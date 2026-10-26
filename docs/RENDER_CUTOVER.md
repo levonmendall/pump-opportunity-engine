@@ -1,5 +1,21 @@
 # In-place Render cutover — deployed bootstrap viewer
 
+## Owner-requested public viewer mode (2026-10-26)
+
+This section supersedes the earlier authenticated-viewer notes below. The existing
+free Render service was switched to public read-only viewing at source
+`2bd35bf9053cba64e01db672d4059583ff5cf54c`, deployed live as
+`dep-dbftds142hec73dhlkl0`. `POE_PUBLIC_VIEWER=true`; old
+`POE_VIEWER_USER` and `POE_VIEWER_PASSWORD` values were cleared.
+Anyone with the URL can GET `/`, `/status`, `/api/snapshot` and
+`/api/export`, including published portfolio history and decisions.
+POST `/api/snapshot` still requires the private `POE_INGEST_SECRET`
+Bearer token. Never attach wallet/provider/trading secrets to Render.
+
+Deployment build, process startup and live status passed. Direct unauthenticated
+browser GET verification from this environment was unavailable; verify from a
+fresh browser session as an additional acceptance check.
+
 Only service **srv-daqon53tqb8s73bdceq0** in confirmed workspace
 **tea-daqk6h8jo6nc73eojtp0** was modified. Existing free compute, resource name
 and URL retained. No second service/account, database or paid upgrade.
