@@ -1,0 +1,56 @@
+name: POE read-only installation status
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/poe-install-preflight.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  installation-status:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 2
+    steps:
+      - name: Verify POE service and bounded nonfinancial status
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          python3 -I - <<'PY'
+          import datetime,json,os,pathlib,pwd,stat,subprocess,time,urllib.request
+          def emit(**data):print(json.dumps(data,sort_keys=True),flush=True)
+          http=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+          token=http.open(urllib.request.Request('http://169.254.169.254/latest/api/token',method='PUT',headers={'X-aws-ec2-metadata-token-ttl-seconds':'60'}),timeout=3).read().decode()
+          identity=json.load(http.open(urllib.request.Request('http://169.254.169.254/latest/dynamic/instance-identity/document',headers={'X-aws-ec2-metadata-token':token}),timeout=3))
+          assert (identity.get('accountId'),identity.get('region'),identity.get('instanceId'))==('133857166104','us-west-2','i-00044d4ea1471b957'),'host mismatch'
+          assert os.getuid()==994 and pwd.getpwuid(os.getuid()).pw_name=='mm-ec2-runner'
+          result=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property=LoadState,ActiveState,SubState,User,NRestarts,Result'],capture_output=True,text=True,timeout=10)
+          properties=dict(line.split('=',1) for line in result.stdout.splitlines() if '=' in line)
+          assert set(properties)<=set(['LoadState','ActiveState','SubState','User','NRestarts','Result'])
+          emit(instance=identity['instanceId'],uid=os.getuid(),service=properties,readOnly=True)
+          try:
+              owner=pwd.getpwnam('poe-runtime').pw_uid
+              path=pathlib.Path('/var/lib/poe-public/status.json');parent=path.parent.lstat();file=path.lstat()
+          except (KeyError,FileNotFoundError):
+              emit(status='WAITING_OWNER_ROOT_BOOTSTRAP',financialFilesRead=False,credentialsRead=False,permissionsChanged=False)
+              raise SystemExit(0)
+          assert owner!=0 and stat.S_ISDIR(parent.st_mode) and not stat.S_ISLNK(parent.st_mode) and parent.st_uid==owner and parent.st_mode&0o777==0o755
+          assert stat.S_ISREG(file.st_mode) and not stat.S_ISLNK(file.st_mode) and file.st_uid==owner and file.st_mode&0o777==0o644 and file.st_size<=4096
+          body=json.loads(path.read_text())
+          keys=['schemaVersion','project','mode','liveTrading','accountId','inceptionAt','release','strategy','generatedAt','lastUsefulProgressAt','usdPriceAt','lastReconciledAt','feedConnected','lastMigrationReceivedAt','shortlistCount','entriesDisabled','flowVerified','blocker','reportingConfigured']
+          assert set(body)==set(keys) and body['schemaVersion']==1 and body['project']=='pump-opportunity-engine' and body['mode']=='PAPER' and body['liveTrading'] is False and body['entriesDisabled'] is True and body['flowVerified'] is False
+          assert isinstance(body['accountId'],str) and body['accountId'].startswith('poe-') and len(body['accountId'])<100
+          assert isinstance(body['release'],str) and len(body['release'])==40 and all(c in '0123456789abcdef' for c in body['release'])
+          assert body['strategy']=='UNIMPLEMENTED_FLOW_BLOCKED' and isinstance(body['blocker'],str) and len(body['blocker'])<=512
+          ages={}
+          for key in ['inceptionAt','generatedAt','lastUsefulProgressAt','usdPriceAt','lastReconciledAt','lastMigrationReceivedAt']:
+              value=body[key]
+              ages[key]=None if value is None else round(time.time()-datetime.datetime.fromisoformat(value.replace('Z','+00:00')).timestamp(),3)
+          emit(status='POE_OBSERVER_STATUS_OBSERVED',publicStatus=body,factAgeSeconds=ages,financialFilesRead=False,credentialsRead=False,permissionsChanged=False,acceptanceClaimed=False)
+          PY

@@ -20,7 +20,7 @@ for poe_option in "$@"; do
     *) fail 'only --init and --start are supported' ;;
   esac
 done
-for poe_command in curl python3 tar sha256sum git runuser systemctl install id find; do
+for poe_command in curl python3 tar sha256sum git runuser systemctl install id find flock; do
   command -v "$poe_command" >/dev/null || fail "required administration command missing: $poe_command"
 done
 test "$(uname -m)" = x86_64 || fail 'this verified Node build targets Linux x86_64 only'
@@ -60,7 +60,7 @@ test "$(id -G poe-runtime)" = "$(id -g poe-runtime)" || fail 'poe-runtime must b
 python3 -I - "$poe_uid" <<'PY'
 import os,pathlib,stat,sys
 uid=int(sys.argv[1])
-for name,owner in [('/opt/poe',0),('/opt/poe/releases',0),('/etc/poe',0),('/etc/poe/secrets',0),('/var/lib/poe',uid),('/var/lib/poe/state',uid),('/var/lib/poe/backups',uid),('/var/lib/poe/evidence',uid)]:
+for name,owner in [('/opt/poe',0),('/opt/poe/releases',0),('/opt/poe/node',0),('/etc/poe',0),('/etc/poe/secrets',0),('/var/lib/poe',uid),('/var/lib/poe/state',uid),('/var/lib/poe/backups',uid),('/var/lib/poe/evidence',uid),('/var/lib/poe-public',uid)]:
     p=pathlib.Path(name)
     if not os.path.lexists(p):continue
     s=p.lstat()
@@ -69,6 +69,7 @@ PY
 install -d -o root -g poe-runtime -m 0750 /opt/poe /opt/poe/releases /etc/poe
 install -d -o root -g root -m 0700 /etc/poe/secrets
 install -d -o poe-runtime -g poe-runtime -m 0700 /var/lib/poe /var/lib/poe/state /var/lib/poe/backups /var/lib/poe/evidence
+install -d -o poe-runtime -g poe-runtime -m 0755 /var/lib/poe-public
 
 # Do not accumulate releases, automatically prune a checkout, or touch history.
 poe_release_count=$(find /opt/poe/releases -mindepth 1 -maxdepth 1 -type d | wc -l)
@@ -93,6 +94,22 @@ if ! test -x /opt/poe/node/bin/node; then
   chmod -R go-w "$poe_stage/node"
   mv "$poe_stage/node" /opt/poe/node
 fi
+# The dedicated tree may already exist. Validate it without running any of its
+# programs, including --version, before trusting an executable as owner/root.
+python3 -I - /opt/poe/node <<'PY'
+import pathlib,stat,sys
+root=pathlib.Path(sys.argv[1]);s=root.lstat();prefix=str(root)+'/'
+assert stat.S_ISDIR(s.st_mode) and not stat.S_ISLNK(s.st_mode),'Dedicated Node path must be a real directory'
+for p in [root,*root.rglob('*')]:
+    s=p.lstat()
+    assert s.st_uid==0,'Dedicated Node tree contains a nonroot-owned path'
+    if stat.S_ISLNK(s.st_mode):
+        assert str(p.resolve(strict=True)).startswith(prefix),'Dedicated Node symlink escapes its tree'
+    else:
+        assert (stat.S_ISDIR(s.st_mode) or stat.S_ISREG(s.st_mode)) and not s.st_mode&0o022,'Dedicated Node tree has an unsafe type or writable path'
+binary=(root/'bin/node').lstat()
+assert stat.S_ISREG(binary.st_mode) and not stat.S_ISLNK(binary.st_mode),'Dedicated Node executable must be a regular file'
+PY
 test "$(/opt/poe/node/bin/node --version)" = v24.19.0 || fail 'dedicated Node version differs from tested v24.19.0'
 
 if ! test -d "$poe_target"; then
@@ -131,26 +148,35 @@ PY
 test "$(git -C "$poe_target" rev-parse HEAD)" = "$poe_release" || fail 'existing release Git HEAD differs from requested tested source'
 test -L /opt/poe/current || ln -s "$poe_target" /opt/poe/current
 
-if ! test -e /etc/poe/runtime.env; then
+validate_runtime_env() {
+  python3 -I - /etc/poe/runtime.env <<'PY'
+import os,pathlib,stat,sys
+p=pathlib.Path(sys.argv[1])
+if os.path.lexists(p):
+    s=p.lstat()
+    assert stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode) and s.st_uid==0 and s.st_nlink==1 and not s.st_mode&0o027 and s.st_size<8192,'Runtime configuration must be a root-owned regular non-symlink file, without group write or other access'
+PY
+}
+validate_runtime_env
+if ! test -e /etc/poe/runtime.env && ! test -L /etc/poe/runtime.env; then
   poe_account="poe-$(cat /proc/sys/kernel/random/uuid)"
-  {
-    echo 'POE_DB_PATH=/var/lib/poe/state/ledger.sqlite'
-    printf 'POE_ACCOUNT_ID=%s\n' "$poe_account"
-    printf 'POE_RUNTIME_RELEASE=%s\n' "$poe_release"
-    echo 'POE_DATA_DIR=/var/lib/poe'
-    echo 'POE_SOCKET_PATH=/run/poe/control.sock'
-    echo 'POE_PUBLISH_URL=https://meme-machine-dashboard-staging.onrender.com/api/snapshot'
-    echo 'POE_USD_SOURCE=coinbase-spot'
-    echo 'POE_USD_PRICE_FILE=/var/lib/poe/state/valuation.json'
-  } > /etc/poe/runtime.env
-  chown root:poe-runtime /etc/poe/runtime.env
-  chmod 0640 /etc/poe/runtime.env
+  python3 -I - "$poe_account" "$poe_release" <<'PY'
+import grp,os,sys
+account,release=sys.argv[1:]
+fields={'POE_DB_PATH':'/var/lib/poe/state/ledger.sqlite','POE_ACCOUNT_ID':account,'POE_RUNTIME_RELEASE':release,'POE_DATA_DIR':'/var/lib/poe','POE_SOCKET_PATH':'/run/poe/control.sock','POE_PUBLISH_URL':'https://meme-machine-dashboard-staging.onrender.com/api/snapshot','POE_USD_SOURCE':'coinbase-spot','POE_USD_PRICE_FILE':'/var/lib/poe/state/valuation.json','POE_PUBLIC_STATUS_PATH':'/var/lib/poe-public/status.json'}
+fd=os.open('/etc/poe/runtime.env',os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o640)
+try:
+    os.fchown(fd,0,grp.getgrnam('poe-runtime').gr_gid);os.fchmod(fd,0o640)
+    os.write(fd,(''.join(key+'='+value+'\n' for key,value in fields.items())).encode());os.fsync(fd)
+finally:os.close(fd)
+PY
 fi
+validate_runtime_env
 # Parse data, never source an environment file as shell code.
 poe_account=$(python3 -I - <<'PY'
-import pathlib,re
-p=pathlib.Path('/etc/poe/runtime.env');s=p.stat()
-assert s.st_uid==0 and s.st_mode&0o007==0 and s.st_size<8192
+import pathlib,re,stat
+p=pathlib.Path('/etc/poe/runtime.env');s=p.lstat()
+assert stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode) and s.st_uid==0 and s.st_nlink==1 and not s.st_mode&0o027 and s.st_size<8192
 d=dict(line.split('=',1) for line in p.read_text().splitlines() if line and not line.startswith('#'))
 assert d['POE_DB_PATH']=='/var/lib/poe/state/ledger.sqlite'
 assert re.fullmatch(r'poe-[a-z0-9-]{1,80}',d['POE_ACCOUNT_ID'])
@@ -161,7 +187,30 @@ test "$(sed -n 's/^POE_RUNTIME_RELEASE=//p' /etc/poe/runtime.env)" = "$poe_relea
 if grep -q '^POE_USD_SOURCE=' /etc/poe/runtime.env; then
   test "$(sed -n 's/^POE_USD_SOURCE=//p' /etc/poe/runtime.env)" = coinbase-spot || fail 'existing USD source differs; no configuration overwrite performed'
 else
-  printf 'POE_USD_SOURCE=coinbase-spot\n' >> /etc/poe/runtime.env
+  validate_runtime_env
+  python3 -I - <<'PY'
+import os,stat
+fd=os.open('/etc/poe/runtime.env',os.O_WRONLY|os.O_APPEND|os.O_NOFOLLOW)
+try:
+    s=os.fstat(fd)
+    assert stat.S_ISREG(s.st_mode) and s.st_uid==0 and s.st_nlink==1 and not s.st_mode&0o027 and s.st_size<8192
+    os.write(fd,b'POE_USD_SOURCE=coinbase-spot\n');os.fsync(fd)
+finally:os.close(fd)
+PY
+fi
+validate_runtime_env
+if grep -q '^POE_PUBLIC_STATUS_PATH=' /etc/poe/runtime.env; then
+  test "$(sed -n 's/^POE_PUBLIC_STATUS_PATH=//p' /etc/poe/runtime.env)" = /var/lib/poe-public/status.json || fail 'existing public status path differs; no overwrite performed'
+else
+  python3 -I - <<'PY'
+import os,stat
+fd=os.open('/etc/poe/runtime.env',os.O_WRONLY|os.O_APPEND|os.O_NOFOLLOW)
+try:
+    s=os.fstat(fd)
+    assert stat.S_ISREG(s.st_mode) and s.st_uid==0 and s.st_nlink==1 and not s.st_mode&0o027 and s.st_size<8192
+    os.write(fd,b'POE_PUBLIC_STATUS_PATH=/var/lib/poe-public/status.json\n');os.fsync(fd)
+finally:os.close(fd)
+PY
 fi
 
 install -o root -g root -m 0644 "$poe_target/scripts/poe-runtime.service" /etc/systemd/system/poe-runtime.service

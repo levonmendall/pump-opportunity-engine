@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, lstatSync, writeFileSync, readFileSync, chmodSync, symlinkSync, linkSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { DisposableLedger, type UsdPrice } from '../src/ledger.js';
 
 const AT = Date.parse('2026-10-26T12:00:00.000Z');
@@ -162,12 +162,84 @@ test('restart recovers unresolved reservations; SQLite backup restores coherent 
   } finally { restored.close(); restarted.close(); }
 });
 
-test('exclusive loaded SQLite connection rejects a second owner and wrong account', t => {
+test('separate advisory flock rejects a second writer while external SQLite readers remain available', t => {
   const { ledger, path, close } = setup(t);
+  const ownerPath = path + '.owner.lock'; const ownerBefore = lstatSync(ownerPath);
+  assert.equal(ownerBefore.mode & 0o7777, 0o600); assert.equal(ownerBefore.nlink, 1);
+  assert.equal(ownerBefore.uid, process.geteuid!());
+  assert.equal(spawnSync('/usr/bin/flock', ['-xn', ownerPath, 'true']).status, 1);
   assert.throws(() => new DisposableLedger(path, 'fixture-ledger'), /locked/);
+  const reader = spawnSync(process.execPath, ['--input-type=module', '-e', `
+    import Database from 'better-sqlite3';
+    const db = new Database(${JSON.stringify(path)}, {readonly:true,fileMustExist:true,timeout:100});
+    const row=db.prepare('SELECT body FROM financial_state WHERE singleton=1').get();
+    process.stdout.write(JSON.stringify({cash:JSON.parse(row.body).lamports,locking:db.pragma('locking_mode',{simple:true})}));
+    db.close();
+  `], { cwd: process.cwd(), encoding: 'utf8' });
+  assert.equal(reader.status, 0, reader.stderr);
+  assert.deepEqual(JSON.parse(reader.stdout), { cash: '10000000000', locking: 'normal' });
+  const moduleUrl = new URL('../src/ledger.ts', import.meta.url).href;
+  const otherWriter = spawnSync(process.execPath, ['--import', 'tsx', '--input-type=module', '-e', `
+    import { DisposableLedger } from ${JSON.stringify(moduleUrl)};
+    try { const l = new DisposableLedger(${JSON.stringify(path)}, 'fixture-ledger'); l.close(); process.exit(2); }
+    catch(e) { if(!/financial owner locked/.test(e.message))throw e;process.stdout.write('owner-refused'); }
+  `], { cwd: process.cwd(), encoding: 'utf8' });
+  assert.equal(otherWriter.status, 0, otherWriter.stderr); assert.equal(otherWriter.stdout, 'owner-refused');
   assert.equal(ledger.integrity(), 'ok');
   close();
+  assert.equal(spawnSync('/usr/bin/flock', ['-xn', ownerPath, 'true']).status, 0);
+  const ownerAfter = lstatSync(ownerPath);
+  assert.equal(ownerAfter.ino, ownerBefore.ino); assert.equal(ownerAfter.nlink, 1); // Never unlink a persistent lease inode.
   assert.throws(() => new DisposableLedger(path, 'fixture-wrong'), /wrong fixture/);
+  const nextOwner = new DisposableLedger(path, 'fixture-ledger'); nextOwner.close(); // Failed constructor released its lease.
+});
+
+test('owner lease rejects symlinks, shared permissions, hardlinks and nonregular files without touching their targets', t => {
+  const dir = mkdtempSync(join(tmpdir(), 'poe-owner-lock-safety-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const target = join(dir, 'unrelated-target'); writeFileSync(target, 'preserve', { mode: 0o600 });
+  const symlinkDb = join(dir, 'symlink.sqlite'); symlinkSync(target, symlinkDb + '.owner.lock');
+  assert.throws(() => new DisposableLedger(symlinkDb, 'fixture-owner-test'), /non-symlink/);
+  assert.equal(readFileSync(target, 'utf8'), 'preserve'); assert.equal(existsSync(symlinkDb), false);
+  const sharedDb = join(dir, 'shared.sqlite'); writeFileSync(sharedDb + '.owner.lock', '', { mode: 0o600 });
+  chmodSync(sharedDb + '.owner.lock', 0o640);
+  assert.throws(() => new DisposableLedger(sharedDb, 'fixture-owner-test'), /0600/);
+  assert.equal(lstatSync(sharedDb + '.owner.lock').mode & 0o777, 0o640); assert.equal(existsSync(sharedDb), false);
+  const linkedDb = join(dir, 'hardlinked.sqlite'); linkSync(target, linkedDb + '.owner.lock');
+  assert.throws(() => new DisposableLedger(linkedDb, 'fixture-owner-test'), /one link/);
+  assert.equal(readFileSync(target, 'utf8'), 'preserve'); assert.equal(existsSync(linkedDb), false);
+  const directoryDb = join(dir, 'directory.sqlite'); mkdirSync(directoryDb + '.owner.lock', { mode: 0o700 });
+  assert.throws(() => new DisposableLedger(directoryDb, 'fixture-owner-test'), /regular/);
+  assert.equal(existsSync(directoryDb), false);
+});
+
+test('database open errors release the separate lease and disposable memory accounts need no file lease', t => {
+  const dir = mkdtempSync(join(tmpdir(), 'poe-owner-open-error-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const path = join(dir, 'not-a-database'); writeFileSync(path, 'not a SQLite database', { mode: 0o600 });
+  assert.throws(() => new DisposableLedger(path, 'fixture-open-error'));
+  assert.equal(lstatSync(path + '.owner.lock').mode & 0o7777, 0o600);
+  assert.equal(spawnSync('/usr/bin/flock', ['-xn', path + '.owner.lock', 'true']).status, 0);
+  const memory = new DisposableLedger(':memory:', 'fixture-memory');
+  try { memory.initialize(price(AT), AT); assert.equal(memory.integrity(), 'ok'); }
+  finally { memory.close(); }
+});
+
+test('database and directory aliases cannot establish a second financial writer', t => {
+  const { ledger, path, dir } = setup(t);
+  const original = ledger.state(); const owner = lstatSync(path + '.owner.lock');
+  const directoryAlias = join(dir, 'directory-alias'); symlinkSync(dir, directoryAlias, 'dir');
+  assert.throws(() => new DisposableLedger(join(directoryAlias, 'fixture.sqlite'), 'fixture-ledger'), /financial owner locked/);
+  const symlinkDb = join(dir, 'database-symlink.sqlite'); symlinkSync(path, symlinkDb);
+  assert.throws(() => new DisposableLedger(symlinkDb, 'fixture-ledger'), /regular non-symlink/);
+  assert.equal(existsSync(symlinkDb + '.owner.lock'), false);
+  const hardlinkDb = join(dir, 'database-hardlink.sqlite'); linkSync(path, hardlinkDb);
+  try {
+    assert.throws(() => new DisposableLedger(hardlinkDb, 'fixture-ledger'), /one link/);
+    assert.equal(existsSync(hardlinkDb + '.owner.lock'), false);
+  } finally { unlinkSync(hardlinkDb); }
+  assert.equal(lstatSync(path + '.owner.lock').ino, owner.ino);
+  assert.deepEqual(ledger.state(), original); assert.equal(ledger.integrity(), 'ok');
 });
 
 test('backward wall time cannot clear a persisted day pause', t => {

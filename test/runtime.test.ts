@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,rmSync,statSync,readFileSync,existsSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,rmSync,statSync,readFileSync,existsSync,chmodSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {PaperLedger,type UsdPrice} from '../src/ledger.js';
@@ -132,4 +132,44 @@ test('position rows reject future, unevidenced and wrong-sized marks consistentl
       assert.equal(s.positions[0]!.netLiquidationUsd,null);assert.equal(s.balances.equitySol,null);assert.equal(s.times.marketAt,null);
     }
   }finally{await runtime.close();rmSync(f.directory,{recursive:true});}
+});
+test('public health projection is allowlisted, atomic and preserves fact ages through fresh heartbeats',async()=>{
+  const f=fixture(),publicDir=mkdtempSync(join(tmpdir(),'poe-public-health-fixture-'));chmodSync(publicDir,0o755);
+  const path=join(publicDir,'status.json');let available=true;
+  const runtime=new PaperObservationRuntime({...f,release:'fixture-release',connectFeed:false,publicStatusPath:path,priceProvider:async()=>{if(!available)throw new Error('fixture-secret-must-not-be-logged');return f.price();}});
+  try{
+    await runtime.start();runtime.observe(JSON.stringify({txType:'migrate',mint:MINT,signature:'fixture-health'}));await runtime.tick();
+    const first=JSON.parse(readFileSync(path,'utf8'));
+    assert.equal(statSync(path).mode&0o777,0o644);assert.ok(statSync(path).size<=4096);
+    assert.deepEqual(Object.keys(first).sort(),['schemaVersion','project','mode','liveTrading','accountId','inceptionAt','release','strategy','generatedAt','lastUsefulProgressAt','usdPriceAt','lastReconciledAt','feedConnected','lastMigrationReceivedAt','shortlistCount','entriesDisabled','flowVerified','blocker','reportingConfigured'].sort());
+    assert.equal(first.accountId,f.ledger.state().accountId);assert.equal(first.inceptionAt,new Date(f.ledger.state().inceptionAt).toISOString());
+    assert.equal(first.release,'fixture-release');assert.equal(first.strategy,'UNIMPLEMENTED_FLOW_BLOCKED');assert.equal(first.mode,'PAPER');assert.equal(first.liveTrading,false);
+    assert.equal(first.entriesDisabled,true);assert.equal(first.flowVerified,false);assert.equal(first.shortlistCount,1);
+    available=false;f.advance(15_000);await runtime.tick();
+    const later=JSON.parse(readFileSync(path,'utf8'));
+    assert.notEqual(later.generatedAt,first.generatedAt);
+    for(const key of ['usdPriceAt','lastReconciledAt','lastUsefulProgressAt','lastMigrationReceivedAt'])assert.equal(later[key],first[key]);
+    const text=readFileSync(path,'utf8');
+    for(const forbidden of ['cash','balance','positions','trades','Lamports','fixture-secret','https:'])assert.ok(!text.includes(forbidden));
+    assert.equal(runtime.command('status').publicStatusUnavailable,false);
+  }finally{await runtime.close();rmSync(f.directory,{recursive:true});rmSync(publicDir,{recursive:true});}
+});
+test('public-file failures and unsafe paths do not halt financial, feed or publisher progress',async()=>{
+  const f=fixture(),publicDir=mkdtempSync(join(tmpdir(),'poe-public-failure-fixture-'));chmodSync(publicDir,0o755);
+  const path=join(publicDir,'status.json');let offers=0;
+  const runtime=new PaperObservationRuntime({...f,release:'fixture-release',connectFeed:false,publicStatusPath:path,priceProvider:async()=>f.price(),publisher:{start(){},offer(){offers++;},async stop(){}}});
+  try{
+    await runtime.start();const first=readFileSync(path,'utf8');
+    chmodSync(publicDir,0o777);f.advance(31_000);
+    runtime.observe(JSON.stringify({txType:'migrate',mint:MINT,signature:'fixture-health-write-failure'}));await runtime.tick();
+    assert.equal(readFileSync(path,'utf8'),first);assert.equal(runtime.command('status').publicStatusUnavailable,true);
+    assert.equal(runtime.command('status').running,true);assert.equal(runtime.snapshot(f.now()).funnel.discovered,1);assert.ok(offers>=2);
+    assert.equal(f.ledger.state().lamports,'10000000000');
+    chmodSync(publicDir,0o755);await runtime.tick();assert.equal(runtime.command('status').publicStatusUnavailable,false);
+  }finally{await runtime.close();rmSync(f.directory,{recursive:true});rmSync(publicDir,{recursive:true});}
+  const next=fixture(),wrongPath=join(next.directory,'status.json');
+  writeFileSync(wrongPath,'fixture-private-file',{mode:0o600});
+  const wrong=new PaperObservationRuntime({...next,release:'fixture-release',connectFeed:false,publicStatusPath:wrongPath});
+  try{await wrong.start();assert.equal(wrong.command('status').publicStatusUnavailable,true);assert.equal(wrong.command('status').running,true);assert.equal(readFileSync(wrongPath,'utf8'),'fixture-private-file');}
+  finally{await wrong.close();rmSync(next.directory,{recursive:true});}
 });

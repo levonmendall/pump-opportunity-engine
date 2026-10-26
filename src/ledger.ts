@@ -1,5 +1,8 @@
 import Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
+import { openSync, closeSync, fstatSync, lstatSync, statSync, realpathSync, constants, type Stats } from 'node:fs';
+import { dirname, basename, resolve, join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 /** One PAPER accounting path. Fixture and authoritative identities never mix. No live execution. */
 export type UsdPrice = { microUsdPerSol: string; at: number; source: string };
@@ -60,24 +63,64 @@ function priceAt(price: UsdPrice, now: number) {
 const usd = (lamports: bigint, price: bigint) => lamports * price / L;
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 
+/** Parent aliases share one lease; final DB aliases cannot split ownership or WAL identity. */
+function canonicalDatabase(path: string): string {
+  const absolute = resolve(path);
+  const canonical = join(realpathSync(dirname(absolute)), basename(absolute));
+  try {
+    const s = lstatSync(canonical);
+    if (!s.isFile() || s.nlink !== 1) throw new Error('financial database must be a regular non-symlink file with one link');
+  } catch (e) { if (!(e instanceof Error && 'code' in e && e.code === 'ENOENT')) throw e; }
+  return canonical;
+}
+
+/** Standard Linux flock on a separate inode. Never use a financial DB lock as a process lease. */
+function acquireOwner(path: string): number {
+  if (process.platform !== 'linux' || !process.geteuid) throw new Error('Linux advisory flock required');
+  const uid = process.geteuid();
+  const ownerPath = path + '.owner.lock';
+  const parent = statSync(dirname(ownerPath));
+  if (!parent.isDirectory() || parent.uid !== uid || parent.mode & 0o077) throw new Error('financial owner directory must be private and owner-held');
+  const check = (s: Stats) => {
+    if (!s.isFile() || s.uid !== uid || (s.mode & 0o7777) !== 0o600 || s.nlink !== 1) throw new Error('financial owner lock must be an owner-held regular non-symlink 0600 file with one link');
+  };
+  try { check(lstatSync(ownerPath)); }
+  catch (e) { if (!(e instanceof Error && 'code' in e && e.code === 'ENOENT')) throw e; }
+  const fd = openSync(ownerPath, constants.O_CREAT | constants.O_RDWR | constants.O_NOFOLLOW, 0o600);
+  try {
+    const before = fstatSync(fd); check(before);
+    // dup(fd) in the child shares the parent's open file description. Linux retains
+    // this flock after the short helper exits until the parent's FD closes/SIGKILL.
+    const lease = spawnSync('/usr/bin/flock', ['-xn', '3'], { stdio: ['ignore', 'ignore', 'pipe', fd], timeout: 5000 });
+    if (lease.error || lease.status !== 0) throw new Error(lease.status === 1 ? 'financial owner locked by another process' : 'Linux advisory flock unavailable; ownership not established');
+    const after = lstatSync(ownerPath); check(after);
+    if (after.dev !== before.dev || after.ino !== before.ino) throw new Error('financial owner lock changed during acquisition');
+    return fd;
+  } catch (e) { closeSync(fd); throw e; }
+}
+
 export class PaperLedger {
   private readonly db: Database.Database;
+  private ownerFd: number | undefined;
   readonly sqlite: { version: string; source: string };
 
   constructor(path: string, readonly accountId: string, readonly mode: LedgerMode = 'PAPER') {
     if (mode === 'DISPOSABLE_PAPER' ? !/^fixture-[a-z0-9-]{1,80}$/.test(accountId) : mode !== 'PAPER' || !/^poe-[a-z0-9-]{1,80}$/.test(accountId)) throw new Error('explicit POE or disposable fixture identity required');
     if (mode === 'PAPER' && (path === ':memory:' || path.length === 0)) throw new Error('durable PAPER account path required');
-    this.db = new Database(path, { timeout: 100 });
-    this.sqlite = this.db.prepare('SELECT sqlite_version() version, sqlite_source_id() source').get() as typeof this.sqlite;
-    const [major, minor, patch] = this.sqlite.version.split('.').map(Number);
-    if (!(major! > 3 || major === 3 && (minor! > 51 || minor === 51 && patch! >= 3))) {
-      this.db.close(); throw new Error('SQLite WAL-reset fixed version >=3.51.3 required');
-    }
+    const database = path === ':memory:' ? path : canonicalDatabase(path);
+    if (database !== ':memory:') this.ownerFd = acquireOwner(database);
+    let opened: Database.Database | undefined;
     try {
+      if (database !== ':memory:') canonicalDatabase(database); // Recheck after acquiring the owner lease.
+      this.db = opened = new Database(database, { timeout: 100 });
+      this.sqlite = this.db.prepare('SELECT sqlite_version() version, sqlite_source_id() source').get() as typeof this.sqlite;
+      const [major, minor, patch] = this.sqlite.version.split('.').map(Number);
+      if (!(major! > 3 || major === 3 && (minor! > 51 || minor === 51 && patch! >= 3))) throw new Error('SQLite WAL-reset fixed version >=3.51.3 required');
       const tables = this.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' LIMIT 5").all() as { name: string }[];
       if (tables.length && (!['financial_state','actions','journal'].every(name => tables.some(row => row.name === name)) || tables.some(row => !['financial_state','actions','journal','metadata'].includes(row.name)))) throw new Error('foreign database schema; refusing to initialize or modify');
-      // One connection, including readers/checkpointing. No external financial writer.
-      this.db.pragma('locking_mode = EXCLUSIVE');
+      // Financial locks last only for short synchronous transactions. The separate
+      // advisory flock owns the writer while network/market/reporting work awaits.
+      this.db.pragma('locking_mode = NORMAL');
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = FULL');
       this.db.pragma('wal_autocheckpoint = 128');
@@ -93,7 +136,11 @@ export class PaperLedger {
       if (existing && ((existing.accountId ?? existing.fixtureId) !== accountId || existing.mode !== mode)) throw new Error('wrong fixture account or PAPER identity/mode');
       if (existing) this.assertState(existing);
       else if ((this.db.prepare('SELECT (SELECT count(*) FROM actions) + (SELECT count(*) FROM journal) + (SELECT count(*) FROM metadata) records').get() as { records: number }).records > 0) throw new Error('financial state missing from populated account; recovery required, never reseed');
-    } catch (e) { this.db.close(); throw e; }
+    } catch (e) {
+      try { opened?.close(); }
+      finally { if (this.ownerFd !== undefined) { closeSync(this.ownerFd); this.ownerFd = undefined; } }
+      throw e;
+    }
   }
 
   private read(): State | undefined {
@@ -474,7 +521,10 @@ export class PaperLedger {
     };
   }
   integrity() { return this.db.pragma('integrity_check', { simple: true }); }
-  close() { this.db.close(); }
+  close() {
+    try { this.db.close(); }
+    finally { if (this.ownerFd !== undefined) { closeSync(this.ownerFd); this.ownerFd = undefined; } }
+  }
 }
 
 /** Fixture wrapper uses the same accounting implementation and rejects production identities. */

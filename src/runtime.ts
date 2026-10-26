@@ -1,6 +1,6 @@
 import {createServer,createConnection,type Server as SocketServer} from 'node:net';
-import {chmodSync,existsSync,lstatSync,mkdirSync,readFileSync,renameSync,unlinkSync,writeFileSync} from 'node:fs';
-import {dirname,resolve} from 'node:path';
+import {chmodSync,closeSync,existsSync,lstatSync,mkdirSync,openSync,readFileSync,realpathSync,renameSync,unlinkSync,writeFileSync} from 'node:fs';
+import {basename,dirname,isAbsolute,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
 import {monitorEventLoopDelay} from 'node:perf_hooks';
@@ -26,6 +26,8 @@ export type RuntimeOptions={
   /** Actual-size conservative liquidation; adapters must bound/cancel requests. */
   markProvider?:(positions:LedgerState['positions'])=>Promise<Record<string,Mark>>;
   publisher?:Publisher;
+  /** Optional nonsecret local read model; directory is provisioned separately. */
+  publicStatusPath?:string;
   feedFactory?:()=>Feed;
   connectFeed?:boolean;
   tickMs?:number;
@@ -56,9 +58,11 @@ export class PaperObservationRuntime {
   private attempts=0;
   private marketError:string|null=null;
   private reportError=false;
+  private publicStatusUnavailable=false;
   private price:UsdPrice|null=null;
   private marks:Record<string,Mark>={};
   private lastUsefulAt:number|null=null;
+  private lastMigrationReceivedAt:number|null=null;
   private lastSnapshotAt=0;
   private lastHistoryAt=0;
   private history:Snapshot['pnl']=[];
@@ -164,7 +168,7 @@ export class PaperObservationRuntime {
   }
   command(command:string):Record<string,unknown>{
     const now=Math.max(this.now(),this.options.ledger.state().lastAt);
-    if(command==='status')return {accountId:this.identity.accountId,mode:'PAPER',liveTrading:false,running:this.running,feedConnected:this.connected,blocker:this.blocker(),reportingUnavailable:this.reportError,candidates:this.candidates.size,financial:this.options.ledger.projection(now,this.price??undefined,this.marks)};
+    if(command==='status')return {accountId:this.identity.accountId,mode:'PAPER',liveTrading:false,running:this.running,feedConnected:this.connected,blocker:this.blocker(),reportingUnavailable:this.reportError,publicStatusUnavailable:this.publicStatusUnavailable,candidates:this.candidates.size,financial:this.options.ledger.projection(now,this.price??undefined,this.marks)};
     if(command==='pause')return this.options.ledger.pause(`operator-pause:${randomUUID()}`,now,'operator paused new entries');
     if(command==='resume')return {enabled:false,reason:BLOCKER};
     if(command==='safe-stop')return this.options.ledger.safeStop(`operator-stop:${randomUUID()}`,now);
@@ -198,6 +202,7 @@ export class PaperObservationRuntime {
     const id=`${data.signature}:${data.mint}`;if(this.seen.has(id))return;
     this.seen.add(id);if(this.seen.size>128)this.seen.delete(this.seen.values().next().value!);
     this.discovered++;const now=this.now();
+    this.lastMigrationReceivedAt=now;
     for(const [mint,c] of this.candidates)if(now-c.firstReceivedAt>7_200_000)this.candidates.delete(mint);
     const existing=this.candidates.get(data.mint);
     if(!existing&&this.candidates.size>=12)return;
@@ -220,6 +225,40 @@ export class PaperObservationRuntime {
       // failure does not stop ingestion or turn into a financial action.
       try{this.options.publisher?.offer(snapshot);this.reportError=false;}catch{this.reportError=true;}
     }
+    this.writePublicStatus(now);
+  }
+  private writePublicStatus(now:number){
+    const path=this.options.publicStatusPath;if(!path)return;
+    let temp:string|undefined;
+    try{
+      if(!isAbsolute(path)||basename(path)!=='status.json'||resolve(path)!==path)throw new Error();
+      const parent=dirname(path),dir=lstatSync(parent),owner=process.getuid?.();
+      const privateRoot=realpathSync(this.options.directory);
+      if(!dir.isDirectory()||dir.isSymbolicLink()||dir.uid!==owner||(dir.mode&0o777)!==0o755||realpathSync(parent)!==parent||parent===privateRoot||parent.startsWith(privateRoot+'/'))throw new Error();
+      try{
+        const current=lstatSync(path);
+        if(!current.isFile()||current.isSymbolicLink()||current.uid!==owner||(current.mode&0o777)!==0o644||current.size>4096)throw new Error();
+        const prior=JSON.parse(readFileSync(path,'utf8'));
+        if(prior.schemaVersion!==1||prior.project!=='pump-opportunity-engine'||prior.mode!=='PAPER'||prior.accountId!==this.identity.accountId)throw new Error();
+      }catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
+      const state=this.options.ledger.state();
+      const body=JSON.stringify({
+        schemaVersion:1,project:'pump-opportunity-engine',mode:'PAPER',liveTrading:false,
+        accountId:this.identity.accountId,inceptionAt:this.identity.inceptionAt,release:this.identity.release,strategy:this.identity.strategy,
+        generatedAt:iso(now),lastUsefulProgressAt:this.lastUsefulAt===null?null:iso(this.lastUsefulAt),
+        usdPriceAt:this.price&&Number.isSafeInteger(this.price.at)&&this.price.at<=now?iso(this.price.at):null,
+        lastReconciledAt:state.daily.reconciledAt?iso(state.daily.reconciledAt):null,
+        feedConnected:this.connected,lastMigrationReceivedAt:this.lastMigrationReceivedAt===null?null:iso(this.lastMigrationReceivedAt),shortlistCount:this.candidates.size,
+        entriesDisabled:true,flowVerified:false,blocker:this.blocker(),reportingConfigured:!!this.options.publisher,
+      })+'\n';
+      if(Buffer.byteLength(body)>4096)throw new Error();
+      temp=resolve(parent,`.poe-status-${randomUUID()}.tmp`);
+      const fd=openSync(temp,'wx',0o600);
+      try{writeFileSync(fd,body);}finally{closeSync(fd);}
+      chmodSync(temp,0o644);renameSync(temp,path);temp=undefined;
+      this.publicStatusUnavailable=false;
+    }catch{this.publicStatusUnavailable=true;}
+    finally{if(temp){try{unlinkSync(temp);}catch{ /* No arbitrary error is logged. */ }}}
   }
   snapshot(now=this.now()):Snapshot{
     const state=this.options.ledger.state(),p=this.options.ledger.projection(now,this.price??undefined,this.marks);
@@ -289,7 +328,7 @@ if(process.argv[1]&&fileURLToPath(import.meta.url)===resolve(process.argv[1])){
       const usdSource=process.env.POE_USD_SOURCE;
       if(usdSource&&usdSource!=='coinbase-spot'){ledger.close();throw new Error('unsupported explicit USD source');}
       const priceProvider=usdSource==='coinbase-spot'?async()=>await (await import('./valuation.js')).fetchPublicUsdPrice():priceFile?async()=>{if(lstatSync(priceFile).size>2048)throw new Error('valuation file too large');return JSON.parse(readFileSync(priceFile,'utf8'));}:undefined;
-      const runtime=new PaperObservationRuntime({ledger,directory:process.env.POE_DATA_DIR??'/var/lib/poe',socketPath,release,publisher,priceProvider});
+      const runtime=new PaperObservationRuntime({ledger,directory:process.env.POE_DATA_DIR??'/var/lib/poe',socketPath,release,publisher,priceProvider,publicStatusPath:process.env.POE_PUBLIC_STATUS_PATH});
       await runtime.start();
       const stop=()=>{const result=runtime.command('safe-stop');if(result.safeToExit===true)void runtime.close();else process.stderr.write('POE safe stop deferred: open positions or unresolved actions require management; a forced supervisor stop would leave exposure unmonitored\n');};
       process.on('SIGTERM',stop);process.on('SIGINT',stop);

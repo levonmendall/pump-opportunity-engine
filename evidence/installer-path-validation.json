@@ -1,0 +1,74 @@
+{
+  "project": "pump-opportunity-engine",
+  "checkedAt": "2026-10-26T21:35:28.048Z",
+  "script": "scripts/install-ec2.sh",
+  "scriptSha256": "3a1b269f2b10f97f45b0fae5d6f9185cc4f6d35abf965df79a2a5941d63c6136",
+  "executionEnvironment": "isolated local temporary fixtures; no EC2 execution",
+  "scenarios": [
+    {
+      "scenario": "bash syntax",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "nonroot installer invocation refuses before mutation",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "actual Node validator refuses a nonroot-owned tree",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "safe fake Node tree accepted by validator with only expected owner UID adjusted for local fixtures",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "Node validator rejects a group-writable executable",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "Node validator rejects an escaping symlink",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "Node validator rejects a symlink at bin/node even when confined",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "actual configuration validator refuses a nonroot-owned file",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "safe fake configuration accepted with only expected owner UID adjusted for local fixtures",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "configuration validator rejects group write and other read access",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "configuration validator rejects multiple hard links",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "configuration validator rejects dangling and existing-target symlinks",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "Node tree validator occurs before dedicated Node --version execution",
+      "outcome": "PASS"
+    },
+    {
+      "scenario": "patch whitespace",
+      "outcome": "PASS"
+    }
+  ],
+  "codeReview": "Independent read-only review found no further blocker in targeted Node/configuration path protections.",
+  "limitations": [
+    "No fixture executable was run.",
+    "Positive local fixtures adjust only the required owner UID because this workspace is nonroot; unmodified validators independently reject those nonroot files.",
+    "This is not an EC2 installation, service start, authoritative account inception, or proof of cloud deployment."
+  ],
+  "credentialsRead": false,
+  "financialStateChanged": false,
+  "followUp": "Required flock binary availability was added after path-validator review; validator source remains unchanged. Final bash syntax passes."
+}

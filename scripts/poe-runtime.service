@@ -28,7 +28,8 @@ PrivateTmp=yes
 ProtectSystem=strict
 ProtectHome=yes
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
-ReadWritePaths=/var/lib/poe /run/poe
+# Missing optional status directory must not prevent financial runtime startup.
+ReadWritePaths=/var/lib/poe /run/poe -/var/lib/poe-public
 UMask=0077
 
 [Install]
