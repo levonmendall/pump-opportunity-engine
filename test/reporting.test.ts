@@ -112,6 +112,28 @@ test('dashboard separates public liveness, owner viewer and machine-only ingesti
   assert.equal((await fetch(app.url + '/reset', { method: 'POST', headers: { authorization: viewer } })).status, 405);
 });
 
+test('explicit public dashboard needs no viewer credentials but never permits unauthenticated ingestion', async t => {
+  const app = await serve(t, { ...config, viewerUser: '', viewerPassword: '', publicViewer: true });
+  assert.equal((await app.get('/')).status, 200);
+  assert.equal((await app.get('/status')).status, 200);
+  assert.equal((await app.get('/api/snapshot')).status, 503);
+  assert.equal((await app.get('/api/export')).status, 503);
+  assert.equal((await app.post(sample(), viewer)).status, 401);
+  assert.equal((await app.post(sample(), 'Bearer incorrect')).status, 401);
+  assert.equal((await app.post(sample())).status, 200);
+  assert.equal((await app.get('/api/snapshot')).status, 200);
+  assert.equal((await app.get('/api/export')).status, 200);
+  assert.equal((await fetch(app.url + '/reset', { method: 'POST' })).status, 405);
+  assert.equal((await fetch(app.url + '/api/snapshot', { method: 'PUT' })).status, 405);
+  assert.equal((await app.get('/unknown')).status, 404);
+  assert.equal((await app.get('/').then(r => r.headers.get('www-authenticate'))), null);
+});
+
+test('public viewer never weakens ingestion secret or permits partial source identity', () => {
+  assert.throws(() => createDashboard({ ...config, viewerUser: '', viewerPassword: '', publicViewer: true, ingestionSecret: '' }), /ingestion secret/);
+  assert.throws(() => createDashboard({ ...config, viewerUser: '', viewerPassword: '', publicViewer: true, accountId: 'other' }), /complete source identity/);
+});
+
 test('HTTP rejects wrong account, conflict, regressions, malformed and oversized payloads', async t => {
   const app = await serve(t); await app.post(sample('2'));
   assert.equal((await app.post(sample('1'))).status, 409);
