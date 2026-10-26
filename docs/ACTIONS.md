@@ -73,3 +73,28 @@ Follow-up dependency resolution:
   on this evidence. AWS/Node/npm not on this runner PATH. No Turnkey path/address
   found in the bounded metadata-only check. Two legacy publisher units identified;
   none stopped. Current inventory no longer needs any owner action/repeat dispatch.
+- Current Render connector now verifies completed POE/main/Node/source/build/start/
+  health/free/auto-off settings. Removed the obsolete owner source-edit request.
+  Live deployment still legacyf889363; no new POE rollout claimed.
+- Prepared targeted reporter retirement at admin commit177e839cf3609c75fbbb7d9599fe23d122dc8775.
+  Owner ran it40397181995/job121833178389. Actual host/component checks passed,
+  but exact existing sudo permission was absent, exit3, changed=false. One old
+  reporting timer remained enabled/active. Reported only the exact owner-root
+  systemctl command; no runner privilege or legacy readiness broker bypass.
+- Extended same accounting path for production PAPER with strict semantic recovery,
+  reserve-funded exits, controls, consistent backup/restore and durable reporting
+  sequence/history. New observer remains entry-blocked, never reads billing/Turnkey
+  secrets or fills orders, and refuses restored exposure without exit management.
+  Tests remain disposable; actual account not initialized. Prepared pinned initial
+  EC2 bootstrap; no root installation/service start occurred.
+- Short DISPOSABLE runtime network smoke20:49:50–20:50:25UTC connected free feed,
+  zero candidates/trades/metered subscriptions, entriesdisabled and safe-stoptrue.
+  This is not an unattended baseline. Economic costs remain unknown, notzero.
+- Existing Turnkey organization ID was supplied. Operator-only official SDK8.8.0
+  query helper handles organization-wide pagination/native balances with submission
+  guards. Current Cloud status still has zero raw-secret/file/outbound bindings;
+  query attempt stopped before API access. Actual local auth-key material, not
+  network placeholders, is required. No Turnkey wallet key export or signing.
+- Rechecked existing billing destination20:44:13UTC at slot461804006: zero lamports.
+  Bundle remains protected outside git; owner recovery/funding/runtime installation
+  unconfirmed. No duplicate wallet, transfer approval, signing or broadcast.

@@ -1,0 +1,96 @@
+# One bounded administration operation, not a trading/deployment controller.
+# Run only from levonmendall/meme-machine-admin main after owner review.
+name: POE retire legacy dashboard publishers
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  retire-reporters:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 3
+    steps:
+      - name: Verify host, reporter roles and existing permission; retire only reporters
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" -ne 0
+          test "$GITHUB_EVENT_NAME" = workflow_dispatch
+          python3 -I - <<'PY'
+          import hashlib,json,os,pathlib,pwd,subprocess,sys,urllib.request
+          def emit(**data): print(json.dumps(data,sort_keys=True),flush=True)
+          def need(ok,code):
+              if not ok: raise RuntimeError(code)
+          def run(args): return subprocess.run(args,capture_output=True,text=True,timeout=20)
+          def show(unit,properties):
+              result=run(['/usr/bin/systemctl','show',unit,'--property='+','.join(properties)])
+              need(result.returncode==0,'UNIT_METADATA_UNAVAILABLE')
+              return dict(line.split('=',1) for line in result.stdout.splitlines() if '=' in line)
+          def reviewed(path,blob):
+              p=pathlib.Path(path);st=p.lstat()
+              allowed_owner={0} if '/etc/systemd/system/' in str(p) else {0,pwd.getpwnam('meme-machine').pw_uid}
+              need(p.is_file() and not p.is_symlink() and st.st_uid in allowed_owner and not st.st_mode&0o022 and st.st_size<32768,'REPORTER_FILE_OWNER_OR_TYPE_CHANGED')
+              raw=p.read_bytes()
+              actual=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+              need(actual==blob,'REPORTER_ROLE_SOURCE_CHANGED_REVIEW_REQUIRED')
+          mutation_attempted=False
+          try:
+              need(os.getuid()==994 and pwd.getpwuid(os.getuid()).pw_name=='mm-ec2-runner','RUNNER_IDENTITY_MISMATCH')
+              http=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+              req=urllib.request.Request('http://169.254.169.254/latest/api/token',method='PUT',headers={'X-aws-ec2-metadata-token-ttl-seconds':'60'})
+              token=http.open(req,timeout=3).read().decode()
+              req=urllib.request.Request('http://169.254.169.254/latest/dynamic/instance-identity/document',headers={'X-aws-ec2-metadata-token':token})
+              identity=json.load(http.open(req,timeout=3))
+              need((identity.get('accountId'),identity.get('region'),identity.get('instanceId'))==('133857166104','us-west-2','i-00044d4ea1471b957'),'EC2_IDENTITY_MISMATCH')
+              # Published unit/source identities prove these exact targets are
+              # reporting-only, without opening any financial or secret file.
+              blobs={
+                'meme-machine-dashboard-publisher.service':'d8876847736fc37697ca0186f4e0d7c4525103e3',
+                'meme-machine-dashboard-publisher.timer':'37f6b82fc2a012d6f9727b474cb4283825ec0108',
+                'meme-machine-ec2-dashboard-publisher.service':'e78603e83780a27bd94c9fa988ba5a8d673be01d',
+                'meme-machine-ec2-dashboard-publisher.timer':'2309f488ed05af005f0498c50672e8f92c61e2c7'}
+              reviewed('/opt/meme-machine/dashboard/publisher.py','3e9bc4df0c2b8b28f6ba4396ce78591a15f821ad')
+              units=sorted(blobs,key=lambda name:(name.endswith('.service'),name))
+              before={}
+              for unit,blob in blobs.items():
+                  reviewed('/etc/systemd/system/'+unit,blob)
+                  facts=show(unit,['LoadState','ActiveState','SubState','UnitFileState','FragmentPath','DropInPaths','TriggeredBy','PartOf','BindsTo','RequiredBy','WantedBy'])
+                  need(facts.get('LoadState')=='loaded' and facts.get('FragmentPath')=='/etc/systemd/system/'+unit and not facts.get('DropInPaths'),'REPORTER_UNIT_LAYOUT_CHANGED_REVIEW_REQUIRED')
+                  need(not facts.get('PartOf') and not facts.get('BindsTo') and not facts.get('RequiredBy'),'REPORTER_HAS_SHARED_LIFECYCLE_DEPENDENCY')
+                  if unit.endswith('.service'):
+                      expected=unit[:-8]+'.timer'
+                      need(set(facts.get('TriggeredBy','').split())<={expected},'UNEXPECTED_REPORTER_TRIGGER')
+                      need(not facts.get('WantedBy'),'UNEXPECTED_REPORTER_ENABLE_PATH')
+                  else:
+                      need(set(facts.get('WantedBy','').split())<={'timers.target'},'UNEXPECTED_REPORTER_TIMER_ENABLE_PATH')
+                  before[unit]={k:v for k,v in facts.items() if k in ['ActiveState','SubState','UnitFileState']}
+              # Test the exact command through the existing sudo policy. This
+              # never installs/changes a sudo rule or invokes a legacy broker.
+              command=['/usr/bin/systemctl','disable','--now',*units]
+              permitted=run(['/usr/bin/sudo','-n','-l','--',*command])
+              if permitted.returncode!=0:
+                  emit(status='OWNER_ROOT_ACTION_REQUIRED',instance=identity['instanceId'],before=before,
+                       exact_command='sudo systemctl disable --now '+' '.join(units),changed=False,
+                       reason='Existing runner sudo policy does not permit the exact reporter-only command; no bypass attempted.')
+                  raise SystemExit(3)
+              mutation_attempted=True
+              result=run(['/usr/bin/sudo','-n','--',*command])
+              after={unit:show(unit,['ActiveState','SubState','UnitFileState']) for unit in units}
+              disabled=all(x.get('ActiveState') in ['inactive','failed'] and x.get('UnitFileState') in ['disabled','static','masked','masked-runtime'] for x in after.values())
+              need(result.returncode==0 and disabled,'REPORTER_RETIREMENT_INCOMPLETE')
+              emit(status='LEGACY_DASHBOARD_REPORTERS_STOPPED_DISABLED',instance=identity['instanceId'],before=before,after=after,
+                   financial_state_opened=False,secrets_opened=False,runner_or_protection_modified=False)
+          except SystemExit: raise
+          except Exception as error:
+              # Exceptions can contain paths/credential-bearing command output.
+              code=str(error) if isinstance(error,RuntimeError) and str(error).isupper() else type(error).__name__
+              emit(status='REPORTER_RETIREMENT_REFUSED',reason=code,changed='unknown; inspect exact target state' if mutation_attempted else False)
+              raise SystemExit(2)
+          PY

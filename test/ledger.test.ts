@@ -126,7 +126,7 @@ test('entry size includes gas/deposit, prevents adds and keeps reserved capital 
   const { ledger } = setup(t);
   assert.throws(() => ledger.order({ ...buyOrder('too-big'), maxSpend: '500000000' }, price(AT), {}), /\$50/);
   fillBuy(ledger);
-  const marks = { 'fixture-mint': { netLamports: '470000000', at: AT + 600, evidence: 'actual-size-liquidation' } };
+  const marks = { 'fixture-mint': { netLamports: '470000000', pricedBaseUnits: '1000', at: AT + 600, evidence: 'actual-size-liquidation' } };
   ledger.reconcile('position-reconcile', AT + 600, price(AT + 600), marks);
   assert.throws(() => ledger.order(buyOrder('add', AT + 600), price(AT + 600), marks), /adds/);
   assert.throws(() => ledger.order({ ...buyOrder('bad-decimal', AT + 600, 'other'), gas: '1.1' }, price(AT + 600), marks), /integer/);

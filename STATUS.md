@@ -5,16 +5,22 @@ Natural PAPER trades: **0**. Authoritative account: **not initialized**.
 Reconciliation: disposable fixtures only; no forward account to reconcile.
 Costs: zero metered subscriptions and no new cloud resources; invoices not accessed.
 Coverage: two selected migration observations, not a full-market benchmark.
-Dashboard: built/tested locally; no deployed URL or EC2 source yet.
-Main blocker: existing Turnkey source address/access and Render source/settings
-access remain unresolved. EC2 inventory run40392851547 has now completed successfully,
-verifying the expected instance/account/region and current nonroot runner. A separate
-unfunded PumpPortal billing wallet/key now exists in protected storage outside git;
-its funding proposal is not yet ready for approval without sender verification.
+Dashboard: source/Node/settings change COMPLETE and connector-verified; live deploy
+still legacy f889363. No POE deployment or authoritative EC2 source is claimed.
+Main blocker for cutover: reporter-retirement run40397181995 verified the actual
+reporters but existing runner sudo policy denied the exact command, changed=false.
+Owner/root execution of that one targeted command remains. EC2 inventory is
+COMPLETE and must not be repeated. The tested entry-blocked runtime/bootstrap is
+prepared; actual EC2 installation also requires existing owner/root access.
+Turnkey organization ID is supplied, but raw SDK authentication delivery is not
+bound here; organization-wide read-only query/pagination is prepared with zero
+authenticated queries attempted. Manual owner funding is an alternative after
+public sender/recovery/fee checks, not a prerequisite for other PAPER work.
+The existing billing bundle remains protected; recovery and funding are unconfirmed.
 
 | Required status | Evidence-based state |
 |---|---|
-| BUILT | Partial: real integration probe, isolated accounting, reporting cache/publisher |
+| BUILT | Production PAPER accounting, entry-blocked observer/controls, installer, reporting; strategy/execution incomplete |
 | RUNNING | No persistent POE trader or Render service |
 | OBSERVING CURRENT DATA | Observed during bounded probes; no continuous observer |
 | PAPER-ENTRY ENABLED | No |
@@ -47,6 +53,16 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
 - Loaded better-sqlite3 13.0.3 is SQLite 3.53.4, including the relevant WAL fix.
   Tests cover delayed disposable lifecycle, durable reservation/inception, real
   SIGKILL recovery, unknown marks, sticky day pause, deposit custody and backup restore.
+- Same accounting implementation now supports explicit production PAPER inception,
+  controls, durable source sequence and bounded honest P&L history. Startup refuses
+  semantically corrupt state without rewriting/reseeding. Exit gas may consume
+  the gas reserve; its floor applies to new risk. Offline CLI backup/restore is
+  tested. No authoritative account has been created by these tests.
+- A restricted supervised observer/control socket is implemented and hard-blocks
+  entries. It never reads billing/Turnkey credentials or places fills. Production
+  CLI refuses restored exposure until supported exit management is wired. A35s
+  DISPOSABLE network smoke connected free discovery, had zero candidates/trades,
+  used no metered subscriptions and safely stopped. This is not elapsed acceptance.
 - Reporting tests exercise separate viewer/machine authentication, wrong identity,
   conflicts/regressions, stale sources, cache loss, payload bounds and publication
   outage/recovery. Unconfigured-source bootstrap says Awaiting POE data and rejects
@@ -66,13 +82,12 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
   succeeded. Owner-created repository is public; the published source/evidence
   passed a focused secret-pattern check. Local REST CLI returned401, while the
   connector and git transport work.
-- Existing admin repository is accessible through the GitHub connector, with
-  admin/push metadata. Runner22 (`meme-machine-ec2-admin`) last inspected historical
-  job121742283141 ran at17:43 UTC. This is not current connectivity proof.
-- Prepared new host-only workflow at admin commit
-  `f87659bffe78f74866226dbb33f5263fdc85afb5`. Connector has no dispatch capability;
-  runner-list endpoint is outside its allowlist. Owner console Run workflow is
-  the narrow unblock. Existing smoke workflows have legacy gates and were not run.
+- Existing admin repository/runner access is verified by successful fresh inventory
+  run40392851547/job121818077975 at main1b53658bc29936c00901f57a35556faac3a995f4.
+  No repeat inventory or legacy readiness/source gate is needed. Connector lacks
+  dispatch; reporter-retirement run40397181995/job121833178389 subsequently verified
+  exact installed reporter roles and failed only sudo permission, changed=false.
+  One old EC2 reporting timer remains active/enabled pending the exact root action.
 - EC2 inventory run40392851547/job121818077975 now verifies via IMDSv2:
   account133857166104, us-west-2, instancei-00044d4ea1471b957, c6i.xlarge,
   nonroot mm-ec2-runner uid994. Root filesystem309GiB,255GiB used,55GiB available;
@@ -84,11 +99,13 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
   Owner amendment now authorizes replacing only existing free service
   `srv-daqon53tqb8s73bdceq0` / `meme-machine-dashboard-staging`, current URL
   `https://meme-machine-dashboard-staging.onrender.com`. No second service.
-  Current Python source is The-Meme-Machine branch release/pump-blocker-repair-20261011;
-  automatic deploy is already off. Service remains unchanged pending source update.
-  Connector has no repository/runtime update or quota/Blueprint/deploy-hook inspection
-  operation. Current docs confirm Settings > Build > Source > Edit can change both.
-  Old root render.yaml lookup returned404; external deployment paths are unverified.
+  Current source is POE/main, Node, empty root, build npm ci --include=dev && npm run compile,
+  start npm run dashboard, health/healthz, free, auto-deploy off: connector VERIFIED.
+  Do not request source editing again. Latest live deployment is still legacy
+  dep-dbff60e7bikc73dano8g/SHAf88936378af75c3064cd2ba2bf980c1b4682aa6e.
+  Credential rotation, reporter retirement, connector-triggered deploy and resulting
+  live SHA/URL/auth verification remain. No legacy restoration controller was
+  identified; possible hook existence alone is not an observed blocker.
   Free quota is still shared/previously consumed and not replenished by replacement.
 - render.yaml passes Render's current public JSON schema. CLI installation could
   not retrieve a release through the local route; no CLI/account validation or
@@ -104,14 +121,22 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
   in docs/FUNDING.md. Actual sender/address/balance/fee and durable owner recovery
   must be verified before asking for transfer approval. No transfer approved/sent.
 - No critical alert-delivery channel is verified.
+- Current Cloud status has no secret variable/file or outbound identity bindings.
+  No connected/discoverable Turnkey plugin is available. Official SDK8.8.0 operator
+  helper supports raw owner-only JSON authentication file or genuinely materialized
+  runtime variables; network-secret placeholders cannot perform local request
+  stamping and are rejected. No raw credential availability/API authorization is
+  claimed. Current sender-specific funding proposal is deliberately not requested.
 
 ## Remaining implementation
 
-Attach data-only credentials and measure actual flow fields/rates before freezing
-the strategy. Build one production account/runtime: durable identity, real SOL/USD
-conversion, first-attempt scheduling, provider budget enforcement, incremental
-features, reconciliation/protection, restart subscriptions, conservative marks,
-operating-cost attribution, passive SOL benchmark and persistent snapshot sequence.
-Install as restricted poe-runtime on the verified existing host, then complete
-capacity/failure/replay and EC2–Render agreement checks before acceptance clocks.
-No claim is made that the present fixture ledger is a complete trading runtime.
+Retire the exact reporters, rotate/report credentials and deploy/verify POE using
+the existing Render service. Execute the reviewed pinned initial EC2 bootstrap
+through existing owner/root access; no cloud administrator key or cleanup is needed.
+Production accounting, initial USD conversion, durable sequence/history and an
+entry-blocked observer are implemented but not installed. Selected-pool scheduling,
+verified flow features/rules, execution/exit management, operating-cost attribution,
+trade projection, alerts and acceptance proving remain incomplete. Recovery of held
+exposure must not use this observer scaffold. Resolve recovery/funding separately,
+measure sustainable data use, then connect the frozen strategy/execution path.
+No full Gate A, unattended runtime, natural lifecycle or economic edge is claimed.

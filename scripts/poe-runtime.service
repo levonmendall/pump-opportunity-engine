@@ -1,0 +1,35 @@
+# Installation template only. Actual paths/user/account require verified provisioning.
+[Unit]
+Description=Pump Opportunity Engine PAPER runtime (entry-blocked observer scaffold)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=poe-runtime
+Group=poe-runtime
+WorkingDirectory=/opt/poe/current
+EnvironmentFile=/etc/poe/runtime.env
+# Optional reporting credential; installer adds this only when provisioned.
+# LoadCredential=poe-ingest-secret:/etc/poe/secrets/ingest-secret
+StateDirectory=poe
+StateDirectoryMode=0700
+RuntimeDirectory=poe
+RuntimeDirectoryMode=0700
+ExecStart=/opt/poe/node/bin/node --use-env-proxy /opt/poe/current/dist/src/runtime.js run
+ExecStop=/opt/poe/node/bin/node /opt/poe/current/dist/src/runtime.js safe-stop
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=45
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadWritePaths=/var/lib/poe /run/poe
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

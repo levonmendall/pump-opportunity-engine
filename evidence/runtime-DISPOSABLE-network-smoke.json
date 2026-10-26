@@ -1,0 +1,13 @@
+{
+  "kind": "DISPOSABLE_RUNTIME_NETWORK_SMOKE",
+  "startedAt": "2026-10-26T20:49:50.503Z",
+  "finishedAt": "2026-10-26T20:50:25.743Z",
+  "feedConnected": true,
+  "candidates": 0,
+  "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED",
+  "entriesEnabled": false,
+  "naturalPaperTrades": 0,
+  "meteredSubscriptions": 0,
+  "safeToExit": true,
+  "acceptanceWindow": false
+}

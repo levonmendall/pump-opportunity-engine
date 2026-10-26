@@ -1,28 +1,36 @@
 import Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
 
-/** Disposable Gate A account only. No daemon, live orders, or production initialization. */
+/** One PAPER accounting path. Fixture and authoritative identities never mix. No live execution. */
 export type UsdPrice = { microUsdPerSol: string; at: number; source: string };
-export type Mark = { netLamports: string; at: number; evidence: string };
-type Position = {
+/** Actual-size token liquidation net of exit costs; excludes separately locked rent deposits. */
+export type Mark = { netLamports: string; pricedBaseUnits: string; at: number; evidence: string };
+export type Position = {
   mint: string; units: string; entryLamports: string; entryGas: string;
   costMicroUsd: string; deposit: string; enteredAt: number;
 };
-type Order = {
+export type Order = {
   id: string; side: 'buy' | 'sell'; mint: string; decidedAt: number; executeAt: number;
   expiresAt: number; gas: string; deposit: string; maxSpend: string;
   minReceive: string; reserved: string; decisionEvidence: string;
 };
-type State = {
-  fixtureId: string; mode: 'DISPOSABLE_PAPER'; inceptionAt: number;
+export type LedgerMode = 'PAPER' | 'DISPOSABLE_PAPER';
+export type LedgerState = {
+  schemaVersion: 1;
+  accountId: string; fixtureId?: string; mode: LedgerMode; inceptionAt: number;
   initialMicroUsd: string; inceptionPrice: UsdPrice; lamports: string;
   roundingResidualMicroUsd: string; gasReserve: string;
   lockedDeposits: Record<string, string>; lastAt: number;
   positions: Record<string, Position>; pending: Record<string, Order>;
   realizedLamports: string; executionCosts: string; daily: {
-    day: string; baselineMicroUsd: string; paused: boolean; reconciledAt: number;
+    day: string; baselineMicroUsd: string; paused: boolean; lossPaused: boolean; reconciledAt: number;
   }; revision: number;
+  controls: { entriesEnabled: boolean; reason: string; changedAt: number; readinessVersion: string | null; stopRequested: boolean };
 };
+type State = LedgerState;
+export type RuntimeReadiness = { version: string; evidence: string; marketAt: number; recoveryComplete: boolean; candidateWindowsReady: boolean; budgetAvailable: boolean };
+export type ReportingPoint = { at: number; tradingMicroUsd: string | null; economicMicroUsd: string | null };
+export type ReportingHistory = { points: ReportingPoint[]; windowLimited: boolean; downsampled: boolean };
 export type ExecutionQuote = {
   /** Caller must supply the first available supported state at/after modeled delay. */
   at: number; spendLamports: string; receiveUnits: string; evidence: string;
@@ -36,27 +44,29 @@ const INITIAL = 1_000_000_000n; // $1,000 in microUSD
 const MAX_PRICE_AGE = 10_000;
 const MAX_QUOTE_AGE = 2_000;
 const utcDay = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+const boundedText = (s: unknown, max = 512): s is string => typeof s === 'string' && s.length > 0 && s.length <= max;
 const amount = (s: string) => {
-  if (!/^(0|[1-9][0-9]*)$/.test(s)) throw new Error('unsigned integer amount required');
+  if (typeof s !== 'string' || !/^(0|[1-9][0-9]*)$/.test(s)) throw new Error('unsigned integer amount required');
   const n = BigInt(s);
   if (n > (1n << 127n) - 1n) throw new Error('amount exceeds supported bound');
   return n;
 };
 function priceAt(price: UsdPrice, now: number) {
   if (!Number.isSafeInteger(now) || !Number.isSafeInteger(price.at) ||
-    price.at > now || now - price.at > MAX_PRICE_AGE || !price.source ||
+    price.at > now || now - price.at > MAX_PRICE_AGE || typeof price.source !== 'string' || !price.source || price.source.length > 512 ||
     amount(price.microUsdPerSol) === 0n) throw new Error('fresh timestamped USD conversion required');
   return amount(price.microUsdPerSol);
 }
 const usd = (lamports: bigint, price: bigint) => lamports * price / L;
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 
-export class DisposableLedger {
+export class PaperLedger {
   private readonly db: Database.Database;
   readonly sqlite: { version: string; source: string };
 
-  constructor(path: string, readonly fixtureId: string) {
-    if (!/^fixture-[a-z0-9-]{1,80}$/.test(fixtureId)) throw new Error('disposable fixture identity required');
+  constructor(path: string, readonly accountId: string, readonly mode: LedgerMode = 'PAPER') {
+    if (mode === 'DISPOSABLE_PAPER' ? !/^fixture-[a-z0-9-]{1,80}$/.test(accountId) : mode !== 'PAPER' || !/^poe-[a-z0-9-]{1,80}$/.test(accountId)) throw new Error('explicit POE or disposable fixture identity required');
+    if (mode === 'PAPER' && (path === ':memory:' || path.length === 0)) throw new Error('durable PAPER account path required');
     this.db = new Database(path, { timeout: 100 });
     this.sqlite = this.db.prepare('SELECT sqlite_version() version, sqlite_source_id() source').get() as typeof this.sqlite;
     const [major, minor, patch] = this.sqlite.version.split('.').map(Number);
@@ -64,6 +74,8 @@ export class DisposableLedger {
       this.db.close(); throw new Error('SQLite WAL-reset fixed version >=3.51.3 required');
     }
     try {
+      const tables = this.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' LIMIT 5").all() as { name: string }[];
+      if (tables.length && (!['financial_state','actions','journal'].every(name => tables.some(row => row.name === name)) || tables.some(row => !['financial_state','actions','journal','metadata'].includes(row.name)))) throw new Error('foreign database schema; refusing to initialize or modify');
       // One connection, including readers/checkpointing. No external financial writer.
       this.db.pragma('locking_mode = EXCLUSIVE');
       this.db.pragma('journal_mode = WAL');
@@ -75,9 +87,12 @@ export class DisposableLedger {
         id TEXT PRIMARY KEY, payload_hash TEXT NOT NULL, result TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS journal (
         revision INTEGER PRIMARY KEY, action_id TEXT NOT NULL UNIQUE,
-        at INTEGER NOT NULL, kind TEXT NOT NULL, detail TEXT NOT NULL);`);
+        at INTEGER NOT NULL, kind TEXT NOT NULL, detail TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);`);
       const existing = this.read();
-      if (existing && existing.fixtureId !== fixtureId) throw new Error('wrong fixture account');
+      if (existing && ((existing.accountId ?? existing.fixtureId) !== accountId || existing.mode !== mode)) throw new Error('wrong fixture account or PAPER identity/mode');
+      if (existing) this.assertState(existing);
+      else if ((this.db.prepare('SELECT (SELECT count(*) FROM actions) + (SELECT count(*) FROM journal) + (SELECT count(*) FROM metadata) records').get() as { records: number }).records > 0) throw new Error('financial state missing from populated account; recovery required, never reseed');
     } catch (e) { this.db.close(); throw e; }
   }
 
@@ -87,18 +102,48 @@ export class DisposableLedger {
   }
   state(): Readonly<State> {
     const s = this.read();
-    if (!s) throw new Error('fixture account not initialized');
+    if (!s) throw new Error('PAPER account not initialized');
     return s;
   }
   private assertState(s: State) {
-    if (Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3) throw new Error('capacity invariant');
-    let reservations = 0n;
-    for (const o of Object.values(s.pending)) reservations += amount(o.reserved);
-    if (reservations + amount(s.gasReserve) > amount(s.lamports)) throw new Error('cash reservation invariant');
-    for (const p of Object.values(s.positions)) {
-      if (!amount(p.units)) throw new Error('empty position invariant');
-      amount(p.entryLamports); amount(p.entryGas); amount(p.deposit);
+    const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
+    const key = (v: unknown, max: number) => boundedText(v, max) && !['__proto__','constructor','prototype'].includes(v);
+    const eventTime = (v: unknown) => Number.isSafeInteger(v) && (v as number) >= s.inceptionAt && (v as number) <= s.lastAt;
+    if (!record(s) || s.schemaVersion !== 1 || s.accountId !== this.accountId || s.mode !== this.mode || s.initialMicroUsd !== INITIAL.toString() || !Number.isSafeInteger(s.inceptionAt) || s.inceptionAt < 0 || !Number.isSafeInteger(s.lastAt) || s.lastAt < s.inceptionAt || !Number.isSafeInteger(s.revision) || s.revision < 0) throw new Error('financial identity/state invariant');
+    if (!record(s.inceptionPrice)) throw new Error('inception conversion invariant');
+    const inceptionPrice = priceAt(s.inceptionPrice, s.inceptionAt);
+    const initialLamports = INITIAL * L / inceptionPrice;
+    if (amount(s.roundingResidualMicroUsd) !== INITIAL - usd(initialLamports, inceptionPrice)) throw new Error('inception rounding invariant');
+    if (!record(s.controls) || typeof s.controls.entriesEnabled !== 'boolean' || typeof s.controls.stopRequested !== 'boolean' || !boundedText(s.controls.reason) || !eventTime(s.controls.changedAt) || !(s.controls.readinessVersion === null || boundedText(s.controls.readinessVersion, 128)) || s.controls.stopRequested && s.controls.entriesEnabled || s.mode === 'PAPER' && s.controls.entriesEnabled && s.controls.readinessVersion === null) throw new Error('financial recovery/control invariant');
+    if (!record(s.daily) || typeof s.daily.lossPaused !== 'boolean' || typeof s.daily.paused !== 'boolean' || s.daily.lossPaused && !s.daily.paused || !Number.isSafeInteger(s.daily.reconciledAt) || s.daily.reconciledAt < 0 || s.daily.reconciledAt > s.lastAt || typeof s.daily.day !== 'string' || !/^\d{4}-\d\d-\d\d$/.test(s.daily.day) || utcDay(Date.parse(s.daily.day + 'T00:00:00.000Z')) !== s.daily.day || s.daily.day < utcDay(s.inceptionAt) || s.daily.day > utcDay(s.lastAt) || s.daily.reconciledAt > 0 && utcDay(s.daily.reconciledAt) !== s.daily.day) throw new Error('financial day/reconciliation invariant');
+    const cash = amount(s.lamports); const gasReserve = amount(s.gasReserve);
+    if (initialLamports <= gasReserve) throw new Error('inception gas reserve invariant');
+    amount(s.executionCosts); amount(s.daily.baselineMicroUsd);
+    if (typeof s.realizedLamports !== 'string' || !/^-?(0|[1-9][0-9]*)$/.test(s.realizedLamports) || amount(s.realizedLamports.startsWith('-') ? s.realizedLamports.slice(1) : s.realizedLamports) > (1n << 127n) - 1n) throw new Error('realized balance invariant');
+    if (!record(s.positions) || !record(s.pending) || !record(s.lockedDeposits) || Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3 || Object.keys(s.lockedDeposits).length > 128) throw new Error('capacity/state map invariant');
+    for (const [mint, deposit] of Object.entries(s.lockedDeposits)) {
+      if (!key(mint, 96)) throw new Error('locked deposit identity invariant');
+      amount(deposit);
     }
+    for (const [mint, p] of Object.entries(s.positions)) {
+      if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || amount(p.costMicroUsd) > 50_000_000n || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
+    }
+    let reservations = 0n;
+    const pendingMints = new Set<string>(); let pendingBuys = 0;
+    for (const [id, o] of Object.entries(s.pending)) {
+      if (!record(o) || !key(id, 100) || o.id !== id || !key(o.mint, 96) || pendingMints.has(o.mint) || !eventTime(o.decidedAt) || !Number.isSafeInteger(o.executeAt) || !Number.isSafeInteger(o.expiresAt) || o.executeAt < o.decidedAt + 500 || o.expiresAt <= o.executeAt || o.expiresAt > o.decidedAt + 30_000 || !boundedText(o.decisionEvidence) || amount(o.gas) === 0n || amount(o.minReceive) === 0n) throw new Error('pending order identity/time/amount invariant');
+      const gas = amount(o.gas), spend = amount(o.maxSpend), deposit = amount(o.deposit), reserved = amount(o.reserved);
+      if (o.side === 'buy') {
+        pendingBuys++;
+        if (spend === 0n || s.positions[o.mint] || reserved !== gas + spend + deposit || deposit > 0n && s.lockedDeposits[o.mint]) throw new Error('pending buy reservation invariant');
+      } else if (o.side === 'sell') {
+        if (!s.positions[o.mint] || spend !== 0n || deposit !== 0n || reserved !== gas) throw new Error('pending exit reservation invariant');
+      } else throw new Error('pending order side invariant');
+      pendingMints.add(o.mint); reservations += reserved;
+    }
+    // The gas reserve protects NEW entries, not exits. Held-position management
+    // may consume it, but no action may spend another action's reservation.
+    if (reservations > cash || Object.keys(s.positions).length + pendingBuys > 3) throw new Error('cash reservation/capacity invariant');
   }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
     if (!id || id.length > 160 || !Number.isSafeInteger(now)) throw new Error('invalid action identity/time');
@@ -110,10 +155,10 @@ export class DisposableLedger {
         if (prior.payload_hash !== hash) throw new Error('idempotency conflict');
         return JSON.parse(prior.result) as T;
       }
-      const s = this.read(); if (!s) throw new Error('fixture account not initialized');
+      const s = this.read(); if (!s) throw new Error('PAPER account not initialized');
       if (now < s.lastAt) throw new Error('financial time regression');
       const result = fn(s);
-      this.assertState(s); s.revision++; s.lastAt = now;
+      s.lastAt = now; s.revision++; this.assertState(s);
       this.db.prepare('UPDATE financial_state SET body=? WHERE singleton=1').run(JSON.stringify(s));
       this.db.prepare('INSERT INTO actions VALUES(?,?,?)').run(id, hash, JSON.stringify(result));
       this.db.prepare('INSERT INTO journal VALUES(?,?,?,?,?)').run(s.revision, id, now, kind, JSON.stringify(payload));
@@ -122,22 +167,27 @@ export class DisposableLedger {
   }
 
   initialize(price: UsdPrice, at: number, gasReserve = '5000000') {
-    const p = priceAt(price, at); const reserve = amount(gasReserve);
     return this.db.transaction(() => {
       const old = this.read();
-      if (old) return old; // Never reseed, even if invocation has another conversion.
+      if (old) return old; // Never reseed or require a new conversion on recovery.
+      const p = priceAt(price, at); const reserve = amount(gasReserve);
       const cash = INITIAL * L / p;
       if (cash <= reserve) throw new Error('insufficient simulated gas capital');
       const s: State = {
-        fixtureId: this.fixtureId, mode: 'DISPOSABLE_PAPER', inceptionAt: at,
+        schemaVersion: 1,
+        accountId: this.accountId, ...(this.mode === 'DISPOSABLE_PAPER' ? { fixtureId: this.accountId } : {}), mode: this.mode, inceptionAt: at,
         initialMicroUsd: INITIAL.toString(), inceptionPrice: price, lamports: cash.toString(),
         roundingResidualMicroUsd: (INITIAL - usd(cash, p)).toString(), gasReserve,
         positions: {}, pending: {}, lockedDeposits: {}, lastAt: at, realizedLamports: '0', executionCosts: '0',
-        daily: { day: utcDay(at), baselineMicroUsd: INITIAL.toString(), paused: true, reconciledAt: 0 }, revision: 0,
+        daily: { day: utcDay(at), baselineMicroUsd: INITIAL.toString(), paused: true, lossPaused: false, reconciledAt: 0 }, revision: 0,
+        controls: { entriesEnabled: this.mode === 'DISPOSABLE_PAPER', reason: this.mode === 'PAPER' ? 'startup: observation only; explicit runtime readiness required' : 'disposable fixture', changedAt: at, readinessVersion: null, stopRequested: false },
       };
       this.assertState(s);
       this.db.prepare('INSERT INTO financial_state VALUES(1,?)').run(JSON.stringify(s));
       this.db.prepare('INSERT INTO journal VALUES(0,?,?,?,?)').run('inception', at, 'inception', JSON.stringify({ price, gasReserve, mode: s.mode }));
+      // One factual inception point from the recorded virtual contribution and
+      // exact USD residual, not a synthetic price series or historical flatline.
+      this.db.prepare("INSERT INTO metadata VALUES('reporting_history',?)").run(JSON.stringify({ points: [{ at, tradingMicroUsd: '0', economicMicroUsd: null }], windowLimited: false, downsampled: false } satisfies ReportingHistory));
       return s;
     }).immediate();
   }
@@ -146,7 +196,7 @@ export class DisposableLedger {
     let liquid = amount(s.lamports);
     for (const p of Object.values(s.positions)) {
       const mark = marks[p.mint];
-      if (!mark || !mark.evidence || !Number.isSafeInteger(mark.at) || mark.at > now || now - mark.at > MAX_QUOTE_AGE) throw new Error('unknown/stale liquidation mark');
+      if (!mark || !boundedText(mark.evidence) || mark.pricedBaseUnits !== p.units || !Number.isSafeInteger(mark.at) || mark.at > now || now - mark.at > MAX_QUOTE_AGE) throw new Error('unknown/stale/wrong-size liquidation mark');
       liquid += amount(mark.netLamports);
     }
     for (const deposit of Object.values(s.lockedDeposits)) liquid += amount(deposit);
@@ -158,25 +208,66 @@ export class DisposableLedger {
     return this.apply(id, 'reconcile', now, { now, price, marks }, s => {
       const equity = this.equity(s, p, marks, now);
       if (s.daily.day !== utcDay(now)) {
-        s.daily = { day: utcDay(now), baselineMicroUsd: equity.toString(), paused: false, reconciledAt: now };
+        s.daily = { day: utcDay(now), baselineMicroUsd: equity.toString(), paused: false, lossPaused: false, reconciledAt: now };
       } else {
         // Inception starts closed, and only fresh reconciliation opens it.
         if (s.daily.reconciledAt === 0) s.daily.paused = false;
-        if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) s.daily.paused = true;
+        if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) { s.daily.paused = true; s.daily.lossPaused = true; }
         s.daily.reconciledAt = now;
       }
       return { equityMicroUsd: equity.toString(), paused: s.daily.paused };
     });
   }
 
-  pause(id: string, now: number) {
-    return this.apply(id, 'pause', now, { now }, s => { s.daily.paused = true; return { paused: true }; });
+  pause(id: string, now: number, reason = 'operator paused new entries') {
+    if (!boundedText(reason)) throw new Error('bounded pause reason required');
+    return this.apply(id, 'pause', now, { now, reason }, s => {
+      s.daily.paused = true; s.controls.entriesEnabled = false;
+      s.controls.reason = reason; s.controls.changedAt = now;
+      const canceled = Object.values(s.pending).filter(o => o.side === 'buy').map(o => o.id);
+      // Preserve already-decided actions until their modeled attempt/cancel is recorded.
+      return { paused: true, pendingBuyCancellations: canceled };
+    });
+  }
+
+  resume(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>, readiness: RuntimeReadiness) {
+    const p = priceAt(price, now);
+    if (typeof readiness.version !== 'string' || !readiness.version || readiness.version.length > 128 || typeof readiness.evidence !== 'string' || !readiness.evidence || readiness.evidence.length > 512 || !Number.isSafeInteger(readiness.marketAt) || readiness.marketAt > now || now - readiness.marketAt > MAX_QUOTE_AGE || readiness.recoveryComplete !== true || readiness.candidateWindowsReady !== true || readiness.budgetAvailable !== true) throw new Error('fresh explicit runtime readiness required');
+    return this.apply(id, 'resume', now, { now, price, marks, readiness }, s => {
+      const equity = this.equity(s, p, marks, now);
+      if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) { s.daily.paused = true; s.daily.lossPaused = true; }
+      if (s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.lossPaused) return { enabled: false, reason: 'fresh reconciliation or next UTC-day loss reset required' };
+      s.daily.paused = false;
+      s.controls = { entriesEnabled: true, reason: 'explicit verified runtime readiness', changedAt: now, readinessVersion: readiness.version, stopRequested: false };
+      return { enabled: true, reason: s.controls.reason };
+    });
+  }
+
+  safeStop(id: string, now: number) {
+    return this.apply(id, 'safe-stop', now, { now }, s => {
+      s.controls.entriesEnabled = false; s.controls.stopRequested = true;
+      s.controls.changedAt = now; s.controls.reason = 'safe stop requested'; s.daily.paused = true;
+      const canceledEntries = Object.values(s.pending).filter(o => o.side === 'buy').map(o => o.id);
+      for (const orderId of canceledEntries) delete s.pending[orderId];
+      const openPositions = Object.keys(s.positions).length;
+      const uncertainActions = Object.keys(s.pending).length;
+      return { safeToExit: openPositions === 0 && uncertainActions === 0, state: openPositions || uncertainActions ? 'management-required' : 'stopped-safe', openPositions, uncertainActions, canceledEntries };
+    });
+  }
+
+  cancelEntryOrders(id: string, now: number, reason: string) {
+    if (!boundedText(reason)) throw new Error('bounded entry cancellation reason required');
+    return this.apply(id, 'cancel-entry-orders', now, { now, reason }, s => {
+      const canceledEntries = Object.values(s.pending).filter(o => o.side === 'buy').map(o => o.id);
+      for (const orderId of canceledEntries) delete s.pending[orderId];
+      return { canceledEntries, preservedExitOrders: Object.values(s.pending).filter(o => o.side === 'sell').map(o => o.id) };
+    });
   }
 
   order(input: Omit<Order, 'reserved'>, price: UsdPrice, marks: Record<string, Mark>) {
     const now = input.decidedAt;
     return this.apply(`order:${input.id}`, 'order', now, { input, price, marks }, s => {
-      if (!Number.isSafeInteger(input.executeAt) || !Number.isSafeInteger(input.expiresAt) || input.executeAt < now + 500 || input.expiresAt <= input.executeAt || input.expiresAt > now + 30_000 || !input.decisionEvidence) throw new Error('invalid delay/expiry/evidence');
+      if (!Number.isSafeInteger(input.executeAt) || !Number.isSafeInteger(input.expiresAt) || input.executeAt < now + 500 || input.expiresAt <= input.executeAt || input.expiresAt > now + 30_000 || !boundedText(input.decisionEvidence)) throw new Error('invalid delay/expiry/evidence');
       const gas = amount(input.gas); const dep = amount(input.deposit);
       const spend = amount(input.maxSpend); const min = amount(input.minReceive);
       if (gas === 0n || min === 0n || input.id.length > 100 || !input.id || !input.mint || ['__proto__', 'constructor', 'prototype'].some(k => k === input.id || k === input.mint)) throw new Error('invalid order amounts/identity');
@@ -184,10 +275,11 @@ export class DisposableLedger {
       if (Object.keys(s.pending).length >= 3) throw new Error('pending capacity');
       let reserved = gas;
       if (input.side === 'buy') {
+        if (spend === 0n) throw new Error('positive buy maximum required');
         const p = priceAt(price, now);
         const equity = this.equity(s, p, marks, now);
-        if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) s.daily.paused = true;
-        if (s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.paused) return { rejected: 'entries paused or reconciliation required' };
+        if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) { s.daily.paused = true; s.daily.lossPaused = true; }
+        if (s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.paused || !s.controls.entriesEnabled || s.controls.stopRequested) return { rejected: 'entries paused or reconciliation required' };
         if (s.positions[input.mint]) throw new Error('adds/re-entry into held position forbidden');
         if (s.lockedDeposits[input.mint] && dep > 0n) throw new Error('existing account deposit cannot be charged twice');
         if (Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');
@@ -202,7 +294,8 @@ export class DisposableLedger {
         if (!s.positions[input.mint] || spend !== 0n || dep !== 0n) throw new Error('full-position sell required');
       } else throw new Error('unsupported side');
       const existing = Object.values(s.pending).reduce((n, o) => n + amount(o.reserved), 0n);
-      if (existing + reserved + amount(s.gasReserve) > amount(s.lamports)) throw new Error('insufficient unreserved cash');
+      const entryReserve = input.side === 'buy' ? amount(s.gasReserve) : 0n;
+      if (existing + reserved + entryReserve > amount(s.lamports)) throw new Error('insufficient unreserved cash');
       s.pending[input.id] = { ...input, reserved: reserved.toString() };
       return { reserved: reserved.toString() };
     });
@@ -225,15 +318,19 @@ export class DisposableLedger {
         let equity: bigint;
         try { equity = this.equity(s, p, marks, now); }
         catch { return finish('failed', 'unknown liquidation marks; entry canceled before attempt'); }
-        if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) s.daily.paused = true;
-        if (s.daily.day !== utcDay(now) || s.daily.paused || now - s.daily.reconciledAt > MAX_QUOTE_AGE) return finish('failed', 'entry gate closed; canceled before attempt');
+        if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) { s.daily.paused = true; s.daily.lossPaused = true; }
+        if (s.daily.day !== utcDay(now) || s.daily.paused || !s.controls.entriesEnabled || s.controls.stopRequested || now - s.daily.reconciledAt > MAX_QUOTE_AGE) return finish('failed', 'entry gate closed; canceled before attempt');
+        const totalReservations = Object.values(s.pending).reduce((sum, pending) => sum + amount(pending.reserved), 0n);
+        if (totalReservations + amount(s.gasReserve) > amount(s.lamports)) return finish('failed', 'gas reserve needed for held-position management; entry canceled before attempt');
       }
       const gas = amount(o.gas);
       chargedGas = gas;
       s.lamports = (amount(s.lamports) - gas).toString();
       s.executionCosts = (amount(s.executionCosts) + gas).toString();
-      if (!quote || !quote.evidence || !Number.isSafeInteger(quote.at) || quote.at < o.executeAt || quote.at > now || now - quote.at > MAX_QUOTE_AGE) return finish('failed', 'missing/stale first-attempt state; gas charged; no retry');
-      const spend = amount(quote.spendLamports); const received = amount(quote.receiveUnits);
+      if (!quote || !boundedText(quote.evidence) || !Number.isSafeInteger(quote.at) || quote.at < o.executeAt || quote.at > now || now - quote.at > MAX_QUOTE_AGE) return finish('failed', 'missing/stale first-attempt state; gas charged; no retry');
+      let spend: bigint, received: bigint;
+      try { spend = amount(quote.spendLamports); received = amount(quote.receiveUnits); }
+      catch { return finish('failed', 'malformed first-attempt amounts; gas charged; no retry'); }
       if (received < amount(o.minReceive) || (o.side === 'buy' && (spend > amount(o.maxSpend) || spend === 0n)) || (o.side === 'sell' && spend !== 0n)) return finish('failed', 'price constraint failed; gas charged; no retry');
       if (o.side === 'buy') {
         if (usd(spend + gas + amount(o.deposit), p) > 50_000_000n) return finish('failed', '$50 commitment limit at execution; gas charged');
@@ -247,9 +344,11 @@ export class DisposableLedger {
       } else {
         const pos = s.positions[o.mint]; if (!pos) throw new Error('position missing');
         if (quote.pricedBaseUnits !== pos.units) return finish('failed', 'exit quote is not for actual full size; gas charged');
-        const refund = amount(quote.refundedDepositLamports ?? '0');
+        let refund: bigint;
+        try { refund = amount(quote.refundedDepositLamports ?? '0'); }
+        catch { return finish('failed', 'malformed deposit refund; gas charged; no retry'); }
         const locked = amount(s.lockedDeposits[o.mint] ?? '0');
-        if (refund > locked || refund > 0n && !quote.refundEvidence) return finish('failed', 'unverified deposit refund; gas charged');
+        if (refund > locked || refund > 0n && !boundedText(quote.refundEvidence)) return finish('failed', 'unverified deposit refund; gas charged');
         s.lamports = (amount(s.lamports) + received + refund).toString();
         if (locked > refund) s.lockedDeposits[o.mint] = (locked - refund).toString();
         else delete s.lockedDeposits[o.mint];
@@ -263,7 +362,7 @@ export class DisposableLedger {
   releaseDeposit(id: string, mint: string, lamports: string, now: number, evidence: string) {
     return this.apply(id, 'deposit-release', now, { mint, lamports, now, evidence }, s => {
       const refund = amount(lamports); const locked = amount(s.lockedDeposits[mint] ?? '0');
-      if (!evidence || refund === 0n || refund > locked || s.positions[mint]) throw new Error('verified closed-account refund required');
+      if (!boundedText(evidence) || refund === 0n || refund > locked || s.positions[mint]) throw new Error('verified closed-account refund required');
       s.lamports = (amount(s.lamports) + refund).toString();
       if (refund === locked) delete s.lockedDeposits[mint];
       else s.lockedDeposits[mint] = (locked - refund).toString();
@@ -276,6 +375,109 @@ export class DisposableLedger {
     return this.db.prepare('SELECT * FROM journal ORDER BY revision DESC LIMIT ?').all(limit);
   }
   async backup(path: string) { await this.db.backup(path); }
+  nextSnapshotSequence() {
+    this.state();
+    return this.db.transaction(() => {
+      const row = this.db.prepare("SELECT value FROM metadata WHERE key='snapshot_sequence'").get() as { value: string } | undefined;
+      if (row && !/^(0|[1-9][0-9]{0,39})$/.test(row.value)) throw new Error('reporting sequence metadata invalid');
+      const next = (BigInt(row?.value ?? '0') + 1n).toString();
+      if (next.length > 40) throw new Error('reporting sequence exhausted');
+      this.db.prepare("INSERT INTO metadata VALUES('snapshot_sequence',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(next);
+      return next;
+    }).immediate();
+  }
+  private validateReportingPoint(point: ReportingPoint, inceptionAt: number) {
+    if (!point || typeof point !== 'object' || Array.isArray(point) || Object.keys(point).sort().join(',') !== 'at,economicMicroUsd,tradingMicroUsd' || !Number.isSafeInteger(point.at) || point.at < inceptionAt) throw new Error('invalid reporting point identity/time');
+    for (const value of [point.tradingMicroUsd, point.economicMicroUsd]) {
+      if (value === null) continue;
+      if (typeof value !== 'string' || !/^-?(0|[1-9][0-9]*)$/.test(value)) throw new Error('integer reporting value required');
+      amount(value.startsWith('-') ? value.slice(1) : value);
+    }
+  }
+  getReportingHistory(): ReportingHistory {
+    const inceptionAt = this.state().inceptionAt;
+    const size = this.db.prepare("SELECT length(value) size FROM metadata WHERE key='reporting_history'").get() as { size: number } | undefined;
+    if (!size) return { points: [], windowLimited: false, downsampled: false };
+    if (size.size > 262_144) throw new Error('reporting history metadata limit');
+    const row = this.db.prepare("SELECT value FROM metadata WHERE key='reporting_history'").get() as { value: string };
+    const history = JSON.parse(row.value) as ReportingHistory;
+    if (!history || typeof history !== 'object' || Object.keys(history).sort().join(',') !== 'downsampled,points,windowLimited' || !Array.isArray(history.points) || history.points.length > 720 || typeof history.windowLimited !== 'boolean' || typeof history.downsampled !== 'boolean') throw new Error('invalid reporting history metadata');
+    let previous = -Infinity;
+    for (const point of history.points) {
+      this.validateReportingPoint(point, inceptionAt);
+      if (point.at <= previous) throw new Error('reporting history chronology');
+      previous = point.at;
+    }
+    if (!history.windowLimited && history.points.length && (history.points[0]!.at !== inceptionAt || history.points[0]!.tradingMicroUsd !== '0')) throw new Error('reporting inception point mismatch');
+    return history;
+  }
+  recordReportingPoint(point: ReportingPoint): ReportingHistory {
+    this.validateReportingPoint(point, this.state().inceptionAt);
+    return this.db.transaction(() => {
+      const history = this.getReportingHistory(), last = history.points.at(-1);
+      if (last && point.at < last.at) throw new Error('reporting point regression');
+      if (last && point.at === last.at) {
+        if (point.tradingMicroUsd !== last.tradingMicroUsd || point.economicMicroUsd !== last.economicMicroUsd) throw new Error('reporting point conflict');
+        return history;
+      }
+      history.points.push({ ...point });
+      if (history.points.length > 720) {
+        // Preserve first/last and every actual null-transition boundary. Thin
+        // the densest interior sample, without fabricating any point or gap.
+        const mask = (p: ReportingPoint) => `${p.tradingMicroUsd === null}:${p.economicMicroUsd === null}`;
+        let remove = -1, smallestSpan = Infinity;
+        for (let i = 1; i < history.points.length - 1; i++) {
+          const before = history.points[i - 1]!, current = history.points[i]!, after = history.points[i + 1]!;
+          const span = after.at - before.at;
+          if (mask(before) === mask(current) && mask(current) === mask(after) && span < smallestSpan) { remove = i; smallestSpan = span; }
+        }
+        if (remove >= 0) { history.points.splice(remove, 1); history.downsampled = true; }
+        else { history.points.shift(); history.windowLimited = true; }
+      }
+      this.db.prepare("INSERT INTO metadata VALUES('reporting_history',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(history));
+      return history;
+    }).immediate();
+  }
+  projection(now: number, price?: UsdPrice, marks: Record<string, Mark> = {}) {
+    const s = this.state();
+    const reservedLamports = Object.values(s.pending).reduce((sum, o) => sum + amount(o.reserved), 0n);
+    const lockedDepositLamports = Object.values(s.lockedDeposits).reduce((sum, n) => sum + amount(n), 0n);
+    let equityLamports: bigint | null = amount(s.lamports) + lockedDepositLamports;
+    let unknownMarks = false;
+    let positionLiquidationLamports = 0n;
+    for (const position of Object.values(s.positions)) {
+      const mark = marks[position.mint];
+      if (!mark || !boundedText(mark.evidence) || mark.pricedBaseUnits !== position.units || !Number.isSafeInteger(mark.at) || mark.at > now || now - mark.at > MAX_QUOTE_AGE) { unknownMarks = true; continue; }
+      positionLiquidationLamports += amount(mark.netLamports);
+    }
+    equityLamports = unknownMarks ? null : equityLamports + positionLiquidationLamports;
+    let p: bigint | null = null;
+    try { if (price) p = priceAt(price, now); } catch { /* Explicit unknown USD valuation. */ }
+    const initialLamports = INITIAL * L / amount(s.inceptionPrice.microUsdPerSol);
+    const equityMicroUsd = p !== null && equityLamports !== null ? usd(equityLamports, p) + amount(s.roundingResidualMicroUsd) : null;
+    const passiveSolEquityMicroUsd = p !== null ? usd(initialLamports, p) + amount(s.roundingResidualMicroUsd) : null;
+    const dayFresh = s.daily.day === utcDay(now) && s.daily.reconciledAt > 0 && now >= s.daily.reconciledAt && now - s.daily.reconciledAt <= MAX_QUOTE_AGE;
+    return {
+      accountId: s.accountId, mode: s.mode, inceptionAt: s.inceptionAt, initialMicroUsd: s.initialMicroUsd, revision: s.revision,
+      cashLamports: s.lamports, reservedLamports: reservedLamports.toString(), lockedDepositLamports: lockedDepositLamports.toString(),
+      equityLamports: equityLamports?.toString() ?? null, equityMicroUsd: equityMicroUsd?.toString() ?? null,
+      totalPnlLamports: equityLamports === null ? null : (equityLamports - initialLamports).toString(),
+      totalPnlMicroUsd: equityMicroUsd === null ? null : (equityMicroUsd - INITIAL).toString(),
+      passiveSolEquityMicroUsd: passiveSolEquityMicroUsd?.toString() ?? null,
+      solPriceEffectMicroUsd: passiveSolEquityMicroUsd === null ? null : (passiveSolEquityMicroUsd - INITIAL).toString(),
+      realizedLamports: s.realizedLamports, executionCostsLamports: s.executionCosts,
+      positionLiquidationLamports: unknownMarks ? null : positionLiquidationLamports.toString(),
+      positionCostMicroUsd: Object.values(s.positions).reduce((sum, x) => sum + amount(x.costMicroUsd), 0n).toString(),
+      openPositions: Object.keys(s.positions).length, pendingActions: Object.keys(s.pending).length,
+      entriesEnabled: s.controls.entriesEnabled && !s.controls.stopRequested && !s.daily.paused && dayFresh && equityMicroUsd !== null,
+      unknownMarks, usdValuationAvailable: p !== null, daily: s.daily, controls: s.controls,
+    };
+  }
   integrity() { return this.db.pragma('integrity_check', { simple: true }); }
   close() { this.db.close(); }
+}
+
+/** Fixture wrapper uses the same accounting implementation and rejects production identities. */
+export class DisposableLedger extends PaperLedger {
+  constructor(path: string, readonly fixtureId: string) { super(path, fixtureId, 'DISPOSABLE_PAPER'); }
 }

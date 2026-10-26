@@ -30,6 +30,9 @@ or workflow artifacts. No second billing wallet should be generated on retry.
   unresolved; no Turnkey credential is attached to the managed workspace, no
   Turnkey connector is available, and safe repository metadata did not expose it.
   Existing EC2 integration may still be present; absence here does not prove otherwise.
+  The owner supplied the existing organization ID. A paginated official SDK8.8.0
+  read-only query is prepared under operator/turnkey, outside trader dependencies.
+  Authentication binding is unavailable: no wallet-accounts API request was attempted.
 - Destination: the exact public address above.
 - Proposed recipient amount: **0.06 SOL** (60,000,000lamports).
 - Expected simple-transfer network fee: **0.000005 SOL** (5,000lamports), priority0,
@@ -45,7 +48,7 @@ or workflow artifacts. No second billing wallet should be generated on retry.
   it does not establish enough capacity for continuous acceptance operation.
 
 No transfer approval is requested until source/address/balance, durable recovery
-and an exact current fee are established. No funding, signing or broadcast occurred.
+  and an exact current fee are established. No funding, signing or broadcast occurred.
 Metered feed authentication is pending funding and credential installation.
 
 ## Secure credential installation
@@ -72,8 +75,22 @@ The EC2 inventory has now completed successfully (run40392851547) on the expecte
 host. Bounded Turnkey presence/path metadata exposed no usable wallet address or
 credential binding. It never read secret file contents or environment values;
 absence in this bounded check does not prove the integration is absent elsewhere.
-No repeat inventory dispatch is needed. Existing Turnkey's public Solana address
-and nonsecret integration location/binding selector remain the precise missing inputs.
+No repeat inventory dispatch is needed. Current local SDK stamping requires actual
+API authentication material, never a network proxy placeholder. A raw protected
+secret file selected by `TURNKEY_API_KEY_FILE` is supported; its fields are
+`apiPublicKey` and `apiPrivateKey`. File must be outside the repo, owner-held0600,
+parent0700. Raw runtime-variable bindings work only if truly materialized. The
+consumer validates shape and matching P-256 API keypair without printing values;
+this is authentication-key availability, not a transaction-signing test or proof
+of API authorization. Current environment exposes no such binding/configuration.
+
+If SDK access cannot be reused here, the owner can instead use the existing
+Turnkey UI/integration for a one-time manual transfer. For that route provide
+only the public source address; native SOL and a current exact unsigned fee can
+be checked without Turnkey credentials. After recovery is confirmed, present the
+complete source/destination/amount/fee/total debit for explicit approval. Do not
+treat the choice of manual route as transfer approval. This dependency does not
+block unrelated PAPER runtime/accounting/Render work.
 
 References: [wallet creation](https://pumpportal.fun/create-wallet/),
 [data requirements](https://pumpportal.fun/data-api/real-time/),

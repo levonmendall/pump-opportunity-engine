@@ -1,0 +1,1 @@
+{"name":"poe-turnkey-read-only-identification","private":true,"type":"module","scripts":{"discover":"node --use-env-proxy discover.mjs","test":"node --test discover.test.mjs"},"dependencies":{"@turnkey/sdk-server":"8.8.0"}}

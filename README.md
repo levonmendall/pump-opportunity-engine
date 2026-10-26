@@ -35,6 +35,20 @@ the reporting identifiers/credentials listed in [.env.example](.env.example).
 Run `npm run dashboard`; it binds `0.0.0.0:$PORT`, starts empty, and only accepts
 authenticated complete snapshots. No real source currently publishes to it.
 
+Production PAPER accounting, offline account controls, a restricted service
+template and a pinned EC2 installer are also prepared. `npm run account -- ...`
+operates only with an explicitly initialized account. `npm run runtime` is an
+**entry-blocked observer**, not an accepted trader: no strategy/fill/exit path is
+enabled, and production startup refuses existing exposure. See the runbook before
+initial installation; never use fixtures as the authoritative account.
+
+Existing Turnkey identification is operator-only under `operator/turnkey`, using
+the existing organization/authentication. No authenticated query has run because
+raw credentials are not bound here. Network-secret placeholders do not support
+SDK local request stamping. Manual owner funding remains an option after recovery,
+public-sender/fee verification and explicit transfer approval.
+
 Render replacement configuration is prepared but not deployed. The owner amended
 authorization to reuse only existing service srv-daqon53tqb8s73bdceq0 on its free
-plan. Read the runbook before switching its source; do not create a second service.
+plan. Its source/Node settings are now verified complete; deployment and cutover
+verification remain pending. Do not request another source edit or create a second service.
