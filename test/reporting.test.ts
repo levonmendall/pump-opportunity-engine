@@ -131,7 +131,7 @@ test('explicit public dashboard needs no viewer credentials but never permits un
 
 test('public viewer never weakens ingestion secret or permits partial source identity', () => {
   assert.throws(() => createDashboard({ ...config, viewerUser: '', viewerPassword: '', publicViewer: true, ingestionSecret: '' }), /ingestion secret/);
-  assert.throws(() => createDashboard({ ...config, viewerUser: '', viewerPassword: '', publicViewer: true, accountId: 'other' }), /complete source identity/);
+  assert.throws(() => createDashboard({ ...config, viewerUser: '', viewerPassword: '', publicViewer: true, inceptionAt: undefined }), /complete source identity/);
 });
 
 test('command center UI is accessible and purely cosmetic, not a trading control', async t => {
@@ -246,5 +246,5 @@ test('partial source identity fails configuration and credentials remain mandato
     assert.throws(() => createDashboard({ ...credentials, ...partial }), /complete source identity/);
   }
   assert.throws(() => createDashboard({ ...credentials, viewerPassword: '' }), /credentials required/);
-  assert.throws(() => createDashboard({ ...credentials, ingestionSecret: '' }), /credentials required/);
+  assert.throws(() => createDashboard({ ...credentials, ingestionSecret: '' }), /ingestion secret required/);
 });
