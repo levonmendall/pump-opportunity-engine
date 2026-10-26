@@ -140,6 +140,15 @@ charges before any 24/72-hour clock. No automatic funding or paid RPC authorizat
 
 ## Dashboard — deployed; awaiting authoritative EC2 data
 
+**Owner update, 2026-10-26:** The existing Render service now uses
+`POE_PUBLIC_VIEWER=true` and does not require a viewer username or password.
+Unauthenticated GET on `/`, `/status`, `/api/snapshot` and `/api/export`
+is intentional, including published balances/trades/decisions. Keep the separate
+strong `POE_INGEST_SECRET` Bearer requirement for machine POST. This public
+mode supersedes references below to owner Basic authentication.
+Deployment `dep-dbftds142hec73dhlkl0` (source `2bd35bf`) is live.
+
+
 The original URL now runs verified POE release3af3f9ed9abde5178379e18e986e07ab41965d22,
 deploymentdep-dbfs7dafngtc73cs4p40. It shows "Awaiting POE data" with newly rotated
 viewer/ingestion credentials and rejects all snapshots while the authoritative
@@ -148,8 +157,8 @@ HTTPS Basic, user poe-owner; obtain its password privately in authenticated Rend
 Environment. This is an empty viewer, not fresh financial reporting.
 After actual EC2 account inception, set
 `POE_ACCOUNT_ID`, `POE_INCEPTION_AT` (UTC millisecond ISO),
-`POE_RUNTIME_RELEASE`, `POE_STRATEGY_VERSION`, `POE_VIEWER_USER`,
-`POE_VIEWER_PASSWORD` (>=16 chars) and separate `POE_INGEST_SECRET` (>=24 chars).
+`POE_RUNTIME_RELEASE`, `POE_STRATEGY_VERSION`, explicit `POE_PUBLIC_VIEWER=true`,
+and the separate `POE_INGEST_SECRET` (>=24 chars).
 Use standard secret storage. Never attach provider keys, wallets, RPC keys,
 EC2 DB paths or trading permissions to Render. Identifiers must match the actual
 future authoritative account; no demo snapshot must reach that source.
@@ -159,9 +168,9 @@ npm run compile
 npm run dashboard
 ```
 
-`GET /healthz` is unauthenticated process health. Owner uses HTTP Basic auth over
-HTTPS for `/`, `/status`, `/api/snapshot`, `/api/export`. The machine uses Bearer
-auth for `POST /api/snapshot` only, full strict schema in src/reporting.ts,128KB
+`GET /healthz` is unauthenticated process health. Public GET routes are `/`,
+`/status`, `/api/snapshot` and `/api/export`. The machine uses Bearer auth for
+`POST /api/snapshot` only, full strict schema in src/reporting.ts,128KB
 maximum. Viewer routes have no financial controls. Receiver cache is memory only:
 redeploy/restart waits for a valid full snapshot and never seeds $1,000.
 
@@ -185,7 +194,7 @@ import legacy financial data. Environment changes were observed to trigger a
 rollout even with auto-deploy off; inspect state before triggering another build.
 Validate with `render blueprints validate render.yaml` if available; current public
 schema validation alone does not prove account allocation. Auto-deploy is off.
-Verify deployed SHA/URL, Basic/Bearer separation, source agreement and cache loss.
+Verify deployed SHA/URL, public GET versus protected POST separation, source agreement and cache loss.
 The YAML is a configuration reference for the existing service, not permission
 to create a new Blueprint or duplicate its resource. Do not upgrade compute or
 create a paid service to mask quota conflicts or free-service cold starts.
