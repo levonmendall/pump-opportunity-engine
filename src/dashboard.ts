@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
 
 const equal = (a: string, b: string) => timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest());
-export type DashboardConfig = Partial<ReportingIdentity> & { viewerUser: string; viewerPassword: string; ingestionSecret: string };
+export type DashboardConfig = Partial<ReportingIdentity> & { viewerUser: string; viewerPassword: string; ingestionSecret: string; publicViewer?: boolean };
 function send(res: ServerResponse, status: number, body: unknown) {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
   res.end(JSON.stringify(body));
@@ -30,14 +30,17 @@ function readBody(req: IncomingMessage): Promise<unknown> {
 }
 /** One reporting cache. No ledger, execution, provider or runtime-control imports. */
 export function createDashboard(config: DashboardConfig) {
-  if (typeof config.viewerUser !== 'string' || !config.viewerUser || config.viewerUser.includes(':') || typeof config.viewerPassword !== 'string' || config.viewerPassword.length < 16 || typeof config.ingestionSecret !== 'string' || config.ingestionSecret.length < 24 || config.viewerPassword === config.ingestionSecret) throw new Error('independent strong viewer/ingestion credentials required');
+  // Public access is an explicit opt-in. Never relax the separate machine ingestion secret.
+  const publicViewer = config.publicViewer === true;
+  if (typeof config.ingestionSecret !== 'string' || config.ingestionSecret.length < 24) throw new Error('strong ingestion secret required');
+  if (!publicViewer && (typeof config.viewerUser !== 'string' || !config.viewerUser || config.viewerUser.includes(':') || typeof config.viewerPassword !== 'string' || config.viewerPassword.length < 16 || config.viewerPassword === config.ingestionSecret)) throw new Error('independent strong viewer/ingestion credentials required');
   const sourceFields = [config.accountId, config.inceptionAt, config.release, config.strategy];
   const configured = sourceFields.filter(value => value !== undefined && value !== '').length;
   if (configured !== 0 && configured !== 4) throw new Error('complete source identity required; configure all four fields or none');
   const cache = new SnapshotCache(configured === 4 ? {
     accountId: config.accountId!, inceptionAt: config.inceptionAt!, release: config.release!, strategy: config.strategy!,
   } : null);
-  const viewer = 'Basic ' + Buffer.from(`${config.viewerUser}:${config.viewerPassword}`).toString('base64');
+  const viewer = publicViewer ? null : 'Basic ' + Buffer.from(`${config.viewerUser}:${config.viewerPassword}`).toString('base64');
   const publisher = `Bearer ${config.ingestionSecret}`;
   const server = createServer({ maxHeaderSize: 8192, requestTimeout: 5000, headersTimeout: 5000 }, async (req, res) => {
     res.setHeader('x-content-type-options', 'nosniff'); res.setHeader('referrer-policy', 'no-referrer');
@@ -56,7 +59,7 @@ export function createDashboard(config: DashboardConfig) {
       }
       return;
     }
-    if (!equal(req.headers.authorization ?? '', viewer)) {
+    if (viewer !== null && !equal(req.headers.authorization ?? '', viewer)) {
       res.setHeader('www-authenticate', 'Basic realm="POE owner", charset="UTF-8"');
       req.resume(); send(res, 401, { error: 'owner authentication required' }); return;
     }
@@ -113,7 +116,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const { server } = createDashboard({
     accountId: process.env.POE_ACCOUNT_ID, inceptionAt: process.env.POE_INCEPTION_AT,
     release: process.env.POE_RUNTIME_RELEASE, strategy: process.env.POE_STRATEGY_VERSION,
-    viewerUser: required('POE_VIEWER_USER'), viewerPassword: required('POE_VIEWER_PASSWORD'), ingestionSecret: required('POE_INGEST_SECRET'),
+    viewerUser: process.env.POE_VIEWER_USER ?? '', viewerPassword: process.env.POE_VIEWER_PASSWORD ?? '',
+    publicViewer: process.env.POE_PUBLIC_VIEWER === 'true', ingestionSecret: required('POE_INGEST_SECRET'),
   });
   server.listen(port, '0.0.0.0', () => process.stdout.write(`poe-dashboard listening on ${port}; awaiting authenticated source\n`));
 }
