@@ -1,0 +1,16 @@
+{
+  "installedRelease": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "symptom": "Original compiled runtime/account CLIs through current directory symlink silently exited0 without main dispatch.",
+  "cause": "Lexical argv path was compared to the canonical module path.",
+  "ownerActionCompleted": true,
+  "serviceStartedAt": "2026-10-26T22:30:55Z",
+  "installedWorkaround": "Standard --preserve-symlinks-main on both ExecStart and ExecStop via root-owned entrypoint.conf; reporting.conf preserved.",
+  "newCodeFix": "Canonical realpath main detection with existence guard also preserves TSX and stdin imports.",
+  "regression": "Actual compiled direct and symlink CLI, TSX aliases, missing account refusal, status/safe-stop and unchanged cash/inception tested in disposable local state.",
+  "bootstrapRepeatedByAssistant": false,
+  "accountReseeded": false,
+  "codeReleaseChangedOnEC2": false,
+  "sourcePreserved": true
+}

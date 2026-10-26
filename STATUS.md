@@ -1,114 +1,110 @@
 # POE status — 2026-10-26
 
-Actual operation: POE's independent Render viewer is LIVE at the original URL.
-EC2 has no POE service or authoritative PAPER account yet. Natural trades: **0**.
-Reconciliation: disposable accounts only. No metered subscriptions or new paid
-resources; actual invoices and remaining shared Render quota are unavailable.
-Discovery/RPC evidence is bounded sampling, without continuous coverage/latency
-claims. Dashboard: **Awaiting POE data**, source unconfigured, no snapshots accepted.
-Main blocker: the connected administration runner cannot perform the initial
-root bootstrap. Existing owner/root execution is technically necessary; no AWS key.
+Actual operation: **EC2 observer running; authenticated machine reporting accepted;
+public read-only dashboard verified fresh.** Natural PAPER trades: **0**.
+The actual account reconciles its virtual SOL cash using current USD observations.
+No selected-token paid data or new paid infrastructure was used. Actual hosting
+allocation/invoices remain unknown; economic P&L remains unavailable. Coverage
+and trading throughput are not accepted. Main blocker: the existing data wallet
+is unfunded and durable owner recovery is unconfirmed, preventing real trade-feed
+field/rate/budget verification. No acceptance clock has started.
 
 | Required status | Evidence-based state |
 |---|---|
-| BUILT | Accounting/controls, entry-blocked observer, reporting and installation path; strategy/execution incomplete |
-| RUNNING | Render viewer live; EC2 POE service absent |
-| OBSERVING CURRENT DATA | Bounded free discovery/RPC probes only |
-| PAPER-ENTRY ENABLED | No |
-| NATURAL PAPER TRADES | 0 |
-| ACCOUNTING RECONCILED | Disposable regressions only; authoritative account absent |
-| DASHBOARD FRESH | Awaiting POE data |
-| OPERATIONALLY ACCEPTED | No; 24/72-hour clocks unstarted |
+| BUILT | Installed observer/accounting/reporting; development trader, costs, actual-size pricing and backup integration implemented/tested locally |
+| RUNNING | One nonroot EC2 observer plus the existing Render service |
+| OBSERVING CURRENT DATA | Free PumpPortal migrations and bounded public Coinbase SOL/USD spot; no selected-token trade flow |
+| PAPER-ENTRY ENABLED | No: flow/budget unverified, rule unfrozen, production raw-feed/quote execution integration incomplete |
+| NATURAL PAPER TRADES | 0; disposable lifecycle tests are separate |
+| ACCOUNTING RECONCILED | Live observer reports fresh cash-account reconciliation; independent DB balance audit not performed through the private admin boundary |
+| DASHBOARD FRESH | Verified public viewer and source account agreement; samples52→53, ages34.4–40.5s at23:00:23UTC (newer UI recheck pending) |
+| OPERATIONALLY ACCEPTED | No; Gates A–D incomplete and24/72-hour clocks unstarted |
 | EDGE | UNPROVEN |
-| LIVE TRADING | DISABLED; no signer/submission path |
+| LIVE TRADING | DISABLED; no transaction signer/submission path in the trader |
 
-## Verified infrastructure and cutover
+## Installed identities and actual operation
 
-- Inventory run 40392851547/job 121818077975 verified account133857166104,
-  us-west-2, instancei-00044d4ea1471b957, nonroot mm-ec2-runner uid994,
-  about 55 GiB free root disk and6871MiB available memory. No cleanup needed or
-  performed. Preserve financial records, runner/access and unrelated resources.
-  No repeat inventory or legacy readiness gate.
-- Owner completed the exact reporter shutdown. Run 40397181995 attempt 2,
-  job 121852666626, verified both timers inactive/disabled and both services static
-  and non-running at21:15:13UTC. One retains an old failed flag. The unchanged
-  workflow still exits3 because it asks for sudo after observing this completed
-  state. No repeated shutdown or cosmetic reset-failed action is required.
-- Preflight run 40404058329/job 121857131607 succeeded21:24:21UTC as a capability
-  diagnostic: poe-runtime user absent, service LoadState=not-found, exact root
-  installation permission denied, installed=false, permissionChanged=false.
-  See [remaining owner actions](docs/OWNER_ACTIONS.md).
-- Read-only status run 40407574723/job 121869201923 subsequently succeeded and
-  observed the same absent service. That small workflow now contains no install
-  or sudo execution; it can verify the public progress file after bootstrap.
-  Tested installation release: bce3d22bb434eb429aafacb788a18f39ec189c1b, pinned in
-  docs/EC2_BOOTSTRAP.md. It has not been installed or promoted to forward evidence.
-- Only Render service srv-daqon53tqb8s73bdceq0 in confirmed workspace
-  tea-daqk6h8jo6nc73eojtp0 was replaced. Owner's POE/main/Node/root/build/start/
-  health edits are complete and connector-verified. Free compute, auto-deploy off.
-- Verified LIVE release3af3f9ed9abde5178379e18e986e07ab41965d22,
-  deploydep-dbfs7dafngtc73cs4p40, finished21:19:31UTC, original URL
-  https://meme-machine-dashboard-staging.onrender.com .
-  Old environment replaced; independent viewer/ingestion credentials rotated.
-  No provider/wallet/Turnkey credentials on Render. Owner uses HTTPS Basic,
-  user poe-owner, password privately available in authenticated Render Environment.
-  All four authoritative source identity fields remain absent.
-- Deployed checks pass: public health200, unauthorized viewer401, owner200,
-  empty snapshot/export503, wrong Bearer401, new machine Bearer503 while source
-  unconfigured, legacy publisher route401. Mobile Chromium390px shows correct POE
-  name, Awaiting POE data, no fabricated money/history, no overflow/script errors.
-  No fixture published. Environment replacement triggered a rollout despite
-  auto-deploy off; one redundant same-release rollout followed. No further deploy
-  is needed for this bootstrap viewer state.
+EC2: account133857166104, us-west-2, instancei-00044d4ea1471b957, service
+poe-runtime.service, restricted poe-runtime uid988. Installed source remains
+bce3d22bb434eb429aafacb788a18f39ec189c1b, with a reviewed standard Node
+--preserve-symlinks-main launch override. The original service/main-path bug
+was reproduced and fixed without replacing the release or resetting capital.
+The service has run since22:30:55UTC; the23:47 check recorded zero restarts.
 
-## Gate evidence and limits
+Authoritative account:poe-3123e352-4581-455b-85db-acd7e825e99e.
+Original inception:2026-10-26T22:07:36.212Z. One $1,000 VIRTUAL conversion only.
+No legacy financial data or fixture balance was imported. No assistant bootstrap
+rerun or reseed occurred. Both legacy publisher timers remain retired; the
+completed inventory/source changes/shutdown need no repeat.
 
-Gate A's actual migration -> supported canonical pool -> current state ->
-size-specific buy/sell quote path is demonstrated with official SDK2.2.0.
-Samples cover Token-2022 MetadataPointer/TokenMetadata, positive/negative signed
-virtual reserves, retained fees, dynamic fee tiers and integer rounding.
-Latest proof19:57:36UTC, pool6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv,
-slot461790901:10,000,000 input lamports ->1,712,049,603 base units ->9,801,369
-sell lamports at the same state; five reads,33,033bytes,764ms. Quotes exclude
-gas/rent and are not a financial lifecycle or performance result.
+Read-only run40415427271 attempt2/job121918984748 verified active/running nonroot service,
+NTP synchronized, fresh USD/reconciliation facts aged3.465s, latest migration
+aged133.557s, shortlist12/12. Cgroup memory62,070,784bytes; cumulative CPU11.239s;
+root filesystem57,834,921,984bytes available. This low-load observer sample is
+not a throughput/headroom benchmark. No cleanup was needed or performed.
 
-One accounting path supports explicit one-time PAPER inception, integer balances,
-reservations, delayed single attempts, sticky UTC loss pause, reserve-funded
-exits, unknown marks, exclusive ownership, semantic recovery, consistent backup/
-restore, durable sequences and bounded honest P&L gaps. Process ownership uses a
-separate Linux flock; NORMAL SQLite keeps financial transactions short and allows
-controlled readers. Database aliases cannot create another owner. Loaded better-sqlite3
-13.0.3 uses SQLite3.53.4. Regression accounts and35-second network smoke are
-DISPOSABLE; none became forward capital. Dependency scanner limitations remain
-in [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+Render: srv-daqon53tqb8s73bdceq0, workspace tea-daqk6h8jo6nc73eojtp0, free compute,
+auto-deploy off, original URL:
+https://meme-machine-dashboard-staging.onrender.com .
+Verified deployment dep-dbftpvd9el5s73b96vi0/source6036cbd9294ce5848fe575a306144e6ad7446000.
+Its configured source account/inception/runtime/strategy are the actual EC2 values;
+strategy is UNIMPLEMENTED_FLOW_BLOCKED.
 
-Observer entries are hard-disabled; production startup refuses positions/pending
-sells until supported exit management exists. This is not a complete trader.
-Full Gate A, B–D, unattended windows, natural lifecycle and edge remain unaccepted.
-No critical alert-delivery channel is verified.
+The owner explicitly confirmed PUBLIC read-only viewing after concurrent public-
+viewer commits were discovered. Authenticated machine ingestion remains private.
+A brief safety pause of only the replaceable read model while clarifying policy
+did not restart EC2, reset its account or duplicate financial actions.
+41 deployed checks pass: actual source sequence advances, identity and arithmetic
+agree, genuine history gap survives republish, public GET works, unauthorized
+ingestion fails401, duplicate retry is idempotent, regression409, wrong account400,
+oversized413, mobile390px has chart/UTC/zero and no controls/overflow/script errors.
+See evidence/render-public-live-e2e.json. Wallet/provider/Turnkey keys never reached
+Render. Current chart movements with no trades are SOL price effects, not strategy
+performance. Operating costs/realized/unrealized/drawdown fields still disclose
+unavailable values where the installed observer lacks the required projection.
 
-## Funding and remaining implementation
+## Development work; not installed evidence
 
-Existing billing wallet:6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ;
-last confirmed0lamports21:40:47UTC/slot461820004. Bundle remains0600 outside git;
-owner recovery, funding and runtime installation unconfirmed. No duplicate wallet.
-Approved measurement limits:0.01 SOL/day, 0.04 SOL/four-day total, also$2.50/day / $10
-total whichever binds;0.02 SOL floor, no automatic top-ups. Continuous data capacity
-is unproven.
+One normalized rule/flow core, cost/field measurement core, delayed execution
+coordinator and connected disposable trader use the same ledger. Tests cover
+bounded data, gaps/corrections, full-size exits, preserved uncertainty, no reentry,
+priority/deadline handling and recorder replay. Production PAPER remains blocked
+under the UNFROZEN rule and unverified field contract. No test became a natural
+trade or forward performance.
 
-Turnkey organization/user identifiers and the later complete API authentication
-pair were supplied. The pair is now stored in a protected0600 file outside git,
-selected by TURNKEY_API_KEY_FILE; local P-256 pair validation passes. Real SDK8.8.0
-read-only account queries receive 401 PUBLIC_KEY_NOT_FOUND: no matching user
-credential is registered in the supplied organization. No accounts/balances are
-identified. Register this public authentication key for the intended existing
-execution user/organization, or identify its correct existing organization binding;
-do not repost the private key or rebuild Turnkey. Manual existing-Turnkey funding
-remains an alternative after public sender/balance/recovery/current-fee checks.
-No transfer approved, signed or broadcast. No key was installed on Render/trader.
+Actual-size position sell pricing reuses canonical pool verification and current
+official SDK2.2.0. The23:34 free migration probe verified a real Mayhem/Token-2022
+pool with signed negative virtual reserves and current buy/sell estimates.
+That probe used modified development code and is QUOTE_ONLY, not an accepted
+release or financial lifecycle. Prior clean integration proof remains preserved.
 
-After root bootstrap, use actual account identity/progress to configure Render's
-four source fields, verify publication/account agreement and recovery. Measure
-selected-token fields/rates and budget before freezing flow rules or enabling
-entries. Pool scheduling, strategy/execution/exit integration, costs, trade
-projection, backup retention proving, alerts and acceptance remain work.
+Operating costs now have same-writer journal/idempotency and explicit coverage;
+missing costs cannot become free operations. New bounded consistent backup and
+worker validation preserve account/inception/history and avoid blocking live
+work; a large DISPOSABLE fixture improved timer gaps from589ms to24–29ms.
+These code changes, scheduling and restore regressions are development evidence.
+They have NOT been installed on EC2; actual backup/restore acceptance remains
+pending. The running C2 observer still refuses restored positions/pending sells
+until supported management is integrated.
+
+## Remaining prerequisites and gates
+
+Turnkey registration and source identification are complete. The owner-confirmed
+existing Solana source is a standalone-key public address; its latest read-only
+balance cannot fund the requested0.06SOL plus fee. Actual treasury details remain
+private and never enter PAPER equity. No private-key export, signing or transfer.
+The existing PumpPortal billing wallet remains unchanged and unfunded. Durable
+recovery still needs an actual named private vault/transfer route; the supplied
+route placeholder is not a usable connection.
+
+Measurement caps remain0.01SOL/day and0.04SOL/four-day total, also$2.50/day/$10total
+whichever binds first, with0.02SOL floor and no automatic top-ups. A transfer still
+needs explicit approval after recovery/source/balance/current-fee checks.
+These caps authorize measurement, not presumed four-day continuous capacity.
+
+Next: secure recovery/funding; real selected-token field/billing measurement;
+production provider/RPC scheduling and complete execution/reporting projections;
+freeze rules/cost assumptions; install a reviewed account-preserving release;
+prove actual backups, restart/outage/pressure/headroom and alert delivery.
+Only then may24/72-hour forward acceptance begin. No alert channel is verified.
+No full Gate A, Gate B, C, D or E acceptance is claimed.

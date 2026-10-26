@@ -74,4 +74,23 @@ jobs:
               value=body[key]
               ages[key]=None if value is None else round(time.time()-datetime.datetime.fromisoformat(value.replace('Z','+00:00')).timestamp(),3)
           emit(status='POE_OBSERVER_STATUS_OBSERVED',publicStatus=body,factAgeSeconds=ages,financialFilesRead=False,credentialsRead=False,permissionsChanged=False,acceptanceClaimed=False)
+          resource_names=['MainPID','MemoryCurrent','CPUUsageNSec','TasksCurrent','NRestarts','ActiveEnterTimestampMonotonic']
+          resource_result=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property='+','.join(resource_names)],capture_output=True,text=True,timeout=10)
+          resources=dict(line.split('=',1) for line in resource_result.stdout.splitlines() if '=' in line)
+          ntp=subprocess.run(['/usr/bin/timedatectl','show','--property=NTPSynchronized','--value'],capture_output=True,text=True,timeout=5)
+          fs=os.statvfs('/')
+          emit(runtimeResources=resources,ntpSynchronized=ntp.stdout.strip() if ntp.returncode==0 else 'unavailable',rootFilesystem={'availableBytes':fs.f_bavail*fs.f_frsize,'totalBytes':fs.f_blocks*fs.f_frsize},credentialsRead=False,financialFilesRead=False)
+          import urllib.error
+          checks=[]
+          for endpoint in ['/healthz','/','/api/snapshot']:
+              request=urllib.request.Request('https://meme-machine-dashboard-staging.onrender.com'+endpoint+'?poe_auth_probe='+str(time.time_ns()),headers={'Cache-Control':'no-cache'})
+              try:
+                  response=http.open(request,timeout=8)
+                  checks.append({'path':endpoint,'httpStatus':response.status,'authorizationSupplied':False,'wwwAuthenticatePresent':bool(response.headers.get('WWW-Authenticate'))})
+                  response.close()
+              except urllib.error.HTTPError as error:
+                  checks.append({'path':endpoint,'httpStatus':error.code,'authorizationSupplied':False,'wwwAuthenticatePresent':bool(error.headers.get('WWW-Authenticate'))})
+                  error.close()
+              except Exception:checks.append({'path':endpoint,'httpStatus':None,'authorizationSupplied':False,'error':'bounded-network-probe-unavailable'})
+          emit(independentRenderAuthProbe=checks,requestEnvironment='EC2; explicit ProxyHandler({}); no auth supplied; response body not logged',credentialsRead=False,financialFilesRead=False)
           PY

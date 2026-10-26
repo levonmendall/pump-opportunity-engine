@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-26T22:29:41.623Z",
+  "authentication": "successful existing registered API key pair; credentials unchanged",
+  "binding": "TURNKEY_API_KEY_FILE",
+  "walletAccounts": {
+    "organizationWide": true,
+    "includeWalletDetails": true,
+    "paginationComplete": true,
+    "solanaAccounts": 0
+  },
+  "boundedAlternative": {
+    "purpose": "The existing funded address is a standalone-key address, not a wallet-account resource.",
+    "officialSdkVersion": "8.8.0",
+    "readOnlyEndpoints": [
+      "whoami",
+      "list_wallets",
+      "list_private_keys"
+    ],
+    "wallets": 0,
+    "standaloneKeyMetadataRecords": 2,
+    "solanaAddressesFound": 2,
+    "positiveNativeBalances": 1,
+    "sourceConfirmedByOwner": true,
+    "requestedFundingSol": "0.06",
+    "sufficientBalanceForRequestedAmountAndFee": false,
+    "privateKeyExported": false
+  },
+  "treasuryRecords": "Public addresses and native balances retained privately outside this public repository; not imported into PAPER equity.",
+  "billingWalletRecoveryCopyConfirmed": false,
+  "transferApproved": false,
+  "transactionSignedOrBroadcast": false
+}

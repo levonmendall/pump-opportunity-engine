@@ -1,0 +1,283 @@
+{
+  "checkedAt": "2026-10-26T23:00:23.500Z",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "viewingPolicy": "owner-authorized-public-read-only",
+  "ingestionPolicy": "private-machine-Bearer-only",
+  "deployedDashboardRelease": "ae93ab414749884281ad458c61a51dd2bd83ff76",
+  "verifiedDeploy": "dep-dbftlqt9el5s73b8p84g",
+  "supersedesArtifact": "render-live-account-e2e.json (private-viewing expectations superseded by explicit owner public-viewing authorization)",
+  "sourceIdentity": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "samples": [
+    {
+      "label": "first",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+      "sequence": "52",
+      "generatedAt": "2026-10-26T22:59:11.322Z",
+      "marketAt": "2026-10-26T22:59:11.322Z",
+      "reconciledAt": "2026-10-26T22:59:11.322Z",
+      "receivedAt": "2026-10-26T22:59:29.810Z",
+      "freshnessState": "observing-with-zero-trades",
+      "sourceAgeMs": 34356,
+      "marketAgeMs": 34356,
+      "reconciliationAgeMs": 34356,
+      "positions": 0,
+      "trades": 0,
+      "paperFilled": 0,
+      "historyPoints": 5,
+      "gapCount": 1
+    },
+    {
+      "label": "second",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+      "sequence": "53",
+      "generatedAt": "2026-10-26T22:59:41.326Z",
+      "marketAt": "2026-10-26T22:59:41.326Z",
+      "reconciledAt": "2026-10-26T22:59:41.326Z",
+      "receivedAt": "2026-10-26T22:59:59.900Z",
+      "freshnessState": "observing-with-zero-trades",
+      "sourceAgeMs": 40525,
+      "marketAgeMs": 40525,
+      "reconciliationAgeMs": 40525,
+      "positions": 0,
+      "trades": 0,
+      "paperFilled": 0,
+      "historyPoints": 5,
+      "gapCount": 1
+    }
+  ],
+  "checks": [
+    {
+      "label": "actual source naturally republished after deployment",
+      "pass": true,
+      "waitMs": 230,
+      "waitingResponses": 0
+    },
+    {
+      "label": "anonymous snapshot ingestion rejected",
+      "pass": true,
+      "status": 401
+    },
+    {
+      "label": "malformed Bearer ingestion rejected",
+      "pass": true,
+      "status": 401
+    },
+    {
+      "label": "public health",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "owner-authorized public viewer accepted anonymously",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "owner viewer accepted",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "public snapshot viewing does not require Basic auth",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "viewer cannot ingest",
+      "pass": true,
+      "status": 401
+    },
+    {
+      "label": "wrong machine credential rejected",
+      "pass": true,
+      "status": 401
+    },
+    {
+      "label": "legacy publishing route is read-only",
+      "pass": true,
+      "status": 405
+    },
+    {
+      "label": "first actual snapshot available",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "exact actual snapshot retry is idempotent",
+      "pass": true,
+      "status": 200,
+      "result": "duplicate"
+    },
+    {
+      "label": "duplicate does not refresh receiver time",
+      "pass": true
+    },
+    {
+      "label": "wrong account rejected",
+      "pass": true,
+      "status": 400
+    },
+    {
+      "label": "over-128KiB payload rejected",
+      "pass": true,
+      "status": 413
+    },
+    {
+      "label": "second actual snapshot available",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "first source identity",
+      "pass": true
+    },
+    {
+      "label": "first PAPER and entries disabled",
+      "pass": true
+    },
+    {
+      "label": "first source/reconciliation fresh",
+      "pass": true
+    },
+    {
+      "label": "first actual flat account",
+      "pass": true
+    },
+    {
+      "label": "first cash and equity SOL agree",
+      "pass": true
+    },
+    {
+      "label": "first equity and passive SOL benchmark agree",
+      "pass": true
+    },
+    {
+      "label": "first total trading PnL arithmetic",
+      "pass": true
+    },
+    {
+      "label": "first inception history retained",
+      "pass": true
+    },
+    {
+      "label": "first genuine history gap retained",
+      "pass": true
+    },
+    {
+      "label": "first history chronology",
+      "pass": true
+    },
+    {
+      "label": "second source identity",
+      "pass": true
+    },
+    {
+      "label": "second PAPER and entries disabled",
+      "pass": true
+    },
+    {
+      "label": "second source/reconciliation fresh",
+      "pass": true
+    },
+    {
+      "label": "second actual flat account",
+      "pass": true
+    },
+    {
+      "label": "second cash and equity SOL agree",
+      "pass": true
+    },
+    {
+      "label": "second equity and passive SOL benchmark agree",
+      "pass": true
+    },
+    {
+      "label": "second total trading PnL arithmetic",
+      "pass": true
+    },
+    {
+      "label": "second inception history retained",
+      "pass": true
+    },
+    {
+      "label": "second genuine history gap retained",
+      "pass": true
+    },
+    {
+      "label": "second history chronology",
+      "pass": true
+    },
+    {
+      "label": "samples at least35 seconds apart",
+      "pass": true,
+      "elapsedMs": 36020
+    },
+    {
+      "label": "actual source sequence advances",
+      "pass": true
+    },
+    {
+      "label": "old actual snapshot regression rejected",
+      "pass": true,
+      "status": 409
+    },
+    {
+      "label": "rejected probes never replace source identity",
+      "pass": true
+    },
+    {
+      "label": "actual mobile rendering",
+      "pass": true
+    }
+  ],
+  "mobile": {
+    "checkedAt": "2026-10-26T23:00:23.500Z",
+    "httpStatus": 200,
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "pageHasActualIdentity": true,
+    "applicationName": "Pump Opportunity Engine",
+    "contentVisible": true,
+    "cardCount": 12,
+    "chartPathCount": 2,
+    "zeroReferenceLines": 1,
+    "timezoneLabel": true,
+    "stateCorrect": true,
+    "liveDisabled": true,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "viewportWidth": 390,
+    "chartAtBottomOfOverview": true,
+    "readOnlyControls": true,
+    "scriptErrors": 0,
+    "dialogs": 0,
+    "externalPageRequests": 0,
+    "screenshotStoredPrivately": true,
+    "screenshotMode": "0600",
+    "credentialsPrinted": false,
+    "tlsVerificationEnabled": true
+  },
+  "allPassed": true,
+  "validSyntheticSnapshotsSubmitted": 0,
+  "actualSnapshotRetriesOnly": true,
+  "runtimeOrFinancialControlsInvoked": false,
+  "providerQueries": 0,
+  "renderEnvironmentOrDeploymentMutated": false,
+  "financialValuesPublishedInEvidence": false,
+  "independentDatabaseBalanceAudit": false,
+  "limit": "Authenticated EC2 snapshot identity/time/arithmetic and read-model agreement; public status does not expose an independent financial projection.",
+  "capturedHistoryWindowMetadataVerified": true
+}

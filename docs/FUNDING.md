@@ -1,101 +1,68 @@
-# Data billing wallet; existing Turnkey remains the possible funding source
+# Existing billing wallet and Turnkey source
 
-The owner explicitly retained the existing Turnkey integration. POE does not
-rebuild it, create a replacement treasury, export its private key, or perform
-signing tests. Funding the separate data wallet is a real transfer and requires
-explicit approval of the complete source/destination/amount/fee proposal first.
-The simulated $1,000 PAPER account is unrelated to these real operating funds.
+The $1,000 PAPER account is virtual and unrelated to real funding. No transfer
+signing/broadcast or live trading is authorized. Preserve both existing wallets.
 
-## Current setup (2026-10-26)
+## Completed authentication
 
-PumpPortal's documented `GET /api/create-wallet` was used once to establish a
-separate **unfunded** data-billing wallet and linked API key:
+Owner registered the existing API public key. Turnkey authentication now works.
+TURNKEY_API_KEY_FILE selects /workspace/shared/poe-secrets/turnkey-api.json,
+0600/parent0700, outside Git. This is actual local SDK stamping material, not a
+network-secret placeholder. Do not display, replace or install it on Render/trader.
 
-`6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ`
+Operator-only official SDK8.8.0 completes getWalletAccounts across organization,
+includeWalletDetails=true and pagination. No Solana wallet accounts returned;
+bounded read-only standalone-key PUBLIC metadata resolved the funded ED25519 source.
+Owner independently confirmed its public address; confirmed native RPC checked
+balance. Actual treasury details remain private outside this public repository.
+See evidence/turnkey-readonly-resolution.json. Historical PUBLIC_KEY_NOT_FOUND is
+resolved, not a current owner action. No wallet-key export/signing test/transfer.
 
-Latest read-only mainnet RPC confirmed0lamports at21:40:47UTC, slot461820004
-(evidence/data-wallet-current-balance.json). The credential response
-was written directly to a protected file outside this public repository:
-`/workspace/shared/poe-secrets/pumpportal-billing-wallet.json` (0600, parent0700).
-No secret response, API key or private key was printed. This new provider recovery
-key is not a Turnkey private key. Treat the bundle as wallet-capable.
+## Existing billing destination and recovery
 
-Do not fund until the owner has a durable recovery copy in their existing secret
-vault. This managed workspace alone is not asserted to be durable owner recovery.
-Use private workspace/secret-vault file handling, not chat, GitHub, logs, Render,
-or workflow artifacts. No second billing wallet should be generated on retry.
+Public destination: `6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ`.
+Existing complete bundle:
+ /workspace/shared/poe-secrets/pumpportal-billing-wallet.json,0600/parent0700.
+Created once without printing values; latest23:38:36UTC confirmed0SOL.
+Treat the bundle/API as wallet-capable. Keep recovery key outside runtime.
 
-## Proposed funding; NOT approved or submitted
+Durable owner recovery is unconfirmed. The supplied route reply still contains
+its name placeholder. No vault/transfer route is named and callable. Supply only
+nonsecret existing connection details; then exact private retrieval/import steps
+can be verified. No invented download link or secret delivery in chat, GitHub,
+Actions, Render, logs or public artifacts. No replacement wallet.
 
-- Source: existing owner Turnkey Solana account; public address/available SOL
-  unresolved. The owner supplied the organization and then a complete API
-  authentication pair, now protected0600 outside git and locally validated.
-  Official SDK8.8.0 read-only account requests return 401 PUBLIC_KEY_NOT_FOUND:
-  no user credentials in the supplied organization match that public key.
-  Register the public key for the existing execution user/organization, or identify
-  its correct existing organization binding. No more private-key delivery is
-  needed. No wallet/account list was obtained, and no signing/broadcast occurred.
-- Destination: the exact public address above.
-- Proposed recipient amount: **0.06 SOL** (60,000,000lamports).
-- Expected simple-transfer network fee: **0.000005 SOL** (5,000lamports), priority0,
-  obtained from a representative unsigned one-signature/two-account transfer message.
-  This was not a Turnkey source-specific quote. Refresh the exact unsigned message
-  after resolving the source and before seeking approval. Verify sufficient native
-  SOL and any existing Turnkey policy without modifying it or signing a test.
-- Expected source debit with that fee: **0.060005 SOL**. No automatic top-ups.
-- Preserve **0.02 SOL** as balance floor. At most **0.04 SOL** is data spend,
-  and at most0.01 SOL/UTCday over the approved four-day measurement experiment.
-  Also cap at$2.50/day and$10total, whichever binds first. At documented rates
-  this is at most40,000events total/10,000perday before safety headroom and USD caps;
-  it does not establish enough capacity for continuous acceptance operation.
+## Funding remains incomplete; no approval requested
 
-No transfer approval is requested until source/address/balance, durable recovery
-  and an exact current fee are established. No funding, signing or broadcast occurred.
-Metered feed authentication is pending funding and credential installation.
+Requested recipient amount:0.06SOL (60,000,000lamports). Confirmed source balance
+at23:38:36UTC is insufficient for that plus fee. It was not topped up/replaced.
+A smaller experiment requires owner choice; never silently reduce coverage.
 
-## Secure credential installation
+Prior representative one-signature fee:5,000lamports (0.000005SOL),
+expected debit0.060005SOL. **Not a current sender-specific proposal.**
+After recovery and sufficient amount/balance, build only an unsigned exact
+source/destination message, refresh blockhash/fee and balance, then present
+source, destination, amount, fee and total debit for explicit approval.
+No automatic top-ups. Manual existing-Turnkey UI transfer remains an alternative
+after those checks; rebuilding access never blocks unrelated PAPER development.
 
-Only the API key belongs in the trading runtime. Keep the recovery private key
-in the owner's secret vault. After verified authenticated host access, copy files
-through that private access path; never carry wallet secrets through GitHub Actions
-inputs, repository content, job output or artifacts.
+At0.06SOL funding,0.02SOL floor leaves at most0.04SOL for data. Measurement caps:
+0.01SOL/UTCday,0.04SOL/four-day total,$2.50/day/$10total whichever binds.
+At documented event rates, at most10,000events/day/40,000total before USD/safety
+constraints. This does not prove four-day continuous coverage. Measure real
+billed rates/useful windows/charges before budgeting24/72-hour acceptance.
+Additional spend needs approval.
 
-An operator can use `scripts/install-provider-credential.mjs SOURCE TARGET` to
-extract only the API key into a new0600file outside the repository. It requires
-protected owner-held input/directory, refuses replacement and prints no secret.
-The regression test uses a disposable fake bundle. Installation is not yet done.
+## Secure runtime installation
 
-On EC2, prefer root-owned `/etc/poe/secrets/pumpportal-api-key` and standard systemd
-`LoadCredential=poe-pumpportal-api-key:/etc/poe/secrets/pumpportal-api-key` for the
-restricted poe-runtime service. The future data adapter should read only that
-credential, never the full recovery bundle. A managed secret binding named
-`POE_PUMPPORTAL_API_KEY` is also supported as a secure attachment route, with its
-value supplied in Secrets, never chat. The public address can be configured as
-`POE_DATA_WALLET`. No wallet/provider credential goes to Render.
+Only the API key later enters EC2. Never transport secrets through repository/
+Actions inputs/output/artifacts, Render or chat. The standard extractor
+scripts/install-provider-credential.mjs reads a protected bundle into a NEW0600
+API-only file and refuses replacement. Prefer root0600
+/etc/poe/secrets/pumpportal-api-key plus systemd
+LoadCredential=poe-pumpportal-api-key:/etc/poe/secrets/pumpportal-api-key.
+The consumer reads only that credential. Installation, authentication and actual
+billing measurement are unperformed. Trading/submission/remote-signing remain denied.
 
-The EC2 inventory has now completed successfully (run 40392851547) on the expected
-host. Bounded Turnkey presence/path metadata exposed no usable wallet address or
-credential binding. It never read secret file contents or environment values;
-absence in this bounded check does not prove the integration is absent elsewhere.
-No repeat inventory dispatch is needed. Current local SDK stamping requires actual
-API authentication material, never a network proxy placeholder. A raw protected
-secret file selected by `TURNKEY_API_KEY_FILE` is supported; its fields are
-`apiPublicKey` and `apiPrivateKey`. File must be outside the repo, owner-held0600,
-parent0700. Raw runtime-variable bindings work only if truly materialized. The
-consumer validates shape and matching P-256 API keypair without printing values;
-this is authentication-key availability, not a transaction-signing test or proof
-of API authorization. This raw file now exists and passes local pair validation;
-the current server-side401 registration failure is recorded above. Do not repost
-credentials or replace the existing wallet/integration.
-
-If SDK access cannot be reused here, the owner can instead use the existing
-Turnkey UI/integration for a one-time manual transfer. For that route provide
-only the public source address; native SOL and a current exact unsigned fee can
-be checked without Turnkey credentials. After recovery is confirmed, present the
-complete source/destination/amount/fee/total debit for explicit approval. Do not
-treat the choice of manual route as transfer approval. This dependency does not
-block unrelated PAPER runtime/accounting/Render work.
-
-References: [wallet creation](https://pumpportal.fun/create-wallet/),
-[data requirements](https://pumpportal.fun/data-api/real-time/),
-[wallet-capable key semantics](https://pumpportal.fun/FAQ/).
+References: https://pumpportal.fun/create-wallet/ ,
+https://pumpportal.fun/data-api/real-time/ , https://pumpportal.fun/FAQ/ .

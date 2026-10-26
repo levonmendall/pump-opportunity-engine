@@ -206,10 +206,11 @@ function renderFunnel(f){
  const ceiling=Math.max(1,...fields.map(([k])=>f[k]));
  fields.forEach(([key,label])=>{const row=add(outer,'div',undefined,'funnel-line');add(row,'div',label,'funnel-name');const track=add(row,'div',undefined,'funnel-track');const fill=add(track,'div',undefined,'funnel-fill');fill.style.width=(100*f[key]/ceiling).toFixed(2)+'%';add(row,'div',f[key].toLocaleString('en-US'),'funnel-count')});
 }
-function renderMetrics(m){
+function renderMetrics(m,source){
  const p=byId('metrics');p.replaceChildren();const grid=add(p,'div',undefined,'metric-grid');
  const fields=[['coverage','Market coverage'],['latency','Latency evidence'],['processingLagMs','Processing lag (ms)'],['eventLoopLagMs','Event-loop lag (ms)'],['providerEvents','Provider events'],['rpcRequests','RPC requests'],['projectedDailyDataSol','Projected data SOL/day'],['budgetRemainingSol','Data budget SOL'],['budgetStatus','Budget status']];
  fields.forEach(([key,label])=>{const e=add(grid,'div',undefined,'metric');add(e,'div',label,'metric-name');add(e,'div',m[key]===null?'Unavailable':String(m[key]),'metric-value')});
+ [['Runtime release',source.release],['Strategy version',source.strategy]].forEach(([label,value])=>{const e=add(grid,'div',undefined,'metric');add(e,'div',label,'metric-name');add(e,'div',value,'metric-value')});
 }
 function plot(points){
  const root=byId('chart');root.replaceChildren();
@@ -254,7 +255,7 @@ function showSnapshot(s,received,f){
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.');
  renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.');
  renderTable('decisions',['UTC','Mint','Stage','Reason'],s.decisions.map(d=>[d.at,d.mint,d.stage,d.reason]),'NO DECISIONS','No decisions in the current published window.');
- renderFunnel(s.funnel);renderMetrics(s.metrics);plot(s.pnl);
+ renderFunnel(s.funnel);renderMetrics(s.metrics,s.source);plot(s.pnl);
  put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED SERIES':'HISTORY UNAVAILABLE');
  put('freshness','Generated '+s.times.generatedAt+' · Market '+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
  put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps.');

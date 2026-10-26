@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import BN from 'bn.js';
 import bs58 from 'bs58';
 import {PublicKey,type AccountInfo} from '@solana/web3.js';
-import {NATIVE_MINT,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID,unpackMint,unpackAccount,getAssociatedTokenAddressSync,getExtensionTypes,ExtensionType,MintLayout} from '@solana/spl-token';
+import {NATIVE_MINT,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID,unpackMint,unpackAccount,getAssociatedTokenAddressSync,getExtensionTypes,getAccountTypeOfMintType,getAccountLen,ExtensionType,MintLayout} from '@solana/spl-token';
 import {PUMP_AMM_SDK,PUMP_AMM_PROGRAM_ID,PUMP_PROGRAM_ID,PUMP_FEE_PROGRAM_ID,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,canonicalPumpPoolPda,pumpPoolAuthorityPda,lpMintPda,buyQuoteInput,sellBaseInput,computeFeesBps,type Pool} from './sdk.js';
 import {ReadOnlyRpc} from './network.js';
 import type {Recorder} from './recorder.js';
@@ -12,8 +12,18 @@ type WireAccount={data:[string,string];owner:string;lamports:number;executable:b
 type Batch={context:{slot:number};value:(WireAccount|null)[]};
 function info(a:WireAccount|null|undefined):AccountInfo<Buffer>{need(a,'MISSING_ACCOUNT');return {...a,data:Buffer.from(a.data[0],'base64'),owner:new PublicKey(a.owner)};}
 const n=(x:bigint|BN)=>new BN(x.toString());
+const timestamp=()=>new Date(Date.now()).toISOString();
+const MAX_TOKEN_UNITS=(1n<<64n)-1n;
 const allowedMintExtensions=new Set([ExtensionType.MetadataPointer,ExtensionType.TokenMetadata]);
 export function checkMintExtensions(types:ExtensionType[]) {for(const t of types)need(allowedMintExtensions.has(t),`UNMODELED_BASE_EXTENSION:${ExtensionType[t]??t}`);}
+/** Account sizing only. A fresh rent quote and actual account-existence check remain necessary. */
+export function associatedAccountRequirements(program:PublicKey,mintExtensions:ExtensionType[]){
+  need(program.equals(TOKEN_PROGRAM_ID)||program.equals(TOKEN_2022_PROGRAM_ID),'UNSUPPORTED_TOKEN_PROGRAM');
+  checkMintExtensions(mintExtensions);
+  const required=mintExtensions.map(getAccountTypeOfMintType).filter(t=>t!==ExtensionType.Uninitialized);
+  const accountExtensions=program.equals(TOKEN_2022_PROGRAM_ID)?[...new Set([...required,ExtensionType.ImmutableOwner])]:required;
+  return {accountLengthBytes:getAccountLen(accountExtensions),accountExtensions:accountExtensions.map(t=>ExtensionType[t]),rentLamports:null,rentStatus:'requires-current-RPC-and-account-existence-check' as const,depositTreatment:'refundable locked capital when a new account is required' as const};
+}
 function canonical(pool:Pool,mint:PublicKey,key:PublicKey){
   need(pool.index===0 && pool.baseMint.equals(mint) && pool.quoteMint.equals(NATIVE_MINT),'NOT_SUPPORTED_SOL_CANONICAL_POOL');
   need(pool.creator.equals(pumpPoolAuthorityPda(mint)) && key.equals(canonicalPumpPoolPda(mint)),'BAD_POOL_IDENTITY');
@@ -42,16 +52,18 @@ export async function verifyMigration(rpc:ReadOnlyRpc,mint:PublicKey,signature:s
   return {signature,slot:tx.slot,blockTime:tx.blockTime,commitment:'confirmed',instructionVerified:true,creationCpiVerified:true,transactionVersion:tx.version};
 }
 
-export async function quotePool(rpc:ReadOnlyRpc,mint:PublicKey,buyLamports:bigint,rec:Recorder,minSlot=0){
-  need(buyLamports>10n && buyLamports<=1_000_000_000n,'INTEGRATION_SIZE_OUT_OF_RANGE');
+async function readSupportedPool(rpc:ReadOnlyRpc,mint:PublicKey,rec:Recorder,minSlot:number){
+  need(Number.isSafeInteger(minSlot)&&minSlot>=0,'INVALID_MINIMUM_SLOT');
   const key=canonicalPumpPoolPda(mint);
   const initial=await rpc.call<Batch>('getMultipleAccounts',[[key.toBase58()],{encoding:'base64',commitment:'confirmed',minContextSlot:minSlot}]);
+  need(initial&&Number.isSafeInteger(initial.context?.slot)&&initial.context.slot>=minSlot,'REGRESSING_INITIAL_POOL_CONTEXT');
   const firstInfo=info(initial.value[0]);need(firstInfo.owner.equals(PUMP_AMM_PROGRAM_ID),'BAD_POOL_OWNER');
   const first=PUMP_AMM_SDK.decodePool(firstInfo);canonical(first,mint,key);
   const addresses=[key,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,mint,NATIVE_MINT,first.poolBaseTokenAccount,first.poolQuoteTokenAccount];
-  const requestedAt=new Date().toISOString();
+  const requestedAt=timestamp();
   const batch=await rpc.call<Batch>('getMultipleAccounts',[addresses.map(k=>k.toBase58()),{encoding:'base64',commitment:'confirmed',minContextSlot:Math.max(minSlot,initial.context.slot)}]);
-  const receivedAt=new Date().toISOString();
+  need(batch&&Number.isSafeInteger(batch.context?.slot)&&batch.context.slot>=Math.max(minSlot,initial.context.slot),'REGRESSING_POOL_BATCH_CONTEXT');
+  const receivedAt=timestamp();
   rec.record('pool-state',{requestedAt,receivedAt,addresses:addresses.map(a=>a.toBase58()),...batch});
   const [pi,gi,fi,mi,qi,bi,vi]=batch.value.map(info);
   need(pi&&gi&&fi&&mi&&qi&&bi&&vi,'MISSING_POOL_STATE');
@@ -76,13 +88,32 @@ export async function quotePool(rpc:ReadOnlyRpc,mint:PublicKey,buyLamports:bigin
   const baseReserve=n(base.amount),quoteReserve=n(quote.amount),effective=quoteReserve.add(pool.virtualQuoteReserves);
   need(baseReserve.gtn(0)&&effective.gtn(0),'NONPOSITIVE_EFFECTIVE_RESERVES');
   const opts={baseReserve,quoteReserve,virtualQuoteReserves:pool.virtualQuoteReserves,feeBucketsTotal:pool.protocolFees.add(pool.creatorFees),globalConfig,feeConfig,baseMintAccount:MintLayout.decode(mi.data.subarray(0,82)),baseMint:mint,coinCreator:pool.coinCreator,creator:pool.creator,quoteMint:NATIVE_MINT,isMayhemMode:pool.isMayhemMode,creatorFeeBps:pool.creatorFeeBps,slippage:0,tradeV2:false};
-  const buy=buyQuoteInput({...opts,quote:n(buyLamports)});need(buy.base.gtn(0),'ZERO_BUY_OUTPUT');
-  const sell=sellBaseInput({...opts,base:buy.base});
-  // Corresponding sell at the SAME observed pool state, not a simulated future fill.
   const fees=computeFeesBps({...opts,baseMintSupply:n(baseMint.supply),quoteReserve:effective});
   const marketBlockTime=await rpc.call<number|null>('getBlockTime',[batch.context.slot]);
   need(marketBlockTime!==null && Math.abs(Date.now()-marketBlockTime*1000)<=30_000,'POOL_STATE_NOT_CURRENT_WITHIN_30_SECONDS');
-  const result={pool:key.toBase58(),mint:mint.toBase58(),slot:batch.context.slot,commitment:'confirmed',requestedAt,receivedAt,tokenProgram:mi.owner.toBase58(),mintExtensions:extensions.map(t=>ExtensionType[t]),decimals:baseMint.decimals,poolFlags:{mayhem:pool.isMayhemMode,cashback:pool.isCashbackCoin,holderReward:pool.isHolderReward},rawBaseReserve:base.amount.toString(),rawQuoteReserve:quote.amount.toString(),virtualQuoteReserves:pool.virtualQuoteReserves.toString(),effectiveQuoteReserve:effective.toString(),feeBuckets:opts.feeBucketsTotal.toString(),feeBps:Object.fromEntries(Object.entries(fees).map(([k,v])=>[k,v.toString()])),buy:{inputLamports:buyLamports.toString(),outputBaseUnits:buy.base.toString(),internalQuoteWithoutFees:buy.internalQuoteWithoutFees.toString()},correspondingSell:{inputBaseUnits:buy.base.toString(),outputLamports:sell.uiQuote.toString()},sdk:'@pump-fun/pump-swap-sdk@2.2.0',mode:'QUOTE_ONLY',limitations:['Same-state independent buy and sell estimates; no financial fill or future execution guarantee.','Excludes gas/rent/priority costs at quote layer; accounting must add them.','Confirmed batch context is retained; no claim of cross-source atomicity.']};
-  const currentResult={...result,marketBlockTime,validatedAt:new Date().toISOString(),maxMarketAgeMs:30_000};
+  const summary={pool:key.toBase58(),mint:mint.toBase58(),slot:batch.context.slot,commitment:'confirmed' as const,requestedAt,receivedAt,tokenProgram:mi.owner.toBase58(),mintExtensions:extensions.map(t=>ExtensionType[t]),decimals:baseMint.decimals,poolFlags:{mayhem:pool.isMayhemMode,cashback:pool.isCashbackCoin,holderReward:pool.isHolderReward},rawBaseReserve:base.amount.toString(),rawQuoteReserve:quote.amount.toString(),virtualQuoteReserves:pool.virtualQuoteReserves.toString(),effectiveQuoteReserve:effective.toString(),feeBuckets:opts.feeBucketsTotal.toString(),feeBps:Object.fromEntries(Object.entries(fees).map(([k,v])=>[k,v.toString()])),creatorFeeApplied:!pool.coinCreator.equals(PublicKey.default),baseAssociatedAccount:associatedAccountRequirements(mi.owner,extensions),quoteAssociatedAccount:associatedAccountRequirements(TOKEN_PROGRAM_ID,[]),sdk:'@pump-fun/pump-swap-sdk@2.2.0' as const,mode:'QUOTE_ONLY' as const,marketBlockTime,validatedAt:timestamp(),maxMarketAgeMs:30_000};
+  return {opts,summary,mintSupply:baseMint.supply};
+}
+
+export async function quotePool(rpc:ReadOnlyRpc,mint:PublicKey,buyLamports:bigint,rec:Recorder,minSlot=0){
+  need(typeof buyLamports==='bigint'&&buyLamports>10n && buyLamports<=1_000_000_000n,'INTEGRATION_SIZE_OUT_OF_RANGE');
+  const {opts,summary}=await readSupportedPool(rpc,mint,rec,minSlot);
+  const buy=buyQuoteInput({...opts,quote:n(buyLamports)});need(buy.base.gtn(0),'ZERO_BUY_OUTPUT');
+  const sell=sellBaseInput({...opts,base:buy.base});
+  // Independent quotes at one observed state; never a modeled future round trip.
+  const currentResult={...summary,buy:{inputLamports:buyLamports.toString(),outputBaseUnits:buy.base.toString(),internalQuoteWithoutFees:buy.internalQuoteWithoutFees.toString()},correspondingSell:{inputBaseUnits:buy.base.toString(),outputLamports:sell.uiQuote.toString()},embeddedCosts:{buyBudgetAboveInternalCurveInputLamports:(buyLamports-BigInt(buy.internalQuoteWithoutFees.toString())).toString(),buyClassification:'SDK fee budget and integer rounding; not an itemized charged-fee total' as const,correspondingSellPoolFeeLamports:sell.internalQuoteAmountOut.sub(sell.uiQuote).toString()},limitations:['Same-state independent buy and sell estimates; no financial fill or future execution guarantee.','Pool deductions are already embedded in amounts; do not debit them again. Buy budget difference includes SDK rounding.','Excludes gas/rent/priority costs at quote layer; accounting must add them.','Confirmed batch context is retained; no claim of cross-source atomicity.']};
   rec.record('size-specific-quote',currentResult);return currentResult;
+}
+
+/** Price the actual full holding without requiring a hypothetical entry to succeed. */
+export async function quotePositionSell(rpc:ReadOnlyRpc,mint:PublicKey,fullBaseUnits:bigint,rec:Recorder,minSlot=0){
+  need(typeof fullBaseUnits==='bigint'&&fullBaseUnits>0n&&fullBaseUnits<=MAX_TOKEN_UNITS,'POSITION_SELL_SIZE_OUT_OF_RANGE');
+  const {opts,summary,mintSupply}=await readSupportedPool(rpc,mint,rec,minSlot);
+  need(fullBaseUnits<=mintSupply,'POSITION_SELL_EXCEEDS_MINT_SUPPLY');
+  // The SDK checks payout against the real vault net of retained fees; virtual
+  // curve reserves alone cannot establish available exit proceeds.
+  const sell=sellBaseInput({...opts,base:n(fullBaseUnits)});
+  need(sell.uiQuote.gtn(0),'ZERO_POSITION_SELL_OUTPUT');
+  const result={...summary,sell:{inputBaseUnits:fullBaseUnits.toString(),outputLamports:sell.uiQuote.toString(),grossCurveOutputLamports:sell.internalQuoteAmountOut.toString(),embeddedPoolFeeLamports:sell.internalQuoteAmountOut.sub(sell.uiQuote).toString()},limitations:['Current supported-pool full-size sell estimate only; no live fill or stop-price guarantee.','Embedded pool fees already reduce output; do not debit them again.','Output excludes network/priority fees and any separately evidenced account-deposit refund.','Confirmed state/context and original receive time are retained; callers must enforce execution/mark freshness.']};
+  rec.record('position-size-sell-quote',result);return result;
 }

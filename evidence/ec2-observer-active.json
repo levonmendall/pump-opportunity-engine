@@ -1,0 +1,155 @@
+{
+  "checkedAt": "2026-10-26T22:50:03Z",
+  "instanceId": "i-00044d4ea1471b957",
+  "runId": 40415427271,
+  "jobId": 121896440304,
+  "facts": [
+    {
+      "instance": "i-00044d4ea1471b957",
+      "readOnly": true,
+      "service": {
+        "ActiveState": "active",
+        "LoadState": "loaded",
+        "NRestarts": "0",
+        "Result": "success",
+        "SubState": "running",
+        "User": "poe-runtime"
+      },
+      "uid": 994
+    },
+    {
+      "credentialsRead": false,
+      "diagnostic": {
+        "ActiveState": "active",
+        "DropInPaths": "/etc/systemd/system/poe-runtime.service.d/entrypoint.conf /etc/systemd/system/poe-runtime.service.d/reporting.conf",
+        "ExecMainCode": "0",
+        "ExecMainExitTimestamp": "",
+        "ExecMainStartTimestamp": "Mon 2026-10-26 22:30:55 UTC",
+        "ExecMainStatus": "0",
+        "FragmentPath": "/etc/systemd/system/poe-runtime.service",
+        "Group": "poe-runtime",
+        "LoadState": "loaded",
+        "SubState": "running",
+        "UnitFileState": "enabled",
+        "User": "poe-runtime"
+      },
+      "exactStartPermitted": false,
+      "financialFilesRead": false,
+      "journalCategories": [],
+      "journalReturnCode": 1,
+      "permissionsChanged": false,
+      "presence": {
+        "/etc/poe": {
+          "exists": true,
+          "isSymlink": false,
+          "mode": "0o750",
+          "ownerUid": 0
+        },
+        "/etc/systemd/system/poe-runtime.service.d/reporting.conf": {
+          "exists": true,
+          "isSymlink": false,
+          "mode": "0o644",
+          "ownerUid": 0
+        },
+        "/var/lib/poe": {
+          "exists": true,
+          "isSymlink": false,
+          "mode": "0o700",
+          "ownerUid": 988
+        },
+        "/var/lib/poe-public": {
+          "exists": true,
+          "isSymlink": false,
+          "mode": "0o755",
+          "ownerUid": 988
+        },
+        "/var/lib/poe-public/status.json": {
+          "exists": true,
+          "isSymlink": false,
+          "mode": "0o644",
+          "ownerUid": 988
+        }
+      }
+    },
+    {
+      "acceptanceClaimed": false,
+      "credentialsRead": false,
+      "factAgeSeconds": {
+        "generatedAt": 2.234,
+        "inceptionAt": 2547.335,
+        "lastMigrationReceivedAt": 16.273,
+        "lastReconciledAt": 2.234,
+        "lastUsefulProgressAt": 2.234,
+        "usdPriceAt": 2.234
+      },
+      "financialFilesRead": false,
+      "permissionsChanged": false,
+      "publicStatus": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED",
+        "entriesDisabled": true,
+        "feedConnected": true,
+        "flowVerified": false,
+        "generatedAt": "2026-10-26T22:50:01.313Z",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "lastMigrationReceivedAt": "2026-10-26T22:49:47.274Z",
+        "lastReconciledAt": "2026-10-26T22:50:01.313Z",
+        "lastUsefulProgressAt": "2026-10-26T22:50:01.313Z",
+        "liveTrading": false,
+        "mode": "PAPER",
+        "project": "pump-opportunity-engine",
+        "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+        "reportingConfigured": true,
+        "schemaVersion": 1,
+        "shortlistCount": 10,
+        "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+        "usdPriceAt": "2026-10-26T22:50:01.313Z"
+      },
+      "status": "POE_OBSERVER_STATUS_OBSERVED"
+    },
+    {
+      "credentialsRead": false,
+      "financialFilesRead": false,
+      "ntpSynchronized": "yes",
+      "rootFilesystem": {
+        "availableBytes": 57835167744,
+        "totalBytes": 331712798720
+      },
+      "runtimeResources": {
+        "ActiveEnterTimestampMonotonic": "630330442223",
+        "CPUUsageNSec": "3206075000",
+        "MainPID": "2333724",
+        "MemoryCurrent": "54960128",
+        "NRestarts": "0",
+        "TasksCurrent": "11"
+      }
+    },
+    {
+      "credentialsRead": false,
+      "financialFilesRead": false,
+      "independentRenderAuthProbe": [
+        {
+          "authorizationSupplied": false,
+          "httpStatus": 200,
+          "path": "/healthz",
+          "wwwAuthenticatePresent": false
+        },
+        {
+          "authorizationSupplied": false,
+          "httpStatus": 200,
+          "path": "/",
+          "wwwAuthenticatePresent": false
+        },
+        {
+          "authorizationSupplied": false,
+          "httpStatus": 200,
+          "path": "/api/snapshot",
+          "wwwAuthenticatePresent": false
+        }
+      ],
+      "requestEnvironment": "EC2; explicit ProxyHandler({}); no auth supplied; response body not logged"
+    }
+  ],
+  "authorizationNote": "Anonymous viewer GET200 in this historical probe is the concurrently enabled public-viewer policy; owner subsequently explicitly confirmed public read-only viewing. Machine ingress remains private.",
+  "acceptanceWindowStarted": false
+}

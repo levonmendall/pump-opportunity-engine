@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,rmSync,statSync,readFileSync,existsSync,chmodSync,writeFileSync,symlinkSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,rmSync,statSync,readFileSync,existsSync,chmodSync,writeFileSync,symlinkSync,readdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -10,8 +10,56 @@ import {PaperLedger,type UsdPrice} from '../src/ledger.js';
 import {PaperObservationRuntime,runtimeCommand} from '../src/runtime.js';
 import {createServer,createConnection} from 'node:net';
 import {once} from 'node:events';
-
+import {FinancialBackupStore} from '../src/backup.js';
+import {COST_CATEGORIES} from '../src/costs.js';
 const MINT='7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump';
+async function backupFinished(runtime:PaperObservationRuntime){
+  for(let i=0;i<400;i++){if(!(runtime.command('status').backups as {inProgress:boolean}).inProgress)return;await new Promise(resolve=>setTimeout(resolve,5));}
+  assert.fail('bounded fixture backup did not finish');
+}
+test('reporting uses authoritative cost coverage without debiting cash or inventing economic history',async()=>{
+  const f=fixture();const runtime=new PaperObservationRuntime({...f,release:'fixture-cost-projection',connectFeed:false,priceProvider:async()=>f.price()});
+  try{
+    await runtime.start();assert.equal(runtime.snapshot().balances.economicPnlUsd,null);
+    f.advance(1);const now=f.now(),inception=f.ledger.state().inceptionAt,cash=f.ledger.state().lamports;
+    f.ledger.recordOperatingCost({kind:'expense',id:'fixture-hosting',accountId:f.ledger.accountId,recordedAt:now,occurredAt:now,evidence:'disposable hosting invoice',category:'hosting',classification:'actual',amount:{currency:'USD',microUsd:'1000000'}});
+    for(const category of COST_CATEGORIES)f.ledger.recordOperatingCost({kind:'coverage',id:'coverage-'+category,accountId:f.ledger.accountId,recordedAt:now,evidence:'disposable complete coverage',category,coverage:{status:'complete',from:inception,through:now,evidence:'disposable interval proof',classification:'actual'}});
+    await runtime.tick();const s=runtime.snapshot();
+    assert.equal(s.balances.operatingCostsUsd,1);assert.equal(s.balances.tradingPnlUsd,0);assert.equal(s.balances.economicPnlUsd,-1);assert.equal(s.costLabels.operating,'actual');
+    assert.equal(f.ledger.state().lamports,cash);assert.equal(s.pnl[0]!.economicUsd,null);assert.equal(s.pnl.at(-1)!.economicUsd,-1);
+    f.advance(1);await runtime.tick();const gap=runtime.snapshot();assert.equal(gap.balances.economicPnlUsd,null);assert.equal(gap.costLabels.operating,'unavailable');assert.equal(gap.pnl.at(-1)!.economicUsd,null);
+  }finally{await runtime.close();rmSync(f.directory,{recursive:true});}
+});
+test('safe-stop during startup waits for the initial read and concurrent close callers preserve the owner',async()=>{
+  const f=fixture();let release!:(value:UsdPrice)=>void,entered!:()=>void;
+  const pending=new Promise<UsdPrice>(resolve=>{release=resolve;}),reading=new Promise<void>(resolve=>{entered=resolve;});
+  const inception=f.ledger.state().inceptionAt,cash=f.ledger.state().lamports;
+  const runtime=new PaperObservationRuntime({...f,release:'fixture-startup-stop',connectFeed:false,priceProvider:async()=>{entered();return pending;}});
+  try{
+    const starting=runtime.start();await reading;
+    assert.equal((await runtimeCommand(f.socketPath,'safe-stop')).safeToExit,true);
+    const closing=runtime.close();assert.equal(runtime.close(),closing);let done=false;void closing.then(()=>{done=true;});
+    await new Promise(resolve=>setImmediate(resolve));assert.equal(done,false);
+    release(f.price());await Promise.all([starting,closing]);assert.equal(existsSync(f.socketPath),false);
+    const recovered=new PaperLedger(f.path,'poe-fixture-observer');
+    try{assert.equal(recovered.state().inceptionAt,inception);assert.equal(recovered.state().lamports,cash);assert.equal(recovered.state().controls.entriesEnabled,false);assert.equal(recovered.state().controls.stopRequested,true);assert.equal(recovered.state().daily.reconciledAt,0);}
+    finally{recovered.close();}
+  }finally{release?.(f.price());await runtime.close();rmSync(f.directory,{recursive:true});}
+});
+test('immediate close settles socket startup without starting feed, publisher or financial observation',{timeout:2000},async()=>{
+  const f=fixture();let publisherStarts=0,offers=0,feedStarts=0,priceReads=0;
+  const before=f.ledger.state();
+  const runtime=new PaperObservationRuntime({...f,release:'fixture-immediate-close',priceProvider:async()=>{priceReads++;return f.price();},feedFactory:()=>{feedStarts++;throw new Error('fixture must not connect after close');},publisher:{start(){publisherStarts++;},offer(){offers++;},async stop(){}}});
+  try{
+    const starting=runtime.start(),closing=runtime.close();
+    await Promise.all([assert.rejects(starting,/runtime closed during startup/),closing]);
+    assert.equal(runtime.close(),closing);assert.equal(existsSync(f.socketPath),false);
+    assert.deepEqual({publisherStarts,offers,feedStarts,priceReads},{publisherStarts:0,offers:0,feedStarts:0,priceReads:0});
+    const recovered=new PaperLedger(f.path,'poe-fixture-observer');
+    try{const state=recovered.state();assert.equal(state.inceptionAt,before.inceptionAt);assert.equal(state.lamports,before.lamports);assert.equal(state.daily.reconciledAt,0);assert.equal(state.controls.entriesEnabled,false);}
+    finally{recovered.close();}
+  }finally{await runtime.close();rmSync(f.directory,{recursive:true});}
+});
 function fixture(){
   const directory=mkdtempSync(join(tmpdir(),'poe-runtime-fixture-'));
   let now=Date.now();const path=join(directory,'isolated-paper.sqlite');
@@ -28,6 +76,39 @@ test('runtime never initializes an absent account and accepts only PAPER identit
     assert.throws(()=>new PaperObservationRuntime({ledger,directory,socketPath:join(directory,'sock'),release:'fixture'}),/not initialized/);
     assert.throws(()=>ledger.state(),/not initialized/);
   }finally{ledger.close();rmSync(directory,{recursive:true});}
+});
+
+test('scheduled backups preserve the active account and use monotonic cadence through wall-clock jumps',async()=>{
+  const f=fixture();let duration=0;
+  for(const path of [f.path,f.path+'-wal',f.path+'-shm'])if(existsSync(path))chmodSync(path,0o600);
+  const store=new FinancialBackupStore({directory:join(f.directory,'backups'),sourcePath:f.path,identity:{accountId:f.ledger.accountId,mode:'PAPER',inceptionAt:f.ledger.state().inceptionAt}});
+  const runtime=new PaperObservationRuntime({...f,release:'fixture-backup-runtime',connectFeed:false,priceProvider:async()=>f.price(),backupStore:store,backupIntervalMs:60_000,monotonicNow:()=>duration});
+  const inception=f.ledger.state().inceptionAt,cash=f.ledger.state().lamports;
+  try{
+    await runtime.start();await backupFinished(runtime);
+    assert.ok(store.latest().backup);assert.equal((runtime.command('status').backups as {unavailable:boolean}).unavailable,false);
+    const initialCount=readdirSync(store.directory).filter(p=>/^poe-financial-\d/.test(p)).length;
+    f.advance(86_400_000);await runtime.tick();await backupFinished(runtime);
+    assert.equal(readdirSync(store.directory).filter(p=>/^poe-financial-\d/.test(p)).length,initialCount);
+    duration=60_000;f.advance(1);await runtime.tick();await backupFinished(runtime);
+    assert.equal(readdirSync(store.directory).filter(p=>/^poe-financial-\d/.test(p)).length,2);
+    assert.equal(f.ledger.state().inceptionAt,inception);assert.equal(f.ledger.state().lamports,cash);
+    assert.equal(runtime.snapshot().status.entries,'disabled');
+  }finally{await runtime.close();rmSync(f.directory,{recursive:true});}
+});
+test('backup failure is visible without blocking observation, reconciliation or publication',async()=>{
+  const f=fixture();for(const path of [f.path,f.path+'-wal',f.path+'-shm'])if(existsSync(path))chmodSync(path,0o600);
+  const store=new FinancialBackupStore({directory:join(f.directory,'backups'),sourcePath:f.path,identity:{accountId:f.ledger.accountId,mode:'PAPER',inceptionAt:f.ledger.state().inceptionAt}});
+  writeFileSync(join(store.directory,'unrelated-owner-file'),'preserve',{mode:0o600});let offers=0;
+  const runtime=new PaperObservationRuntime({...f,release:'fixture-backup-failure',connectFeed:false,priceProvider:async()=>f.price(),backupStore:store,publisher:{start(){},offer(){offers++;},async stop(){}}});
+  try{
+    await runtime.start();await backupFinished(runtime);assert.equal((runtime.command('status').backups as {unavailable:boolean}).unavailable,true);
+    f.advance(31_000);runtime.observe(JSON.stringify({txType:'migrate',mint:MINT,signature:'fixture-backup-progress'}));await runtime.tick();
+    const status=runtime.command('status'),snapshot=runtime.snapshot();
+    assert.equal(status.running,true);assert.match(String(status.blocker),/BACKUP_UNAVAILABLE/);
+    assert.equal(snapshot.funnel.discovered,1);assert.ok(offers>=2);assert.equal(snapshot.status.reconciled,true);
+    assert.equal(readFileSync(join(store.directory,'unrelated-owner-file'),'utf8'),'preserve');
+  }finally{await runtime.close();rmSync(f.directory,{recursive:true});}
 });
 test('one financial owner serves private controls, refuses resume, and preserves inception across restart',async()=>{
   const f=fixture();let runtime=new PaperObservationRuntime({...f,release:'fixture-release',connectFeed:false,priceProvider:async()=>f.price()});

@@ -1,241 +1,165 @@
-# Operating runbook — present partial implementation
+# POE operating runbook
 
-## Local start and status
+## Verified installation
 
-Use Node24.19.0 and `npm ci` with lifecycle scripts enabled. `npm run build` checks
-types; `npm run compile` emits JavaScript. `npm test` runs isolated regressions.
-The native bigint-buffer mitigation is required; see DEPENDENCIES.md.
+The existing instance i-00044d4ea1471b957 in account133857166104/us-west-2 runs
+poe-runtime.service as restricted poe-runtime uid988. Bootstrap and launch fix are
+complete. **Do not rerun bootstrap or initialize the installed account.** Inventory,
+old publisher retirement and Render source changes are also complete. No cleanup
+is needed; preserve the administration runner and financial/access records.
 
-`npm run integration` is a bounded free read-only probe, not a daemon. Inspect
-its timestamped `evidence/integration-proof-*.json` and matching NDJSON. Evidence
-is capped at10MB per probe and RPC at100 calls/run, with12-second requests and
-2MB streamed response limits. No unbounded history discovery or automatic RPC
-retries. A stale/missing/unsupported sample fails rather than creates a fill.
+Installed runtime: bce3d22bb434eb429aafacb788a18f39ec189c1b.
+Account: poe-3123e352-4581-455b-85db-acd7e825e99e.
+Inception:2026-10-26T22:07:36.212Z, one VIRTUAL $1,000 USD-to-SOL conversion.
+Never reseed on restart, restore or deployment.
 
-Stop an integration probe with Ctrl-C; it owns no financial positions. A failed
-or interrupted evidence file remains diagnostic and does not become a passed gate.
+The supervised process is an **entry-blocked observer**, not an autonomous PAPER
+trader. It receives free migrations/public SOL/USD, reconciles cash and publishes
+snapshots. It has no selected-token flow or active entry/exit path. Startup refuses
+held positions/pending sells until supported management is connected.
 
-Production PAPER accounting and the supervised **entry-blocked observer** are now
-implemented. They are not an accepted trading strategy/execution runtime. The
-observer never seeds an account, enables entries, reads the billing credential,
-or manufactures trades. It refuses production startup with existing positions
-or pending sells until supported position/exit management is connected.
+## Status and controls
 
-## EC2 access — inventory complete
+Use the existing read-only administration workflow in meme-machine-admin,
+poe-install-preflight.yml ("POE read-only installation status"). The filename is
+historical; current contents only inspect identity, units, bounded public status,
+resources and fact times. Run40415427271 attempt2/job121918984748 at23:47UTC
+verified active/running/enabled, zero restarts since22:30:55UTC, reconciliation
+age3.465seconds. It does not read private financial files or independently audit
+DB balances. The runner's root start permission is denied; never bypass it.
 
-Use the existing successful inventory
-[run 40392851547](https://github.com/levonmendall/meme-machine-admin/actions/runs/40392851547),
-job 121818077975, main1b53658bc29936c00901f57a35556faac3a995f4. It verifies
-account133857166104/us-west-2/instancei-00044d4ea1471b957, nonroot runner
-mm-ec2-runner uid994, about 55 GiB free root disk and6871MiB available memory.
-No repeat dispatch or legacy application readiness/source gate is needed.
-No cleanup is justified by this capacity. Preserve the runner and owner access.
-
-Reporter retirement is complete. After the owner's root action, run 40397181995
-attempt 2/job 121852666626 observed both timers inactive/disabled and both services
-static/non-running. One old failed flag is cosmetic. The unchanged workflow still
-fails its later sudo test; that does not mean the shutdown needs repeating.
-Financial records, protection services and administration access were preserved.
-
-## Install and operate the entry-blocked PAPER runtime
-
-Use the exact reviewed root-owned download, checksum and private reporting-secret
-procedure in [EC2_BOOTSTRAP.md](EC2_BOOTSTRAP.md). Run it once through existing
-owner/root access on the verified host. Do not execute a runner-writable /tmp
-script as root. Installation preflight run 40404058329/job 121857131607 proves the
-runner lacks the exact bootstrap permission; no POE user/service is installed.
-No new AWS key, inventory dispatch or runner sudo rule is needed or proposed.
-
-Pinned installation release: bce3d22bb434eb429aafacb788a18f39ec189c1b; installer
-SHA2563a1b269f2b10f97f45b0fae5d6f9185cc4f6d35abf965df79a2a5941d63c6136.
-The reporting viewer remains on its separately verified3af3f9e release; both use
-the same snapshot schema. No dashboard redeploy is required for installer fixes.
-
-This is an initial owner bootstrap, not a runner privilege workaround. It verifies
-IMDSv2 identity, creates restricted poe-runtime, installs dedicated tested Node,
-builds a pinned release as nonroot, freezes code and separates state/backups/evidence.
-It refuses an active runtime or unreviewed upgrade; it never cleans legacy data.
-Explicit --init obtains current public SOL/USD for VIRTUAL inception once. Restart
-never seeds. No wallet funding is involved. Existing dedicated Node paths and
-runtime configuration are checked for ownership, symlinks and write permissions
-before trusted execution/writes. Installer validation remains local until actual
-EC2 execution; a successful preflight diagnostic is not a successful installation.
-
-The separate read-only /var/lib/poe-public/status.json projection exposes only
-identity, process/data fact timestamps, bounded free-feed counts and blockers to
-the existing runner. It contains no balances, trades, secrets or provider URLs.
-Private financial directories and control-socket permissions remain unchanged.
-Its generated time is not evidence that market or reconciliation facts are fresh.
-
-Offline account commands (daemon stopped; exclusive writer prevents a second owner):
+Private controls use /run/poe/control.sock,0600. Execute as poe-runtime through
+existing authorized administration, with POE_SOCKET_PATH selecting that socket:
 
 ```sh
-npm run account -- init --db /private/poe/ledger.sqlite --account poe-main --input conversion.json
-npm run account -- status --db /private/poe/ledger.sqlite --account poe-main
-npm run account -- backup --db /private/poe/ledger.sqlite --account poe-main --target /private/backup/ledger.sqlite
-npm run account -- restore --db /private/restored/ledger.sqlite --account poe-main --input /private/backup/ledger.sqlite
+/opt/poe/node/bin/node --preserve-symlinks-main /opt/poe/current/dist/src/runtime.js status
+/opt/poe/node/bin/node --preserve-symlinks-main /opt/poe/current/dist/src/runtime.js pause
+/opt/poe/node/bin/node --preserve-symlinks-main /opt/poe/current/dist/src/runtime.js resume
+/opt/poe/node/bin/node --preserve-symlinks-main /opt/poe/current/dist/src/runtime.js safe-stop
 ```
 
-conversion.json contains `{ "price": { "microUsdPerSol": "INTEGER", "at": EPOCH_MS,
-"source": "actual observation source" } }`, fresh within10seconds. Parent/file
-permissions0700/0600 and exact ownership are required. No fixture identity/state
-can be promoted. Resume requires fresh real readiness evidence and cannot clear
-sticky daily loss pauses. Unknown/corrupt financial state refuses startup untouched.
+Installed C2 needs that standard Node flag through the current symlink; the owner
+already installed equivalent start/stop overrides. EC2_ENTRYPOINT_RECOVERY.md is a
+completed action, not another request. Later code canonicalizes main paths; do
+not deploy merely to remove a working flag.
 
-Use the daemon's0600Unix control socket while it owns the DB. Run as poe-runtime
-(or existing owner/root invoking that identity), with POE_SOCKET_PATH=/run/poe/control.sock:
+Pause closes entries. Resume intentionally returns disabled:
+FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED. Safe-stop cancels entry reservations and
+refuses graceful exit with unresolved/held exposure. Never force-stop and silently
+abandon exposure. The present account has none. Systemd is enabled, restart on
+failure10seconds, three starts per300seconds. No new runner privileges.
+
+The public /var/lib/poe-public/status.json exposes a bounded nonfinancial allowlist.
+Its heartbeat does not refresh underlying reconciliation/USD/migration facts.
+NTP is synchronized. Socket connectivity alone does not prove discovery coverage.
+
+## Financial state and recovery
+
+One PaperLedger writer uses standard Linux flock and short SQLite NORMAL/WAL
+transactions. Never unlink an active ownership lock. OS crash releases it.
+Database symlinks/hardlinks are refused; no network call inside a transaction.
+Loaded fixed dependency: better-sqlite3 13.0.3 / SQLite3.53.4; retain lockfile.
+
+Private DB: /var/lib/poe/state/ledger.sqlite. Offline commands require a safely
+stopped daemon and understood exposure. These are command forms, not reset steps:
 
 ```sh
-/opt/poe/node/bin/node /opt/poe/current/dist/src/runtime.js status
-/opt/poe/node/bin/node /opt/poe/current/dist/src/runtime.js pause
-/opt/poe/node/bin/node /opt/poe/current/dist/src/runtime.js resume
-/opt/poe/node/bin/node /opt/poe/current/dist/src/runtime.js safe-stop
+npm run account -- status --db PRIVATE_DB --account EXISTING_ACCOUNT
+npm run account -- backup --db PRIVATE_DB --account EXISTING_ACCOUNT --target NEW_PRIVATE_BACKUP
+npm run account -- restore --db NEW_PRIVATE_DB --account EXISTING_ACCOUNT --input VERIFIED_BACKUP
 ```
 
-Resume intentionally refuses FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED in this
-observer. Safe-stop cancels entry reservations but never discards exposure; it
-refuses graceful exit when positions/unresolved exits require management. A forced
-supervisor kill would leave exposure unmonitored. Do not deploy this scaffold with
-held positions or claim supported exit protection. Full execution remains work.
+Restore writes a NEW target, validates exact account/mode/inception and integrity,
+and pauses entries pending fresh reconciliation/readiness. Never start a second
+authority. Preserve damaged originals; never reset capital to pass startup.
+Never copy an open main SQLite file without WAL; use SQLite backup API.
 
-Explicit POE_USD_SOURCE=coinbase-spot enables bounded read-only public SOL/USD
-refresh within the single process; failed/stale observations become unknown.
-Default price-file mode requires an actually fresh timestamped file, not a cached
-price relabeled fresh. Reporting runs asynchronously at30seconds and cannot own
-financial writes. Durable snapshot sequence/history use the same ledger writer.
+Development FinancialBackupStore schedules async maintenance/copy after useful
+work, startup then six-hour monotonic intervals, one in-flight operation, two
+completed copies and one pending artifact. Heavy validation runs on a bounded
+worker. See BACKUPS.md for selection/restore/size limits. **Not installed on EC2.**
+Actual production backup/restore, disk-pressure and alert proving remain pending.
+No paid backup service is authorized.
 
-## Authoritative financial state
+## Development
 
-Create one new POE identity and durable directory owned by poe-runtime. Inception
-must record the $1,000 USD-to-SOL conversion once using timestamped actual valuation,
-integer balances and gas reserve. Never use fixture-* identity, reset on startup,
-or import old records. A persistent0600 .owner.lock uses standard Linux flock for
-process ownership; never unlink it to take over an active writer. The OS releases
-ownership on close/crash; stale timestamps/pid heuristics are not used. SQLite
-stays in NORMAL locking mode with short transactions, not a permanent financial
-DB lock across network requests. Canonical directory aliases share ownership;
-database symlinks/hardlinks are refused. No network call inside transactions.
+Use Node24.19.0 and secret-free .env.example:
 
-Until the production runtime is implemented, do not turn entries on. Safe stop with
-positions must pause/cancel pending entries, preserve reservations and unresolved
-actions, and keep supported RPC exit/valuation management under the supervisor.
-A full stop requires explicit disclosure of unmonitored paper exposure; never
-delete or silently close it. Future resume requires fresh reconciliation and
-candidate-specific warm windows, retaining sticky daily-loss pauses.
+```sh
+npm ci
+npm run build
+npm run compile
+npm test
+npm run integration
+```
 
-## Backup and recovery
+Integration is a bounded free migration/RPC probe: five-minute socket maximum,
+three selected events,100RPC calls/run,12-second requests,2MB responses,10MB
+evidence. It verifies real migration/canonical pool/token behavior/fees/effective
+reserves and size-specific buy/matching sell. A quote is not a fill; Ctrl-C stops
+this position-free probe. Failed/interrupted evidence never becomes a passed gate.
 
-DisposableLedger.backup uses SQLite's backup API; restore consistency and actual
-crash recovery are tested. Never copy an open database file without its active WAL.
-Offline backup/restore commands are implemented and tested. Production retention and EC2 restore proving remain incomplete.
-Keep a small bounded consistent local backup; no paid backup service is authorized.
-Financial corruption means preserve records and block risk, never reseed.
+The normalized flow/rule, delayed single-attempt execution, connected disposable
+trader, actual-size exits, operating-cost journal and backup scheduler remain
+development code. Fixtures use separate DISPOSABLE_PAPER accounts. Raw managed-feed
+fields remain unverified, rule UNFROZEN, production scheduling/projections incomplete.
+See STRATEGY.md, TRADER.md, EXECUTION.md, FEED_MEASUREMENT.md, PRICING.md, COSTS.md.
+No signer, transaction submission or AI calls in the trading loop.
 
 ## Data wallet and costs
 
-Follow [FEED_EXPERIMENT.md](FEED_EXPERIMENT.md). The approved limits cover initial
-measurement, not continuous acceptance. The free probe never loads the API key.
-After secure attachment, measure sustainable selected-token observation and actual
-charges before any 24/72-hour clock. No automatic funding or paid RPC authorization.
+Turnkey registration/authentication and source identification are complete.
+TURNKEY_API_KEY_FILE selects the existing protected0600 pair outside Git,
+operator-only, never trader/Render. Local SDK stamping requires actual material;
+network-secret placeholders cannot sign requests. Do not alter credentials,
+rebuild Turnkey, export private keys or sign a test.
 
-## Dashboard — deployed; awaiting authoritative EC2 data
+FUNDING.md/OWNER_ACTIONS.md retain only actual recovery/funding dependencies.
+The earlier private-route reply is still a placeholder; no callable vault/transfer
+route is identified. Never send the protected billing bundle through chat,
+GitHub, Actions, logs, Render or public artifacts. Keep the existing wallet.
+Source balance cannot fund0.06SOL plus fee; no transfer is approved. After recovery
+and sufficient amount/balance checks, refresh exact unsigned fee and request
+explicit approval before signing/broadcast.
 
-**Owner update, 2026-10-26:** The existing Render service now uses
-`POE_PUBLIC_VIEWER=true` and does not require a viewer username or password.
-Unauthenticated GET on `/`, `/status`, `/api/snapshot` and `/api/export`
-is intentional, including published balances/trades/decisions. Keep the separate
-strong `POE_INGEST_SECRET` Bearer requirement for machine POST. This public
-mode supersedes references below to owner Basic authentication.
-Deployment `dep-dbftds142hec73dhlkl0` (source `2bd35bf`) is live.
+Only the API key later reaches EC2 via private root0600 file/systemd LoadCredential;
+the recovery bundle does not. scripts/install-provider-credential.mjs extracts a
+NEW API-only file without printing values. Installation/auth measurement pending.
+Caps:0.01SOL/day,0.04SOL/four-day total,$2.50/day/$10total whichever binds,
+0.02SOL floor, no automatic funding. These authorize measurement, not continuous
+acceptance. Missing actual operating allocations keep economic P&L unavailable.
 
+## Public dashboard
 
-The original URL now runs verified POE release3af3f9ed9abde5178379e18e986e07ab41965d22,
-deploymentdep-dbfs7dafngtc73cs4p40. It shows "Awaiting POE data" with newly rotated
-viewer/ingestion credentials and rejects all snapshots while the authoritative
-account is unconfigured. Deployed HTTP/auth/mobile checks pass. Owner viewing is
-HTTPS Basic, user poe-owner; obtain its password privately in authenticated Render
-Environment. This is an empty viewer, not fresh financial reporting.
-After actual EC2 account inception, set
-`POE_ACCOUNT_ID`, `POE_INCEPTION_AT` (UTC millisecond ISO),
-`POE_RUNTIME_RELEASE`, `POE_STRATEGY_VERSION`, explicit `POE_PUBLIC_VIEWER=true`,
-and the separate `POE_INGEST_SECRET` (>=24 chars).
-Use standard secret storage. Never attach provider keys, wallets, RPC keys,
-EC2 DB paths or trading permissions to Render. Identifiers must match the actual
-future authoritative account; no demo snapshot must reach that source.
+Original URL: https://meme-machine-dashboard-staging.onrender.com .
+Only srv-daqon53tqb8s73bdceq0 in tea-daqk6h8jo6nc73eojtp0; existing free compute,
+one instance, no database, auto-deploy off. Owner explicitly chose PUBLIC
+read-only viewing; published PAPER financial snapshots/exports require no login.
 
-```sh
-npm run compile
-npm run dashboard
-```
+GET /healthz is process health; /status reports source freshness. Public GET:
+ /, /status, /api/snapshot, /api/export. Machine POST /api/snapshot alone requires
+the dedicated strong Bearer secret. No browser financial controls. No wallet,
+provider or Turnkey secrets, market requests or EC2 DB access on Render.
 
-`GET /healthz` is unauthenticated process health. Public GET routes are `/`,
-`/status`, `/api/snapshot` and `/api/export`. The machine uses Bearer auth for
-`POST /api/snapshot` only, full strict schema in src/reporting.ts,128KB
-maximum. Viewer routes have no financial controls. Receiver cache is memory only:
-redeploy/restart waits for a valid full snapshot and never seeds $1,000.
+EC2 publishes asynchronously every30seconds, bounded timeout/retries/backoff
+(maxfive minutes), one replaceable latest slot, no financial lock. Cache loss
+waits for full real data/history; never seed $1,000 or restart EC2 to refresh
+Render. Receiver time cannot refresh market/reconciliation facts. Retain genuine
+chart gaps. With zero trades, current movement is SOL price effect, not edge.
 
-The standalone SnapshotPublisher accepts bounded projections supplied by EC2;
-its default cadence is30seconds, timeout3seconds, backoff at most5minutes. It
-retains one latest snapshot during outages and never reads market/ledger data.
-Durable source sequence, bounded projection and honest history gaps are implemented
-in the entry-blocked runtime; they are not installed/verified on EC2 yet. No
-end-to-end financial agreement is claimed.
+Four source fields must match installed account/inception/runtime/strategy in
+RENDER_CUTOVER.md. Never import demo/legacy records. Dashboard source advances
+independently of EC2: latest connector sees6036cbd9294ce5848fe575a306144e6ad7446000,
+deploy dep-dbftpvd9el5s73b96vi0 at23:07:24UTC; EC2 remains C2.
+Preserve public policy and protected ingress. Rollback only web code, never source
+financial identity. Env updates can trigger builds despite auto-deploy off;
+inspect state before triggering another. No second service/paid upgrade or
+assumption of renewed shared quotas.
 
-Owner amendment authorizes replacing exactly existing service
-`srv-daqon53tqb8s73bdceq0` in confirmed workspace `tea-daqk6h8jo6nc73eojtp0`.
-Retain free compute and preferably URL `https://meme-machine-dashboard-staging.onrender.com`.
-No second continuously running service is authorized. Keep the resource name to
-avoid unnecessary URL changes; the displayed application name is Pump Opportunity Engine.
-The source/Node/build/start/health/free-plan/auto-deploy edit, reporter retirement,
-credential rotation, deployment and empty-viewer verification are COMPLETE.
-Do not ask the owner to repeat them. Complete only actual EC2 source identity,
-publication/account agreement and recovery checks in RENDER_CUTOVER.md. Never
-import legacy financial data. Environment changes were observed to trigger a
-rollout even with auto-deploy off; inspect state before triggering another build.
-Validate with `render blueprints validate render.yaml` if available; current public
-schema validation alone does not prove account allocation. Auto-deploy is off.
-Verify deployed SHA/URL, public GET versus protected POST separation, source agreement and cache loss.
-The YAML is a configuration reference for the existing service, not permission
-to create a new Blueprint or duplicate its resource. Do not upgrade compute or
-create a paid service to mask quota conflicts or free-service cold starts.
-Keep a last known good release and roll back Render independently of EC2.
+## Acceptance
 
-No alert delivery is established. Dashboard process health is not an unattended
-trading alert system. Gates B/C remain incomplete until actual supervised operation,
-failure drills and elapsed evidence exist.
-
-## Existing Turnkey identification and manual-funding alternative
-
-The organization ID is already supplied. Operator-only code in operator/turnkey
-uses official SDK8.8.0 getWalletAccounts without walletId, includeWalletDetails=true,
-and cursor pagination. It refuses stalled/incomplete pagination, keeps ambiguous
-accounts separate and reads confirmed mainnet native SOL. Its guarded transport
-rejects signing/export/submission paths, including a tested real SDK method call.
-It is outside trader dependencies and is never installed/loaded on Render.
-
-Local SDK authentication stamping needs actual API authentication material;
-network placeholders cannot stamp requests. The owner subsequently supplied a
-complete pair and explicitly authorized protected storage/use. It is now in
-/workspace/shared/poe-secrets/turnkey-api.json, owner-only 0600/parent0700, outside
-git, selected by TURNKEY_API_KEY_FILE. Local P-256 pair validation passes without
-displaying values. No key is installed on Render or the PAPER trader.
-
-Real read-only SDK queries return HTTP 401 PUBLIC_KEY_NOT_FOUND: "no user
-credentials found in organization with that public key." The remaining problem
-is public-key registration/organization binding, not local private-key delivery.
-Register the public API authentication key for the intended existing execution
-user/organization with only account-query access, or identify its correct existing
-organization binding. Do not repost private material or rebuild Turnkey.
-
-Alternatively let the owner perform the one-time transfer through the existing
-Turnkey UI after the full exact proposal is verified and explicitly approved.
-For manual funding, only the public sender address is needed for independent SOL/
-fee checks. Recovery confirmation and explicit approval of the complete exact
-source/destination/0.06 SOL/fee/total-debit proposal still precede signing/broadcast.
-This access dependency never blocks unrelated PAPER/EC2/Render implementation.
-
-Private recovery route: import the existing protected billing bundle directly
-from private workspace file access into the owner's existing secret vault. Never
-paste/display it in chat, GitHub, logs or Render. If private file access is absent,
-identify an existing private vault/upload/file-transfer connection by nonsecret
-name. No alternative wallet is created. Confirmation remains pending.
+No24/72-hour acceptance clock started; GatesA–D incomplete, edge UNPROVEN,
+LIVE DISABLED. Finish real-flow/budget proof, production management/projections,
+frozen rules/assumptions, account-preserving deployment, actual backup/restart/
+outage/load proving and alert delivery first. No authorized critical-alert
+channel is verified; a process/dashboard alone is not alert delivery.

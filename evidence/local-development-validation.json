@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-26T23:55:08.014Z",
+  "classification": "LOCAL_DEVELOPMENT_NOT_DEPLOYED_TRADER",
+  "sourceBase": "6036cbd9294ce5848fe575a306144e6ad7446000",
+  "workingTreeModified": true,
+  "checks": {
+    "typescript": "passed",
+    "compiledBuild": "passed",
+    "rootRegressions": {
+      "tests": 185,
+      "pass": 185,
+      "fail": 0,
+      "elapsedMs": 29303.005406
+    },
+    "operatorReadOnlyTests": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0
+    },
+    "protectedValueRepositoryScan": {
+      "files": 120,
+      "values": 5,
+      "matches": 0
+    }
+  },
+  "independentReview": [
+    "normalized flow/rule and measured-feed prototype",
+    "same-writer accounting and operating costs",
+    "full-size current SDK pricing",
+    "delayed execution and candidate/position deadline priority",
+    "first activation/reconnect/gap availability",
+    "backup worker/retention/restore validators",
+    "runtime backup scheduling and startup/close cancellation"
+  ],
+  "included": [
+    "DISPOSABLE_PAPER lifecycles, restart/uncertainty recovery and replay",
+    "bounded backup worker tests including100000-action fixture",
+    "authenticated snapshot admission and public read-only routes"
+  ],
+  "limitations": [
+    "These results do not certify deployed raw-feed fields, sustainable provider budget, actual EC2 backup restore, full runtime throughput or forward economics.",
+    "Production EC2 remains entry-blocked C2 observer with unchanged account/inception.",
+    "No natural PAPER trades, live signing or acceptance interval."
+  ],
+  "strategyFrozen": false,
+  "paperEntriesEnabled": false,
+  "acceptanceClockStarted": false,
+  "liveTradingEnabled": false
+}

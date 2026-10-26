@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import { openSync, closeSync, fstatSync, lstatSync, statSync, realpathSync, constants, type Stats } from 'node:fs';
 import { dirname, basename, resolve, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { isDeepStrictEqual } from 'node:util';
+import { initializeOperatingCosts, validateOperatingCosts, applyOperatingCostEvent, projectOperatingCosts, type OperatingCostState, type OperatingCostEvent } from './costs.js';
 
 /** One PAPER accounting path. Fixture and authoritative identities never mix. No live execution. */
 export type UsdPrice = { microUsdPerSol: string; at: number; source: string };
@@ -99,6 +101,48 @@ function acquireOwner(path: string): number {
   } catch (e) { closeSync(fd); throw e; }
 }
 
+/** Pure financial schema validation shared by writer recovery and read-only backups. */
+export function validateFinancialState(s: LedgerState, accountId: string, mode: LedgerMode) {
+  const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
+  const key = (v: unknown, max: number) => boundedText(v, max) && !['__proto__','constructor','prototype'].includes(v);
+  const eventTime = (v: unknown) => Number.isSafeInteger(v) && (v as number) >= s.inceptionAt && (v as number) <= s.lastAt;
+  if (!record(s) || s.schemaVersion !== 1 || s.accountId !== accountId || s.mode !== mode || s.initialMicroUsd !== INITIAL.toString() || !Number.isSafeInteger(s.inceptionAt) || s.inceptionAt < 0 || !Number.isSafeInteger(s.lastAt) || s.lastAt < s.inceptionAt || !Number.isSafeInteger(s.revision) || s.revision < 0) throw new Error('financial identity/state invariant');
+  if (!record(s.inceptionPrice)) throw new Error('inception conversion invariant');
+  const inceptionPrice = priceAt(s.inceptionPrice, s.inceptionAt);
+  const initialLamports = INITIAL * L / inceptionPrice;
+  if (amount(s.roundingResidualMicroUsd) !== INITIAL - usd(initialLamports, inceptionPrice)) throw new Error('inception rounding invariant');
+  if (!record(s.controls) || typeof s.controls.entriesEnabled !== 'boolean' || typeof s.controls.stopRequested !== 'boolean' || !boundedText(s.controls.reason) || !eventTime(s.controls.changedAt) || !(s.controls.readinessVersion === null || boundedText(s.controls.readinessVersion, 128)) || s.controls.stopRequested && s.controls.entriesEnabled || s.mode === 'PAPER' && s.controls.entriesEnabled && s.controls.readinessVersion === null) throw new Error('financial recovery/control invariant');
+  if (!record(s.daily) || typeof s.daily.lossPaused !== 'boolean' || typeof s.daily.paused !== 'boolean' || s.daily.lossPaused && !s.daily.paused || !Number.isSafeInteger(s.daily.reconciledAt) || s.daily.reconciledAt < 0 || s.daily.reconciledAt > s.lastAt || typeof s.daily.day !== 'string' || !/^\d{4}-\d\d-\d\d$/.test(s.daily.day) || utcDay(Date.parse(s.daily.day + 'T00:00:00.000Z')) !== s.daily.day || s.daily.day < utcDay(s.inceptionAt) || s.daily.day > utcDay(s.lastAt) || s.daily.reconciledAt > 0 && utcDay(s.daily.reconciledAt) !== s.daily.day) throw new Error('financial day/reconciliation invariant');
+  const cash = amount(s.lamports); const gasReserve = amount(s.gasReserve);
+  if (initialLamports <= gasReserve) throw new Error('inception gas reserve invariant');
+  amount(s.executionCosts); amount(s.daily.baselineMicroUsd);
+  if (typeof s.realizedLamports !== 'string' || !/^-?(0|[1-9][0-9]*)$/.test(s.realizedLamports) || amount(s.realizedLamports.startsWith('-') ? s.realizedLamports.slice(1) : s.realizedLamports) > (1n << 127n) - 1n) throw new Error('realized balance invariant');
+  if (!record(s.positions) || !record(s.pending) || !record(s.lockedDeposits) || Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3 || Object.keys(s.lockedDeposits).length > 128) throw new Error('capacity/state map invariant');
+  for (const [mint, deposit] of Object.entries(s.lockedDeposits)) {
+    if (!key(mint, 96)) throw new Error('locked deposit identity invariant');
+    amount(deposit);
+  }
+  for (const [mint, p] of Object.entries(s.positions)) {
+    if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || amount(p.costMicroUsd) > 50_000_000n || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
+  }
+  let reservations = 0n;
+  const pendingMints = new Set<string>(); let pendingBuys = 0;
+  for (const [id, o] of Object.entries(s.pending)) {
+    if (!record(o) || !key(id, 100) || o.id !== id || !key(o.mint, 96) || pendingMints.has(o.mint) || !eventTime(o.decidedAt) || !Number.isSafeInteger(o.executeAt) || !Number.isSafeInteger(o.expiresAt) || o.executeAt < o.decidedAt + 500 || o.expiresAt <= o.executeAt || o.expiresAt > o.decidedAt + 30_000 || !boundedText(o.decisionEvidence) || amount(o.gas) === 0n || amount(o.minReceive) === 0n) throw new Error('pending order identity/time/amount invariant');
+    const gas = amount(o.gas), spend = amount(o.maxSpend), deposit = amount(o.deposit), reserved = amount(o.reserved);
+    if (o.side === 'buy') {
+      pendingBuys++;
+      if (spend === 0n || s.positions[o.mint] || reserved !== gas + spend + deposit || deposit > 0n && s.lockedDeposits[o.mint]) throw new Error('pending buy reservation invariant');
+    } else if (o.side === 'sell') {
+      if (!s.positions[o.mint] || spend !== 0n || deposit !== 0n || reserved !== gas) throw new Error('pending exit reservation invariant');
+    } else throw new Error('pending order side invariant');
+    pendingMints.add(o.mint); reservations += reserved;
+  }
+  // The gas reserve protects NEW entries, not exits. Held-position management
+  // may consume it, but no action may spend another action's reservation.
+  if (reservations > cash || Object.keys(s.positions).length + pendingBuys > 3) throw new Error('cash reservation/capacity invariant');
+}
+
 export class PaperLedger {
   private readonly db: Database.Database;
   private ownerFd: number | undefined;
@@ -134,7 +178,7 @@ export class PaperLedger {
         CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);`);
       const existing = this.read();
       if (existing && ((existing.accountId ?? existing.fixtureId) !== accountId || existing.mode !== mode)) throw new Error('wrong fixture account or PAPER identity/mode');
-      if (existing) this.assertState(existing);
+      if (existing) { this.assertState(existing); this.getOperatingCosts(); }
       else if ((this.db.prepare('SELECT (SELECT count(*) FROM actions) + (SELECT count(*) FROM journal) + (SELECT count(*) FROM metadata) records').get() as { records: number }).records > 0) throw new Error('financial state missing from populated account; recovery required, never reseed');
     } catch (e) {
       try { opened?.close(); }
@@ -152,46 +196,7 @@ export class PaperLedger {
     if (!s) throw new Error('PAPER account not initialized');
     return s;
   }
-  private assertState(s: State) {
-    const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
-    const key = (v: unknown, max: number) => boundedText(v, max) && !['__proto__','constructor','prototype'].includes(v);
-    const eventTime = (v: unknown) => Number.isSafeInteger(v) && (v as number) >= s.inceptionAt && (v as number) <= s.lastAt;
-    if (!record(s) || s.schemaVersion !== 1 || s.accountId !== this.accountId || s.mode !== this.mode || s.initialMicroUsd !== INITIAL.toString() || !Number.isSafeInteger(s.inceptionAt) || s.inceptionAt < 0 || !Number.isSafeInteger(s.lastAt) || s.lastAt < s.inceptionAt || !Number.isSafeInteger(s.revision) || s.revision < 0) throw new Error('financial identity/state invariant');
-    if (!record(s.inceptionPrice)) throw new Error('inception conversion invariant');
-    const inceptionPrice = priceAt(s.inceptionPrice, s.inceptionAt);
-    const initialLamports = INITIAL * L / inceptionPrice;
-    if (amount(s.roundingResidualMicroUsd) !== INITIAL - usd(initialLamports, inceptionPrice)) throw new Error('inception rounding invariant');
-    if (!record(s.controls) || typeof s.controls.entriesEnabled !== 'boolean' || typeof s.controls.stopRequested !== 'boolean' || !boundedText(s.controls.reason) || !eventTime(s.controls.changedAt) || !(s.controls.readinessVersion === null || boundedText(s.controls.readinessVersion, 128)) || s.controls.stopRequested && s.controls.entriesEnabled || s.mode === 'PAPER' && s.controls.entriesEnabled && s.controls.readinessVersion === null) throw new Error('financial recovery/control invariant');
-    if (!record(s.daily) || typeof s.daily.lossPaused !== 'boolean' || typeof s.daily.paused !== 'boolean' || s.daily.lossPaused && !s.daily.paused || !Number.isSafeInteger(s.daily.reconciledAt) || s.daily.reconciledAt < 0 || s.daily.reconciledAt > s.lastAt || typeof s.daily.day !== 'string' || !/^\d{4}-\d\d-\d\d$/.test(s.daily.day) || utcDay(Date.parse(s.daily.day + 'T00:00:00.000Z')) !== s.daily.day || s.daily.day < utcDay(s.inceptionAt) || s.daily.day > utcDay(s.lastAt) || s.daily.reconciledAt > 0 && utcDay(s.daily.reconciledAt) !== s.daily.day) throw new Error('financial day/reconciliation invariant');
-    const cash = amount(s.lamports); const gasReserve = amount(s.gasReserve);
-    if (initialLamports <= gasReserve) throw new Error('inception gas reserve invariant');
-    amount(s.executionCosts); amount(s.daily.baselineMicroUsd);
-    if (typeof s.realizedLamports !== 'string' || !/^-?(0|[1-9][0-9]*)$/.test(s.realizedLamports) || amount(s.realizedLamports.startsWith('-') ? s.realizedLamports.slice(1) : s.realizedLamports) > (1n << 127n) - 1n) throw new Error('realized balance invariant');
-    if (!record(s.positions) || !record(s.pending) || !record(s.lockedDeposits) || Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3 || Object.keys(s.lockedDeposits).length > 128) throw new Error('capacity/state map invariant');
-    for (const [mint, deposit] of Object.entries(s.lockedDeposits)) {
-      if (!key(mint, 96)) throw new Error('locked deposit identity invariant');
-      amount(deposit);
-    }
-    for (const [mint, p] of Object.entries(s.positions)) {
-      if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || amount(p.costMicroUsd) > 50_000_000n || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
-    }
-    let reservations = 0n;
-    const pendingMints = new Set<string>(); let pendingBuys = 0;
-    for (const [id, o] of Object.entries(s.pending)) {
-      if (!record(o) || !key(id, 100) || o.id !== id || !key(o.mint, 96) || pendingMints.has(o.mint) || !eventTime(o.decidedAt) || !Number.isSafeInteger(o.executeAt) || !Number.isSafeInteger(o.expiresAt) || o.executeAt < o.decidedAt + 500 || o.expiresAt <= o.executeAt || o.expiresAt > o.decidedAt + 30_000 || !boundedText(o.decisionEvidence) || amount(o.gas) === 0n || amount(o.minReceive) === 0n) throw new Error('pending order identity/time/amount invariant');
-      const gas = amount(o.gas), spend = amount(o.maxSpend), deposit = amount(o.deposit), reserved = amount(o.reserved);
-      if (o.side === 'buy') {
-        pendingBuys++;
-        if (spend === 0n || s.positions[o.mint] || reserved !== gas + spend + deposit || deposit > 0n && s.lockedDeposits[o.mint]) throw new Error('pending buy reservation invariant');
-      } else if (o.side === 'sell') {
-        if (!s.positions[o.mint] || spend !== 0n || deposit !== 0n || reserved !== gas) throw new Error('pending exit reservation invariant');
-      } else throw new Error('pending order side invariant');
-      pendingMints.add(o.mint); reservations += reserved;
-    }
-    // The gas reserve protects NEW entries, not exits. Held-position management
-    // may consume it, but no action may spend another action's reservation.
-    if (reservations > cash || Object.keys(s.positions).length + pendingBuys > 3) throw new Error('cash reservation/capacity invariant');
-  }
+  private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode); }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
     if (!id || id.length > 160 || !Number.isSafeInteger(now)) throw new Error('invalid action identity/time');
     if (JSON.stringify(payload).length > 65_536) throw new Error('financial action payload limit');
@@ -311,6 +316,14 @@ export class PaperLedger {
     });
   }
 
+  /** Durable no-reentry index; successful fills write this marker atomically. */
+  hasTradedMint(mint: string): boolean {
+    if (!boundedText(mint, 96)) throw new Error('bounded mint identity required');
+    const row = this.db.prepare('SELECT value FROM metadata WHERE key=?').get('traded_mint:' + mint) as { value: string } | undefined;
+    if (row && row.value !== '1') throw new Error('traded mint history marker invalid');
+    return !!row;
+  }
+
   order(input: Omit<Order, 'reserved'>, price: UsdPrice, marks: Record<string, Mark>) {
     const now = input.decidedAt;
     return this.apply(`order:${input.id}`, 'order', now, { input, price, marks }, s => {
@@ -328,6 +341,7 @@ export class PaperLedger {
         if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) { s.daily.paused = true; s.daily.lossPaused = true; }
         if (s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.paused || !s.controls.entriesEnabled || s.controls.stopRequested) return { rejected: 'entries paused or reconciliation required' };
         if (s.positions[input.mint]) throw new Error('adds/re-entry into held position forbidden');
+        if (this.hasTradedMint(input.mint)) throw new Error('re-entry after a prior PAPER fill forbidden');
         if (s.lockedDeposits[input.mint] && dep > 0n) throw new Error('existing account deposit cannot be charged twice');
         if (Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');
         const pendingBuys = Object.values(s.pending).filter(o => o.side === 'buy');
@@ -388,6 +402,7 @@ export class PaperLedger {
           mint: o.mint, units: received.toString(), entryLamports: spend.toString(), entryGas: gas.toString(),
           costMicroUsd: usd(spend + gas, p).toString(), deposit: o.deposit, enteredAt: now,
         };
+        this.db.prepare('INSERT INTO metadata VALUES(?,?)').run('traded_mint:' + o.mint, '1');
       } else {
         const pos = s.positions[o.mint]; if (!pos) throw new Error('position missing');
         if (quote.pricedBaseUnits !== pos.units) return finish('failed', 'exit quote is not for actual full size; gas charged');
@@ -420,6 +435,54 @@ export class PaperLedger {
   exportJournal(limit = 100) {
     if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1000) throw new Error('bounded export required');
     return this.db.prepare('SELECT * FROM journal ORDER BY revision DESC LIMIT ?').all(limit);
+  }
+  /** O(1) lookup of a durable idempotent result; no state or journal mutation. */
+  actionResult(id: string): unknown | undefined {
+    if (!id || id.length > 160) throw new Error('bounded action identity required');
+    const row = this.db.prepare('SELECT result FROM actions WHERE id=?').get(id) as { result: string } | undefined;
+    return row ? JSON.parse(row.result) : undefined;
+  }
+  /** Bounded read model; absence means unknown coverage, never assumed free operations. */
+  getOperatingCosts(): OperatingCostState {
+    const account = this.state();
+    const size = this.db.prepare("SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key='operating_costs'").get() as { size: number } | undefined;
+    if (!size) {
+      // Existing durable action/journal IDs provide this indexed history check; do not
+      // scan the journal or silently reseed a lost cost projection on refresh.
+      for (const [from, through] of [['cost:', 'cost;'], ['cost-valuation:', 'cost-valuation;']]) {
+        const action = this.db.prepare('SELECT 1 FROM actions WHERE id>=? AND id<? LIMIT 1').get(from, through);
+        const journal = this.db.prepare('SELECT 1 FROM journal WHERE action_id>=? AND action_id<? LIMIT 1').get(from, through);
+        if (action || journal) throw new Error('operating cost metadata missing from recorded history; recovery required');
+      }
+      return initializeOperatingCosts(account.accountId, account.inceptionAt);
+    }
+    if (size.size > 262_144) throw new Error('operating cost metadata limit');
+    const row = this.db.prepare("SELECT value FROM metadata WHERE key='operating_costs'").get() as { value: string };
+    const costs = JSON.parse(row.value) as OperatingCostState;
+    validateOperatingCosts(costs);
+    if (costs.accountId !== account.accountId || costs.inceptionAt !== account.inceptionAt || costs.lastRecordedAt > account.lastAt) throw new Error('operating cost account/inception chronology mismatch');
+    return costs;
+  }
+  /** Uses the same atomic journal/action/metadata transaction as PAPER finance.
+   * Operating outlays affect economic P&L, not this virtual account's cash. */
+  recordOperatingCost(event: OperatingCostEvent, now = event.recordedAt) {
+    const identity = event.kind === 'valuation' ? event.expense?.id : event.id;
+    if (!boundedText(identity, 128)) throw new Error('bounded operating cost action identity required');
+    const actionId = event.kind === 'valuation' ? 'cost-valuation:' + identity : 'cost:' + identity;
+    return this.apply(actionId, 'operating-cost', now, { event }, account => {
+      // Deliberately inside apply: an identical old action returns its durable
+      // result first, without rebasing original knowledge time or reapplying it.
+      if (now !== event.recordedAt) throw new Error('new operating cost recording time must equal its evidence time');
+      if (event.kind === 'valuation') {
+        const row = this.db.prepare('SELECT kind, detail FROM journal WHERE action_id=?').get('cost:' + event.expense.id) as { kind: string; detail: string } | undefined;
+        const original = row ? JSON.parse(row.detail) as { event?: OperatingCostEvent } : undefined;
+        if (row?.kind !== 'operating-cost' || original?.event?.kind !== 'expense' || !isDeepStrictEqual(original.event, event.expense)) throw new Error('original operating expense does not match authoritative journal');
+      }
+      const costs = applyOperatingCostEvent(this.getOperatingCosts(), event, now), body = JSON.stringify(costs);
+      if (Buffer.byteLength(body) > 262_144) throw new Error('operating cost metadata limit');
+      this.db.prepare("INSERT INTO metadata VALUES('operating_costs',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(body);
+      return { recorded: true, actionId, eventId: event.id, kind: event.kind, accountId: account.accountId, inceptionAt: account.inceptionAt, recordedAt: now };
+    });
   }
   async backup(path: string) { await this.db.backup(path); }
   nextSnapshotSequence() {
@@ -503,13 +566,16 @@ export class PaperLedger {
     const initialLamports = INITIAL * L / amount(s.inceptionPrice.microUsdPerSol);
     const equityMicroUsd = p !== null && equityLamports !== null ? usd(equityLamports, p) + amount(s.roundingResidualMicroUsd) : null;
     const passiveSolEquityMicroUsd = p !== null ? usd(initialLamports, p) + amount(s.roundingResidualMicroUsd) : null;
+    const totalPnlMicroUsd = equityMicroUsd === null ? null : (equityMicroUsd - INITIAL).toString();
+    const operating = projectOperatingCosts(this.getOperatingCosts(), { asOf: now, now, tradingPnlMicroUsd: totalPnlMicroUsd });
     const dayFresh = s.daily.day === utcDay(now) && s.daily.reconciledAt > 0 && now >= s.daily.reconciledAt && now - s.daily.reconciledAt <= MAX_QUOTE_AGE;
     return {
       accountId: s.accountId, mode: s.mode, inceptionAt: s.inceptionAt, initialMicroUsd: s.initialMicroUsd, revision: s.revision,
       cashLamports: s.lamports, reservedLamports: reservedLamports.toString(), lockedDepositLamports: lockedDepositLamports.toString(),
       equityLamports: equityLamports?.toString() ?? null, equityMicroUsd: equityMicroUsd?.toString() ?? null,
       totalPnlLamports: equityLamports === null ? null : (equityLamports - initialLamports).toString(),
-      totalPnlMicroUsd: equityMicroUsd === null ? null : (equityMicroUsd - INITIAL).toString(),
+      totalPnlMicroUsd,
+      operatingCostsMicroUsd: operating.operatingCostsMicroUsd, economicPnlMicroUsd: operating.economicPnlMicroUsd, operatingCostClassification: operating.classification,
       passiveSolEquityMicroUsd: passiveSolEquityMicroUsd?.toString() ?? null,
       solPriceEffectMicroUsd: passiveSolEquityMicroUsd === null ? null : (passiveSolEquityMicroUsd - INITIAL).toString(),
       realizedLamports: s.realizedLamports, executionCostsLamports: s.executionCosts,

@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "classification": "SYNTHETIC_OFFLINE_CAPACITY_ONLY",
+  "acceptanceGateCompleted": false,
+  "acceptanceClockStarted": false,
+  "paperEntriesEnabled": false,
+  "naturalTrades": 0,
+  "actualStartedAt": "2026-10-26T23:54:05.833Z",
+  "actualCompletedAt": "2026-10-26T23:54:09.744Z",
+  "actualTotalWallDurationMs": 3910.533,
+  "environment": {
+    "kind": "Codex execution workspace; not EC2 production host",
+    "node": "v24.19.0",
+    "platform": "linux",
+    "architecture": "x64",
+    "availableParallelism": 4
+  },
+  "reproduce": "node --import tsx scripts/offline-capacity.ts",
+  "sourceHashes": {
+    "strategy": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+    "recorder": "65c1e0f68dbb387b059a062fa530ba8407df7092214ecc119cdcbf7fceed0a40",
+    "script": "f0371d662f66b6e63ffdd6470f6ed74de189f4d462e0cdb531077f7758c91eca"
+  },
+  "fixture": {
+    "disposable": true,
+    "syntheticAvailabilityStart": 1700000000000,
+    "syntheticDurationMs": 72000,
+    "syntheticDurationIsNotElapsedWallTime": true,
+    "rows": 8712,
+    "uniqueTrades": 8640,
+    "duplicateRows": 72,
+    "candidates": 12,
+    "shape": "12 simultaneous events per 100ms synthetic interval, plus one exact duplicate per synthetic second; complete invented instruction/event identities are fixtures only",
+    "recordBytes": 3762522,
+    "recordByteCap": 8000000,
+    "normalizedSha256": "c6457314382ab39f6599be2b9574f679d07c6a1536908d7bb716361d5288468c",
+    "temporaryInputDeleted": true,
+    "usesProductionRecorder": true,
+    "usesProductionFlowWindow": true,
+    "features": "integer net buying, persistence bins, buyer concentration, price ratio and warming; exact aggregate oracle at 96 completed checkpoints/run"
+  },
+  "rules": {
+    "version": "persistent-buying-v0-unfrozen",
+    "changed": false,
+    "flowFieldsVerified": false,
+    "entriesEnabled": false
+  },
+  "runs": [
+    {
+      "label": "25x-synthetic-time",
+      "speedup": 25,
+      "offeredRowsPerSecond": 3025,
+      "actualWallDurationMs": 2880.063,
+      "completedRowsPerSecond": 3024.934,
+      "usefulAcceptedTradesPerSecond": 2999.935,
+      "processedRows": 8712,
+      "acceptedUniqueTrades": 8640,
+      "duplicates": 72,
+      "completedFeatureEvaluations": 96,
+      "fullyWarmedFeatureEvaluations": 36,
+      "unverifiedFieldRefusals": 96,
+      "featureOraclePassed": true,
+      "availabilityTimesPreserved": true,
+      "finiteScheduledInputBacklog": {
+        "sampledPeakRows": 13,
+        "finalRows": 0,
+        "capacityRows": 8712,
+        "interpretation": "offline record scheduling backlog sampled at cooperative chunks of at most 64 rows; not a production ingestion queue"
+      },
+      "processingCompletionDelayMs": {
+        "p50": 0.61,
+        "p95": 1.117,
+        "p99": 1.34,
+        "max": 3.446,
+        "meaning": "actual completion wall time minus synthetic scheduled replay availability; includes parsing, feature work and cooperative scheduler"
+      },
+      "eventLoopDelayMs": {
+        "sampleCount": 2648,
+        "mean": 1.088,
+        "p99": 1.439,
+        "max": 4.37,
+        "resolutionMs": 1
+      },
+      "cpu": {
+        "userMs": 237.763,
+        "systemMs": 25.087,
+        "eventLoopUtilization": 0.055
+      },
+      "memory": {
+        "beforeRssBytes": 80551936,
+        "afterRssBytes": 89989120,
+        "sampledMaxRssBytes": 89989120,
+        "beforeHeapUsedBytes": 19554760,
+        "afterHeapUsedBytes": 21923352,
+        "sampledMaxHeapUsedBytes": 21985800,
+        "samples": 731,
+        "interpretation": "same process sequential runs; sampled values, no forced GC or isolated peak guarantee"
+      },
+      "boundedFeatureState": {
+        "candidates": 12,
+        "thirteenthCandidateRefused": true,
+        "maxObservedRetainedTrades": 8400,
+        "maxObservedRetainedIdentities": 8640,
+        "maxOneCandidateTrades": 700,
+        "maxOneCandidateIdentities": 720,
+        "perCandidateTradeCap": 4096,
+        "perCandidateIdentityCap": 8192,
+        "finalRetainedTrades": 7440,
+        "finalRetainedIdentities": 8640,
+        "interpretation": "logical active/pending counts from usage(); excludes stale deque prefixes and historical trades referenced by dedup identities; not a physical object-memory bound"
+      }
+    },
+    {
+      "label": "100x-synthetic-time",
+      "speedup": 100,
+      "offeredRowsPerSecond": 12100,
+      "actualWallDurationMs": 721.222,
+      "completedRowsPerSecond": 12079.495,
+      "usefulAcceptedTradesPerSecond": 11979.664,
+      "processedRows": 8712,
+      "acceptedUniqueTrades": 8640,
+      "duplicates": 72,
+      "completedFeatureEvaluations": 96,
+      "fullyWarmedFeatureEvaluations": 36,
+      "unverifiedFieldRefusals": 96,
+      "featureOraclePassed": true,
+      "availabilityTimesPreserved": true,
+      "finiteScheduledInputBacklog": {
+        "sampledPeakRows": 61,
+        "finalRows": 0,
+        "capacityRows": 8712,
+        "interpretation": "offline record scheduling backlog sampled at cooperative chunks of at most 64 rows; not a production ingestion queue"
+      },
+      "processingCompletionDelayMs": {
+        "p50": 0.622,
+        "p95": 1.158,
+        "p99": 1.791,
+        "max": 4.37,
+        "meaning": "actual completion wall time minus synthetic scheduled replay availability; includes parsing, feature work and cooperative scheduler"
+      },
+      "eventLoopDelayMs": {
+        "sampleCount": 656,
+        "mean": 1.099,
+        "p99": 1.765,
+        "max": 4.764,
+        "resolutionMs": 1
+      },
+      "cpu": {
+        "userMs": 114.758,
+        "systemMs": 28.505,
+        "eventLoopUtilization": 0.144
+      },
+      "memory": {
+        "beforeRssBytes": 90120192,
+        "afterRssBytes": 108470272,
+        "sampledMaxRssBytes": 108470272,
+        "beforeHeapUsedBytes": 21967952,
+        "afterHeapUsedBytes": 28755688,
+        "sampledMaxHeapUsedBytes": 32299728,
+        "samples": 591,
+        "interpretation": "same process sequential runs; sampled values, no forced GC or isolated peak guarantee"
+      },
+      "boundedFeatureState": {
+        "candidates": 12,
+        "thirteenthCandidateRefused": true,
+        "maxObservedRetainedTrades": 8400,
+        "maxObservedRetainedIdentities": 8640,
+        "maxOneCandidateTrades": 700,
+        "maxOneCandidateIdentities": 720,
+        "perCandidateTradeCap": 4096,
+        "perCandidateIdentityCap": 8192,
+        "finalRetainedTrades": 7440,
+        "finalRetainedIdentities": 8640,
+        "interpretation": "logical active/pending counts from usage(); excludes stale deque prefixes and historical trades referenced by dedup identities; not a physical object-memory bound"
+      }
+    },
+    {
+      "label": "400x-synthetic-time",
+      "speedup": 400,
+      "offeredRowsPerSecond": 48400,
+      "actualWallDurationMs": 180.416,
+      "completedRowsPerSecond": 48288.502,
+      "usefulAcceptedTradesPerSecond": 47889.423,
+      "processedRows": 8712,
+      "acceptedUniqueTrades": 8640,
+      "duplicates": 72,
+      "completedFeatureEvaluations": 96,
+      "fullyWarmedFeatureEvaluations": 36,
+      "unverifiedFieldRefusals": 96,
+      "featureOraclePassed": true,
+      "availabilityTimesPreserved": true,
+      "finiteScheduledInputBacklog": {
+        "sampledPeakRows": 109,
+        "finalRows": 0,
+        "capacityRows": 8712,
+        "interpretation": "offline record scheduling backlog sampled at cooperative chunks of at most 64 rows; not a production ingestion queue"
+      },
+      "processingCompletionDelayMs": {
+        "p50": 0.611,
+        "p95": 1.145,
+        "p99": 2.043,
+        "max": 3.054,
+        "meaning": "actual completion wall time minus synthetic scheduled replay availability; includes parsing, feature work and cooperative scheduler"
+      },
+      "eventLoopDelayMs": {
+        "sampleCount": 168,
+        "mean": 1.071,
+        "p99": 2.058,
+        "max": 2.443,
+        "resolutionMs": 1
+      },
+      "cpu": {
+        "userMs": 71.489,
+        "systemMs": 8.634,
+        "eventLoopUtilization": 0.296
+      },
+      "memory": {
+        "beforeRssBytes": 108470272,
+        "afterRssBytes": 118431744,
+        "sampledMaxRssBytes": 118431744,
+        "beforeHeapUsedBytes": 28772552,
+        "afterHeapUsedBytes": 40974408,
+        "sampledMaxHeapUsedBytes": 40974408,
+        "samples": 203,
+        "interpretation": "same process sequential runs; sampled values, no forced GC or isolated peak guarantee"
+      },
+      "boundedFeatureState": {
+        "candidates": 12,
+        "thirteenthCandidateRefused": true,
+        "maxObservedRetainedTrades": 8400,
+        "maxObservedRetainedIdentities": 8640,
+        "maxOneCandidateTrades": 700,
+        "maxOneCandidateIdentities": 720,
+        "perCandidateTradeCap": 4096,
+        "perCandidateIdentityCap": 8192,
+        "finalRetainedTrades": 7440,
+        "finalRetainedIdentities": 8640,
+        "interpretation": "logical active/pending counts from usage(); excludes stale deque prefixes and historical trades referenced by dedup identities; not a physical object-memory bound"
+      }
+    },
+    {
+      "label": "unpaced-finite-burst",
+      "speedup": null,
+      "offeredRowsPerSecond": null,
+      "actualWallDurationMs": 40.201,
+      "completedRowsPerSecond": 216713.221,
+      "usefulAcceptedTradesPerSecond": 214922.203,
+      "processedRows": 8712,
+      "acceptedUniqueTrades": 8640,
+      "duplicates": 72,
+      "completedFeatureEvaluations": 96,
+      "fullyWarmedFeatureEvaluations": 36,
+      "unverifiedFieldRefusals": 96,
+      "featureOraclePassed": true,
+      "availabilityTimesPreserved": true,
+      "finiteScheduledInputBacklog": {
+        "sampledPeakRows": 8712,
+        "finalRows": 0,
+        "capacityRows": 8712,
+        "interpretation": "offline record scheduling backlog sampled at cooperative chunks of at most 64 rows; not a production ingestion queue"
+      },
+      "processingCompletionDelayMs": {
+        "p50": 20.956,
+        "p95": 37.408,
+        "p99": 39.767,
+        "max": 40.083,
+        "meaning": "actual completion wall time minus synthetic scheduled replay availability; includes parsing, feature work and cooperative scheduler"
+      },
+      "eventLoopDelayMs": {
+        "sampleCount": 40,
+        "mean": 1.069,
+        "p99": 3.322,
+        "max": 3.322,
+        "resolutionMs": 1
+      },
+      "cpu": {
+        "userMs": 56.945,
+        "systemMs": 0,
+        "eventLoopUtilization": 1
+      },
+      "memory": {
+        "beforeRssBytes": 118431744,
+        "afterRssBytes": 121708544,
+        "sampledMaxRssBytes": 121708544,
+        "beforeHeapUsedBytes": 40990416,
+        "afterHeapUsedBytes": 30268944,
+        "sampledMaxHeapUsedBytes": 40990416,
+        "samples": 148,
+        "interpretation": "same process sequential runs; sampled values, no forced GC or isolated peak guarantee"
+      },
+      "boundedFeatureState": {
+        "candidates": 12,
+        "thirteenthCandidateRefused": true,
+        "maxObservedRetainedTrades": 8400,
+        "maxObservedRetainedIdentities": 8640,
+        "maxOneCandidateTrades": 700,
+        "maxOneCandidateIdentities": 720,
+        "perCandidateTradeCap": 4096,
+        "perCandidateIdentityCap": 8192,
+        "finalRetainedTrades": 7440,
+        "finalRetainedIdentities": 8640,
+        "interpretation": "logical active/pending counts from usage(); excludes stale deque prefixes and historical trades referenced by dedup identities; not a physical object-memory bound"
+      }
+    }
+  ],
+  "limitations": [
+    "No actual PumpPortal/raw feed field verification, discovery coverage or measured provider arrival rates.",
+    "No socket/network, RPC/pool pricing, ledger writes, trading/exits, publication or financial reconciliation in this benchmark.",
+    "Synthetic record availability times are preserved; accelerating replay does not establish 72 seconds, 24 hours or 72 hours of unattended operation.",
+    "Rates apply only to this short selected normalized payload and 12-candidate workload on this execution workspace; not a universal capacity or EC2 bound.",
+    "Finite offline backlog is drained; no production queue or sustained-memory/long-outage behavior is proved.",
+    "Recorder write/flush and initial record loading are outside timed replay; per-row JSON parsing, feature checks, rule refusals, metrics and cooperative yields are inside.",
+    "Runs share one process, OS scheduling and JIT/GC state; memory is sampled and rate results are sensitive to short-run overhead.",
+    "Every strategy decision refuses unverified feed fields; no qualified opportunity, fill or economic edge is established.",
+    "The 72-second synthetic interval does not exercise 120-second identity pruning. Logical usage() counts exclude stale deque prefixes and historical objects retained by dedup identities; they are not a physical memory bound."
+  ],
+  "postRunAnnotation": "Only logical-state interpretation labels and the corresponding script hash were updated after timing; measured rates, delays and counts are unchanged."
+}

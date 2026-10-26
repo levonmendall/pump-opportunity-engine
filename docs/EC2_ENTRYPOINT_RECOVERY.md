@@ -1,5 +1,11 @@
 # Targeted recovery of the installed C2 observer
 
+**COMPLETED by the owner.** Read-only run40415427271 attempt2/job121918984748
+verified active/running with zero restarts since22:30:55UTC, fresh reconciliation
+and original account/inception. Do not repeat this action or bootstrap. The
+instructions below preserve the reviewed recovery history; current controls are
+in RUNBOOK.md. No acceptance clock started.
+
 The owner bootstrap installed the service and reporting credential drop-in.
 Read-only run40410457283/job121879546758 verified it enabled under poe-runtime,
 but its process exited0 immediately and no public status file exists. This is a

@@ -1,6 +1,10 @@
 # One-time owner/root EC2 bootstrap
 
-This is the only remaining EC2 action requiring owner access. The verified
+**COMPLETED. Do not rerun on the installed host.** The actual account/inception
+and running C2 observer are verified in STATUS.md. This file retains the pinned
+initial-install procedure for review; it is not a pending owner request.
+
+At initial installation, the verified
 administration runner is connected, but run40404058329/job121857131607 proved it
 cannot create the POE user/service under its existing sudo policy. Do not change
 that policy, redispatch inventory, repeat reporter shutdown or obtain AWS keys.

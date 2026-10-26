@@ -1,0 +1,185 @@
+{
+  "checkedAt": "2026-10-26T23:51:04.837Z",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "deployedDashboardRelease": "6036cbd9294ce5848fe575a306144e6ad7446000",
+  "verifiedDeploy": "dep-dbftpvd9el5s73b96vi0",
+  "sourceIdentity": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "samples": [
+    {
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+      "sequence": "146",
+      "generatedAt": "2026-10-26T23:50:06.475Z",
+      "marketAt": "2026-10-26T23:50:06.475Z",
+      "reconciledAt": "2026-10-26T23:50:06.475Z",
+      "receivedAt": "2026-10-26T23:50:07.771Z",
+      "sourceAgeMs": 56201,
+      "marketAgeMs": 56201,
+      "reconciliationAgeMs": 56201,
+      "state": "observing-with-zero-trades",
+      "positionCount": 0,
+      "tradeCount": 0,
+      "historyPointCount": 10,
+      "historyGapCount": 1
+    },
+    {
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+      "sequence": "146",
+      "generatedAt": "2026-10-26T23:50:06.475Z",
+      "marketAt": "2026-10-26T23:50:06.475Z",
+      "reconciledAt": "2026-10-26T23:50:06.475Z",
+      "receivedAt": "2026-10-26T23:50:07.771Z",
+      "sourceAgeMs": 57249,
+      "marketAgeMs": 57249,
+      "reconciliationAgeMs": 57249,
+      "state": "observing-with-zero-trades",
+      "positionCount": 0,
+      "tradeCount": 0,
+      "historyPointCount": 10,
+      "historyGapCount": 1
+    }
+  ],
+  "viewingPolicy": "owner-authorized-public-read-only",
+  "scope": "GET-only current UI supplement; prior41-check reporting-ingestion evidence is retained separately.",
+  "checks": [
+    {
+      "label": "current public process health",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "current actual snapshot GET",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "current actual account/inception/source",
+      "pass": true
+    },
+    {
+      "label": "current PAPER entries disabled",
+      "pass": true
+    },
+    {
+      "label": "current fresh observer reporting",
+      "pass": true
+    },
+    {
+      "label": "current flat state matches",
+      "pass": true
+    },
+    {
+      "label": "current actual arithmetic",
+      "pass": true
+    },
+    {
+      "label": "current actual inception/gap history",
+      "pass": true
+    },
+    {
+      "label": "browser actual snapshot GET",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "browser actual account/inception/source",
+      "pass": true
+    },
+    {
+      "label": "browser PAPER entries disabled",
+      "pass": true
+    },
+    {
+      "label": "browser fresh observer reporting",
+      "pass": true
+    },
+    {
+      "label": "browser flat state matches",
+      "pass": true
+    },
+    {
+      "label": "browser actual arithmetic",
+      "pass": true
+    },
+    {
+      "label": "browser actual inception/gap history",
+      "pass": true
+    },
+    {
+      "label": "anonymous current mobile route",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "current UI binding and numbers",
+      "pass": true
+    },
+    {
+      "label": "current UI PAPER/fresh/read-only labels",
+      "pass": true
+    },
+    {
+      "label": "current UI history plot matches actual snapshot",
+      "pass": true
+    },
+    {
+      "label": "current mobile geometry and execution",
+      "pass": true
+    }
+  ],
+  "coreChecksPassed": true,
+  "mobile": {
+    "titleIsPoe": true,
+    "paperVisible": true,
+    "liveDisabledVisible": true,
+    "publicReadOnlyLabelVisible": true,
+    "actualAccountVisible": true,
+    "actualSequenceVisible": true,
+    "runtimeReleaseVisible": false,
+    "strategyVersionVisible": false,
+    "fullInceptionTimestampVisible": true,
+    "freshStateVisible": true,
+    "cardCount": 12,
+    "allCardsMatchActualPageSnapshot": true,
+    "chartPointCount": 9,
+    "actualNonNullHistoryCount": 9,
+    "chartStrokeSegments": 2,
+    "actualHistorySegments": 2,
+    "zeroReferencePresent": true,
+    "timezoneVisible": true,
+    "chartBelowPortfolioBeforeActivity": true,
+    "controlsCount": 0,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "viewportWidth": 390,
+    "externalLinkCount": 0,
+    "scriptErrors": 0,
+    "dialogs": 0,
+    "externalRequests": 0,
+    "screenshotStoredPrivately": true,
+    "screenshotMode": "0600"
+  },
+  "visibleMetadataRegressions": [
+    "Runtime release is no longer visible in UI diagnostics; it remains correct in the authenticated-source snapshot API.",
+    "Strategy version is no longer visible in UI diagnostics; it remains correct in the snapshot API."
+  ],
+  "priorEvidencePreserved": "render-public-live-e2e.json",
+  "postRequests": 0,
+  "syntheticSnapshotsSubmitted": 0,
+  "financialValuesPublishedInEvidence": false,
+  "credentialValuesRead": false,
+  "renderEnvironmentOrDeploymentMutated": false,
+  "runtimeOrFinancialControlsInvoked": false,
+  "providerQueries": 0,
+  "independentDatabaseBalanceAudit": false
+}

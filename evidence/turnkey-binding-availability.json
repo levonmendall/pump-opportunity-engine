@@ -24,5 +24,8 @@
   "minimumUnblock": "Register the supplied existing public API authentication key for the intended execution user in the supplied organization, or identify the correct existing organization binding. No replacement wallet or private-key repost is needed.",
   "manualFundingAlternative": "Existing owner Turnkey UI, after public sender/recovery/current-fee verification and explicit transfer approval.",
   "lastBoundedRecheckAt": "2026-10-26T21:54:36Z",
-  "lastBoundedRecheckStatus": "TURNKEY_AUTH_OR_QUERY_FAILED; credential details suppressed"
+  "lastBoundedRecheckStatus": "TURNKEY_AUTH_OR_QUERY_FAILED; credential details suppressed",
+  "historicalOnly": true,
+  "supersededBy": "turnkey-readonly-resolution.json",
+  "resolution": "Owner registration completed; existing authentication and source identification now succeed. No credential replacement needed."
 }

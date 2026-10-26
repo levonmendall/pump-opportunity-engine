@@ -3,7 +3,7 @@ import {chmodSync,closeSync,existsSync,lstatSync,mkdirSync,openSync,readFileSync
 import {basename,dirname,isAbsolute,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
-import {monitorEventLoopDelay} from 'node:perf_hooks';
+import {monitorEventLoopDelay,performance} from 'node:perf_hooks';
 import WebSocket from 'ws';
 import {HttpsProxyAgent} from 'https-proxy-agent';
 import {PublicKey} from '@solana/web3.js';
@@ -11,6 +11,7 @@ import {PaperLedger,type LedgerState,type Mark,type UsdPrice,type ReportingHisto
 import {Recorder} from './recorder.js';
 import {dataMessage} from './network.js';
 import {SnapshotPublisher,validateSnapshot,type ReportingIdentity,type Snapshot} from './reporting.js';
+import {FinancialBackupStore} from './backup.js';
 
 const BLOCKER='FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED';
 const iso=(at:number)=>new Date(at).toISOString();
@@ -28,10 +29,13 @@ export type RuntimeOptions={
   publisher?:Publisher;
   /** Optional nonsecret local read model; directory is provisioned separately. */
   publicStatusPath?:string;
+  backupStore?:FinancialBackupStore;
+  backupIntervalMs?:number;
   feedFactory?:()=>Feed;
   connectFeed?:boolean;
   tickMs?:number;
   now?:()=>number;
+  monotonicNow?:()=>number;
 };
 
 /** One financial owner and bounded observer. No strategy/fill path is enabled.
@@ -40,6 +44,7 @@ export type RuntimeOptions={
  */
 export class PaperObservationRuntime {
   private readonly now:()=>number;
+  private readonly monotonicNow:()=>number;
   private readonly epoch=randomUUID();
   private readonly identity:ReportingIdentity;
   private readonly recorder:Recorder;
@@ -52,6 +57,7 @@ export class PaperObservationRuntime {
   private reconnect:ReturnType<typeof setTimeout>|undefined;
   private timer:ReturnType<typeof setInterval>|undefined;
   private currentTick:Promise<void>|undefined;
+  private closing:Promise<void>|undefined;
   private running=false;
   private closed=false;
   private connected=false;
@@ -59,6 +65,10 @@ export class PaperObservationRuntime {
   private marketError:string|null=null;
   private reportError=false;
   private publicStatusUnavailable=false;
+  private backupUnavailable=false;
+  private backupInFlight:Promise<void>|undefined;
+  private lastBackupAt:number|null=null;
+  private nextBackupAt=0;
   private price:UsdPrice|null=null;
   private marks:Record<string,Mark>={};
   private lastUsefulAt:number|null=null;
@@ -74,10 +84,12 @@ export class PaperObservationRuntime {
 
   constructor(private readonly options:RuntimeOptions){
     this.now=options.now??Date.now;
+    this.monotonicNow=options.monotonicNow??(()=>performance.now());
     const state=options.ledger.state(); // Never initializes or reseeds.
     if(state.mode!=='PAPER')throw new Error('authoritative PAPER identity required');
     if(!options.release||options.release.length>128)throw new Error('source release required');
     if((options.tickMs??5000)<1000)throw new Error('bounded runtime cadence required');
+    if(!Number.isSafeInteger(options.backupIntervalMs??21_600_000)||(options.backupIntervalMs??21_600_000)<60_000||(options.backupIntervalMs??21_600_000)>86_400_000)throw new Error('bounded backup cadence required');
     mkdirSync(options.directory,{recursive:true,mode:0o700});
     const dir=lstatSync(options.directory);
     if(!dir.isDirectory()||dir.isSymbolicLink()||dir.uid!==process.getuid?.()||(dir.mode&0o077)!==0)throw new Error('runtime directory must be private and owned by runtime user');
@@ -107,14 +119,15 @@ export class PaperObservationRuntime {
     this.lastHistoryAt=history.points.at(-1)?.at??0;
     this.historyWindowLimited=history.windowLimited;this.historyCompacted=history.downsampled;
   }
-  private recordPnl(at:number,tradingMicroUsd:string|null){
-    this.acceptHistory(this.options.ledger.recordReportingPoint({at,tradingMicroUsd,economicMicroUsd:null}));
+  private recordPnl(at:number,tradingMicroUsd:string|null,economicMicroUsd:string|null=null){
+    this.acceptHistory(this.options.ledger.recordReportingPoint({at,tradingMicroUsd,economicMicroUsd}));
   }
   private save(name:string,value:unknown){
     const file=resolve(this.options.directory,name),temp=file+'.tmp';
     writeFileSync(temp,JSON.stringify(value),{mode:0o600});renameSync(temp,file);
   }
   async start(){
+    if(this.closed)throw new Error('runtime is already closed');
     if(this.running)return;
     const now=this.now();
     const state=this.options.ledger.state();
@@ -131,10 +144,13 @@ export class PaperObservationRuntime {
     }
     try{
       await this.listen();
+      if(this.closed)return;
       this.running=true;this.lag.enable();
       try{this.options.publisher?.start();}catch{this.reportError=true;}
       if(this.options.connectFeed!==false)this.connect();
-      await this.tick();
+      this.currentTick=this.tick();
+      try{await this.currentTick;}finally{this.currentTick=undefined;}
+      if(this.closed)return;
       this.timer=setInterval(()=>{if(!this.currentTick)this.currentTick=this.tick().catch(()=>{this.marketError='RUNTIME_PROGRESS_UNAVAILABLE';}).finally(()=>{this.currentTick=undefined;});},this.options.tickMs??5000);
     }catch(e){await this.close();throw e;}
   }
@@ -147,6 +163,7 @@ export class PaperObservationRuntime {
       const old=lstatSync(path);
       if(!old.isSocket()||old.uid!==process.getuid?.())throw new Error('refusing to replace foreign control path');
       const active=await new Promise<boolean>(resolve=>{const c=createConnection(path);c.setTimeout(300);c.once('connect',()=>{c.destroy();resolve(true);});c.once('error',e=>resolve((e as NodeJS.ErrnoException).code!=='ECONNREFUSED'));c.once('timeout',()=>{c.destroy();resolve(true);});});
+      if(this.closed)throw new Error('runtime closed during startup');
       if(active)throw new Error('runtime socket already active');
       unlinkSync(path);
     }
@@ -164,17 +181,26 @@ export class PaperObservationRuntime {
         }catch{socket.end(JSON.stringify({error:'unsupported control request'})+'\n');}
       });
     });
-    await new Promise<void>((resolve,reject)=>{this.server!.once('error',reject);this.server!.listen(path,()=>{this.ownsSocket=true;chmodSync(path,0o600);resolve();});});
+    await new Promise<void>((resolve,reject)=>{
+      const server=this.server!,closed=()=>reject(new Error('runtime closed during startup'));
+      server.once('close',closed);
+      server.once('error',error=>{server.off('close',closed);reject(error);});
+      server.listen(path,()=>{
+        server.off('close',closed);this.ownsSocket=true;
+        try{chmodSync(path,0o600);resolve();}catch(error){reject(error);}
+      });
+    });
   }
   command(command:string):Record<string,unknown>{
     const now=Math.max(this.now(),this.options.ledger.state().lastAt);
-    if(command==='status')return {accountId:this.identity.accountId,mode:'PAPER',liveTrading:false,running:this.running,feedConnected:this.connected,blocker:this.blocker(),reportingUnavailable:this.reportError,publicStatusUnavailable:this.publicStatusUnavailable,candidates:this.candidates.size,financial:this.options.ledger.projection(now,this.price??undefined,this.marks)};
+    if(command==='status')return {accountId:this.identity.accountId,mode:'PAPER',liveTrading:false,running:this.running,feedConnected:this.connected,blocker:this.blocker(),reportingUnavailable:this.reportError,publicStatusUnavailable:this.publicStatusUnavailable,backups:{configured:!!this.options.backupStore,inProgress:!!this.backupInFlight,lastSuccessAt:this.lastBackupAt,unavailable:this.backupUnavailable},candidates:this.candidates.size,financial:this.options.ledger.projection(now,this.price??undefined,this.marks)};
     if(command==='pause')return this.options.ledger.pause(`operator-pause:${randomUUID()}`,now,'operator paused new entries');
     if(command==='resume')return {enabled:false,reason:BLOCKER};
     if(command==='safe-stop')return this.options.ledger.safeStop(`operator-stop:${randomUUID()}`,now);
     throw new Error('unsupported control command');
   }
   private blocker(){
+    if(this.backupUnavailable)return 'CONSISTENT_BACKUP_UNAVAILABLE; '+BLOCKER;
     if(Object.keys(this.options.ledger.state().positions).length>0&&!this.options.markProvider)return 'HELD_POSITION_PRICING_UNAVAILABLE; '+BLOCKER;
     return this.marketError?`${this.marketError}; ${BLOCKER}`:BLOCKER;
   }
@@ -212,10 +238,13 @@ export class PaperObservationRuntime {
     this.save('candidates.json',[...this.candidates.values()]);
   }
   async tick(){
+    if(this.closed)return;
     const state=this.options.ledger.state();
     // Held state first; no mark is inferred from a generic migration or zero balance.
     try{this.marks=this.options.markProvider?await this.options.markProvider(state.positions):{};}catch{this.marks={};this.marketError='HELD_POSITION_PRICING_UNAVAILABLE';}
+    if(this.closed)return;
     try{const next=this.options.priceProvider?await this.options.priceProvider():null;if(next)this.price=next;}catch{ /* Reuse only within ledger's unchanged 10s freshness bound. */ }
+    if(this.closed)return;
     const now=this.now();
     if(this.price){try{this.options.ledger.reconcile(`reconcile:${this.epoch}:${now}`,Math.max(now,state.lastAt),this.price,this.marks);this.lastUsefulAt=now;}catch{/* Stale/unknown valuation blocks reconciliation and risk. */}}
     if(now-this.lastSnapshotAt>=30_000||this.lastSnapshotAt===0){
@@ -226,6 +255,20 @@ export class PaperObservationRuntime {
       try{this.options.publisher?.offer(snapshot);this.reportError=false;}catch{this.reportError=true;}
     }
     this.writePublicStatus(now);
+    this.scheduleBackup();
+  }
+  private scheduleBackup(){
+    const store=this.options.backupStore;
+    const durationNow=this.monotonicNow();
+    if(!store||this.backupInFlight||durationNow<this.nextBackupAt)return;
+    this.nextBackupAt=durationNow+(this.options.backupIntervalMs??21_600_000);
+    // Backup is lower priority than marks, financial reconciliation and reporting.
+    // One in-flight copy; no financial transaction or network lock crosses it.
+    this.backupInFlight=Promise.resolve().then(async()=>{
+      await store.maintainPending();
+      await store.create(this.options.ledger);
+      this.lastBackupAt=this.now();this.backupUnavailable=false;
+    }).catch(()=>{this.backupUnavailable=true;this.nextBackupAt=this.monotonicNow()+60_000;}).finally(()=>{this.backupInFlight=undefined;});
   }
   private writePublicStatus(now:number){
     const path=this.options.publicStatusPath;if(!path)return;
@@ -268,9 +311,9 @@ export class PaperObservationRuntime {
     const marketAt=price===null||markTimes.some(t=>t===0)?null:iso(Math.min(this.price!.at,...(markTimes.length?markTimes:[this.price!.at])));
     const trading= micro(p.totalPnlMicroUsd);
     const previous=this.history.at(-1);
-    const transition=previous!==undefined&&((previous.tradingUsd===null)!==(trading===null));
+    const transition=previous!==undefined&&(((previous.tradingUsd===null)!==(trading===null))||((previous.economicUsd===null)!==(p.economicPnlMicroUsd===null)));
     if((!previous||Date.parse(previous.at)<now)&&(!previous||now-this.lastHistoryAt>=600_000||transition)){
-      this.recordPnl(now,p.totalPnlMicroUsd);
+      this.recordPnl(now,p.totalPnlMicroUsd,p.economicPnlMicroUsd);
     }
     const freshReconciliation=state.daily.reconciledAt>0&&state.daily.reconciledAt<=now&&now-state.daily.reconciledAt<=2000&&p.equityMicroUsd!==null;
     const snapshot:Snapshot={
@@ -278,8 +321,8 @@ export class PaperObservationRuntime {
       account:{id:state.accountId,inceptionAt:iso(state.inceptionAt),initialUsd:1000},sequence:this.options.ledger.nextSnapshotSequence(),source:{release:this.identity.release,strategy:this.identity.strategy},
       times:{generatedAt:iso(now),marketAt,reconciledAt:state.daily.reconciledAt?iso(state.daily.reconciledAt):null,usefulProgressAt:this.lastUsefulAt===null?null:iso(this.lastUsefulAt)},
       status:{runtime:this.running?'running':'stopped',market:this.connected?'observing':'unavailable',entries:'disabled',reconciled:freshReconciliation,blocker:this.blocker()},
-      balances:{cashSol:sol(p.cashLamports),reservedSol:sol(p.reservedLamports),equitySol:p.equityLamports===null?null:sol(p.equityLamports),equityUsd:micro(p.equityMicroUsd),realizedUsd:null,unrealizedUsd:null,tradingPnlUsd:trading,economicPnlUsd:null,positionCostUsd:micro(p.positionCostMicroUsd)!,markedExposureUsd:p.positionLiquidationLamports===null||price===null?null:Number(BigInt(p.positionLiquidationLamports))/1e9*price,drawdownUsd:null,executionCostsUsd:null,operatingCostsUsd:null,passiveSolEquityUsd:micro(p.passiveSolEquityMicroUsd),solPriceUsd:price},
-      costLabels:{execution:'simulated',operating:'unavailable'},
+      balances:{cashSol:sol(p.cashLamports),reservedSol:sol(p.reservedLamports),equitySol:p.equityLamports===null?null:sol(p.equityLamports),equityUsd:micro(p.equityMicroUsd),realizedUsd:null,unrealizedUsd:null,tradingPnlUsd:trading,economicPnlUsd:micro(p.economicPnlMicroUsd),positionCostUsd:micro(p.positionCostMicroUsd)!,markedExposureUsd:p.positionLiquidationLamports===null||price===null?null:Number(BigInt(p.positionLiquidationLamports))/1e9*price,drawdownUsd:null,executionCostsUsd:null,operatingCostsUsd:micro(p.operatingCostsMicroUsd),passiveSolEquityUsd:micro(p.passiveSolEquityMicroUsd),solPriceUsd:price},
+      costLabels:{execution:'simulated',operating:p.operatingCostClassification},
       positions:Object.values(state.positions).map(position=>({mint:position.mint,label:position.mint,quantity:position.units,enteredAt:iso(position.enteredAt),entryCostUsd:micro(position.costMicroUsd)!,netLiquidationUsd:price!==null&&validMark(position.mint)?Number(BigInt(this.marks[position.mint]!.netLamports))/1e9*price:null,executionCostsUsd:Number(BigInt(position.costMicroUsd)*BigInt(position.entryGas)/(BigInt(position.entryGas)+BigInt(position.entryLamports)))/1e6,status:'held; gas USD allocated from recorded entry cost; exit execution not connected'})),
       trades:[],decisions:[],pnl:[...this.history],history:{windowStartAt:this.history[0]?.at??null,downsampled:true,label:`${this.historyWindowLimited?'WINDOW LIMITED; inception context lost':'Authoritative inception/observations'}: 10-minute samples plus explicit gaps, max720points${this.historyCompacted?', compacted':''}. Historical trades not projected by this scaffold.`},
       funnel:{discovered:this.discovered,supported:0,sufficientlyObserved:0,evaluated:0,qualified:0,attempted:0,paperFilled:0,exited:0,reconciled:0},
@@ -287,14 +330,18 @@ export class PaperObservationRuntime {
     };
     return validateSnapshot(snapshot,this.identity,now);
   }
-  async close(){
-    if(this.closed)return;this.closed=true;
+  close():Promise<void>{
+    if(this.closing)return this.closing;this.closed=true;
     this.running=false;clearInterval(this.timer);clearTimeout(this.reconnect);this.feed?.terminate();this.feed=undefined;
-    await this.currentTick;await this.options.publisher?.stop();this.lag.disable();
+    this.closing=this.finishClose();return this.closing;
+  }
+  private async finishClose(){
+    try{await this.currentTick;}catch{/* Failed startup still releases the existing owner without reseeding. */}
+    try{await this.options.publisher?.stop();}catch{this.reportError=true;}
+    await this.backupInFlight;this.lag.disable();
     if(this.server){await new Promise<void>(resolve=>this.server!.close(()=>resolve()));this.server=undefined;}
     try{if(this.ownsSocket&&existsSync(this.options.socketPath)&&lstatSync(this.options.socketPath).isSocket())unlinkSync(this.options.socketPath);}catch{}
-    this.recorder.close();
-    this.options.ledger.close();
+    try{this.recorder.close();}finally{this.options.ledger.close();}
   }
 }
 
@@ -328,7 +375,9 @@ if(process.argv[1]&&existsSync(process.argv[1])&&realpathSync(fileURLToPath(impo
       const usdSource=process.env.POE_USD_SOURCE;
       if(usdSource&&usdSource!=='coinbase-spot'){ledger.close();throw new Error('unsupported explicit USD source');}
       const priceProvider=usdSource==='coinbase-spot'?async()=>await (await import('./valuation.js')).fetchPublicUsdPrice():priceFile?async()=>{if(lstatSync(priceFile).size>2048)throw new Error('valuation file too large');return JSON.parse(readFileSync(priceFile,'utf8'));}:undefined;
-      const runtime=new PaperObservationRuntime({ledger,directory:process.env.POE_DATA_DIR??'/var/lib/poe',socketPath,release,publisher,priceProvider,publicStatusPath:process.env.POE_PUBLIC_STATUS_PATH});
+      const directory=process.env.POE_DATA_DIR??'/var/lib/poe';
+      const backupStore=new FinancialBackupStore({directory:resolve(directory,'backups'),sourcePath:path,identity:{accountId:state.accountId,mode:state.mode,inceptionAt:state.inceptionAt},maxBytes:256*1024*1024});
+      const runtime=new PaperObservationRuntime({ledger,directory,socketPath,release,publisher,priceProvider,publicStatusPath:process.env.POE_PUBLIC_STATUS_PATH,backupStore});
       await runtime.start();
       const stop=()=>{const result=runtime.command('safe-stop');if(result.safeToExit===true)void runtime.close();else process.stderr.write('POE safe stop deferred: open positions or unresolved actions require management; a forced supervisor stop would leave exposure unmonitored\n');};
       process.on('SIGTERM',stop);process.on('SIGINT',stop);

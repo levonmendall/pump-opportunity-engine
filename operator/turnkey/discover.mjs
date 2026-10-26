@@ -4,6 +4,26 @@ import {dirname,relative,resolve} from 'node:path';
 import {createECDH} from 'node:crypto';
 
 export const ORGANIZATION_ID=process.env.TURNKEY_ORGANIZATION_ID??'00000000-0000-0000-0000-000000000000';
+export const DISCOVERY_LIMITS=Object.freeze({responseBytes:200000,requestBytes:8192,pageSize:100,pages:100,walletAccounts:1000,metadataKeys:1000,addressesPerKey:64,candidates:100});
+const identifier=value=>typeof value==='string'&&value.length>0&&value.length<=128&&!/[\x00-\x20\x7f]/.test(value);
+const solanaAddress=value=>{
+  if(typeof value!=='string'||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value))return false;
+  const alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let n=0n,bytes=0;
+  for(const char of value)n=n*58n+BigInt(alphabet.indexOf(char));
+  while(n>0n){bytes++;n>>=8n;}
+  return bytes+(value.match(/^1*/)?.[0].length??0)===32;
+};
+const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
+const onlyKeys=(value,allowed)=>object(value)&&Object.keys(value).every(key=>allowed.includes(key));
+function boundedOption(value,cap){if(!Number.isSafeInteger(value)||value<1||value>cap)throw new Error('TURNKEY_DISCOVERY_LIMIT_INVALID');return value;}
+async function boundedResponse(response,code){
+  if(Number(response.headers.get('content-length'))>DISCOVERY_LIMITS.responseBytes){await response.body?.cancel();throw new Error(code);}
+  const reader=response.body?.getReader();if(!reader)return response;
+  let size=0;const chunks=[];
+  try{for(;;){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>DISCOVERY_LIMITS.responseBytes){await reader.cancel();throw new Error(code);}chunks.push(part.value);}}finally{reader.releaseLock();}
+  const headers=new Headers(response.headers);headers.delete('content-encoding');headers.delete('content-length');
+  return new Response(size?Buffer.concat(chunks):null,{status:response.status,statusText:response.statusText,headers});
+}
 export function existingApiCredentials(env=process.env){
   let apiPublicKey=env.TURNKEY_API_PUBLIC_KEY,apiPrivateKey=env.TURNKEY_API_PRIVATE_KEY;
   let binding={kind:'raw-runtime-variable',publicKeyBinding:'TURNKEY_API_PUBLIC_KEY',privateKeyBinding:'TURNKEY_API_PRIVATE_KEY'};
@@ -23,16 +43,18 @@ export function existingApiCredentials(env=process.env){
 }
 // This is a one-off use of the existing authentication binding, not a wallet
 // integration in the trader. No signing/export/submission method is invoked.
-export async function listSolanaAccounts(getWalletAccounts,{limit=100,maxPages=100}={}){
+export async function listSolanaAccounts(getWalletAccounts,{limit=100,maxPages=100,maxAccounts=1000,maxCandidates=100}={}){
+  boundedOption(limit,DISCOVERY_LIMITS.pageSize);boundedOption(maxPages,DISCOVERY_LIMITS.pages);boundedOption(maxAccounts,DISCOVERY_LIMITS.walletAccounts);boundedOption(maxCandidates,DISCOVERY_LIMITS.candidates);
   const all=new Map();let after;
   for(let page=0;page<maxPages;page++){
     const response=await getWalletAccounts({organizationId:ORGANIZATION_ID,includeWalletDetails:true,paginationOptions:{limit:String(limit),...(after?{after}:{})}});
-    if(!response||!Array.isArray(response.accounts))throw new Error('TURNKEY_INVALID_RESPONSE');
-    if(response.accounts.length===0)return [...all.values()].filter(a=>a.addressFormat==='ADDRESS_FORMAT_SOLANA');
+    if(!response||!Array.isArray(response.accounts)||response.accounts.length>limit)throw new Error('TURNKEY_INVALID_RESPONSE');
+    if(response.accounts.length===0){const accounts=[...all.values()].filter(a=>a.addressFormat==='ADDRESS_FORMAT_SOLANA');if(accounts.length>maxCandidates)throw new Error('TURNKEY_CANDIDATE_CAP_REACHED_NOT_COMPLETE');return accounts;}
+    if(all.size+response.accounts.length>maxAccounts)throw new Error('TURNKEY_ACCOUNT_CAP_REACHED_NOT_COMPLETE');
     for(const account of response.accounts){
-      if(typeof account.walletAccountId!=='string'||!account.walletAccountId||account.organizationId!==ORGANIZATION_ID||typeof account.address!=='string')throw new Error('TURNKEY_INVALID_ACCOUNT_IDENTITY');
+      if(!object(account)||!identifier(account.walletAccountId)||account.organizationId!==ORGANIZATION_ID||typeof account.address!=='string')throw new Error('TURNKEY_INVALID_ACCOUNT_IDENTITY');
       if(all.has(account.walletAccountId))throw new Error('TURNKEY_PAGINATION_OVERLAP');
-      all.set(account.walletAccountId,{walletAccountId:account.walletAccountId,walletId:account.walletId,organizationId:account.organizationId,address:account.address,addressFormat:account.addressFormat,curve:account.curve});
+      all.set(account.walletAccountId,{sourceKind:'wallet-account',walletAccountId:account.walletAccountId,walletId:account.walletId,organizationId:account.organizationId,address:account.address,addressFormat:account.addressFormat,curve:account.curve});
     }
     const next=response.accounts.at(-1).walletAccountId;
     if(next===after)throw new Error('TURNKEY_PAGINATION_STALLED');
@@ -41,16 +63,52 @@ export async function listSolanaAccounts(getWalletAccounts,{limit=100,maxPages=1
   }
   throw new Error('TURNKEY_DISCOVERY_CAP_REACHED_NOT_COMPLETE');
 }
+// Despite its SDK name, getPrivateKeys returns public metadata only. Do not add
+// getPrivateKey/export/sign/send methods to this operator's transport allowlist.
+export async function listStandaloneSolanaAccounts(getPrivateKeys,{maxKeys=1000,maxCandidates=100}={}){
+  boundedOption(maxKeys,DISCOVERY_LIMITS.metadataKeys);boundedOption(maxCandidates,DISCOVERY_LIMITS.candidates);
+  const response=await getPrivateKeys({organizationId:ORGANIZATION_ID});
+  if(!response||!Array.isArray(response.privateKeys))throw new Error('TURNKEY_INVALID_METADATA_RESPONSE');
+  if(response.privateKeys.length>maxKeys)throw new Error('TURNKEY_METADATA_CAP_REACHED_NOT_COMPLETE');
+  const accounts=[],seenKeys=new Set();
+  for(const key of response.privateKeys){
+    if(!object(key))throw new Error('TURNKEY_INVALID_METADATA_IDENTITY');
+    if(key.curve!=='CURVE_ED25519')continue;
+    if(!identifier(key.privateKeyId)||seenKeys.has(key.privateKeyId)||!Array.isArray(key.addresses)||key.addresses.length>DISCOVERY_LIMITS.addressesPerKey)throw new Error('TURNKEY_INVALID_METADATA_IDENTITY');
+    seenKeys.add(key.privateKeyId);const seenAddresses=new Set();
+    for(const address of key.addresses){
+      if(!object(address))throw new Error('TURNKEY_INVALID_METADATA_ADDRESS');
+      if(address.format!=='ADDRESS_FORMAT_SOLANA')continue;
+      if(!solanaAddress(address.address)||seenAddresses.has(address.address))throw new Error('TURNKEY_INVALID_METADATA_ADDRESS');
+      seenAddresses.add(address.address);
+      if(accounts.length>=maxCandidates)throw new Error('TURNKEY_CANDIDATE_CAP_REACHED_NOT_COMPLETE');
+      accounts.push({sourceKind:'standalone-key-public-metadata',privateKeyId:key.privateKeyId,organizationId:ORGANIZATION_ID,address:address.address,addressFormat:'ADDRESS_FORMAT_SOLANA',curve:'CURVE_ED25519'});
+    }
+  }
+  return accounts;
+}
+export async function discoverSolanaAccounts(client,options={}){
+  const accounts=await listSolanaAccounts(query=>client.getWalletAccounts(query),options.wallets);
+  if(accounts.length)return {accounts,metadataFallbackUsed:false};
+  return {accounts:await listStandaloneSolanaAccounts(query=>client.getPrivateKeys(query),options.metadata),metadataFallbackUsed:true};
+}
 export function readOnlyFetch(transport){
   return async(input,init={})=>{
     const url=String(input instanceof Request?input.url:input);
-    if(url!=='https://api.turnkey.com/public/v1/query/list_wallet_accounts'||init.method!=='POST')throw new Error('TURNKEY_READ_ONLY_ENDPOINT_DENIED');
-    const body=JSON.parse(String(init.body));
-    if(body.organizationId!==ORGANIZATION_ID||body.walletId!==undefined||body.includeWalletDetails!==true)throw new Error('TURNKEY_READ_ONLY_QUERY_DENIED');
-    return transport(input,{...init,redirect:'error',signal:AbortSignal.timeout(12000)});
+    const wallet=url==='https://api.turnkey.com/public/v1/query/list_wallet_accounts',metadata=url==='https://api.turnkey.com/public/v1/query/list_private_keys';
+    if((!wallet&&!metadata)||init.method!=='POST')throw new Error('TURNKEY_READ_ONLY_ENDPOINT_DENIED');
+    let body;try{if(typeof init.body!=='string'||Buffer.byteLength(init.body)>DISCOVERY_LIMITS.requestBytes)throw new Error();body=JSON.parse(init.body);}catch{throw new Error('TURNKEY_READ_ONLY_QUERY_DENIED');}
+    if(!object(body)||body.organizationId!==ORGANIZATION_ID)throw new Error('TURNKEY_READ_ONLY_QUERY_DENIED');
+    if(metadata&&!onlyKeys(body,['organizationId']))throw new Error('TURNKEY_READ_ONLY_QUERY_DENIED');
+    if(wallet){
+      if(!onlyKeys(body,['organizationId','includeWalletDetails','paginationOptions'])||body.includeWalletDetails!==true)throw new Error('TURNKEY_READ_ONLY_QUERY_DENIED');
+      if(body.paginationOptions!==undefined){const pagination=body.paginationOptions;if(!onlyKeys(pagination,['limit','after'])||typeof pagination.limit!=='string'||!/^([1-9]|[1-9][0-9]|100)$/.test(pagination.limit)||(pagination.after!==undefined&&!identifier(pagination.after)))throw new Error('TURNKEY_READ_ONLY_QUERY_DENIED');}
+    }
+    return boundedResponse(await transport(input,{...init,redirect:'error',signal:AbortSignal.timeout(12000)}),'TURNKEY_QUERY_RESPONSE_TOO_LARGE');
   };
 }
 export async function nativeSolBalances(accounts,transport=fetch){
+  if(!Array.isArray(accounts)||accounts.length>DISCOVERY_LIMITS.candidates)throw new Error('TURNKEY_CANDIDATE_CAP_REACHED_NOT_COMPLETE');
   let id=0;
   const rpc=async(method,params)=>{
     const requestId=++id;
@@ -68,7 +126,7 @@ export async function nativeSolBalances(accounts,transport=fetch){
   const rows=[];
   for(let offset=0;offset<accounts.length;offset+=100){
     const batch=accounts.slice(offset,offset+100);
-    if(batch.some(a=>a.curve!=='CURVE_ED25519'||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a.address)))throw new Error('TURNKEY_UNSUPPORTED_SOLANA_ACCOUNT');
+    if(batch.some(a=>a.curve!=='CURVE_ED25519'||!solanaAddress(a.address)))throw new Error('TURNKEY_UNSUPPORTED_SOLANA_ACCOUNT');
     const result=await rpc('getMultipleAccounts',[batch.map(a=>a.address),{commitment:'confirmed',encoding:'base64',dataSlice:{offset:0,length:0}}]);
     if(!result?.context||!Array.isArray(result.value)||result.value.length!==batch.length)throw new Error('TURNKEY_BALANCE_INVALID_CONTEXT');
     result.value.forEach((value,index)=>{
@@ -92,9 +150,10 @@ async function run(){
   try{
     const {Turnkey}=await import('@turnkey/sdk-server');
     const client=new Turnkey({apiBaseUrl:'https://api.turnkey.com',defaultOrganizationId:ORGANIZATION_ID,apiPublicKey:credentials.apiPublicKey,apiPrivateKey:credentials.apiPrivateKey}).apiClient();
-    const accounts=await nativeSolBalances(await listSolanaAccounts(input=>client.getWalletAccounts(input)),actualFetch);
+    const discovered=await discoverSolanaAccounts(client);
+    const accounts=await nativeSolBalances(discovered.accounts,actualFetch);
     const funded=accounts.filter(a=>a.availableForSimpleTransferLamports!==null&&BigInt(a.availableForSimpleTransferLamports)>=60005000n);
-    console.log(JSON.stringify({status:'READ_ONLY_IDENTIFICATION_COMPLETE',organizationId:ORGANIZATION_ID,binding:credentials.binding,accounts,sourceSelection:funded.length===1?'single-sufficient-source-candidate-requires-fresh-fee-and-owner-approval':funded.length>1?'owner-selection-required':'no-sufficient-verified-simple-transfer-source',transactionSigningOrBroadcast:false}));
+    console.log(JSON.stringify({status:'READ_ONLY_IDENTIFICATION_COMPLETE',organizationId:ORGANIZATION_ID,binding:credentials.binding,metadataFallbackUsed:discovered.metadataFallbackUsed,accounts,sourceSelection:funded.length===1?'single-sufficient-source-candidate-requires-fresh-fee-and-owner-approval':funded.length>1?'owner-selection-required':'no-sufficient-verified-simple-transfer-source',transactionSigningOrBroadcast:false}));
   }catch(error){
     // SDK errors may embed credentials or stamped payloads. Never log them.
     const code=error instanceof Error&&/^TURNKEY_[A-Z_]+$/.test(error.message)?error.message:'TURNKEY_AUTH_OR_QUERY_FAILED';
