@@ -1,0 +1,33 @@
+# Not applied. Configuration reference for the ONE EXISTING authorized service:
+# srv-daqon53tqb8s73bdceq0. Repoint in Settings; do not create a new Blueprint/service.
+# Keep its resource name/URL; displayed app name is Pump Opportunity Engine.
+# No worker, database, disk, or market credentials.
+services:
+  - type: web
+    name: meme-machine-dashboard-staging
+    repo: https://github.com/levonmendall/pump-opportunity-engine
+    branch: main
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci --include=dev && npm run compile
+    startCommand: npm run dashboard
+    healthCheckPath: /healthz
+    autoDeployTrigger: 'off'
+    envVars:
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: POE_ACCOUNT_ID
+        sync: false
+      - key: POE_INCEPTION_AT
+        sync: false
+      - key: POE_RUNTIME_RELEASE
+        sync: false
+      - key: POE_STRATEGY_VERSION
+        sync: false
+      - key: POE_VIEWER_USER
+        sync: false
+      - key: POE_VIEWER_PASSWORD
+        sync: false
+      - key: POE_INGEST_SECRET
+        sync: false

@@ -1,0 +1,51 @@
+
+> pump-opportunity-engine@0.1.0 test
+> node --import tsx --test test/*.test.ts
+
+✔ content-checked fallback patch is repeatable and native bigint binding stays unloaded (45.743272ms)
+✔ fallback patch rejects unreviewed version or contents without changing them (83.318909ms)
+✔ SPL u64 mint/account layouts retain integer values with JS fallback (0.858501ms)
+✔ current SDK CommonJS entry preserves known canonical PDA and versioned signed pool decoding (5.870636ms)
+✔ SDK quotes retain signed effective reserves, dynamic fee tier and ceil/floor behavior (4.30656ms)
+✔ scoped Jayson upgrade retains web3 browser-client request/callback interface (1.034723ms)
+✔ scoped TOML upgrade preserves Anchor local configuration parsing (2.884373ms)
+✔ fixture-only identity, fixed loaded SQLite, integer conversion and one-time inception (27.774413ms)
+✔ delayed full lifecycle counts gas once, locks/refunds deposits, preserves idempotency (4.864125ms)
+✔ failed single attempt charges gas and cannot cherry-pick a retry; expiry cannot fill (2.262652ms)
+✔ missing state never fills and pre-delay or stale quotes never become execution evidence (4.054526ms)
+✔ unknown liquidation blocks new risk, never converts an open position to zero (3.082266ms)
+✔ sticky day loss survives recovery, price recovery and restart; fresh next day can resume (4.656858ms)
+✔ entry pause cancels pending buys without abandoning position exit management (2.665659ms)
+✔ entry size includes gas/deposit, prevents adds and keeps reserved capital exclusive (3.190106ms)
+✔ wrong-sized exit cannot remove held tokens or refund its deposit (2.905474ms)
+✔ restart recovers unresolved reservations; SQLite backup restores coherent financial state (15.299564ms)
+✔ exclusive loaded SQLite connection rejects a second owner and wrong account (103.935216ms)
+✔ backward wall time cannot clear a persisted day pause (2.768481ms)
+✔ SOL exits work during USD outage and deposits stay locked until explicit refund (2.987655ms)
+✔ SIGKILL after durable order commit retains reservation and inception (206.6546ms)
+✔ SIGKILL during uncommitted write rolls back without reseeding account (172.040304ms)
+✔ PAPER rejects submission, simulation, wallet signing and provider trading without making requests (2.462528ms)
+✔ read client preserves explicit RPC errors and uses bounded HTTPS requests (25.724337ms)
+✔ oversized streamed responses are cancelled before accumulating beyond cap (1.495745ms)
+✔ reproduce captured migration and full-size quotes: 2026-10-26T19-41-20.717Z (40.552303ms)
+✔ reproduce captured migration and full-size quotes: 2026-10-26T19-42-16.130Z (19.896103ms)
+✔ Token-2022 metadata is supported; transfer semantics require explicit modeling (0.308266ms)
+✔ cache starts empty, accepts whole snapshots atomically, retains gaps and clones read model (10.069947ms)
+✔ identical retries ignore JSON key order without refreshing receiver/source time; regression/conflict rejected (2.612771ms)
+✔ wrong account/source, unexpected fields, nonfinite values and inconsistent chronology are rejected (0.703632ms)
+✔ fresh publishing heartbeat cannot disguise stale market/accounting, stopped runtime, or unreconciled data (0.987382ms)
+✔ dashboard separates public liveness, owner viewer and machine-only ingestion (58.941524ms)
+✔ HTTP rejects wrong account, conflict, regressions, malformed and oversized payloads (22.284051ms)
+✔ bounded exports contain no configuration secrets; HTML uses safe DOM and mobile layout (6.683531ms)
+✔ publisher does not send on construction; outages retain only latest snapshot and recover independently (24.503202ms)
+✔ publisher timeout is bounded, retains latest, sanitizes errors and never follows redirects (12.702777ms)
+✔ unconfigured source is a deployable authenticated waiting page and never adopts a sender identity (19.103084ms)
+✔ partial source identity fails configuration and credentials remain mandatory before source setup (0.778924ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3129.320666

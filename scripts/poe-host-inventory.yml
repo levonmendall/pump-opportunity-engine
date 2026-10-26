@@ -1,0 +1,51 @@
+# Administration bootstrap only; no project source checkout, trading, or cleanup.
+name: POE read-only host identity and capacity
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  inventory:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 3
+    steps:
+      - name: Verify current runner and EC2 identity without legacy application gates
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" -ne 0
+          test "$GITHUB_EVENT_NAME" = workflow_dispatch
+          python3 -I - <<'PY'
+          import json,os,pwd,shutil,subprocess,urllib.request
+          # IMDSv2 local metadata only. Never request role credentials or user-data.
+          http=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+          req=urllib.request.Request('http://169.254.169.254/latest/api/token',method='PUT',headers={'X-aws-ec2-metadata-token-ttl-seconds':'60'})
+          token=http.open(req,timeout=3).read().decode()
+          req=urllib.request.Request('http://169.254.169.254/latest/dynamic/instance-identity/document',headers={'X-aws-ec2-metadata-token':token})
+          identity=json.load(http.open(req,timeout=3))
+          actual={k:identity.get(k) for k in ['accountId','region','instanceId','instanceType','imageId','availabilityZone']}
+          print(json.dumps({'ec2':actual,'uid':os.getuid(),'user':pwd.getpwuid(os.getuid()).pw_name,'commands':{x:shutil.which(x) for x in ['aws','node','npm','systemctl','sudo','findmnt','lsblk']}}),flush=True)
+          assert actual['accountId']=='133857166104', 'AWS_ACCOUNT_MISMATCH'
+          assert actual['region']=='us-west-2', 'AWS_REGION_MISMATCH'
+          assert actual['instanceId']=='i-00044d4ea1471b957', 'EC2_INSTANCE_MISMATCH'
+          for command in [['df','-hT'],['free','-m'],['lsblk','-o','NAME,TYPE,SIZE,FSTYPE,MOUNTPOINTS'],['findmnt','-rn','-o','TARGET,SOURCE,FSTYPE,OPTIONS']]:
+              result=subprocess.run(command,capture_output=True,text=True,timeout=10)
+              print(json.dumps({'command':command,'returncode':result.returncode,'stdout':result.stdout[:20000]}),flush=True)
+          if shutil.which('aws'):
+              command=['aws','sts','get-caller-identity','--region','us-west-2','--output','json']
+              result=subprocess.run(command,capture_output=True,text=True,timeout=20)
+              if result.returncode==0:
+                  caller=json.loads(result.stdout);print(json.dumps({'sts':caller}),flush=True)
+                  assert caller['Account']=='133857166104', 'AWS_CALLER_ACCOUNT_MISMATCH'
+                  command=['aws','ec2','describe-instances','--region','us-west-2','--instance-ids','i-00044d4ea1471b957','--query','Reservations[].Instances[].{Id:InstanceId,State:State.Name,Type:InstanceType,Root:RootDeviceName,Devices:BlockDeviceMappings,Profile:IamInstanceProfile.Arn}','--output','json']
+                  result=subprocess.run(command,capture_output=True,text=True,timeout=20)
+                  print(json.dumps({'api':'ec2:DescribeInstances','returncode':result.returncode,'result':json.loads(result.stdout) if result.returncode==0 else 'unavailable; inspect role authorization without changing it'}),flush=True)
+              else:print(json.dumps({'api':'sts:GetCallerIdentity','returncode':result.returncode,'result':'unavailable; no credential or permission change attempted'}),flush=True)
+          PY

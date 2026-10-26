@@ -1,0 +1,7 @@
+{"receivedAt":"2026-10-26T19:36:13.118Z","kind":"open","data":{}}
+{"receivedAt":"2026-10-26T19:36:13.147Z","kind":"message","data":{"message":"Subscribed to 'migration' events."}}
+{"receivedAt":"2026-10-26T19:36:57.952Z","kind":"close","data":{"code":1005}}
+{"receivedAt":"2026-10-26T19:37:35.145Z","kind":"open","data":{}}
+{"receivedAt":"2026-10-26T19:37:35.175Z","kind":"message","data":{"message":"Subscribed to 'migration' events."}}
+{"receivedAt":"2026-10-26T19:37:41.700Z","kind":"message","data":{"signature":"43ohkZqttTQtcwhLsv88cTeBQfE2gFnppCFUtGH5jqj7zfQmE9pZZdNA8rwR4Ax7KtinSUV58bnwJbmqfu1mdPGd","mint":"A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump","txType":"migrate","pool":"pump-amm"}}
+{"receivedAt":"2026-10-26T19:37:41.701Z","kind":"close","data":{"code":1006}}
