@@ -1,5 +1,12 @@
 # Pump Opportunity Engine
 
+**Dashboard access (2026-10-26):** The existing free Render viewer at
+https://meme-machine-dashboard-staging.onrender.com is public read-only with
+`POE_PUBLIC_VIEWER=true`. No visitor username or password is required. Published
+balances, positions, trades, decisions and exports are publicly visible.
+Only `POST /api/snapshot` requires `POE_INGEST_SECRET` as a machine-only
+Bearer token; no trading or wallet credentials belong on Render.
+
 Independent Solana/PumpSwap PAPER project. **Work in progress, not a deployed trader.**
 Live signing, transaction submission and PumpPortal trading endpoints are excluded.
 See [status](STATUS.md), [implementation plan](PLAN.md), and [runbook](docs/RUNBOOK.md).
@@ -31,7 +38,7 @@ simulated accounting state in disposable temporary accounts. No fixture balances
 or chart history are published as forward performance.
 
 The reporting service is independently runnable after `npm run compile` with
-the reporting identifiers/credentials listed in [.env.example](.env.example).
+the reporting identifiers and publishing credential listed in [.env.example](.env.example).
 Run `npm run dashboard`; it binds `0.0.0.0:$PORT`, starts empty, and only accepts
 authenticated complete snapshots. No real source currently publishes to it.
 
@@ -52,7 +59,7 @@ explicit transfer approval.
 
 The POE viewer is live at https://meme-machine-dashboard-staging.onrender.com,
 release3af3f9ed9abde5178379e18e986e07ab41965d22, on the existing free service.
-Authentication and mobile checks pass. It correctly shows Awaiting POE data;
+The old Basic-auth verification is superseded by the public-viewer release 2bd35bf. The awaiting-data state remains source-dependent;
 the authoritative EC2 account/source is not installed yet. See the runbook for
 the one-time root bootstrap. No source edit, publisher shutdown or deploy click
 needs repeating. No second service or paid upgrade is authorized.
