@@ -25,9 +25,7 @@ services:
         sync: false
       - key: POE_STRATEGY_VERSION
         sync: false
-      - key: POE_VIEWER_USER
-        sync: false
-      - key: POE_VIEWER_PASSWORD
-        sync: false
+      - key: POE_PUBLIC_VIEWER
+        value: 'true'
       - key: POE_INGEST_SECRET
         sync: false
