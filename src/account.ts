@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync, chmodSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, statSync, chmodSync, mkdirSync, realpathSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Database from 'better-sqlite3';
@@ -94,7 +94,7 @@ export async function runAccountCommand(argv: string[], wallNow = Date.now()): P
   } finally { ledger.close(); }
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+if (process.argv[1] && existsSync(process.argv[1]) && realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])) {
   process.umask(0o077);
   try { process.stdout.write(JSON.stringify(await runAccountCommand(process.argv.slice(2))) + '\n'); }
   catch (e) { process.stderr.write((e instanceof Error ? e.message : 'account command failed') + '\n'); process.exitCode = 1; }

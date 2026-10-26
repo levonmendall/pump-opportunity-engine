@@ -309,7 +309,7 @@ export async function runtimeCommand(path:string,command:string){
   });
 }
 
-if(process.argv[1]&&fileURLToPath(import.meta.url)===resolve(process.argv[1])){
+if(process.argv[1]&&existsSync(process.argv[1])&&realpathSync(fileURLToPath(import.meta.url))===realpathSync(process.argv[1])){
   const required=(key:string)=>{const value=process.env[key];if(!value)throw new Error(`missing configuration:${key}`);return value;};
   const command=process.argv[2]??'run';
   try{

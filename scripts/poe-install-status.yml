@@ -34,6 +34,27 @@ jobs:
           properties=dict(line.split('=',1) for line in result.stdout.splitlines() if '=' in line)
           assert set(properties)<=set(['LoadState','ActiveState','SubState','User','NRestarts','Result'])
           emit(instance=identity['instanceId'],uid=os.getuid(),service=properties,readOnly=True)
+          diagnostic_properties=['LoadState','ActiveState','SubState','User','Group','UnitFileState','ExecMainCode','ExecMainStatus','ExecMainStartTimestamp','ExecMainExitTimestamp','FragmentPath','DropInPaths']
+          diagnostic=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property='+','.join(diagnostic_properties)],capture_output=True,text=True,timeout=10)
+          metadata=dict(line.split('=',1) for line in diagnostic.stdout.splitlines() if '=' in line)
+          command=['/usr/bin/systemctl','start','poe-runtime.service']
+          permission=subprocess.run(['/usr/bin/sudo','-n','-l','--',*command],capture_output=True,text=True,timeout=10)
+          presence={}
+          for name in ['/var/lib/poe','/var/lib/poe-public','/var/lib/poe-public/status.json','/etc/poe','/etc/systemd/system/poe-runtime.service.d/reporting.conf']:
+              try:
+                  s=pathlib.Path(name).lstat()
+                  presence[name]={'exists':True,'mode':oct(stat.S_IMODE(s.st_mode)),'ownerUid':s.st_uid,'isSymlink':stat.S_ISLNK(s.st_mode)}
+              except FileNotFoundError:presence[name]={'exists':False}
+              except PermissionError:presence[name]={'readableMetadata':False,'reason':'permission-denied; no bypass'}
+          journal=subprocess.run(['/usr/bin/journalctl','--unit=poe-runtime.service','--since=-1h','--lines=20','--output=json','--no-pager'],capture_output=True,text=True,timeout=10)
+          journal_categories=[]
+          for line in journal.stdout.splitlines()[-20:]:
+              try:
+                  row=json.loads(line);message=str(row.get('MESSAGE','')).lower()
+                  categories=[word for word in ['existing authoritative account required','missing configuration','credential','permission denied','observer running','fresh timestamped','not found','failed','unsupported','sqlite','database','flow_not_verified'] if word in message]
+                  if categories:journal_categories.append({'atMicros':row.get('__REALTIME_TIMESTAMP'),'categories':categories})
+              except Exception:pass
+          emit(diagnostic=metadata,presence=presence,exactStartPermitted=permission.returncode==0,journalReturnCode=journal.returncode,journalCategories=journal_categories,credentialsRead=False,financialFilesRead=False,permissionsChanged=False)
           try:
               owner=pwd.getpwnam('poe-runtime').pw_uid
               path=pathlib.Path('/var/lib/poe-public/status.json');parent=path.parent.lstat();file=path.lstat()

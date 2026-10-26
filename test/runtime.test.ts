@@ -1,8 +1,11 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,rmSync,statSync,readFileSync,existsSync,chmodSync,writeFileSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,rmSync,statSync,readFileSync,existsSync,chmodSync,writeFileSync,symlinkSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 import {PaperLedger,type UsdPrice} from '../src/ledger.js';
 import {PaperObservationRuntime,runtimeCommand} from '../src/runtime.js';
 import {createServer,createConnection} from 'node:net';
@@ -172,4 +175,44 @@ test('public-file failures and unsafe paths do not halt financial, feed or publi
   const wrong=new PaperObservationRuntime({...next,release:'fixture-release',connectFeed:false,publicStatusPath:wrongPath});
   try{await wrong.start();assert.equal(wrong.command('status').publicStatusUnavailable,true);assert.equal(wrong.command('status').running,true);assert.equal(readFileSync(wrongPath,'utf8'),'fixture-private-file');}
   finally{await wrong.close();rmSync(next.directory,{recursive:true});}
+});
+test('compiled CLI dispatches run, status and safe-stop through the release symlink without reseeding',async()=>{
+  const project=fileURLToPath(new URL('../',import.meta.url));
+  const build=mkdtempSync(join(project,'.poe-entrypoint-fixture-'));
+  const f=fixture(),run=promisify(execFile);
+  let runtime:PaperObservationRuntime|undefined;
+  const env={...process.env};
+  for(const key of Object.keys(env))if(key.startsWith('POE_')||key==='CREDENTIALS_DIRECTORY')delete env[key];
+  env.POE_SOCKET_PATH=f.socketPath;
+  try{
+    await run(process.execPath,['node_modules/typescript/bin/tsc','--outDir',join(build,'compiled'),'--noEmit','false'],{cwd:project,env,timeout:20_000,maxBuffer:128*1024});
+    symlinkSync(join(build,'compiled'),join(build,'current'),'dir');
+    symlinkSync(project,join(build,'source-current'),'dir');
+    const direct=join(build,'compiled/src/runtime.js'),alias=join(build,'current/src/runtime.js');
+    const imported=await run(process.execPath,['--input-type=module','-e',`await import(${JSON.stringify(pathToFileURL(direct).href)});process.stdout.write('imported');`,'-'],{cwd:project,env,timeout:5000,maxBuffer:128*1024});
+    assert.equal(imported.stdout,'imported');assert.equal(imported.stderr,'');
+    const absent=join(f.directory,'must-never-be-seeded.sqlite');
+    for(const entry of [direct,alias]){
+      await assert.rejects(run(process.execPath,[entry,'run'],{cwd:project,env:{...env,POE_DB_PATH:absent,POE_ACCOUNT_ID:'poe-fixture-cli-entrypoint'},timeout:5000,maxBuffer:128*1024}),
+        (error:unknown)=>{const e=error as Error&{code:number;stderr:string};return e.code===1&&/existing authoritative account required; runtime never seeds/.test(e.stderr);});
+      assert.equal(existsSync(absent),false);
+    }
+    const inception=f.ledger.state().inceptionAt,cash=f.ledger.state().lamports;
+    runtime=new PaperObservationRuntime({...f,release:'fixture-cli-entrypoint',connectFeed:false,priceProvider:async()=>f.price()});
+    await runtime.start();
+    for(const entry of [direct,alias]){
+      const result=JSON.parse((await run(process.execPath,[entry,'status'],{cwd:project,env,timeout:5000,maxBuffer:128*1024})).stdout);
+      assert.equal(result.accountId,'poe-fixture-observer');assert.equal(result.running,true);assert.equal(result.liveTrading,false);
+      assert.equal(result.financial.entriesEnabled,false);assert.equal(result.financial.inceptionAt,inception);
+    }
+    const tsx=JSON.parse((await run(process.execPath,['--import','tsx',join(build,'source-current/src/runtime.ts'),'status'],{cwd:project,env,timeout:5000,maxBuffer:128*1024})).stdout);
+    assert.equal(tsx.running,true);assert.equal(tsx.financial.entriesEnabled,false);
+    const stopped=JSON.parse((await run(process.execPath,[alias,'safe-stop'],{cwd:project,env,timeout:5000,maxBuffer:128*1024})).stdout);
+    assert.equal(stopped.safeToExit,true);
+    for(let attempt=0;existsSync(f.socketPath)&&attempt<100;attempt++)await new Promise(resolve=>setTimeout(resolve,10));
+    assert.equal(existsSync(f.socketPath),false);
+    const recovered=new PaperLedger(f.path,'poe-fixture-observer');
+    try{assert.equal(recovered.state().inceptionAt,inception);assert.equal(recovered.state().lamports,cash);assert.equal(recovered.state().controls.entriesEnabled,false);}
+    finally{recovered.close();}
+  }finally{if(runtime)await runtime.close();else f.ledger.close();rmSync(f.directory,{recursive:true});rmSync(build,{recursive:true});}
 });

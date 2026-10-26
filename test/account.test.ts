@@ -1,8 +1,11 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,rmSync,writeFileSync,chmodSync,existsSync} from 'node:fs';
+import {mkdtempSync,rmSync,writeFileSync,chmodSync,existsSync,symlinkSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 import {PaperLedger,DisposableLedger,type UsdPrice,type RuntimeReadiness} from '../src/ledger.js';
 import Database from 'better-sqlite3';
 import {runAccountCommand} from '../src/account.js';
@@ -234,4 +237,34 @@ test('offline commands require explicit init and restore a consistent account wi
   const restored=join(dir,'restored.sqlite');await runAccountCommand(['restore','--db',restored,'--account','poe-cli-disposable-test','--input',backup],AT+2);
   const l=new PaperLedger(restored,'poe-cli-disposable-test');try{assert.equal(l.state().inceptionAt,AT);assert.equal(l.state().lamports,initial.cashLamports);assert.equal(l.state().controls.entriesEnabled,false);}finally{l.close();}
   await assert.rejects(runAccountCommand(['restore','--db',restored,'--account','poe-cli-disposable-test','--input',backup],AT+2),/must not exist/);
+});
+test('compiled and TSX account CLIs dispatch through directory symlinks and preserve existing inception',async t=>{
+  const {dir,path}=setup(t),project=fileURLToPath(new URL('../',import.meta.url));
+  const build=mkdtempSync(join(project,'.poe-account-entrypoint-fixture-')),run=promisify(execFile);
+  t.after(()=>rmSync(build,{recursive:true,force:true}));
+  const env={...process.env};for(const key of Object.keys(env))if(key.startsWith('POE_')||key==='CREDENTIALS_DIRECTORY')delete env[key];
+  await run(process.execPath,['node_modules/typescript/bin/tsc','--outDir',join(build,'compiled'),'--noEmit','false'],{cwd:project,env,timeout:20_000,maxBuffer:128*1024});
+  symlinkSync(join(build,'compiled'),join(build,'current'),'dir');symlinkSync(project,join(build,'source-current'),'dir');
+  const direct=join(build,'compiled/src/account.js'),alias=join(build,'current/src/account.js');
+  const imported=await run(process.execPath,['--input-type=module','-e',`await import(${JSON.stringify(pathToFileURL(direct).href)});process.stdout.write('imported');`,'-'],{cwd:project,env,timeout:5000,maxBuffer:128*1024});
+  assert.equal(imported.stdout,'imported');assert.equal(imported.stderr,'');
+  const missing=join(dir,'not-initialized.sqlite');
+  await assert.rejects(run(process.execPath,[alias,'status','--db',missing,'--account','poe-cli-disposable-test'],{cwd:project,env,timeout:5000,maxBuffer:128*1024}),
+    (error:unknown)=>{const e=error as Error&{code:number;stderr:string};return e.code===1&&/account database not found/.test(e.stderr);});
+  assert.equal(existsSync(missing),false);
+  const input=join(dir,'input.json');writeFileSync(input,JSON.stringify({price:price(AT)}),{mode:0o600});
+  await runAccountCommand(['init','--db',path,'--account','poe-cli-disposable-test','--input',input],AT);
+  const args=['status','--db',path,'--account','poe-cli-disposable-test'];
+  for(const entry of [direct,alias]){
+    const status=JSON.parse((await run(process.execPath,[entry,...args],{cwd:project,env,timeout:5000,maxBuffer:128*1024})).stdout);
+    assert.equal(status.accountId,'poe-cli-disposable-test');assert.equal(status.inceptionAt,AT);
+    assert.equal(status.cashLamports,'10000000000');assert.equal(status.entriesEnabled,false);assert.equal(status.liveTrading,false);
+  }
+  const tsx=JSON.parse((await run(process.execPath,['--import','tsx',join(build,'source-current/src/account.ts'),...args],{cwd:project,env,timeout:5000,maxBuffer:128*1024})).stdout);
+  assert.equal(tsx.inceptionAt,AT);assert.equal(tsx.entriesEnabled,false);
+  const stopped=JSON.parse((await run(process.execPath,[alias,'safe-stop','--db',path,'--account','poe-cli-disposable-test','--id','fixture-cli-stop'],{cwd:project,env,timeout:5000,maxBuffer:128*1024})).stdout);
+  assert.equal(stopped.safeToExit,true);
+  const ledger=new PaperLedger(path,'poe-cli-disposable-test');
+  try{assert.equal(ledger.state().inceptionAt,AT);assert.equal(ledger.state().lamports,'10000000000');assert.equal(ledger.state().controls.entriesEnabled,false);}
+  finally{ledger.close();}
 });
