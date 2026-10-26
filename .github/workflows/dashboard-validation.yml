@@ -1,0 +1,28 @@
+name: POE dashboard validation
+on:
+  pull_request:
+    paths:
+      - 'src/dashboard.ts'
+      - 'src/reporting.ts'
+      - 'test/reporting.test.ts'
+      - 'package*.json'
+      - '.github/workflows/dashboard-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck
+        run: npm run build
+      - name: Offline regressions
+        run: npm test
