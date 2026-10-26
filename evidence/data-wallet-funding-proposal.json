@@ -1,0 +1,38 @@
+{
+  "project": "pump-opportunity-engine",
+  "checkedAt": "2026-10-26T20:04:34.377Z",
+  "destination": "6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ",
+  "balance": {
+    "context": {
+      "apiVersion": "4.3.2",
+      "slot": 461792869
+    },
+    "value": 0
+  },
+  "proposedTransferLamports": "60000000",
+  "retainedFloorLamports": "20000000",
+  "maxDataSpendLamports": "40000000",
+  "dailyCapLamports": "10000000",
+  "usdCaps": {
+    "daily": "2.50",
+    "total": "10.00"
+  },
+  "feeQuote": {
+    "context": {
+      "apiVersion": "4.3.2",
+      "slot": 461792871
+    },
+    "value": 5000,
+    "kind": "representative unsigned one-signature two-account SOL transfer; actual Turnkey source unresolved",
+    "priorityFeeLamports": 0,
+    "requiresFreshQuoteBeforeApproval": true
+  },
+  "turnkey": {
+    "accessibleInWorkspace": false,
+    "publicSourceAddress": null,
+    "availableSol": null
+  },
+  "transferApproval": "NOT_REQUESTED_OR_GRANTED",
+  "signed": false,
+  "broadcast": false
+}

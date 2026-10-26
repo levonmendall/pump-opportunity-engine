@@ -6,9 +6,11 @@ Reconciliation: disposable fixtures only; no forward account to reconcile.
 Costs: zero metered subscriptions and no new cloud resources; invoices not accessed.
 Coverage: two selected migration observations, not a full-market benchmark.
 Dashboard: built/tested locally; no deployed URL or EC2 source yet.
-Main blocker: fresh EC2 identity/inventory needs the owner to dispatch the prepared
-read-only administration workflow. Billing-key attachment and Render source/settings
-access also remain pending.
+Main blocker: the fresh EC2 inventory is still unsubmitted (not queued or runner-blocked).
+The prepared read-only workflow needs one owner dispatch. Existing Turnkey source
+address/access and Render source/settings access also remain unresolved. A separate
+unfunded PumpPortal billing wallet/key now exists in protected storage outside git;
+its funding proposal is not yet ready for approval without sender verification.
 
 | Required status | Evidence-based state |
 |---|---|
@@ -89,8 +91,14 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
   deployment is claimed. Configuration now targets the existing service name;
   it must not be used to create a second Blueprint/service. Auto-deploy remains off.
 - Data measurement budget approved:0.01 SOL/day,0.04 SOL/four-day total, also
-  $2.50/day/$10 total, whichever binds first;0.02 SOL wallet floor. Key/wallet are
-  not attached and no paid authentication/event-rate experiment has run.
+  $2.50/day/$10 total, whichever binds first;0.02 SOL wallet floor. Separate billing
+  wallet `6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ` was created and confirmed
+  unfunded. Its key/recovery bundle remains0600 outside git; no metered subscription
+  or runtime credential installation has occurred. Existing Turnkey is the possible
+  funding source; no replacement treasury or Turnkey key export/signing was attempted.
+  Proposed0.06SOL recipient funding and representative5000lamport fee are detailed
+  in docs/FUNDING.md. Actual sender/address/balance/fee and durable owner recovery
+  must be verified before asking for transfer approval. No transfer approved/sent.
 - No critical alert-delivery channel is verified.
 
 ## Remaining implementation

@@ -44,3 +44,25 @@
 All 24/72-hour acceptance clocks remain unstarted. No real assets were transacted,
 no signatures/submissions requested, no legacy publisher stopped yet, and no
 independently running trader is claimed. Remaining work/access is in STATUS.md.
+
+Follow-up dependency resolution:
+
+- Fresh GitHub queries again show no inventory submitted, queued, waiting or
+  running. Runner availability and AWS IAM failure are not established. Updated
+  the same host-only workflow at admin commit1b53658bc29936c00901f57a35556faac3a995f4
+  to include bounded Turnkey path/presence metadata only; no secret contents read.
+- No Turnkey credential/outbound identity is attached here and no Turnkey tool
+  is available. Administration/source filename metadata and bounded code search
+  did not reveal a usable Turnkey address/access path. Existing EC2 integration
+  is not claimed absent; it remains to be inspected through authorized access.
+- Created exactly one unfunded PumpPortal billing wallet through documented wallet
+  creation API. Credentials were written directly to protected0700/0600 storage
+  outside this repository, without printing provider responses or secrets.
+  Public destination/balance and representative unsigned transfer fee are in
+  evidence/data-wallet-funding-proposal.json. No Turnkey private key was accessed,
+  no signing test or funding occurred, and transfer approval is not yet requested.
+- Added a secret-silent exclusive credential installer and disposable test;
+  runtime installation remains pending. Added docs/FUNDING.md for exact budget,
+  secure attachment and owner recovery requirements.
+- Render remains on the legacy free/Python deployment dep-dbff60e7bikc73dano8g.
+  Connector still lacks source/runtime update; no Render mutation or second service.

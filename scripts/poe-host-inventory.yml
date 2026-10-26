@@ -38,6 +38,35 @@ jobs:
           for command in [['df','-hT'],['free','-m'],['lsblk','-o','NAME,TYPE,SIZE,FSTYPE,MOUNTPOINTS'],['findmnt','-rn','-o','TARGET,SOURCE,FSTYPE,OPTIONS']]:
               result=subprocess.run(command,capture_output=True,text=True,timeout=10)
               print(json.dumps({'command':command,'returncode':result.returncode,'stdout':result.stdout[:20000]}),flush=True)
+          # Presence/path metadata only. Do not read secret files, Environment
+          # values, process arguments, wallet material or application databases.
+          import pathlib,re,stat
+          names=sorted(k for k in os.environ if k.startswith(('TURNKEY_','TK_')))
+          print(json.dumps({'runnerTurnkeyVariableNamesOnly':names,'note':'Runner environment is not the trading service environment; absence is inconclusive.'}),flush=True)
+          paths=[]
+          for root in ['/etc','/opt','/srv']:
+              for current,dirs,files in os.walk(root,followlinks=False):
+                  depth=len(pathlib.Path(current).relative_to(root).parts)
+                  if depth>=2:dirs[:]=[]
+                  for name in dirs+files:
+                      if 'turnkey' not in name.lower():continue
+                      path=pathlib.Path(current)/name
+                      try:
+                          st=path.lstat();paths.append({'path':str(path),'uid':st.st_uid,'gid':st.st_gid,'mode':oct(stat.S_IMODE(st.st_mode))})
+                      except OSError:pass
+                      if len(paths)>=32:break
+                  if len(paths)>=32:break
+              if len(paths)>=32:break
+          print(json.dumps({'turnkeyPathMetadataOnly':paths,'contentsRead':False}),flush=True)
+          if shutil.which('systemctl'):
+              result=subprocess.run(['systemctl','list-units','--type=service','--all','--plain','--no-legend','--no-pager'],capture_output=True,text=True,timeout=10)
+              units=[]
+              for line in result.stdout.splitlines():
+                  parts=line.split()
+                  if parts and re.fullmatch(r'[A-Za-z0-9_.@-]+\.service',parts[0]) and re.search('turnkey|wallet|meme|pons',parts[0],re.I):units.append(parts[0])
+              for unit in units[:24]:
+                  result=subprocess.run(['systemctl','show',unit,'--property=User,FragmentPath,EnvironmentFiles'],capture_output=True,text=True,timeout=5)
+                  print(json.dumps({'unitMetadataOnly':unit,'returncode':result.returncode,'properties':result.stdout[:4000]}),flush=True)
           if shutil.which('aws'):
               command=['aws','sts','get-caller-identity','--region','us-west-2','--output','json']
               result=subprocess.run(command,capture_output=True,text=True,timeout=20)

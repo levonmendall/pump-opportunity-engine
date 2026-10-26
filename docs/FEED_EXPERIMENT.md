@@ -14,9 +14,12 @@ Keep the publisher secret separate. The data key is wallet-capable; no treasury
 or legacy funds may be present. Verify the owner-supplied key/address relationship
 without assuming any arbitrary public address proves which wallet the key bills.
 
-Before network use, inspect environment credential readiness. No secret or
-wallet is currently attached, so metered authentication has NOT been tested.
-The implemented free integration intentionally never loads this secret.
+Before network use, inspect environment credential readiness. A separate unfunded
+provider wallet/key has now been created in protected storage outside git; it is
+not installed in the runtime and metered authentication has NOT been tested.
+The implemented free integration intentionally never loads this secret. See
+[FUNDING.md](FUNDING.md) for the existing Turnkey funding-source dependency and
+the source/destination/amount/fee checks required before transfer approval.
 
 Next bounded experiment (requires attached key and implementation review):
 
