@@ -57,8 +57,11 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
 
 - Local standalone repository: `/workspace/pump-opportunity-engine`; no legacy
   application source/schema/strategy copied. Owner has now created the separate
-  remote after local createRepository permission was denied. Remote write/access
-  verification is in progress. Local GitHub REST CLI returned401; connector works.
+  remote after local createRepository permission was denied. Connector verified
+  repository1434864545 with push access; git push and remote main SHA verification
+  succeeded. Owner-created repository is public; the published source/evidence
+  passed a focused secret-pattern check. Local REST CLI returned401, while the
+  connector and git transport work.
 - Existing admin repository is accessible through the GitHub connector, with
   admin/push metadata. Runner22 (`meme-machine-ec2-admin`) last inspected historical
   job121742283141 ran at17:43 UTC. This is not current connectivity proof.

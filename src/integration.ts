@@ -3,6 +3,7 @@ import {HttpsProxyAgent} from 'https-proxy-agent';
 import {PublicKey} from '@solana/web3.js';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {performance} from 'node:perf_hooks';
+import {execFileSync} from 'node:child_process';
 import {ReadOnlyRpc,dataMessage} from './network.js';
 import {Recorder,json} from './recorder.js';
 import {verifyMigration,quotePool} from './pool.js';
@@ -14,6 +15,8 @@ const recorder=new Recorder(`evidence/integration-${runId}.ndjson`);
 const rpc=new ReadOnlyRpc(process.env.POE_RPC_URL??undefined);
 const start=performance.now();let proved=false;
 const MAINNET_GENESIS='5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+const sourceVersion=(()=>{try{return {commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim(),dirty:execFileSync('git',['status','--porcelain','--','src','package.json','package-lock.json','scripts/patch-bigint-buffer.mjs'],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim().length>0};}catch{return {commit:null,dirty:true};}})();
+recorder.record('run-configuration',{sourceVersion,node:process.version,sdk:'@pump-fun/pump-swap-sdk@2.2.0',strategy:'NOT_IMPLEMENTED',mode:'QUOTE_ONLY',sizeLamports:'10000000',maxMarketAgeMs:30000,paidSubscriptions:false});
 async function prove(data:any,firstReceivedAt:string){
   if(typeof data.mint!=='string'||typeof data.signature!=='string')throw new Error('MISSING_MIGRATION_FIELDS');
   const mint=new PublicKey(data.mint);
@@ -34,7 +37,7 @@ async function prove(data:any,firstReceivedAt:string){
     if(!origin)throw new Error('ACTUAL_MIGRATION_NOT_FOUND_IN_BOUNDED_HISTORY');
   }
   const quote=await quotePool(rpc,mint,10_000_000n,recorder,origin.slot);
-  const result={project:'pump-opportunity-engine',runId,firstReceivedAt,feedSignature:data.signature,origin,quote,rpc:{calls:rpc.calls,bytes:rpc.bytes,durationsMs:rpc.durationsMs},wallDurationMs:performance.now()-start,gate:'A_REAL_INTEGRATION_ONLY',paidDataEvents:0,paidDataCostSol:'0',naturalPaperTrades:0};
+  const result={project:'pump-opportunity-engine',runId,sourceVersion,firstReceivedAt,feedSignature:data.signature,origin,quote,rpc:{calls:rpc.calls,bytes:rpc.bytes,durationsMs:rpc.durationsMs},wallDurationMs:performance.now()-start,gate:'A_REAL_INTEGRATION_ONLY',paidDataEvents:0,paidDataCostSol:'0',naturalPaperTrades:0};
   writeFileSync(`evidence/integration-proof-${runId}.json`,json(result)+'\n');
   console.log(json(result));proved=true;
 }
