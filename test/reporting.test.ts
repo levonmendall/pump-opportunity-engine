@@ -134,6 +134,26 @@ test('public viewer never weakens ingestion secret or permits partial source ide
   assert.throws(() => createDashboard({ ...config, viewerUser: '', viewerPassword: '', publicViewer: true, accountId: 'other' }), /complete source identity/);
 });
 
+test('command center UI is accessible and purely cosmetic, not a trading control', async t => {
+  const app = await serve(t, { ...config, viewerUser: '', viewerPassword: '', publicViewer: true });
+  const resp = await app.get('/');
+  assert.equal(resp.status, 200);
+  const html = await resp.text();
+  assert.match(html, /POE \/\/ Opportunity Command Center/);
+  assert.match(html, /role="status"/);
+  assert.match(html, /prefers-reduced-motion/);
+  assert.match(html, /aria-label="Dashboard navigation"/);
+  assert.match(html, /aria-hidden="true"/);
+  assert.match(html, /No authenticated EC2 snapshot has been received/);
+  assert.match(html, /NO VERIFIED P&L SERIES/);
+  assert.match(html, /Missing samples remain gaps/);
+  assert.ok(!html.includes('onerror='));
+  assert.ok(!html.includes('onclick='));
+  assert.ok(!html.includes('fetch(\'http'));
+  assert.equal((await app.get('/api/snapshot')).status, 503);
+  assert.equal((await app.post(sample(), 'Bearer not-the-machine-key')).status, 401);
+});
+
 test('HTTP rejects wrong account, conflict, regressions, malformed and oversized payloads', async t => {
   const app = await serve(t); await app.post(sample('2'));
   assert.equal((await app.post(sample('1'))).status, 409);
@@ -157,9 +177,9 @@ test('bounded exports contain no configuration secrets; HTML uses safe DOM and m
   assert.ok(!exported.includes(config.ingestionSecret)); assert.ok(!exported.includes(config.viewerPassword));
   const response = await app.get('/', viewer); const html = await response.text();
   assert.match(response.headers.get('content-security-policy')!, /frame-ancestors 'none'/);
-  assert.match(html, /width=device-width/); assert.match(html, /max-width:700px/); assert.match(html, /textContent/);
+  assert.match(html, /width=device-width/); assert.match(html, /@media\(max-width:640px\)/); assert.match(html, /textContent/);
   assert.ok(!html.includes('.innerHTML')); assert.ok(!html.includes(config.ingestionSecret)); assert.ok(!html.includes('<img src=x onerror'));
-  assert.match(html, /LIVE DISABLED/); assert.match(html, /Zero reference/); assert.match(html, /UTC/);
+  assert.match(html, /LIVE EXECUTION DISABLED/); assert.match(html, /Zero is the reference line/); assert.match(html, /UTC/);
 });
 
 test('publisher does not send on construction; outages retain only latest snapshot and recover independently', async () => {
@@ -204,9 +224,9 @@ test('unconfigured source is a deployable authenticated waiting page and never a
   assert.equal((await app.get('/')).status, 401);
   const response = await app.get('/', viewer); const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /Awaiting POE data/);
+  assert.match(html, /Awaiting authoritative data/);
   assert.ok(!html.includes('$1,000')); assert.ok(!html.includes('fixture-reporting-account'));
-  assert.match(html, /<main id="content" hidden>/);
+  assert.match(html, /class="stat top empty"/); assert.match(html, /NO SYNTHETIC BALANCES OR TRADES/);
   assert.deepEqual(await (await app.get('/api/snapshot', viewer)).json(), { state: 'waiting', message: 'Awaiting POE data' });
   const status = await (await app.get('/status', viewer)).json() as { state: string; message: string; sourceConfigured: boolean; generatedAt: string | null };
   assert.equal(status.state, 'waiting'); assert.equal(status.message, 'Awaiting POE data');
