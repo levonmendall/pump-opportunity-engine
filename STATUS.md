@@ -37,17 +37,19 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
 - Real samples exercise positive and negative signed virtual quote reserves.
   Current SDK 2.2.0 uses dynamic fee tiers, retained-fee payout limits and integer
   quote math. Older examples/version notes were not treated as present behavior.
-- Latest bounded quote proof (19:50:12.096 UTC): pool
-  `6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv`, slot 461788816;
-  10,000,000 input lamports -> 1,968,651,183 base units -> 9,801,324 sell lamports
-  at the same observed state. Five RPC reads, 33,033 response bytes, 588 ms total.
+- Latest bounded quote proof (19:57:36.647 UTC), clean code8172a30589a4b38a2d05b0ecb640a24aa5581b68:
+  pool `6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv`, slot461790901;
+  10,000,000 input lamports -> 1,712,049,603 base units -> 9,801,369 sell lamports
+  at the same observed state. Five RPC reads,33,033 response bytes,764ms total.
   These are quotes without gas/rent, not an executed round trip or profit.
 - Loaded better-sqlite3 13.0.3 is SQLite 3.53.4, including the relevant WAL fix.
   Tests cover delayed disposable lifecycle, durable reservation/inception, real
   SIGKILL recovery, unknown marks, sticky day pause, deposit custody and backup restore.
 - Reporting tests exercise separate viewer/machine authentication, wrong identity,
   conflicts/regressions, stale sources, cache loss, payload bounds and publication
-  outage/recovery. Fixtures are never authoritative dashboard or performance data.
+  outage/recovery. Unconfigured-source bootstrap says Awaiting POE data and rejects
+  every ingestion with503. Chromium checked390px layout, escaped token metadata,
+  and explicit P&L gaps. Fixtures are never authoritative performance data.
 - Dependency mitigation and remaining scanner findings are in
   [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md). Production audit is not clean:
   four high findings propagate from bigint-buffer's scanned version, whose native
