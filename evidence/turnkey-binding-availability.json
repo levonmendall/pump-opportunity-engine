@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-26T21:49:33.264Z",
+  "status": "TURNKEY_AUTHENTICATION_REJECTED",
+  "organizationId": "03a45b97-036b-4766-936e-af7c3eda72c9",
+  "binding": {
+    "kind": "owner-only-raw-secret-file",
+    "selector": "TURNKEY_API_KEY_FILE",
+    "apiKeyName": "codex-solana-executor",
+    "outsideRepository": true,
+    "fileMode": "0600",
+    "parentMode": "0700",
+    "pairValidatedLocally": true
+  },
+  "queryEndpoint": "https://api.turnkey.com/public/v1/query/list_wallet_accounts",
+  "queriesAttempted": 3,
+  "successfulQueries": 0,
+  "httpStatus": 401,
+  "providerErrorCode": 16,
+  "providerErrorName": "PUBLIC_KEY_NOT_FOUND",
+  "sanitizedServerMessage": "no user credentials found in organization with that public key",
+  "sourceAddressVerified": false,
+  "credentialValuesDisplayed": false,
+  "transactionSigningOrBroadcast": false,
+  "minimumUnblock": "Register the supplied existing public API authentication key for the intended execution user in the supplied organization, or identify the correct existing organization binding. No replacement wallet or private-key repost is needed.",
+  "manualFundingAlternative": "Existing owner Turnkey UI, after public sender/recovery/current-fee verification and explicit transfer approval."
+}

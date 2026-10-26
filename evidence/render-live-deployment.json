@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-10-26T21:30:17.176Z",
+  "service": {
+    "autoDeploy": "no",
+    "autoDeployTrigger": "off",
+    "branch": "main",
+    "createdAt": "2026-09-24T20:44:04.788986Z",
+    "dashboardUrl": "https://dashboard.render.com/web/srv-daqon53tqb8s73bdceq0",
+    "id": "srv-daqon53tqb8s73bdceq0",
+    "name": "meme-machine-dashboard-staging",
+    "notifyOnFail": "default",
+    "ownerId": "tea-daqk6h8jo6nc73eojtp0",
+    "repo": "https://github.com/levonmendall/pump-opportunity-engine",
+    "rootDir": "",
+    "serviceDetails": {
+      "buildPlan": "starter",
+      "cache": {
+        "profile": "no-cache"
+      },
+      "env": "node",
+      "envSpecificDetails": {
+        "buildCommand": "npm ci --include=dev && npm run compile",
+        "startCommand": "npm run dashboard"
+      },
+      "healthCheckPath": "/healthz",
+      "ipAllowList": [
+        {
+          "cidrBlock": "0.0.0.0/0",
+          "description": "everywhere"
+        }
+      ],
+      "maintenanceMode": {
+        "enabled": false,
+        "uri": ""
+      },
+      "numInstances": 1,
+      "openPorts": [],
+      "plan": "free",
+      "previews": {
+        "generation": "off"
+      },
+      "pullRequestPreviewsEnabled": "no",
+      "region": "oregon",
+      "renderSubdomainPolicy": "enabled",
+      "runtime": "node",
+      "sshAddress": "srv-daqon53tqb8s73bdceq0@ssh.oregon.render.com",
+      "url": "https://meme-machine-dashboard-staging.onrender.com"
+    },
+    "slug": "meme-machine-dashboard-staging",
+    "suspended": "not_suspended",
+    "suspenders": [],
+    "type": "web_service",
+    "updatedAt": "2026-10-26T21:19:31.465699Z"
+  },
+  "deploy": {
+    "commit": {
+      "createdAt": "2026-10-26T21:10:57Z",
+      "id": "3af3f9ed9abde5178379e18e986e07ab41965d22",
+      "message": "Prepare restricted PAPER observer, durable accounting recovery, and verified cutover actions"
+    },
+    "createdAt": "2026-10-26T21:18:45.563565Z",
+    "finishedAt": "2026-10-26T21:19:31.379469Z",
+    "id": "dep-dbfs7dafngtc73cs4p40",
+    "startedAt": "2026-10-26T21:18:45.538005Z",
+    "status": "live",
+    "trigger": "api",
+    "updatedAt": "2026-10-26T21:20:00.702259Z"
+  },
+  "sourceSnapshotConfigured": false,
+  "sourceAccountSeeded": false,
+  "credentialsRotated": true,
+  "legacyEnvironmentReplaced": true,
+  "providerOrWalletSecretsInstalled": false,
+  "ownerAccess": "HTTP Basic over HTTPS; poe-owner; password held privately in authenticated Render Environment console",
+  "previousLegacyDeploy": "dep-dbff60e7bikc73dano8g",
+  "sameReleaseRedundantRollout": "Environment update triggered an initial successful same-SHA rollout dep-dbfs6nmc6qcc73d3npb0. A redundant explicit rollout produced the final live deployment above; no further deploy was needed.",
+  "quota": "Existing free plan; no quota failure observed; remaining shared free usage is not exposed by connector."
+}

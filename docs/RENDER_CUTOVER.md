@@ -1,85 +1,77 @@
-# In-place Render cutover
+# In-place Render cutover — deployed bootstrap viewer
 
-Only service **srv-daqon53tqb8s73bdceq0** in workspace
-**tea-daqk6h8jo6nc73eojtp0** is authorized. Keep the existing **free** plan,
-resource name and URL. No second service, account, database or paid upgrade.
+Only service **srv-daqon53tqb8s73bdceq0** in confirmed workspace
+**tea-daqk6h8jo6nc73eojtp0** was modified. Existing free compute, resource name
+and URL retained. No second service/account, database or paid upgrade.
 
-## Completed source settings — connector verified
-
-The source change is complete. Current connector values:
-
-| Setting | Verified value |
+| Setting | Connector-verified value |
 |---|---|
 | Repository | https://github.com/levonmendall/pump-opportunity-engine |
-| Branch | main |
-| Runtime | Node |
-| Root directory | empty |
+| Branch / runtime / root | main / Node / empty |
 | Build | npm ci --include=dev && npm run compile |
-| Start | npm run dashboard |
-| Health | /healthz |
-| Compute | free |
-| Auto-deploy | off |
+| Start / health | npm run dashboard / /healthz |
+| Compute / auto-deploy | free / off |
 | Name | meme-machine-dashboard-staging |
 | URL | https://meme-machine-dashboard-staging.onrender.com |
+| Live deploy | dep-dbfs7dafngtc73cs4p40 |
+| Live source | 3af3f9ed9abde5178379e18e986e07ab41965d22 |
+| Live finished | 2026-10-26T21:19:31.379Z |
 
-**No owner source edit is needed.** Source settings are not proof of a deployed
-POE release. At this check the latest live deploy remains
-`dep-dbff60e7bikc73dano8g`, legacy SHA
-`f88936378af75c3064cd2ba2bf980c1b4682aa6e`.
+## Completed prerequisites
 
-## Remaining authorized work
+Source/runtime edits and EC2 inventory are complete; neither needs repetition.
+Owner/root shutdown of the four reporting units was verified21:15:13UTC in
+run 40397181995 attempt 2/job 121852666626: both timers inactive/disabled; both
+services static/non-running, one old failed flag. No enabled restart path remains
+for these reporters. The unchanged workflow still asks for sudo and exits3 after
+observing the completed state; no repeat shutdown or reset-failed is needed.
 
-1. Retire only the verified old reporting publishers and their30-second timers.
-   EC2 inventory is complete and must not be rerun as a readiness gate. Prepared
-   admin job: `.github/workflows/poe-dashboard-cutover.yml` in meme-machine-admin.
-   It checks actual component roles and existing sudo permission, then targets only:
+Obsolete service-specific environment was replaced with Node24.19.0 and newly
+rotated independent viewer/ingestion credentials. No wallet/provider/RPC/Turnkey
+secret went to Render. Owner uses HTTPS Basic, user poe-owner; retrieve password
+privately through authenticated Render Environment. The reporting-only ingestion
+secret will reach EC2 through private owner administration, never GitHub/artifacts.
 
-   ```sh
-   sudo systemctl disable --now meme-machine-dashboard-publisher.timer meme-machine-ec2-dashboard-publisher.timer meme-machine-dashboard-publisher.service meme-machine-ec2-dashboard-publisher.service
-   ```
+No legacy restoration controller identified; former dashboard CI was test-only.
+An ordinary deploy hook now uses POE source. No evidenced hook/Blueprint action
+requires an owner. Environment replacement triggered a successful deployment even
+with auto-deploy off; a redundant explicit same-release rollout produced the final
+live deploy above. Inspect state after future environment changes before triggering
+another build. No further deployment is needed for the empty bootstrap state.
 
-   Do not stop the runner, trading/protection services, or shared dependencies.
-   Reporter-retirement run40397181995/job121833178389 now verified actual roles
-   and failed only its exact sudo permission check, exit3, changed=false. One
-   EC2 publisher timer remains active/enabled. The specific manual-only action is
-   that exact command through existing owner/root access. Do not rerun inventory,
-   request AWS administrator credentials, or invoke a legacy readiness broker.
-2. Replace obsolete service-specific environment values with only Node version
-   and newly rotated independent viewer/ingestion credentials. Use connector
-   replace=true; never retrieve/log old secret values. New credentials are
-   prepared in protected storage outside git and unrelated to the data wallet.
-   Owner can retrieve viewer credentials privately through their authenticated
-   Render Environment console after installation. No wallet, RPC, Turnkey or
-   provider secret goes to Render. Leave all four authoritative source identity
-   variables absent until actual PAPER inception.
-3. Inspect any evidenced restoration path. Former dashboard CI is test-only.
-   No external Blueprint/controller was identified. An ordinary deploy hook now
-   deploys the current POE source, so possible hook existence is not proof of a
-   legacy restoration controller. Connector has no hook/Blueprint inspection;
-   request a manual disconnect only if a specific controller is identified.
-4. Freeze/test/commit/push the intended POE release. Record local/remote SHA and
-   prevent competing pushes during deploy. With auto-deploy off, use the
-   connector trigger-deploy operation. Capture deploy ID, monitor to terminal
-   state and verify live repository/SHA/runtime/URL. A successful trigger alone
-   is not a successful cutover.
+No quota failure observed. Replacement did not replenish shared free hours/build/
+bandwidth; remaining quota is unavailable through connector. Keep free compute.
 
-No quota failure has been observed. Replacement does not replenish consumed free
-hours/build/bandwidth. If Render reports a limit, preserve the exact failure and
-continue independent work without upgrading compute.
+## Deployed verification
 
-## Deployed checks
+See evidence/render-deployed-auth-bootstrap-check.json and
+evidence/render-deployed-mobile-check.json.
 
-Check `/healthz`200 without auth; `/` and `/status` require owner Basic; only the
-new machine Bearer may POST. Wrong credentials fail401; old publisher routes
-must not accept data. No old financial records may appear. Until authoritative
-identity is configured, show **Awaiting POE data**, reject all authenticated
-snapshot ingestion with503source-not-configured and keep the cache empty. Never
-seed a dashboard balance or historical P&L line.
+- /healthz200; unauthorized viewer401; authenticated owner200.
+- Empty snapshot/export503; viewer cannot ingest; wrong machine Bearer401.
+- New machine Bearer503source-not-configured. All four source identity fields
+  absent until actual EC2 inception. No fixture accepted.
+- Legacy /api/dashboard/snapshot rejects401. Old credentials/configuration
+  replaced; no legacy financial records appear.
+- Mobile390px: correct POE name, Awaiting POE data, PAPER/live disabled,
+  no fabricated money/chart, no overflow/script errors.
 
-After the actual EC2 account exists, configure all four identity fields together,
-compare account/sequence/integer projection with the dashboard, and test cache
-loss/republication and Render outage without financial duplication. Local fixtures
-do not establish deployed EC2 agreement or unattended acceptance.
+This is a deployed authenticated empty viewer, not fresh EC2 reporting, financial
+integration or unattended acceptance. Render cannot read EC2's database, call data
+providers, control the runtime or become financial authority.
 
-Keep one tested POE rollback release. Do not restore obsolete legacy credentials,
-publishers or financial identity. Dashboard rollout/rollback cannot restart EC2.
+## Remaining integration after root bootstrap
+
+Read actual EC2 account/inception/release/strategy from its bounded nonfinancial
+status file. Set all four source fields together: POE_ACCOUNT_ID, POE_INCEPTION_AT
+(UTC ISO milliseconds), POE_RUNTIME_RELEASE, POE_STRATEGY_VERSION. Never use
+disposable identity. Connector environment updates affect only reporting, not EC2.
+
+Compare accepted account/sequence/integer projection with EC2, then verify
+duplicate/out-of-order/wrong-account rejection, cache loss/full republication and
+Render outage without financial duplication. These deployed checks remain pending.
+
+Keep auto-deploy off during acceptance. Dashboard rollback is independent of EC2;
+retain this verified POE release, never restore old credentials/publishers/financial
+identity. render.yaml describes only the existing service; do not create a duplicate
+Blueprint/service. Remaining owner actions are only in OWNER_ACTIONS.md.

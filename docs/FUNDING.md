@@ -13,7 +13,8 @@ separate **unfunded** data-billing wallet and linked API key:
 
 `6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ`
 
-Read-only mainnet RPC confirmed0lamports at slot461792869. The credential response
+Latest read-only mainnet RPC confirmed0lamports at21:40:47UTC, slot461820004
+(evidence/data-wallet-current-balance.json). The credential response
 was written directly to a protected file outside this public repository:
 `/workspace/shared/poe-secrets/pumpportal-billing-wallet.json` (0600, parent0700).
 No secret response, API key or private key was printed. This new provider recovery
@@ -26,13 +27,14 @@ or workflow artifacts. No second billing wallet should be generated on retry.
 
 ## Proposed funding; NOT approved or submitted
 
-- Source: existing owner Turnkey Solana account — address and available SOL remain
-  unresolved; no Turnkey credential is attached to the managed workspace, no
-  Turnkey connector is available, and safe repository metadata did not expose it.
-  Existing EC2 integration may still be present; absence here does not prove otherwise.
-  The owner supplied the existing organization ID. A paginated official SDK8.8.0
-  read-only query is prepared under operator/turnkey, outside trader dependencies.
-  Authentication binding is unavailable: no wallet-accounts API request was attempted.
+- Source: existing owner Turnkey Solana account; public address/available SOL
+  unresolved. The owner supplied the organization and then a complete API
+  authentication pair, now protected0600 outside git and locally validated.
+  Official SDK8.8.0 read-only account requests return 401 PUBLIC_KEY_NOT_FOUND:
+  no user credentials in the supplied organization match that public key.
+  Register the public key for the existing execution user/organization, or identify
+  its correct existing organization binding. No more private-key delivery is
+  needed. No wallet/account list was obtained, and no signing/broadcast occurred.
 - Destination: the exact public address above.
 - Proposed recipient amount: **0.06 SOL** (60,000,000lamports).
 - Expected simple-transfer network fee: **0.000005 SOL** (5,000lamports), priority0,
@@ -42,7 +44,7 @@ or workflow artifacts. No second billing wallet should be generated on retry.
   SOL and any existing Turnkey policy without modifying it or signing a test.
 - Expected source debit with that fee: **0.060005 SOL**. No automatic top-ups.
 - Preserve **0.02 SOL** as balance floor. At most **0.04 SOL** is data spend,
-  and at most0.01SOL/UTCday over the approved four-day measurement experiment.
+  and at most0.01 SOL/UTCday over the approved four-day measurement experiment.
   Also cap at$2.50/day and$10total, whichever binds first. At documented rates
   this is at most40,000events total/10,000perday before safety headroom and USD caps;
   it does not establish enough capacity for continuous acceptance operation.
@@ -71,7 +73,7 @@ credential, never the full recovery bundle. A managed secret binding named
 value supplied in Secrets, never chat. The public address can be configured as
 `POE_DATA_WALLET`. No wallet/provider credential goes to Render.
 
-The EC2 inventory has now completed successfully (run40392851547) on the expected
+The EC2 inventory has now completed successfully (run 40392851547) on the expected
 host. Bounded Turnkey presence/path metadata exposed no usable wallet address or
 credential binding. It never read secret file contents or environment values;
 absence in this bounded check does not prove the integration is absent elsewhere.
@@ -82,7 +84,9 @@ secret file selected by `TURNKEY_API_KEY_FILE` is supported; its fields are
 parent0700. Raw runtime-variable bindings work only if truly materialized. The
 consumer validates shape and matching P-256 API keypair without printing values;
 this is authentication-key availability, not a transaction-signing test or proof
-of API authorization. Current environment exposes no such binding/configuration.
+of API authorization. This raw file now exists and passes local pair validation;
+the current server-side401 registration failure is recorded above. Do not repost
+credentials or replace the existing wallet/integration.
 
 If SDK access cannot be reused here, the owner can instead use the existing
 Turnkey UI/integration for a one-time manual transfer. For that route provide

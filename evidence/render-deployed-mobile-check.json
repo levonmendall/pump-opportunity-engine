@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-26T21:31:33.969Z",
+  "url": "https://meme-machine-dashboard-staging.onrender.com/",
+  "httpStatus": 200,
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "title": "POE · PAPER opportunity engine",
+  "applicationName": "Pump Opportunity Engine",
+  "awaitingPoeData": true,
+  "contentVisible": false,
+  "visibleCurrency": false,
+  "portfolioCardCount": 0,
+  "chartPathCount": 0,
+  "documentWidth": 390,
+  "bodyWidth": 390,
+  "viewportWidth": 390,
+  "horizontalOverflow": false,
+  "liveDisabled": true,
+  "apiSnapshotStatus": 503,
+  "scriptErrors": 0,
+  "dialogs": 0,
+  "fixturePublished": false,
+  "renderMutations": false,
+  "tlsVerificationEnabled": true,
+  "credentialsPrinted": false,
+  "passed": true
+}

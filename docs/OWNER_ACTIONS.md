@@ -1,52 +1,39 @@
 # Remaining owner actions
 
-Already completed: EC2 inventory run40392851547/job121818077975; separate repository
-and billing-wallet creation; existing Render source/branch/Node/build/start/root/
-health/free-plan/auto-deploy settings. No repeat inventory or source edit is needed.
+Completed: repository and billing-wallet creation; EC2 inventory; Render source/
+runtime/settings edits; publisher shutdown; reporting credential rotation and POE
+deployment. No repeat dispatch, source edit, shutdown, AWS key or deploy click.
 
-1. **Choose existing Turnkey authentication or manual one-time funding.** Organization
-   ID is supplied. No Turnkey secret/outbound binding or connected tool is available
-   here. Local SDK request stamping needs actual API authentication key material;
-   a network-secret placeholder is insufficient. The prepared consumer supports
-   a raw secret-file binding at `/workspace/shared/poe-secrets/turnkey-api.json`
-   (owner-only0600file/0700directory), selected by `TURNKEY_API_KEY_FILE`, containing
-   `apiPublicKey` and `apiPrivateKey` from the existing API authentication pair.
-   Raw runtime-variable bindings are supported only if actual values are delivered,
-   not proxy placeholders. API authentication keys are not wallet private keys.
-   Current Cloud status declares no secret variable/file bindings; exposed tools
-   cannot configure a binding. Use the Cloud configuration's raw secret-file/runtime
-   delivery option if available; do not use network-only credential injection for
-   this SDK. If that delivery is unavailable, reuse an existing authenticated
-   backend/session by its nonsecret connection/binding name, or choose to make
-   the one-time transfer yourself from the existing Turnkey setup. No values in chat.
-   The supplied organization ID will be used to enumerate all wallet accounts,
-   with details and cursor pagination, then read native SOL balances. Do not
-   create a replacement Turnkey organization, treasury or integration.
-2. **Confirm durable owner recovery of the existing PumpPortal bundle.** It remains
-   at `/workspace/shared/poe-secrets/pumpportal-billing-wallet.json`, outside git,
-   file0600/parent0700. Through private workspace file access, import the file
-   directly into an existing secret vault/password manager, then confirm it is
-   preserved. Do not paste/display it in chat or carry it through GitHub, Render
-   or workflow artifacts. If private file access is unavailable, identify an
-   existing private vault/upload or authenticated file-transfer connection by
-   nonsecret name so a private copy route can be established.
-3. **Use existing owner/root access for the exact reporter command.** The new
-   cutover job was run40397181995/job121833178389 and verified the host and actual
-   reporting components. It made no changes because runner sudo policy does not
-   permit the exact command below. Do not dispatch inventory or source-edit again:
+1. **Run the pinned initial POE bootstrap once through existing owner/root access
+   on i-00044d4ea1471b957.** Follow [EC2_BOOTSTRAP.md](EC2_BOOTSTRAP.md).
+   Preflight40404058329/job 121857131607 proved the connected runner lacks the
+   exact OS permission; POE user/service are absent. No runner privilege change
+   is proposed. During this same private terminal action, supply the existing
+   rotated POE_INGEST_SECRET from authenticated Render Environment at its
+   non-echoing prompt. This reporting-only secret must not enter chat, GitHub,
+   command arguments, logs or artifacts. PAPER entries remain disabled.
+2. **Confirm durable private recovery of the existing PumpPortal bundle.**
+   File:/workspace/shared/poe-secrets/pumpportal-billing-wallet.json,
+   mode0600/parent0700, outside git. If private workspace file access is available,
+   import it directly into the existing owner password manager/secret vault.
+   Otherwise identify an existing private vault or authenticated file-transfer
+   connection by nonsecret name for delivery. Never paste/display the bundle,
+   API key or recovery key in chat, GitHub, Render, logs or artifacts.
+3. **Resolve Turnkey's public-key registration, or choose manual funding.** The
+   supplied complete API authentication pair is already stored in an owner-only
+   raw file outside git and passes local pair validation. No more private-key
+   delivery is needed. Read-only Turnkey requests return 401 PUBLIC_KEY_NOT_FOUND:
+   "no user credentials found in organization with that public key." In the
+   existing Turnkey console, register this public API key for the intended
+   execution user in organization03a45b97-036b-4766-936e-af7c3eda72c9 with the
+   minimum read-only account-query access, or identify its correct existing
+   organization binding if it is already registered elsewhere. No new wallet or
+   integration is required. Alternatively, use the existing Turnkey interface for
+   one-time manual funding and provide only its public Solana sender address.
+   Do not repost private keys; no signing/broadcast is authorized by this action.
 
-   ```sh
-   sudo systemctl disable --now meme-machine-dashboard-publisher.timer meme-machine-ec2-dashboard-publisher.timer meme-machine-dashboard-publisher.service meme-machine-ec2-dashboard-publisher.service
-   ```
-
-   Report completion so resulting states can be verified. This does not alter
-   trading/protection services, financial records, runner or shared dependencies.
-
-No funding approval is requested yet. After authenticated account discovery,
-native SOL verification, source ambiguity resolution, recovery confirmation and
-a current sender-specific fee quote, the owner must explicitly approve the exact
-0.06SOL transfer before any transaction signing/broadcast. No automatic top-ups.
-
-Render environment/deploy/verification use available connector operations and
-do not require another source-edit or owner deploy click. A manual-only hook or
-Blueprint action will be added only if evidence identifies such a controller.
+No transfer approval requested yet. Once public sender/native SOL, destination,
+durable recovery and current sender-specific fee are verified, the complete
+0.06 SOL proposal requires explicit approval before signing/broadcast. Existing
+data-spending caps and0.02 SOL floor remain; no automatic top-ups. The manual route
+keeps Turnkey SDK access independent of unrelated PAPER development.

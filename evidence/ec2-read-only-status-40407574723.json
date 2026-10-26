@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-26T21:52:39.321Z",
+  "runId": 40407574723,
+  "jobId": 121869201923,
+  "commit": "30350f3afae08715dd2ea89c81d817e2fd90bfd1",
+  "conclusion": "success",
+  "facts": [
+    {
+      "instance": "i-00044d4ea1471b957",
+      "readOnly": true,
+      "service": {
+        "ActiveState": "inactive",
+        "LoadState": "not-found",
+        "NRestarts": "0",
+        "Result": "success",
+        "SubState": "dead",
+        "User": ""
+      },
+      "uid": 994
+    },
+    {
+      "credentialsRead": false,
+      "financialFilesRead": false,
+      "permissionsChanged": false,
+      "status": "WAITING_OWNER_ROOT_BOOTSTRAP"
+    }
+  ],
+  "purpose": "Existing administration route can rerun this job after owner bootstrap to verify the nonfinancial status projection without sudo, financial-directory access or credentials. No install execution remains in this workflow.",
+  "acceptanceClaimed": false
+}

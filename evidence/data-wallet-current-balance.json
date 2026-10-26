@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-26T21:40:47.747Z",
+  "destination": "6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ",
+  "nativeLamports": "0",
+  "slot": 461820004,
+  "commitment": "confirmed",
+  "rpcRequests": 2,
+  "transactionSigningOrBroadcast": false,
+  "providerAuthenticationAttempted": false
+}

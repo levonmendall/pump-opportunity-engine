@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-26T21:52:39.321Z",
+  "testedInstallationRelease": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+  "liveDashboardRelease": "3af3f9ed9abde5178379e18e986e07ab41965d22",
+  "installerSha256": "3a1b269f2b10f97f45b0fae5d6f9185cc4f6d35abf965df79a2a5941d63c6136",
+  "checks": {
+    "typescript": "pass",
+    "compile": "pass",
+    "rootTests": {
+      "passed": 70,
+      "failed": 0
+    },
+    "operatorTurnkeyTests": {
+      "passed": 6,
+      "failed": 0
+    },
+    "bashInstallerSyntax": "pass",
+    "ownerBootstrapBashSyntax": "pass",
+    "knownSuppliedCredentialLeakScan": "pass; values not displayed",
+    "independentReview": "Installer paths, public health projection, ownership lease/alias exclusion and root bootstrap pass focused review"
+  },
+  "localSystemdValidation": "Required deployment Node path absent locally; actual EC2 unit execution remains unverified, not a passing deployment claim.",
+  "financialDatabaseLocking": "NORMAL SQLite plus separate Linux advisory flock ownership; external readers, second-writer refusal, alias refusal and SIGKILL recovery tested.",
+  "authoritativeAccountCreated": false,
+  "ec2Installed": false,
+  "forwardTrades": 0,
+  "unattendedIntervalStarted": false,
+  "edge": "UNPROVEN",
+  "liveTrading": false
+}

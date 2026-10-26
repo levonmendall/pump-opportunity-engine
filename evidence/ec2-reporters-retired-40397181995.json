@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-10-26T21:15:13.857Z",
+  "runId": 40397181995,
+  "jobId": 121852666626,
+  "runAttempt": 2,
+  "instance": "i-00044d4ea1471b957",
+  "units": {
+    "meme-machine-dashboard-publisher.service": {
+      "ActiveState": "failed",
+      "SubState": "failed",
+      "UnitFileState": "static"
+    },
+    "meme-machine-dashboard-publisher.timer": {
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "meme-machine-ec2-dashboard-publisher.service": {
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "static"
+    },
+    "meme-machine-ec2-dashboard-publisher.timer": {
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    }
+  },
+  "observedGoalSatisfied": true,
+  "workflowConclusion": "failure",
+  "explanation": "The unmodified workflow still asks for sudo after observing the already-retired state. Both timers are inactive/disabled; both static services are non-running. One retains a failed flag. No repeat owner shutdown is required.",
+  "secretsRead": false,
+  "financialRecordsRead": false,
+  "permissionsChanged": false
+}

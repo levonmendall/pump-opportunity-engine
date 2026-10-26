@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-26T21:24:21.972Z",
+  "runId": 40404058329,
+  "jobId": 121857131607,
+  "workflowConclusion": "success",
+  "facts": [
+    {
+      "instance": "i-00044d4ea1471b957",
+      "uid": 994,
+      "poeUserPresent": false,
+      "poeServiceProperties": "User=\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nFragmentPath=\n"
+    },
+    {
+      "status": "OWNER_ROOT_BOOTSTRAP_REQUIRED",
+      "permissionChanged": false,
+      "installed": false,
+      "release": "3af3f9ed9abde5178379e18e986e07ab41965d22",
+      "download": "https://raw.githubusercontent.com/levonmendall/pump-opportunity-engine/3af3f9ed9abde5178379e18e986e07ab41965d22/scripts/install-ec2.sh",
+      "sha256": "64e9e39058f1fbec4ed43cf8655e385d7d15cea6b192b1e67b10d36cb30c0416",
+      "exactCommand": "sudo bash /tmp/poe-install-3af3f9ed9abde5178379e18e986e07ab41965d22.sh 3af3f9ed9abde5178379e18e986e07ab41965d22 --init --start"
+    }
+  ],
+  "explanation": "Successful capability diagnostic, not successful installation. Existing runner lacks the exact root bootstrap permission; user and service absent. No permission bypass or changes.",
+  "historicalCommandSuperseded": true,
+  "currentProcedure": "docs/EC2_BOOTSTRAP.md; root-owned verified staging, not the historical runner-owned /tmp path"
+}

@@ -5,11 +5,16 @@ also $2.50/day and $10 total, whichever binds first. Maintain 0.02 SOL wallet
 floor. No automatic top-ups, extra spending, or claimed four-day capacity.
 This is approval for measurement, not evidence of a supplied/funded key.
 
-Attach the separate data-billing key through managed environment **Secrets** as
-`POE_PUMPPORTAL_API_KEY`; public billing address is `POE_DATA_WALLET`. Do not use
-chat, source control, command-line arguments or Render. On verified EC2, use a
-root-owned `/etc/poe/runtime.env` restricted to the poe-runtime group (0640) and
-a systemd EnvironmentFile. Do not print environment, key, or WebSocket URL.
+The approved billing key is not installed or used yet. On verified EC2, prefer a
+root-owned0600 /etc/poe/secrets/pumpportal-api-key with standard systemd
+LoadCredential=poe-pumpportal-api-key:/etc/poe/secrets/pumpportal-api-key.
+The adapter must read only that key, never the full recovery bundle. Public billing
+address is POE_DATA_WALLET. A managed secret-file or actual runtime-variable
+binding is also usable if the platform securely materializes it; current Cloud
+status exposes none and its tools cannot provision one. Do not assume a network
+proxy placeholder can be read by a local consumer. Never use chat, source control,
+command-line arguments, workflow artifacts or Render for wallet/provider secrets.
+Do not print environment, key, authenticated WebSocket URL or provider errors.
 Keep the publisher secret separate. The data key is wallet-capable; no treasury
 or legacy funds may be present. Verify the owner-supplied key/address relationship
 without assuming any arbitrary public address proves which wallet the key bills.

@@ -49,8 +49,15 @@ Only public account data and binding names are returned. Provider/SDK exception
 details are suppressed because they may include stamped headers. Multiple
 sufficient funding-source candidates require owner selection before a proposal.
 
-No authenticated query has run in the present environment: raw bindings are
-absent. The helper and its SDK/transport/pagination tests are not wallet evidence.
+The owner subsequently supplied a complete pair and authorized protected storage.
+The real raw file now exists outside git with0600/parent0700 and passes local
+P-256 pair validation. Real read-only SDK account queries return401
+PUBLIC_KEY_NOT_FOUND: no user credentials in the supplied organization match that
+public key. Register the public API key for the intended existing execution user
+and organization with account-query access, or identify its correct existing
+organization binding. No more private-key delivery is needed. No wallet account
+or sender balance is verified; no signing/broadcast occurred. See the sanitized
+evidence/turnkey-binding-availability.json in the repository root.
 
 ## Manual funding is independent
 

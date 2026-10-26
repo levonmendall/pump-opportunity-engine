@@ -42,13 +42,17 @@ operates only with an explicitly initialized account. `npm run runtime` is an
 enabled, and production startup refuses existing exposure. See the runbook before
 initial installation; never use fixtures as the authoritative account.
 
-Existing Turnkey identification is operator-only under `operator/turnkey`, using
-the existing organization/authentication. No authenticated query has run because
-raw credentials are not bound here. Network-secret placeholders do not support
-SDK local request stamping. Manual owner funding remains an option after recovery,
-public-sender/fee verification and explicit transfer approval.
+Existing Turnkey identification is operator-only under operator/turnkey. The
+owner-supplied API authentication pair is stored privately outside git and
+passes local pair validation. Read-only queries return401 PUBLIC_KEY_NOT_FOUND
+in the supplied organization; registration/binding remains to resolve. No wallet
+accounts are identified or transactions authorized. Manual existing-Turnkey
+funding remains an option after recovery, public-sender/fee verification and
+explicit transfer approval.
 
-Render replacement configuration is prepared but not deployed. The owner amended
-authorization to reuse only existing service srv-daqon53tqb8s73bdceq0 on its free
-plan. Its source/Node settings are now verified complete; deployment and cutover
-verification remain pending. Do not request another source edit or create a second service.
+The POE viewer is live at https://meme-machine-dashboard-staging.onrender.com,
+release3af3f9ed9abde5178379e18e986e07ab41965d22, on the existing free service.
+Authentication and mobile checks pass. It correctly shows Awaiting POE data;
+the authoritative EC2 account/source is not installed yet. See the runbook for
+the one-time root bootstrap. No source edit, publisher shutdown or deploy click
+needs repeating. No second service or paid upgrade is authorized.

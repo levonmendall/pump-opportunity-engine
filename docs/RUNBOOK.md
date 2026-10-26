@@ -24,35 +24,48 @@ or pending sells until supported position/exit management is connected.
 ## EC2 access — inventory complete
 
 Use the existing successful inventory
-[run40392851547](https://github.com/levonmendall/meme-machine-admin/actions/runs/40392851547),
-job121818077975, main1b53658bc29936c00901f57a35556faac3a995f4. It verifies
+[run 40392851547](https://github.com/levonmendall/meme-machine-admin/actions/runs/40392851547),
+job 121818077975, main1b53658bc29936c00901f57a35556faac3a995f4. It verifies
 account133857166104/us-west-2/instancei-00044d4ea1471b957, nonroot runner
-mm-ec2-runner uid994, about55GiB free root disk and6871MiB available memory.
+mm-ec2-runner uid994, about 55 GiB free root disk and6871MiB available memory.
 No repeat dispatch or legacy application readiness/source gate is needed.
 No cleanup is justified by this capacity. Preserve the runner and owner access.
 
-Reporter retirement is a DIFFERENT operation. Its run40397181995 verified actual
-reporter components but the existing runner sudo policy denied the exact stop/
-disable command. No changes occurred. See RENDER_CUTOVER.md and OWNER_ACTIONS.md
-for the one-time owner-root action; never bypass that permission or request a
-broad AWS administrator key.
+Reporter retirement is complete. After the owner's root action, run 40397181995
+attempt 2/job 121852666626 observed both timers inactive/disabled and both services
+static/non-running. One old failed flag is cosmetic. The unchanged workflow still
+fails its later sudo test; that does not mean the shutdown needs repeating.
+Financial records, protection services and administration access were preserved.
 
 ## Install and operate the entry-blocked PAPER runtime
 
-After publishing/reviewing a tested exact40hex release, execute through existing
-owner/root access on the verified host:
+Use the exact reviewed root-owned download, checksum and private reporting-secret
+procedure in [EC2_BOOTSTRAP.md](EC2_BOOTSTRAP.md). Run it once through existing
+owner/root access on the verified host. Do not execute a runner-writable /tmp
+script as root. Installation preflight run 40404058329/job 121857131607 proves the
+runner lacks the exact bootstrap permission; no POE user/service is installed.
+No new AWS key, inventory dispatch or runner sudo rule is needed or proposed.
 
-```sh
-sudo bash scripts/install-ec2.sh TESTED_RELEASE_SHA --init --start
-```
+Pinned installation release: bce3d22bb434eb429aafacb788a18f39ec189c1b; installer
+SHA2563a1b269f2b10f97f45b0fae5d6f9185cc4f6d35abf965df79a2a5941d63c6136.
+The reporting viewer remains on its separately verified3af3f9e release; both use
+the same snapshot schema. No dashboard redeploy is required for installer fixes.
 
 This is an initial owner bootstrap, not a runner privilege workaround. It verifies
 IMDSv2 identity, creates restricted poe-runtime, installs dedicated tested Node,
 builds a pinned release as nonroot, freezes code and separates state/backups/evidence.
 It refuses an active runtime or unreviewed upgrade; it never cleans legacy data.
 Explicit --init obtains current public SOL/USD for VIRTUAL inception once. Restart
-never seeds. No wallet funding is involved. Installer has only bounded local
-syntax/refusal checks until actually executed on EC2.
+never seeds. No wallet funding is involved. Existing dedicated Node paths and
+runtime configuration are checked for ownership, symlinks and write permissions
+before trusted execution/writes. Installer validation remains local until actual
+EC2 execution; a successful preflight diagnostic is not a successful installation.
+
+The separate read-only /var/lib/poe-public/status.json projection exposes only
+identity, process/data fact timestamps, bounded free-feed counts and blockers to
+the existing runner. It contains no balances, trades, secrets or provider URLs.
+Private financial directories and control-socket permissions remain unchanged.
+Its generated time is not evidence that market or reconciliation facts are fresh.
 
 Offline account commands (daemon stopped; exclusive writer prevents a second owner):
 
@@ -96,7 +109,12 @@ financial writes. Durable snapshot sequence/history use the same ledger writer.
 Create one new POE identity and durable directory owned by poe-runtime. Inception
 must record the $1,000 USD-to-SOL conversion once using timestamped actual valuation,
 integer balances and gas reserve. Never use fixture-* identity, reset on startup,
-or import old records. Keep an exclusive owner; no network call inside transactions.
+or import old records. A persistent0600 .owner.lock uses standard Linux flock for
+process ownership; never unlink it to take over an active writer. The OS releases
+ownership on close/crash; stale timestamps/pid heuristics are not used. SQLite
+stays in NORMAL locking mode with short transactions, not a permanent financial
+DB lock across network requests. Canonical directory aliases share ownership;
+database symlinks/hardlinks are refused. No network call inside transactions.
 
 Until the production runtime is implemented, do not turn entries on. Safe stop with
 positions must pause/cancel pending entries, preserve reservations and unresolved
@@ -120,11 +138,15 @@ measurement, not continuous acceptance. The free probe never loads the API key.
 After secure attachment, measure sustainable selected-token observation and actual
 charges before any 24/72-hour clock. No automatic funding or paid RPC authorization.
 
-## Dashboard — source changed, deployment still to verify
+## Dashboard — deployed; awaiting authoritative EC2 data
 
-Initially deploy with strong viewer/ingestion credentials only to show
-"Awaiting POE data" while the authoritative account is unconfigured. Ingestion
-must reject all snapshots in this state. After real account inception, set
+The original URL now runs verified POE release3af3f9ed9abde5178379e18e986e07ab41965d22,
+deploymentdep-dbfs7dafngtc73cs4p40. It shows "Awaiting POE data" with newly rotated
+viewer/ingestion credentials and rejects all snapshots while the authoritative
+account is unconfigured. Deployed HTTP/auth/mobile checks pass. Owner viewing is
+HTTPS Basic, user poe-owner; obtain its password privately in authenticated Render
+Environment. This is an empty viewer, not fresh financial reporting.
+After actual EC2 account inception, set
 `POE_ACCOUNT_ID`, `POE_INCEPTION_AT` (UTC millisecond ISO),
 `POE_RUNTIME_RELEASE`, `POE_STRATEGY_VERSION`, `POE_VIEWER_USER`,
 `POE_VIEWER_PASSWORD` (>=16 chars) and separate `POE_INGEST_SECRET` (>=24 chars).
@@ -155,10 +177,12 @@ Owner amendment authorizes replacing exactly existing service
 Retain free compute and preferably URL `https://meme-machine-dashboard-staging.onrender.com`.
 No second continuously running service is authorized. Keep the resource name to
 avoid unnecessary URL changes; the displayed application name is Pump Opportunity Engine.
-The source/Node/build/start/health/free-plan/auto-deploy edit is COMPLETE and
-connector-verified. Do not ask the owner to repeat it. Complete remaining reporter
-retirement, credential rotation, connector deploy and live verification described
-in RENDER_CUTOVER.md. Never import legacy financial data.
+The source/Node/build/start/health/free-plan/auto-deploy edit, reporter retirement,
+credential rotation, deployment and empty-viewer verification are COMPLETE.
+Do not ask the owner to repeat them. Complete only actual EC2 source identity,
+publication/account agreement and recovery checks in RENDER_CUTOVER.md. Never
+import legacy financial data. Environment changes were observed to trigger a
+rollout even with auto-deploy off; inspect state before triggering another build.
 Validate with `render blueprints validate render.yaml` if available; current public
 schema validation alone does not prove account allocation. Auto-deploy is off.
 Verify deployed SHA/URL, Basic/Bearer separation, source agreement and cache loss.
@@ -180,22 +204,25 @@ accounts separate and reads confirmed mainnet native SOL. Its guarded transport
 rejects signing/export/submission paths, including a tested real SDK method call.
 It is outside trader dependencies and is never installed/loaded on Render.
 
-Local SDK authentication stamping needs REAL API authentication key material.
-Network-secret placeholders cannot sign the local API request. Current Cloud
-status declares no secret variable/file bindings, and exposed tools are read-only
-status/diagnostics; no authenticated Turnkey query has run. The consumer supports
-TURNKEY_API_KEY_FILE pointing to owner-only0600JSON outside git (parent0700), with
-apiPublicKey/apiPrivateKey from the existing authentication setup. It validates
-matching P-256 auth-key material without printing values. Actual raw runtime
-variables also work; placeholder strings are refused. Cloud raw secret-file or
-runtime materialization must actually be available/configured before this can be
-claimed usable. Do not request keys in chat or export a wallet private key.
+Local SDK authentication stamping needs actual API authentication material;
+network placeholders cannot stamp requests. The owner subsequently supplied a
+complete pair and explicitly authorized protected storage/use. It is now in
+/workspace/shared/poe-secrets/turnkey-api.json, owner-only 0600/parent0700, outside
+git, selected by TURNKEY_API_KEY_FILE. Local P-256 pair validation passes without
+displaying values. No key is installed on Render or the PAPER trader.
 
-If raw-key delivery is unavailable, reuse an existing authenticated backend/session,
-or let the owner perform the one-time transfer through their existing Turnkey UI.
+Real read-only SDK queries return HTTP 401 PUBLIC_KEY_NOT_FOUND: "no user
+credentials found in organization with that public key." The remaining problem
+is public-key registration/organization binding, not local private-key delivery.
+Register the public API authentication key for the intended existing execution
+user/organization with only account-query access, or identify its correct existing
+organization binding. Do not repost private material or rebuild Turnkey.
+
+Alternatively let the owner perform the one-time transfer through the existing
+Turnkey UI after the full exact proposal is verified and explicitly approved.
 For manual funding, only the public sender address is needed for independent SOL/
 fee checks. Recovery confirmation and explicit approval of the complete exact
-source/destination/0.06SOL/fee/total-debit proposal still precede signing/broadcast.
+source/destination/0.06 SOL/fee/total-debit proposal still precede signing/broadcast.
 This access dependency never blocks unrelated PAPER/EC2/Render implementation.
 
 Private recovery route: import the existing protected billing bundle directly

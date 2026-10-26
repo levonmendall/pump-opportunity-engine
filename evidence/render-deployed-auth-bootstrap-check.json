@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-10-26T21:21:19.821Z",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "checks": [
+    {
+      "path": "/healthz",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "service": "poe-dashboard"
+    },
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "path": "/status",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "state": "waiting",
+      "sourceIdentityConfigured": false
+    },
+    {
+      "path": "/api/snapshot",
+      "method": "GET",
+      "status": 503,
+      "expected": 503,
+      "pass": true
+    },
+    {
+      "path": "/api/export",
+      "method": "GET",
+      "status": 503,
+      "expected": 503,
+      "pass": true
+    },
+    {
+      "path": "/api/snapshot",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "path": "/api/snapshot",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "path": "/api/snapshot",
+      "method": "POST",
+      "status": 503,
+      "expected": 503,
+      "pass": true
+    },
+    {
+      "path": "/api/dashboard/snapshot",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    }
+  ],
+  "allPassed": true,
+  "secretsPrinted": false,
+  "sourceSnapshotsAccepted": 0,
+  "accountSeeded": false
+}
