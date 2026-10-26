@@ -57,8 +57,8 @@ No fixture or old financial history has been promoted.
 - Existing Turnkey organization/user identifiers were supplied. Owner then supplied
   a complete API authentication pair and explicitly authorized storage/use. It was
   written through non-echoing stdin to private0600/parent0700 storage outside git,
-  never argv/environment/GitHub/Render. Local P-256 pair validation passes. Three
-  read-only account-query attempts (including bounded sanitized diagnostics) return
+  never argv/environment/GitHub/Render. Local P-256 pair validation passes. Four
+  read-only account-query attempts (including bounded sanitized diagnostics); the diagnosed response was
   401 PUBLIC_KEY_NOT_FOUND: no matching public credential in that organization.
   Public-key registration/correct organization binding remains, not private-key
   delivery. No account/sender balance was obtained, wallet private key exported,
