@@ -6,9 +6,9 @@ Reconciliation: disposable fixtures only; no forward account to reconcile.
 Costs: zero metered subscriptions and no new cloud resources; invoices not accessed.
 Coverage: two selected migration observations, not a full-market benchmark.
 Dashboard: built/tested locally; no deployed URL or EC2 source yet.
-Main blocker: the fresh EC2 inventory is still unsubmitted (not queued or runner-blocked).
-The prepared read-only workflow needs one owner dispatch. Existing Turnkey source
-address/access and Render source/settings access also remain unresolved. A separate
+Main blocker: existing Turnkey source address/access and Render source/settings
+access remain unresolved. EC2 inventory run40392851547 has now completed successfully,
+verifying the expected instance/account/region and current nonroot runner. A separate
 unfunded PumpPortal billing wallet/key now exists in protected storage outside git;
 its funding proposal is not yet ready for approval without sender verification.
 
@@ -73,9 +73,13 @@ Gates B–D are incomplete; 24/72-hour clocks have not started. Gate E is unauth
   `f87659bffe78f74866226dbb33f5263fdc85afb5`. Connector has no dispatch capability;
   runner-list endpoint is outside its allowlist. Owner console Run workflow is
   the narrow unblock. Existing smoke workflows have legacy gates and were not run.
-- AWS discovery targets **unverified**: account133857166104, us-west-2,
-  instancei-00044d4ea1471b957. No AWS resource/mount/owner/deletion identity verified;
-  no cleanup or host mutation performed. No broad AWS key is requested.
+- EC2 inventory run40392851547/job121818077975 now verifies via IMDSv2:
+  account133857166104, us-west-2, instancei-00044d4ea1471b957, c6i.xlarge,
+  nonroot mm-ec2-runner uid994. Root filesystem309GiB,255GiB used,55GiB available;
+  memory7775MiB total,6871MiB available. No cleanup is justified by this capacity.
+  AWS CLI/Node/npm were not on runner PATH (not proof they are absent everywhere).
+  EBS IDs/DeleteOnTermination and STS identity remain unverified. No cleanup or
+  host mutation occurred. The inventory needs no rerun for connectivity proof.
 - User confirmed Render workspace `tea-daqk6h8jo6nc73eojtp0` (LeVon's workspace).
   Owner amendment now authorizes replacing only existing free service
   `srv-daqon53tqb8s73bdceq0` / `meme-machine-dashboard-staging`, current URL

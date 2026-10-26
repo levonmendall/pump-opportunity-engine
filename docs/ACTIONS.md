@@ -66,3 +66,10 @@ Follow-up dependency resolution:
   secure attachment and owner recovery requirements.
 - Render remains on the legacy free/Python deployment dep-dbff60e7bikc73dano8g.
   Connector still lacks source/runtime update; no Render mutation or second service.
+- Owner then dispatched the prepared inventory: run40392851547, job121818077975
+  completed successfully20:07:43UTC on meme-machine-ec2-admin/mm-ec2-runner uid994.
+  IMDSv2 verifies account133857166104, regionus-west-2, instancei-00044d4ea1471b957.
+  Capacity55GiB free root storage and6871MiB available memory; no cleanup needed
+  on this evidence. AWS/Node/npm not on this runner PATH. No Turnkey path/address
+  found in the bounded metadata-only check. Two legacy publisher units identified;
+  none stopped. Current inventory no longer needs any owner action/repeat dispatch.

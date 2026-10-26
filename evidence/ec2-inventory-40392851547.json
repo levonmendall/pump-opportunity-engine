@@ -1,0 +1,81 @@
+{
+  "runId": 40392851547,
+  "jobId": 121818077975,
+  "conclusion": "success",
+  "runner": "meme-machine-ec2-admin",
+  "identity": {
+    "ec2": {
+      "accountId": "133857166104",
+      "region": "us-west-2",
+      "instanceId": "i-00044d4ea1471b957",
+      "instanceType": "c6i.xlarge",
+      "imageId": "ami-0c9cb99abe659a860",
+      "availabilityZone": "us-west-2c"
+    },
+    "uid": 994,
+    "user": "mm-ec2-runner",
+    "commands": {
+      "aws": null,
+      "node": null,
+      "npm": null,
+      "systemctl": "/usr/bin/systemctl",
+      "sudo": "/usr/bin/sudo",
+      "findmnt": "/usr/bin/findmnt",
+      "lsblk": "/usr/bin/lsblk"
+    }
+  },
+  "capacity": [
+    {
+      "command": [
+        "df",
+        "-hT"
+      ],
+      "returncode": 0,
+      "stdout": "Filesystem      Type      Size  Used Avail Use% Mounted on\n/dev/root       ext4      309G  255G   55G  83% /\ntmpfs           tmpfs     3.8G     0  3.8G   0% /dev/shm\ntmpfs           tmpfs     1.6G 1000K  1.6G   1% /run\ntmpfs           tmpfs     5.0M     0  5.0M   0% /run/lock\nefivarfs        efivarfs  128K  3.3K  120K   3% /sys/firmware/efi/efivars\n/dev/nvme0n1p16 ext4      881M  203M  617M  25% /boot\n/dev/nvme0n1p15 vfat      105M  6.2M   99M   6% /boot/efi\n"
+    },
+    {
+      "command": [
+        "free",
+        "-m"
+      ],
+      "returncode": 0,
+      "stdout": "               total        used        free      shared  buff/cache   available\nMem:            7775         904         605          43        6628        6871\nSwap:              0           0           0\n"
+    },
+    {
+      "command": [
+        "lsblk",
+        "-o",
+        "NAME,TYPE,SIZE,FSTYPE,MOUNTPOINTS"
+      ],
+      "returncode": 0,
+      "stdout": "NAME         TYPE  SIZE FSTYPE   MOUNTPOINTS\nloop0        loop 28.4M squashfs /snap/amazon-ssm-agent/13349\nloop1        loop   74M squashfs /snap/core22/2437\nloop2        loop   74M squashfs /snap/core22/2955\nloop3        loop 50.1M squashfs /snap/snapd/27710\nloop4        loop 44.7M squashfs /snap/snapd/28254\nnvme0n1      disk  320G          \n├─nvme0n1p1  part  319G ext4     /\n├─nvme0n1p14 part    4M          \n├─nvme0n1p15 part  106M vfat     /boot/efi\n└─nvme0n1p16 part  913M ext4     /boot\n"
+    }
+  ],
+  "turnkeyMetadata": [
+    {
+      "runnerTurnkeyVariableNamesOnly": [],
+      "note": "Runner environment is not the trading service environment; absence is inconclusive."
+    },
+    {
+      "turnkeyPathMetadataOnly": [],
+      "contentsRead": false
+    }
+  ],
+  "publishers": [
+    {
+      "unitMetadataOnly": "meme-machine-dashboard-publisher.service",
+      "returncode": 0,
+      "properties": "EnvironmentFiles=/etc/meme-machine/dashboard.env (ignore_errors=no)\nUser=meme-machine\nFragmentPath=/etc/systemd/system/meme-machine-dashboard-publisher.service\n"
+    },
+    {
+      "unitMetadataOnly": "meme-machine-ec2-dashboard-publisher.service",
+      "returncode": 0,
+      "properties": "EnvironmentFiles=/etc/meme-machine/dashboard.env (ignore_errors=no)\nUser=meme-machine\nFragmentPath=/etc/systemd/system/meme-machine-ec2-dashboard-publisher.service\n"
+    }
+  ],
+  "limitations": [
+    "IMDSv2 identity verified; AWS CLI not on runner PATH, no STS or EBS API identity verified.",
+    "No Turnkey credentials, secret file contents or wallet address read.",
+    "No service stop, cleanup or financial mutation performed."
+  ]
+}

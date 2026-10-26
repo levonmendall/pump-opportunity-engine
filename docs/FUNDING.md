@@ -68,9 +68,12 @@ credential, never the full recovery bundle. A managed secret binding named
 value supplied in Secrets, never chat. The public address can be configured as
 `POE_DATA_WALLET`. No wallet/provider credential goes to Render.
 
-The single pending EC2 inventory dispatch now includes bounded Turnkey presence
-and service configuration **path metadata only**, never secret file contents or
-environment values. This is access discovery, not an integration rebuild.
+The EC2 inventory has now completed successfully (run40392851547) on the expected
+host. Bounded Turnkey presence/path metadata exposed no usable wallet address or
+credential binding. It never read secret file contents or environment values;
+absence in this bounded check does not prove the integration is absent elsewhere.
+No repeat inventory dispatch is needed. Existing Turnkey's public Solana address
+and nonsecret integration location/binding selector remain the precise missing inputs.
 
 References: [wallet creation](https://pumpportal.fun/create-wallet/),
 [data requirements](https://pumpportal.fun/data-api/real-time/),
