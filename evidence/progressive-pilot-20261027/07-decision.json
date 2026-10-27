@@ -1,0 +1,17 @@
+{
+  "runId": "pilot-20261027200603791-46c145af",
+  "observedElapsedMs": 246829,
+  "ageEligibleCandidateMs": 154135,
+  "ageEligibleDistinctWallMs": 134160,
+  "auditCoveredWindowsAllAges": 22,
+  "auditCoveredWindowsWithinEntryAge": 3,
+  "controlEnabledMs": 61160,
+  "predictiveRejections": 3,
+  "qualifiedDecisions": 0,
+  "qualifiedButUnfilled": 0,
+  "actualNewRpcUnits": 81,
+  "enrichment": "11 actual swaps (7Buy/4Sell); affected busy scope invalidated with4pending hints; no usable busy window",
+  "conclusion": "recording correction verified; age-admission/cache-order defects require correction; busy selected-flow workload inadequate at observed method/deadline limits",
+  "financialBackupMatches": true,
+  "noNaturalTrades": true
+}

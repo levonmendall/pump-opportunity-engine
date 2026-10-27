@@ -1,3 +1,29 @@
+# Forward repairs and actual limits — 2026-10-27
+
+The two-scope forward sourcef8d7cd8 completed246.829seconds and verified the
+recording repair beyond the original100-row boundary. It produced22audited
+windows, but only3were in entry-age eligibility;3genuine predictive rejections,
+zeroqualified/unfilled orders and no natural entries/exits.61.160seconds of
+literal entry-control permission is separate from154.135candidate-seconds of
+age-eligible collection (134.160distinctwall-seconds). Eleven swaps (7Buy/4Sell)
+were validated;4pendinghints caused an explicit busy-scope capacity refusal.
+That active window is unusable, even though the quiet windows succeeded. No
+mapper failure or provider429 occurred. The configuration is inadequate for that
+observed busy flow; unused average request capacity is not a deadline guarantee.
+
+The next separately labeled source corrects observed selection timing: reject
+fresh-window impossibility under the unchanged2h age limit, recheck actual socket
+activation, retire expired entry scopes without discarding financial obligations,
+and alternate ready new discoveries with recent eligible cached identities.
+Transient backoff defers preparation rather than permanently excluding a valid
+candidate. These are selection/recovery changes; primary entry/exit thresholds,
+fees, actual-size pricing, source/quote validity and risk limits stay fixed.
+
+The failed recorder source8c2a639 remains an incomplete adverse interval, with
+its rawrecording,40newRPCunits and last-known stream lowerbound preserved. Its
+failed final status projection is not replaced with fabricated performance.
+All substantive results and full uncertainty are in the bounded evidence folder.
+
 # Progressive validation — 2026-10-27
 
 The temporary single-position contract remains immutable. Explicit stages now

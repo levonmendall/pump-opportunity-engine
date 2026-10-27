@@ -1,7 +1,7 @@
 /** Controller policies only: no network, live account, or natural trade. */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotCandidateWindowReady,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity} from '../src/pilot.js';
+import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotCandidateWindowReady,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
 import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
 
 test('explicit stage transitions preserve account/inception and append known capacity contracts',()=>{
@@ -82,4 +82,31 @@ test('shadow collection does not require a new exposure runway and preserves hel
 test('a newly filled position starts its protection clock at entry, not prior candidate warm-up',()=>{
  const gaps=pilotOpenProtectionGaps({newlyFilled:{units:'100',enteredAt:61000}},new Map(),61500,1000);
  assert.equal(gaps[0]!.gapMs,500);assert.equal(gaps[0]!.overdue,false);assert.equal(gaps[0]!.from,61000);
+});
+
+
+test('fresh candidate runway uses the unchanged closed window and audit timing and rechecks preparation delay',()=>{
+ const migration=1000000,expiry=migration+7200000;
+ assert.equal(pilotEligibilityRunway(migration,expiry).allowed,false);
+ const before=pilotEligibilityRunway(migration,expiry-80000);assert.equal(before.allowed,true);assert.equal(before.firstWindowEndAt,expiry-20000);assert.equal(before.earliestAuditStartAt,expiry-15000);
+ assert.equal(pilotEligibilityRunway(migration,expiry-65000).allowed,false,'aligned window would need audit at or after expiry');
+ assert.equal(pilotEligibilityRunway(migration,expiry-1000).allowed,false,'support preparation cannot authorize an unusable fresh window');
+});
+
+test('fresh discovery gets bounded service alongside prepared cache without dispatching immature or backed-off hints',()=>{
+ const cached={signature:'cached',receivedAt:1},fresh={signature:'fresh',receivedAt:5000},immature={signature:'too-new',receivedAt:39999},backoff={signature:'backoff',receivedAt:1,eligibleAfter:90000};
+ let choice=choosePilotPreparation(cached,[immature,backoff,fresh],40000,true)!;assert.equal(choice.kind,'fresh-discovery');assert.equal(choice.index,2);
+ choice=choosePilotPreparation(cached,[fresh],40000,choice.preferFreshNext)!;assert.equal(choice.kind,'verified-cache');
+ choice=choosePilotPreparation(cached,[fresh],40000,choice.preferFreshNext)!;assert.equal(choice.kind,'fresh-discovery');
+ assert.equal(choosePilotPreparation(null,[immature,backoff],40000,true),null);
+});
+
+
+test('prepared selection prefers recent eligible identities and excludes only impossible fresh-window age runways',()=>{
+ const now=10000000;
+ const proof=(mint:string,age:number)=>({identity:{baseMint:mint,signature:'fixture-'+mint,chainBlockTime:(now-age)/1000},evidence:'ISOLATED identity timing fixture'});
+ const pools={near:proof('near-expiry',7190000),old:proof('older',600000),recent:proof('recent',300000)};
+ assert.equal(nextPreparedPilotSeed(pools as any,new Set(),now)?.feedMint,'recent');
+ assert.equal(nextPreparedPilotSeed(pools as any,new Set(['recent']),now)?.feedMint,'older');
+ assert.equal(nextPreparedPilotSeed(pools as any,new Set(['recent','older']),now),null);
 });
