@@ -25,7 +25,7 @@ Actual forward history:
   hints at busy-scope capacity retirement. That busy window is unusable.81new
   RPCunits,791cumulative;255,926,606PumpApi bytes. Backup17matchesrevision2644.
 
-Current repair (build/57focusedchecks+independentreviewPASS): existing age/window
+Previous selection repair (build/57focusedchecks+independentreviewPASS): existing age/window
 feasibility checked before preparation/admission/actualactivation; expire entry
 observation promptly; favor recent eligible cache and alternate ready discovery
 seeds; defer reconnect-backoff race through existing recovery. This is an explicit
@@ -50,3 +50,13 @@ Evidence: `evidence/progressive-pilot-20261027/`; reports and exact assumptions 
 are retained in Git history; rawfinancial/evidence files remain outside Git or in
 their original tracked locations. Preserve unrelated docs/FUNDING.md,
 operator/funding/ and historical empty lockfiles.
+
+20:39UTC continuation: run08/source7020fc6 settled443.888s,46age-valid audited
+windows,45predictive rejections,zeroqualified/orders/exposure. Account/revision
+3127 confirmed bybackup20. Local preparation starvation independently demonstrated;
+priority/deadline/deferral correction now passes755repository tests,58focused
+admission/accounting checks and independent review. Pilot currently stopped.
+New owner directive requires dynamic broad watch registry independent of deep
+slots, progressive3/6/12scope tests, and auditable demotion/re-promotion. Next
+implement that narrow funnel on this review branch before the corrected forward
+interval. No owner approval needed within isolated PAPER/free-data boundaries.

@@ -1,0 +1,218 @@
+{
+  "runId": "pilot-20261027201954438-c75c4513",
+  "source": {
+    "commit": "7020fc6f9f64e84eb929e797ad92e525ad507aca",
+    "sha256": "2308ccdd5eb971b609135606f1fcbfe109e3ae8485ecb71de167841d81f89a2d"
+  },
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "elapsedMs": 443888,
+  "usage": {
+    "rpc": {
+      "runId": "pilot-20261027201954438-c75c4513",
+      "startedAt": 1793132394472,
+      "deadlineAt": 1793134194472,
+      "remainingMs": 1356145,
+      "chapter": 2,
+      "chapterPaths": [
+        "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/04-active/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/05-sampler/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/06-targeted/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/07-field/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/08-audit/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/09-notifications/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/10-notifications/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/11-combined/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/12-combined-audit/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/13-buy-finality/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/01-paced-combined/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/02-failed-buy-audit/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/03-corrected-combined/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/04-current-subject/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/06-targeted-retry-subject/rpc-budget.json",
+        "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/08-current-combined/rpc-budget.json",
+        "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-002.json",
+        "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json",
+        "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-003.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-002.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-003.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-004.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-005.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-006.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-007.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-008.json",
+        "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-009.json",
+        "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-001.json",
+        "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-002.json"
+      ],
+      "activeChapterPath": null,
+      "cumulativeUnits": 934,
+      "newUnits": 143,
+      "accountedCumulativeResponseBytes": 36029669,
+      "newAccountedResponseBytes": 2217731,
+      "maximumNewUnits": 1500,
+      "maximumNewResponseBytes": 33554432,
+      "requestLimits": {
+        "maxStartsPer10s": 20,
+        "maxGetTransactionStartsPer10s": 8,
+        "maxStartsPerMinute": 60,
+        "minSpacingMs": 250,
+        "physicalInFlight": 1
+      },
+      "methodPacing": {
+        "getTransactionStartsLast10s": [
+          {
+            "at": 1793132831496,
+            "origin": "getTransaction"
+          },
+          {
+            "at": 1793132831918,
+            "origin": "getTransaction"
+          },
+          {
+            "at": 1793132832170,
+            "origin": "getTransaction"
+          },
+          {
+            "at": 1793132832506,
+            "origin": "getTransaction"
+          },
+          {
+            "at": 1793132834699,
+            "origin": "getTransaction"
+          },
+          {
+            "at": 1793132837265,
+            "origin": "getTransaction"
+          }
+        ],
+        "capacityRefusals": 0,
+        "baselineUnknownMethodsCountConservatively": true
+      },
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "uncertainResponseBytes": 23068672,
+      "currentChapterUncertainResponseBytes": 0,
+      "inheritedUncertaintyIsRetainedInBaseline": true,
+      "cooldownUntil": 1793126555459,
+      "controlCooldownUntil": 0,
+      "lastFailureWasDataControl": false,
+      "closed": true,
+      "fatal": null,
+      "chapterUsage": null,
+      "dispatchWindow": null,
+      "automaticRequestRetries": 0
+    },
+    "feeds": {
+      "maximumCandidates": 2,
+      "candidates": [
+        {
+          "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+          "pool": "HYYE3KW1d2S67wADcXjqvLAeUPa8jBjFV6dq23yeUe6A",
+          "suspended": false,
+          "pending": 0,
+          "normalized": 0,
+          "selectedForMs": 20015.37364299997
+        },
+        {
+          "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+          "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+          "suspended": false,
+          "pending": 1,
+          "normalized": 6,
+          "selectedForMs": 9229.970085999987
+        }
+      ],
+      "enrichmentInFlight": false,
+      "startedAt": 1793132394490,
+      "durationMs": 1800000,
+      "stopped": true,
+      "firstFailure": "candidate observation allocation ended",
+      "pumpApiSocketBytes": 508664904,
+      "discoverySocketBytes": 1857,
+      "controlBytesCharged": 2709,
+      "totalSocketBytes": 508666761,
+      "lastAnyTrafficAt": 1793132837963,
+      "frames": 340846,
+      "irrelevantFrames": 340801,
+      "selectedFrames": 33,
+      "parsedPumpApiFrames": 52,
+      "recordedBytes": 903489,
+      "normalizedTrades": 6,
+      "gaps": 9,
+      "discoveryConnected": false,
+      "pumpApiConnected": false,
+      "discoveryDesired": false,
+      "pumpApiDesired": false,
+      "failedCandidate": false,
+      "candidateRetryAt": 1793132816031,
+      "connections": {
+        "discovery": 1,
+        "pumpapi": 4
+      },
+      "candidate": {
+        "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+        "pool": "HYYE3KW1d2S67wADcXjqvLAeUPa8jBjFV6dq23yeUe6A",
+        "suspended": false,
+        "pending": 0,
+        "normalized": 0,
+        "selectedForMs": 20015.376647999976
+      },
+      "physicalTransportsSettled": true,
+      "streamFieldCompleteness": "REQUIRES_BOUNDED_INDEPENDENT_AUDIT",
+      "liveTrading": false
+    },
+    "heldDiscretionary": {
+      "count": 34,
+      "maximum": 20,
+      "admitted": false,
+      "readyAt": 1793132869453
+    },
+    "dispatchWaitsCoalesced": 0,
+    "eventBytes": 2345154,
+    "maximumRss": 236093440,
+    "cpu": {
+      "user": 29329158,
+      "system": 5222332
+    },
+    "eventLoopDelayP95Ms": 20.938751
+  },
+  "funnel": {
+    "discovered": 8,
+    "supported": 8,
+    "sufficientlyObserved": 46,
+    "evaluated": 81,
+    "qualified": 0,
+    "reserved": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 388,
+    "discoveryCountMeaning": "migration notifications; token/base identities require later verification",
+    "uniqueDiscoverySignaturesInBoundedSet": 8,
+    "verifiedMigrationOrigins": 11,
+    "admitted": 8,
+    "usableWindows": 46
+  },
+  "naturalForward": {
+    "entries": 0,
+    "exits": 0
+  },
+  "status": "graceful local stop request; exposure retained"
+}

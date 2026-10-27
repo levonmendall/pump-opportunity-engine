@@ -1,4 +1,66 @@
-# Forward repairs and actual limits — 2026-10-27
+# Progressive pilot: current evidence and preparation-priority repair
+
+Original EC2 runtime, authoritative account/inception, financial history and
+Render portfolio are unchanged. Research uses the same isolated pilot account
+`poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`, inception
+2026-10-27T17:56:13.252Z. No reseed or forced natural trade occurred.
+
+Source7020fc6/run08 completed443.888seconds with two simultaneous candidate
+scopes and zero natural positions/orders/fills/exits. Eight identities were
+admitted, eleven origins verified and eight migration hints received. All46
+independently audited windows were within entry age. Overlapping lookbacks cover
+660candidate-seconds/350distinctwall-seconds; this is not46*60seconds of unique
+coverage. Age-eligible collection was732.980candidate-seconds/393.870wall-seconds.
+Entry-control permission lasted125.477seconds; it does not mean qualification.
+The81decisions comprise45predictive rejections,31warming,4age exclusions and
+1ledger-control risk rejection. No qualified-but-unfilled order exists.
+
+Six swaps were validated: an inner/routed Buy, an inner/routed Sell and four
+direct Sells. No multiple-swap transaction was demonstrated in this interval.
+Enrichment availability p50/p95/max was1986/2593/2593ms. All143physical starts
+settled;137HTTP bodies had72/179/440ms p50/p95/max response time. New related
+bytes2,217,731; PumpApi bytes508,664,904. MaxRSS236,093,440bytes; CPU34.55149s;
+event-loop p9520.939ms. Backup20 agrees at financial revision3127. SOL trading
+P&L is zero; USD+$1.785626 comes entirely from passive SOL valuation. Economic
+P&L remains unavailable because infrastructure costs are not verified.
+
+A real local scheduler defect remains separately recorded: while one candidate
+received17selected frames, lower-priority preparation made five additional fast
+reads and then waited8668ms inline for opening headroom. No enrichment was
+dispatched. Those responses were44–55ms; the trace does not show provider
+saturation. This overflow cannot all be attributed to inherent burst capacity.
+
+The narrow correction checks pending required enrichment before every lower-
+priority physical admission, caps a preparation/audit pacing segment at500ms
+when observation is active, and defers opening headroom instead of awaiting it
+inline. Enrichment bypasses its own priority guard; holdings/pending actions keep
+precedence. Local prephysical admission/dispatch deferrals preserve discovery
+seeds and use the existing30second bounded audit recovery. Post-reservation
+uncertainty/fatal accounting is unchanged. No rate, strategy, risk or quote-age
+limit was raised. Independent review found no blocker for an isolated interval.
+The corrected trace must still separate starvation repair from excessive bursts.
+
+Concurrency evidence is deliberately bounded: the disposable financial fixture
+ran1holding+2shadow candidates, then2holdings+1candidate, then3holdings+0candidates
+and3pending exits. It did not run3holdings+2candidates simultaneously. That
+combination passed only the separately labeled synthetic scheduler replay at
+47peak starts/minute and2100ms maximum completed gap. Actual natural forward
+holding concurrency remains zero. Bursts,4.5snonpreemptible requests and3sCPU
+stalls retain their recorded coverage/protection failures below. No production
+or unattended acceptance is claimed.
+
+The following forward interval will use the corrected frozen source, unchanged
+predictive/financial rules, a maximum of two candidate scopes and permitted
+three-position exposure. This is a capacity-bound research stage, not a permanent
+architecture limit. Every failed scope remains entry-ineligible; no sampling
+repairs completeness. Source/result/usage files remain preserved separately.
+
+The historical feed-cooldown concern near the end of this document was repaired:
+manifest controlCooldownUntil is recovered from settled/crashed RPC books and
+checked before either feed control, separately from pricing cooldown. It is no
+longer a requested prerequisite; the historical review remains evidence.
+
+# Historical forward repairs and actual limits — 2026-10-27
 
 The two-scope forward sourcef8d7cd8 completed246.829seconds and verified the
 recording repair beyond the original100-row boundary. It produced22audited

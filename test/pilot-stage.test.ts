@@ -1,7 +1,7 @@
 /** Controller policies only: no network, live account, or natural trade. */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotCandidateWindowReady,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
+import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotPreparationDeferrable,pilotCandidateWindowReady,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
 import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
 
 test('explicit stage transitions preserve account/inception and append known capacity contracts',()=>{
@@ -117,4 +117,32 @@ test('observation concurrency is independent of the permitted financial stage',(
  assert.equal(stage.contract.baseline,PILOT_CONTRACT.baseline);assert.equal(stage.contract.execution,PILOT_CONTRACT.execution);
  assert.equal(resolvePilotStage('two',1).maximumPositions,2);assert.equal(resolvePilotStage('three').maximumCandidates,3);
  assert.throws(()=>resolvePilotStage('single',2),/CANDIDATE_STAGE_LIMIT/);assert.throws(()=>resolvePilotStage('three',4),/CANDIDATE_STAGE_LIMIT/);assert.throws(()=>resolvePilotStage('three',0),/CANDIDATE_STAGE_LIMIT/);
+});
+
+
+test('required candidate enrichment precedes lower-priority preparation without requiring a held position',()=>{
+ const start=100000,arrivals=[100078,100150,100200],remaining=[...arrivals],completed:number[]=[],starts:number[]=[];
+ // Explicit counterfactual50ms responses and250ms shared pacing. The retained
+ // forward responses are not assumed identical at different request times.
+ let now=start;let lastStart=-Infinity;
+ while(remaining.length){
+  const pending=remaining.some(t=>t<=now);
+  const preparation=pilotLowerPriorityAdmission({now,endAt:start+20000,held:0,lastUsable:null,nextPendingAt:null,candidatePending:pending});
+  if(pending){assert.equal(preparation.admitted,false);const received=remaining.shift()!;now=Math.max(now,received+1000,lastStart+250);const enrich=pilotLowerPriorityAdmission({now,endAt:start+20000,held:0,lastUsable:null,nextPendingAt:null,candidatePending:false});assert.equal(enrich.admitted,true);lastStart=now;starts.push(now);now+=50;completed.push(now-received);}
+  else now=arrivals[0]!;
+ }
+ assert.deepEqual(starts,[101078,101328,101578]);assert.ok(completed.every(delay=>delay<=5000));
+ const held=pilotLowerPriorityAdmission({now:start+2500,endAt:start+20000,held:3,lastUsable:start,nextPendingAt:null,candidatePending:true});assert.equal(held.admitted,false,'known required flow cannot make preparation consume held reserve either');
+});
+
+
+test('local prephysical deferrals preserve discovery seeds and bounded independent audit recovery',()=>{
+ for(const reason of ['PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_SCHEDULER_LOWER_PRIORITY_DEFER']){
+  assert.equal(pilotPreparationDeferrable(reason),true);
+  const initial=pilotAuditFailurePolicy(reason,null,1000,0);assert.equal(initial.defer,true);assert.equal(initial.firstUnavailableAt,1000);
+  assert.equal(pilotAuditFailurePolicy(reason,initial.firstUnavailableAt,30999,0).defer,true);
+  assert.equal(pilotAuditFailurePolicy(reason,initial.firstUnavailableAt,31000,0).defer,false);
+ }
+ assert.equal(pilotPreparationDeferrable('PILOT_HISTORY_UNSUPPORTED_EVENT'),false);
+ assert.equal(pilotAuditFailurePolicy('PILOT_RPC_COMPONENT_RESPONSE_CAP',null,1000,0).defer,false);
 });
