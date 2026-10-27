@@ -1,0 +1,175 @@
+{
+  "classification": "OFFLINE_IMMUTABLE_PREFIX_SCHEDULER_DIAGNOSIS",
+  "run": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205",
+  "executedCommit": "98ebbb985459ac3867de503f00cb8ff9db71efb4",
+  "executedSourceSha256": "eb148c4db75b2031c1d1f9ef22ba831d0c2cdfb165abef84e82912da9db1b389",
+  "relevantSourceSha256": {
+    "pilot.ts": "92d86240ecd7d7f94165374137784981fabaf18295425bbaa7a91db84e39784a",
+    "pilot-feeds.ts": "d71a48179961c06e71c67ae52d9fdebab11947256e4f3585adbdf391e0bd398e",
+    "pilot-rpc.ts": "f7cb4b4639c7fd3568f1b25f6b447a7b9891919f8621862052de4360666c4d52",
+    "component-budget.ts": "474b36d83a9bd918f728cb06a10e3bbc0df3570ba19fcc0b684126dfcfc91e08"
+  },
+  "provenance": {
+    "eventPath": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/events.ndjson",
+    "prefixBytes": 3697742,
+    "prefixRows": 4671,
+    "prefixLastRecordAt": 1793124723532,
+    "prefixSha256": "cd8014c9464586e015580c7d6cbe428483ad3493573f31c762f05b6fbbc882ca",
+    "prefixScope": "Only bytes through the third candidate retirement, before later mutable run observations.",
+    "closedChapterBook": {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json",
+      "sha256": "477e2190b1574c3bd028a9b34bc79a4fe9e4ff38e50d67a4db3a07eeaf56989c",
+      "lastObservedAt": 1793124810851,
+      "role": "Later-read immutable counterbook corroborates earlier actual starts; later starts are excluded from timing reconstruction."
+    }
+  },
+  "failure": {
+    "at": 1793124723531,
+    "jobEnqueuedAt": 1793124723528,
+    "signature": "4bzoBU2HyY77aPcoq4urw84Nd8RStWMbuRx1UTBsStvs1qpM3vWgMEpENdqeLwoMFTkq8DHQr23szuc7XrYSJ4HX",
+    "hintReceivedAt": 1793124722316,
+    "eligibleAt": 1793124723316,
+    "validationDeadlineAt": 1793124727316,
+    "latestPermittedStartAt": 1793124726116,
+    "localRolling10sStarts": 10,
+    "localRolling60sStarts": 26,
+    "limits": {
+      "startsPer10s": 10,
+      "startsPerMinute": 60,
+      "minimumSpacingMs": 250,
+      "onePhysicalInFlight": true
+    },
+    "lastPhysicalStartAt": 1793124723469,
+    "physicalSpacingReadyAt": 1793124723719,
+    "rolling10sReadyAt": 1793124729100,
+    "dispatchReadyAfterCallerDeadlineMs": 2984,
+    "dispatchReadyAfterFullValidationDeadlineMs": 1784,
+    "physicalNetworkStarted": false,
+    "providerResponseForFailedJob": false,
+    "reason": "Local rolling10s gate could not provide a start by the declared deadline; guard refused before reservation/transport."
+  },
+  "actualStartsPrior10s": [
+    {
+      "id": 467,
+      "at": 1793124719100,
+      "transport": "http",
+      "method": "getTransaction"
+    },
+    {
+      "id": 468,
+      "at": 1793124719353,
+      "transport": "http",
+      "method": "getTransaction"
+    },
+    {
+      "id": 469,
+      "at": 1793124719606,
+      "transport": "http",
+      "method": "getMultipleAccounts"
+    },
+    {
+      "id": 470,
+      "at": 1793124719858,
+      "transport": "http",
+      "method": "getMultipleAccounts"
+    },
+    {
+      "id": 471,
+      "at": 1793124720111,
+      "transport": "http",
+      "method": "getBlockTime"
+    },
+    {
+      "id": 472,
+      "at": 1793124720364,
+      "transport": "http",
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "id": 473,
+      "at": 1793124720618,
+      "transport": "http",
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "id": 474,
+      "at": 1793124720871,
+      "transport": "ws-upgrade",
+      "method": "upgrade"
+    },
+    {
+      "id": 475,
+      "at": 1793124723217,
+      "transport": "http",
+      "method": "getTransaction"
+    },
+    {
+      "id": 476,
+      "at": 1793124723469,
+      "transport": "http",
+      "method": "getTransaction"
+    }
+  ],
+  "preparation": {
+    "beforeCaptureStarts": 8,
+    "breakdown": {
+      "migrationProofGetTransaction": 2,
+      "supportedPoolGetMultipleAccounts": 2,
+      "blockTimestampGetBlockTime": 1,
+      "accountLengthRentReads": 2,
+      "pumpApiUpgrade": 1
+    },
+    "streamOpenedAt": 1793124721756,
+    "firstSelectedHintAt": 1793124722177,
+    "firstTwoEnrichments": [
+      {
+        "id": 475,
+        "startAt": 1793124723217,
+        "rpcAvailableAt": 1793124723269,
+        "validationAt": 1793124723271
+      },
+      {
+        "id": 476,
+        "startAt": 1793124723469,
+        "rpcAvailableAt": 1793124723525,
+        "validationAt": 1793124723527
+      }
+    ],
+    "noHeldPricingOrIndependentAuditJobsBetweenFirstHintAndFailure": true
+  },
+  "burst": {
+    "distinctSelectedSignatureHints": 14,
+    "firstReceivedAt": 1793124722177,
+    "lastReceivedAt": 1793124723457,
+    "receiptSpanMs": 1280,
+    "earliestEligibleAt": 1793124723177,
+    "lastValidationDeadlineAt": 1793124728457,
+    "fullStartIntervalUpperBoundMs": 5280,
+    "maximumStartsInThatIntervalUnderExisting10sGate": 10,
+    "minimumRequiredTransactionRequests": 14,
+    "minimumInfeasibleHintsEvenWithEmptyGateAndZeroServiceTime": 4,
+    "qualification": "Signature hints require confirmation; fourteen genuine trades or complete provider coverage are not inferred. Only two were normalized before this gap."
+  },
+  "backoff": {
+    "oldCandidateExpiredAt": 1793124668730,
+    "oldCandidateClearedAt": 1793124668740,
+    "requiredNewCandidateEarliestAt": 1793124670730,
+    "newPreparationFirstPhysicalStart": 1793124668743,
+    "newPreparationLastPhysicalStart": 1793124670260,
+    "preparationRequestsConsumed": 7,
+    "preparationReadyAt": 1793124670313,
+    "admissionRefusedAt": 1793124670320,
+    "refusedBeforeReadyMs": 410,
+    "newCandidateMint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+    "cause": "Root marks mint tested and prepares account costs before checking feeds.candidateRetryAt; transient410ms backoff refusal is then retired as already-tested for the rest of this run."
+  },
+  "recommendations": [
+    "Check feed candidateRetryAt before consuming preparation requests or marking a mint tested; defer the prepared proof/seed to that exact time and perform required fresh checks then.",
+    "Before opening a candidate stream, reserve rolling request headroom for complete enrichment, independent auditing and held protection. Warming begins at actual subsequent socket open; do not backfill missed flow.",
+    "Treat the observed14-signature/1.28s burst as outside this configuration’s demonstrated5s enrichment capacity. An initial drain helps setup contention but cannot make this burst feasible under10 starts/10s.",
+    "Preserve gap invalidation and the active source until a reviewed successor; do not loosen deadlines, drop selected signatures or claim a provider failure."
+  ],
+  "networkCallsMadeForAnalysis": 0,
+  "sourceEdited": false,
+  "financialStateEdited": false
+}

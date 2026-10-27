@@ -1,3 +1,15 @@
+## Current isolated pilot — 2026-10-27 17:57UTC
+
+A continuous isolated PAPER pilot is running in Cloud from review release `f8bdf1e`, with frozen strategy `persistent-buying-pilot-v1`. Account `poe-pilot-8468add6-f916-48cf-a585-6cd008a81360` was initialized once at `2026-10-27T17:56:13.252Z`, then reopened unchanged after a clean review-fix stop. This is separate from the original authoritative EC2 account. No production or Render write occurred.
+
+Initial start checks cover fresh delayed entry/exit pricing, current rent, exact modeled costs, candidate-gap handling, held exposure, same-account restart and writer exclusivity. The first stage has one candidate or one simulated holding; this is temporary. Discovery continues while holding. Progressive shadow/concurrency tests remain authorized and must report failed contention cases, lost coverage and actual supported concurrency.
+
+At interval start: free migration discovery connected; no eligible candidate yet; entries gated by identity/window/reconciliation/capacity checks; natural PAPER entries/exits0; no positions/pending actions. The changing local scorecard is `/workspace/poe-pilot/status.json`. This paragraph is a start checkpoint, not the final forward result. See [PILOT.md](docs/PILOT.md) for commands, frozen timing and resource limits.
+
+Production remains untouched. Its last public read-only snapshot check was about16:13UTC (not a current systemd/DB verification): original account reconciled, entries disabled, no positions/trades, source about49sold. No24/72h acceptance clock has started. EDGE UNPROVEN. LIVE TRADING DISABLED.
+
+---
+
 # POE status — 2026-10-27 UTC
 
 One authorized diagnostic obtained5validated on-chain market swaps and one usable

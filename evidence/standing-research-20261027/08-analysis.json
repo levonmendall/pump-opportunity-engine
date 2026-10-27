@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "classification": "BOUNDED_DATA_PATH_MILESTONE_NOT_ACCEPTANCE",
+  "rawSources": {
+    "evidence/standing-research-20261027/08-current-combined/summary.json": "71f4db77000e70868641de918af5628dbedcb562d8595573793686d196a70238",
+    "evidence/standing-research-20261027/08-current-combined/capture.json": "caf21509b1bfa602298ebf01f0bc82bec6e95dcae643a7860db45ea02bc3e664",
+    "evidence/standing-research-20261027/08-current-combined/audit.json": "765734e8f426be191481e3e96795e98b369ce845f4b6ffb20d40e5a85caf58bc"
+  },
+  "sourceUnchanged": true,
+  "oldEvidenceUnchanged": true,
+  "observationMs": 75000,
+  "tradeTypes": {
+    "normalizedBuys": 11,
+    "normalizedSells": 0,
+    "routedEvents": 0,
+    "multipleSwapTransactions": 0,
+    "pending": 0,
+    "failedTransactions": 0
+  },
+  "independentAudit": {
+    "complete": false,
+    "matchedEvents": 11,
+    "verifiedEvents": 11,
+    "historyRangeCovered": true,
+    "reason": "COMPONENT_HTTP_429",
+    "finalityRechecks": [],
+    "scope": "Exact nominal chain interval plus every explicitly recorded selected signature; not proof of receive-window completeness"
+  },
+  "candidateFeatures": {
+    "at": 1793121350427,
+    "curve": {
+      "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+      "asOf": 1793121350427,
+      "windowStartAt": 1793121290000,
+      "windowEndAt": 1793121350000,
+      "sufficientlyObserved": true,
+      "qualityReason": null,
+      "buyLamports": "788870206",
+      "sellLamports": "0",
+      "netBuyLamports": "788870206",
+      "tradeCount": 11,
+      "provisionalTradeCount": 0,
+      "distinctBuyerWallets": 10,
+      "largestBuyerBps": 9968,
+      "positiveNetBuckets": 6,
+      "priceReturnBps": 1,
+      "firstPrice": {
+        "quoteLamports": "128816",
+        "tokenUnits": "15208"
+      },
+      "lastPrice": {
+        "quoteLamports": "454837",
+        "tokenUnits": "53691"
+      }
+    },
+    "user": {
+      "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+      "asOf": 1793121350427,
+      "windowStartAt": 1793121290000,
+      "windowEndAt": 1793121350000,
+      "sufficientlyObserved": true,
+      "qualityReason": null,
+      "buyLamports": "791236834",
+      "sellLamports": "0",
+      "netBuyLamports": "791236834",
+      "tradeCount": 11,
+      "provisionalTradeCount": 0,
+      "distinctBuyerWallets": 10,
+      "largestBuyerBps": 9968,
+      "positiveNetBuckets": 6,
+      "priceReturnBps": 1,
+      "firstPrice": {
+        "quoteLamports": "129204",
+        "tokenUnits": "15208"
+      },
+      "lastPrice": {
+        "quoteLamports": "456203",
+        "tokenUnits": "53691"
+      }
+    },
+    "fullyEnriched": true,
+    "researchOnly": true
+  },
+  "holdingChecks": {
+    "attempts": 39,
+    "unavailable": 0,
+    "maxCompletedEvaluationGapMs": 2046,
+    "p95CompletedEvaluationGapMs": 2042
+  },
+  "cutoff": {
+    "enabled": true,
+    "durationMs": 75000,
+    "logicalCutoffAt": 1793121364959,
+    "logicalCutoffMonotonicAt": 87631.79329,
+    "exclusive": true,
+    "lastAcceptedInformationAt": 1793121364945,
+    "lastAcceptedTradeAt": 1793121347176,
+    "lastAcceptedPriceAt": 1793121364945,
+    "admittedObservationEndAt": 1793121364959,
+    "admissionClosedAt": 1793121364960,
+    "admissionClosedMonotonicAt": 87633.041142,
+    "transportStopRequestedAt": 1793121364960,
+    "transportStopRequestedMonotonicAt": 87633.4113,
+    "transportSettledAt": 1793121364962,
+    "transportSettledMonotonicAt": 87634.602576,
+    "socketBytesAtStop": 68057169,
+    "applicationBytesAtStop": 67881872,
+    "socketBytesAfterStop": 0,
+    "applicationBytesAfterStop": 0,
+    "drainFrames": 0,
+    "drainApplicationBytes": 0,
+    "postCutoffFrames": 0,
+    "postCutoffApplicationBytes": 0,
+    "transportTimingGuarantee": "Logical data admission is bounded; actual OS/socket closure may occur later and is measured separately."
+  },
+  "actualCumulative": {
+    "requestUnits": 348,
+    "observedRelatedBytes": 4004168,
+    "unknownRelatedBytesRetained": 4194304,
+    "accountedRelatedBytes": 8198472,
+    "observedPumpApiSocketBytes": 437709271,
+    "observedPumpApiBytesAreLowerBound": false,
+    "unknownPumpApiReservationBytesRetained": 0,
+    "historicLifetimeCeilingsAreNotProviderLimits": true
+  },
+  "resources": {
+    "peakRssBytes": 206790656,
+    "peakCpuMs": 9156.69,
+    "peakEventLoopLagMs": 21.602313000010327,
+    "externalPrlimitRequired": true,
+    "externalWallGuardRequired": true
+  },
+  "limitations": [
+    "Finality audit stopped at new HTTP429; original audit remains incomplete.",
+    "No natural stop/profit/max-hold crossing occurred.",
+    "Migration origin/entry age for this transport sample remained unverified.",
+    "No financial action or PAPER trade occurred.",
+    "Observed low jitter does not erase recorded burst/jitter/pending contention failures."
+  ]
+}

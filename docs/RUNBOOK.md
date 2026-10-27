@@ -340,3 +340,10 @@ node --import tsx --test test/research-end-to-end.test.ts test/observation-cutof
 ```
 
 The test lifecycle uses disposable state and fixture decisions; it must never be published to Render or relabeled natural PAPER performance. Existing production install/backup/rollback commands are unchanged. Any future upgrade must preserve the actual account ID/inception, stop after exclusive writer release, validate a consistent backup, use the compatible schema and retain the prior release; this research does not authorize executing that upgrade.
+
+
+## Isolated live-market PAPER pilot
+
+Use [PILOT.md](PILOT.md) for the separate Cloud pilot. `bash operator/pilot.sh start --directory /workspace/poe-pilot --duration-seconds 1800` starts/reopens only the distinct experimental ledger. `status`, `stop` and `resume` use the same directory. A graceful stop preserves open exposure and records an interruption; it never fabricates an exit. Do not point these commands at production data or publish their snapshots to the original Render identity.
+
+The one-candidate/one-position first stage is temporary. Additional shadow candidates and concurrent simulated positions require measured scheduling/data support, not another owner grant. Existing jitter/burst/processing/pending failures remain relevant. No production release, service restart or authoritative entry enablement is authorized.

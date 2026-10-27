@@ -101,9 +101,14 @@ export class ComponentBudget {
   halt(reason:string){need(/^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(reason),'COMPONENT_INVALID_HALT');if(!this.state.haltedReason){this.state.haltedReason=reason;this.clock();this.persist();}this.currentController?.abort();}
   /** Charge measured WebSocket receipt once, before payload parsing. Caller
    * separately stops at7MiB socket/6MiB application to retain in-flight room. */
-  chargeWs(n:number){
+  chargeWs(n:number){this.chargeWsReceipt(n,true);}
+  /** Existing pilot sockets can receive after a short accounting chapter ends.
+   * Charge those bytes without extending admission: operate() still refuses all
+   * starts at/after deadline. The pilot separately enforces its global duration. */
+  chargePassiveWs(n:number){this.chargeWsReceipt(n,false);}
+  private chargeWsReceipt(n:number,enforceChapterDeadline:boolean){
     need(!this.closed&&!this.storageFailed,'COMPONENT_CLOSED');need(integer(n)&&n<=COMPONENT_LIMITS.httpResponseBytes,'COMPONENT_INVALID_BYTE_CHARGE');this.state.wsBytes+=n;this.clock();this.persist();
-    if(this.state.lastObservedAt>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
+    if(enforceChapterDeadline&&this.state.lastObservedAt>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
     if(this.state.wsBytes>this.limits.maxWsBytes||this.state.httpBytes+this.state.wsBytes>this.limits.maxCombinedBytes||!within(this.bytes,this.limits.maxCumulativeBytes)){this.halt('COMPONENT_RESPONSE_BYTE_CAP');throw Error('COMPONENT_RESPONSE_BYTE_CAP');}
   }
   async operate<T>(kind:ComponentKind,work:(context:ComponentOperation)=>Promise<T>,outer?:AbortSignal,options:{timeoutMs?:number;latestStartAt?:number;admissionOpen?:()=>boolean}={}):Promise<T>{

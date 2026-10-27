@@ -10,7 +10,7 @@ import {validateRpc} from './network.js';
 
 const MIB=1024*1024;
 export type PilotRpcCallOptions={latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean};
-export type PilotRpcOptions={directory:string;runId:string;baselinePaths:readonly string[];priorPhysicalSettled:true;priorCooldownUntil?:number;durationMs?:number;maxUnits?:number;maxResponseBytes?:number;chapterMs?:number;chapterUnits?:number;maxChapters?:number;record?:(kind:string,data:unknown)=>void;now?:()=>number;monotonic?:()=>number;fetcher?:typeof fetch;sleep?:ComponentBudgetOptions['sleep']};
+export type PilotRpcOptions={directory:string;runId:string;baselinePaths:readonly string[];priorPhysicalSettled:true;priorCooldownUntil?:number;durationMs?:number;maxUnits?:number;maxResponseBytes?:number;chapterMs?:number;chapterUnits?:number;maxChapters?:number;/** Research-only local gate; default10 retains earlier behavior. */maxStartsPer10s?:number;record?:(kind:string,data:unknown)=>void;now?:()=>number;monotonic?:()=>number;fetcher?:typeof fetch;sleep?:ComponentBudgetOptions['sleep']};
 export class PilotRpcUnavailable extends Error{
   constructor(readonly code:string,readonly retryAt:number|null=null){super('PILOT_RPC_'+code);this.name='PilotRpcUnavailable';}
 }
@@ -26,13 +26,13 @@ function retryAfter(value:unknown,at:number){
 
 export class PilotRpc{
   private readonly dir:string;private readonly paths:string[];private readonly now:()=>number;private readonly mono:()=>number;
-  private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;
+  private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;private readonly startsPer10s:number;
   private readonly initial:ComponentBaseline;private baseline:ComponentBaseline;private budget:ComponentBudget|undefined;private transport:ComponentTransport|undefined;
   private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;
   constructor(private readonly options:PilotRpcOptions){
     this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.startedAt=this.now();this.startedMono=this.mono();
-    this.duration=options.durationMs??1800000;this.units=options.maxUnits??1500;this.responseBytes=options.maxResponseBytes??32*MIB;this.chapterMs=options.chapterMs??300000;this.chapterUnits=options.chapterUnits??200;this.maximumChapters=options.maxChapters??32;
-    if(!int(this.startedAt)||!Number.isFinite(this.startedMono)||this.startedMono<0||!int(this.duration)||this.duration<1||this.duration>1800000||!int(this.units)||this.units<1||this.units>1500||!int(this.responseBytes)||this.responseBytes<4*MIB||this.responseBytes>32*MIB||!int(this.chapterMs)||this.chapterMs<1||this.chapterMs>300000||!int(this.chapterUnits)||this.chapterUnits<1||this.chapterUnits>200||!int(this.maximumChapters)||this.maximumChapters<1||this.maximumChapters>32||options.priorPhysicalSettled!==true||!/^[a-z0-9-]{1,60}$/.test(options.runId))throw new PilotRpcUnavailable('INVALID_OPTIONS');
+    this.duration=options.durationMs??1800000;this.units=options.maxUnits??1500;this.responseBytes=options.maxResponseBytes??32*MIB;this.chapterMs=options.chapterMs??300000;this.chapterUnits=options.chapterUnits??200;this.maximumChapters=options.maxChapters??32;this.startsPer10s=options.maxStartsPer10s??10;
+    if(!int(this.startedAt)||!Number.isFinite(this.startedMono)||this.startedMono<0||!int(this.duration)||this.duration<1||this.duration>1800000||!int(this.units)||this.units<1||this.units>1500||!int(this.responseBytes)||this.responseBytes<4*MIB||this.responseBytes>32*MIB||!int(this.chapterMs)||this.chapterMs<1||this.chapterMs>300000||!int(this.chapterUnits)||this.chapterUnits<1||this.chapterUnits>200||!int(this.maximumChapters)||this.maximumChapters<1||this.maximumChapters>32||!int(this.startsPer10s)||this.startsPer10s<1||this.startsPer10s>20||options.priorPhysicalSettled!==true||!/^[a-z0-9-]{1,60}$/.test(options.runId))throw new PilotRpcUnavailable('INVALID_OPTIONS');
     this.dir=resolve(options.directory);const parent=lstatSync(dirname(this.dir));if(!parent.isDirectory()||parent.isSymbolicLink()||parent.uid!==process.getuid?.()||(parent.mode&0o077)!==0||realpathSync(dirname(this.dir))!==dirname(this.dir))throw new PilotRpcUnavailable('UNSAFE_DIRECTORY');
     this.paths=options.baselinePaths.map(p=>resolve(p));if(this.paths.length+this.maximumChapters>128)throw new PilotRpcUnavailable('BASELINE_CHAPTER_CAP');
     const linked=readResearchBaseline({paths:this.paths,now:this.startedAt,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:128});this.initial=structuredClone(linked.baseline);this.baseline=linked.baseline;this.inheritedUncertainty=linked.uncertainResponseBytes;
@@ -43,7 +43,7 @@ export class PilotRpc{
     // Creation is exclusive. An old run cannot be silently resumed with a new
     // allowance; callers must review its receipts and explicitly link a new run.
     mkdirSync(this.dir,{mode:0o700});
-    this.save('authorization.json',{runId:options.runId,startedAt:this.startedAt,durationMs:this.duration,maxUnits:this.units,maxResponseBytes:this.responseBytes,chapterMs:this.chapterMs,chapterUnits:this.chapterUnits,maxChapters:this.maximumChapters,baseline:linked,priorCooldownUntil:this.cooldown,endpoint:'https://api.mainnet.solana.com',readOnly:true,automaticRequestRetries:0});
+    this.save('authorization.json',{runId:options.runId,startedAt:this.startedAt,durationMs:this.duration,maxUnits:this.units,maxResponseBytes:this.responseBytes,chapterMs:this.chapterMs,chapterUnits:this.chapterUnits,maxChapters:this.maximumChapters,requestLimits:{maxStartsPer10s:this.startsPer10s,maxStartsPerMinute:60,minSpacingMs:250,physicalInFlight:1},baseline:linked,priorCooldownUntil:this.cooldown,endpoint:'https://api.mainnet.solana.com',readOnly:true,automaticRequestRetries:0});
     this.persist();
   }
   private save(name:string,value:unknown,replace=false){
@@ -75,7 +75,7 @@ export class PilotRpc{
     this.finishChapter();this.check();if(this.chapter>=this.maximumChapters)throw new PilotRpcUnavailable('CHAPTER_CAP');
     const remainingUnits=this.units-(this.baseline.calls-this.initial.calls),remainingBytes=this.responseBytes-(this.baseline.bytes-this.initial.bytes),at=this.now(),index=++this.chapter;
     const path=join(this.dir,'chapter-'+String(index).padStart(3,'0')+'.json');this.controlFailure=false;
-    this.budget=new ComponentBudget({statePath:path,grantId:this.options.runId+'-'+index,baseline:this.baseline,startedAt:at,totalMs:Math.min(this.chapterMs,Math.max(1,Math.floor(this.remainingMs()))),limits:{maxNewUnits:Math.min(this.chapterUnits,remainingUnits),maxCumulativeUnits:this.initial.calls+this.units,maxHttpBytes:remainingBytes,maxWsBytes:remainingBytes,maxCombinedBytes:remainingBytes,maxCumulativeBytes:this.initial.bytes+this.responseBytes,minSpacingMs:250,maxStartsPerMinute:60,maxStartsPer10s:10},now:this.now,monotonic:this.mono,sleep:this.options.sleep,record:(kind,data)=>{
+    this.budget=new ComponentBudget({statePath:path,grantId:this.options.runId+'-'+index,baseline:this.baseline,startedAt:at,totalMs:Math.min(this.chapterMs,Math.max(1,Math.floor(this.remainingMs()))),limits:{maxNewUnits:Math.min(this.chapterUnits,remainingUnits),maxCumulativeUnits:this.initial.calls+this.units,maxHttpBytes:remainingBytes,maxWsBytes:remainingBytes,maxCombinedBytes:remainingBytes,maxCumulativeBytes:this.initial.bytes+this.responseBytes,minSpacingMs:250,maxStartsPerMinute:60,maxStartsPer10s:this.startsPer10s},now:this.now,monotonic:this.mono,sleep:this.options.sleep,record:(kind,data)=>{
       if(kind==='http-headers'){const h=data as {status:number;retryAfter:unknown;at:number};if(h.status===429)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);}
       this.emit(kind,data);
     }});
@@ -119,7 +119,10 @@ export class PilotRpc{
   accountControlBytes(bytes:number){
     if(!int(bytes)||bytes>2*MIB)throw new PilotRpcUnavailable('CONTROL_BYTE_CHARGE');
     if(!this.budget||this.closed)throw new PilotRpcUnavailable('CONTROL_WITHOUT_OPEN_CHAPTER');
-    try{this.budget.chargeWs(bytes);const u=this.budget.usage();if(u.cumulativeResponseBytes+u.uncertainResponseBytes-this.initial.bytes+2*MIB>this.responseBytes){this.budget.halt('COMPONENT_RESPONSE_RESERVE');throw Error('COMPONENT_RESPONSE_RESERVE');}this.persist();}catch(error){const code=safe(error);if(!['COMPONENT_TIME_CAP','COMPONENT_UNIT_CAP'].includes(code))this.fatal=code;this.persist();throw new PilotRpcUnavailable(code);}
+    try{this.budget.chargePassiveWs(bytes);const u=this.budget.usage();if(u.cumulativeResponseBytes+u.uncertainResponseBytes-this.initial.bytes+2*MIB>this.responseBytes){this.budget.halt('COMPONENT_RESPONSE_RESERVE');throw Error('COMPONENT_RESPONSE_RESERVE');}this.persist();}catch(error){const code=safe(error);if(!['COMPONENT_TIME_CAP','COMPONENT_UNIT_CAP'].includes(code))this.fatal=code;this.persist();throw new PilotRpcUnavailable(code);}
+    // The receipt already happened and remains counted even when the global
+    // interval has ended. It cannot admit another request or extend that run.
+    if(this.remainingMs()<=0)throw new PilotRpcUnavailable('RUN_TIME_CAP');
   }
   chargeDataBytes(bytes:number){this.accountControlBytes(bytes);}
   /** A WS unexpected-response handler must call this before rejecting its
@@ -130,7 +133,7 @@ export class PilotRpc{
   }
   usage(){
     const u=this.current(),calls=u?.cumulativeUnits??this.baseline.calls,bytes=u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes;
-    return {runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,dispatchWindow:this.budget?.dispatchWindow()??null,automaticRequestRetries:0};
+    return {runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxStartsPerMinute:60,minSpacingMs:250,physicalInFlight:1},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,dispatchWindow:this.budget?.dispatchWindow()??null,automaticRequestRetries:0};
   }
   available(){try{this.check();return true;}catch{return false;}}
   cooldownUntil(){return this.cooldown;}

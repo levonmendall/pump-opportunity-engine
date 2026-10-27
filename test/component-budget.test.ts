@@ -13,6 +13,10 @@ function fixture(t:TestContext,recent=false){
 }
 const done=async(c:ComponentOperation)=>{c.completeResponse();return 'ok';};
 
+test('explicit passive receipt after chapter expiry preserves bytes but cannot admit a late operation',async t=>{
+  const f=fixture(t),b=new ComponentBudget({...f.options,totalMs:1000});try{f.now+=1001;b.chargePassiveWs(75);assert.equal(b.usage().wsBytes,75);assert.equal(b.newUnits,0);assert.equal(b.usage().haltedReason,null);await assert.rejects(b.operate(HTTP,done),/TIME_CAP/);assert.equal(b.newUnits,0);b.chargePassiveWs(7);assert.equal(b.usage().wsBytes,82);assert.equal(b.usage().haltedReason,'COMPONENT_TIME_CAP');assert.equal(f.read().wsBytes,82);}finally{b.close();}
+});
+
 test('all HTTP/upgrade/subscription starts share durable cumulative counters, pacing and one source baseline',async t=>{
   const f=fixture(t),b=new ComponentBudget(f.options);let work=0;
   try{

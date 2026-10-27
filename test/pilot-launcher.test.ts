@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {assertPilotDirectory,validatePilotHistory,nextPreparedPilotSeed,PILOT_FLOW_EVIDENCE} from '../src/pilot.js';
+import {assertPilotDirectory,validatePilotHistory,nextPreparedPilotSeed,PILOT_FLOW_EVIDENCE,pilotObservationReadyAt} from '../src/pilot.js';
 
 test('pilot launcher rejects production, shared-secret and repository storage before access',()=>{
   for(const path of ['/var/lib/poe','/opt/poe','/workspace/shared/poe-secrets','/workspace/pump-opportunity-engine/data/pilot'])assert.throws(()=>assertPilotDirectory(path),/PILOT_ISOLATED/);
@@ -33,3 +33,11 @@ test('ready verified origins cannot starve behind a continuously nonempty discov
 });
 
 test('launcher flow evidence reference satisfies the actual strategy field contract',()=>{assert.ok(PILOT_FLOW_EVIDENCE.length<=128);assert.match(PILOT_FLOW_EVIDENCE,/^pilot-confirmed-curve-v1:[a-f0-9]{64}$/);});
+
+test('flow opening reserves14-enrichment burst plus upgrade after prep rather than wasting deadlines',()=>{
+  const now=100000,prep=[98000,98250,98500,98750,99000,99250,99500,99750];
+  assert.equal(pilotObservationReadyAt(prep,now),108500);
+  assert.equal(pilotObservationReadyAt(prep,108500),108500);
+  assert.equal(pilotObservationReadyAt([],now),now);
+  assert.throws(()=>pilotObservationReadyAt([now+1],now),/HEADROOM/);
+});

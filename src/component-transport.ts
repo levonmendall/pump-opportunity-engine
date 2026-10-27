@@ -35,13 +35,19 @@ export class ComponentTransport {
       // A throttle refusal ends this grant at its first known observation. Do
       // not read the error body to completion; retain the reserved uncertainty.
       if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
-      if(!res.ok){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_STATUS_'+res.status);}
       if(Number(res.headers.get('content-length'))>2*1024*1024){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_RESPONSE_SIZE');}
       const reader=res.body?.getReader();if(!reader)throw Error('COMPONENT_HTTP_EMPTY_RESPONSE');
-      const chunks:Uint8Array[]=[];let size=0;const abort=()=>{void reader.cancel().catch(()=>{});};op.signal.addEventListener('abort',abort,{once:true});
-      try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');op.completeResponse();break;}size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>2*1024*1024)throw Error('COMPONENT_HTTP_RESPONSE_SIZE');chunks.push(value);}}
-      finally{op.signal.removeEventListener('abort',abort);if(op.signal.aborted)await reader.cancel().catch(()=>{});reader.releaseLock();}
+      const chunks:Uint8Array[]=[];let size=0,complete=false;const abort=()=>{void reader.cancel().catch(()=>{});};op.signal.addEventListener('abort',abort,{once:true});
+      // Fetch exposes decoded body bytes. Only an identity body can be compared
+      // with Content-Length; compressed wire lengths describe different bytes.
+      const length=res.headers.get('content-length'),encoding=res.headers.get('content-encoding');
+      const expectedLength=length!==null&&/^[0-9]+$/.test(length)&&Number.isSafeInteger(Number(length))&&(!encoding||encoding==='identity')?Number(length):null;
+      try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');if(expectedLength!==null&&size!==expectedLength)throw Error('COMPONENT_HTTP_TRUNCATED_RESPONSE');op.completeResponse();complete=true;break;}size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>2*1024*1024)throw Error('COMPONENT_HTTP_RESPONSE_SIZE');if(res.ok)chunks.push(value);}}
+      finally{op.signal.removeEventListener('abort',abort);if(!complete)await reader.cancel().catch(()=>{});reader.releaseLock();}
       this.record('http-response-timing',{id:op.id,method,requestedAt,availableAt:this.now(),responseBytes:size,status:res.status});
+      // A fully drained bounded error body has known size, even though the
+      // status halts this grant. Never parse, retain or log provider error text.
+      if(!res.ok)throw Error('COMPONENT_HTTP_STATUS_'+res.status);
       let body:any;try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw Error('COMPONENT_HTTP_MALFORMED_JSON');}
       if(body?.jsonrpc!=='2.0'||body.id!==op.id||!('result'in body)&&!body.error)throw Error('COMPONENT_HTTP_ENVELOPE');
       if(body.error){const code=body.error.code;if(!Number.isSafeInteger(code))throw Error('COMPONENT_RPC_ERROR');throw Error(code===-32005?'COMPONENT_RPC_-32005':'COMPONENT_RPC_ERROR_'+code);}

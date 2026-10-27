@@ -18,6 +18,47 @@ test('HTTP429 stops at headers, retains uncertain body reserve and prior refusal
  await assert.rejects(client.call('getSlot'),/429/);await turn();assert.equal(calls,1);assert.equal(reads,0);assert.equal(cancelled,true);assert.equal(f.budget.calls,21);assert.equal(f.budget.usage().httpBytes,0);assert.equal(f.budget.usage().baseline.refusal,'RPC_HTTP_429');assert.equal(f.budget.usage().pending.length,1);assert.equal(f.budget.usage().uncertainResponseBytes,2*1024*1024);await assert.rejects(client.call('getSlot'));assert.equal(calls,1);assert.equal(records[0].data.retryAfter,'60');
  }finally{f.cleanup();}
 });
+test('a fully received bounded HTTP503 body is charged exactly without an unknown response reservation',async()=>{
+ const f=setup(),records:any[]=[];let calls=0;
+ const text='private provider error body is not telemetry',body=new TextEncoder().encode(text);
+ try{const client=new ComponentTransport(f.budget,(kind,data)=>records.push({kind,data}),()=>{},f.now,(async()=>{calls++;return new Response(body,{status:503,headers:{'content-length':String(body.byteLength),'retry-after':'5'}});})as typeof fetch);
+ await assert.rejects(client.call('getSlot'),/^Error: COMPONENT_HTTP_STATUS_503$/);await turn();const usage=f.budget.usage();
+ assert.equal(calls,1);assert.equal(usage.httpBytes,body.byteLength);assert.equal(usage.pending.length,0);assert.equal(usage.uncertainResponseBytes,0);assert.equal(usage.haltedReason,'COMPONENT_HTTP_STATUS_503');assert.equal(usage.baseline.bytes,272634);assert.equal(usage.baseline.refusal,'RPC_HTTP_429');
+ assert.deepEqual(records.find(r=>r.kind==='http-response-timing').data,{id:21,method:'getSlot',requestedAt:f.now(),availableAt:f.now(),responseBytes:body.byteLength,status:503});assert.equal(records.find(r=>r.kind==='http-headers').data.retryAfter,'5');assert.equal(JSON.stringify(records).includes(text),false);
+ await assert.rejects(client.call('getSlot'),/HALTED/);assert.equal(calls,1,'no automatic retry follows a complete error response');
+ }finally{f.cleanup();}
+});
+test('stalled HTTP503 body times out, charges partial receipt and preserves uncertain response bytes',{timeout:3000},async()=>{
+ const f=setup();let canceled=false,pulls=0;const partial=new TextEncoder().encode('partial-error');
+ try{const client=new ComponentTransport(f.budget,()=>{},()=>{},f.now,(async()=>new Response(new ReadableStream({pull(controller){if(pulls++===0)controller.enqueue(partial);},cancel(){canceled=true;}},{highWaterMark:0}),{status:503}))as typeof fetch);
+ await assert.rejects(client.call('getSlot',[],undefined,{timeoutMs:10}),/PHYSICAL_TIMEOUT/);await turn();const usage=f.budget.usage();assert.equal(canceled,true);assert.equal(usage.httpBytes,partial.byteLength);assert.equal(usage.pending.length,1);assert.equal(usage.uncertainResponseBytes,2*1024*1024);assert.equal(usage.haltedReason,'COMPONENT_PHYSICAL_TIMEOUT');assert.equal(usage.inFlight,0);
+ }finally{f.cleanup();}
+});
+test('canceling a partially received HTTP503 cannot turn cancellation into a complete response',async()=>{
+ const f=setup(),controller=new AbortController();let canceled=false,pulls=0;
+ try{const partial=new TextEncoder().encode('partial-error'),client=new ComponentTransport(f.budget,()=>{},()=>{},f.now,(async()=>new Response(new ReadableStream({pull(stream){if(pulls++===0)stream.enqueue(partial);},cancel(){canceled=true;}},{highWaterMark:0}),{status:503}))as typeof fetch);
+ const pending=client.call('getSlot',[],controller.signal);await turn();controller.abort();await assert.rejects(pending,/ABORTED/);await turn();assert.equal(canceled,true);assert.equal(f.budget.usage().httpBytes,partial.byteLength);assert.equal(f.budget.usage().uncertainResponseBytes,2*1024*1024);assert.equal(f.budget.usage().pending.length,1);assert.equal(f.budget.inFlight,0);
+ }finally{f.cleanup();}
+});
+test('declared oversize HTTP503 is canceled before reading and preserves uncertainty',async()=>{
+ const f=setup();let canceled=false,pulls=0;
+ try{const client=new ComponentTransport(f.budget,()=>{},()=>{},f.now,(async()=>new Response(new ReadableStream({pull(){pulls++;},cancel(){canceled=true;}},{highWaterMark:0}),{status:503,headers:{'content-length':String(2*1024*1024+1)}}))as typeof fetch);
+ await assert.rejects(client.call('getSlot'),/RESPONSE_SIZE/);await turn();assert.equal(canceled,true);assert.equal(pulls,0);assert.equal(f.budget.usage().httpBytes,0);assert.equal(f.budget.usage().uncertainResponseBytes,2*1024*1024);
+ }finally{f.cleanup();}
+});
+test('streamed oversize HTTP503 charges delivered chunks and cannot mark a partial body complete',async()=>{
+ const f=setup();let canceled=false,index=0;
+ try{const chunks=[new Uint8Array(1024*1024),new Uint8Array(1024*1024),new Uint8Array(1)];
+ const client=new ComponentTransport(f.budget,()=>{},()=>{},f.now,(async()=>new Response(new ReadableStream({pull(controller){const chunk=chunks[index++];if(chunk)controller.enqueue(chunk);},cancel(){canceled=true;}},{highWaterMark:0}),{status:503}))as typeof fetch);
+ await assert.rejects(client.call('getSlot'),/RESPONSE_BYTE_CAP/);await turn();assert.equal(canceled,true);assert.equal(f.budget.usage().httpBytes,2*1024*1024+1);assert.equal(f.budget.usage().uncertainResponseBytes,2*1024*1024);assert.equal(f.budget.usage().pending.length,1);
+ }finally{f.cleanup();}
+});
+test('truncated HTTP503 body does not clear uncertainty when the identity Content-Length disagrees',async()=>{
+ const f=setup(),partial=new TextEncoder().encode('truncated');
+ try{const client=new ComponentTransport(f.budget,()=>{},()=>{},f.now,(async()=>new Response(partial,{status:503,headers:{'content-length':String(partial.byteLength+1)}}))as typeof fetch);
+ await assert.rejects(client.call('getSlot'),/TRUNCATED_RESPONSE/);await turn();assert.equal(f.budget.usage().httpBytes,partial.byteLength);assert.equal(f.budget.usage().uncertainResponseBytes,2*1024*1024);assert.equal(f.budget.usage().pending.length,1);
+ }finally{f.cleanup();}
+});
 type AckMode='normal'|'pre-notice'|'invalid'|'error'|'none';
 class FakeSocket extends EventEmitter{
  readyState:number=WebSocket.OPEN;_socket=Object.assign(new EventEmitter(),{bytesRead:100});sent=0;

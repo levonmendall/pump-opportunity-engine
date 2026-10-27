@@ -70,9 +70,32 @@ test('WS throttle observation respects an HTTP-date cooldown without retrying th
 });
 test('a periodic chapter expiry caused by passive control receipt preserves bytes and allows only a settled rollover',async()=>{
   const f=fixture({chapterMs:500});try{
-    await f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>op.completeResponse());f.advance(501);assert.throws(()=>f.client.accountControlBytes(75),/TIME_CAP/);assert.equal(f.client.usage().fatal,null);assert.equal(f.client.usage().chapterUsage!.wsBytes,75);
-    assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,2);const old=JSON.parse(readFileSync(join(f.directory,'run/chapter-001.json'),'utf8'));assert.equal(old.haltedReason,'COMPONENT_TIME_CAP');assert.equal(old.wsBytes,75);assert.equal(f.client.usage().newUnits,2);
+    await f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>op.completeResponse());f.advance(501);assert.doesNotThrow(()=>f.client.accountControlBytes(75));assert.equal(f.client.usage().fatal,null);assert.equal(f.client.usage().chapterUsage!.wsBytes,75);assert.equal(f.client.usage().chapter,1);assert.equal(f.client.usage().newUnits,1);
+    assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,2);const old=JSON.parse(readFileSync(join(f.directory,'run/chapter-001.json'),'utf8'));assert.equal(old.haltedReason,null);assert.equal(old.wsBytes,75);assert.equal(f.client.usage().newUnits,2);assert.ok(f.invocations[0]!.at>=old.deadlineAt);
   }finally{f.close();}
+});
+test('passive chapter-expiry receipt cannot cancel or replace an in-flight physical request',async()=>{
+  let release!:(value:Response)=>void;const f=fixture({chapterMs:500,fetcher:(async(_url,init)=>{const body=JSON.parse(String(init?.body));return new Promise<Response>(resolve=>{release=()=>resolve(new Response(JSON.stringify({jsonrpc:'2.0',id:body.id,result:42})));});}) as typeof fetch});
+  try{const p=f.client.call('getSlot');await turn();f.advance(501);f.client.accountControlBytes(75);assert.equal(f.client.usage().inFlight,1);assert.equal(f.client.usage().chapter,1);assert.equal(f.client.usage().chapterUsage!.wsBytes,75);await assert.rejects(f.client.call('getSlot'),/PHYSICAL_SLOT_OCCUPIED/);release(new Response());assert.equal(await p,42);assert.equal(f.client.usage().newUnits,1);assert.equal(f.client.usage().inFlight,0);}
+  finally{f.close();}
+});
+test('passive receipt during a retained RPC cooldown neither clears it nor drops byte reservations',async()=>{
+  const f=fixture({chapterMs:500,fetcher:(async()=>new Response('no',{status:429,headers:{'retry-after':'10'}})) as typeof fetch});
+  try{await assert.rejects(f.client.call('getSlot'),/HTTP_429/);await turn();const until=f.client.cooldownUntil(),uncertain=f.client.usage().uncertainResponseBytes;f.advance(501);f.client.accountControlBytes(91);f.client.accountControlBytes(7);assert.equal(f.client.cooldownUntil(),until);assert.equal(f.client.usage().chapterUsage!.wsBytes,98);assert.equal(f.client.usage().uncertainResponseBytes,uncertain);assert.equal(f.client.usage().newUnits,1);await assert.rejects(f.client.call('getSlot'),/COOLDOWN/);assert.equal(f.client.usage().chapter,1);}
+  finally{f.close();}
+});
+test('global time and response bounds still stop passive receipt after charging actual bytes once',async()=>{
+  const timed=fixture({durationMs:500,chapterMs:250});try{await timed.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>op.completeResponse());timed.advance(501);assert.throws(()=>timed.client.accountControlBytes(73),/RUN_TIME_CAP/);assert.equal(timed.client.usage().chapterUsage!.wsBytes,73);assert.equal(timed.client.usage().newUnits,1);await assert.rejects(timed.client.call('getSlot'),/RUN_TIME_CAP/);}
+  finally{timed.close();}
+  const capped=fixture({maxResponseBytes:4*MIB});try{await capped.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>op.completeResponse());capped.client.accountControlBytes(2*MIB);assert.throws(()=>capped.client.accountControlBytes(1),/RESPONSE_RESERVE/);assert.equal(capped.client.usage().chapterUsage!.wsBytes,2*MIB+1);assert.equal(capped.client.usage().fatal,'COMPONENT_RESPONSE_RESERVE');assert.equal(capped.client.usage().newUnits,1);}
+  finally{capped.close();}
+});
+test('explicit research burst gate permits at most20 starts while the default stays10 and actual spacing stays250ms',async()=>{
+  const expanded=fixture({maxStartsPer10s:20});try{for(let i=0;i<21;i++)await expanded.client.call('getSlot');assert.equal(expanded.client.usage().requestLimits.maxStartsPer10s,20);assert.equal(expanded.invocations[19]!.at-expanded.invocations[0]!.at,4750);assert.ok(expanded.invocations[20]!.at-expanded.invocations[0]!.at>=10000);assert.ok(expanded.invocations.every((v,i)=>i===0||v.at-expanded.invocations[i-1]!.at>=250));}
+  finally{expanded.close();}
+  const original=fixture();try{for(let i=0;i<11;i++)await original.client.call('getSlot');assert.equal(original.client.usage().requestLimits.maxStartsPer10s,10);assert.ok(original.invocations[10]!.at-original.invocations[0]!.at>=10000);}
+  finally{original.close();}
+  for(const n of [0,21,1.5])assert.throws(()=>fixture({maxStartsPer10s:n}),/INVALID_OPTIONS/);
 });
 test('new run requires the retained throttle receipt and cannot guess a long provider Retry-After',async()=>{
   const f=fixture({fetcher:(async()=>new Response('no',{status:429,headers:{'retry-after':'3600'}})) as typeof fetch});try{

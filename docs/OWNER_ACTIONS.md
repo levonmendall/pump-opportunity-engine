@@ -1,3 +1,7 @@
+## Current pilot owner actions — 2026-10-27
+
+None required to continue the authorized isolated free-data PAPER pilot. Existing funding/credential requests below are historical or concern excluded paid-feed paths; they are not pilot prerequisites. Do not repeat inventory, Render source changes, publisher shutdown, Turnkey registration or wallet creation. Production deployment and authoritative entry enablement remain separately unauthorized.
+
 # Owner actions — standing research continuation
 
 No owner action is required for the current read-only research. Existing access, source changes, service setup and wallet registration are not being requested again. No new data budget or provider is requested.
