@@ -12,7 +12,7 @@ import {ComponentTransport} from '../src/component-transport.js';
 import {readResearchBaseline} from '../src/research-baseline.js';
 import {ResearchClockPositionPricer} from '../src/research-clock-pricing.js';
 import {validateComponentParity,type ComponentSnapshot} from '../src/component-parity.js';
-import {PUMP_AMM_SDK,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA} from '../src/sdk.js';
+import {PUMP_AMM_SDK,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,canonicalPumpPoolPda} from '../src/sdk.js';
 import {captureOvernightFields,type ObservationRequestContext} from '../src/overnight-field.js';
 import {preflightSchedulerForward,type ForwardScope} from '../src/scheduler-forward-preflight.js';
 import {auditSchedulerForward} from '../src/scheduler-forward-audit.js';
@@ -38,9 +38,16 @@ function files(path:string):string[]{const result:string[]=[];for(const name of 
 const directoryBytes=(path:string)=>files(path).reduce((total,p)=>total+lstatSync(p).size,0);
 function fixedDir(value:string,repo:string){const p=resolve(repo,value),root=resolve(repo,EXPERIMENT_ROOT);need(dirname(p)===root&&/^[a-z0-9][a-z0-9-]{1,63}$/.test(p.slice(root.length+1)),'STANDING_EXPLICIT_OUTPUT_REQUIRED');return p;}
 export function parseStandingResearchArgs(args:readonly string[],repo=process.cwd()){
-  need(args[0]==='run','STANDING_EXPLICIT_RUN_REQUIRED');let out:string|undefined,observation:string|undefined;const previous:string[]=[];
-  for(let i=1;i<args.length;i+=2){const flag=args[i],value=args[i+1];need(typeof value==='string','STANDING_ARGUMENT_VALUE_REQUIRED');if(flag==='--out'){need(!out,'STANDING_DUPLICATE_ARGUMENT');out=fixedDir(value,repo);}else if(flag==='--observation-ms'){need(!observation,'STANDING_DUPLICATE_ARGUMENT');observation=value;}else if(flag==='--previous')previous.push(fixedDir(value,repo));else throw Error('STANDING_UNKNOWN_ARGUMENT');}
-  need(out&&observation==='75000'&&previous.length<=8&&new Set(previous).size===previous.length&&!previous.includes(out),'STANDING_FIXED_SCOPE_REQUIRED');return {out,observationMs:75000 as const,previous};
+  need(args[0]==='run','STANDING_EXPLICIT_RUN_REQUIRED');let out:string|undefined,observation:string|undefined,scopePath:string|undefined;const previous:string[]=[];
+  for(let i=1;i<args.length;i+=2){const flag=args[i],value=args[i+1];need(typeof value==='string','STANDING_ARGUMENT_VALUE_REQUIRED');if(flag==='--out'){need(!out,'STANDING_DUPLICATE_ARGUMENT');out=fixedDir(value,repo);}else if(flag==='--observation-ms'){need(!observation,'STANDING_DUPLICATE_ARGUMENT');observation=value;}else if(flag==='--previous')previous.push(fixedDir(value,repo));else if(flag==='--scope'){need(!scopePath,'STANDING_DUPLICATE_ARGUMENT');const p=resolve(repo,value);need(dirname(p).startsWith(resolve(repo,EXPERIMENT_ROOT)+'/')&&p.endsWith('/selected.json'),'STANDING_SCOPE_EVIDENCE_PATH');fixedDir(dirname(p),repo);scopePath=p;}else throw Error('STANDING_UNKNOWN_ARGUMENT');}
+  need(out&&observation==='75000'&&previous.length<=8&&new Set(previous).size===previous.length&&!previous.includes(out),'STANDING_FIXED_SCOPE_REQUIRED');return {out,observationMs:75000 as const,previous,scopePath};
+}
+/** A persisted identity is a seed, never current support/activity evidence. */
+export function validateStandingScope(value:unknown):ForwardScope{
+  need(value&&typeof value==='object'&&!Array.isArray(value),'STANDING_SCOPE_SHAPE');const v=value as Record<string,unknown>;
+  const mint=new PublicKey(String(v.mint)),pool=new PublicKey(String(v.pool));
+  need(canonicalPumpPoolPda(mint).equals(pool)&&typeof v.baseUnits==='string'&&/^[1-9][0-9]{0,19}$/.test(v.baseUnits)&&BigInt(v.baseUnits)<(1n<<64n)&&Number.isSafeInteger(v.minSlot)&&Number(v.minSlot)>=0&&typeof v.supportedPoolEvidence==='string'&&v.supportedPoolEvidence.length>0&&v.supportedPoolEvidence.length<=512,'STANDING_SCOPE_INVALID');
+  return {mint:mint.toBase58(),pool:pool.toBase58(),baseUnits:v.baseUnits,minSlot:Number(v.minSlot),supportedPoolEvidence:v.supportedPoolEvidence};
 }
 function assertExternalBounds(){
   need(process.getuid?.()===1000,'STANDING_NONROOT_CLOUD_USER_REQUIRED');const limits=readFileSync('/proc/self/limits','utf8');
@@ -79,7 +86,9 @@ export async function runStandingResearch(options:ReturnType<typeof parseStandin
     globalTimer=setTimeout(()=>{reason??='STANDING_SHUTDOWN_RESERVE';controller.abort();},Math.max(0,startedAt+115000-Date.now()));hardTimer=setTimeout(()=>{controller.abort();process.exitCode=2;},Math.max(0,deadlineAt-Date.now()));
     watch=setInterval(()=>{try{const at=performance.now();maxLag=Math.max(maxLag,Math.max(0,at-lastTick-100));lastTick=at;maxRss=Math.max(maxRss,process.memoryUsage().rss);const cpu=process.cpuUsage();maxCpu=Math.max(maxCpu,(cpu.user+cpu.system)/1000);const halt=budget?.usage().haltedReason;if(Date.now()>=deadlineAt||maxLag>500||maxRss>256*MIB||maxCpu>20000){reason??='STANDING_RESOURCE_LIMIT';controller.abort();}if(halt&&/(HTTP_429|OVERLOAD|RPC_-32005)/.test(halt)){reason??=halt;controller.abort();}if(at-lastHashCheck>=5000){lastHashCheck=at;need(mismatches(oldHashes).length===0,'STANDING_OLD_EVIDENCE_CHANGED');need(mismatches(sourceHashes).length===0,'STANDING_REVIEWED_SOURCE_CHANGED');}need(directoryBytes(out)+640*1024<=6*MIB,'STANDING_EVIDENCE_CAP');process.send?.({kind:'progress',phase,rss:maxRss,cpuMs:maxCpu,eventLoopLagMs:maxLag});}catch(e){reason??=safe(e);controller.abort();}},100);
     try{
-      const scope=JSON.parse(readFileSync('evidence/scheduler-forward-20261027/capture.json','utf8')).scope as ForwardScope;
+      let scope:ForwardScope;
+      if(options.scopePath){const parent=lstatSync(dirname(options.scopePath)),st=lstatSync(options.scopePath);need(parent.isDirectory()&&!parent.isSymbolicLink()&&st.isFile()&&!st.isSymbolicLink()&&st.uid===1000&&st.size<=256*1024,'STANDING_SCOPE_FILE');const raw=JSON.parse(readFileSync(options.scopePath,'utf8'));scope=validateStandingScope(raw.scope??raw);record('standing-subject-seed',{path:options.scopePath,sha256:hash(options.scopePath),scope,currentSupportAndActivity:'REQUIRES_CURRENT_PREFLIGHT_AND_PREWARM'});}
+      else scope=validateStandingScope(JSON.parse(readFileSync('evidence/scheduler-forward-20261027/capture.json','utf8')).scope);
       preflight=await phaseRun('01-preflight',5000,signal=>preflightSchedulerForward({scope,rpc,record,signal}));
       await phaseRun('02-combined',105000,async signal=>{
         const pricer=new ResearchClockPositionPricer(rpc,{record}),holdings=[{mint:scope.mint,units:scope.baseUnits,minSlot:preflight.scope.minSlot}];

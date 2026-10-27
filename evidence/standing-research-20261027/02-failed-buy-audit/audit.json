@@ -1,0 +1,243 @@
+{
+  "classification": "INDEPENDENT_SHORT_BUY_LAYOUT_RECHECK_NOT_ORIGINAL_WINDOW_REPAIR",
+  "complete": false,
+  "layoutAndExecutedTransferRecheckComplete": true,
+  "signature": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP",
+  "originalCaptureTarget": {
+    "startAt": 1793117890000,
+    "endAt": 1793117950000
+  },
+  "originalForwardQualityGaps": [
+    {
+      "at": 1793117954162,
+      "reason": "confirmed-transaction-mapping-unavailable"
+    }
+  ],
+  "originalForwardNormalizedEvents": 3,
+  "originalForwardSelectedHints": 4,
+  "originalFailure": {
+    "at": 1793117954162,
+    "rpcAvailableAt": 1793117954157,
+    "signature": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP",
+    "reason": "The value of \"offset\" is out of range. It must be >= 0 and <= 15. Received 16",
+    "audit": false
+  },
+  "originalRpcAvailableAt": 1793117954157,
+  "originalProviderReceivedAt": 1793117952837,
+  "correctedOriginalRawMapping": {
+    "classification": "OFFLINE_MAPPING_OF_RETAINED_RAW_TRANSACTION; not an original forward normalization",
+    "layout": {
+      "name": "buy_exact_quote_in",
+      "layout": "observed-exact-quote-two-u64",
+      "byteLength": 24,
+      "exactLayout": true,
+      "trackVolumeAvailable": false,
+      "trackVolumeInvented": false,
+      "arguments": {
+        "spendable_quote_in": "1972669747",
+        "min_base_amount_out": "1"
+      }
+    },
+    "mapped": [
+      {
+        "identity": {
+          "signature": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP",
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "outerInstructionIndex": 1,
+          "swapInnerInstructionIndex": 9,
+          "eventInnerInstructionIndex": 16,
+          "eventIndex": 0
+        },
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "trader": "ARu4n5mFdZogZAravu7CcizaojWnS6oqka37gdLT5SZn",
+        "side": "buy",
+        "tokenUnits": "98475000481",
+        "curveQuoteLamports": "1955074078",
+        "userQuoteLamports": "1972669747",
+        "fees": {
+          "lp_fee": "3910149",
+          "protocol_fee": "977538",
+          "coin_creator_fee": "12707982",
+          "cashback": "0",
+          "buyback_fee": "488769",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "slot": 462135636,
+        "identityKey": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:1:9:16:0",
+        "chainBlockTime": 1793117952,
+        "commitment": "confirmed",
+        "providerReceivedAt": 1793117952837,
+        "availableAt": 1793117954157,
+        "transferChecks": {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        },
+        "fingerprint": "c80e5485cc095cd5e2e1e2b2031d3ed63c50887e57a675c24672a6c1dca465cd",
+        "normalizedForStrategy": false,
+        "limitations": [
+          "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+          "The strategy quoteLamports economic convention is not frozen by this mapper.",
+          "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+        ]
+      }
+    ]
+  },
+  "newIndependentReads": [
+    {
+      "requestCommitment": "confirmed",
+      "requestedAt": 1793118496683,
+      "availableAt": 1793118497090,
+      "layout": {
+        "name": "buy_exact_quote_in",
+        "layout": "observed-exact-quote-two-u64",
+        "byteLength": 24,
+        "exactLayout": true,
+        "trackVolumeAvailable": false,
+        "trackVolumeInvented": false,
+        "arguments": {
+          "spendable_quote_in": "1972669747",
+          "min_base_amount_out": "1"
+        }
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 9,
+            "eventInnerInstructionIndex": 16,
+            "eventIndex": 0
+          },
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "trader": "ARu4n5mFdZogZAravu7CcizaojWnS6oqka37gdLT5SZn",
+          "side": "buy",
+          "tokenUnits": "98475000481",
+          "curveQuoteLamports": "1955074078",
+          "userQuoteLamports": "1972669747",
+          "fees": {
+            "lp_fee": "3910149",
+            "protocol_fee": "977538",
+            "coin_creator_fee": "12707982",
+            "cashback": "0",
+            "buyback_fee": "488769",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462135636,
+          "identityKey": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:1:9:16:0",
+          "chainBlockTime": 1793117952,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793118497090,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "c80e5485cc095cd5e2e1e2b2031d3ed63c50887e57a675c24672a6c1dca465cd",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "originalRawCorrectedFingerprintMatches": true
+    },
+    {
+      "requestCommitment": "finalized",
+      "requestedAt": 1793118497098,
+      "availableAt": 1793118497194,
+      "layout": {
+        "name": "buy_exact_quote_in",
+        "layout": "observed-exact-quote-two-u64",
+        "byteLength": 24,
+        "exactLayout": true,
+        "trackVolumeAvailable": false,
+        "trackVolumeInvented": false,
+        "arguments": {
+          "spendable_quote_in": "1972669747",
+          "min_base_amount_out": "1"
+        }
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 9,
+            "eventInnerInstructionIndex": 16,
+            "eventIndex": 0
+          },
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "trader": "ARu4n5mFdZogZAravu7CcizaojWnS6oqka37gdLT5SZn",
+          "side": "buy",
+          "tokenUnits": "98475000481",
+          "curveQuoteLamports": "1955074078",
+          "userQuoteLamports": "1972669747",
+          "fees": {
+            "lp_fee": "3910149",
+            "protocol_fee": "977538",
+            "coin_creator_fee": "12707982",
+            "cashback": "0",
+            "buyback_fee": "488769",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462135636,
+          "identityKey": "2CPXozPnsW1SPnLsTYHzWPLjKCGySCBbtYLX3go3X6uanBCmCh5hLnWvkVoZhwq9xy7XEuSBZei7oB4MRmkh8miP:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:1:9:16:0",
+          "chainBlockTime": 1793117952,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793118497194,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "c80e5485cc095cd5e2e1e2b2031d3ed63c50887e57a675c24672a6c1dca465cd",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "originalRawCorrectedFingerprintMatches": true
+    }
+  ],
+  "unchangedRetainedSells": [
+    {
+      "identityKey": "tGB6diRNR9sjpgCBMxbxDnvrJFZbxqDUCHXrVxXvyP4jRJhtPdG74kXxD1wEreBKHez95WZfoS3Hz8VSPPDhxC9:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+      "fingerprint": "49809c5408d5b83cf934a5c599f1874334d4a8cafc718277e55de9be8b749c83",
+      "unchanged": true
+    },
+    {
+      "identityKey": "2JzPCKL2k7bsnsqRhT35xQgywwPWZ1jUW4qsJSyWXJckB6WSCr6PWe8R76ixLLe31YKG6LHn8CMty9ZTAsQuFA9e:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+      "fingerprint": "62e9bc31e9fddf484caa2a294e4dab3028a45820c5c095ba4c9f89a2ec9552c3",
+      "unchanged": true
+    },
+    {
+      "identityKey": "2fNwpPpemNaPg3YLR9f6o5AYdYckGec5PhSw7DkrJdJqgZKP9d5A6VvhUCvK5dDj2YQDr1skVSmFuFrnhkDN71j2:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:6:12:0",
+      "fingerprint": "89d81bed1314d663bf1c7b5fad436f1b0b9c02114b42dfe58f57c509535a0b64",
+      "unchanged": true
+    }
+  ],
+  "mapper": {
+    "originalExecutedSourceSha256": "76aa0ae24e0e66fc7ae04c0ca076137a15d81454cf02a954cae014a1a0bf3e96",
+    "currentSourceSha256": "6544b202d7a427e3e26e2977c53f2005f935d54771d2a1954318c2a0b14de090",
+    "sourceChanged": true
+  },
+  "genericCoverageAuditPerformed": false,
+  "originalForwardCandidateComplete": false,
+  "forwardAcceptance": false,
+  "originalWindowRepaired": false,
+  "laterReadAvailabilityBackdated": false,
+  "normalizationOrFinancialActionsCreated": 0
+}

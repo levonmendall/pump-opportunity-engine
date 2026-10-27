@@ -20,3 +20,12 @@ Root is reviewing `scripts/standing-research.ts` before one specifically informa
 All old raw evidence immutable. Current linked baseline221requestunits,2,314,558 measured related bytes+2,097,152oldunknown=4,411,710 accounted. These are cumulative visibility, not current lifetime prohibitions. Any newrun must append its own linked book. New evidence17,832,952bytes before next run.
 
 Focused tests pass; initial full suite568pass; rerun final relevant tests/build after all final edits. Source ownership: root dispatch/field/pricer/transport; component_review budget+baseline frozen; component_preflight simulator+tests/artifact frozen; component_parity E2E+cutofftests; component_budget standing runner (finishing). Preserve unrelated `docs/FUNDING.md`, `operator/funding/` and existing empty lockfiles. Do not merge/deploy or infer production health beyond source check.
+
+
+### Checkpoint after first new live capture and correction
+
+Source3297490 completed01-paced-combined:47units,97,702,483streambytes,38freshthree-holdingchecks/maxgap2085ms. ThreeSells mapped; fourthshortBuy hit a new24-byteinstructionlayoutdefect. Candidatewindowinvalidated; holdingscontinued; no429. Allold/sourcehashesmatch. Strictlogicalcutoff75s;stoprequest+1ms/socketsettlement+3ms;nonewinfoaftercutoff. Originalfailureimmutable.
+
+Fixpinned79d0146: exactrecognized24-bytebuy_exact_quote_in only, no inventedtrack_volume; mapper,selector,audit sharedecoder. Newconfirmed/finalizedpair02-failed-buy-audit succeeds, originalwindowstillfailed. Currentbaseline must append01rpcbook THEN02rpcbook:270units,3,013,315measuredrelated+2,097,152unknown=5,110,467accounted; PumpApiactual369,652,102. reservation-reconciliation-01 releases49,098,157unusedbyteswithouteditingoldbooks.
+
+Root is running final frozen fullsuite, then one specifically justified corrected combined rerun (new output03-corrected-combined, previous01 and02 in order). No blind retry or favorable-sample loop. Never mutate oldraw files or publishresearchdata. Existingnonroot processcaps/strictphase/observationguards unchanged. Noowneractionrequired.

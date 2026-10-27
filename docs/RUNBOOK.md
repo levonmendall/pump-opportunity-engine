@@ -328,7 +328,7 @@ The opt-in `protected-deadline-proposed` scheduler retains a2s target,2s quote a
 A specifically prepared Cloud experiment requires nonroot UID1000 and external resource controls. Example (use a NEW reviewed output name and every previously completed standing book in chronological `--previous` order):
 
 ```sh
-timeout --signal=TERM --kill-after=5s 115s prlimit --cpu=20:21 --fsize=16777216:16777216 --nofile=64:64 -- node --max-old-space-size=128 --use-env-proxy --import tsx scripts/standing-research.ts run --out evidence/standing-research-20261027/NEW-NAME --observation-ms 75000 --previous evidence/standing-research-20261027/01-paced-combined
+timeout --signal=TERM --kill-after=5s 115s prlimit --cpu=20:21 --fsize=16777216:16777216 --nofile=64:64 -- node --max-old-space-size=128 --use-env-proxy --import tsx scripts/standing-research.ts run --out evidence/standing-research-20261027/new-reviewed-run --observation-ms 75000 --previous evidence/standing-research-20261027/01-paced-combined --previous evidence/standing-research-20261027/02-failed-buy-audit
 ```
 
 This is a research command, never an EC2 installation/restart. Inspect actual limits, candidate support/activity, current source and remaining disk/evidence headroom first. There is no automatic second capture. The driver enforces100 new units/120s,250ms spacing/60starts per minute/10per10s/one in flight,32MiB related responses,140MiB stream reservation,75s logical observation and6MiB new evidence within32MiB retained. It preserves full pre/post-cutoff byte accounting. PublicRPC availability is nonguaranteed; limits do not confer production entitlement.

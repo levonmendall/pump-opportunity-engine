@@ -2,12 +2,21 @@
  * run, no experiment directory or reservation is created. */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {parseStandingResearchArgs,mergeStandingAdmission} from '../scripts/standing-research.js';
+import {parseStandingResearchArgs,mergeStandingAdmission,validateStandingScope} from '../scripts/standing-research.js';
+import {readFileSync} from 'node:fs';
 
 test('standing CLI requires one explicit isolated output and the fixed75s observation scope',()=>{
   const p=parseStandingResearchArgs(['run','--out','evidence/standing-research-20261027/experiment-01','--observation-ms','75000','--previous','evidence/standing-research-20261027/completed-00'],'/workspace/pump-opportunity-engine');
   assert.equal(p.out,'/workspace/pump-opportunity-engine/evidence/standing-research-20261027/experiment-01');assert.equal(p.observationMs,75000);assert.equal(p.previous.length,1);
   for(const args of [[],['run'],['run','--out','evidence/scheduler-forward-20261027','--observation-ms','75000'],['run','--out','evidence/standing-research-20261027/../escape','--observation-ms','75000'],['run','--out','evidence/standing-research-20261027/experiment-01','--observation-ms','30000'],['run','--out','evidence/standing-research-20261027/experiment-01','--observation-ms','75000','--retry','yes']])assert.throws(()=>parseStandingResearchArgs(args,'/workspace/pump-opportunity-engine'),/STANDING_/);
+});
+
+test('a prepared subject is only a bounded canonical identity seed, never reused current support',()=>{
+  const scope=JSON.parse(readFileSync('evidence/scheduler-forward-20261027/capture.json','utf8')).scope;
+  assert.deepEqual(validateStandingScope(scope),scope);
+  for(const changed of [{baseUnits:'0'},{baseUnits:(1n<<64n).toString()},{minSlot:-1},{pool:'11111111111111111111111111111111'},{supportedPoolEvidence:''}])assert.throws(()=>validateStandingScope({...scope,...changed}));
+  const parsed=parseStandingResearchArgs(['run','--out','evidence/standing-research-20261027/next-subject','--observation-ms','75000','--scope','evidence/standing-research-20261027/04-current-subject/selected.json'],'/workspace/pump-opportunity-engine');assert.match(parsed.scopePath!,/04-current-subject\/selected.json$/);
+  assert.throws(()=>parseStandingResearchArgs(['run','--out','evidence/standing-research-20261027/next-subject','--observation-ms','75000','--scope','/workspace/shared/poe-secrets/selected.json'],'/workspace/pump-opportunity-engine'),/SCOPE_EVIDENCE/);
 });
 
 test('phase and observation admission use the earlier physical deadline and both clocks, including a post-persist crossing',()=>{

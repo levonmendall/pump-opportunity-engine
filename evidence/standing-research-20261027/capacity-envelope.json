@@ -1,0 +1,85 @@
+{
+  "classification": "CONDITIONAL_PLANNING_ARITHMETIC_NOT_PRODUCTION_CAPACITY",
+  "authority": "Research only; no new acceptable protection delay approved",
+  "physicalControls": {
+    "startsPerRollingMinute": 60,
+    "startsPerRolling10Seconds": 10,
+    "minimumStartSpacingMs": 250,
+    "inFlight": 1
+  },
+  "protection": {
+    "targetMs": 2000,
+    "maximumCompletedGapProposalMs": 4000,
+    "proposalApproved": false,
+    "quoteAgeAtUseMs": 2000,
+    "bankSourceAgeMs": 30000,
+    "steadyStateCallsPerCoherentBatch": 1,
+    "maximumHypotheticalHoldingsPerBatch": 3,
+    "steadyStateBatchRequestsPerMinute": 30,
+    "coldValidationAdditionalRequests": 1
+  },
+  "oneActiveFlowCandidateBudgetPerMinute": {
+    "holdingPricing": 30,
+    "selectedTransactionEnrichment": 8,
+    "independentVerification": 2,
+    "candidateAdmissionAmortized": 2,
+    "recoveryReserve": 6,
+    "unallocatedSafetyHeadroom": 12,
+    "total": 60
+  },
+  "candidateAdmissionAssumption": "At least5 physical reads per newly selected verified migration subject (origin1, pool history1, swap verification1, cold coherent state2). The2/minute allocation assumes at most one such admission every3minutes (5/3 per minute amortized), with explicit initial/burst reservation. Qualified entry/rent and additional audit pages consume recovery/safety allocation and must be refused/deferred if unavailable. Source-phase admission under held exposure is not yet scheduled/verified; average arithmetic alone is insufficient.",
+  "scenarios": [
+    {
+      "held": 1,
+      "activeCandidates": 1,
+      "aggregateEnrichmentStartsPerMinute": 8,
+      "state": "CONDITIONAL_AVERAGE_FITS; burst/deadline/failure tests govern admission"
+    },
+    {
+      "held": 2,
+      "activeCandidates": 2,
+      "aggregateEnrichmentStartsPerMinute": 8,
+      "state": "NOT_PROVEN_USEFUL: at4transactions/minute each, the five-buyer predictive condition may not be attainable in a complete60s window; no sampling permitted"
+    },
+    {
+      "held": 3,
+      "activeCandidates": 12,
+      "aggregateEnrichmentStartsPerMinute": 8,
+      "state": "UNSUPPORTED_AS_SIMULTANEOUS_FLOW_COVERAGE. Shortlist identities are not complete observations; no per-candidate8/min multiplication."
+    }
+  ],
+  "informationDependency": "One independent getTransaction is still required for every unique selected signature. All relevant swaps in that response are decoded; multi-swap transactions can alter the relation between request and trade counts, but no reduction is assumed without evidence.",
+  "observedNewTrial": {
+    "held": 3,
+    "candidate": 1,
+    "holdingChecks": 38,
+    "maximumCompletedGapMs": 2085,
+    "selectedSignatures": 4,
+    "normalizedTrades": 3,
+    "candidateWindowComplete": false,
+    "reason": "One actual short Buy layout failed; subsequently corrected and independently rechecked. Original window stays failed.",
+    "maximumRollingMinuteStarts": 35,
+    "maximumRolling10SecondStarts": 8,
+    "minimumPhysicalSpacingMs": 253
+  },
+  "knownUnserviceableCases": [
+    "Three selected transactions with950ms response costs fail complete flow in the tested envelope. Candidate window must be invalidated.",
+    "Processing overruns and unresolved physical cancellation can fail proposed protection itself.",
+    "Simultaneous financial deadlines can be jointly infeasible; do not erase unresolved financial actions."
+  ],
+  "streamProjection": {
+    "basis": "97,702,483 actual received socket bytes/75.001s; not provider-stationarity evidence",
+    "estimatedBytesPerDayAtSameRate": 112551759725.8703,
+    "estimatedBytesPer30DaysAtSameRate": 3376552791776.109,
+    "interpretation": "Broad traffic remains even when irrelevant events are discarded locally. These are traffic projections, not billing estimates or guaranteed free allocation."
+  },
+  "apiFeesUsdForDocumentedEndpoints": 0,
+  "infrastructureTransferAndStorageCost": "UNVERIFIED; not included in zero API fee claim",
+  "productionCapacityVerified": false,
+  "ec2ResourceCompatibilityVerified": false,
+  "unverifiedIntegrationConstraints": [
+    "Cold multi-read candidate admission must be interruptible between physical reads or separately reserved; current live captures prewarm before held evaluation begins.",
+    "The2/min independent verification allocation is a planning assumption, not proof of complete feed coverage.",
+    "USD/account-cost evidence for actual entry is distinct from SOL liquidation pricing; its freshness and work must be accounted for."
+  ]
+}

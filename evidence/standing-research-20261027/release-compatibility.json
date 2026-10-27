@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_READ_ONLY_RELEASE_COMPATIBILITY_REVIEW_NOT_DEPLOYMENT_ACCEPTANCE",
+  "generatedAt": "2026-10-27T16:41:36.052544+00:00",
+  "recordedInstalledRelease": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+  "reviewHead": "79d014622aca3609a1724637e9ea1fe433fce21c",
+  "reviewWorktreeIsNotAReleasePin": true,
+  "scope": "Static source/history and documented command review only. No production database, host or service was accessed; installed identity is a retained record, not reverified here.",
+  "decision": {
+    "accountSchema": "SOURCE_COMPATIBLE_WITH_RECORDED_SCHEMA_1; no source-level destructive migration found",
+    "releaseCandidate": "May be labeled an account-preserving OBSERVER release candidate with the conditions below; not an accepted autonomous PAPER trader or deployment-ready release.",
+    "productionEntrypoint": "Still PaperObservationRuntime, no Trader/Clock-held-market wiring, entries disabled, startup refuses exposure.",
+    "crossVersionRecoveryProvenByThisReview": false,
+    "deploymentAuthorizedByThisReview": false
+  },
+  "verifiedStaticChecks": {
+    "financialStateSchemaVersion": 1,
+    "sameFourTables": [
+      "financial_state",
+      "actions",
+      "journal",
+      "metadata"
+    ],
+    "fourTableDdlLiteralIdentical": true,
+    "financialValidatorIdenticalAfterParameterExtractionAndWhitespaceNormalization": true,
+    "accountCliChange": "Only realpath-aware main-module detection changed; init/backup/restore semantics remain the installed forms.",
+    "unchangedBetweenInstalledAndReview": [
+      "package.json",
+      "package-lock.json",
+      "scripts/poe-runtime.service",
+      "scripts/install-ec2.sh"
+    ],
+    "sqliteRequirement": "Same loaded-library check >=3.51.3; pinned better-sqlite3 13.0.3 and lockfile unchanged. Actual installed binary/OS compatibility not rechecked.",
+    "refs": [
+      {
+        "path": "src/ledger.ts",
+        "line": 23
+      },
+      {
+        "path": "src/ledger.ts",
+        "line": 103
+      },
+      {
+        "path": "src/ledger.ts",
+        "line": 151
+      },
+      {
+        "path": "src/ledger.ts",
+        "line": 171
+      },
+      {
+        "path": "src/account.ts",
+        "line": 97
+      }
+    ]
+  },
+  "additiveFinancialChanges": [
+    {
+      "change": "Operating-cost projection under metadata.operating_costs and atomic cost:/cost-valuation: action/journal IDs. Does not debit virtual cash or change inception.",
+      "oldAccountBehavior": "Absent cost metadata with no cost history returns unknown coverage in memory; it does not reseed money or claim free operations. Missing projection with recorded cost history refuses recovery.",
+      "refs": [
+        {
+          "path": "src/ledger.ts",
+          "line": 446
+        },
+        {
+          "path": "src/ledger.ts",
+          "line": 468
+        },
+        {
+          "path": "src/costs.ts",
+          "line": 78
+        },
+        {
+          "path": "src/runtime.ts",
+          "line": 307
+        }
+      ]
+    },
+    {
+      "change": "traded_mint:<mint> marker written atomically with a successful new-code buy fill; entry checks it to prevent re-entry.",
+      "hazard": "No historical-fill index backfill exists. Before eventual entry enablement, establish zero prior fills from authoritative evidence or prove index coverage for older fills. This review did not inspect financial history.",
+      "refs": [
+        {
+          "path": "src/ledger.ts",
+          "line": 319
+        },
+        {
+          "path": "src/ledger.ts",
+          "line": 344
+        },
+        {
+          "path": "src/ledger.ts",
+          "line": 405
+        }
+      ]
+    },
+    {
+      "change": "New asynchronous two-completed/one-pending backup store and runtime scheduler. Uses existing sole writer SQLite backup API; worker inspects artifacts, not source ledger.",
+      "hazard": "New operational dependency on private backup directory/retention layout, source-size bound and worker availability. Actual EC2 backup/restore/resource behavior remains unverified.",
+      "refs": [
+        {
+          "path": "src/backup.ts",
+          "line": 47
+        },
+        {
+          "path": "src/backup.ts",
+          "line": 69
+        },
+        {
+          "path": "src/backup.ts",
+          "line": 78
+        },
+        {
+          "path": "src/backup.ts",
+          "line": 199
+        },
+        {
+          "path": "src/runtime.ts",
+          "line": 260
+        },
+        {
+          "path": "src/runtime.ts",
+          "line": 379
+        }
+      ]
+    }
+  ],
+  "upgradeAndRollback": {
+    "installerIsNotUpgradeCommand": true,
+    "installerReason": "install-ec2.sh refuses an active service, refuses changing the current release symlink, and refuses overwriting a different runtime release in runtime.env. Never rerun bootstrap/--init to upgrade.",
+    "executableCodeSwitchOrRollbackCommandInRepository": null,
+    "documentedControls": "Use the existing owner-only control socket as the runtime user; status/pause/resume/safe-stop forms are in RUNBOOK.md. Installed main-symlink flag is a completed fix, not another action.",
+    "oldCodeRollback": "Monetary schema is readable in source, but bce3d22 ignores newer cost/no-reentry semantics and cannot manage positions/pending sells. Only an entries-disabled, exposure-free observer fallback is supportable; never roll back newer financial records.",
+    "requiredBeforeAnyFutureAuthorizedSwitch": "Freeze exact tested SHA; keep original DB/account/inception and reporting identity; make and validate a consistent current SQLite backup, prove disposable restore and cross-version reopen; stop only through safe ownership release, preserve the old immutable release and installed credential/drop-in boundaries, and review an explicit atomic switch/reversal plan. No such actions were executed.",
+    "refs": [
+      {
+        "path": "scripts/install-ec2.sh",
+        "line": 40
+      },
+      {
+        "path": "scripts/install-ec2.sh",
+        "line": 74
+      },
+      {
+        "path": "scripts/install-ec2.sh",
+        "line": 186
+      },
+      {
+        "path": "docs/RUNBOOK.md",
+        "line": 91
+      },
+      {
+        "path": "docs/RUNBOOK.md",
+        "line": 116
+      },
+      {
+        "path": "docs/EC2_ENTRYPOINT_RECOVERY.md",
+        "line": 16
+      }
+    ]
+  },
+  "backupRestoreCommandReview": {
+    "forms": [
+      "npm run account -- backup --db PRIVATE_DB --account EXISTING_ACCOUNT --target NEW_PRIVATE_BACKUP",
+      "npm run account -- restore --db NEW_PRIVATE_DB --account EXISTING_ACCOUNT --input VERIFIED_BACKUP"
+    ],
+    "preconditions": "Offline CLI opens the financial writer lease; do not run it against an active authoritative account. Use the existing sole writer backup API for an online copy.",
+    "restoreBehavior": "Requires a new target; verifies source integrity and account/mode, reopens through current ledger validation and appends an entries-closed pause. It retains source inception, rather than starting new capital.",
+    "inceptionCaveat": "CLI has no expected-inception flag. Independently compare backup/restored inception against the verified expected identity; FinancialBackupStore inspection takes and checks that expected identity.",
+    "historyCaveat": "Never restore an older snapshot over newer actions merely to roll code back. Preserve newer source/WAL/uncertainty and reconcile.",
+    "refs": [
+      {
+        "path": "src/account.ts",
+        "line": 25
+      },
+      {
+        "path": "src/account.ts",
+        "line": 37
+      },
+      {
+        "path": "src/account.ts",
+        "line": 81
+      },
+      {
+        "path": "src/backup.ts",
+        "line": 112
+      },
+      {
+        "path": "docs/RUNBOOK.md",
+        "line": 206
+      }
+    ]
+  },
+  "remainingWiring": {
+    "beforeIsolatedEc2Shadow": [
+      "Freeze a tested source/build SHA and a specific read-only shadow entrypoint. Keep the existing observer, service, DB path, account/inception and Render publisher untouched; shadow must have separate output and no production credential/financial/reporting bindings.",
+      "Through existing authorized access, verify current capacity and nonroot execution plus process-level CPU/RSS/FD/disk/network budgets. Cloud results do not establish EC2 resource compatibility. No shadow launcher/resource compatibility was demonstrated by this review.",
+      "Compose the existing migration identity/flow normalization and held pricing components with one shared paced physical gate, exact information-availability/cutoff accounting, held/pending priority and explicit candidate suspension. Current standing-research CLI is a bounded experiment, not an independently supervised production trader."
+    ],
+    "beforeAutonomousPaperRelease": [
+      "runtime.ts does not import/wire PaperTrader, migration identity resolver, ResearchHeldMarket or the corrected selected-flow capture path. Add explicit production-safe composition/recovery before describing it as a trader.",
+      "Freeze the currently -unfrozen rule/amount/cost contract only after required validation. PAPER mode currently has a deliberate no-entry guard; this review does not remove it.",
+      "Connect bounded trades/decisions/funnel and cost evidence to authoritative reporting. Runtime snapshot still emits empty trades/decisions and zero supported/evaluated/filled funnel counts; cost recording has a ledger API but no production ingestion caller.",
+      "Prove fresh held/own-pending execution during feed gaps, coherent post-delay actual-size pricing, backup/restore and cost coverage on the actual installed platform before any acceptance interval."
+    ],
+    "refs": [
+      {
+        "path": "src/runtime.ts",
+        "line": 365
+      },
+      {
+        "path": "src/runtime.ts",
+        "line": 370
+      },
+      {
+        "path": "src/runtime.ts",
+        "line": 326
+      },
+      {
+        "path": "src/runtime.ts",
+        "line": 328
+      },
+      {
+        "path": "src/trader.ts",
+        "line": 138
+      },
+      {
+        "path": "src/strategy.ts",
+        "line": 3
+      },
+      {
+        "path": "src/research-held-market.ts",
+        "line": 1
+      },
+      {
+        "path": "docs/BACKUPS.md",
+        "line": 65
+      }
+    ]
+  },
+  "sources": [
+    {
+      "path": "src/ledger.ts",
+      "sha256": "7b399a38ccc066ff6956a3535ad89b390fcc40d1828cbca051b8e8fa2c85b192"
+    },
+    {
+      "path": "src/account.ts",
+      "sha256": "7688d1311cda378ab828237a40a529bc365a04a544626fb3e5ba843867c70625"
+    },
+    {
+      "path": "src/runtime.ts",
+      "sha256": "b7c3135f8f004abad63e6680d9d20e1f607ea4d5d5eba09c0e81cabb00c4fca7"
+    },
+    {
+      "path": "src/backup.ts",
+      "sha256": "de42f564b7c325e403826bfb468e9750fca1a4a6eb141ead80988141b8a71483"
+    },
+    {
+      "path": "src/backup-worker.ts",
+      "sha256": "17a634185fa5878ebf7a66e78642ba9a7b8d321368d609ed43754e45aebfa7df"
+    },
+    {
+      "path": "src/costs.ts",
+      "sha256": "dde96e6c11031100b3bab114f2f394fd35ef0502d43c1f2a4f433d8167582978"
+    },
+    {
+      "path": "src/trader.ts",
+      "sha256": "7e345fc91f895c46a062662178ce6d060b26a1bab41b14acba22bff3698962e1"
+    },
+    {
+      "path": "src/execution.ts",
+      "sha256": "dc496f9bb634a6b970c9ee7ae6a815a713d5031704a9492825619c0c843f9dc2"
+    },
+    {
+      "path": "src/strategy.ts",
+      "sha256": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084"
+    },
+    {
+      "path": "src/research-held-market.ts",
+      "sha256": "7f3753e3cea8edea00a92bb158637dc6c9721c51dc34506e5d029b6b9f787de4"
+    },
+    {
+      "path": "scripts/install-ec2.sh",
+      "sha256": "3a1b269f2b10f97f45b0fae5d6f9185cc4f6d35abf965df79a2a5941d63c6136"
+    },
+    {
+      "path": "scripts/poe-runtime.service",
+      "sha256": "297db78094e7e55afbdd68b875b9f811248671f2f415b559f9d855246d007982"
+    },
+    {
+      "path": "package.json",
+      "sha256": "b83c2a7f4eb5a73b719c17293e95333d24b4b1c014991042198362a87da1640a"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+    },
+    {
+      "path": "docs/RUNBOOK.md",
+      "sha256": "76c566f42a29ae051f0d17ece2b31429d55857f817c6cc06a5e0081e0ecbd512"
+    },
+    {
+      "path": "docs/BACKUPS.md",
+      "sha256": "14fce989c00c965e2e543b1732c7106e335dced78a94bcdb5d596d8f6f4f10f5"
+    }
+  ],
+  "productionDatabaseRead": false,
+  "financialFilesModified": false,
+  "sourceFilesModifiedByReview": false,
+  "testsRunByThisReview": false,
+  "networkRequests": 0,
+  "serviceChanges": false,
+  "deployments": 0,
+  "accountInceptionChanged": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}
