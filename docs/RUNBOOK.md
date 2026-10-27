@@ -9,21 +9,28 @@ wallets or activate paid PumpPortal trades. Existing wallet tasks are deferred,
 not prerequisites for this experiment. Read `FREE_DATA_EVALUATION.md` for actual
 results, limits and the exact proposed next steps.
 
-Alchemy/Helius data budgets remain zero until current Free eligibility and
-remaining allowance are verified. Hard assignment caps after verification are
-`min(250000, floor(0.02 * remainingFreeCu))` and
-`min(20000, floor(0.02 * remainingFreeCredits))`. PumpApi is credential-free,
-one connection/IP, at most128MiB total received/30minutes aggregate; all new
-experiment evidence is limited to32MiB. The probe reserves limits before network
-use and never automatically refunds uncertain attempts. Check its budget receipt
-before repeating it. No test was run on EC2; Cloud containment does not prove
-EC2 resource compatibility.
+The current next leg uses **PumpApi and public RPC only**. Do not test Alchemy,
+request Usage screenshots, or make Helius access a prerequisite. No new stream
+may open under the current allowance:102.04MiB actual/112MiBreserved of128MiB
+leaves16MiBunreserved, insufficient for a complete active-pool window. Preserve
+`pumpapi-budget.json`; do not reset/refund reservations. OWNER_ACTIONS.md and
+`active-capture-proposal.json` contain the ONE pending allowance request.
+
+Offline mapping/negative current-transaction fixtures can run without provider
+use. Scripts `active-pool-preflight.ts` and `public-activity-sample.ts` default to
+no-network usage; their completed bounded public reads produced no supported
+active pool. Do not repeat a selection search or open another empty feed sample.
+After an approved combined test allowance and completed offline orchestration,
+preflight must independently verify supported current trading activity and quota
+fit, then use one bounded socket or stop. Keep original byte/time counters,
+32MiB evidence, receive-time integrity and resource limits. No EC2 experiment was
+run; Cloud containment does not establish EC2 compatibility.
 
 ## Prior unmetered development checkpoint — 2026-10-27
 
 The installed C2 observer/account/inception remain unchanged. Development RPC
 market integration, requirement-based observation planning and offline recovery/
-load checks passed before this assignment; final combined build/compile and235root
+load checks passed before this assignment; final combined build/compile and245root
 tests pass. Earlier unsigned-funding checks remain separate and out of scope. They are not installed
 trading evidence. New commands, isolated from production financial state:
 
@@ -38,7 +45,7 @@ RPC_OBSERVATION.md before repeating. Tested slow schedules did not validate
 protection replacement, trade flow or cost savings. The2s quote-age rule applies
 at use; holding-check cadence/maximum response still require explicit freezing.
 
-Alchemy is the next targeted investigation before paid Helius. Existing repository
+Historical provider-binding work (outside the current PumpApi/public-RPC scope): Existing repository
 secret MM_SOLANA_READ_RPC_URL in levonmendall/The-Meme-Machine is confirmed and its
 public Alchemy Solana host validated in protected job memory, without provider
 requests or secret export. Isolated metadata branches never change old main or

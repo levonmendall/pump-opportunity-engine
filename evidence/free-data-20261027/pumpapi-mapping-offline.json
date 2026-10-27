@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_PUMPAPI_RPC_ENRICHMENT_MAPPING_AND_SCOPE_EXCLUSION_NOT_FEED_VERIFICATION",
+  "recordedAt": "2026-10-27T02:08:31.152331+00:00",
+  "newNetworkRequests": 0,
+  "credentialsRead": false,
+  "productionChanged": false,
+  "strategyChanged": false,
+  "financialAccountCreated": false,
+  "actualValidatedShape": {
+    "source": "evidence/targeted-transaction-sample.json",
+    "side": "sell",
+    "outerInstructionIndex": 2,
+    "eventCpiInnerInstructionIndex": 5,
+    "eventIndex": 0,
+    "eventIndexMeaning": "one IDL event record encoded in this genuine self-CPI; not an invented provider index",
+    "tokenUnits": "138353716808147",
+    "curveQuoteLamports": "1481514",
+    "userQuoteLamports": "1462993",
+    "trader": "BwJigd5taT26gAhNcv1DMrC7epkedHBjcgbWVbEMP8Q",
+    "baseAndUserQuoteTransferChecks": true,
+    "networkFeeLamportsSeparate": 25000
+  },
+  "currentActivitySample": {
+    "source": "evidence/free-data-20261027/public-activity-2026-10-27T02-02-18.064Z.json",
+    "sourceSha256": "2f825e796395453724b9d9a256ad21a6ed2c9c1ae2d870cbbda88f23a8e85652",
+    "recordedAt": "2026-10-27T02:02:18.052Z",
+    "selection": "bounded program address page12 signatures then first3successful transaction fetches; activity-biased transport test, not a market sample",
+    "exclusions": [
+      {
+        "signature": "3Pj2bTs4motqJDbCPG8eR2a2GZYzu6dRxWTYsTFAX4fV4xgkXQCGRTSA36wyRyuxqe2X1Me1qE3UgmEkx6wmy5Lq",
+        "reason": "actual direct Sell but WSOL base and custom quote, noncanonical pool outside POE scope",
+        "pool": "pCKusx9zFxyY1ZhaNjXPRtLVyL9KjnEvZBv4FefMDxb",
+        "baseMint": "So11111111111111111111111111111111111111112",
+        "quoteMint": "BZQGbEx8fy88M6EdCbkRrgmvJk4u59WSCENbb4o1EDw"
+      },
+      {
+        "signature": "siPjKNdmQiG5EpDM9pminne6JdTfpdH4vFFCGYjXiActSpaRFakfuAqWn6fCZzt676d2zK82sA54FGQrZMSi8Jy",
+        "reason": "program-address mention without PumpSwap invocation"
+      },
+      {
+        "signature": "2GpYvARgNDrogqGWUsGJfcG69gVV7mKy9UEPivPy9XkBT8AA1UhMcvaCFXrbnPQXbYpmqbtE4i3ukxVssAxajG8L",
+        "reason": "program-address mention without PumpSwap invocation"
+      }
+    ],
+    "successfulSupportedSwaps": 0,
+    "providerCoverageInferencePermitted": false
+  },
+  "requiredRpcWork": "At least one confirmed getTransaction per distinct selected transaction not already verified, plus bounded independent history and current pricing; every failed/not-yet-confirmed attempt also counts.",
+  "tests": {
+    "focusedPassed": 10,
+    "typecheck": "passed",
+    "actualFixtureCases": [
+      "retained direct Sell integer/role/transfer/CPI identity",
+      "current actual custom-quote exclusion",
+      "current program-address mention exclusion"
+    ],
+    "syntheticCasesNotForwardEvidence": [
+      "altered event correction and transfer mismatch",
+      "fee payer separation",
+      "missing stack/layout/signature/data failures",
+      "repeated representation/availability",
+      "unchanged event with changed transfer validation yields correction, not duplicate",
+      "explicit curve/user research views retain full genuine CPI identity and original RPC availability"
+    ]
+  },
+  "remainingEssentialGaps": [
+    "selected PumpApi payload to chain matching",
+    "Buy/routed/multiple current supported variants",
+    "precise provider commitment/corrections",
+    "frozen quoteLamports economic convention",
+    "complete active same-window feature/protection workload",
+    "review research normalization CPI-index semantics before any strategy integration"
+  ],
+  "normalizedForStrategy": false,
+  "fullFlowWindowsProved": 0,
+  "sourceHashes": {
+    "src/pumpapi-mapping.ts": "eb0c3edf3769c5c20791ed8c62bd167b4aa5b0aaea7934d50478c13829044ef5",
+    "test/pumpapi-mapping.test.ts": "ca2953cea17a0033adaeb205aea8b597bcb1e1217c0a9d4a38373908e3663846",
+    "docs/PUMPAPI_MAPPING.md": "4533b6f5b753dcc8cb2ac7201ea9910fba529ca4157ac1d35b6fd8a580e83f1e"
+  },
+  "researchNormalization": {
+    "mode": "RESEARCH_ONLY",
+    "requiresExplicitCurveOrUserConvention": true,
+    "requiresSupportedPoolEvidence": true,
+    "refusesTransferMismatch": true,
+    "identityProjection": "instructionIndex=actualouter, eventIndex=actualeventCPIinner index, completeidentityretained",
+    "primaryStrategyEnabled": false
+  }
+}

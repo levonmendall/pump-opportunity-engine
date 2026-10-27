@@ -2,11 +2,103 @@
 
 **2026-10-27 UTC · review branch `poe-free-data-evaluation-20261027` · research only**
 
-1. **Can current requirements be met for $0 additional data fees? Not yet demonstrated.** Free migration discovery and bounded actual-size public-RPC pricing work. No tested source supplies verified complete candidate flow, with its required identities, quantities, trader attribution and integrity contract. A socket connection is insufficient evidence.
-2. **Measured scope:** one newly discovered migration-to-canonical-pool quote; an earlier 60-second, one-pool public-RPC polling/subscription comparison; same-evidence quote/exit replay; a short credential-free PumpApi schema probe. A further80-second PumpApi capture and three two-pool batch rounds are recorded below. These do not establish a continuous monthly duty cycle or production protection.
-3. **Recommendation:** preserve the working observer and entries-disabled account. Review the small shared-batch pricing adapter separately. Test the existing account's eligible filtered stream only after its free allowance is verified. Do not introduce a paid Helius plan, broad indexer, continuous broad feed or production data-path replacement.
-4. **Verified:** free discovery, supported-pool checks, coherent hypothetical sell quotes, bounded stopping and offline parity. **Inferred:** conditional CU/credit/traffic projections. **Unavailable:** authenticated Alchemy/Helius plan, remaining allowance and actual charges. **Untested:** complete live candidate flow, active-pool change/exit latency, long-run quotas, EC2 test compatibility and unattended PAPER trading.
-5. **Smallest owner action:** a current sanitized Alchemy Usage view/export showing plan, remaining account-wide **free CUs**, overage/cap setting and POE allocation. The existing key is already located; no key value or new credential is requested. “10 million free inquiries I believe” does not verify those facts. No funding action is needed for this assignment.
+1. **Decision: Free configuration PROMISING, WITH SPECIFIC REMAINING EVIDENCE GAPS.** Candidate flow mapping, active-pool completeness and changing-price protection have not passed. Free discovery and bounded hypothetical public-RPC pricing work; no continuous operating scope is verified.
+2. **Measured scope:** earlier two PumpApi captures received102.04MiB in84.526seconds, with no selected activity. Current follow-up adds offline integer/identity mapping and5public-RPC reads/37,006bytes; it found no supported active pool. No new PumpApi stream was opened and no counter was reset.
+3. **Recommendation:** investigate **PumpApi plus public RPC only**. Alchemy tests/Usage screenshots and Helius access are not prerequisites or requests. Preserve production and do not change strategy, deploy or enable entries.
+4. **Verified:** one actual direct on-chain Sell's executed amounts/trader/CPI identity, failure/correction handling and explicit research-only normalization; shared actual-size quote parity. **Missing:** matched selected PumpApi payloads, actual supported Buy/routed/multi-swap examples, complete receive-time windows, enrichment workload and changing-price protection response. Public RPC enrichment is extra work, not a free completeness assumption.
+5. **One owner action:** approve the precise revised test allowance below. Present16MiB unreserved receipt capacity cannot fit a60–70second complete active-pool observation. No billing screenshot, wallet funding or paid provider is requested.
+
+## Narrow follow-up and proposed allowance — 2026-10-27
+
+The prior broad captures remain102.04MiB actually received,112MiB reserved of
+128MiB; reserved time100seconds, actual open time84.526seconds. The16MiB
+unreserved byte allowance supports only about12–13seconds at measured rates.
+A70-second window needs83.75–96.17MiB: **67.75–80.17MiB more than unreserved
+capacity**, before enrichment/independent audit. The actual-versus-reserved byte
+difference is not automatically refunded. Original budget receipts are unchanged.
+
+One bounded selection check used the retained canonical pool with highest
+historical effective SOL liquidity (`6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv`).
+Its latest20signatures showed no successful address activity in the preceding
+10minutes:1public read/4,508bytes. It was rejected for the next transport test.
+A single latest12-signature PumpSwap-program page then supplied the first three
+successful transactions no older than60seconds:4reads/32,498bytes total. One was
+a real Sell with **WSOL as base/custom token quote**, noncanonical and outside POE;
+the other two mentioned the program address without invoking it. This supplies
+negative decoding fixtures, **not an active supported sample or evidence of bad
+feed coverage**. No pagination, broad archive or further search was performed.
+Selection was explicitly activity-biased transport research, not strategy results
+or unbiased opportunity selection. See `active-preflight-*` and `public-activity-*`
+receipts in the evidence directory.
+
+`src/pumpapi-mapping.ts` now treats a selected PumpApi frame as a signature hint
+only. It uses a successful confirmed transaction's genuine event-CPI bytes and
+compiled account roles for exact executed token units, curve SOL, user SOL,
+fees, direction and actual `user`; it never substitutes the fee payer or UI
+float. Full outer/swap-inner/event-inner identity is retained. The actual event-CPI
+inner index can supply the research type's event index because each such CPI
+encodes exactly one event; this is a real chain position, not an invented provider
+ordinal. Logs and CPI representations do not double count. Transfer-validation
+changes are corrections even when event bytes stay identical. Unknown/truncated
+layouts and failed/missing transaction evidence are refused.
+
+Explicit `curve` and `user` **RESEARCH_ONLY** views preserve both amount conventions
+and original RPC-availability time. They can exercise existing unchanged feature
+code without silently choosing the primary strategy convention or enabling flow
+in production. Conversion requires a named supported-pool evidence identifier and passing
+transfer checks; the harness must verify that the evidence matches the pool
+and current supported behavior. PumpApi commitment/correction semantics remain unknown; current
+official stream/FAQ pages rechecked2026-10-27 do not establish them. Confirmed RPC
+enrichment is therefore later information and must not be backdated. Subsequent
+finality/reversal checking is still needed. There are **no retained selected
+PumpApi payloads** from which to finish provider-specific amount matching offline.
+
+Minimum enrichment is **one `getTransaction` per distinct selected signature**,
+not one per message or swap. One transaction may contain multiple real events;
+confirmation failures, retries if explicitly allowed, history and pool/fee reads
+must also count. The current five-read sample cost is37,006response bytes with no
+stream usage; it is not a measurement of the combined candidate/pricing workload.
+Direct Buy/routed/multi-swap matching and genuine changing-price exit response
+remain untested. No hypothetical live holdings or natural trades were created in
+this follow-up. Details/tests: [PUMPAPI_MAPPING.md](PUMPAPI_MAPPING.md).
+
+**Proposed, not approved:** raise cumulative PumpApi receipt to**256MiB**; use a
+stricter**5-minute cumulative time sublimit** within the existing30-minute limit,
+including prior100seconds reserved; permit **one90-second active-pool combined
+capture**,5-second shutdown reserve, and **240additional public-RPC reads/64MiB
+responses**. Keep one connection/IP and the existing32MiB total evidence cap.
+New128MiB reservation plus prior112MiB becomes240MiB, leaving16MiB transport
+headroom. Stop at127MiB for the new socket,90seconds or any quality/resource limit;
+no retry or second empty sample. This request raises bytes, not authorization to
+spend. It is recorded in `active-capture-proposal.json`; existing hard counters
+are not changed until approval.
+
+RPC allocation:12preflight/identity/activity reads,135pricing reads (45three-call
+cycles at2seconds),48distinct-transaction enrichments,12history/transaction audit
+reads,33failure/in-flight headroom with no automatic retry. **Admission gate:**
+recent independently verified successful supported-pool trades and activity/burst
+rate must fit the full window/enrichment budget after pricing is reserved. If
+those gates fail, no socket opens. If data loss or a cap interrupts the run, mark
+its window unusable. Preserve actual received/confirmed availability and report
+unobserved trade variants rather than extending the test.
+
+This research allowance would require a separately enforced shared test ceiling
+of150RPC starts/minute,30per10seconds and one in flight. Production's existing
+60/minute client stays unchanged:3-call pricing at2seconds already needs90/minute
+before enrichment. That is an explicit integration-capacity gap. The proposed
+2-second attempt schedule measures freshness, stale periods and response; it
+does not certify a maximum response or lower the2-second **at-use** freshness
+rule. No production protection will be replaced. API/data fees are documented$0;
+Cloud infrastructure/transfer allocation remains unverified, and no new charge,
+paid plan, funding or EC2 experiment is authorized by this proposal.
+
+Current combined validation: build/compile and245tests pass, including10new mapping
+checks. A read-only dashboard check at02:13:11UTC retained the original account/
+inception and installed release, snapshot406, entriesdisabled, positions/trades0,
+reconciledtrue; source facts44.87seconds old. No production action occurred.
+
+The following sections retain the earlier comparison evidence and account facts.
+Alchemy/Helius material is **historical, outside the current assignment**.
 
 ## Production boundary and actual requirements
 
@@ -339,17 +431,16 @@ The later history audit command is
 to exceed6public reads/30seconds/6MB and uses the closed-window receipt. Repeating
 it does not make late historical information available to earlier decisions.
 
-Next proposed integration: verify account eligibility; conduct a tiny filtered
-schema/credit probe; independently match direct Buy/Sell, CPI/routed/multi-swap
-events with executed quantities and trader roles; establish complete receive-time
-windows and coverage denominators; run changed-state protection/failure tests at
-the same cadence; reserve held capacity and measure actual quota deltas. Only
-then review a pinned account-preserving production integration. This report does
-not authorize merge/deployment, strategy changes, entries, funding or live trading.
+Current next step is only the proposed PumpApi/public-RPC combined active-pool
+leg above, after its explicit allowance approval and offline orchestration tests.
+The earlier provider comparisons are retained for audit, not as access requests
+or work prerequisites. Do not migrate production, change the strategy or remove
+its blocker when a trial succeeds. Recheck supported pool identity/activity,
+measure complete workload/freshness and report unobserved variants explicitly.
 
-Final verification: TypeScript build/compile and235tests passed; independent
+Final verification: TypeScript build/compile and245tests passed; independent
 review corrected the unchanged-notification wording. Retained new evidence is
-about0.26MB, well below32MiB. See `validation-final.json`. This review branch
+about0.34MB, well below32MiB. See `validation-final.json`. This review branch
 also preserves previously undeployed RPC-market/observation/recovery work needed
 by the replay; none is installed or accepted as an autonomous trader.
 

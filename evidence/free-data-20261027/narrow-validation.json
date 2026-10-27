@@ -1,0 +1,27 @@
+{
+  "recordedAt": "2026-10-27T02:13:33.985977+00:00",
+  "classification": "NARROW_FOLLOWUP_OFFLINE_AND_BOUNDED_RPC_VALIDATION",
+  "build": "passed",
+  "compile": "passed",
+  "tests": {
+    "passed": 245,
+    "failed": 0,
+    "durationMs": 33477.413736
+  },
+  "mappingTests": 10,
+  "newPublicRpcReads": 5,
+  "newPublicRpcResponseBytes": 37006,
+  "newPumpApiConnections": 0,
+  "priorPumpApiBudgetUnchanged": true,
+  "priorPumpApiBudgetSha256": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+  "newEvidenceBytesBeforeReceipt": 328439,
+  "maximumEvidenceBytes": 33554432,
+  "sourceSha256": {
+    "src/pumpapi-mapping.ts": "eb0c3edf3769c5c20791ed8c62bd167b4aa5b0aaea7934d50478c13829044ef5",
+    "test/pumpapi-mapping.test.ts": "ca2953cea17a0033adaeb205aea8b597bcb1e1217c0a9d4a38373908e3663846"
+  },
+  "classificationResult": "PROMISING_WITH_SPECIFIC_REMAINING_EVIDENCE_GAPS",
+  "acceptanceClockStarted": false,
+  "entriesEnabled": false,
+  "productionChanged": false
+}

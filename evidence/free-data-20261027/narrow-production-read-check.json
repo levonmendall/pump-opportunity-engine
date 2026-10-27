@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-10-27T02:13:11.514Z",
+  "account": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "sequence": "406",
+  "source": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "times": {
+    "generatedAt": "2026-10-27T02:12:26.589Z",
+    "marketAt": "2026-10-27T02:12:26.589Z",
+    "reconciledAt": "2026-10-27T02:12:26.589Z",
+    "usefulProgressAt": "2026-10-27T02:12:26.589Z"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "disabled",
+    "reconciled": true,
+    "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+  },
+  "freshness": {
+    "state": "observing-with-zero-trades",
+    "receivedAt": "2026-10-27T02:12:29.571Z",
+    "generatedAt": "2026-10-27T02:12:26.589Z",
+    "marketAt": "2026-10-27T02:12:26.589Z",
+    "reconciledAt": "2026-10-27T02:12:26.589Z",
+    "usefulProgressAt": "2026-10-27T02:12:26.589Z",
+    "sourceAgeMs": 44870,
+    "marketAgeMs": 44870,
+    "reconciliationAgeMs": 44870
+  },
+  "positions": 0,
+  "trades": 0,
+  "readOnly": true,
+  "productionChanged": false
+}

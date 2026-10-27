@@ -1,34 +1,38 @@
-# Remaining owner action — zero incremental data cost evaluation
+# One owner action — bounded PumpApi/public-RPC follow-up
 
-The existing EC2 observer/account/inception and public Render viewer remain in
-place. Inventory, bootstrap, source edits, publisher shutdown and Turnkey
-registration are complete. This assignment requires no wallet funding, recovery
-bundle delivery, replacement key, paid plan or infrastructure change.
+Alchemy is excluded from this assignment. No Usage screenshot, Alchemy test,
+Helius access, replacement key, wallet funding or infrastructure action is needed.
+The observer, original account/inception, Render viewer and financial history
+remain unchanged.
 
-**One input would unblock the existing Alchemy test:** provide a current sanitized
-Alchemy **Usage** view/export for the account behind repository secret
-`MM_SOLANA_READ_RPC_URL` in `levonmendall/The-Meme-Machine`. Include:
+**Approval requested for one revised test allowance:**
 
-- Current account plan and intended app's nonsecret name.
-- Remaining **account-wide free CUs**, with the view's timestamp/reset date.
-- Overage/usage-cap setting and the no-charge CU allocation available to POE.
+- **256 MiB cumulative PumpApi receipt**, including all prior captures; this
+  raises the existing128MiB cap by128MiB.
+- **5 minutes cumulative provider observation/reserved time**, including the
+  prior100seconds reserved. This is stricter than the existing30-minute ceiling.
+- **One90-second active-pool capture**, plus5seconds shutdown reserve; reserve
+  128MiB before opening. Prior112MiB +new128MiB =240MiB reserved, leaving16MiB
+  unmetered transport/in-flight headroom. No automatic retry or second empty test.
+- **At most240 additional public-RPC reads and64MiB RPC responses** for the
+  combined preflight, pricing, enrichment and audit workload. Keep32MiB total
+  retained evidence, one socket/IP and no production/financial writes.
 
-“10 million free inquiries I believe” is an estimate with an uncertain unit; it
-does not establish current remaining CUs, Free eligibility or overage behavior.
-The existing key and HTTPS Alchemy host are already located. No key value,
-secret-inventory permission, replacement key or new Admin key is requested.
-An already authorized Usage-read session can supply the same metadata; the app
-key itself cannot read billing/quota. Never paste credentials into chat.
+Only16MiB remains unreserved under the present byte cap. A complete70-second
+window needs about83.75–96.17MiB at the measured rates. Existing reservations are
+not reset/refunded, and no new stream has been opened.
 
-The experiment may then use only
-`min(250000, floor(0.02 * verifiedRemainingFreeCu))`, reserving requests, stream
-bytes, reconciliation, retries and in-flight headroom before network use. The
-previous proposed 11000-CU test is superseded by this aggregate formula. Until
-eligibility is verified the permitted Alchemy data budget is **zero**.
+After approval, first verify a supported pool's current activity within the
+bounded preflight and confirm its enrichment rate fits reserved pricing capacity.
+If no suitable pool fits, do not connect. The experiment includes exact-size
+hypothetical pricing at a2-second attempt cadence and explicit unknown/stale
+periods; it does not weaken the at-use2-second freshness requirement. The current
+production client's60/minute limit is unchanged. An isolated aggregate research
+limit of150starts/minute/30per10seconds would be enforced separately.
 
-Helius remains an optional blocked comparison: no usable existing key binding
-or verified remaining Free credits was located in the specifically tested
-scopes. This is not a request to create an account or purchase a plan. Public
-RPC, free migration discovery, PumpApi and offline work continue independently.
-Existing PumpPortal wallet/recovery material is preserved and is outside this
-no-funding assignment. See [FREE_DATA_EVALUATION.md](FREE_DATA_EVALUATION.md).
+API/data fees remain$0 under the documented credential-free/public paths. Existing
+Cloud infrastructure/transfer allocation is unverified; this request does **not**
+authorize any new charge, paid service, plan change or EC2 deployment. No funding,
+PAPER entries or live trading. Full arithmetic, RPC allocation and stop conditions
+are in `evidence/free-data-20261027/active-capture-proposal.json` and
+[FREE_DATA_EVALUATION.md](FREE_DATA_EVALUATION.md).

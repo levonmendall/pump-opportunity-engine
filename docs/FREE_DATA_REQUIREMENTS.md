@@ -1,5 +1,11 @@
 # Zero incremental data cost requirements — 2026-10-27
 
+**Scope amendment:** the next test uses PumpApi and public RPC only. Alchemy
+Usage/eligibility and Helius access are not current prerequisites or owner actions.
+The historical table below records earlier investigated options; see
+FREE_DATA_EVALUATION.md for the pending cumulative capture allowance.
+
+
 This is the requirements/eligibility record for branch
 `poe-free-data-evaluation-20261027`. It is not the final evaluation or a production
 release. Public primary documents were retrieved on 2026-10-27; authenticated
