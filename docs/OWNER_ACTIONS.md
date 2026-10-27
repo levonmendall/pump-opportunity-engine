@@ -1,22 +1,20 @@
-# Owner checklist — bounded continuation completed
+# Owner checklist — offline design review complete
 
-**No owner-only action or spending approval is requested.** Alchemy and Helius
-remain excluded. No Usage screenshot, credential, funding, bootstrap, dashboard
-change or production intervention is needed.
+**No owner-only action or additional budget is requested.** Alchemy/Helius,
+wallet funding, credentials, infrastructure and production changes are outside
+this work. No live measurement was run or automatically scheduled.
 
-The authorized selection continuation used14more public-RPC requests and190,905
-response bytes, skipped two saturated pool histories, and stopped on HTTP429.
-No PumpApi capture opened, no automatic retry and no new socket reservation.
-The shared budget is20/240requests and272,634/67,108,864bytes; preserve its sticky
-429 and all prior receipts.220unused requests do not authorize a retry loop.
+Selection pacing and persistent rejection handling are implemented and tested
+offline. Current two-call pricing plus per-transaction flow enrichment cannot
+fit 60 RPC/minute. A research-only one-call Clock-batch path has a conditional
+one-candidate/one-held-pool budget; it needs component and combined live validation
+before any production use. See [FREE_DATA_EVALUATION.md](FREE_DATA_EVALUATION.md).
 
-Safe quote-read reuse and bounded multi-candidate selection are review-branch
-research code only. Combined candidate flow and changing-price protection remain
-unverified. Offline selection pacing/cross-pass rejection review is an engineering
-step; no paid-provider or marginal budget request follows from this result.
+A specific next measurement is prepared as a proposal only: a 30-second field sample,
+then separate RPC-only changing-price validation. Neither this document nor the
+existing unused allowance authorizes execution or clearing the completed429.
 
-Production observer/account/inception, financial history and public Render viewer
-are preserved. Snapshot522 retained the original identity, fresh reconciliation,
-disabled entries and0fills/positions. No deployment, PAPER-entry enablement,
-live trading or acceptance clock.
-See [FREE_DATA_EVALUATION.md](FREE_DATA_EVALUATION.md).
+Authoritative counters remain 20/240 requests and 272,634/67,108,864 bytes;
+220 requests/66,836,230 bytes remain. Preserve all grants, reservations and evidence.
+Observer/account/inception, financial history and dashboard remain untouched.
+PAPER entries/live trading disabled; no acceptance clock.

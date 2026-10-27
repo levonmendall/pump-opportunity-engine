@@ -9,7 +9,8 @@ import type {Recorder} from './recorder.js';
 type EvidenceRecorder=Pick<Recorder,'record'>;
 
 function need(condition:unknown,reason:string):asserts condition {if(!condition)throw new Error(reason);}
-type WireAccount={data:[string,string];owner:string;lamports:number;executable:boolean;rentEpoch:number};
+export type PoolWireAccount={data:[string,string];owner:string;lamports:number;executable:boolean;rentEpoch:number};
+type WireAccount=PoolWireAccount;
 type Batch={context:{slot:number};value:(WireAccount|null)[]};
 function info(a:WireAccount|null|undefined):AccountInfo<Buffer>{need(a,'MISSING_ACCOUNT');return {...a,data:Buffer.from(a.data[0],'base64'),owner:new PublicKey(a.owner)};}
 const n=(x:bigint|BN)=>new BN(x.toString());
@@ -70,8 +71,9 @@ async function readSupportedPool(rpc:ReadOnlyRpc,mint:PublicKey,rec:EvidenceReco
   return decodeSupportedPool(mint,key,first,batch.value,batch.context,requestedAt,receivedAt,marketBlockTime);
 }
 
-/** Decode one pool only from one complete confirmed dependency batch. */
-function decodeSupportedPool(mint:PublicKey,key:PublicKey,first:Pool,values:(WireAccount|null)[],context:{slot:number},requestedAt:string,receivedAt:string,marketBlockTime:number|null){
+/** Pure pricing inputs from one complete confirmed dependency batch. Time
+ * provenance is validated by the caller, never inferred from slot ordering. */
+export function decodeSupportedPoolAccounts(mint:PublicKey,key:PublicKey,first:Pool,values:(WireAccount|null)[],context:{slot:number},requestedAt:string,receivedAt:string){
   const [pi,gi,fi,mi,qi,bi,vi]=values.map(info);
   need(pi&&gi&&fi&&mi&&qi&&bi&&vi,'MISSING_POOL_STATE');
   need(pi.owner.equals(PUMP_AMM_PROGRAM_ID)&&gi.owner.equals(PUMP_AMM_PROGRAM_ID)&&fi.owner.equals(PUMP_FEE_PROGRAM_ID),'BAD_CONFIG_OWNER');
@@ -96,9 +98,15 @@ function decodeSupportedPool(mint:PublicKey,key:PublicKey,first:Pool,values:(Wir
   need(baseReserve.gtn(0)&&effective.gtn(0),'NONPOSITIVE_EFFECTIVE_RESERVES');
   const opts={baseReserve,quoteReserve,virtualQuoteReserves:pool.virtualQuoteReserves,feeBucketsTotal:pool.protocolFees.add(pool.creatorFees),globalConfig,feeConfig,baseMintAccount:MintLayout.decode(mi.data.subarray(0,82)),baseMint:mint,coinCreator:pool.coinCreator,creator:pool.creator,quoteMint:NATIVE_MINT,isMayhemMode:pool.isMayhemMode,creatorFeeBps:pool.creatorFeeBps,slippage:0,tradeV2:false};
   const fees=computeFeesBps({...opts,baseMintSupply:n(baseMint.supply),quoteReserve:effective});
-  need(marketBlockTime!==null && Math.abs(Date.now()-marketBlockTime*1000)<=30_000,'POOL_STATE_NOT_CURRENT_WITHIN_30_SECONDS');
-  const summary={pool:key.toBase58(),mint:mint.toBase58(),slot:context.slot,commitment:'confirmed' as const,requestedAt,receivedAt,tokenProgram:mi.owner.toBase58(),mintExtensions:extensions.map(t=>ExtensionType[t]),decimals:baseMint.decimals,poolFlags:{mayhem:pool.isMayhemMode,cashback:pool.isCashbackCoin,holderReward:pool.isHolderReward},rawBaseReserve:base.amount.toString(),rawQuoteReserve:quote.amount.toString(),virtualQuoteReserves:pool.virtualQuoteReserves.toString(),effectiveQuoteReserve:effective.toString(),feeBuckets:opts.feeBucketsTotal.toString(),feeBps:Object.fromEntries(Object.entries(fees).map(([k,v])=>[k,v.toString()])),creatorFeeApplied:!pool.coinCreator.equals(PublicKey.default),baseAssociatedAccount:associatedAccountRequirements(mi.owner,extensions),quoteAssociatedAccount:associatedAccountRequirements(TOKEN_PROGRAM_ID,[]),sdk:'@pump-fun/pump-swap-sdk@2.2.0' as const,mode:'QUOTE_ONLY' as const,marketBlockTime,validatedAt:timestamp(),maxMarketAgeMs:30_000};
+  const summary={pool:key.toBase58(),mint:mint.toBase58(),slot:context.slot,commitment:'confirmed' as const,requestedAt,receivedAt,tokenProgram:mi.owner.toBase58(),mintExtensions:extensions.map(t=>ExtensionType[t]),decimals:baseMint.decimals,poolFlags:{mayhem:pool.isMayhemMode,cashback:pool.isCashbackCoin,holderReward:pool.isHolderReward},rawBaseReserve:base.amount.toString(),rawQuoteReserve:quote.amount.toString(),virtualQuoteReserves:pool.virtualQuoteReserves.toString(),effectiveQuoteReserve:effective.toString(),feeBuckets:opts.feeBucketsTotal.toString(),feeBps:Object.fromEntries(Object.entries(fees).map(([k,v])=>[k,v.toString()])),creatorFeeApplied:!pool.coinCreator.equals(PublicKey.default),baseAssociatedAccount:associatedAccountRequirements(mi.owner,extensions),quoteAssociatedAccount:associatedAccountRequirements(TOKEN_PROGRAM_ID,[]),sdk:'@pump-fun/pump-swap-sdk@2.2.0' as const,mode:'QUOTE_ONLY' as const};
   return {opts,summary,mintSupply:baseMint.supply};
+}
+
+/** Existing production/read-only path retains exact slot-block-time evidence. */
+function decodeSupportedPool(mint:PublicKey,key:PublicKey,first:Pool,values:(WireAccount|null)[],context:{slot:number},requestedAt:string,receivedAt:string,marketBlockTime:number|null){
+  const state=decodeSupportedPoolAccounts(mint,key,first,values,context,requestedAt,receivedAt);
+  need(marketBlockTime!==null && Math.abs(Date.now()-marketBlockTime*1000)<=30_000,'POOL_STATE_NOT_CURRENT_WITHIN_30_SECONDS');
+  return {...state,summary:{...state.summary,marketBlockTime,validatedAt:timestamp(),maxMarketAgeMs:30_000}};
 }
 
 export async function quotePool(rpc:ReadOnlyRpc,mint:PublicKey,buyLamports:bigint,rec:EvidenceRecorder,minSlot=0,signal?:AbortSignal){
@@ -119,8 +127,9 @@ export async function quotePositionSell(rpc:ReadOnlyRpc,mint:PublicKey,fullBaseU
   return positionSellFromState({opts,summary,mintSupply},fullBaseUnits,rec,signal);
 }
 
-function positionSellFromState({opts,summary,mintSupply}:ReturnType<typeof decodeSupportedPool>,fullBaseUnits:bigint,rec:EvidenceRecorder,signal?:AbortSignal){
+export function positionSellFromState<S extends ReturnType<typeof decodeSupportedPoolAccounts>['summary']>({opts,summary,mintSupply}:{opts:ReturnType<typeof decodeSupportedPoolAccounts>['opts'];summary:S;mintSupply:bigint},fullBaseUnits:bigint,rec:EvidenceRecorder,signal?:AbortSignal){
   signal?.throwIfAborted();
+  need(typeof fullBaseUnits==='bigint'&&fullBaseUnits>0n&&fullBaseUnits<=MAX_TOKEN_UNITS,'POSITION_SELL_SIZE_OUT_OF_RANGE');
   need(fullBaseUnits<=mintSupply,'POSITION_SELL_EXCEEDS_MINT_SUPPLY');
   // The SDK checks payout against the real vault net of retained fees; virtual
   // curve reserves alone cannot establish available exit proceeds.

@@ -1,0 +1,129 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {PublicKey,SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
+import {quotePositionsSell,type PoolWireAccount} from '../src/pool.js';
+import type {ReadOnlyRpc} from '../src/network.js';
+import {ResearchClockPositionPricer,decodeResearchBankClock} from '../src/research-clock-pricing.js';
+
+const copy=<T>(x:T):T=>structuredClone(x);
+function fixture(){
+  const run='2026-10-26T19-42-16.130Z',proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));
+  const rows=readFileSync(`evidence/integration-${run}.ndjson`,'utf8').trim().split('\n').map(x=>JSON.parse(x));
+  const state=copy(rows.find(x=>x.kind==='pool-state').data);
+  const request={mint:new PublicKey(proof.quote.mint),fullBaseUnits:BigInt(proof.quote.buy.outputBaseUnits)*3n+1n,minSlot:proof.origin.slot};
+  const raw=Buffer.alloc(40);raw.writeBigUInt64LE(BigInt(state.context.slot),0);raw.writeBigInt64LE(BigInt(proof.quote.marketBlockTime),32);
+  // SYNTHETIC Clock fixture added to retained actual pool bytes. No live Clock
+  // account or endpoint behavior was observed by this offline test.
+  const clock:PoolWireAccount={owner:'Sysvar1111111111111111111111111111111111111',data:[raw.toString('base64'),'base64'],lamports:1169280,executable:false,rentEpoch:0};
+  const calls:Array<{method:string;params:unknown[]}> = [],records:Array<{kind:string;data:any}>=[];
+  const rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{
+    calls.push({method,params:copy(params)});
+    if(method==='getBlockTime')return proof.quote.marketBlockTime as T;
+    assert.equal(method,'getMultipleAccounts');
+    const addresses=params[0] as string[];
+    if(addresses.length===1)return copy({context:state.context,value:[state.value[0]]}) as T;
+    assert.ok(addresses.length===7||addresses.length===8);
+    if(addresses.length===8)assert.equal(addresses[7],SYSVAR_CLOCK_PUBKEY.toBase58());
+    return copy({...state,value:[...state.value,...(addresses.length===8?[clock]:[])]}) as T;
+  }};
+  const rec={record(kind:string,data:unknown){records.push({kind,data:copy(data)});}};
+  const moveSlot=()=>{state.context.slot++;const b=Buffer.from(clock.data[0],'base64');b.writeBigUInt64LE(BigInt(state.context.slot));clock.data[0]=b.toString('base64');};
+  return {proof,state,request,clock,rpc,rec,calls,records,moveSlot};
+}
+async function withTime<T>(fn:(f:ReturnType<typeof fixture>)=>Promise<T>){
+  const f=fixture(),realNow=Date.now;Date.now=()=>Date.parse(f.proof.quote.validatedAt);
+  try{return await fn(f);}finally{Date.now=realNow;}
+}
+
+test('same-batch Clock research path uses2cold/1steady reads, preserving exact established sell and fees',async()=>withTime(async f=>{
+  const baseline=await quotePositionsSell(f.rpc as ReadOnlyRpc,[f.request],{record(){}}),key=f.request.mint.toBase58();
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);let before=f.calls.length;
+  const first=await p.quote(f.request);assert.equal(f.calls.length-before,2);
+  before=f.calls.length;const second=await p.quote(f.request);assert.equal(f.calls.length-before,1);
+  for(const q of [first,second]){
+    assert.deepEqual(q.sell,baseline.quotes[key]!.sell);assert.deepEqual(q.feeBps,baseline.quotes[key]!.feeBps);
+    assert.equal(q.timeEvidence,'confirmed-bank-clock');assert.equal(q.clockSlot,f.state.context.slot);
+    assert.equal(q.marketClockUnixSeconds,f.proof.quote.marketBlockTime);assert.equal('marketBlockTime' in q,false);
+    assert.equal(q.receivedAt,new Date(Date.now()).toISOString());
+  }
+  assert.equal(p.usage().networkCalls,3);assert.equal(p.usage().linkCacheHits,1);
+  assert.equal(f.calls.slice(3).some(x=>x.method==='getBlockTime'),false);
+  assert.ok(f.records.filter(x=>x.kind==='research-clock-pool-state').every(x=>x.data.addresses.length===8));
+}));
+
+test('fresh changed reserves and newer slot still get one coherent read and exactly match established math',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),first=await p.quote(f.request);
+  const quote=Buffer.from(f.state.value[6].data[0],'base64');quote.writeBigUInt64LE(quote.readBigUInt64LE(64)+10_000_000n,64);f.state.value[6].data[0]=quote.toString('base64');f.moveSlot();
+  const before=f.calls.length,changed=await p.quote(f.request),baseline=await quotePositionsSell(f.rpc as ReadOnlyRpc,[f.request],{record(){}}),key=f.request.mint.toBase58();
+  assert.equal(f.calls.length-before,4); //1Clock read +3baseline reads
+  assert.notEqual(changed.sell.outputLamports,first.sell.outputLamports);
+  assert.deepEqual(changed.sell,baseline.quotes[key]!.sell);assert.deepEqual(changed.feeBps,baseline.quotes[key]!.feeBps);
+  assert.equal(changed.slot,f.state.context.slot);assert.equal(changed.clockSlot,changed.slot);
+}));
+
+test('fee-tier changes are read in the fresh dependency batch, with exact established decoder parity',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),first=await p.quote(f.request);
+  const data=Buffer.from(f.state.value[2].data[0],'base64');
+  // Pinned SDK2.2.0 IDL FeeConfig: discriminator8+bump1+admin32+
+  // flatFees24 then vec-length4, each tier is thresholdu128+Fees(3*u64).
+  const count=data.readUInt32LE(65);assert.ok(count>0&&count<256);
+  for(let i=0;i<count;i++){const lp=69+i*40+16;data.writeBigUInt64LE(data.readBigUInt64LE(lp)+1n,lp);}
+  f.state.value[2].data[0]=data.toString('base64');f.moveSlot();
+  const changed=await p.quote(f.request),baseline=await quotePositionsSell(f.rpc as ReadOnlyRpc,[f.request],{record(){}}),key=f.request.mint.toBase58();
+  assert.notDeepEqual(changed.feeBps,first.feeBps);assert.notEqual(changed.sell.outputLamports,first.sell.outputLamports);
+  assert.deepEqual(changed.feeBps,baseline.quotes[key]!.feeBps);assert.deepEqual(changed.sell,baseline.quotes[key]!.sell);
+}));
+
+test('Clock refuses wrong owner, executable, encoding, layout, slot, out-of-range and stale/future timestamp',async()=>withTime(async f=>{
+  assert.equal(decodeResearchBankClock(f.clock,f.state.context.slot).clockAccount,SYSVAR_CLOCK_PUBKEY.toBase58());
+  const cases:Array<(c:PoolWireAccount)=>void>=[
+    c=>{c.owner=PublicKey.default.toBase58();},c=>{c.executable=true;},c=>{c.data[1]='jsonParsed';},
+    c=>{c.data[0]=Buffer.alloc(39).toString('base64');},
+    c=>{const b=Buffer.from(c.data[0],'base64');b.writeBigUInt64LE(BigInt(f.state.context.slot+1),0);c.data[0]=b.toString('base64');},
+    c=>{const b=Buffer.from(c.data[0],'base64');b.writeBigInt64LE(1n<<62n,32);c.data[0]=b.toString('base64');},
+    c=>{const b=Buffer.from(c.data[0],'base64');b.writeBigInt64LE(BigInt(Math.floor(Date.now()/1000)-31),32);c.data[0]=b.toString('base64');},
+    c=>{const b=Buffer.from(c.data[0],'base64');b.writeBigInt64LE(BigInt(Math.floor(Date.now()/1000)+31),32);c.data[0]=b.toString('base64');},
+    c=>{const b=Buffer.from(c.data[0],'base64');b.writeBigInt64LE(BigInt(Math.floor(Date.now()/1000)+1),32);c.data[0]=b.toString('base64');},
+  ];
+  for(const mutate of cases){const c=copy(f.clock);mutate(c);assert.throws(()=>decodeResearchBankClock(c,f.state.context.slot),/RESEARCH_CLOCK_/);}
+  assert.throws(()=>decodeResearchBankClock(null,f.state.context.slot),/RESEARCH_CLOCK_/);
+}));
+
+test('changed links fail current batch, invalidate reuse and never retry the failing quote',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.quote(f.request);
+  const original=copy(f.state.value[0]);const b=Buffer.from(f.state.value[0].data[0],'base64');b[175]=b[175]!^1;f.state.value[0].data[0]=b.toString('base64');
+  const before=f.calls.length;await assert.rejects(p.quote(f.request),/POOL_LINKS_CHANGED/);assert.equal(f.calls.length-before,1);assert.equal(p.usage().cachedPoolSlot,null);
+  f.state.value[0]=original;const again=f.calls.length;await p.quote(f.request);assert.equal(f.calls.length-again,2);
+}));
+
+test('missing dependency, bad owner, Clock mismatch and context regression invalidate rather than price partial state',async()=>{
+  for(const mutate of [(f:any)=>{f.state.value[6]=null;},(f:any)=>{f.state.value[5].owner=PublicKey.default.toBase58();},(f:any)=>{f.clock.owner=PublicKey.default.toBase58();},(f:any)=>{f.state.context.slot--; }]){
+    await withTime(async f=>{
+      const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.quote(f.request);const highest=p.usage().highestVerifiedSlot;mutate(f);
+      const before=f.calls.length;await assert.rejects(p.quote(f.request));assert.equal(f.calls.length-before,1);assert.equal(p.usage().cachedPoolSlot,null);assert.equal(p.usage().highestVerifiedSlot,highest);
+    });
+  }
+});
+
+test('aborted and invalid-size quotes make no read; explicit invalidation retains nonregression floor',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);const aborted=new AbortController();aborted.abort();
+  await assert.rejects(p.quote(f.request,aborted.signal));assert.equal(f.calls.length,0);
+  await assert.rejects(p.quote({...f.request,fullBaseUnits:0n}),/SIZE/);assert.equal(f.calls.length,0);
+  await p.quote(f.request);const floor=p.usage().highestVerifiedSlot;p.invalidate('offline-restart');f.state.context.slot--;
+  const before=f.calls.length;await assert.rejects(p.quote(f.request),/REGRESSING/);assert.equal(f.calls.length-before,1);assert.equal(p.usage().highestVerifiedSlot,floor);
+}));
+
+test('slow validation or recording cannot refresh the original receive time into a fresh returned quote',async()=>{
+  for(const slowKind of ['research-clock-pool-state','research-clock-position-sell-quote']){
+    await withTime(async f=>{
+      let now=Date.now();Date.now=()=>now;
+      const rec={record(kind:string,data:unknown){f.rec.record(kind,data);if(kind===slowKind)now+=2001;}};
+      const p=new ResearchClockPositionPricer(f.rpc,rec);
+      await assert.rejects(p.quote(f.request),/QUOTE_AGE_AT_USE/);
+      assert.equal(p.usage().cachedPoolSlot,null);
+      const row=f.records.find(x=>x.kind==='research-clock-pool-state')!;
+      assert.equal(Date.parse(row.data.receivedAt),Date.parse(f.proof.quote.validatedAt));
+    });
+  }
+});

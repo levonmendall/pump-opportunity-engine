@@ -1,11 +1,16 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import bs58 from 'bs58';
 import {PublicKey} from '@solana/web3.js';
 import {canonicalPumpPoolPda} from '../src/sdk.js';
 import {selectActivePool,invokedCanonicalSolPools,invokedCanonicalSolSwaps,type SelectionRpc} from '../src/active-selection.js';
 import type {PositionSellQuote} from '../src/pool.js';
+import {SelectionRejections} from '../src/selection-rejections.js';
+import {SelectionPacedRpc} from '../src/research-pacing.js';
+import {ResearchPhaseRpc} from '../src/research-phase.js';
 
 const retained=JSON.parse(readFileSync('evidence/targeted-transaction-sample.json','utf8'));
 const proof=JSON.parse(readFileSync('evidence/integration-proof-2026-10-26T23-32-41.255Z.json','utf8'));
@@ -135,4 +140,72 @@ test('a single wider program sample stays inside explicit pass and support-call 
   const f=fixture(),result=await selectActivePool({...f,programLimit:256,maxProgramTransactions:24,maxReads:48,maxCandidates:6,maxElapsedMs:70_000,maxResponseBytes:8*1024*1024});
   assert.equal(result.ok,true);assert.equal((f.calls[0]!.params[1] as any).limit,256);assert.equal(result.evidence.maximumProgramTransactions,24);assert.equal(result.evidence.maximumReads,48);
   const bytes=fixture();await assert.rejects(selectActivePool({...bytes,programLimit:257}),/INVALID_SELECTION_BOUNDS/);assert.equal(bytes.calls.length,0);
+});
+
+test('persisted rejected pool is skipped across attempts without another history/support read; expiry requires a fresh full pass',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'poe-select-reject-fixture-')),path=join(directory,'rejections.json'),f=fixture();let store:SelectionRejections|undefined;
+  try{
+    store=new SelectionRejections({path,policyVersion:'fixture-support-v1',now:f.now});
+    f.history(Array.from({length:20},(_,i)=>f.row(i+10,i+1)));
+    const first=await selectActivePool({...f,maxCandidates:1,rejectionStore:store,rejectionEvidenceRef:'fixture:first'});assert.equal(first.ok,false);assert.equal(store.snapshot().length,1);store.close();
+    store=new SelectionRejections({path,policyVersion:'fixture-support-v1',now:f.now});
+    const historiesBefore=f.calls.filter(c=>c.method==='getSignaturesForAddress'&&c.params[0]===scope.pool).length;
+    const second=await selectActivePool({...f,rejectionStore:store});assert.equal(second.ok,false);if(!second.ok)assert.equal(second.reason,'PRIOR_REJECTIONS_BLOCKED_OBSERVED_CANDIDATES');
+    assert.equal(second.evidence.candidateAttempts.length,0);assert.equal(second.evidence.priorRejectionSkips.length,1);assert.equal(second.evidence.priorRejectionSkips[0]?.prior.record?.reason,'POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN');
+    assert.equal(f.calls.filter(c=>c.method==='getSignaturesForAddress'&&c.params[0]===scope.pool).length,historiesBefore);assert.equal(f.quoteCalls(),0);
+    f.advance(86_400_000);const a=f.row(70,5),b=f.row(71,15),old=f.row(72,120);f.program([a,b]);f.history([a,b,old]);
+    const before=f.calls.length,third=await selectActivePool({...f,rejectionStore:store});assert.equal(third.ok,true);assert.equal(f.calls.length-before,7);assert.equal(f.quoteCalls(),1);assert.equal(third.evidence.priorRejectionSkips.length,0);assert.equal(store.snapshot().length,1);
+  }finally{store?.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('prior guards do not consume distinct-new-pool admission slots or hide reason and expiry',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'poe-select-reject-fixture-')),path=join(directory,'rejections.json'),f=fixture(),store=new SelectionRejections({path,policyVersion:'fixture-support-v1',now:f.now});
+  try{
+    store.reject(scope,'POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN','fixture:historical');
+    const mint=new PublicKey(Buffer.alloc(32,29)).toBase58(),next={mint,pool:canonicalPumpPoolPda(new PublicKey(mint)).toBase58()},a=f.rowFor(50,4,next),b=f.rowFor(51,12,next),old=f.rowFor(52,120,next);
+    f.program([f.row(1,5),a]);f.historyFor(next.pool,[a,b,old]);
+    const result=await selectActivePool({...f,maxCandidates:1,rejectionStore:store});assert.equal(result.ok,true);if(!result.ok)return;
+    assert.equal(result.candidate.pool,next.pool);assert.equal(result.evidence.candidateAttempts.length,1);assert.equal(result.evidence.priorRejectionSkips.length,1);
+    assert.ok(result.evidence.priorRejectionSkips[0]?.prior.record?.expiresAt);assert.equal(f.calls.some(c=>c.method==='getSignaturesForAddress'&&c.params[0]===scope.pool),false);
+  }finally{store.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('endpoint throttle is propagated without per-pool cooldown or automatic next candidate',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'poe-select-reject-fixture-')),path=join(directory,'rejections.json'),f=fixture(),store=new SelectionRejections({path,policyVersion:'fixture-support-v1',now:f.now});
+  try{
+    const rpc:SelectionRpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal){if(method==='getSignaturesForAddress'&&params[0]===scope.pool)throw Error('RESEARCH_RPC_HTTP_429');return f.rpc.call<T>(method,params,signal);}};
+    const result=await selectActivePool({...f,rpc,rejectionStore:store});assert.equal(result.ok,false);if(!result.ok)assert.equal(result.reason,'RESEARCH_RPC_HTTP_429');assert.deepEqual(store.snapshot(),[]);assert.equal(f.calls.length,2);assert.equal(f.quoteCalls(),0);
+  }finally{store.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('global pacing halt ends selection without poisoning a pool record or trying another candidate',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'poe-select-reject-fixture-')),path=join(directory,'rejections.json'),f=fixture(),store=new SelectionRejections({path,policyVersion:'fixture-support-v1',now:f.now});
+  try{
+    let attempts=0;
+    const rpc:SelectionRpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal){attempts++;if(method==='getSignaturesForAddress'&&params[0]===scope.pool)throw Error('RESEARCH_PACING_PROVIDER_HALTED');return f.rpc.call<T>(method,params,signal);}};
+    const result=await selectActivePool({...f,rpc,rejectionStore:store});assert.equal(result.ok,false);if(!result.ok)assert.equal(result.reason,'RESEARCH_PACING_PROVIDER_HALTED');assert.deepEqual(store.snapshot(),[]);assert.equal(attempts,3);assert.equal(f.calls.length,2);assert.equal(f.quoteCalls(),0);
+  }finally{store.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('unavailable rejection lookup ends the pass before pool history and without attempting a rejection write',async()=>{
+  const f=fixture();let lookups=0,writes=0;
+  const rejectionStore={lookup(){lookups++;throw Error('SELECTION_REJECTIONS_UNREADABLE');},reject(){writes++;throw Error('UNEXPECTED_REJECTION_WRITE');}};
+  const result=await selectActivePool({...f,rejectionStore});assert.equal(result.ok,false);if(!result.ok)assert.equal(result.reason,'SELECTION_REJECTIONS_UNREADABLE');assert.equal(lookups,1);assert.equal(writes,0);assert.equal(f.calls.length,2);assert.equal(f.quoteCalls(),0);
+});
+
+test('full selector composes paced shared accounting, support reads and cross-attempt guards without network',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'poe-select-composition-fixture-')),f=fixture();
+  let bytes=0,active=0;const starts:number[]=[];
+  const source={get calls(){return f.calls.length;},get bytes(){return bytes;},get inFlight(){return active;},usage(){return {blockedReason:null,nextStartAfterMs:0};},async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal){active++;starts.push(f.now());try{const value=await f.rpc.call<T>(method,params,signal);f.advance(250);bytes+=512;return value;}finally{active--;}}};
+  const paced=new SelectionPacedRpc(source,{statePath:join(directory,'pacing.json'),now:f.now,monotonic:f.now,sleep:async(ms:number)=>{f.advance(ms);}}),phase=new ResearchPhaseRpc(paced,'SELECTION',48,8*1024*1024);
+  const path=join(directory,'rejections.json');let store=new SelectionRejections({path,policyVersion:'fixture-support-v1',now:f.now});
+  try{
+    const first=await selectActivePool({...f,rpc:phase,responseBytes:()=>bytes,rejectionStore:store});assert.equal(first.ok,true);assert.equal(f.calls.length,7);assert.equal(bytes,7*512);assert.equal(phase.usage().calls,7);assert.equal(f.quoteCalls(),1);
+    assert.equal(f.calls.filter(c=>c.method==='getMultipleAccounts').length,2);assert.equal(f.calls.filter(c=>c.method==='getBlockTime').length,1);
+    store.reject(scope,'POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN','fixture:reviewed-prior-rejection',f.now());store.close();store=new SelectionRejections({path,policyVersion:'fixture-support-v1',now:f.now});
+    const before=f.calls.length,second=await selectActivePool({...f,rpc:phase,responseBytes:()=>bytes,rejectionStore:store});assert.equal(second.ok,false);assert.equal(second.evidence.priorRejectionSkips.length,1);assert.equal(second.evidence.candidateAttempts.length,0);
+    const additional=f.calls.slice(before);assert.equal(additional.length,3);assert.equal(additional.some(c=>c.method==='getSignaturesForAddress'&&c.params[0]===scope.pool),false);assert.equal(additional.some(c=>c.method==='getMultipleAccounts'||c.method==='getBlockTime'),false);
+    assert.equal(f.quoteCalls(),1);assert.equal(phase.usage().calls,10);assert.equal(bytes,10*512);assert.ok(starts.every((at,i)=>i===0||at-starts[i-1]!>=1000));
+    assert.ok(starts.at(-1)!-starts[0]!>=9000);
+  }finally{store.close();paced.close();rmSync(directory,{recursive:true,force:true});}
 });

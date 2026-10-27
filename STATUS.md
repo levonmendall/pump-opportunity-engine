@@ -1,14 +1,21 @@
 # POE status — 2026-10-27 UTC
 
-**EC2 observer healthy; authoritative cash reconciliation progressing;
-authenticated reporting accepted; public dashboard fresh. Natural PAPER trades:0.**
-Entries remain disabled; this is not an autonomous PAPER trader. The zero
-incremental data cost investigation is complete to available access/samples:
-free discovery/pricing work at bounded scope, but complete candidate flow and
-continuous protection are unproved. The bounded continuation stopped on public-RPC HTTP 429 after skipping two
-saturated pool histories; no new capture opened. No owner action is requested. Alchemy/Helius
-remain excluded; no Usage screenshot, funding or replacement key is requested. No production change or acceptance clock. **Edge UNPROVEN;
-LIVE TRADING DISABLED.**
+**Observer/account preserved; last verified reporting snapshot522 (03:16UTC)
+reconciled the original account with0fills/positions and entries disabled.**
+This task was offline and makes no new host/dashboard freshness claim. No
+production restart/deployment, account reset or acceptance-clock start.
+
+Current two-call/every-two-second pricing plus per-transaction enrichment is
+**unsuitable for the unchanged60RPC/minute combined workload**. Offline work
+added actual selection pacing, durable rejection reasons/expiry, and research-only
+one-call Clock-batch pricing with shared decoder/math. A one-candidate/one-held
+pool54+6request proposal is conditional on live Clock/response/burst validation.
+No verified continuous free production configuration yet. See
+[docs/FREE_DATA_EVALUATION.md](docs/FREE_DATA_EVALUATION.md).
+
+No owner-only action, new budget, provider access or live measurement is requested.
+The existing429/counters and all prior receipts remain intact. PAPER entries and
+**LIVE TRADING remain DISABLED; edge UNPROVEN.**
 
 | Status | Current evidence |
 | --- | --- |
@@ -47,6 +54,35 @@ C2account/inception, positions/trades0 and reconciledtrue. Accepted new snapshot
 and matching fresh facts prove reporting progress, not an independent DB audit.
 See active-continuation-production-check.json and the earlier service/status receipts in
 the same directory.
+
+## Latest offline design review — 2026-10-27
+
+Selection now enforces1secondafterphysicalsettlement, persists pacing across
+restart and shares the original counterbook. Historical3rejections/2pools are
+seeded at original timestamps. Capacity/saturated24h, quiet10m, stale/missing1m;
+structural failures require reviewed support-policy change plus fresh validation.
+GlobalRESEARCH_* failures never become pool records. Existing completed grant
+markers/stickyRPC_HTTP_429 are not cleared.
+
+Current PumpApi evidence still requires confirmedgetTransaction per distinct
+selected signature; validation sampling cannot supply missing identity, amounts,
+trader roles, commitment or omitted flow. Held exits need price/cost/time, notflow.
+ResearchClockPositionPricer performs2cold/1steady reads using a full8accountbatch,
+explicitbankClock evidence and unchanged SDKvalidation/math. No syntheticblocktime.
+This path is not installed or wired into productionexecution/reporting.
+
+Proposed54working+6reservedrequests/min covers30heldprice,12flow,6admission/cost,
+2integrity,4recovery,6headroom for onecandidate/oneheldpool. It needs actual800ms
+physicalcompletion andconservativearrivalspacing; twohintburst counterexample
+misses5s researchdeadline. Exitevaluationmaxgapremainsunfrozen; notloosened.
+Prepared only:30s fieldcomponent20RPC/16MiB; separate60s protection40RPC/16MiB.
+No network performed. Combinedacceptance stillrequired beforeproduction use.
+
+Counters remain20/240requests,272,634bytes,220/66,836,230remaining; original
+PumpApi112MiB/100s reservation unchanged, sole newcapture unused. Offline
+receipts/hashverification and exactproposal under evidence/free-data-20261027/.
+Historical sectionsbelow retain their actual outcomes; latestdecision above
+supersedes earlier unqualifiedpromising labels. No owneraction pending.
 
 ## Latest bounded continuation — 2026-10-27 03:14 UTC
 

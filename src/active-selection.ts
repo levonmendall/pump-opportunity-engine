@@ -9,6 +9,7 @@ import {canonicalPumpPoolPda,PUMP_AMM_PROGRAM_ID} from './sdk.js';
 import {quotePositionSell,type PositionSellQuote} from './pool.js';
 import type {ReadOnlyRpc} from './network.js';
 import {mapConfirmedPumpSwapEvidence,type MappedTradeEvidence} from './pumpapi-mapping.js';
+import {isPoolRejection,type SelectionRejectionStore,type SelectionRejectionLookup} from './selection-rejections.js';
 
 const require=createRequire(import.meta.url);
 const idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl;
@@ -29,6 +30,7 @@ export type ActivityEvidence={
   maximumCandidates:number;maximumProgramTransactions:number;maximumElapsedMs:number;maximumResponseBytes:number;
   responseBytes:number;responseByteAccounting:'transport'|'decoded-result-estimate-offline-only';elapsedMs:number;
   candidateAttempts:Array<{scope:CandidateScope;signature:string;reason:string;readsAtStart:number;readsAtEnd:number;historyRows:number;historyWindowCovered:boolean;successfulAddressTransactions:number;projected90sWithHeadroom:number|null}>;
+  priorRejectionSkips:Array<{scope:CandidateScope;signature:string;prior:SelectionRejectionLookup}>;
 };
 export type ActiveCandidate={
   mint:string;pool:string;baseUnits:string;minSlot:number;supportedQuote:PositionSellQuote;
@@ -38,6 +40,7 @@ export type ActiveCandidate={
 export type ActiveSelectionResult={ok:true;candidate:ActiveCandidate;evidence:ActivityEvidence}|{ok:false;reason:string;evidence:ActivityEvidence};
 export type ActiveSelectionOptions={rpc:SelectionRpc;now?:()=>number;signal?:AbortSignal;maxReads?:number;enrichmentCapacity?:number;record?:(kind:string,data:unknown)=>void;
   maxCandidates?:number;maxProgramTransactions?:number;programLimit?:number;maxElapsedMs?:number;maxResponseBytes?:number;responseBytes?:()=>number;
+  rejectionStore?:SelectionRejectionStore;rejectionEvidenceRef?:string;
   quote?:(rpc:SelectionRpc,scope:CandidateScope,baseUnits:bigint,minSlot:number,signal?:AbortSignal)=>Promise<PositionSellQuote>};
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 function reason(error:unknown){const s=error instanceof Error?error.message:'';return /^[A-Z][A-Z0-9_]{0,96}(?::[A-Za-z][A-Za-z0-9_]{0,48})?$/.test(s)?s:'UNVERIFIED_ACTIVITY_OR_POOL';}
@@ -101,7 +104,7 @@ export async function selectActivePool(options:ActiveSelectionOptions):Promise<A
   need(Number.isSafeInteger(initialBytes)&&initialBytes>=0,'INVALID_SELECTION_RESPONSE_COUNTER');
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),maxElapsedMs);timer.unref?.();
   const signal=options.signal?AbortSignal.any([options.signal,controller.signal]):controller.signal;
-  const evidence:ActivityEvidence={selectionMethod:`Activity-biased transport test: one latest${programLimit}-signature PumpSwap-program page; up to${maxProgramTransactions} successful recent transactions systematically spread over that page; at most${maxCandidates} distinct canonical SOL pools checked once each. A saturated20-row history is skipped as capacity-unknown, never treated as a measured swap rate. No universe or strategy-performance claim.`,readsAttempted:0,maximumReads:maxReads,programRows:0,programTransactionsInspected:0,historyRows:0,historyWindowMs:60_000,historyWindowCovered:false,successfulAddressTransactions:0,activitySpanMs:0,addressTransactionsPerMinute:null,projected90sWithHeadroom:null,enrichmentCapacity:capacity,decodedRecentTransactions:0,decodedSwapEvents:0,sides:[],routes:[],rejections:[],transactions:[],history:[],selectedAt:null,maximumCandidates:maxCandidates,maximumProgramTransactions:maxProgramTransactions,maximumElapsedMs:maxElapsedMs,maximumResponseBytes:maxResponseBytes,responseBytes:0,responseByteAccounting:options.responseBytes?'transport':'decoded-result-estimate-offline-only',elapsedMs:0,candidateAttempts:[]};
+  const evidence:ActivityEvidence={selectionMethod:`Activity-biased transport test: one latest${programLimit}-signature PumpSwap-program page; up to${maxProgramTransactions} successful recent transactions systematically spread over that page; at most${maxCandidates} distinct canonical SOL pools checked once each. A saturated20-row history is skipped as capacity-unknown, never treated as a measured swap rate. No universe or strategy-performance claim.`,readsAttempted:0,maximumReads:maxReads,programRows:0,programTransactionsInspected:0,historyRows:0,historyWindowMs:60_000,historyWindowCovered:false,successfulAddressTransactions:0,activitySpanMs:0,addressTransactionsPerMinute:null,projected90sWithHeadroom:null,enrichmentCapacity:capacity,decodedRecentTransactions:0,decodedSwapEvents:0,sides:[],routes:[],rejections:[],transactions:[],history:[],selectedAt:null,maximumCandidates:maxCandidates,maximumProgramTransactions:maxProgramTransactions,maximumElapsedMs:maxElapsedMs,maximumResponseBytes:maxResponseBytes,responseBytes:0,responseByteAccounting:options.responseBytes?'transport':'decoded-result-estimate-offline-only',elapsedMs:0,candidateAttempts:[],priorRejectionSkips:[]};
   const record=(kind:string,data:unknown)=>options.record?.(kind,data);
   const checkBounds=()=>{
     evidence.elapsedMs=Math.max(0,now()-began);
@@ -135,8 +138,8 @@ export async function selectActivePool(options:ActiveSelectionOptions):Promise<A
     need(rows.every(t=>t.transferChecks.baseTransfer&&t.transferChecks.userQuoteTransfer),'UNVERIFIED_SCOPED_EXECUTED_TRANSFERS');
     return rows;
   };
-  const terminal=(code:string)=>code.startsWith('PREFLIGHT_')||code.startsWith('RESEARCH_RPC_')||code==='INVALID_SELECTION_RESPONSE_COUNTER'||code==='TRANSACTION_SIGNATURE_MISMATCH'||code==='TRANSACTION_HISTORY_CONTEXT_MISMATCH';
-  const visited=new Set<string>();
+  const terminal=(code:string)=>code.startsWith('PREFLIGHT_')||code.startsWith('RESEARCH_')||code.startsWith('SELECTION_REJECTIONS_')||code==='INVALID_SELECTION_RESPONSE_COUNTER'||code==='TRANSACTION_SIGNATURE_MISMATCH'||code==='TRANSACTION_HISTORY_CONTEXT_MISMATCH';
+  const visited=new Set<string>(),guarded=new Set<string>();
   let lastRejection='NO_VERIFIED_CANONICAL_SOL_SWAP_IN_BOUNDED_PROGRAM_SAMPLE';
   try{
     checkBounds();
@@ -150,7 +153,12 @@ export async function selectActivePool(options:ActiveSelectionOptions):Promise<A
       let pools:CandidateScope[];try{pools=invokedCanonicalSolPools(entry.transaction);}catch(e){evidence.rejections.push({signature:row.signature,reason:reason(e)});continue;}
       if(!pools.length)evidence.rejections.push({signature:row.signature,reason:'NO_INVOKED_CANONICAL_SOL_POOL'});
       for(const scope of pools){
-        if(visited.has(scope.pool))continue;
+        if(visited.has(scope.pool)||guarded.has(scope.pool))continue;
+        // A prior guard is checked before new pool history or support reads.
+        // Expiry only permits this complete fresh pass; it never imports old
+        // swaps, quotes or eligibility into the present observation window.
+        const prior=options.rejectionStore?.lookup(scope,now());
+        if(prior?.blocked){guarded.add(scope.pool);const skipped={scope,signature:row.signature,prior};evidence.priorRejectionSkips.push(skipped);record('selection-prior-rejection-skipped',skipped);continue;}
         if(visited.size>=maxCandidates)return {ok:false,reason:lastRejection,evidence};
         visited.add(scope.pool);
         const attempt={scope,signature:row.signature,reason:'IN_PROGRESS',readsAtStart:evidence.readsAttempted,readsAtEnd:evidence.readsAttempted,historyRows:0,historyWindowCovered:false,successfulAddressTransactions:0,projected90sWithHeadroom:null as number|null};
@@ -208,6 +216,9 @@ export async function selectActivePool(options:ActiveSelectionOptions):Promise<A
         }catch(e){
           lastRejection=reason(e);attempt.reason=lastRejection;evidence.rejections.push({signature:row.signature,reason:lastRejection});
           if(terminal(lastRejection))throw e;
+          if(options.rejectionStore&&isPoolRejection(lastRejection)){
+            const stored=options.rejectionStore.reject(scope,lastRejection,options.rejectionEvidenceRef??'selection-pass-record',now());record('selection-rejection-persisted',stored);
+          }
         }finally{
           attempt.readsAtEnd=evidence.readsAttempted;attempt.historyRows=evidence.historyRows;attempt.historyWindowCovered=evidence.historyWindowCovered;attempt.successfulAddressTransactions=evidence.successfulAddressTransactions;attempt.projected90sWithHeadroom=evidence.projected90sWithHeadroom;
           record('selection-candidate-result',attempt);
@@ -215,7 +226,7 @@ export async function selectActivePool(options:ActiveSelectionOptions):Promise<A
         if(visited.size>=maxCandidates)return {ok:false,reason:lastRejection,evidence};
       }
     }
-    return {ok:false,reason:visited.size?lastRejection:'NO_VERIFIED_CANONICAL_SOL_SWAP_IN_BOUNDED_PROGRAM_SAMPLE',evidence};
+    return {ok:false,reason:visited.size?lastRejection:guarded.size?'PRIOR_REJECTIONS_BLOCKED_OBSERVED_CANDIDATES':'NO_VERIFIED_CANONICAL_SOL_SWAP_IN_BOUNDED_PROGRAM_SAMPLE',evidence};
   }catch(e){return {ok:false,reason:reason(e),evidence};}
   finally{clearTimeout(timer);evidence.elapsedMs=Math.max(0,now()-began);if(options.responseBytes)evidence.responseBytes=options.responseBytes()-initialBytes;}
 }

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T03:47:18.608435+00:00",
+  "classification": "OFFLINE_PROPOSAL_NOT_AUTHORIZATION_OR_RESERVATION",
+  "executed": false,
+  "networkRequests": 0,
+  "throttleCleared": false,
+  "productionChanges": false,
+  "current": {
+    "rpcCalls": 20,
+    "rpcResponseBytes": 272634,
+    "remainingCalls": 220,
+    "remainingResponseBytes": 66836230,
+    "stickyBlock": "RPC_HTTP_429",
+    "pumpApiReservedBytes": 117440512,
+    "pumpApiReservedMs": 100000,
+    "capturesAlreadyPerformed": 2,
+    "newAuthorizedCaptureUnused": true
+  },
+  "firstQuestion": "Which exact fields in actual selected PumpApi raw payloads match every executed instruction/event, and which remain supplied by confirmed RPC?",
+  "fieldComponent": {
+    "proposedOnly": true,
+    "pumpApiConnections": 1,
+    "maximumCaptureMs": 30000,
+    "shutdownReserveMs": 5000,
+    "maximumSelectedDistinctSignatures": 4,
+    "stopOnFirstApplicableLimit": true,
+    "newPumpApiReservationBytes": 50331648,
+    "socketStopBytes": 49283072,
+    "applicationStopBytes": 48234496,
+    "cumulativeReservedBytesIfApproved": 167772160,
+    "cumulativeReservedMsIfApproved": 135000,
+    "rpc": {
+      "selectionAndBasicScope": 8,
+      "selectedEnrichment": 4,
+      "independentAuditAndFinalization": 6,
+      "shutdownHeadroom": 2,
+      "total": 20,
+      "responseBytesCeiling": 16777216
+    },
+    "retainedEvidenceBytesCeiling": 4194304,
+    "minimumAdmission": "One independently successful current canonical-SOL swap, exact pool/mint known; basic token decimals checked. No full-window or production pricing readiness prerequisite for this field-only test. Persisted prior pool guards respected.",
+    "selectionPacing": "at least1000ms after physical settlement; same durable counterbook; one physicalinflight; no endpointrotation/retry",
+    "selectedEvidence": "Retain selected UTF8 beforeparse, localwall+monotonicreceipt, everyselectedhint/missingfield; enrichonceperdistinctsignature; preserveactualRPCavailability; stoptheconnectionifselectedallocationoverruns andmarkintervalunusable, neverdropselectedeventstoassertcompleteness.",
+    "denominator": "At most6boundedhistory/finalizationreads. Reportonlyverifiedtransaction/instructiondenominatorwithchainboundarylimits; absenthistorycoverageorvariantsremainunverified.",
+    "notClaimed": [
+      "complete60sfeaturewindow",
+      "continuousprotection",
+      "combinedacceptance",
+      "profitability"
+    ]
+  },
+  "protectionComponent": {
+    "proposedOnly": true,
+    "pumpApiConnections": 0,
+    "maximumMs": 60000,
+    "hypotheticalHoldingsOnly": true,
+    "heldPools": 1,
+    "pricingStartCadenceMs": 2000,
+    "pricingCalls": 31,
+    "independentSlotBlockTimeReferenceCalls": 2,
+    "selectionCalls": 5,
+    "shutdownHeadroom": 2,
+    "totalCalls": 40,
+    "responseBytesCeiling": 16777216,
+    "retainedEvidenceBytesCeiling": 4194304,
+    "timing": "Clockprovenanceexplicit; complete8accountbatch; nofakegetBlockTime. Recordactualchanges, quote-ageatuse, completiongaps, staleperiods, deadlinefailures. Nochange=>protectionresponseinconclusive.",
+    "reference": "Decodeidenticalcapturedaccountbyteswiththeexistingpuredecoder; twoactualgetBlockTimereadsonthesamecapturedslotschecktimingwitness. Noextraunaccountedmultirequesthelper."
+  },
+  "aggregateProposedComponents": {
+    "calls": 60,
+    "responseBytes": 33554432,
+    "remainingCallsIfBothCompletedAtCeilings": 160,
+    "remainingResponseBytesIfBothCompletedAtCeilings": 33281798,
+    "retainedEvidenceReservationBytes": 8388608,
+    "capturePermissionNow": false
+  },
+  "acceptanceBoundary": "Spendingtheoneunusedcaptureonthefieldcomponentdoesnotauthorizeasecondcombinedcapture.Combinedflow/pricing/integrity/failureacceptanceisstillrequiredwithseparateexplicitlive-researchauthorization.Entriesandlivetradingremaindisabled."
+}

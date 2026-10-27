@@ -9,6 +9,8 @@ import WebSocket from 'ws';
 import {HttpsProxyAgent} from 'https-proxy-agent';
 import {PublicKey} from '@solana/web3.js';
 import {ResearchRpc} from '../src/research-rpc.js';
+import {SelectionPacedRpc} from '../src/research-pacing.js';
+import {SelectionRejections} from '../src/selection-rejections.js';
 import {selectActivePool,invokedCanonicalSolSwaps,type ActiveCandidate} from '../src/active-selection.js';
 import {ActivePipeline} from '../src/active-pipeline.js';
 import {quotePositionSell} from '../src/pool.js';
@@ -36,7 +38,7 @@ function atomic(path:string,value:unknown){const tmp=path+'.pending-'+process.pi
 function disk(path=ROOT):number{return readdirSync(path).reduce((n,f)=>{const p=resolve(path,f),s=lstatSync(p);if(s.isSymbolicLink())throw Error('RESEARCH_EVIDENCE_SYMLINK');return n+(s.isDirectory()?disk(p):s.size);},0);}
 function safe(error:unknown){const s=error instanceof Error?error.message:'';return /^[A-Z][A-Z0-9_:;-]{0,127}$/.test(s)?s:'BOUNDED_RESEARCH_UNAVAILABLE';}
 function compactSelection(selection:any){return {...selection,evidence:{...selection.evidence,transactions:selection.evidence.transactions.map((x:any)=>({signature:x.signature,requestedAt:x.requestedAt,availableAt:x.availableAt,slot:x.transaction?.slot,version:x.transaction?.version,transactionSha256:createHash('sha256').update(JSON.stringify(x.transaction)).digest('hex')}))}};}
-function sources(){return {version:readSourceVersion(dirname(SCRIPT)),sha256:Object.fromEntries([SCRIPT,'../src/research-rpc.ts','../src/active-selection.ts','../src/active-pipeline.ts','../src/pumpapi-mapping.ts','../src/pool.ts','../src/strategy.ts','../package-lock.json'].map(p=>p.startsWith('/')?p:resolve(dirname(SCRIPT),p)).map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')]))};}
+function sources(){return {version:readSourceVersion(dirname(SCRIPT)),sha256:Object.fromEntries([SCRIPT,'../src/research-rpc.ts','../src/research-pacing.ts','../src/selection-rejections.ts','../src/active-selection.ts','../src/active-pipeline.ts','../src/pumpapi-mapping.ts','../src/pool.ts','../src/strategy.ts','../package-lock.json'].map(p=>p.startsWith('/')?p:resolve(dirname(SCRIPT),p)).map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')]))};}
 
 async function parent(){
   if(process.getuid?.()!==1000||disk()+LIMITS.recordBytes+2*MIB>LIMITS.retainedBytes)throw Error('NONROOT_OR_EVIDENCE_CAPACITY_REQUIRED');
@@ -64,11 +66,13 @@ async function child(){
   let heartbeatPending=false;
   const watch=setInterval(()=>{const now=performance.now(),rss=process.memoryUsage().rss,cpu=process.cpuUsage(cpuStart);peakLoop=Math.max(peakLoop,Math.max(0,now-lastTick-100));lastTick=now;peakRss=Math.max(peakRss,rss);if(rss>LIMITS.rssBytes||(cpu.user+cpu.system)/1000>LIMITS.cpuMs||now-began>LIMITS.parentWallMs-5000){signal();}if(!heartbeatPending&&process.connected){heartbeatPending=true;process.send?.({kind:'progress',stage,rss,at:Date.now()},undefined,undefined,()=>{heartbeatPending=false;});}},100);
   const rpc=new ResearchRpc({budgetPath:RPC_BUDGET,timeoutMs:8000});
-  let summary:any;
+  let summary:any,paced:SelectionPacedRpc|undefined,rejections:SelectionRejections|undefined;
   try{
     record('approved-configuration',{limits:LIMITS,sources:sources(),rpc:rpc.usage(),enrichmentDelayMs:1000,enrichmentDeadlineMs:5000,pricingAttemptCadenceMs:2000,entryEligibility:'UNVERIFIED_HELD_PRICING_ONLY',economicConventions:['curve','user']});
+    paced=new SelectionPacedRpc(rpc,{statePath:resolve(ROOT,'selection-pacing.json')});
+    rejections=new SelectionRejections({path:resolve(ROOT,'selection-rejections.json'),policyVersion:'pump-swap-sdk2.2.0-supported-sol-v1'});
     const preflightController=new AbortController(),preflightTimeout=setTimeout(()=>preflightController.abort(),100_000);
-    const selection=await selectActivePool({rpc,signal:AbortSignal.any([globalAbort.signal,preflightController.signal]),record,maxReads:24,enrichmentCapacity:48});clearTimeout(preflightTimeout);record('selection-result',compactSelection(selection));
+    const selection=await selectActivePool({rpc:paced,rejectionStore:rejections,rejectionEvidenceRef:'active-approved-record.ndjson',signal:AbortSignal.any([globalAbort.signal,preflightController.signal]),record,maxReads:24,enrichmentCapacity:48});clearTimeout(preflightTimeout);record('selection-result',compactSelection(selection));record('selection-pacing',paced.usage().pacing);rejections.close();rejections=undefined;if(rpc.inFlight===0){paced.close();paced=undefined;}
     if(!selection.ok||terminated){summary={outcome:'PREFLIGHT_REFUSED_NO_STREAM',reason:!selection.ok?selection.reason:'RESOURCE_OR_SUPERVISOR_STOP',selection:compactSelection(selection),streamOpened:false,rpc:rpc.usage()};}
     else{
       // Preserve the complete prior receipt and reserve before the sole socket.
@@ -83,7 +87,7 @@ async function child(){
       summary={outcome:result.normalizedEvents>0?'ACTIVE_DATA_CAPTURED_REVIEW_REQUIRED':'INCONCLUSIVE_NO_NORMALIZED_ACTIVE_DATA',selection:compactSelection(selection),streamOpened:result.openedAt!==null,capture:boundedResult,audit,rpc:rpc.usage(),aggregate:{reservedBytes:updated.reservedBytes,reservedMs:updated.reservedMs,actualPriorSocketBytes:106994938,actualTotalSocketBytes:106994938+result.socketBytes},verifiedForProduction:false};
     }
   }catch(e){summary={outcome:'BOUNDED_EXPERIMENT_UNAVAILABLE',reason:safe(e),rpc:rpc.usage(),streamMayHaveBeenOpened:stage!=='preflight',uncertainReservationsRetained:true};}
-  finally{clearInterval(watch);socket?.terminate();if(rpc.inFlight===0)rpc.close();recordOpen=false;fsyncSync(fd);closeSync(fd);}
+  finally{clearInterval(watch);socket?.terminate();rejections?.close();if(rpc.inFlight===0){paced?.close();rpc.close();}recordOpen=false;fsyncSync(fd);closeSync(fd);}
   summary={...summary,recordedAt:new Date().toISOString(),actualWallMs:performance.now()-began,resources:{peakRssBytes:Math.max(peakRss,process.memoryUsage().rss),peakEventLoopLagMs:peakLoop,cpuMs:(process.cpuUsage(cpuStart).user+process.cpuUsage(cpuStart).system)/1000,kernelMaxRssBytes:process.resourceUsage().maxRSS*1024},retainedRecordBytes:retained,record:recordPath,apiDataFeesUsd:'0.00 under public/credential-free documentation',infrastructureTransferAllocationVerified:false,productionChanged:false,entriesEnabled:false,liveTrading:false,acceptanceClockStarted:false};
   json(resolve(ROOT,'active-approved-summary.json'),summary,true);const grant=JSON.parse(readFileSync(GRANT,'utf8'));grant.status=summary.outcome;grant.completedAt=summary.recordedAt;atomic(GRANT,grant);
   if(process.connected)process.send?.({kind:'final',summary},undefined,undefined,()=>{process.disconnect();process.exit(0);});else process.exit(0);
