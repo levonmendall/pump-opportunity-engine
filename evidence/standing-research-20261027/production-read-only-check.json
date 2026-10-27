@@ -1,0 +1,47 @@
+{
+  "source": "public read-only Render snapshot, not direct EC2 or DB inspection",
+  "httpStatus": 200,
+  "responseBytes": 10358,
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "sequence": "1948",
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "disabled",
+    "reconciled": true,
+    "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+  },
+  "positionCount": 0,
+  "tradeCountInPublishedWindow": 0,
+  "freshness": {
+    "state": "observing-with-zero-trades",
+    "receivedAt": "2026-10-27T16:13:06.403Z",
+    "generatedAt": "2026-10-27T16:13:02.446Z",
+    "marketAt": "2026-10-27T16:13:02.446Z",
+    "reconciledAt": "2026-10-27T16:13:02.446Z",
+    "usefulProgressAt": "2026-10-27T16:13:02.446Z",
+    "sourceAgeMs": 48609,
+    "marketAgeMs": 48609,
+    "reconciliationAgeMs": 48609
+  },
+  "recordedAt": "2026-10-27T16:13:58.887Z",
+  "localResponseFileCompletedAt": "2026-10-27T16:13:51.086Z",
+  "sourceRelease": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "times": {
+    "generatedAt": "2026-10-27T16:13:02.446Z",
+    "marketAt": "2026-10-27T16:13:02.446Z",
+    "reconciledAt": "2026-10-27T16:13:02.446Z",
+    "usefulProgressAt": "2026-10-27T16:13:02.446Z"
+  },
+  "liveTrading": false,
+  "identityAgreesWithProtectedAccount": true,
+  "directEc2ServiceHealthChecked": false,
+  "authoritativeDatabaseRead": false
+}

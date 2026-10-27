@@ -1,0 +1,423 @@
+{
+  "schemaVersion": 1,
+  "classification": "ISOLATED_RESEARCH_INTEGRATION; NOT_FORWARD_TRADING_OR_ACCEPTANCE",
+  "sources": [
+    {
+      "path": "evidence/scheduler-forward-20261027/capture.json",
+      "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce"
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/observations.ndjson",
+      "sha256": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b"
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/audit.json",
+      "sha256": "c3c5cd6dd605e5e6f2b89a8930aa0a1f4470e246342c5b6a59afa50b4c651fd5"
+    },
+    {
+      "path": "evidence/integration-proof-2026-10-26T19-42-16.130Z.json",
+      "sha256": "0cac0463b64d7f961dedcb2ee3f6029da1d81ee44af01e712141fe8e22114e5d"
+    },
+    {
+      "path": "evidence/integration-2026-10-26T19-42-16.130Z.ndjson",
+      "sha256": "28197fc79de98666f8636f6b824e04c240c9fb0e16b806c529bdec8238cf4f46"
+    }
+  ],
+  "natural": {
+    "classification": "ACTUAL_RECORDED_FLOW_REPLAY_AT_ORIGINAL_VALIDATED_AVAILABILITY",
+    "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+    "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+    "events": 5,
+    "buys": 1,
+    "sells": 4,
+    "applicationTarget": {
+      "startAt": 1793114350000,
+      "endAt": 1793114410000,
+      "interval": "[startAt,endAt)",
+      "timeBasis": "fully validated application availability; never chain or feed time"
+    },
+    "chainAuditDenominator": {
+      "matched": 5,
+      "verified": 5,
+      "receiveWindowCompleteness": "NOT_ESTABLISHED_BY_CHAIN_TIME_ALONE"
+    },
+    "views": [
+      {
+        "amountConvention": "curve",
+        "features": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114410263,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "fullEntryDecision": {
+          "qualified": false,
+          "kind": "missing-data",
+          "reason": "verified-migration-time-unavailable",
+          "ruleVersion": "persistent-buying-v0-unfrozen",
+          "at": 1793114410263,
+          "features": {
+            "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+            "asOf": 1793114410263,
+            "windowStartAt": 1793114350000,
+            "windowEndAt": 1793114410000,
+            "sufficientlyObserved": true,
+            "qualityReason": null,
+            "buyLamports": "146338375",
+            "sellLamports": "742919162",
+            "netBuyLamports": "-596580787",
+            "tradeCount": 5,
+            "provisionalTradeCount": 0,
+            "distinctBuyerWallets": 1,
+            "largestBuyerBps": 10000,
+            "positiveNetBuckets": 0,
+            "priceReturnBps": -8,
+            "firstPrice": {
+              "quoteLamports": "143130089",
+              "tokenUnits": "6689043481"
+            },
+            "lastPrice": {
+              "quoteLamports": "341460325",
+              "tokenUnits": "15970582802"
+            }
+          }
+        },
+        "predictivePrerequisiteFacts": {
+          "netBuyingBelowMinimum": true,
+          "positiveBucketsBelowMinimum": true,
+          "buyersBelowMinimum": true,
+          "concentrationAboveMaximum": true,
+          "priceReturnNegative": true
+        }
+      },
+      {
+        "amountConvention": "user",
+        "features": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114410263,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "fullEntryDecision": {
+          "qualified": false,
+          "kind": "missing-data",
+          "reason": "verified-migration-time-unavailable",
+          "ruleVersion": "persistent-buying-v0-unfrozen",
+          "at": 1793114410263,
+          "features": {
+            "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+            "asOf": 1793114410263,
+            "windowStartAt": 1793114350000,
+            "windowEndAt": 1793114410000,
+            "sufficientlyObserved": true,
+            "qualityReason": null,
+            "buyLamports": "147582253",
+            "sellLamports": "736604342",
+            "netBuyLamports": "-589022089",
+            "tradeCount": 5,
+            "provisionalTradeCount": 0,
+            "distinctBuyerWallets": 1,
+            "largestBuyerBps": 10000,
+            "positiveNetBuckets": 0,
+            "priceReturnBps": -8,
+            "firstPrice": {
+              "quoteLamports": "141913481",
+              "tokenUnits": "6689043481"
+            },
+            "lastPrice": {
+              "quoteLamports": "338557911",
+              "tokenUnits": "15970582802"
+            }
+          }
+        },
+        "predictivePrerequisiteFacts": {
+          "netBuyingBelowMinimum": true,
+          "positiveBucketsBelowMinimum": true,
+          "buyersBelowMinimum": true,
+          "concentrationAboveMaximum": true,
+          "priceReturnNegative": true
+        }
+      }
+    ],
+    "migrationAt": null,
+    "migrationVerified": false,
+    "entryEligibility": "UNVERIFIED; no invented migration age",
+    "primaryStrategyEntry": false,
+    "naturalOrdersSubmitted": 0,
+    "naturalTradesCreated": 0,
+    "meaning": "Both observed amount views fail several predictive prerequisites. The complete entry rule stops earlier at missing migration evidence; this is not a fully eligible natural strategy-performance sample."
+  },
+  "fixture": {
+    "classification": "DISPOSABLE_MANUALLY_SUBMITTED_POSITIVE_LIFECYCLE; SYNTHETIC_TIME_AND_CLOCK",
+    "accountId": "fixture-research-end-to-end",
+    "mode": "DISPOSABLE_PAPER",
+    "inceptionAt": 1793043736684,
+    "initialMicroUsd": "1000000000",
+    "inceptionCount": 1,
+    "sourcePool": {
+      "mint": "A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump",
+      "pool": "7fQkV54AAoUUqkTu1nVCCguZNwr34kbRuXGqx8ZLvgXU",
+      "verifiedMigration": {
+        "signature": "2Asd7zD4HYofygQyX4yRecaZ9Q6rz2V1pJP2n7xGbsFb3TwHTxDASNJZqzVp99zP7tQpzKhUFmBg2jY4kfqYwDqR",
+        "slot": 461785305,
+        "blockTime": 1793043461,
+        "commitment": "confirmed",
+        "instructionVerified": true
+      }
+    },
+    "stateProvenance": "Seven retained non-Clock account bytes reused unchanged; context slots and Clock/timing advanced synthetically. No assertion these static reserves were current at fixture times.",
+    "entryParities": [
+      {
+        "slot": 461786589,
+        "inputLamports": "10000000",
+        "outputBaseUnits": "456133100519472",
+        "sellOutputLamports": "3948792",
+        "sameByteParity": true
+      },
+      {
+        "slot": 461786590,
+        "inputLamports": "10000000",
+        "outputBaseUnits": "456133100519472",
+        "sellOutputLamports": "3948792",
+        "sameByteParity": true
+      }
+    ],
+    "entry": [
+      {
+        "orderId": "fixture-entry",
+        "status": "filled",
+        "reason": "single modeled PAPER attempt; no live fill claim",
+        "at": 1793043737684
+      }
+    ],
+    "positionAfterEntry": {
+      "mint": "A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump",
+      "units": "456133100519472",
+      "entryLamports": "10000000",
+      "entryGas": "7000",
+      "costMicroUsd": "1000700",
+      "deposit": "0",
+      "enteredAt": 1793043737684
+    },
+    "safeStop": {
+      "safeToExit": false,
+      "state": "management-required",
+      "openPositions": 1,
+      "uncertainActions": 1,
+      "canceledEntries": []
+    },
+    "recovery": {
+      "canceledEntries": [],
+      "uncertainExitOrders": [
+        "fixture-unresolved-exit"
+      ]
+    },
+    "uncertain": [
+      {
+        "orderId": "fixture-unresolved-exit",
+        "status": "uncertain",
+        "reason": "financial action requires expiry or reconciliation before a new management decision; no re-quote",
+        "at": 1793043738684
+      }
+    ],
+    "uncertainActionPreserved": true,
+    "restartStateExactlyPreserved": true,
+    "unknownMarkProjection": {
+      "equityLamports": null,
+      "openPositions": 1,
+      "entriesEnabled": false
+    },
+    "expired": [
+      {
+        "orderId": "fixture-unresolved-exit",
+        "status": "expired",
+        "reason": "expiry reached before attempt",
+        "at": 1793043742684
+      }
+    ],
+    "expiryChargedNoAdditionalGas": true,
+    "recoveryCurrentAdapterCalls": 2,
+    "exitDecision": {
+      "action": "request-exit",
+      "reason": "maximum-holding-time; fresh executable quote still required"
+    },
+    "exit": [
+      {
+        "orderId": "fixture-fresh-exit",
+        "status": "filled",
+        "reason": "single modeled PAPER attempt; no live fill claim",
+        "at": 1793044643684
+      }
+    ],
+    "exitContextAdapterCalls": 1,
+    "postDelayExitQuoteReuse": {
+      "at": 1793044643684,
+      "orderId": "fixture-fresh-exit",
+      "side": "sell",
+      "quoteAt": 1793044643684,
+      "quoteSlot": 461786594,
+      "classification": "ISOLATED_RESEARCH_ONLY",
+      "newNetworkRequests": 0,
+      "entryDelegateUsage": null
+    },
+    "executionCostsLamports": "14000",
+    "fixtureOnlyRealizedLamports": "-6065208",
+    "fixtureOnlyCashDeltaLamports": "-6065208",
+    "economicPnl": null,
+    "operatingCosts": "Not allocated; this fixture tests accounting mechanics only",
+    "riskSizing": "0.01SOL buy budget +7000 simulated entry gas, same ledger limits; existing account/no new deposit assumption",
+    "finalProjection": {
+      "accountId": "fixture-research-end-to-end",
+      "mode": "DISPOSABLE_PAPER",
+      "inceptionAt": 1793043736684,
+      "initialMicroUsd": "1000000000",
+      "revision": 13,
+      "cashLamports": "9993934792",
+      "reservedLamports": "0",
+      "lockedDepositLamports": "0",
+      "equityLamports": "9993934792",
+      "equityMicroUsd": "999393479",
+      "totalPnlLamports": "-6065208",
+      "totalPnlMicroUsd": "-606521",
+      "operatingCostsMicroUsd": null,
+      "economicPnlMicroUsd": null,
+      "operatingCostClassification": "unavailable",
+      "passiveSolEquityMicroUsd": "1000000000",
+      "solPriceEffectMicroUsd": "0",
+      "realizedLamports": "-6065208",
+      "executionCostsLamports": "14000",
+      "positionLiquidationLamports": "0",
+      "positionCostMicroUsd": "0",
+      "openPositions": 0,
+      "pendingActions": 0,
+      "entriesEnabled": false,
+      "unknownMarks": false,
+      "usdValuationAvailable": true,
+      "daily": {
+        "day": "2026-10-26",
+        "baselineMicroUsd": "1000000000",
+        "paused": true,
+        "lossPaused": false,
+        "reconciledAt": 1793044643684
+      },
+      "controls": {
+        "entriesEnabled": false,
+        "reason": "execution startup: fresh reconciliation/readiness required",
+        "changedAt": 1793043737684,
+        "readinessVersion": "fixture-research-e2e",
+        "stopRequested": true
+      }
+    },
+    "idempotentNoDuplicateAttempt": true,
+    "allFinancialStateValid": true,
+    "sqlite": {
+      "version": "3.53.4",
+      "source": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+    },
+    "adapterCalls": [
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 1,
+        "at": 1793043736684,
+        "slot": 461786589
+      },
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 8,
+        "at": 1793043736684,
+        "slot": 461786589
+      },
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 8,
+        "at": 1793043737684,
+        "slot": 461786590
+      },
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 8,
+        "at": 1793043737684,
+        "slot": 461786590
+      },
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 1,
+        "at": 1793043742684,
+        "slot": 461786592
+      },
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 8,
+        "at": 1793043742684,
+        "slot": 461786592
+      },
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 8,
+        "at": 1793044642684,
+        "slot": 461786593
+      },
+      {
+        "method": "getMultipleAccounts",
+        "addresses": 8,
+        "at": 1793044643684,
+        "slot": 461786594
+      }
+    ],
+    "networkRequests": 0
+  },
+  "capability": "Validated evidence, original availability and no-entry refusal connect to separately labeled same-byte SDK pricing, delayed disposable execution, uncertainty-preserving restart, exposure retention, fresh recovery and a full fixture lifecycle. This does not turn the observer into an autonomous strategy trader.",
+  "remainingGaps": [
+    "Natural sample migration origin/age and broad receive-window completeness remain unverified.",
+    "No natural qualifying entry or natural financial lifecycle is produced.",
+    "Primary curve-versus-user feature convention and production strategy remain unfrozen.",
+    "Static-state/synthetic-Clock lifecycle cannot establish fill realism, changing-price protection or economic edge.",
+    "No production data-path integration, supervisor, notification recovery, throughput or elapsed unattended acceptance is established here."
+  ],
+  "sourceEvidenceUnchanged": true,
+  "productionChanged": false,
+  "authoritativeAccountChanged": false,
+  "naturalPaperTrades": 0,
+  "paperEntriesEnabled": false,
+  "liveTradingEnabled": false,
+  "acceptanceClockStarted": false,
+  "networkRequests": 0
+}

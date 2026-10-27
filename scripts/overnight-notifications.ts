@@ -90,7 +90,7 @@ async function child(){
     const preflight=await quote('preflight',null);await blockTime(preflight.slot);
     const initial=capture.latest;need(initial,'COMPONENT_CAPTURE_MISSING');addresses.push(...initial.addresses.filter(a=>a!==SYSVAR_CLOCK_PUBKEY.toBase58()));
     need(addresses.length===7&&new Set(addresses).size===7,'COMPONENT_SUBSCRIPTION_SCOPE');
-    const remaining=budget.usage();need(remaining.remainingGrantUnits>=43&&remaining.remainingCumulativeUnits>=43&&remaining.remainingCumulativeResponseBytes>=10*MIB,'COMPONENT_FULL_NOTIFICATION_WORKLOAD_DOES_NOT_FIT');
+    const remaining=budget.usage();need(remaining.remainingGrantUnits>=43&&(remaining.remainingCumulativeUnits===null||remaining.remainingCumulativeUnits>=43)&&(remaining.remainingCumulativeResponseBytes===null||remaining.remainingCumulativeResponseBytes>=10*MIB),'COMPONENT_FULL_NOTIFICATION_WORKLOAD_DOES_NOT_FIT');
     transport.seedAccountHashes(addresses,addresses.map(a=>initial.value[initial.addresses.indexOf(a)]));
     stage='initial-subscriptions';await transport.connect(abort.signal);for(const address of addresses)await transport.manage('accountSubscribe',address,abort.signal);
     need(Date.now()-startedAt<=15000,'COMPONENT_SETUP_PHASE_CAP');

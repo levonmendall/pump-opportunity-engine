@@ -1,0 +1,601 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_RETAINED_TRACE_ATTRIBUTION_NOT_NEW_PROVIDER_MEASUREMENT",
+  "generatedAt": "2026-10-27T16:09:40.659852+00:00",
+  "sourceFiles": [
+    {
+      "path": "evidence/scheduler-forward-20261027/observations.ndjson",
+      "sha256": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b",
+      "bytes": 1635776
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/capture.json",
+      "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce",
+      "bytes": 316117
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/observations.ndjson",
+      "sha256": "835c7e7d5bf867556c50ca90a30f089a0d62a2f62fa8efb8a4a7813cb8e49ef2",
+      "bytes": 1249357
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467",
+      "bytes": 329724
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c",
+      "bytes": 4814
+    },
+    {
+      "path": "evidence/scheduler-correction-20261027/trace-analysis.json",
+      "sha256": "a3a558530b648f1f3a5ad1109d3d2603f63e0b331ab1f2c7cbf13e3e1a02e4e8",
+      "bytes": 106839
+    },
+    {
+      "path": "evidence/scheduler-correction-20261027/scheduler-evaluation-v4.json",
+      "sha256": "7c95b078e795505e0f0168a09179872bf1221f30a180ce2ebcf505427ae98989",
+      "bytes": 694608
+    }
+  ],
+  "sourcesUnmodified": true,
+  "latestDiagnostic": {
+    "actualLongestUsableGap": {
+      "fromLine": 582,
+      "toLine": 599,
+      "from": {
+        "scheduledAt": 1793114400054,
+        "requestedAt": 1793114400059,
+        "availableAt": 1793114400137,
+        "deadlineAt": 1793114402054,
+        "startDelayMs": 5,
+        "requests": 1,
+        "quoteAgeAtUseMs": 21,
+        "usable": true,
+        "late": false,
+        "reason": null
+      },
+      "to": {
+        "scheduledAt": 1793114402054,
+        "requestedAt": 1793114402056,
+        "availableAt": 1793114402193,
+        "deadlineAt": 1793114404054,
+        "startDelayMs": 2,
+        "requests": 1,
+        "quoteAgeAtUseMs": 31,
+        "usable": true,
+        "late": false,
+        "reason": null
+      },
+      "gapMs": 2056
+    },
+    "topFiveCompletedGaps": [
+      {
+        "fromLine": 582,
+        "toLine": 599,
+        "from": {
+          "scheduledAt": 1793114400054,
+          "requestedAt": 1793114400059,
+          "availableAt": 1793114400137,
+          "deadlineAt": 1793114402054,
+          "startDelayMs": 5,
+          "requests": 1,
+          "quoteAgeAtUseMs": 21,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "to": {
+          "scheduledAt": 1793114402054,
+          "requestedAt": 1793114402056,
+          "availableAt": 1793114402193,
+          "deadlineAt": 1793114404054,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 31,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "gapMs": 2056
+      },
+      {
+        "fromLine": 237,
+        "toLine": 254,
+        "from": {
+          "scheduledAt": 1793114369293,
+          "requestedAt": 1793114369295,
+          "availableAt": 1793114369381,
+          "deadlineAt": 1793114371293,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "to": {
+          "scheduledAt": 1793114371293,
+          "requestedAt": 1793114371293,
+          "availableAt": 1793114371431,
+          "deadlineAt": 1793114373293,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 39,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "gapMs": 2050
+      },
+      {
+        "fromLine": 69,
+        "toLine": 86,
+        "from": {
+          "scheduledAt": 1793114349293,
+          "requestedAt": 1793114349293,
+          "availableAt": 1793114349378,
+          "deadlineAt": 1793114351293,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 28,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "to": {
+          "scheduledAt": 1793114351293,
+          "requestedAt": 1793114351295,
+          "availableAt": 1793114351411,
+          "deadlineAt": 1793114353293,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 28,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "gapMs": 2033
+      },
+      {
+        "fromLine": 171,
+        "toLine": 188,
+        "from": {
+          "scheduledAt": 1793114361293,
+          "requestedAt": 1793114361294,
+          "availableAt": 1793114361367,
+          "deadlineAt": 1793114363293,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "to": {
+          "scheduledAt": 1793114363293,
+          "requestedAt": 1793114363293,
+          "availableAt": 1793114363396,
+          "deadlineAt": 1793114365293,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "gapMs": 2029
+      },
+      {
+        "fromLine": 483,
+        "toLine": 510,
+        "from": {
+          "scheduledAt": 1793114394016,
+          "requestedAt": 1793114393030,
+          "availableAt": 1793114393092,
+          "deadlineAt": 1793114396016,
+          "startDelayMs": -986,
+          "requests": 1,
+          "quoteAgeAtUseMs": 18,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "to": {
+          "scheduledAt": 1793114395033,
+          "requestedAt": 1793114395038,
+          "availableAt": 1793114395116,
+          "deadlineAt": 1793114397033,
+          "startDelayMs": 5,
+          "requests": 1,
+          "quoteAgeAtUseMs": 18,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        "gapMs": 2024
+      }
+    ],
+    "competingWorkInsideLongestGap": [],
+    "recordedTimeline": [
+      {
+        "line": 587,
+        "kind": "shared-scheduler-dispatch",
+        "recordedAt": 1793114402056,
+        "phase": "02-combined",
+        "data": {
+          "at": 1793114402056,
+          "decision": {
+            "kind": "protection",
+            "scheduledAt": 1793114402054,
+            "deadlineAt": 1793114404054,
+            "advance": false
+          },
+          "otherStartSinceProtection": false,
+          "advanceOutstanding": false,
+          "nextProtectionAt": 1793114402054
+        }
+      },
+      {
+        "line": 588,
+        "kind": "component-job-enqueued",
+        "recordedAt": 1793114402058,
+        "phase": "02-combined",
+        "data": {
+          "at": 1793114402058,
+          "kind": {
+            "transport": "http",
+            "method": "getMultipleAccounts"
+          },
+          "latestStartAt": null
+        }
+      },
+      {
+        "line": 589,
+        "kind": "component-physical-start",
+        "recordedAt": 1793114402067,
+        "phase": "02-combined",
+        "data": {
+          "id": 203,
+          "at": 1793114402063,
+          "enqueuedAt": 1793114402058,
+          "reservedAt": 1793114402059,
+          "kind": {
+            "transport": "http",
+            "method": "getMultipleAccounts"
+          }
+        }
+      },
+      {
+        "line": 590,
+        "kind": "http-headers",
+        "recordedAt": 1793114402138,
+        "phase": "02-combined",
+        "data": {
+          "id": 203,
+          "method": "getMultipleAccounts",
+          "status": 200,
+          "retryAfter": null,
+          "at": 1793114402138,
+          "byteAccounting": "measured-body; response-header-and-wire-overhead-unmeasured"
+        }
+      },
+      {
+        "line": 591,
+        "kind": "http-response-timing",
+        "recordedAt": 1793114402152,
+        "phase": "02-combined",
+        "data": {
+          "id": 203,
+          "method": "getMultipleAccounts",
+          "requestedAt": 1793114402063,
+          "availableAt": 1793114402152,
+          "responseBytes": 13770,
+          "status": 200
+        }
+      },
+      {
+        "line": 592,
+        "kind": "component-physical-settled",
+        "recordedAt": 1793114402161,
+        "phase": "02-combined",
+        "data": {
+          "id": 203,
+          "at": 1793114402161,
+          "responseComplete": true,
+          "kind": {
+            "transport": "http",
+            "method": "getMultipleAccounts"
+          },
+          "uncertainReservedBytes": 0
+        }
+      },
+      {
+        "line": 599,
+        "kind": "field-protection-evaluation",
+        "recordedAt": 1793114402193,
+        "phase": "02-combined",
+        "data": {
+          "scheduledAt": 1793114402054,
+          "requestedAt": 1793114402056,
+          "availableAt": 1793114402193,
+          "deadlineAt": 1793114404054,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 31,
+          "usable": true,
+          "late": false,
+          "reason": null
+        }
+      }
+    ],
+    "arithmetic": [
+      {
+        "name": "previous validated completion to next target",
+        "from": 1793114400137,
+        "to": 1793114402054,
+        "ms": 1917,
+        "interpretation": "Normal remaining cadence; not processing delay."
+      },
+      {
+        "name": "target to dispatch",
+        "from": 1793114402054,
+        "to": 1793114402056,
+        "ms": 2,
+        "interpretation": "Recorded2ms dispatch lateness."
+      },
+      {
+        "name": "dispatch to job enqueue",
+        "from": 1793114402056,
+        "to": 1793114402058,
+        "ms": 2,
+        "interpretation": "Local caller work; finer substeps uninstrumented."
+      },
+      {
+        "name": "enqueue to durable reservation",
+        "from": 1793114402058,
+        "to": 1793114402059,
+        "ms": 1,
+        "interpretation": "Reservation timestamp; no pacing-wait row for this request."
+      },
+      {
+        "name": "reservation to physical start",
+        "from": 1793114402059,
+        "to": 1793114402063,
+        "ms": 4,
+        "interpretation": "Durability/preparation combined; actual start is payload at, not recorder time."
+      },
+      {
+        "name": "physical start to completed HTTP body",
+        "from": 1793114402063,
+        "to": 1793114402152,
+        "ms": 89,
+        "interpretation": "89ms transport interval; proxy/network/provider portions not separable."
+      },
+      {
+        "name": "completed body to physical settlement",
+        "from": 1793114402152,
+        "to": 1793114402161,
+        "ms": 9,
+        "interpretation": "Parsing/result validation/counter settlement combined."
+      },
+      {
+        "name": "physical settlement to account snapshot receipt",
+        "from": 1793114402161,
+        "to": 1793114402162,
+        "ms": 1,
+        "interpretation": "Caller snapshot receipt."
+      },
+      {
+        "name": "snapshot receipt to fully validated three-holding completion",
+        "from": 1793114402162,
+        "to": 1793114402193,
+        "ms": 31,
+        "interpretation": "SDK/account validation, parity, recording/use checks combined; not isolated compute latency."
+      }
+    ],
+    "sumMs": 2056,
+    "equivalentCadenceArithmetic": {
+      "targetSeparationMs": 2000,
+      "dispatchJitterDeltaMs": -3,
+      "dispatchToValidatedDurationDeltaMs": 59,
+      "sumMs": 2056
+    },
+    "demonstratedCause": "No candidate operation, pacing wait, or other physical request occurs inside the longest interval. Its56ms excess over2s arises arithmetically from59ms more dispatch-to-validation time offset by3ms less dispatch lateness. This is not evidence of enrichment starvation, provider saturation, or an agreed maximum protection gap.",
+    "uncertainty": "Only wall timestamps were retained for this decomposition. Transport segments cannot isolate provider from proxy/network. Parsing, SDK parity and record I/O are not separately timed. The absence of a competing request in this interval says nothing about busier future intervals."
+  },
+  "earlierOvernight": {
+    "actualLongestUsableGap": {
+      "fromLine": 49,
+      "toLine": 73,
+      "from": {
+        "scheduledAt": 1793087308903,
+        "requestedAt": 1793087308958,
+        "availableAt": 1793087309025,
+        "deadlineAt": 1793087310903,
+        "startDelayMs": 55,
+        "requests": 1,
+        "quoteAgeAtUseMs": 19,
+        "usable": true,
+        "late": false,
+        "reason": null
+      },
+      "to": {
+        "scheduledAt": 1793087310903,
+        "requestedAt": 1793087311276,
+        "availableAt": 1793087312249,
+        "deadlineAt": 1793087312903,
+        "startDelayMs": 373,
+        "requests": 1,
+        "quoteAgeAtUseMs": 23,
+        "usable": true,
+        "late": false,
+        "reason": null
+      },
+      "gapMs": 3224
+    },
+    "existingImmutableAudit": {
+      "path": "evidence/scheduler-correction-20261027/trace-analysis.json",
+      "sha256": "a3a558530b648f1f3a5ad1109d3d2603f63e0b331ab1f2c7cbf13e3e1a02e4e8"
+    },
+    "arithmetic": [
+      {
+        "name": "previous completed evaluation to next absolute pricing eligibility",
+        "from": 1793087309025,
+        "to": 1793087310903,
+        "interpretation": "Reference cadence interval remaining after the previous evaluation; not processing delay.",
+        "fromUtc": "2026-10-27T07:48:29.025Z",
+        "toUtc": "2026-10-27T07:48:30.903Z",
+        "ms": 1878
+      },
+      {
+        "name": "pricing eligible to reported pricing job selection",
+        "from": 1793087310903,
+        "to": 1793087311276,
+        "interpretation": "Includes the admitted second enrichment waiting/operating plus the unseparated completion-to-dispatch interval.",
+        "fromUtc": "2026-10-27T07:48:30.903Z",
+        "toUtc": "2026-10-27T07:48:31.276Z",
+        "ms": 373
+      },
+      {
+        "name": "reported pricing job selection to physical HTTP invocation",
+        "from": 1793087311276,
+        "to": 1793087312174,
+        "interpretation": "Dominated by the mandatory1s spacing after the preceding enrichment; remaining local preparation/persistence is not separately instrumented.",
+        "fromUtc": "2026-10-27T07:48:31.276Z",
+        "toUtc": "2026-10-27T07:48:32.174Z",
+        "ms": 898
+      },
+      {
+        "name": "physical HTTP invocation to completed response body",
+        "from": 1793087312174,
+        "to": 1793087312221,
+        "interpretation": "Measured request/response wall interval; proxy, network and provider portions are not separable.",
+        "fromUtc": "2026-10-27T07:48:32.174Z",
+        "toUtc": "2026-10-27T07:48:32.221Z",
+        "ms": 47
+      },
+      {
+        "name": "response body available to account snapshot receipt",
+        "from": 1793087312221,
+        "to": 1793087312226,
+        "interpretation": "Includes JSON/result delivery, budget bookkeeping and caller snapshot capture; substeps are uninstrumented.",
+        "fromUtc": "2026-10-27T07:48:32.221Z",
+        "toUtc": "2026-10-27T07:48:32.226Z",
+        "ms": 5
+      },
+      {
+        "name": "account snapshot receipt to completed three-holding evaluation",
+        "from": 1793087312226,
+        "to": 1793087312249,
+        "interpretation": "SDK decoding/quotes, same-byte independent parity, recording and use checks combined; this is NOT an isolated parity-duration measurement.",
+        "fromUtc": "2026-10-27T07:48:32.226Z",
+        "toUtc": "2026-10-27T07:48:32.249Z",
+        "ms": 23
+      }
+    ],
+    "demonstratedCause": "A second selected transaction was admitted at07:48:30.270Z before the30.903Z pricing target, then paced until31.172Z. Pricing selected31.276Z then waited until32.174Z physical invocation under the local1s spacing rule after enrichment. This demonstrates priority inversion through admission into a nonpreemptible shared pacing path. It does not demonstrate slow provider service: the holding HTTP body took47ms and enrichment HTTP bodies44/67ms.",
+    "uncertainty": "Old capture lacks per-job enqueue/pacing/start-settlement events; exact portions of373ms target-to-pricing-selection and898ms selection-to-physical-start cannot be decomposed beyond recorded request invocation times and limiter rules."
+  },
+  "strictReservationCounterexample": {
+    "source": "evidence/scheduler-correction-20261027/scheduler-evaluation-v4.json",
+    "classification": "DETERMINISTIC_COUNTERFACTUAL_NOT_FORWARD_BEHAVIOR",
+    "cases": [
+      {
+        "name": "trace11-strict-zero-window-jitter0",
+        "requestsByKind": {
+          "protection": 35,
+          "enrichment": 0,
+          "pending": 0,
+          "reconnect": 0
+        },
+        "enrichments": {
+          "knownInputArrivals": 6,
+          "submitted": 6,
+          "completedWithinFiveSeconds": 0,
+          "refused": 5,
+          "timedOut": 0,
+          "completedLate": 0,
+          "pendingAtEnd": 1,
+          "inFlightAtEnd": 0,
+          "deadlineCensoredPendingAtEnd": 1,
+          "maximumArrivalToParseMs": null
+        },
+        "maximumCompletedEvaluationGapMs": 2041
+      },
+      {
+        "name": "trace11-strict-zero-window-jitter10",
+        "requestsByKind": {
+          "protection": 35,
+          "enrichment": 0,
+          "pending": 0,
+          "reconnect": 0
+        },
+        "enrichments": {
+          "knownInputArrivals": 6,
+          "submitted": 6,
+          "completedWithinFiveSeconds": 0,
+          "refused": 5,
+          "timedOut": 0,
+          "completedLate": 0,
+          "pendingAtEnd": 1,
+          "inFlightAtEnd": 0,
+          "deadlineCensoredPendingAtEnd": 1,
+          "maximumArrivalToParseMs": null
+        },
+        "maximumCompletedEvaluationGapMs": 2041
+      },
+      {
+        "name": "trace11-strict-zero-window-jitter50",
+        "requestsByKind": {
+          "protection": 35,
+          "enrichment": 0,
+          "pending": 0,
+          "reconnect": 0
+        },
+        "enrichments": {
+          "knownInputArrivals": 6,
+          "submitted": 6,
+          "completedWithinFiveSeconds": 0,
+          "refused": 5,
+          "timedOut": 0,
+          "completedLate": 0,
+          "pendingAtEnd": 1,
+          "inFlightAtEnd": 0,
+          "deadlineCensoredPendingAtEnd": 1,
+          "maximumArrivalToParseMs": null
+        },
+        "maximumCompletedEvaluationGapMs": 2062
+      },
+      {
+        "name": "trace11-strict-zero-window-jitter100",
+        "requestsByKind": {
+          "protection": 35,
+          "enrichment": 0,
+          "pending": 0,
+          "reconnect": 0
+        },
+        "enrichments": {
+          "knownInputArrivals": 6,
+          "submitted": 6,
+          "completedWithinFiveSeconds": 0,
+          "refused": 5,
+          "timedOut": 0,
+          "completedLate": 0,
+          "pendingAtEnd": 1,
+          "inFlightAtEnd": 0,
+          "deadlineCensoredPendingAtEnd": 1,
+          "maximumArrivalToParseMs": null
+        },
+        "maximumCompletedEvaluationGapMs": 2110
+      }
+    ],
+    "mechanism": "A target-relative zero-width reservation opportunity disappears when actual pacing readiness and local setup occur even slightly after the ideal slot. The recorded-arrival rescheduling model refuses5 of6 required enrichments, leaving1 right-censored, while35 price requests continue. Pricing success therefore does not prove complete flow."
+  },
+  "reproduction": "Read the hashed NDJSON files; take usable field-protection-evaluation rows in file order; subtract consecutive data.availableAt values; sort descending. For the maximal pair inspect recorded rows between completions, using data.at/requestedAt/availableAt rather than recordedAt for actual physical timestamps. Compare existing longestGapArithmetic and strict-zero-window cases in immutable scheduler-evaluation-v4.json.",
+  "networkRequests": 0,
+  "productionChanged": false,
+  "financialRecordsChanged": false,
+  "riskToleranceApproved": false
+}

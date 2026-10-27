@@ -8,7 +8,8 @@ import {decodeSupportedPoolAccounts,positionSellFromState,type PoolWireAccount,t
 import type {ReadOnlyRpc} from './network.js';
 import type {Recorder} from './recorder.js';
 
-type Rpc=Pick<ReadOnlyRpc,'call'>;
+type Admission={latestStartAt:number;admissionOpen:()=>boolean};
+type Rpc={call<T>(method:string,params?:unknown[],signal?:AbortSignal,options?:{latestStartAt?:number;admissionOpen?:()=>boolean}):Promise<T>};
 type Rec=Pick<Recorder,'record'>;
 type Batch={context:{slot:number};value:(PoolWireAccount|null)[]};
 const SYSVAR_OWNER='Sysvar1111111111111111111111111111111111111';
@@ -69,7 +70,7 @@ export class ResearchClockPositionPricer {
    * newly read in this single context. A per-pool fault cannot price that pool;
    * a common batch/Clock/source-age fault makes the entire batch unavailable.
    */
-  async quoteMany(requests:readonly PositionSellRequest[],signal?:AbortSignal):Promise<ResearchClockQuoteBatch>{
+  async quoteMany(requests:readonly PositionSellRequest[],signal?:AbortSignal,admission?:Admission):Promise<ResearchClockQuoteBatch>{
     need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
     need(requests.length>0&&requests.length<=3,'POSITION_BATCH_CAPACITY');
     const selected=requests.map(r=>({mint:new PublicKey(r.mint),units:r.fullBaseUnits,minSlot:r.minSlot??0}));
@@ -79,6 +80,9 @@ export class ResearchClockPositionPricer {
     const quotes:Record<string,ResearchClockQuote>={},unavailable:Record<string,string>={};
     try{
       signal?.throwIfAborted();
+      const checkAdmission=()=>need(!admission||admission.admissionOpen()&&Date.now()<=admission.latestStartAt,'RESEARCH_CLOCK_ADMISSION_CLOSED');
+      const options=admission?{latestStartAt:admission.latestStartAt,admissionOpen:admission.admissionOpen}:undefined;
+      checkAdmission();
       // The union has a fixed maximum of three holdings. The shared highest slot
       // remains a conservative floor even after a holding leaves this cache.
       const active=new Set(names);for(const mint of this.cached.keys())if(!active.has(mint))this.cached.delete(mint);
@@ -88,7 +92,7 @@ export class ResearchClockPositionPricer {
       const discovered=new Map<string,Pool>();
       if(missing.length){
         const keys=missing.map(r=>canonicalPumpPoolPda(r.mint).toBase58());this.networkCalls++;
-        const initial=await this.rpc.call<Batch>('getMultipleAccounts',[keys,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal);
+        const initial=await this.rpc.call<Batch>('getMultipleAccounts',[keys,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal,options);checkAdmission();
         checkedBatch(initial,missing.length,floor);floor=Math.max(floor,initial.context.slot);this.highestSlot=Math.max(this.highestSlot,initial.context.slot);
         for(let i=0;i<missing.length;i++){
           const name=missing[i]!.mint.toBase58();
@@ -107,7 +111,7 @@ export class ResearchClockPositionPricer {
       const addresses=[...new Set([...holdings.flatMap(h=>h.addresses),SYSVAR_CLOCK_PUBKEY.toBase58()])];
       need(addresses.length<=16,'RESEARCH_CLOCK_DEPENDENCY_CAP');
       const requestedAt=new Date(Date.now()).toISOString();this.networkCalls++;
-      const batch=await this.rpc.call<Batch>('getMultipleAccounts',[addresses,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal);
+      checkAdmission();const batch=await this.rpc.call<Batch>('getMultipleAccounts',[addresses,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal,options);checkAdmission();
       const receivedAt=new Date(Date.now()).toISOString();checkedBatch(batch,addresses.length,floor);
       this.rec.record('research-clock-pool-state',{requestedAt,receivedAt,addresses,context:batch.context,value:batch.value});
       const indexed=new Map(addresses.map((address,i)=>[address,batch.value[i]??null]));
@@ -116,7 +120,7 @@ export class ResearchClockPositionPricer {
       // unavailable. Later recovery cannot borrow an older favorable snapshot.
       this.highestSlot=Math.max(this.highestSlot,batch.context.slot);
       const pendingCache=new Map<string,Pool>();
-      const fresh=()=>{const now=Date.now();need(now-Date.parse(receivedAt)>=0&&now-Date.parse(receivedAt)<=2000,'RESEARCH_CLOCK_QUOTE_AGE_AT_USE');need(timing.marketClockUnixSeconds*1000<=now&&now-timing.marketClockUnixSeconds*1000<=30_000,'RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS');};
+      const fresh=()=>{checkAdmission();const now=Date.now();need(now-Date.parse(receivedAt)>=0&&now-Date.parse(receivedAt)<=2000,'RESEARCH_CLOCK_QUOTE_AGE_AT_USE');need(timing.marketClockUnixSeconds*1000<=now&&now-timing.marketClockUnixSeconds*1000<=30_000,'RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS');};
       for(const h of holdings){
         signal?.throwIfAborted();let quote:ResearchClockQuote;
         try{

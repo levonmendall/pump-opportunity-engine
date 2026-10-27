@@ -1,64 +1,22 @@
-# POE continuation checkpoint — single forward grant completed
+# POE continuation checkpoint — standing research, 2026-10-27
 
-Review branchpoe-free-data-evaluation-20261027. Approved proposalde102ee;
-actual capture source349e67b. Use containing final commit for results/docs/tests.
-Main/EC2/Render unchanged. Preserve unrelated docs/FUNDING.md, operator/funding/
-and emptylocks. No merge/deploy/productionrestart orPAPER/live entries.
+Branch `poe-free-data-evaluation-20261027`, base `5a0fa96`. Standing owner authorization supersedes the old one-capture, lifetime-request and no-reservation-release restrictions. It authorizes bounded read-only research using PumpApi, public Solana RPC and free PumpPortal discovery. Alchemy/Helius/paid feeds remain excluded. No production change, account reset, deployment, entries, signing or spending.
 
-Protected EC2i-00044d4ea1471b957, installedbce3d22bb434eb429aafacb788a18f39ec189c1b;
-accountpoe-3123e352-4581-455b-85db-acd7e825e99e, inception2026-10-26T22:07:36.212Z.
-No production check this task; last dashboard1049 at08:04UTC is historical only.
-No research balances/trades/performance published and no financialwriter started.
+Production EC2/account/inception/Render preserved. Public read-only reporting checked around16:13UTC: sequence1948, original account/inception, installed releasebce3d22, entriesdisabled, reconciled=true,0publishedpositions/trades, source48.609s old at response. This is reporting evidence, not direct EC2/systemd or database verification. See `evidence/standing-research-20261027/production-read-only-check.json`.
 
-## Actual completed result
+## Completed this continuation
 
-Directory evidence/scheduler-forward-20261027 is the durable consumed-attempt
-marker. DO NOT delete/rerun it. Summary/capture/audit/supervisor/observations and
-new linkedstreamreservation are immutable. Offline decision.json and independent
-counteranalysis/trade-field-analysis/window-analysis/independent-review document
-limits; original failed experiments/correctedreplay also remain unchanged.
+- Explicit wall/monotonic logical cutoff at request and validated-information admission. Record stop request, actual socket settlement and all drain bytes separately. Original75.002s result unchanged.
+- Proposed completion-deadline scheduler, target2s, quoteage≤2s, sourceage≤30s, enrichment≤5s; proposed4s maxgap is UNAPPROVED research behavior. Prior financial actions/holdings retain priority; impossible candidate windows are invalidated, not silently sampled.
+- Offline retained-trace + stress comparison: at both1s/250ms spacing,15/16 workloads meet proposed protection timing; complete required flow9/16→12/16 at250ms. Slow/overrun/outage limitations remain explicit. Same60/min,10/10s,onephysicaloperation for250ms cases. Not endpoint/EC2 capacity proof.
+- Matched actual5-event replay honestly rejects missing verified migration and failed buying features. Separate disposable same-byte-SDK execution/held mark/restart/quarantined exit/recovery/final exit reconciles; no natural trade claimed.
+- Append-only unused-byte reconciliation releases143,286,477 local reserved bytes; consumed271,949,619 and oldRPC2,097,152 uncertainty retained. Original396MiB/320s gross books unchanged; no time release inferred.
+- Legacy budgets retain original defaults. Explicit standing experiment budgets remove only lifetime caps and retain cumulative actuals, refusals and uncertainty. Official publicRPC terms rechecked; limits non-guaranteed and public endpoint not intended for production.
 
-Preflight1history+1verifiedswap, fresh3holdingprewarm2reads, ONEkeyless PumpApi
-connection. Aggregate88.802s. Observation15:19:07.293–15:20:22.295UTC (75002ms):
-2msrecordedbounddeviation, no postcutoff decisioninformation. Datawindow
-15:19:10–15:20:10UTC usable263ms afterend;10repeatrows=ONEwindow.5market swaps:
-1routedbuy_v2,3directSells,1routedSell.5independentconfirmedmatches+2finalizedSell
-rechecks. ExactquoteBuy/multiswapabsent; genericreceivecoverageunproved.
+## In progress / next command
 
-40coherent3holdingchecks/4earlyphases;maxgap2056ms,p952033ms,21gaps>2starget,
-quotesatuse14–39ms,Clockage365–1431ms. Cacheunavailable1323ms/1.764%.
-No15%stop/30%TP/maxholdcross. No enrichmentrefusal/gap/pending;maxvalidateddelay
-3582ms. Bothfeeconventions rejectbuying (negative net,1buyer100%,0positivebins).
-No fullentrydecision orP&L; origin/ageunverified. No protectionacceptance/frozenmaxgap.
+Root is reviewing `scripts/standing-research.ts` before one specifically informative corrected combined research measurement. Do not invoke concurrently. Root alone owns network and usage writes. External process controls required; runner refuses absent bounds. Proposed250ms spacing keeps60/min,10/10s,oneflight,100units/120s,32MiB related bytes,140MiB streamreservation/75s observation,6MiB new evidence within32MiB total. Strict cutoff/proposed scheduler; no provider/strategy/screen change. Preflight must pass current support/activity; no second capture automatically.
 
-## Authoritative research accounting
+All old raw evidence immutable. Current linked baseline221requestunits,2,314,558 measured related bytes+2,097,152oldunknown=4,411,710 accounted. These are cumulative visibility, not current lifetime prohibitions. Any newrun must append its own linked book. New evidence17,832,952bytes before next run.
 
-Original old+component+14overnight books must be followed by newphasebooks:
-evidence/scheduler-forward-20261027/{01-preflight,02-combined,03-audit}/rpc-budget.json.
-New2+48+8=58units =>221/240,19unused.2,314,558measuredrelatedbytes+unchanged
-2,097,152oldunknown=4,411,710;62,697,154bytes remain.0new429/overload,oldrefusals
-untouched; minphysicalgap1002ms,max41/60s and10/10s. Newuncertainty0.
-
-Newstreambooklinksold256MiB/230s plus140MiB/90s =>396MiB/320s. NOrefunds.
-Actualnew76,013,520socketbytes;actualcumulative271,949,619bytes. Fullreservations
-arecommitted. NounusedRPC/request/receiptallowanceauthorizesanothercapture.
-72bytesamples1000–1102msapart;onlysampledintervalpeaks,notexactcontinuouspeaks.
-ChildobservedCPU7.770s+parent6.936s,RSS197.59MB/170.34MB;Cloudonly,notEC2.
-API$0;infrastructure/transfercostunverified. Allevidence<32MiB,newrun<6MiB.
-
-## Source and next decision
-
-Corrected dispatcher remainsbounded-deadline-v1 (actual-ready,1lowerjob/pricecycle,
-finite100mswindow with25mssetupreserve,up to5early/43totalchecks). Sourceprofile
-140/138/136MiB caps10enrichments,75sfromopen; firstessentialqualitystop, no retry.
-Parent/nonrootchildbounded120s,globalCPU20/resourcecaps,3phases3/56/14maxunits,
-no morethan73planned/77absolute. Datavalidationavailabilityandwhole-txatomicity
-remaincorrect; originalRPCreceipttimes/executedamounts/fingerprintsunchanged.
-All259priorhashes/74launchedsourcesmatched349e67b. Build/compile550testspass.
-
-Keep policy RESEARCH ONLY. Next offline work: reserve shutdown headroom and
-separate fixed admission cutoff/monotonic durations/actual closure, then address
-known50/100ms-jitter,3eventburst andsimultaneouspending/reconnectfailures. No
-newlivecapture simplytoobtainfavorablecoverage. Productionwiring/backup/host
-capacity/alerts/frozencontractand24/72hacceptance remainpending. No oldsetup,
-wallet/funding/paid-provider/ownerpermissionstep is currently required.
+Focused tests pass; initial full suite568pass; rerun final relevant tests/build after all final edits. Source ownership: root dispatch/field/pricer/transport; component_review budget+baseline frozen; component_preflight simulator+tests/artifact frozen; component_parity E2E+cutofftests; component_budget standing runner (finishing). Preserve unrelated `docs/FUNDING.md`, `operator/funding/` and existing empty lockfiles. Do not merge/deploy or infer production health beyond source check.

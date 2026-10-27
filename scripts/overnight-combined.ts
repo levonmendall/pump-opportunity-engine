@@ -41,7 +41,7 @@ async function child(){
  const lease=openSync('/tmp/poe-pumpapi-probe.lock','a+',0o600);if(spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',lease]}).status!==0)throw Error('COMPONENT_PUMPAPI_ALREADY_OWNED');
  const pbPath='evidence/overnight-20261027/pumpapi-budget.json';let pb:any;
  try{
-  if(budget.usage().remainingCumulativeUnits<67)throw Error('COMPONENT_COMBINED_REQUEST_RESERVE');
+  if(budget.usage().remainingCumulativeUnits!==null&&budget.usage().remainingCumulativeUnits!<67)throw Error('COMPONENT_COMBINED_REQUEST_RESERVE');
   const prewarm=await quote(controller.signal,selected.minSlot);if(!prewarm)throw Error('COMPONENT_COMBINED_HELD_PREFLIGHT_UNAVAILABLE');
   pb=JSON.parse(readFileSync(pbPath,'utf8'));if(pb.reservedBytes+64*MIB>256*MIB||pb.reservedMs+85000>300000)throw Error('COMPONENT_PUMPAPI_AGGREGATE_CAP');pb.reservedBytes+=64*MIB;pb.reservedMs+=85000;pb.attempts.push({leg,reservedAt:Date.now(),reservedBytes:64*MIB,reservedMs:85000,status:'reserved-before-network'});
   save();

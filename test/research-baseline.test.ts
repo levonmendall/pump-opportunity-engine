@@ -42,3 +42,23 @@ test('future clocks, forged event identities, and cumulative overrun are rejecte
   const b=f.write('next.json',{schemaVersion:1,grantId:'next',baseline:base,startedAt:1100,lastObservedAt:1200,starts:[1100],actualInvocations:[{id:4,at:1101}],httpBytes:0,wsBytes:0,pending:[]});assert.throws(()=>readResearchBaseline({paths:[a,b],now:2000}),/INVALID_INVOCATIONS/);
   f.write('old.json',{...old(),bytes:64*1024*1024+1});assert.throws(()=>readResearchBaseline({paths:[a],now:2000}),/CUMULATIVE_CAP/);
 });
+
+test('explicit standing mode crosses historical lifetime caps while retaining uncertainty and the exact linked history',t=>{
+  const f=fixture(t),a=f.write('old.json',old()),base=readResearchBaseline({paths:[a],now:2000}).baseline;
+  const b=f.write('large.json',{schemaVersion:1,grantId:'bounded-standing',baseline:base,startedAt:1100,lastObservedAt:1400,starts:Array.from({length:239},(_,i)=>1100+i),httpBytes:65*1024*1024,wsBytes:17,pending:[{id:241,transport:'http',reservedBytes:2000}]});
+  const before=[a,b].map(hash);assert.throws(()=>readResearchBaseline({paths:[a,b],now:2000,physicalSettled:true}),/CUMULATIVE_CAP/);
+  assert.throws(()=>readResearchBaseline({paths:[a,b],now:2000,allowCumulativeBeyondLegacy:true}),/PHYSICAL_UNCERTAINTY/);
+  const first=readResearchBaseline({paths:[a,b],now:2000,physicalSettled:true,allowCumulativeBeyondLegacy:true});assert.equal(first.baseline.calls,241);assert.equal(first.observedBytes,100+65*1024*1024+17);assert.equal(first.uncertainResponseBytes,2000);assert.equal(first.baseline.bytes,first.observedBytes+2000);
+  const c=f.write('next.json',{schemaVersion:1,grantId:'another-bounded-run',baseline:first.baseline,startedAt:1500,lastObservedAt:1600,starts:[1500],actualInvocations:[{id:242,at:1501}],httpBytes:31,wsBytes:0,pending:[]});
+  const next=readResearchBaseline({paths:[a,b,c],now:2000,physicalSettled:true,allowCumulativeBeyondLegacy:true});assert.equal(next.baseline.calls,242);assert.equal(next.baseline.bytes,first.baseline.bytes+31);assert.equal(next.uncertainResponseBytes,2000);assert.equal(next.baseline.starts.at(-1),1501);assert.deepEqual([a,b].map(hash),before);
+});
+
+test('an explicitly larger bounded chapter list preserves default32-path behavior and never scans directories',t=>{
+  const f=fixture(t),paths=[f.write('old.json',old())];let base=readResearchBaseline({paths,now:2000}).baseline;
+  for(let i=0;i<32;i++){
+    const at=1100+i*2;paths.push(f.write('chapter-'+i+'.json',{schemaVersion:1,grantId:'next-'+i,baseline:base,startedAt:at,lastObservedAt:at+1,starts:[],httpBytes:0,wsBytes:0,pending:[]}));
+    base=readResearchBaseline({paths,now:2000,maximumPaths:128}).baseline;
+  }
+  assert.equal(paths.length,33);assert.throws(()=>readResearchBaseline({paths,now:2000}),/INVALID_OPTIONS/);assert.equal(readResearchBaseline({paths,now:2000,maximumPaths:128}).baseline.calls,2);
+  for(const maximumPaths of [0,129,1.5])assert.throws(()=>readResearchBaseline({paths,now:2000,maximumPaths}),/INVALID_OPTIONS/);
+});

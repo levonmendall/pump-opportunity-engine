@@ -45,3 +45,59 @@ export function chooseResearchWork(v:DispatchView):DispatchDecision{
   const future=ordered.filter(j=>j.eligibleAt>v.now).map(j=>j.eligibleAt);
   return {kind:'wait',until:Math.max(v.now+1,Math.min(v.now+RESEARCH_DISPATCH.quantumMs,...future,v.nextProtectionAt??Infinity)),reason:v.otherStartSinceProtection?'one-other-start-per-protection-cycle':'outside-bounded-admission-window'};
 }
+
+/** A research proposal, not an approved production protection tolerance.
+ * 4s permits a bounded nonpreemptible operation between 2s target checks;
+ * it is not inferred from the last successful sample or a stop-price guarantee. */
+export const PROPOSED_RESEARCH_TIMING=Object.freeze({status:'PROPOSED_UNAPPROVED' as const,targetMs:2000,maximumUsableEvaluationGapMs:4000,quoteAgeMs:2000,sourceAgeMs:30000,enrichmentDeadlineMs:5000});
+export type ProtectedDispatchView=DispatchView & {lastUsableEvaluationAt:number|null;observingSince:number;candidateWindowActive:boolean;recoveryActive:boolean;capacityAvailable:boolean;startSpacingMs?:number};
+export type ProtectedDispatchResult={decision:DispatchDecision;candidateDisposition:'continue'|'suspend';reason:string|null;protectionDeadlineAt:number;protectionFeasible:boolean;protectionBreach:boolean;proposed:true};
+/** Completion-deadline admission over the SAME physical gate. Request aborts
+ * never create capacity. Owners must retain financial work, record suspension
+ * as a flow gap, and warm a new complete window before permitting entry. */
+export function chooseProtectedResearchWork(v:ProtectedDispatchView):ProtectedDispatchResult{
+  chooseResearchWork(v); // reuse the established bounded view/job validation
+  if(!int(v.observingSince)||v.lastUsableEvaluationAt!==null&&!int(v.lastUsableEvaluationAt)||v.startSpacingMs!==undefined&&(!int(v.startSpacingMs)||v.startSpacingMs<1))throw Error('PROTECTED_DISPATCH_INVALID_VIEW');
+  const spacing=v.startSpacingMs??RESEARCH_DISPATCH.spacingMs;
+  const setup=RESEARCH_DISPATCH.reservationReserveMs+RESEARCH_DISPATCH.quantumMs;
+  const bound=RESEARCH_DISPATCH.operationBoundMs;
+  const deadline=(v.lastUsableEvaluationAt??v.observingSince)+PROPOSED_RESEARCH_TIMING.maximumUsableEvaluationGapMs;
+  const start=Math.max(v.now,v.readyAt),finishPrice=start+setup+bound;
+  const breach=v.now>deadline;
+  const jobs=[...v.jobs].sort((a,b)=>(a.kind==='pending'?0:1)-(b.kind==='pending'?0:1)||a.deadlineAt-b.deadlineAt||a.enqueuedAt-b.enqueuedAt||a.id.localeCompare(b.id));
+  const pending=jobs.find(j=>j.kind==='pending'&&j.eligibleAt<=v.now);
+  let disposition:'continue'|'suspend'=!v.candidateWindowActive||v.recoveryActive||!v.capacityAvailable||pending||breach?'suspend':'continue';
+  let reason:string|null=breach?'proposed-protection-deadline-exceeded':pending?'pending-financial-action':v.recoveryActive?'recovery-work':!v.capacityAvailable?'monitoring-capacity-unavailable':!v.candidateWindowActive?'candidate-window-not-active':null;
+  const result=(decision:DispatchDecision,feasible=finishPrice<=deadline):ProtectedDispatchResult=>({decision,candidateDisposition:disposition,reason,protectionDeadlineAt:deadline,protectionFeasible:feasible,protectionBreach:breach,proposed:true});
+  if(v.physicalBusy){if(breach){disposition='suspend';reason='physical-operation-unsettled-at-protection-deadline';}return result({kind:'wait',until:Math.max(v.now+1,v.readyAt),reason:'physical-operation-or-cancellation-unsettled'},false);}
+  if(v.readyAt>v.now){if(finishPrice>deadline){disposition='suspend';reason='pacing-makes-protection-envelope-infeasible';}return result({kind:'wait',until:v.readyAt,reason:'shared-physical-pacing'});}
+  const price=(advance:boolean):DispatchDecision=>({kind:'protection',scheduledAt:v.nextProtectionAt??v.now,deadlineAt:deadline,advance});
+  const afterJob=(j:ResearchJob)=>Math.max(start+spacing,start+setup+j.operationBoundMs)+setup+bound;
+  const jobAfterPrice=(j:ResearchJob)=>Math.max(start+spacing,finishPrice,j.eligibleAt)+setup+j.operationBoundMs;
+  const latestJobStart=(j:ResearchJob)=>Math.min(j.deadlineAt-setup-j.operationBoundMs,deadline-Math.max(spacing,setup+j.operationBoundMs)-setup-bound);
+  if(pending){
+    const ownFirst=start+setup+pending.operationBoundMs<=pending.deadlineAt&&afterJob(pending)<=deadline&&start+RESEARCH_DISPATCH.reservationReserveMs<=latestJobStart(pending);
+    const priceFirst=finishPrice<=deadline&&jobAfterPrice(pending)<=pending.deadlineAt;
+    if(priceFirst&&v.nextProtectionAt!==null&&v.now>=v.nextProtectionAt)return result(price(false));
+    if(ownFirst)return result({kind:'job',job:pending,latestStartAt:latestJobStart(pending)});
+    if(priceFirst)return result(price(v.nextProtectionAt!==null&&v.now<v.nextProtectionAt));
+    // There is no ordering that meets both promises. Retain the financial owner
+    // and expose the protection failure instead of hiding it in another queue.
+    reason='pending-and-protection-deadlines-jointly-infeasible';disposition='suspend';
+    const latest=pending.deadlineAt-setup-pending.operationBoundMs;
+    return result(start+RESEARCH_DISPATCH.reservationReserveMs<=latest?{kind:'job',job:pending,latestStartAt:latest}:{kind:'refuse',job:pending,reason:'financial-action-retained-for-reconciliation:joint-deadlines-infeasible'},false);
+  }
+  if(finishPrice>deadline){disposition='suspend';reason='protection-envelope-no-longer-feasible';return result(price(true),false);}
+  const due=v.nextProtectionAt!==null&&v.now>=v.nextProtectionAt;
+  if(due)return result(price(false));
+  const job=jobs.find(j=>j.eligibleAt<=v.now);
+  if(job){
+    if(job.kind==='enrichment'&&disposition==='suspend')return result({kind:'refuse',job,reason:reason??'candidate-window-suspended'});
+    if(start+setup+job.operationBoundMs>job.deadlineAt){disposition='suspend';reason='required-enrichment-completion-envelope-exceeds-deadline';return result({kind:'refuse',job,reason});}
+    if(afterJob(job)<=deadline&&start+RESEARCH_DISPATCH.reservationReserveMs<=latestJobStart(job))return result({kind:'job',job,latestStartAt:latestJobStart(job)});
+    if(!v.advanceOutstanding&&jobAfterPrice(job)<=job.deadlineAt)return result(price(true));
+    disposition='suspend';reason='combined-enrichment-and-protection-envelope-infeasible';return result({kind:'refuse',job,reason});
+  }
+  const future=jobs.filter(j=>j.eligibleAt>v.now).map(j=>j.eligibleAt);
+  return result({kind:'wait',until:Math.max(v.now+1,Math.min(v.now+RESEARCH_DISPATCH.quantumMs,...future,v.nextProtectionAt??Infinity,deadline-setup-bound)),reason:'waiting-for-eligible-work'});
+}

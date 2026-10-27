@@ -26,7 +26,7 @@ export class ComponentTransport {
     return n;
   }
   sampleSocket(){return this.activeConnection?this.sampleConnection(this.activeConnection):undefined;}
-  async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number}={}):Promise<T>{
+  async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<T>{
     validateRpc({method});
     return this.budget.operate({transport:'http',method},async op=>{
       const requestedAt=this.now();let res:Response;

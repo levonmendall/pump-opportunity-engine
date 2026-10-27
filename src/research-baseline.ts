@@ -9,7 +9,7 @@ import type {ComponentBaseline} from './component-budget.js';
 const MIB=1024*1024;
 type Book=Record<string,unknown>;
 export type ResearchBaselineSource={path:string;sha256:string;incrementUnits:number;incrementObservedBytes:number;pendingReservedBytes:number};
-export type ResearchBaselineOptions={paths:readonly string[];now:number;physicalSettled?:boolean};
+export type ResearchBaselineOptions={paths:readonly string[];now:number;physicalSettled?:boolean;/** Standing research explicitly removes only the historical lifetime caps. */allowCumulativeBeyondLegacy?:boolean;/** Bounded explicit chapter list; never searches the filesystem. */maximumPaths?:number};
 const int=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
 function need(v:unknown,code:string):asserts v {if(!v)throw Error('RESEARCH_BASELINE_'+code);}
 function times(value:unknown,now:number):number[]{need(Array.isArray(value)&&value.every((t,i)=>int(t)&&t<=now&&(i===0||t>=value[i-1])),'INVALID_STARTS');return [...value];}
@@ -39,7 +39,8 @@ function pendingBytes(value:unknown,firstId:number,lastId:number,legacy:boolean)
  * observed bytes. A later linked baseline must carry that conservative debit;
  * it is never counted again as a new chapter's observed traffic. */
 export function readResearchBaseline(options:ResearchBaselineOptions){
-  need(int(options.now)&&Array.isArray(options.paths)&&options.paths.length>0&&options.paths.length<=32,'INVALID_OPTIONS');
+  const maximumPaths=options.maximumPaths??32;
+  need(int(maximumPaths)&&maximumPaths>=1&&maximumPaths<=128&&(options.allowCumulativeBeyondLegacy===undefined||typeof options.allowCumulativeBeyondLegacy==='boolean')&&int(options.now)&&Array.isArray(options.paths)&&options.paths.length>0&&options.paths.length<=maximumPaths,'INVALID_OPTIONS');
   const paths=options.paths.map(p=>{need(typeof p==='string'&&p.length>0,'INVALID_PATH');return resolve(p);});
   need(new Set(paths).size===paths.length,'DUPLICATE_PATH');
   const sources:ResearchBaselineSource[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0;
@@ -73,7 +74,7 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
       baseline={...baseline,calls:baseline.calls+reserved.length,bytes:baseline.bytes+b.httpBytes+b.wsBytes+pending.bytes,starts:[...baseline.starts,...newStarts].sort((a,z)=>a-z),sha256};
       sources.push({path,sha256,incrementUnits:reserved.length,incrementObservedBytes:b.httpBytes+b.wsBytes,pendingReservedBytes:pending.bytes});
     }
-    need(baseline.calls<=240&&baseline.bytes<=64*MIB,'CUMULATIVE_CAP');
+    need(int(baseline.calls)&&int(baseline.bytes)&&(options.allowCumulativeBeyondLegacy===true||baseline.calls<=240&&baseline.bytes<=64*MIB),'CUMULATIVE_CAP');
   }
   need(baseline,'MISSING_BASELINE');
   if(pendingOperations&&!options.physicalSettled){

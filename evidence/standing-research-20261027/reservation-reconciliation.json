@@ -1,0 +1,1025 @@
+{
+  "schemaVersion": 1,
+  "eventId": "standing-research-reservation-reconciliation-20261027-001",
+  "recordedAt": "2026-10-27T16:04:16.885625+00:00",
+  "eventType": "APPEND_ONLY_RELEASE_OF_PROVEN_UNUSED_PUMPAPI_BYTE_RESERVATIONS",
+  "authority": "Owner's new standing free-data research authorization, as supplied in the current task, supersedes the former lifetime/one-capture/no-refund restrictions for later bounded research. It does not authorize spending, wallet operations, production changes or trading.",
+  "oldCounterbooksEdited": false,
+  "historicalEvidenceRelabeled": false,
+  "networkRequestsForReconciliation": 0,
+  "capturesVerified": [
+    {
+      "captureId": "schema-2026-10-27T01-30-23-258Z",
+      "reservedBytes": 8388608,
+      "observedConsumedSocketBytes": 7341091,
+      "releasedUnusedBytes": 1047517,
+      "historicalReservedMs": 15000,
+      "proofs": {
+        "completedReservationReceipt": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "connectedFlagAtFinalReceipt": false,
+        "oneConnection": true,
+        "terminalSocketCounterMatchesReservationReceipt": true,
+        "terminalCloseOrGapRecord": "source-gap",
+        "transportSettled": true
+      },
+      "receiptPath": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.json",
+      "recordPath": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.ndjson",
+      "reportedDurationMs": 5863.551856,
+      "reportedDurationMeaning": "Probe duration, not claimed as precise network-connection elapsed time.",
+      "actualConnectionTimeMs": null
+    },
+    {
+      "captureId": "capture-2026-10-27T01-35-40-166Z",
+      "reservedBytes": 109051904,
+      "observedConsumedSocketBytes": 99653847,
+      "releasedUnusedBytes": 9398057,
+      "historicalReservedMs": 85000,
+      "proofs": {
+        "completedReservationReceipt": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "connectedFlagAtFinalReceipt": false,
+        "oneConnection": true,
+        "terminalSocketCounterMatchesReservationReceipt": true,
+        "terminalCloseOrGapRecord": "source-gap",
+        "transportSettled": true
+      },
+      "receiptPath": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.json",
+      "recordPath": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.ndjson",
+      "reportedDurationMs": 80006.441487,
+      "reportedDurationMeaning": "Probe duration, not claimed as precise network-connection elapsed time.",
+      "actualConnectionTimeMs": null
+    },
+    {
+      "captureId": "05-sampler",
+      "reservedBytes": 16777216,
+      "observedConsumedSocketBytes": 77425,
+      "releasedUnusedBytes": 16699791,
+      "historicalReservedMs": 10000,
+      "proofs": {
+        "completedReservationReceipt": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "supervisorUncertainAttempt": false,
+        "zeroInFlightAtFinalReceipt": true,
+        "zeroPendingRpcAtFinalReceipt": true,
+        "terminalSocketCounterMatchesReservationReceipt": true,
+        "transportSettled": true,
+        "oneConnection": true,
+        "secondFinalHintsCounterMatches": true,
+        "explicitSocketCloseTimestampRecorded": false,
+        "settlementBasis": "Completed sampler receipt with final counter, matching hints receipt, zero in-flight/pending operations and normal child-process exit. Process exit closes remaining transport descriptors; an exact close timestamp is not invented."
+      },
+      "receiptPath": "evidence/overnight-20261027/05-sampler/summary.json",
+      "supervisorPath": "evidence/overnight-20261027/05-sampler/supervisor.json",
+      "reportedDurationMs": 1637,
+      "reportedDurationMeaning": "Attempt/helper elapsed duration, not substituted for exact transport-open-to-closed time.",
+      "actualConnectionTimeMs": null
+    },
+    {
+      "captureId": "07-field",
+      "reservedBytes": 67108864,
+      "observedConsumedSocketBytes": 23684526,
+      "releasedUnusedBytes": 43424338,
+      "historicalReservedMs": 35000,
+      "proofs": {
+        "completedReservationReceipt": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "supervisorUncertainAttempt": false,
+        "zeroInFlightAtFinalReceipt": true,
+        "zeroPendingRpcAtFinalReceipt": true,
+        "terminalSocketCounterMatchesReservationReceipt": true,
+        "transportSettled": true,
+        "physicalSlotUncertain": false,
+        "closedAt": 1793084941398,
+        "endedAt": 1793084941362,
+        "fullCaptureCounterMatches": true
+      },
+      "receiptPath": "evidence/overnight-20261027/07-field/summary.json",
+      "supervisorPath": "evidence/overnight-20261027/07-field/supervisor.json",
+      "reportedDurationMs": 30045.605847,
+      "reportedDurationMeaning": "Attempt/helper elapsed duration, not substituted for exact transport-open-to-closed time.",
+      "actualConnectionTimeMs": null
+    },
+    {
+      "captureId": "11-combined",
+      "reservedBytes": 67108864,
+      "observedConsumedSocketBytes": 65179210,
+      "releasedUnusedBytes": 1929654,
+      "historicalReservedMs": 85000,
+      "proofs": {
+        "completedReservationReceipt": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "supervisorUncertainAttempt": false,
+        "zeroInFlightAtFinalReceipt": true,
+        "zeroPendingRpcAtFinalReceipt": true,
+        "terminalSocketCounterMatchesReservationReceipt": true,
+        "transportSettled": true,
+        "physicalSlotUncertain": false,
+        "closedAt": 1793087374435,
+        "endedAt": 1793087374433,
+        "fullCaptureCounterMatches": true
+      },
+      "receiptPath": "evidence/overnight-20261027/11-combined/summary.json",
+      "supervisorPath": "evidence/overnight-20261027/11-combined/supervisor.json",
+      "reportedDurationMs": 70979.837774,
+      "reportedDurationMeaning": "Attempt/helper elapsed duration, not substituted for exact transport-open-to-closed time.",
+      "actualConnectionTimeMs": null
+    },
+    {
+      "captureId": "scheduler-forward-20261027",
+      "reservedBytes": 146800640,
+      "observedConsumedSocketBytes": 76013520,
+      "releasedUnusedBytes": 70787120,
+      "historicalReservedMs": 90000,
+      "proofs": {
+        "completedDiagnosticReceipt": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "supervisorUncertainAttempt": false,
+        "physicalSlotUncertain": false,
+        "zeroPendingHintsAtFinalReceipt": true,
+        "closedAt": 1793114422360,
+        "endedAt": 1793114422295,
+        "captureAndSummaryCountersMatch": true,
+        "newLinkedReservationBaselineHashMatches": true,
+        "transportSettled": true
+      },
+      "receiptPath": "evidence/scheduler-forward-20261027/summary.json",
+      "supervisorPath": "evidence/scheduler-forward-20261027/supervisor.json",
+      "reportedDurationMs": 76616.66883200001,
+      "reportedDurationMeaning": "Capture-helper attempt elapsed time; observed open duration alone is not a connection-time replacement.",
+      "actualConnectionTimeMs": null
+    }
+  ],
+  "reconciliation": {
+    "grossHistoricalReservedBytes": 415236096,
+    "grossHistoricalReservedMiB": 396.0,
+    "retainedObservedConsumedSocketBytes": 271949619,
+    "unusedBytesReleasedByThisNewRecord": 143286477,
+    "netCommittedBytesAfterRelease": 271949619,
+    "uncertainUnusedPumpApiBytesRetained": 0,
+    "allSixTransportSettlementAndCounterProofsPassed": true,
+    "grossHistoricalReservedMs": 320000,
+    "timeReleasedMs": 0,
+    "retainedHistoricalTimeReservationMs": 320000,
+    "actualCumulativeConnectionTimeMs": null,
+    "timeReason": "Observed probe/helper/process/open durations use different anchors. No uniform verified exact connection duration exists across all six captures. All320000ms remain visible; no actual connection-time total or time release is invented.",
+    "releaseApplication": "This new append-only event reconciles only unused byte reservations. Original reservations, receipts, counters and actual consumed traffic remain immutable. Future experiments must create their own bounded allocations under the standing authorization; no connection or automatic retry starts from this record.",
+    "transportCounterConvention": "Observed Node socket bytesRead under the original receipt convention. This is not complete packet-captured TLS/proxy/IP overhead; no previously unmeasured wire bytes are invented or silently treated as measured."
+  },
+  "rpcAccountingRetained": {
+    "historicCompletedRequestUnits": 221,
+    "historicFormerLifetimeCeilingUnits": 240,
+    "historicUnusedHeadroomAtGrantClose": 19,
+    "formerLifetimeCeilingIsCurrentProviderLimit": false,
+    "retainedOldUnknownResponseBytes": 2097152,
+    "cumulativeObservedRelatedBytes": 2314558,
+    "cumulativeAccountedRelatedBytes": 4411710,
+    "unknownResponseBytesReleased": 0,
+    "rule": "Current experiments use their separately declared request/byte/time budgets, while cumulative history and the old HTTP429 remain visible. Provider throttling is binding; no endpoint or identity rotation and no assumption that a standing authorization changes provider quotas."
+  },
+  "pacingReview": {
+    "classification": "PURE_ARITHMETIC_NOT_PROVIDER_OR_LIVE_CAPACITY_VALIDATION",
+    "physicalSpacingHypothesesMs": [
+      1000,
+      250
+    ],
+    "fixedAggregateStartsPerRollingMinute": 60,
+    "fixedAggregateStartsPerRolling10Seconds": 10,
+    "fixedPhysicalOperationsInFlight": 1,
+    "publicDocumentationEligibility": "Root must verify current official public-endpoint constraints before any250ms experiment; this arithmetic does not authorize a new provider request.",
+    "formula": "Let C be last usable completed protection, L actual last physical start, S spacing, H=reservationReserve+dispatchJitter, Bj candidate service/use bound, Bp protected service/use bound. At actual readiness, candidate dispatch a admits only if nextProtectedComplete=max(a+H+S,a+H+Bj)+H+Bp <= min_h(C_h+G). For sensitivity from C use a=C+max(0,L+S-C); no zero-jitter or equal-prior-service cancellation is assumed.",
+    "actualReadiness": "Do not start low-priority work before readyAt. Suspend candidate work during pending actions or recovery; retain required hints and invalidate their windows if service cannot complete within5000ms.",
+    "samples": [
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 1000,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2450,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 1000,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2550,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 1000,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2650,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 1000,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2750,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 1000,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3550,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 1000,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3650,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 941,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2391,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 941,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2491,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 941,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2591,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 941,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2691,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 941,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3491,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 941,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3591,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 869,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2319,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 869,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2419,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 869,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2519,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 869,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2619,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 869,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3419,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 869,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3519,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 500,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1950,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 500,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2050,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 500,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2150,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 500,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2250,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 500,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3050,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 500,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 3150,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1450,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1550,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1650,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1750,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2550,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 1000,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2650,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 250,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1000,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 250,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1100,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 250,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1400,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 250,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1500,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 250,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2800,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 0,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 250,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2900,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 191,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 941,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 191,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1041,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 191,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1341,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 191,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1441,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 191,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2741,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 59,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 191,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2841,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 119,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 869,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 119,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 969,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 119,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1269,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 119,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1369,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 119,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2669,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 131,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 119,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2769,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 750,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 850,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1150,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1250,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2550,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 500,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2650,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 750,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 300,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 850,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1150,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 500,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 1250,
+        "withinHypothetical2500msCompletedGap": true
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 50,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2550,
+        "withinHypothetical2500msCompletedGap": false
+      },
+      {
+        "physicalSpacingMs": 250,
+        "actualPriorProtectionStartToCompletionMs": 1200,
+        "hypotheticalCandidateAndProtectionUseBoundMs": 1200,
+        "reservationReserveMs": 25,
+        "dispatchJitterBoundMs": 100,
+        "pacerWaitAfterActualPriorCompletionMs": 0,
+        "earliestNextProtectedCompletionUpperBoundAfterPriorCompletionMs": 2650,
+        "withinHypothetical2500msCompletedGap": false
+      }
+    ],
+    "shortBurstIllustration": "250ms minimum spacing permits short bursts only within the same60/minute and10/10s aggregate gates. It is not permission for continuous4requests/second. Full1200ms physical/use jobs can still dominate the spacing; smaller spacing alone does not prove protection or enrichment capacity.",
+    "noNewRiskSettingChosen": true
+  },
+  "sourceFilesBefore": [
+    {
+      "path": "evidence/free-data-20261027/pumpapi-budget.json",
+      "sha256": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+      "bytes": 1318
+    },
+    {
+      "path": "evidence/overnight-20261027/pumpapi-budget.json",
+      "sha256": "7e1fffb72cb7c55f13655859a678863b2ffacb75ee2b4fb1583c7a57a3ee7d29",
+      "bytes": 1051
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/pumpapi-budget.json",
+      "sha256": "8c82938fb754d7fadc7439f6e9825bdcfa7e48fc4d29b7898bf1f6719d5a3878",
+      "bytes": 641
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/counteranalysis.json",
+      "sha256": "0afe2f64a95293c97f79718dc254204c6ee26724c3e7b250e41baab933a703a6",
+      "bytes": 18425
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.json",
+      "sha256": "65ca506ccc7a53c70ebb89c9afcbac808ba8441a27843d89d0c00bb683a9de32",
+      "bytes": 7404
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.ndjson",
+      "sha256": "901d64516ca3ed5d74ef02e6e41c00426d246e17a194e982481813e78ea5afef",
+      "bytes": 986
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.json",
+      "sha256": "64c2622b9cfab8afd1b2a210bb4bfaf5607f8c4acafa8197eb80d690e0af7b4b",
+      "bytes": 10558
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.ndjson",
+      "sha256": "322fe52c0cb46f2b045fc0a5d278e0bc66c905b9db11ece81b5b427af87ff491",
+      "bytes": 985
+    },
+    {
+      "path": "evidence/overnight-20261027/05-sampler/summary.json",
+      "sha256": "b81a42f79ad92c469e5e0c88a4bddec19d404ce1b7aa2a15e2e83894eb910149",
+      "bytes": 11642
+    },
+    {
+      "path": "evidence/overnight-20261027/05-sampler/supervisor.json",
+      "sha256": "38e331b5c4219adde806ce48ca6488f229445d9d78db58c83210c0f47568d8ee",
+      "bytes": 13091
+    },
+    {
+      "path": "evidence/overnight-20261027/05-sampler/hints.json",
+      "sha256": "9d836d06222f918d95f516dd1207121e347ab2a43028f155f3d31d876a053d2d",
+      "bytes": 8693
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/summary.json",
+      "sha256": "d5fcb2768bfe9980c85c36996bbd6e3a544f6700bcc4e03b3afa28d9aa32d6cc",
+      "bytes": 6072
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/supervisor.json",
+      "sha256": "c39873d954e52c11c27267a8bde81ecf81c22bca333adf4351e4b556b8abdfc5",
+      "bytes": 7304
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/capture.json",
+      "sha256": "15d42d745b83f84dd2549a7f6c259565f036a3b83fda8a6818cfcf63b99272e1",
+      "bytes": 118452
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/summary.json",
+      "sha256": "2af351ef7c628b32bfd1efbbd0b9374278e1bab9d0b505b48694c37e4f31f2ed",
+      "bytes": 51914
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/supervisor.json",
+      "sha256": "295fefe16ecd49e8b114dadf4e18b73ebc4f32f6638ec7889f530f2474a73b34",
+      "bytes": 56517
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467",
+      "bytes": 329724
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/summary.json",
+      "sha256": "59d374166cc0a01b4a0e4eab8e656309a1e5e36c3f6d5c874dc9129650bbbfc8",
+      "bytes": 104932
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/supervisor.json",
+      "sha256": "67a2e999ec4a70523d06f6bc23ac5b60e6837bd5acf6e6bf481569e3b5a04a24",
+      "bytes": 112999
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/capture.json",
+      "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce",
+      "bytes": 316117
+    }
+  ],
+  "sourceFilesAfter": [
+    {
+      "path": "evidence/free-data-20261027/pumpapi-budget.json",
+      "sha256": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/pumpapi-budget.json",
+      "sha256": "7e1fffb72cb7c55f13655859a678863b2ffacb75ee2b4fb1583c7a57a3ee7d29",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/pumpapi-budget.json",
+      "sha256": "8c82938fb754d7fadc7439f6e9825bdcfa7e48fc4d29b7898bf1f6719d5a3878",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/counteranalysis.json",
+      "sha256": "0afe2f64a95293c97f79718dc254204c6ee26724c3e7b250e41baab933a703a6",
+      "unchanged": true
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.json",
+      "sha256": "65ca506ccc7a53c70ebb89c9afcbac808ba8441a27843d89d0c00bb683a9de32",
+      "unchanged": true
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.ndjson",
+      "sha256": "901d64516ca3ed5d74ef02e6e41c00426d246e17a194e982481813e78ea5afef",
+      "unchanged": true
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.json",
+      "sha256": "64c2622b9cfab8afd1b2a210bb4bfaf5607f8c4acafa8197eb80d690e0af7b4b",
+      "unchanged": true
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.ndjson",
+      "sha256": "322fe52c0cb46f2b045fc0a5d278e0bc66c905b9db11ece81b5b427af87ff491",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/05-sampler/summary.json",
+      "sha256": "b81a42f79ad92c469e5e0c88a4bddec19d404ce1b7aa2a15e2e83894eb910149",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/05-sampler/supervisor.json",
+      "sha256": "38e331b5c4219adde806ce48ca6488f229445d9d78db58c83210c0f47568d8ee",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/05-sampler/hints.json",
+      "sha256": "9d836d06222f918d95f516dd1207121e347ab2a43028f155f3d31d876a053d2d",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/summary.json",
+      "sha256": "d5fcb2768bfe9980c85c36996bbd6e3a544f6700bcc4e03b3afa28d9aa32d6cc",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/supervisor.json",
+      "sha256": "c39873d954e52c11c27267a8bde81ecf81c22bca333adf4351e4b556b8abdfc5",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/capture.json",
+      "sha256": "15d42d745b83f84dd2549a7f6c259565f036a3b83fda8a6818cfcf63b99272e1",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/summary.json",
+      "sha256": "2af351ef7c628b32bfd1efbbd0b9374278e1bab9d0b505b48694c37e4f31f2ed",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/supervisor.json",
+      "sha256": "295fefe16ecd49e8b114dadf4e18b73ebc4f32f6638ec7889f530f2474a73b34",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/summary.json",
+      "sha256": "59d374166cc0a01b4a0e4eab8e656309a1e5e36c3f6d5c874dc9129650bbbfc8",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/supervisor.json",
+      "sha256": "67a2e999ec4a70523d06f6bc23ac5b60e6837bd5acf6e6bf481569e3b5a04a24",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/capture.json",
+      "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce",
+      "unchanged": true
+    }
+  ],
+  "allProofSourcesUnchanged": true,
+  "productionChanged": false,
+  "paperEntriesEnabled": false,
+  "financialAccountChanged": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

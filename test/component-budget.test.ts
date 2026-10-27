@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {ComponentBudget,COMPONENT_LIMITS,type ComponentOperation,type ComponentKind} from '../src/component-budget.js';
+import {ComponentBudget,COMPONENT_LIMITS,LEGACY_COMPONENT_BUDGET_LIMITS,type ComponentOperation,type ComponentKind} from '../src/component-budget.js';
 const MIB=1024*1024;
 const HTTP:ComponentKind={transport:'http',method:'getMultipleAccounts'},UPGRADE:ComponentKind={transport:'ws-upgrade',method:'upgrade'},SUB:ComponentKind={transport:'ws',method:'accountSubscribe'};
 function fixture(t:TestContext,recent=false){
@@ -156,4 +156,65 @@ test('failed diagnostic after invocation retains the physical slot until actual 
   try{
     const op=b.operate(HTTP,async()=>new Promise<void>(r=>{release=r;}),undefined,{timeoutMs:5});await assert.rejects(op,/ABORTED/);assert.equal(b.inFlight,1);assert.throws(()=>b.close(),/PHYSICAL_SLOT/);release();for(let i=0;i<8&&b.inFlight;i++)await new Promise(r=>setImmediate(r));assert.equal(b.inFlight,0);assert.equal(b.usage().uncertainResponseBytes,2*MIB);
   }finally{b.close();}
+});
+
+test('legacy defaults retain lifetime caps and do not add a limits field to historical books',async t=>{
+  const f=fixture(t),b=new ComponentBudget(f.options);assert.deepEqual(b.usage().limits,LEGACY_COMPONENT_BUDGET_LIMITS);assert.equal(f.read().limits,undefined);b.close();
+  const before=readFileSync(f.options.statePath,'utf8');assert.throws(()=>new ComponentBudget({...f.options,limits:{minSpacingMs:250}}),/LIMITS_CONFLICT/);assert.equal(readFileSync(f.options.statePath,'utf8'),before);
+  assert.throws(()=>new ComponentBudget({...f.options,baseline:{...f.options.baseline,calls:241,starts:Array.from({length:241},(_,i)=>i)}}),/INVALID_BASELINE/);
+  assert.throws(()=>new ComponentBudget({...f.options,baseline:{...f.options.baseline,bytes:64*MIB+1}}),/INVALID_BASELINE/);
+  const g=fixture(t),full=new ComponentBudget({...g.options,baseline:{...g.options.baseline,calls:240,starts:Array.from({length:240},(_,i)=>i)}});
+  try{await assert.rejects(full.operate(HTTP,done),/UNIT_CAP/);assert.equal(full.calls,240);}finally{full.close();}
+});
+
+const standingLimits={maxNewUnits:100,maxCumulativeUnits:null,maxCumulativeBytes:null,minSpacingMs:250,maxStartsPerMinute:60,maxStartsPer10s:10} as const;
+test('explicit standing limits carry cumulative calls and accounted bytes beyond historical caps with250ms physical spacing',async t=>{
+  const f=fixture(t),baseline={...f.options.baseline,calls:245,bytes:70*MIB,starts:Array.from({length:245},(_,i)=>i)},options={...f.options,baseline,limits:standingLimits},b=new ComponentBudget(options);
+  try{
+    for(const kind of [HTTP,UPGRADE,SUB])await b.operate(kind,async c=>{if(kind===HTTP)c.chargeHttp(17);c.completeResponse();});
+    assert.deepEqual(b.usage().starts,[100000,100250,100500]);assert.equal(b.calls,248);assert.equal(b.bytes,70*MIB+17);assert.deepEqual(b.usage().baseline,baseline);
+    assert.equal(b.usage().remainingCumulativeUnits,null);assert.equal(b.usage().remainingCumulativeResponseBytes,null);assert.equal(b.usage().remainingGrantUnits,97);
+    assert.deepEqual(f.read().limits,b.usage().limits);b.close();
+    const resumed=new ComponentBudget(options);assert.equal(resumed.calls,248);assert.equal(resumed.bytes,70*MIB+17);resumed.close();
+    assert.throws(()=>new ComponentBudget({...options,limits:{...standingLimits,minSpacingMs:500}}),/LIMITS_CONFLICT/);
+  }finally{if(!b.usage().closed)b.close();}
+});
+
+test('standing rolling10/10s and60/minute caps constrain bursts independently of250ms spacing',async t=>{
+  const f=fixture(t),b=new ComponentBudget({...f.options,limits:standingLimits});
+  try{
+    for(let i=0;i<61;i++)await b.operate(HTTP,done);
+    const starts=b.usage().starts;assert.deepEqual(starts.slice(0,3),[100000,100250,100500]);assert.equal(starts[10],110000);assert.equal(starts[60],160000);
+    for(const at of starts){assert.ok(starts.filter(s=>s>at-10000&&s<=at).length<=10);assert.ok(starts.filter(s=>s>at-60000&&s<=at).length<=60);}
+    assert.ok(starts.slice(1).every((s,i)=>s-starts[i]!>=250));assert.equal(b.inFlight,0);
+  }finally{b.close();}
+});
+
+test('standing mode still enforces per-run request and byte ceilings and keeps failed response uncertainty',async t=>{
+  const f=fixture(t),b=new ComponentBudget({...f.options,limits:{...standingLimits,maxNewUnits:1,maxHttpBytes:4*MIB,maxWsBytes:0,maxCombinedBytes:4*MIB}});
+  try{await b.operate(HTTP,done);await assert.rejects(b.operate(HTTP,done),/UNIT_CAP/);assert.equal(b.calls,21);}finally{b.close();}
+  const g=fixture(t),other=new ComponentBudget({...g.options,limits:{...standingLimits,maxHttpBytes:4*MIB,maxWsBytes:0,maxCombinedBytes:4*MIB}});
+  try{await assert.rejects(other.operate(HTTP,async c=>{c.chargeHttp(42);throw Error('COMPONENT_HTTP_TRANSPORT');}),/TRANSPORT/);assert.equal(other.usage().httpBytes,42);assert.equal(other.usage().uncertainResponseBytes,2*MIB);assert.equal(other.usage().pending.length,1);}finally{other.close();}
+});
+
+test('monotonic admission closes without a reservation before or after pacing',async t=>{
+  const f=fixture(t),b=new ComponentBudget(f.options);let physical=0;
+  try{
+    await assert.rejects(b.operate(HTTP,async c=>{physical++;c.completeResponse();},undefined,{admissionOpen:()=>false}),/ADMISSION_CLOSED/);assert.equal(b.calls,20);assert.equal(b.usage().haltedReason,null);
+    await b.operate(HTTP,done);
+    await assert.rejects(b.operate(HTTP,async c=>{physical++;c.completeResponse();},undefined,{admissionOpen:()=>f.now<100500}),/ADMISSION_CLOSED/);
+    assert.equal(f.now,101000);assert.equal(b.calls,21);assert.equal(physical,0);assert.equal(b.usage().pending.length,0);assert.equal(b.usage().haltedReason,null);
+  }finally{b.close();}
+});
+
+test('admission closure during durable reservation never invokes transport and conservatively retains the charged unit and bytes',async t=>{
+  const f=fixture(t);let writes=0,physical=0;const b=new ComponentBudget({...f.options,beforePersist(){if(++writes===2)f.now+=100;}});
+  try{
+    await assert.rejects(b.operate(HTTP,async c=>{physical++;c.completeResponse();},undefined,{admissionOpen:()=>f.now<100050}),/ADMISSION_CLOSED/);
+    assert.equal(physical,0);assert.equal(b.calls,21);assert.equal(b.usage().actualInvokedUnits,0);assert.equal(b.usage().uncertainResponseBytes,2*MIB);assert.equal(b.usage().haltedReason,'COMPONENT_ADMISSION_CLOSED');assert.equal(b.inFlight,0);
+  }finally{b.close();}
+});
+
+test('malformed or unbounded run-limit settings are refused before creating a counterbook',t=>{
+  const f=fixture(t);for(const limits of [{maxNewUnits:0},{maxNewUnits:1001},{minSpacingMs:0},{maxStartsPerMinute:601},{maxStartsPer10s:61},{maxCombinedBytes:0},{maxHttpBytes:257*MIB},{maxCumulativeUnits:undefined},{unknown:1}])assert.throws(()=>new ComponentBudget({...f.options,limits}),/INVALID_LIMITS/);
 });

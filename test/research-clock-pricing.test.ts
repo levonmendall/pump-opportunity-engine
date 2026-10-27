@@ -52,6 +52,17 @@ test('same-batch Clock research path uses2cold/1steady reads, preserving exact e
   assert.ok(f.records.filter(x=>x.kind==='research-clock-pool-state').every(x=>x.data.addresses.length===8));
 }));
 
+test('explicit observation admission reaches every physical read and late preparation cannot return a usable mark',async()=>withTime(async f=>{
+  let open=true;const options:any[]=[];
+  const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,option?:unknown){options.push(option);return f.rpc.call<T>(method,params);}};
+  const p=new ResearchClockPositionPricer(rpc,{record(kind,data){f.rec.record(kind,data);if(kind==='research-clock-position-sell-quote')open=false;}});
+  const admission={latestStartAt:Date.now()+1000,admissionOpen:()=>open};
+  await assert.rejects(p.quoteMany([f.request],undefined,admission),/RESEARCH_CLOCK_ADMISSION_CLOSED/);
+  assert.equal(options.length,2);for(const option of options){assert.equal(option.latestStartAt,admission.latestStartAt);assert.equal(option.admissionOpen,admission.admissionOpen);}
+  assert.equal(p.usage().cachedPoolSlot,null);
+  const before=f.calls.length;await assert.rejects(p.quoteMany([f.request],undefined,admission),/RESEARCH_CLOCK_ADMISSION_CLOSED/);assert.equal(f.calls.length,before);
+}));
+
 test('fresh changed reserves and newer slot still get one coherent read and exactly match established math',async()=>withTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec),first=await p.quote(f.request);
   const quote=Buffer.from(f.state.value[6].data[0],'base64');quote.writeBigUInt64LE(quote.readBigUInt64LE(64)+10_000_000n,64);f.state.value[6].data[0]=quote.toString('base64');f.moveSlot();
