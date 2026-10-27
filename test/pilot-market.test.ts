@@ -43,7 +43,7 @@ function fixture(t:TestContext){
   for(const c of captures)market.registerPool({mint:c.proof.quote.mint,migrationVerified:true,migrationSlot:c.proof.origin.slot,evidence:'retained actual migration; synthetic current timing'});
   const coordinator=new PaperExecutionCoordinator({ledger,now:()=>at,timeoutMs:1000,context:s=>market.context(ledger.state().positions,s),quote:market.executionQuote});
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
-  return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},pause:(p:Promise<void>)=>{wait=p;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;}};
+  return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;}};
 }
 
 test('fresh supported account lengths and current rent define deposits; every entry repeats rent checks',async t=>{
@@ -110,4 +110,43 @@ test('a newer known flow slot arriving during entry pricing prevents an older re
   const pending=f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());await Promise.resolve();await Promise.resolve();
   f.market.minimumSlot(mint,plan.sourceSlot+1);release();assert.equal(await pending,null);
   assert.equal(Object.keys(f.ledger.state().positions).length,0);
+});
+
+
+test('candidate-only support uses unchanged current state validation without rent or an entry plan',async t=>{
+  const f=fixture(t),capture=f.captures[1]!,mint=capture.proof.quote.mint,before=f.ledger.state();
+  const result=await f.market.validateObservationPool(mint,signal());
+  assert.equal(result.mint,mint);assert.equal(result.sourceSlot,capture.state.context.slot);assert.equal(result.at,f.now());assert.match(result.evidence,/^pilot-observation-support:/);
+  assert.deepEqual(f.calls.map(c=>c.method),['getMultipleAccounts','getMultipleAccounts','getBlockTime']);
+  assert.equal(f.records.filter(r=>r.kind==='pilot-entry-cost-preparation').length,0);
+  assert.equal(f.records.filter(r=>r.kind==='pilot-observation-support-validation').length,1);
+  const calls=f.calls.length;
+  assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null,'observation proof cannot substitute for a financial deposit plan');
+  assert.equal(f.calls.length,calls);assert.deepEqual(f.ledger.state(),before);
+});
+
+test('candidate-only support retains mint, pool, vault and fee-owner checks',async t=>{
+  const f=fixture(t),capture=f.captures[1]!,mint=capture.proof.quote.mint;
+  // The selected address indices are the retained decoder's pool/config/fee/
+  // mint/quote-mint/base-vault/quote-vault dependency order.
+  for(const index of [0,2,3,5]){
+    const address=capture.state.addresses[index]!,wire=f.account(address)!;assert.ok(wire);
+    const owner=wire.owner;wire.owner='11111111111111111111111111111111';
+    await assert.rejects(f.market.validateObservationPool(mint,signal()));wire.owner=owner;
+  }
+  assert.equal(f.calls.some(c=>c.method==='getMinimumBalanceForRentExemption'),false);
+  assert.equal(f.records.some(r=>r.kind==='pilot-observation-support-validation'),false);
+});
+
+test('candidate-only support refuses stale records, invalidation, newer slot floors and cancellation',async t=>{
+  const f=fixture(t),mint=f.captures[1]!.proof.quote.mint;
+  f.onRecord(kind=>{if(kind==='size-specific-quote')f.advance(2001);});
+  await assert.rejects(f.market.validateObservationPool(mint,signal()),/PREPARATION_CHANGED_OR_STALE/);
+  f.onRecord(kind=>{if(kind==='size-specific-quote')f.market.invalidate('candidate support changed during validation');});
+  await assert.rejects(f.market.validateObservationPool(mint,signal()),/PREPARATION_CHANGED_OR_STALE/);
+  f.onRecord(kind=>{if(kind==='size-specific-quote')f.market.minimumSlot(mint,f.captures[1]!.state.context.slot+1);});
+  await assert.rejects(f.market.validateObservationPool(mint,signal()),/PREPARATION_CHANGED_OR_STALE/);
+  f.onRecord(()=>{});const controller=new AbortController();controller.abort();const calls=f.calls.length;
+  await assert.rejects(f.market.validateObservationPool(mint,controller.signal),/PREPARATION_UNAVAILABLE/);assert.equal(f.calls.length,calls);
+  assert.equal(f.calls.some(c=>c.method==='getMinimumBalanceForRentExemption'),false);
 });

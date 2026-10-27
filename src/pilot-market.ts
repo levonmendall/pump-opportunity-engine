@@ -85,6 +85,25 @@ export class PilotMarket {
     return plan!;
   }
   private floor(mint:string,min=0){return Math.max(min,this.floors.get(mint)??0,this.pools.get(mint)?.migrationSlot??0);}
+  /** Candidate observation needs current supported pool evidence, not simulated
+   * account-creation rent. Use the unchanged state decoder/SDK checks, but leave
+   * financial entry plans absent; any future entry must prepare its own costs. */
+  async validateObservationPool(mint:string,signal:AbortSignal):Promise<{mint:string;evidence:string;at:number;sourceSlot:number}>{
+    need(!this.active&&!signal.aborted&&this.pools.has(mint),'PILOT_MARKET_PREPARATION_UNAVAILABLE');
+    this.active=true;const generation=this.generation;
+    try{
+      const state=await quotePool(this.options.rpc as ReadOnlyRpc,new PublicKey(mint),10000000n,this.options.recorder,this.floor(mint),signal);
+      const lengths={base:state.baseAssociatedAccount.accountLengthBytes,quote:state.quoteAssociatedAccount.accountLengthBytes};
+      for(const bytes of Object.values(lengths))need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
+      const received=Date.parse(state.receivedAt);
+      const fresh=()=>{signal.throwIfAborted();const at=this.clock();need(generation===this.generation&&state.slot>=this.floor(mint)&&received<=at&&at-received<=2000&&state.marketBlockTime*1000<=at&&at-state.marketBlockTime*1000<=30000,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');return at;};
+      const at=fresh(),evidence='pilot-observation-support:'+hash({mint,at,state,poolEvidence:this.pools.get(mint)!.evidence});
+      this.options.recorder.record('pilot-observation-support-validation',{mint,evidence,at,sourceSlot:state.slot,requestedAt:state.requestedAt,receivedAt:state.receivedAt,marketBlockTime:state.marketBlockTime,accountLengths:lengths,requests:3,classification:'current supported state/SDK validation only; no rent reads or financial entry plan'});
+      fresh();this.minimumSlot(mint,state.slot);
+      return {mint,evidence,at,sourceSlot:state.slot};
+    }finally{this.active=false;}
+  }
+
   /** Preparation is not an entry estimate or fill. Current supported SDK state
    * establishes account lengths (including Token2022 ImmutableOwner), then
    * current rent is read once per distinct required length. Every call counts.
