@@ -1,6 +1,7 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual, createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { connectionReport, withConnectionDiagnostics } from './dashboard-connectivity.js';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
 
 const equal = (a: string, b: string) => timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest());
@@ -46,7 +47,7 @@ export function createDashboard(config: DashboardConfig) {
     res.setHeader('x-content-type-options', 'nosniff'); res.setHeader('referrer-policy', 'no-referrer');
     res.setHeader('x-frame-options', 'DENY');
     const path = req.url?.split('?')[0];
-    if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard' }); return; }
+    if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard', dashboardRelease: process.env.RENDER_GIT_COMMIT ?? 'local-build', connectivityDiagnostics: 1 }); return; }
     if (path === '/api/snapshot' && req.method === 'POST') {
       if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res, 401, { error: 'unauthorized' }); return; }
       if (cache.identity === null) { req.resume(); send(res, 503, { error: 'source-not-configured', message: 'Awaiting POE data' }); return; }
@@ -65,18 +66,19 @@ export function createDashboard(config: DashboardConfig) {
     }
     if (req.method !== 'GET') { req.resume(); send(res, 405, { error: 'read-only viewer' }); return; }
     if (path === '/status') { send(res, 200, cache.status()); return; }
+    if (path === '/api/connections') { send(res, 200, connectionReport(cache)); return; }
     if (path === '/api/snapshot' || path === '/api/export') {
       const current = cache.read();
       if (!current) { send(res, 503, { state: 'waiting', message: 'Awaiting POE data' }); return; }
       if (path === '/api/export') res.setHeader('content-disposition', 'attachment; filename="poe-bounded-snapshot.json"');
-      send(res, 200, { ...current, freshness: cache.status() }); return;
+      send(res, 200, { ...current, freshness: cache.status(), connections: connectionReport(cache) }); return;
     }
     if (path !== '/') { send(res, 404, { error: 'not found' }); return; }
     res.writeHead(200, {
       'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
       'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     });
-    res.end(HTML);
+    res.end(withConnectionDiagnostics(HTML));
   });
   server.keepAliveTimeout = 5000; server.maxRequestsPerSocket = 100;
   return { server, cache };
@@ -264,21 +266,24 @@ function showSnapshot(s,received,f){
  signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
  byId('exportLink').hidden=false;
 }
+let refreshInFlight=false;
 async function refresh(){
+ if(refreshInFlight)return;
+ refreshInFlight=true;
  try{
-  const resp=await fetch('/api/snapshot',{cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(4000)});
+  const resp=await fetch('/api/snapshot',{cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(10000)});
   if(!resp.ok)throw new Error(resp.status===503?'SOURCE_NOT_CONFIGURED':'REPORTING_HTTP_'+resp.status);
   const result=await resp.json();
   if(!result||!result.snapshot||!result.freshness)throw new Error('SNAPSHOT_UNAVAILABLE');
-  showSnapshot(result.snapshot,result.receivedAt,result.freshness);
+  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.connections);
  }catch(error){
   const reason=error instanceof Error?error.message:'REPORTING_UNAVAILABLE';
   if(reason==='SOURCE_NOT_CONFIGURED'){if(!latest)signal('Awaiting authoritative data','No verified EC2 snapshot is configured. This dashboard will not fabricate balances, charts, or trades.','SOURCE NOT CONNECTED','pending');else signal('Source reporting unavailable','Last received data is retained for inspection, but current source configuration is unavailable.','SOURCE UNAVAILABLE','warning')}
   else{signal(latest?'Data link interrupted':'Reporting unavailable',latest?'Last received snapshot remains displayed; do not treat it as current.':'Unable to obtain a verified source snapshot. Portfolio values remain unavailable.',reason,'error')}
- }
+ }finally{refreshInFlight=false}
 }
 document.querySelectorAll('.rail-link').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.rail-link').forEach(n=>n.classList.remove('selected'));link.classList.add('selected')}));
-clock();setInterval(clock,1000);plot([]);refresh();setInterval(refresh,30000);
+clock();setInterval(clock,1000);plot([]);refresh();setInterval(refresh,15000);
 window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
 </script>
 </body></html>`;
