@@ -198,3 +198,16 @@ test('shared support wait coalesces all cached identities while fresh verificati
  // A newer shared phase reservation still blocks selection after the old expiry.
  assert.equal(choosePilotPreparation(cached[0]!,[],sharedReadyAt,false,sharedReadyAt+1000),null);
 });
+
+
+test('shared transaction-method wait leaves fresh seeds queued and permits ready cached support',()=>{
+ const cached={signature:'cached',receivedAt:1},fresh={signature:'fresh',receivedAt:1};
+ assert.equal(choosePilotPreparation(cached,[fresh],40000,true,0,41000)!.kind,'verified-cache');
+ const seeds=[fresh];assert.equal(choosePilotPreparation(null,seeds,40000,true,0,41000),null);assert.deepEqual(seeds,[fresh]);
+ assert.equal(choosePilotPreparation(cached,seeds,40000,false,42000,41000),null);
+ assert.equal(choosePilotPreparation(null,seeds,41000,true,0,41000)!.kind,'fresh-discovery');
+ // Read method eligibility before taking selection time: an available method's
+ // now-return cannot be compared against a stale event-loop timestamp.
+ const methodReadyAt=41001,selectionAt=41002;
+ assert.equal(choosePilotPreparation(null,seeds,selectionAt,true,0,methodReadyAt)!.kind,'fresh-discovery');
+});
