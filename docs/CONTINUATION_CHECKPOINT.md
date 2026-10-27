@@ -36,3 +36,18 @@ research runner and live network. One writer/dispatcher for research counters.
 Production untouched this run; no fresh health claim. Original account/inception,
 EC2 observer, Render and financial history preserved. PAPER/live entries disabled;
 no acceptance clock. Update this checkpoint after each actual evidence milestone.
+
+
+Second milestone:07-field obtained3actualSellV2 (1direct+2JupiterCPI),3confirmed
+lookups,0qualitygaps,29.289sopen,23,684,526socketbytes. UIamounts matchintegerbase
+units/grosscurveSOL; netfeesdifferent; RPCneededforcommitment/wholeeventidentity.
+08independentaudit matched3/3compiledswaps in25sinterior,2finalizedrechecksagree;
+zero60scompletewindows andBuy/multiple-selectedswapcasesstillunobserved.
+03freeonlylistenerclosedearlyafter1hint; actualnonSOLquoteprovenoffline. No second
+migrationlistener. 05PumpApisampler16MiB10sreservation actual77,425bytes1.637s,
+then07reserved64MiB35s. LinkedPumpApireservations192MiB145s;64MiB155sremain.
+CurrentRPC51units/551,621measuredrelatedbytes (confirm from08bookbeforeuse).
+Next09-notifications pendingreviewfixes; thenconsideronecombined60s+warm-up test
+withinlastPumpApi64MiB, usingavailablecounter/headroom. No new429. No prodcheck.
+Checkpointcodeincludesimmutableactual01–08receipts; newmutableovernightPumpApi
+bookpreservesoldbaseline andallreservations. Do not touchold112MiB100sbook.

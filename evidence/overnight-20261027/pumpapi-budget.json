@@ -1,0 +1,31 @@
+{
+  "baseline": {
+    "source": "evidence/free-data-20261027/pumpapi-budget.json",
+    "reservedBytes": 117440512,
+    "reservedMs": 100000
+  },
+  "reservedBytes": 201326592,
+  "reservedMs": 145000,
+  "attempts": [
+    {
+      "leg": "05-sampler",
+      "reservedAt": 1793084666462,
+      "reservedBytes": 16777216,
+      "reservedMs": 10000,
+      "status": "completed-with-receipt",
+      "observedSocketBytes": 77425,
+      "reason": null,
+      "fieldStopReason": null
+    },
+    {
+      "leg": "07-field",
+      "reservedAt": 1793084911350,
+      "reservedBytes": 67108864,
+      "reservedMs": 35000,
+      "status": "completed-with-receipt",
+      "observedSocketBytes": 23684526,
+      "reason": null,
+      "fieldStopReason": "COMPONENT_FIELD_DURATION_LIMIT"
+    }
+  ]
+}

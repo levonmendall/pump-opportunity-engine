@@ -1,0 +1,24 @@
+{
+  "seeds": [
+    {
+      "mint": "DGwPC5Ct2sBhH7mYqAxcFihBCrj5dtvSz82sr4Q2pump",
+      "pool": "6mCXHMwJ1yX4MrVPUidDnov4rCf22ZzYUPRvsMSZfAmX",
+      "signature": "3dvLTGdpNMK9tqWyxe4S5zBZBr8Kv2Ui6bekKLcRy9YyMRnQDTCiRLs8Exf6h95bXy5pXW8Dsp796GHNsLxriHUB",
+      "observedAt": 1793084140780,
+      "sourceRef": "evidence/overnight-20261027/03-discovery/observations.ndjson",
+      "commitment": "processed",
+      "support": "UNVERIFIED",
+      "payload": {
+        "signature": "3dvLTGdpNMK9tqWyxe4S5zBZBr8Kv2Ui6bekKLcRy9YyMRnQDTCiRLs8Exf6h95bXy5pXW8Dsp796GHNsLxriHUB",
+        "mint": "DGwPC5Ct2sBhH7mYqAxcFihBCrj5dtvSz82sr4Q2pump",
+        "txType": "migrate",
+        "pool": "pump-amm"
+      }
+    }
+  ],
+  "receivedSocketBytes": 467,
+  "oneConnection": true,
+  "paidMethods": false,
+  "sourceCommitment": "processed",
+  "support": "UNVERIFIED"
+}

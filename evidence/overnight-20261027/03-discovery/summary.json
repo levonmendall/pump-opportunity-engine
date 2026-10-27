@@ -1,0 +1,128 @@
+{
+  "outcome": "STOPPED_COMPONENT_PARENT_STOP",
+  "reason": "COMPONENT_PARENT_STOP",
+  "startedAt": 1793083779974,
+  "finishedAt": 1793084246362,
+  "elapsedMs": 466388,
+  "results": [
+    {
+      "objective": "FREE_MIGRATION_DISCOVERY",
+      "seeds": [
+        {
+          "mint": "DGwPC5Ct2sBhH7mYqAxcFihBCrj5dtvSz82sr4Q2pump",
+          "pool": "6mCXHMwJ1yX4MrVPUidDnov4rCf22ZzYUPRvsMSZfAmX",
+          "signature": "3dvLTGdpNMK9tqWyxe4S5zBZBr8Kv2Ui6bekKLcRy9YyMRnQDTCiRLs8Exf6h95bXy5pXW8Dsp796GHNsLxriHUB",
+          "observedAt": 1793084140780
+        }
+      ],
+      "receivedSocketBytes": 467
+    }
+  ],
+  "usage": {
+    "grantId": "overnight-03-discovery",
+    "baseline": {
+      "calls": 34,
+      "bytes": 426538,
+      "starts": [
+        1793069031002,
+        1793069031314,
+        1793069031396,
+        1793069031462,
+        1793069031573,
+        1793069031683,
+        1793070868114,
+        1793070868438,
+        1793070868560,
+        1793070868620,
+        1793070868784,
+        1793070868860,
+        1793070868907,
+        1793070868987,
+        1793070869076,
+        1793070869128,
+        1793070869216,
+        1793070869294,
+        1793070869347,
+        1793070869405,
+        1793081386306,
+        1793081387309,
+        1793081388313,
+        1793081389315,
+        1793083252240,
+        1793083253245,
+        1793083254248,
+        1793083255251,
+        1793083256255,
+        1793083419722,
+        1793083420725,
+        1793083421729,
+        1793083422732,
+        1793083423735
+      ],
+      "refusal": "RPC_HTTP_429",
+      "refusalAt": 1793070869405,
+      "sha256": "f6c4d9843cdf26165f229c97d241167f3e0633bcbbd56298133ab4ab1a78c2a7"
+    },
+    "cumulativeUnits": 36,
+    "newUnits": 2,
+    "actualInvokedUnits": 2,
+    "cumulativeResponseBytes": 427005,
+    "httpBytes": 0,
+    "wsBytes": 467,
+    "newResponseBytes": 467,
+    "remainingGrantUnits": 68,
+    "remainingCumulativeUnits": 204,
+    "remainingGrantResponseBytes": 33553965,
+    "remainingCumulativeResponseBytes": 66681859,
+    "pending": [],
+    "uncertainResponseBytes": 0,
+    "rolling60SecondStarts": 0,
+    "rolling10SecondStarts": 0,
+    "starts": [
+      1793083780796,
+      1793083781799
+    ],
+    "actualInvocations": [
+      {
+        "id": 35,
+        "at": 1793083780796
+      },
+      {
+        "id": 36,
+        "at": 1793083781799
+      }
+    ],
+    "reservationStarts": [
+      1793083780795,
+      1793083781798
+    ],
+    "byOperation": {
+      "ws-upgrade:upgrade": 1,
+      "ws:subscribeMigration": 1
+    },
+    "durationsMs": [
+      207.59133600000007,
+      33.693234000000075
+    ],
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "haltedReason": "COMPONENT_PARENT_STOP",
+    "startedAt": 1793083779974,
+    "totalMs": 600000,
+    "deadlineAt": 1793084379974,
+    "closed": false,
+    "storageFailed": false
+  },
+  "resources": {
+    "maxRss": 127553536,
+    "maxLag": 8.9602889999951,
+    "cpu": {
+      "user": 1023288,
+      "system": 268785
+    }
+  },
+  "productionTouched": false,
+  "paperEntries": false,
+  "liveTrading": false,
+  "acceptanceClock": false
+}

@@ -63,10 +63,14 @@ export async function runComponentLauncher(childScript:string,overnight?:{leg:st
   const refusalAt=Math.max(old.lastObservedAt,...old.starts);
   need(Number.isSafeInteger(refusalAt)&&refusalAt<=startedAt&&startedAt-refusalAt>=300000,'COMPONENT_PROVIDER_COOLDOWN_NOT_ELAPSED');
   const priorRoots=['evidence/free-data-20261027','evidence/adaptive-monitoring',...(overnight?['evidence/public-component-20261027','evidence/overnight-20261027']:[])].map(p=>resolve(repo,p)),priorFiles=priorRoots.flatMap(files);
-  const priorEvidence=hashes(priorFiles,repo),priorEvidenceBytes=bytes(priorFiles);
+  const immutableFiles=overnight?priorFiles.filter(p=>p!==resolve(overnightRoot,'pumpapi-budget.json')):priorFiles;
+  const priorEvidence=hashes(immutableFiles,repo),priorEvidenceBytes=bytes(priorFiles);
   need(priorEvidenceBytes+MAX_NEW_EVIDENCE<=MAX_ALL_EVIDENCE,'COMPONENT_CUMULATIVE_EVIDENCE_RESERVE');
   const sourcePaths=[script,resolve(repo,'scripts/component-launcher.ts'),...['src/component-budget.ts','src/component-selection.ts','src/component-transport.ts','src/component-parity.ts','src/research-clock-pricing.ts','src/pool.ts','src/sdk.ts','src/pumpapi-mapping.ts','src/active-selection.ts','src/strategy.ts','src/network.ts','package.json','package-lock.json'].map(p=>resolve(repo,p))];
   if(overnight)sourcePaths.push(resolve(repo,'src/research-baseline.ts'));
+  if(script.endsWith('/overnight-notifications.ts'))sourcePaths.push(resolve(repo,'src/component-results.ts'));
+  if(script.endsWith('/overnight-active.ts'))for(const path of ['scripts/active-pumpapi-trial.ts','src/active-pipeline.ts','src/research-rpc.ts'])sourcePaths.push(resolve(repo,path));
+  if(script.endsWith('/overnight-feed.ts'))for(const path of ['src/overnight-field.ts','src/active-pipeline.ts','src/pumpapi-probe.ts'])sourcePaths.push(resolve(repo,path));
   const sourceHashes=hashes(sourcePaths,repo);
   const lockPath='/tmp/poe-public-component-20261027.lock',lease=openSync(lockPath,constants.O_RDWR|constants.O_CREAT|constants.O_NOFOLLOW,0o600);
   let leaseOpen=true;
@@ -75,7 +79,7 @@ export async function runComponentLauncher(childScript:string,overnight?:{leg:st
     const owned=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',lease],timeout:5000});need(!owned.error&&owned.status===0,'COMPONENT_SUPERVISOR_ALREADY_OWNED');
     const outDir=overnight?resolve(overnightRoot,overnight.leg):resolve(repo,'evidence/public-component-20261027');
     try{mkdirSync(outDir,{mode:0o700});}catch(error){if((error as NodeJS.ErrnoException).code==='EEXIST')throw Error('COMPONENT_GRANT_ALREADY_RECORDED_NO_RETRY');throw error;}
-    const maximumTotalMs=overnight?.leg.endsWith('-discovery')?600000:90000;
+    const maximumTotalMs=overnight?.leg.endsWith('-discovery')?600000:overnight?.leg.endsWith('-sampler')?10000:overnight?.leg.endsWith('-field')?35000:90000;
     const deadlineAt=startedAt+maximumTotalMs;
     if(overnight){
       const grantPath=resolve(overnightRoot,'grant.json');

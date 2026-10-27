@@ -1,0 +1,280 @@
+{
+  "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+  "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+  "signature": "2SWbMaGhG2JhQkrskxRqTrXMDvtBQzevGNAddfBYqUq8ZjHAMcWM8tmeznofz3N8GyYT9t7hhDTpmzC97zFqi8Rm",
+  "receivedAt": 1793084667211,
+  "support": "UNVERIFIED",
+  "raw": {
+    "signature": "2SWbMaGhG2JhQkrskxRqTrXMDvtBQzevGNAddfBYqUq8ZjHAMcWM8tmeznofz3N8GyYT9t7hhDTpmzC97zFqi8Rm",
+    "action": "sell",
+    "poolId": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+    "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+    "quoteMint": "So11111111111111111111111111111111111111112",
+    "txSigner": "5QEKAbV16tnRi8QDHifKPoeTBmrUwZq1ZGoEwwt67BCL",
+    "tokenAmount": 201602.316536,
+    "quoteAmount": 4.602105814,
+    "tokensInPool": 40086217.368469,
+    "quoteInPool": 892.923673143,
+    "price": 0.000022712838328396596,
+    "marketCapQuote": 21868.355069091376,
+    "name": "Hot Bot",
+    "symbol": "HOTBOT",
+    "uri": "https://ipfs.io/ipfs/bafkreic5pwrukpcyhh5wekebvqeejpunioccy2vftg36ub2cg2z655nxgq",
+    "supply": 962819122.511456,
+    "poolFeeRate": 0.0085,
+    "pool": "pump-amm",
+    "poolCreatedBy": "pump",
+    "burnedLiquidity": "100%",
+    "creatorFeeAddress": "21GML1ieck3tVVM1J5N6GsXh51rTrzVF55tbgdcvPAex",
+    "mayhemMode": false,
+    "cashbackEnabled": false,
+    "holderRewardsRate": 0,
+    "virtualQuoteInPool": 17.548101144,
+    "breakdown": [
+      {
+        "action": "sell",
+        "trader": "5QEKAbV16tnRi8QDHifKPoeTBmrUwZq1ZGoEwwt67BCL",
+        "tokenAmount": 201602.316536,
+        "quoteAmount": 4.602105814
+      }
+    ],
+    "decimals": 6,
+    "mintAuthority": null,
+    "freezeAuthority": null,
+    "tokenProgram": "spl-token-2022",
+    "tokenExtensions": {
+      "metadataPointer": {},
+      "tokenMetadata": {}
+    },
+    "tradersInvolved": {
+      "5QEKAbV16tnRi8QDHifKPoeTBmrUwZq1ZGoEwwt67BCL": {}
+    },
+    "programsUsed": [
+      "6Vo3245eszAb5wuqEMw8mGdbfRUdKbHhDHP5LcaGuTAB"
+    ],
+    "preBalances": {
+      "5QEKAbV16tnRi8QDHifKPoeTBmrUwZq1ZGoEwwt67BCL": {
+        "sol": 0.249117666,
+        "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF": 201602.316536,
+        "So11111111111111111111111111111111111111112": 0
+      }
+    },
+    "postBalances": {
+      "5QEKAbV16tnRi8QDHifKPoeTBmrUwZq1ZGoEwwt67BCL": {
+        "sol": 4.786563135,
+        "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF": 0,
+        "So11111111111111111111111111111111111111112": 0
+      }
+    },
+    "addressLookupTables": [],
+    "priorityFee": 0.000009,
+    "block": 461979126,
+    "timestamp": 1793084667017
+  },
+  "observedAt": 1793084667211,
+  "sourceRef": "evidence/overnight-20261027/05-sampler/observations.ndjson",
+  "origin": null,
+  "activityVerifiedAt": 1793084714944,
+  "verifiedSignature": "46UCZs58j87rWChC2D14TjdQMrQsi3cppoa3oHHPgLLG1N3Xv5zSj9ck7uc42QxQdnwsfkocUPAVSSozPQZGghGx",
+  "trades": [
+    {
+      "identity": {
+        "signature": "46UCZs58j87rWChC2D14TjdQMrQsi3cppoa3oHHPgLLG1N3Xv5zSj9ck7uc42QxQdnwsfkocUPAVSSozPQZGghGx",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 3,
+        "eventIndex": 0
+      },
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "trader": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+      "side": "sell",
+      "tokenUnits": "11731280707",
+      "curveQuoteLamports": "266431117",
+      "userQuoteLamports": "264166451",
+      "fees": {
+        "lp_fee": "532863",
+        "protocol_fee": "133216",
+        "coin_creator_fee": "1598587",
+        "cashback": "0",
+        "buyback_fee": "66608",
+        "holder_rewards": "0",
+        "quote_transfer_fee": "0"
+      },
+      "slot": 461979331,
+      "identityKey": "46UCZs58j87rWChC2D14TjdQMrQsi3cppoa3oHHPgLLG1N3Xv5zSj9ck7uc42QxQdnwsfkocUPAVSSozPQZGghGx:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+      "chainBlockTime": 1793084710,
+      "commitment": "confirmed",
+      "providerReceivedAt": null,
+      "availableAt": 1793084714944,
+      "transferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "fingerprint": "17eea15139c5a2a0001a3104715e8963f7624e304f8b4a8a88e513a22eab1f26",
+      "normalizedForStrategy": false,
+      "limitations": [
+        "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+        "The strategy quoteLamports economic convention is not frozen by this mapper.",
+        "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+      ]
+    }
+  ],
+  "minSlot": 461979360,
+  "baseUnits": "436723517",
+  "hypothetical": {
+    "classification": "HYPOTHETICAL_COMPONENT_ONLY",
+    "fullBaseUnits": "436723517",
+    "inputLamports": "10000000",
+    "entryGasLamports": "7000",
+    "entryCostLamports": "10007000",
+    "exitGasLamports": "7000",
+    "sameStateSell": {
+      "inputBaseUnits": "436723517",
+      "outputLamports": "9831215",
+      "grossCurveOutputLamports": "9915497",
+      "embeddedPoolFeeLamports": "84282"
+    },
+    "clock": {
+      "timeEvidence": "confirmed-bank-clock",
+      "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+      "clockSlot": 461979360,
+      "marketClockUnixSeconds": 1793084716,
+      "maxMarketAgeMs": 30000,
+      "owner": "Sysvar1111111111111111111111111111111111111",
+      "executable": false,
+      "rawBytes": 40,
+      "slot": "461979360",
+      "epochStartTimestamp": "1793048300",
+      "epoch": "1069",
+      "leaderScheduleEpoch": "1070",
+      "unixTimestamp": "1793084716",
+      "sourceAgeAtReceiptMs": 929,
+      "provenance": "bank-clock-account-not-independent-block-timestamp"
+    },
+    "nativeVault": {
+      "address": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+      "tokenUnits": "892764588666",
+      "rentReserveLamports": "1488440",
+      "nativeLamports": "892766077241",
+      "sufficientBacking": true,
+      "uncreditedExtraLamports": "135"
+    },
+    "limitations": "Same-state quote-derived quantity and modeled gas assumptions, not an actual entry, position or financial result."
+  },
+  "quote": {
+    "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+    "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+    "slot": 461979360,
+    "commitment": "confirmed",
+    "requestedAt": "2026-10-27T07:05:15.939Z",
+    "receivedAt": "2026-10-27T07:05:16.929Z",
+    "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    "mintExtensions": [
+      "MetadataPointer",
+      "TokenMetadata"
+    ],
+    "decimals": 6,
+    "poolFlags": {
+      "mayhem": false,
+      "cashback": false,
+      "holderReward": false
+    },
+    "rawBaseReserve": "40093762442457",
+    "rawQuoteReserve": "892764588666",
+    "virtualQuoteReserves": "17545791100",
+    "effectiveQuoteReserve": "910310379766",
+    "feeBuckets": "38714347",
+    "feeBps": {
+      "lpFeeBps": "20",
+      "protocolFeeBps": "5",
+      "creatorFeeBps": "60"
+    },
+    "creatorFeeApplied": true,
+    "baseAssociatedAccount": {
+      "accountLengthBytes": 170,
+      "accountExtensions": [
+        "ImmutableOwner"
+      ],
+      "rentLamports": null,
+      "rentStatus": "requires-current-RPC-and-account-existence-check",
+      "depositTreatment": "refundable locked capital when a new account is required"
+    },
+    "quoteAssociatedAccount": {
+      "accountLengthBytes": 165,
+      "accountExtensions": [],
+      "rentLamports": null,
+      "rentStatus": "requires-current-RPC-and-account-existence-check",
+      "depositTreatment": "refundable locked capital when a new account is required"
+    },
+    "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+    "mode": "QUOTE_ONLY",
+    "timeEvidence": "confirmed-bank-clock",
+    "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+    "clockSlot": 461979360,
+    "marketClockUnixSeconds": 1793084716,
+    "maxMarketAgeMs": 30000,
+    "validatedAt": "2026-10-27T07:05:16.936Z",
+    "researchOnly": true,
+    "sell": {
+      "inputBaseUnits": "11731280707",
+      "outputLamports": "264012063",
+      "grossCurveOutputLamports": "266275405",
+      "embeddedPoolFeeLamports": "2263342"
+    },
+    "limitations": [
+      "Current supported-pool full-size sell estimate only; no live fill or stop-price guarantee.",
+      "Embedded pool fees already reduce output; do not debit them again.",
+      "Output excludes network/priority fees and any separately evidenced account-deposit refund.",
+      "Confirmed state/context and original receive time are retained; callers must enforce execution/mark freshness."
+    ]
+  },
+  "parity": {
+    "matches": true,
+    "comparison": "established-decoder-and-pinned-SDK-on-identical-bytes-times-and-size",
+    "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+    "slot": 461979360,
+    "requestedAt": "2026-10-27T07:05:15.939Z",
+    "receivedAt": "2026-10-27T07:05:16.929Z",
+    "fullBaseUnits": "11731280707",
+    "sell": {
+      "inputBaseUnits": "11731280707",
+      "outputLamports": "264012063",
+      "grossCurveOutputLamports": "266275405",
+      "embeddedPoolFeeLamports": "2263342"
+    },
+    "feeBps": {
+      "lpFeeBps": "20",
+      "protocolFeeBps": "5",
+      "creatorFeeBps": "60"
+    },
+    "clock": {
+      "timeEvidence": "confirmed-bank-clock",
+      "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+      "clockSlot": 461979360,
+      "marketClockUnixSeconds": 1793084716,
+      "maxMarketAgeMs": 30000,
+      "owner": "Sysvar1111111111111111111111111111111111111",
+      "executable": false,
+      "rawBytes": 40,
+      "slot": "461979360",
+      "epochStartTimestamp": "1793048300",
+      "epoch": "1069",
+      "leaderScheduleEpoch": "1070",
+      "unixTimestamp": "1793084716",
+      "sourceAgeAtReceiptMs": 929,
+      "provenance": "bank-clock-account-not-independent-block-timestamp"
+    },
+    "nativeVault": {
+      "address": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+      "tokenUnits": "892764588666",
+      "rentReserveLamports": "1488440",
+      "nativeLamports": "892766077241",
+      "sufficientBacking": true,
+      "uncreditedExtraLamports": "135"
+    }
+  },
+  "supportedPoolEvidence": "90616a0cd41cf585c00b12890205685b6a8b1f9144013a70969c863e47f8a3cf",
+  "entryEligibility": "UNVERIFIED_RESEARCH_ONLY"
+}
