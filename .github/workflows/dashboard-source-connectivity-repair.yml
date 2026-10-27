@@ -1,0 +1,88 @@
+name: One-time dashboard connectivity repair
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/apply-dashboard-connectivity-fix.mjs'
+      - '.github/workflows/dashboard-source-connectivity-repair.yml'
+permissions:
+  contents: read
+jobs:
+  repair:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/dashboard-source-connectivity-20261027'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Apply exact dashboard-only repair
+        run: node scripts/apply-dashboard-connectivity-fix.mjs
+      - name: Install pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck, compile and regressions
+        run: npm run build && npm run compile && npm test
+      - name: Inspect current public reporting path
+        continue-on-error: true
+        run: |
+          node --input-type=module <<'JS'
+          const base='https://meme-machine-dashboard-staging.onrender.com';
+          for(const path of ['/healthz','/api/snapshot']) {
+            try {
+              const r=await fetch(base+path,{signal:AbortSignal.timeout(30000)}),v=await r.json();
+              console.log(JSON.stringify({path,status:r.status,health:path==='/healthz'?v:undefined,source:v.snapshot?.source,sequence:v.snapshot?.sequence,account:v.snapshot?.account.id,freshness:v.freshness,funnel:v.snapshot?.funnel,metrics:v.snapshot?.metrics}));
+            } catch(e) {console.log(JSON.stringify({path,error:String(e)}))}
+          }
+          JS
+      - name: Commit only tested dashboard wiring and tests
+        run: |
+          git config user.name 'dashboard-repair'
+          git config user.email 'dashboard-repair@users.noreply.github.com'
+          git add src/dashboard.ts test/reporting.test.ts
+          git diff --cached --check
+          git commit -m 'Wire dashboard connectivity diagnostics and truthful observer states'
+          git push origin HEAD:fix/dashboard-source-connectivity-20261027
+  verify-live:
+    needs: repair
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - name: Verify manually deployed reporting repair
+        run: |
+          node --input-type=module <<'JS'
+          const base='https://meme-machine-dashboard-staging.onrender.com';
+          let ready=false;
+          for(let i=0;i<24;i++){
+            try {const r=await fetch(base+'/healthz',{signal:AbortSignal.timeout(15000)}),v=await r.json();if(v.connectivityDiagnostics===1){console.log('DEPLOYED_HEALTH '+JSON.stringify(v));ready=true;break;}}catch{}
+            await new Promise(r=>setTimeout(r,20000));
+          }
+          if(!ready)throw Error('Reporting repair did not become live within bounded verification window');
+          const html=await fetch(base+'/',{signal:AbortSignal.timeout(15000)}).then(r=>r.text());
+          for(const marker of ['reportingConnections','EVALUATION ENGINE NOT CONNECTED','setInterval(refresh,15000)'])if(!html.includes(marker))throw Error('Missing deployed marker: '+marker);
+          const denied=await fetch(base+'/api/snapshot',{method:'POST',headers:{'content-type':'application/json'},body:'{}',signal:AbortSignal.timeout(15000)});
+          if(denied.status!==401)throw Error('Unauthenticated ingestion must remain blocked');
+          console.log('AUTHENTICATED_INGESTION_PROTECTION '+denied.status);
+          let first;
+          for(let i=0;i<4;i++){
+            const r=await fetch(base+'/api/connections',{signal:AbortSignal.timeout(15000)});
+            if(r.status!==200)throw Error('Public diagnostics failed');
+            const report=await r.json();console.log('LIVE_CONNECTIONS '+JSON.stringify(report));
+            if(report.source){first=report;break;}
+            await new Promise(r=>setTimeout(r,20000));
+          }
+          if(first){
+            await new Promise(r=>setTimeout(r,35000));
+            const next=await fetch(base+'/api/connections',{signal:AbortSignal.timeout(15000)}).then(r=>r.json());
+            console.log('SOURCE_PROGRESS '+JSON.stringify({previous:first.source.sequence,current:next.source?.sequence,advanced:next.source&&BigInt(next.source.sequence)>BigInt(first.source.sequence),sourceAgeMs:next.sourceAgeMs,account:next.source?.accountId,sourceRole:next.sourceRole,pipeline:next.capabilities.candidatePipeline}));
+          }else console.log('SOURCE_NOT_YET_PUBLISHED_AFTER_DEPLOY');
+          console.log('DEPLOYED_REPORTING_CHECKS_PASS');
+          JS
