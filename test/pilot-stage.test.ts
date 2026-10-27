@@ -1,7 +1,7 @@
 /** Controller policies only: no network, live account, or natural trade. */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotPreparationDeferrable,pilotCandidateWindowReady,pilotInitialAuditReady,pilotCandidateDeferral,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
+import {resolvePilotStage,pilotOpeningReserves,PILOT_EVIDENCE_LIMITS,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotPreparationDeferrable,pilotCandidateWindowReady,pilotInitialAuditReady,pilotCandidateDeferral,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
 import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
 
 test('explicit stage transitions preserve account/inception and append known capacity contracts',()=>{
@@ -210,4 +210,42 @@ test('shared transaction-method wait leaves fresh seeds queued and permits ready
  // now-return cannot be compared against a stale event-loop timestamp.
  const methodReadyAt=41001,selectionAt=41002;
  assert.equal(choosePilotPreparation(null,seeds,selectionAt,true,0,methodReadyAt)!.kind,'fresh-discovery');
+});
+
+// Explicit synthetic phase accounting: provider timing is not inferred.
+test('candidate-only support phase fits seven prior starts and leaves the unchanged shared opening reserve',()=>{
+ const at=20000,prior=Array.from({length:7},(_,i)=>11000+i*250);
+ const opening=pilotOpeningReserves(true,0,true),phase={short:opening.short+3,minute:opening.minute+3};
+ assert.deepEqual(opening,{short:10,minute:20});
+ assert.equal(pilotObservationReadyAt(prior,at,20,phase),at);
+ assert.ok(pilotObservationReadyAt(prior,at,20,{short:18,minute:23})>at,'old candidate phase needlessly blocked the same starts');
+ const after=[...prior,at,at+250,at+500];
+ assert.equal(pilotObservationReadyAt(after,at+750,20,opening),at+750);
+ const eighth=[...prior,at-250];assert.ok(pilotObservationReadyAt(eighth,at,20,phase)>at);
+ const disconnected=pilotOpeningReserves(true,0,false);assert.deepEqual(disconnected,{short:11,minute:20});
+ assert.ok(pilotObservationReadyAt(prior,at,20,{short:disconnected.short+3,minute:23})>at,'upgrade consumes shared headroom');
+ assert.deepEqual(pilotOpeningReserves(false,0,true),{short:15,minute:20});
+ assert.deepEqual(pilotOpeningReserves(false,3,true),{short:10,minute:10});
+ assert.deepEqual(pilotOpeningReserves(false,3,false),{short:11,minute:10});
+ const minuteHistory=Array.from({length:38},(_,i)=>1000+i*250);
+ assert.ok(pilotObservationReadyAt(minuteHistory,at,20,phase)>at,'minute reserve cannot be bypassed by quiet short window');
+});
+
+test('new pending evidence stops remaining support reads even after phase admission',()=>{
+ for(const responseMs of [900,1200,4500]){
+  let now=100000,pending=false,physical=0;
+  for(let read=0;read<3;read++){
+   const admission=pilotLowerPriorityAdmission({now,endAt:200000,held:0,lastUsable:null,nextPendingAt:null,candidatePending:pending});
+   if(!admission.admitted)break;physical++;now+=responseMs;pending=true;
+  }
+  assert.equal(physical,1);
+ }
+ assert.equal(pilotLowerPriorityAdmission({now:1000,endAt:200000,held:1,lastUsable:0,nextPendingAt:1500,operationBoundMs:1200}).admitted,false,'pending actions retain their completion envelope');
+ assert.equal(pilotLowerPriorityAdmission({now:3800,endAt:200000,held:1,lastUsable:0,nextPendingAt:null}).admitted,false,'slow processing does not relax protection admission');
+});
+
+test('evidence expansion remains finite with candidate and shutdown reserves separately visible',()=>{
+ assert.equal(PILOT_EVIDENCE_LIMITS.feedHardBytes,10*1024*1024);
+ assert.equal(PILOT_EVIDENCE_LIMITS.eventHardBytes-PILOT_EVIDENCE_LIMITS.eventSoftBytes,4*1024*1024);
+ assert.ok(PILOT_EVIDENCE_LIMITS.eventSoftBytes<PILOT_EVIDENCE_LIMITS.eventStopBytes);
 });

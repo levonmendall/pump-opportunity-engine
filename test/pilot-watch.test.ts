@@ -101,3 +101,46 @@ test('lower observation ceiling cannot prevent recovery of three owned pending a
  const f=fixture();for(const id of ['a','b','c']){f.seed(id);f.registry.transition('mint-'+id,'DEEP_OBSERVATION','fresh observation');f.registry.transition('mint-'+id,'ENTRY_PENDING','owned action unresolved');}
  const recovered=new PilotWatch({...f.options,maximumDeep:1,restored:f.registry.export()});const state=recovered.snapshot();assert.equal(state.summary.states.ENTRY_PENDING,3);assert.equal(state.summary.deepActive,0);assert.ok(state.rows.every(r=>r.deepSince===null));
 });
+
+test('saturated origin retries persist signature-specific five then fifteen minute deferrals across restart',()=>{
+  const f=fixture();const signature='saturated-origin';const reason='PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN';
+  f.registry.discover({signature,feedMint:'provisional-mint',receivedAt:f.now()});
+  const first=f.registry.deferVerification(signature,reason,f.now());assert.equal(first.state,'DEFERRED');assert.equal(first.deferUntil,f.now()+300000);assert.equal(first.mint,null);
+  f.at(f.now()+300000);const restored=new PilotWatch({...f.options,restored:f.registry.export()});
+  const second=restored.deferVerification(signature,reason,f.now());assert.equal(second.deferUntil,f.now()+900000);assert.equal(second.state,'DEFERRED');assert.equal(restored.snapshot().summary.structuralExclusions,0);
+  assert.equal(restored.snapshot().summary.known,1);assert.equal(restored.snapshot().summary.unverified,1);
+  assert.equal(f.records.filter(r=>r.kind==='pilot-watch-verification-deferred').at(-1)!.data.repeatedSaturatedOrigin,true);
+});
+
+test('a different signature for the same provisional mint does not inherit a saturated origin cooldown',()=>{
+  const f=fixture();f.registry.discover({signature:'first',feedMint:'same-provisional-mint',receivedAt:f.now()});
+  const first=f.registry.deferVerification('first','PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN');
+  const second=f.registry.discover({signature:'second',feedMint:'same-provisional-mint',receivedAt:f.now()})!;
+  assert.equal(second.deferUntil,0);assert.equal(second.state,'DISCOVERED');assert.equal(first.deferUntil,f.now()+300000);
+  const verified=f.registry.verify('second',{mint:'actual-base-mint',pool:'canonical-pool',migrationAt:f.now()-300000,verifiedAt:f.now()});
+  assert.equal(verified.state,'WATCH');assert.equal(f.registry.next(f.now(),new Set())!.signature,'second');
+});
+
+test('ordinary verification retry remains one minute and cannot shorten an outstanding saturated deferral',()=>{
+  const f=fixture();f.registry.discover({signature:'ordinary',receivedAt:f.now()});
+  const first=f.registry.deferVerification('ordinary','PILOT_MIGRATION_FINALIZED_CREATION_UNAVAILABLE');assert.equal(first.deferUntil,f.now()+60000);
+  f.at(f.now()+60000);assert.equal(f.registry.deferVerification('ordinary','PILOT_MIGRATION_FINALIZED_CREATION_UNAVAILABLE').deferUntil,f.now()+60000);
+  const saturated=f.registry.deferVerification('ordinary','PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN');assert.equal(saturated.deferUntil,f.now()+300000);
+  f.at(f.now()+1);assert.equal(f.registry.deferVerification('ordinary','temporary upstream failure').deferUntil,saturated.deferUntil);
+});
+
+test('verification deferral cannot revive terminal identities, demote verified exposure, or invent unknown identities',()=>{
+  const f=fixture();f.registry.discover({signature:'unsupported',receivedAt:f.now()});f.registry.transition('unsupported','PERMANENTLY_UNSUPPORTED','verified structural exclusion');
+  f.registry.discover({signature:'expired',receivedAt:f.now()});f.registry.transition('expired','EXPIRED','retention ended');
+  for(const signature of ['unsupported','expired']){const before=f.registry.snapshot().rows.find(r=>r.signature===signature)!;assert.deepEqual(f.registry.deferVerification(signature,'temporary failure'),before);}
+  f.seed('held');f.registry.transition('mint-held','HELD','owned exposure');const held=f.registry.snapshot().rows.find(r=>r.signature==='signature-held')!;
+  assert.deepEqual(f.registry.deferVerification('signature-held','temporary failure'),held);
+  assert.throws(()=>f.registry.deferVerification('unknown','temporary failure'),/UNKNOWN_IDENTITY/);
+});
+
+test('rebroadcast discovery and unverified activity cannot clear persisted verification backoff',()=>{
+  const f=fixture();const signature='saturated';f.registry.discover({signature,feedMint:'hint',receivedAt:f.now()});const deferred=f.registry.deferVerification(signature,'PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN');
+  f.at(f.now()+1);const duplicate=f.registry.discover({signature,feedMint:'hint',receivedAt:f.now()})!;
+  assert.equal(duplicate.deferUntil,deferred.deferUntil);assert.equal(f.registry.noteActivity(signature,f.now(),'untrusted hint only'),false);
+  assert.equal(f.registry.snapshot().rows.find(r=>r.signature===signature)!.deferUntil,deferred.deferUntil);
+});

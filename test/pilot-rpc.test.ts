@@ -6,13 +6,13 @@ import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {PilotRpc,PilotRpcUnavailable,type PilotRpcOptions} from '../src/pilot-rpc.js';
 const MIB=1024*1024,turn=()=>new Promise<void>(r=>setImmediate(r));
-function fixture(options:Partial<PilotRpcOptions>={},recent=false){
+function fixture(options:Partial<PilotRpcOptions>={},recent=false,tickingClock=false){
   const directory=mkdtempSync(join(tmpdir(),'poe-pilot-rpc-')),old=join(directory,'old.json');let now=200000,mono=200000;
   writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:20,bytes:272634,lastObservedAt:recent?199999:2000,starts:Array.from({length:20},(_,i)=>(recent?199000:1000)+i),pending:[{id:20,unobservedBytes:2*MIB}]}),{mode:0o600});
   const before=readFileSync(old),records:Array<{kind:string;data:any}>=[],invocations:Array<{at:number;method:string}>=[];
   const response=(body:string,status=200,headers:Record<string,string>={})=>new Response(body,{status,headers});
   const success=(async(_url,init)=>{const b=JSON.parse(String(init?.body));invocations.push({at:now,method:b.method});now+=5;mono+=5;return response(JSON.stringify({jsonrpc:'2.0',id:b.id,result:123}));}) as typeof fetch;
-  const client=new PilotRpc({directory:join(directory,'run'),runId:'isolated-test',baselinePaths:[old],priorPhysicalSettled:true,now:()=>now,monotonic:()=>mono,sleep:async ms=>{now+=ms;mono+=ms;},fetcher:success,record:(kind,data)=>records.push({kind,data}),...options});
+  const client=new PilotRpc({directory:join(directory,'run'),runId:'isolated-test',baselinePaths:[old],priorPhysicalSettled:true,now:()=>{const value=now;if(tickingClock){now++;mono++;}return value;},monotonic:()=>mono,sleep:async ms=>{now+=ms;mono+=ms;},fetcher:success,record:(kind,data)=>records.push({kind,data}),...options});
   return {client,directory,old,before,records,invocations,now:()=>now,advance(ms:number){now+=ms;mono+=ms;},response,close(){client.close();assert.deepEqual(readFileSync(old),before);rmSync(directory,{recursive:true,force:true});}};
 }
 test('chapter rollover preserves cumulative counters, inherited uncertainty, real spacing and frozen prior books',async()=>{
@@ -141,4 +141,14 @@ test('settled transient RPC failures use bounded2/5/10s backoff without automati
 test('invalid feed protocol remains isolated from held-price RPC while global accounting failures still block it',async()=>{
   const f=fixture();try{await assert.rejects(f.client.operateData({transport:'ws',method:'subscribeMigration'},async()=>{throw Error('PILOT_DISCOVERY_ACK_INVALID');}),/COMPONENT_OPERATION_FAILED/);await turn();assert.equal(f.client.available(),true);assert.equal(f.client.usage().fatal,null);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().uncertainResponseBytes,2*MIB+65536);}finally{f.close();}
   const bad=fixture();try{await assert.rejects(bad.client.operateData({transport:'ws',method:'subscribeMigration'},async()=>{throw Error('COMPONENT_STORAGE_UNAVAILABLE');}),/STORAGE_UNAVAILABLE/);await turn();assert.equal(bad.client.available(),false);await assert.rejects(bad.client.call('getSlot'));assert.equal(bad.invocations.length,0);}finally{bad.close();}
+});
+
+
+test('single admission timestamp avoids one-millisecond method refusals without weakening the real cap',async()=>{
+ const f=fixture({maxStartsPer10s:20,maxGetTransactionStartsPer10s:8},false,true);try{
+  for(let i=0;i<8;i++)assert.equal(await f.client.call('getTransaction'),123);
+  assert.equal(f.invocations.length,8);assert.equal(f.client.usage().methodPacing.capacityRefusals,0);
+  await assert.rejects(f.client.call('getTransaction'),e=>e instanceof PilotRpcUnavailable&&e.code==='METHOD_PACING');
+  assert.equal(f.invocations.length,8);const refusal=f.records.find(r=>r.kind==='pilot-method-capacity-refusal');assert.equal(refusal?.data.knownOrConservativelyInheritedStarts,8);assert.equal(refusal?.data.physicalRequestStarted,false);
+ }finally{f.close();}
 });

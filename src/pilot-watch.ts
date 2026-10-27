@@ -80,6 +80,20 @@ export class PilotWatch {
     if(state==='PERMANENTLY_UNSUPPORTED'&&r.state!=='PERMANENTLY_UNSUPPORTED')this.counters.structuralExclusions++;
     r.deferUntil=options.deferUntil??0;this.history(r,at,state,reason);this.emit('pilot-watch-transition',{mint:r.mint,signature:r.signature,at,state,reason,deferUntil:r.deferUntil,deepAllocated:deep(r)});return copy(r);
   }
+  deferVerification(signature:string,reason:string,at=this.clock()):WatchRow{
+    this.at(at);need(text(signature,100)&&text(reason),'PILOT_WATCH_VERIFICATION_DEFERRAL');this.expire(at);
+    // Verification retries belong to an exact transaction hint, never to its
+    // provisional mint role. A new signature for that mint remains independent.
+    const r=this.rows.get(signature);need(r,'PILOT_WATCH_UNKNOWN_IDENTITY');
+    if(r.verifiedAt!==null||['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state))return copy(r);
+    const saturated=(value:string)=>value.includes('PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN');
+    const repeated=saturated(reason)&&r.history.some(h=>h.state==='DEFERRED'&&saturated(h.reason));
+    const delayMs=saturated(reason)?repeated?900000:300000:60000;
+    const deferUntil=Math.max(r.deferUntil,at+delayMs);need(integer(deferUntil),'PILOT_WATCH_VERIFICATION_DEFERRAL');
+    const result=this.transition(signature,'DEFERRED',reason,at,{deferUntil});
+    this.emit('pilot-watch-verification-deferred',{signature,at,reason,delayMs,deferUntil,repeatedSaturatedOrigin:repeated,scope:'exact unverified transaction signature; awareness retained'});
+    return result;
+  }
   noteActivity(mint:string,at:number,evidence:string):boolean{
     this.at(at);need(text(evidence,256),'PILOT_WATCH_ACTIVITY_EVIDENCE');const r=this.row(mint);if(!r||r.mint===null||['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state))return false;
     if(r.lastActivityAt!==null&&at<=r.lastActivityAt)return false;r.lastActivityAt=at;r.lastActivityEvidence=evidence;this.counters.activityHints++;

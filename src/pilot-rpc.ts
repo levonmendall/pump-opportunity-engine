@@ -62,8 +62,9 @@ export class PilotRpc{
   /** Earliest time N getTransaction slots are simultaneously available. This
    * observes a method cache only; shared pacing/cooldowns still apply. Infinity
    * means N exceeds this run's method cap, not permission to wait internally. */
-  methodReadyAt(method:string,reserveStarts=1):number{
-    validateRpc({method});if(!int(reserveStarts)||reserveStarts<1||reserveStarts>8)throw new PilotRpcUnavailable('INVALID_METHOD_RESERVE');const at=this.now();if(!int(at))throw new PilotRpcUnavailable('METHOD_CLOCK');
+  methodReadyAt(method:string,reserveStarts=1):number{return this.methodReadyAtClock(method,reserveStarts,this.now());}
+  private methodReadyAtClock(method:string,reserveStarts:number,at:number):number{
+    validateRpc({method});if(!int(reserveStarts)||reserveStarts<1||reserveStarts>8)throw new PilotRpcUnavailable('INVALID_METHOD_RESERVE');if(!int(at))throw new PilotRpcUnavailable('METHOD_CLOCK');
     if(method!=='getTransaction'||this.transactionStartsPer10s===undefined)return at;if(reserveStarts>this.transactionStartsPer10s)return Infinity;
     const starts=this.recentMethodStarts(at),expire=starts.length+reserveStarts-this.transactionStartsPer10s;return expire>0?Math.max(at,starts[expire-1]!.at+10000):at;
   }
@@ -128,7 +129,7 @@ export class PilotRpc{
   async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:PilotRpcCallOptions={}):Promise<T>{
     validateRpc({method});if(Buffer.byteLength(JSON.stringify({method,params}))>64000)throw new PilotRpcUnavailable('REQUEST_SIZE');
     if(signal?.aborted)throw new PilotRpcUnavailable('ABORTED');
-    if(method==='getTransaction'&&this.transactionStartsPer10s!==undefined){this.check();const at=this.now(),retryAt=this.methodReadyAt(method);if(retryAt>at){this.methodRefusals++;this.emit('pilot-method-capacity-refusal',{at,method,reserveStarts:1,retryAt,maximumStartsPer10s:this.transactionStartsPer10s,knownOrConservativelyInheritedStarts:this.recentMethodStarts(at).length,physicalRequestStarted:false,providerResponse:false});this.persist();throw new PilotRpcUnavailable('METHOD_PACING',retryAt);}}
+    if(method==='getTransaction'&&this.transactionStartsPer10s!==undefined){this.check();const at=this.now(),retryAt=this.methodReadyAtClock(method,1,at);if(retryAt>at){this.methodRefusals++;this.emit('pilot-method-capacity-refusal',{at,method,reserveStarts:1,retryAt,maximumStartsPer10s:this.transactionStartsPer10s,knownOrConservativelyInheritedStarts:this.recentMethodStarts(at).length,physicalRequestStarted:false,providerResponse:false});this.persist();throw new PilotRpcUnavailable('METHOD_PACING',retryAt);}}
     return this.perform(o=>this.transport!.call<T>(method,params,signal,o),signal,options,'rpc');
   }
   async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,options:PilotRpcCallOptions={}):Promise<T>{
