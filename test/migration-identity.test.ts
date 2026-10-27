@@ -8,7 +8,7 @@ import {BorshCoder,type Idl} from '@coral-xyz/anchor';
 import bs58 from 'bs58';
 import {PublicKey} from '@solana/web3.js';
 import {decodeMigrationIdentity,type MigrationIdentityInput} from '../src/migration-identity.js';
-import {canonicalPumpPoolPda} from '../src/sdk.js';
+import {canonicalPumpPoolPda,PUMP_PROGRAM_ID} from '../src/sdk.js';
 
 const require=createRequire(import.meta.url),idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl,coder=new BorshCoder(idl);
 function recorded(path:string){return readFileSync(path,'utf8').trim().split('\n').map(x=>JSON.parse(x));}
@@ -74,4 +74,15 @@ test('multiple genuine creations are ambiguous and legacy discriminator support 
   // dispatch of the legacy discriminator, not a natural legacy migration.
   const legacy=copy(sol),outer=legacy.transaction.message.instructions[2],old=Buffer.from(bs58.decode(outer.data));outer.data=bs58.encode(Buffer.concat([createHash('sha256').update('global:migrate').digest().subarray(0,8),old.subarray(8)]));
   const result=decodeMigrationIdentity(legacy,solInput);assert.equal(result.ok,true);if(result.ok)assert.equal(result.identity.migration.name,'migrate');
+});
+
+test('current successful migration hints with no inner instructions provide no creation bytes or original migration time',()=>{
+  const rows=recorded('evidence/standing-research-20261027/04-current-subject/observations.ndjson').filter(r=>r.kind==='migration-identity-transaction');assert.equal(rows.length,3);
+  const expected=[['ndvXhN8','fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump'],['4hn8Qjx','3yM6w93HMUZSHrMSGVPR2cW4Wvubvkscht1541i6pump']];
+  for(const [prefix,mint] of expected){const row=rows.find(r=>r.data.seed.signature.startsWith(prefix))!,{seed,transaction:tx,availableAt}=row.data;assert.equal(seed.feedMint,mint);assert.equal(tx.version,0);assert.equal(tx.meta.err,null);assert.deepEqual(tx.meta.innerInstructions,[]);
+    const ix=tx.transaction.message.instructions[2];assert.equal(tx.transaction.message.accountKeys[ix.programIdIndex],PUMP_PROGRAM_ID.toBase58());assert.equal(Buffer.from(bs58.decode(ix.data)).toString('hex'),'bbcb121fceedfe29');assert.deepEqual(tx.meta.logMessages.filter((l:string)=>l.includes('Program log: Instruction:')),['Program log: Instruction: MigrateV2']);
+    assert.deepEqual(decodeMigrationIdentity(tx,{signature:seed.signature,feedMint:seed.feedMint,commitment:'confirmed',availableAt}),{ok:false,reason:'MIGRATION_IDENTITY_CREATION_CPI_NOT_VERIFIED'});
+  }
+  // A genuinely present current create_pool still decodes in the same pass.
+  const actual=rows.find(r=>r.data.seed.signature.startsWith('eZZ919'))!.data,result=decodeMigrationIdentity(actual.transaction,{signature:actual.seed.signature,feedMint:actual.seed.feedMint,commitment:'confirmed',availableAt:actual.availableAt});assert.equal(result.ok,true);if(result.ok){assert.equal(result.identity.classification,'EXCLUDED_CUSTOM_QUOTE');assert.equal(result.identity.feedHintRole,'quote');assert.equal(result.identity.baseMint,'Afdp5Eg9XAoPDEa2sBRcbeVyGqx5smW5GUeKDuF2pump');assert.equal(result.identity.quoteMint,actual.seed.feedMint);}
 });

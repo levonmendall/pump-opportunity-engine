@@ -1,0 +1,11 @@
+{
+  "openedAt": 1793119669460,
+  "endedAt": 1793119705009,
+  "closed": true,
+  "stopReason": "THREE_DISTINCT_SEEDS",
+  "frames": 4,
+  "socketBytes": 825,
+  "applicationBytes": 628,
+  "seeds": 3,
+  "connectionCount": 1
+}

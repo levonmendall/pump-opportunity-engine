@@ -8,6 +8,20 @@ import {SelectionRejections,isPoolRejection} from '../src/selection-rejections.j
 const scope={mint:'91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump',pool:'4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW'};
 const make=()=>{const directory=mkdtempSync(join(tmpdir(),'poe-reject-fixture-'));return {path:join(directory,'history.json'),clean:()=>rmSync(directory,{recursive:true,force:true})};};
 
+test('candidate-shaped scope persists only canonical rejection fields and reopens without weakening its guard',()=>{
+  const f=make();let store:SelectionRejections|undefined;
+  try{
+    store=new SelectionRejections({path:f.path,policyVersion:'support-v1',now:()=>1000});
+    const candidate={...scope,baseUnits:'436723517',minSlot:462135269,supportedPoolEvidence:'a'.repeat(64),origin:null,source:'fixture:candidate'};
+    const row=store.reject(candidate,'INSUFFICIENT_RECENT_POOL_ACTIVITY','fixture:canonical-scope');
+    const fields=['mint','pool','reason','observedAt','expiresAt','policyVersion','evidenceRef','releaseCondition'].sort();
+    assert.deepEqual(Object.keys(row).sort(),fields);assert.deepEqual(Object.keys(JSON.parse(readFileSync(f.path,'utf8')).records[0]).sort(),fields);
+    assert.equal(row.observedAt,1000);assert.equal(row.expiresAt,601000);store.close();
+    const before=readFileSync(f.path,'utf8');store=new SelectionRejections({path:f.path,policyVersion:'support-v1',now:()=>1001});
+    assert.deepEqual(store.lookup(scope).record,row);assert.equal(store.lookup(scope).blocked,true);assert.equal(readFileSync(f.path,'utf8'),before);
+  }finally{store?.close();f.clean();}
+});
+
 test('saturated rejection survives restart, preserves reason and evidence, and expiry only permits fresh revalidation',()=>{
   const f=make();let now=1_000;let store:SelectionRejections|undefined;
   try{

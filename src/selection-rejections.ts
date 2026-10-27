@@ -81,7 +81,7 @@ export class SelectionRejections implements SelectionRejectionStore {
     this.ready();scopeValid(scope);need(integer(at)&&isPoolRejection(reason)&&text(evidenceRef,192),'SELECTION_REJECTIONS_INVALID_RECORD');
     const last=this.records.findLast(r=>r.mint===scope.mint&&r.pool===scope.pool);need(!last||at>=last.observedAt,'SELECTION_REJECTIONS_CLOCK_REGRESSION');
     const expiresAt=expiry(reason,at);need(expiresAt===null||integer(expiresAt),'SELECTION_REJECTIONS_INVALID_TIME');
-    const row:SelectionRejection={...scope,reason,observedAt:at,expiresAt,policyVersion:this.options.policyVersion,evidenceRef,releaseCondition:expiresAt===null?'support-policy-version-change-and-fresh-revalidation':'cooldown-elapsed-and-fresh-revalidation'};
+    const row:SelectionRejection={mint:scope.mint,pool:scope.pool,reason,observedAt:at,expiresAt,policyVersion:this.options.policyVersion,evidenceRef,releaseCondition:expiresAt===null?'support-policy-version-change-and-fresh-revalidation':'cooldown-elapsed-and-fresh-revalidation'};
     this.persist([...this.records,row]);this.records.push(row);return structuredClone(row);
   }
   snapshot(){this.ready();return structuredClone(this.records);}

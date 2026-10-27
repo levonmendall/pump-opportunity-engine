@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_CANONICAL_REJECTION_PROJECTION",
+  "createdAt": 1793119931969,
+  "source": {
+    "path": "evidence/standing-research-20261027/04-current-subject/rejections.json",
+    "sha256": "5f8d55a3690b1aaf2d1cd6aec995e5b7d8a9c65e48ca29b0d494833e175d5b70",
+    "rawStrictReaderResult": "SELECTION_REJECTIONS_CORRUPT",
+    "preserved": true
+  },
+  "projection": {
+    "path": "evidence/standing-research-20261027/05-selection-rejections-projection/rejections.json",
+    "sha256": "c9284a3915154bc8882576c26845cb1a68532fa47bc40d04a24bf75fcd5015f9",
+    "rowCount": 7,
+    "canonicalRowFields": [
+      "mint",
+      "pool",
+      "reason",
+      "observedAt",
+      "expiresAt",
+      "policyVersion",
+      "evidenceRef",
+      "releaseCondition"
+    ],
+    "transformation": "Copy the eight existing schema fields from each original row in original order. Do not change reason, times, expiry, evidence reference, policy or release condition."
+  },
+  "removedExtraFields": [
+    {
+      "rowIndex": 3,
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "removedFields": [
+        "baseUnits",
+        "minSlot",
+        "supportedPoolEvidence"
+      ]
+    },
+    {
+      "rowIndex": 5,
+      "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+      "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+      "removedFields": [
+        "baseUnits",
+        "minSlot",
+        "supportedPoolEvidence",
+        "origin",
+        "source"
+      ]
+    },
+    {
+      "rowIndex": 6,
+      "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+      "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+      "removedFields": [
+        "baseUnits",
+        "minSlot",
+        "supportedPoolEvidence",
+        "origin",
+        "source"
+      ]
+    }
+  ],
+  "softwareCorrection": {
+    "path": "src/selection-rejections.ts",
+    "sha256": "db39c6da8d3954b8e3435c46a705e0d2ddd5b648dccc1c453e830f4362f4688c",
+    "change": "reject() writes explicit mint and pool rather than spreading arbitrary Candidate scope properties. The strict reader remains unchanged."
+  },
+  "validation": {
+    "strictReaderOpened": true,
+    "strictReaderReopened": true,
+    "rowsEqualCanonicalSourceFields": true,
+    "projectionUnchangedByValidation": true,
+    "allOriginal04FilesUnchanged": true,
+    "original04Sha256": {
+      "evidence/standing-research-20261027/04-current-subject/authorization.json": "27989d49e46a57ee7525852ff45e0690793af087d6d4ab82e04393393c72ff2a",
+      "evidence/standing-research-20261027/04-current-subject/baseline.json": "d05c72b0e38b15c6d953229c4c32ad6ffc6de698b59cb91c10c13bdd6c86710d",
+      "evidence/standing-research-20261027/04-current-subject/listener.json": "d3e1b2dfa75b09bacaa35954293bc39eaaef9ad16c9f5908351fe759558f2baa",
+      "evidence/standing-research-20261027/04-current-subject/observations.ndjson": "1cb87f3fe7032fd5a5c17eb394a4ff9b7882b9310373f3d4ce2709f0288af15e",
+      "evidence/standing-research-20261027/04-current-subject/rejections.json": "5f8d55a3690b1aaf2d1cd6aec995e5b7d8a9c65e48ca29b0d494833e175d5b70",
+      "evidence/standing-research-20261027/04-current-subject/rejections.json.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "evidence/standing-research-20261027/04-current-subject/rpc-budget.json": "82b9f82f96a79e391889dbff01bfeb4dd5af6067d39da2958f3dc3a7bcd9b082",
+      "evidence/standing-research-20261027/04-current-subject/rpc-budget.json.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "evidence/standing-research-20261027/04-current-subject/summary.json": "12804f0c15e6e7544cfbadf590d05496d3164faae40e07f93c1d4e5cb54fcfc3"
+    }
+  },
+  "limitations": [
+    "This is a derived restart-compatible rejection view, not a replacement of the invalid original artifact.",
+    "No refusal was cleared or shortened. Expiry only permits future authorized fresh revalidation.",
+    "No provider calls, current pool checks, strategy qualification, financial changes, or production deployment occurred."
+  ],
+  "networkRequests": 0
+}
