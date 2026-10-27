@@ -21,6 +21,25 @@ function need(condition:unknown,reason:string):asserts condition {if(!condition)
 const integer=(value:any):string=>{need(BN.isBN(value),'UNVERIFIED_INTEGER');const s=value.toString(10);need(/^(0|[1-9][0-9]*)$/.test(s),'UNVERIFIED_INTEGER');return s;};
 const key=(value:any):string=>{need(value&&typeof value.toBase58==='function','UNVERIFIED_EVENT_KEY');return value.toBase58();};
 const bytes=(ix:any)=>{need(typeof ix?.data==='string'&&ix.data.length<=4096,'UNVERIFIED_INSTRUCTION_BYTES');return Buffer.from(bs58.decode(ix.data));};
+export type DecodedPumpSwapInstruction={name:string;data:Record<string,unknown>;layout:'pinned-sdk'|'observed-exact-quote-two-u64';exactLayout:true;trackVolumeAvailable:boolean};
+/** Current observed buy_exact_quote_in can omit the packaged IDL's trailing
+ * track_volume field. Decode only its two actual u64s; never pad or invent the
+ * missing option. This says nothing about event, trader or transfer validity.
+ * Other layouts must round-trip through the pinned SDK exactly. */
+export function decodePumpSwapInstruction(encoded:Buffer):DecodedPumpSwapInstruction{
+  need(Buffer.isBuffer(encoded)&&encoded.length>=8&&encoded.length<=4096,'UNVERIFIED_INSTRUCTION_BYTES');
+  const definition=idl.instructions.find(i=>Buffer.from(i.discriminator).equals(encoded.subarray(0,8)));
+  need(definition,'UNKNOWN_SWAP_INSTRUCTION');
+  if(definition.name==='buy_exact_quote_in'&&encoded.length===24){
+    need(definition.args.length===3&&definition.args[0]!.name==='spendable_quote_in'&&definition.args[0]!.type==='u64'&&definition.args[1]!.name==='min_base_amount_out'&&definition.args[1]!.type==='u64'&&definition.args[2]!.name==='track_volume'&&JSON.stringify(definition.args[2]!.type)===JSON.stringify({defined:{name:'OptionBool'}}),'PINNED_SWAP_INTERFACE_MISMATCH');
+    return {name:definition.name,data:{spendable_quote_in:new BN(encoded.subarray(8,16),'le'),min_base_amount_out:new BN(encoded.subarray(16,24),'le')},layout:'observed-exact-quote-two-u64',exactLayout:true,trackVolumeAvailable:false};
+  }
+  try{
+    const decoded=coder.instruction.decode(encoded);
+    need(decoded&&decoded.name===definition.name&&coder.instruction.encode(decoded.name,decoded.data).equals(encoded),'UNSUPPORTED_SWAP_INSTRUCTION_LAYOUT');
+    return {name:decoded.name,data:decoded.data as Record<string,unknown>,layout:'pinned-sdk',exactLayout:true,trackVolumeAvailable:Object.hasOwn(decoded.data,'track_volume')};
+  }catch{throw Error('UNSUPPORTED_SWAP_INSTRUCTION_LAYOUT');}
+}
 export type FullTradeIdentity={signature:string;program:string;outerInstructionIndex:number;swapInnerInstructionIndex:number|null;eventInnerInstructionIndex:number;eventIndex:0};
 export type MappedTradeEvidence={
   identity:FullTradeIdentity;identityKey:string;pool:string;mint:string;trader:string;side:'buy'|'sell';
@@ -91,7 +110,7 @@ export function mapConfirmedPumpSwapEvidence(tx:any,input:{signature:string;mint
       // SDK decoding can default absent trailing u64s to zero on older logs.
       // Require the exact packaged layout instead of inventing reported fees.
       need(coder.types.encode(event.name,event.data).equals(encoded.subarray(16)),'UNSUPPORTED_EVENT_LAYOUT');
-      const swap=coder.instruction.decode(bytes(parent.ix));need(swap,'UNKNOWN_SWAP_INSTRUCTION');
+      const swap=decodePumpSwapInstruction(bytes(parent.ix));
       const side:'buy'|'sell'=event.name==='BuyEvent'?'buy':'sell';
       need((side==='buy'?['buy','buy_exact_quote_in','buy_v2','buy_exact_quote_in_v2']:['sell','sell_v2']).includes(swap.name),'SWAP_EVENT_DIRECTION_MISMATCH');
       const definition=idl.instructions.find(i=>i.name===swap.name)!;

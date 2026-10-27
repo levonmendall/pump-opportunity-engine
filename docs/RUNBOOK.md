@@ -317,3 +317,26 @@ LIVE DISABLED. Finish real-flow/budget proof, production management/projections,
 frozen rules/assumptions, account-preserving deployment, actual backup/restart/
 outage/load proving and alert delivery first. No authorized critical-alert
 channel is verified; a process/dashboard alone is not alert delivery.
+
+
+## Standing read-only research (2026-10-27; no production install)
+
+Use the existing review branch. Preserve all old evidence/counterbooks; never rerun an output directory or clear a refusal. Old240-unit lifetime restriction is historical, not current authority. Every new experiment keeps explicit physical request/byte/time/resource limits and an ordered baseline chain. Verified unused stream bytes may be released only by an append-only settlement receipt. Provider429/Retry-After still governs; no endpoint/IP rotation or automatic retry.
+
+The opt-in `protected-deadline-proposed` scheduler retains a2s target,2s quote age and5s enrichment deadline. Its4s completed-evaluation proposal is NOT an approved production risk setting. Pending/recovery/protection failures invalidate candidate windows; fresh60s observation is required after recovery. In-flight cancellation must settle physically. A quote/state gap preserves financial exposure and closes new-risk admission.
+
+A specifically prepared Cloud experiment requires nonroot UID1000 and external resource controls. Example (use a NEW reviewed output name and every previously completed standing book in chronological `--previous` order):
+
+```sh
+timeout --signal=TERM --kill-after=5s 115s prlimit --cpu=20:21 --fsize=16777216:16777216 --nofile=64:64 -- node --max-old-space-size=128 --use-env-proxy --import tsx scripts/standing-research.ts run --out evidence/standing-research-20261027/NEW-NAME --observation-ms 75000 --previous evidence/standing-research-20261027/01-paced-combined
+```
+
+This is a research command, never an EC2 installation/restart. Inspect actual limits, candidate support/activity, current source and remaining disk/evidence headroom first. There is no automatic second capture. The driver enforces100 new units/120s,250ms spacing/60starts per minute/10per10s/one in flight,32MiB related responses,140MiB stream reservation,75s logical observation and6MiB new evidence within32MiB retained. It preserves full pre/post-cutoff byte accounting. PublicRPC availability is nonguaranteed; limits do not confer production entitlement.
+
+Reproduce the disposable integration without network or an authoritative account:
+
+```sh
+node --import tsx --test test/research-end-to-end.test.ts test/observation-cutoff.test.ts test/shared-scheduler-trace.test.ts test/pumpapi-short-exact-buy.test.ts test/instruction-layout-callers.test.ts
+```
+
+The test lifecycle uses disposable state and fixture decisions; it must never be published to Render or relabeled natural PAPER performance. Existing production install/backup/rollback commands are unchanged. Any future upgrade must preserve the actual account ID/inception, stop after exclusive writer release, validate a consistent backup, use the compatible schema and retain the prior release; this research does not authorize executing that upgrade.

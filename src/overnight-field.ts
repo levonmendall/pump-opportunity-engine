@@ -49,7 +49,7 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
   let firstQualityFailure:FieldQualityFailure|null=null;
   let candidateSuspended=false;const candidateSuspensions:Array<{at:number;reason:string}>=[];
   const observationElapsed=()=>mono()-(input.schedulerPolicy&&openedMono!==null?openedMono:connectionStartedMono);
-  const protectionOutcomes:Array<{scheduledAt:number;requestedAt:number;availableAt:number;deadlineAt:number;startDelayMs:number;requests:number;quoteAgeAtUseMs:number|null;usable:boolean;late:boolean;reason:string|null}>=[],protectionGaps:Array<{at:number;reason:string;blocksCombinedAcceptance:true}>=[],evaluationGapsMs:number[]=[];
+  const protectionOutcomes:Array<{scheduledAt:number;requestedAt:number;availableAt:number;pricingReturnedAt:number;decisionAt:number|null;deadlineAt:number;startDelayMs:number;requests:number;quoteAgeAtUseMs:number|null;usable:boolean;late:boolean;reason:string|null}>=[],protectionGaps:Array<{at:number;reason:string;blocksCombinedAcceptance:true}>=[],evaluationGapsMs:number[]=[];
   let resolveClosed!:()=>void;const closedPromise=new Promise<void>(r=>{resolveClosed=r;});
   const stop=(reason:string,gap=false)=>{
     if(stopReason)return;stopReason=reason;endedAt=now();stopRequestedMono=mono();socketBytesAtStop=socketBytes;applicationBytesAtStop=applicationBytes;

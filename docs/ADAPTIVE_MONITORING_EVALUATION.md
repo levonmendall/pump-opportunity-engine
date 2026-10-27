@@ -813,3 +813,35 @@ capture until a favorable event appears. The single grant is complete; unused
 RPC bytes/units and unused physical receipt below reserved ceilings authorize no
 retry. All reservations remain committed. No owner infrastructure, wallet,
 credential, paid-provider or completed setup action is needed.
+
+
+## Standing research continuation — timing correction (2026-10-27)
+
+The new standing authorization replaces the old lifetime/one-capture/no-release restrictions for later bounded research. Historical receipts and failures remain unchanged. It does not authorize production changes, spending, new providers or entry enablement.
+
+**Operating timing proposal, not approved risk tolerance:** retain a2,000ms target; propose a4,000ms maximum gap between fully validated usable evaluations. Quote age at use remains≤2,000ms, confirmed-bank source age≤30,000ms and selected-transaction validation deadline≤5,000ms after original receipt. A4s completion gap can permit a longer unobserved adverse move than a2s target. It guarantees neither crossing recognition nor a stop price. The proposal follows bounded nonpreemptible-operation and processing/pacing envelopes, rather than rounding the observed2.056s into a pass. No production maximum delay is approved.
+
+For admission, the deadline is last **successful usable completion**+4s (initially observation start+4s). Project both the candidate/control completion and the following coherent holding check, including pacing,125ms setup/wake reserve and1,200ms operation/validation envelopes. Admit only if both fit. Known pacing infeasibility closes candidate admission before waiting. A failed evaluation does not refresh the protection baseline. Actual late completions preserve usable marks but invalidate the affected candidate window; a later successful check cannot repair it. Pending financial work remains owned when deadlines cannot jointly be served. Outages and processing overruns remain failures, not capacity passes.
+
+**Demonstrated causes:** latest2,056ms gap had no competing work; changing response/validation duration and small dispatch jitter explain its arithmetic. Earlier3,224ms gap includes373ms candidate selection and898ms dispatch-to-physical-start pacing. Neither proves provider saturation. Exact rows, decomposition and hashes are in `evidence/timing-standard-20261027/actual-delay-analysis.json`.
+
+**Small correction:** replace the brittle finite-start opportunity only in the opt-in research policy with bounded completion-deadline admission. Remove the artificial one-candidate-job-per-cycle restriction when joint deadlines permit. Keep one physical operation, cancellation settlement, coherent multi-holding state and the existing2s reference. Explicit cutoff checks occur before physical admission and after expensive validation; logical data cutoff, stop request, last accepted information, transport settlement and drain bytes are distinct. Original75.002s evidence remains unchanged.
+
+| Same16 unique offline workloads |1,000ms local spacing |250ms local spacing |
+|---|---:|---:|
+| Modeled timing within unapproved4s proposal |15/16 |15/16 |
+| Complete required candidate flow |9/16 |12/16 |
+| Normal six-event trace across0/10/50/100ms jitter |6/6 each |6/6 each |
+| Normal trace maximum completed gap |2,187–2,245ms |2,041–2,138ms |
+| Three-event80ms bursts across tested jitters |2/3 events |3/3 events |
+| Three-event950ms response case |Incomplete |Incomplete |
+
+These are counterfactual rescheduling results using retained timings plus labeled stress inputs, not new provider behavior, market outcomes or EC2 capacity. The processing-reserve overrun fails the protection proposal at both rates. Pending/recovery work explicitly invalidates flow; one simultaneous financial-deadline case remains jointly unservable. No claim of complete candidate observation survives refusal, timeout or suspension. The full24 legacy comparisons and original failures remain available in the new separate `evidence/timing-standard-20261027/scheduler-evaluation.json`.
+
+Public RPC terms were re-read: documented mainnet100requests/10s/IP,40permethod/10s,40concurrent connections and100MB/30s are explicitly nonguaranteed; the public endpoint is explicitly not intended for production. The250ms/60perminute/10per10s/one-inflight configuration is a separate bounded research setting. It does not raise production's local limit or establish provider entitlement.
+
+The same-byte research execution harness now connects retained natural flow, fresh coherent holding prices and one disposable accounting lifecycle. All5 actual trades reproduce their original availability/fingerprints; the natural entry is honestly refused for absent verified migration evidence and failed buying predicates. A separate manual fixture uses SDK entry quantities, delay, execution costs, conservative marks, safe-stop exposure retention, uncertain-exit quarantine on same-account restart, expiry without duplicate gas, unknown equity during a gap, recovery and final exit. Its−6,065,208lamport result is synthetic static-state mechanics evidence, not trading performance. See `evidence/standing-research-20261027/isolated-integration.json`.
+
+Equivalent efficiencies remain preferred: shared coherent holdings state, reusable validated dependency links, correctly sized fresh post-delay execution-state reuse and deferring quotes only after existing predictive rejection. No additional screen or entry-strategy change was introduced. Held-token trade enrichment was already absent; it is not counted again as a saving.
+
+Completed stream reservations were reconciled by a new append-only record:143,286,477 unused local bytes released after settlement,271,949,619 actual bytes retained. Original396MiB/320s gross books remain immutable; connection time was not released from incomparable timing fields. OldRPC2MiB uncertainty remains charged. Cumulative actuals remain visible without the superseded240-unit lifetime prohibition.

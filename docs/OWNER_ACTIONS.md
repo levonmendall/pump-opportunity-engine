@@ -1,19 +1,11 @@
-# Owner actions — approved diagnostic completed
+# Owner actions — standing research continuation
 
-No owner setup, credential, wallet, funding, Render, provider-plan or spending
-action is needed. The single de102ee diagnostic approval was used and is closed.
-No additional capture or retry is requested.
+No owner action is required for the current read-only research. Existing access, source changes, service setup and wallet registration are not being requested again. No new data budget or provider is requested.
 
-One scoped60s recorded-information window and5/5bounded chain audit were obtained.
-Protection remains unaccepted (2056ms maximum completed gap, no natural exit
-crossing); recorded observation ended2ms beyond75s. Known high-jitter/burst/pending
-failures remain. Next work is offline timing/admission hardening; no deployment,
-PAPER/live entry enablement or acceptance clock.
+Standing research authorization replaces earlier individual-capture/lifetime limits. Completed counters, refusals and reservations remain immutable; unused local bytes are reconciled through append-only records. Actual traffic and uncertain RPC bytes remain charged in the research visibility totals.
 
-Counters:221/240RPC units;4,411,710accounted related bytes. PumpApi reservations
-396MiB/320s remain committed with no refunds; actual receipt271,949,619bytes.
-The19unusedRPC units do not authorize another attempt. Do not repeat old setup.
+Production/account/inception/dashboard remain unchanged. No merge, deployment, restart, PAPER entries, signing or acceptance clock is authorized. The proposed4s maximum completed-evaluation gap is research-only and unapproved; the2s target and2s quote validity remain distinct.
 
-[Actual decision](../evidence/scheduler-forward-20261027/decision.json) and the
-final section of [the evaluation](ADAPTIVE_MONITORING_EVALUATION.md) contain the
-measured evidence and limitations.
+The corrected experiment observed38 three-holding checks with2.085s maximum gap, but a genuine24-byte Buy instruction exposed a decoder incompatibility. Its candidate window remains failed. A narrowly scoped decoder correction preserves actual amounts, trader roles, fees, transfer checks and identities; independent rechecking and one specifically justified corrected validation are proceeding under standing authority.
+
+See [the adaptive-monitoring evaluation](ADAPTIVE_MONITORING_EVALUATION.md) and [continuation checkpoint](CONTINUATION_CHECKPOINT.md). Any later production/risk decision will be presented with concrete results; routine research allowance is not an owner dependency.

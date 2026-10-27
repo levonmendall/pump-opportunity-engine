@@ -3,17 +3,12 @@
  * Chain-time coverage and application-availability windows remain separate.
  */
 import {performance} from 'node:perf_hooks';
-import {createRequire} from 'node:module';
-import {readFileSync} from 'node:fs';
-import {dirname,join} from 'node:path';
-import {BorshCoder,type Idl} from '@coral-xyz/anchor';
 import bs58 from 'bs58';
 import {invokedCanonicalSolSwaps} from './active-selection.js';
-import {mapConfirmedPumpSwapEvidence,type MappedTradeEvidence} from './pumpapi-mapping.js';
+import {decodePumpSwapInstruction,mapConfirmedPumpSwapEvidence,type MappedTradeEvidence} from './pumpapi-mapping.js';
 import type {ActiveScope} from './active-pipeline.js';
 import {PUMP_AMM_PROGRAM_ID} from './sdk.js';
 
-const require=createRequire(import.meta.url),idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl,coder=new BorshCoder(idl);
 const SWAPS=new Set(['buy','buy_exact_quote_in','buy_v2','buy_exact_quote_in_v2','sell','sell_v2']);
 
 export const SCHEDULER_FORWARD_AUDIT_LIMITS=Object.freeze({historyPages:2,signaturesPerPage:50,independentTransactions:10,finalityRechecks:2,requestUnits:14,elapsedMs:20000});
@@ -63,9 +58,9 @@ export async function auditSchedulerForward(options:SchedulerForwardAuditOptions
       need(Array.isArray(ix.accounts)&&ix.accounts.every((i:unknown)=>integer(i)&&i<keys.length),'AMM_ACCOUNT_INDICES');
       if(!ix.accounts.some((i:number)=>keys[i]===scope.pool))continue;
       need(typeof ix.data==='string'&&ix.data.length<=4096,'AMM_INSTRUCTION_BYTES');let raw:Buffer;try{raw=Buffer.from(bs58.decode(ix.data));}catch{throw Error('FORWARD_AUDIT_AMM_INSTRUCTION_BYTES');}
-      let decoded:ReturnType<typeof coder.instruction.decode>=null,exact=false;try{decoded=coder.instruction.decode(raw);if(decoded)exact=coder.instruction.encode(decoded.name,decoded.data).equals(raw);}catch{}
-      const checked={signature:sig,requestCommitment:commitment,outerInstructionIndex:p.outerInstructionIndex,innerInstructionIndex:p.innerInstructionIndex,discriminatorHex:raw.subarray(0,8).toString('hex'),instructionName:decoded?.name??null,exactPackagedLayout:exact,knownNonSwap:!!decoded&&exact&&!SWAPS.has(decoded.name)};result.relevantInstructionChecks.push(checked);
-      need(decoded&&exact,'RELEVANT_AMM_INSTRUCTION_UNSUPPORTED');
+      let decoded:ReturnType<typeof decodePumpSwapInstruction>|null=null;try{decoded=decodePumpSwapInstruction(raw);}catch{}
+      const checked={signature:sig,requestCommitment:commitment,outerInstructionIndex:p.outerInstructionIndex,innerInstructionIndex:p.innerInstructionIndex,discriminatorHex:raw.subarray(0,8).toString('hex'),instructionName:decoded?.name??null,exactRecognizedLayout:decoded?.exactLayout??false,exactPackagedLayout:decoded?.layout==='pinned-sdk',instructionLayout:decoded?.layout??null,trackVolumeAvailable:decoded?.trackVolumeAvailable??null,knownNonSwap:!!decoded&&!SWAPS.has(decoded.name)};result.relevantInstructionChecks.push(checked);
+      need(decoded&&decoded.exactLayout,'RELEVANT_AMM_INSTRUCTION_UNSUPPORTED');
       need(!/^(buy|sell)(_|$)/.test(decoded.name)||SWAPS.has(decoded.name),'RELEVANT_SWAP_VARIANT_UNSUPPORTED');
     }
     const mapped=mapConfirmedPumpSwapEvidence(tx,{mint:scope.mint,pool:scope.pool,signature:sig,providerReceivedAt:null,availableAt:at});

@@ -2,18 +2,18 @@
 import {createRequire} from 'node:module';
 import {readFileSync} from 'node:fs';
 import {dirname,join} from 'node:path';
-import {BorshCoder,type Idl} from '@coral-xyz/anchor';
+import type {Idl} from '@coral-xyz/anchor';
 import bs58 from 'bs58';
 import {PublicKey} from '@solana/web3.js';
 import {canonicalPumpPoolPda,PUMP_AMM_PROGRAM_ID} from './sdk.js';
 import {quotePositionSell,type PositionSellQuote} from './pool.js';
 import type {ReadOnlyRpc} from './network.js';
-import {mapConfirmedPumpSwapEvidence,type MappedTradeEvidence} from './pumpapi-mapping.js';
+import {decodePumpSwapInstruction,mapConfirmedPumpSwapEvidence,type MappedTradeEvidence} from './pumpapi-mapping.js';
 import {isPoolRejection,type SelectionRejectionStore,type SelectionRejectionLookup} from './selection-rejections.js';
 
 const require=createRequire(import.meta.url);
 const idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl;
-const coder=new BorshCoder(idl),PROGRAM=PUMP_AMM_PROGRAM_ID.toBase58(),SOL='So11111111111111111111111111111111111111112';
+const PROGRAM=PUMP_AMM_PROGRAM_ID.toBase58(),SOL='So11111111111111111111111111111111111111112';
 const SWAPS=new Set(['buy','buy_exact_quote_in','buy_v2','buy_exact_quote_in_v2','sell','sell_v2']);
 export type SelectionRpc={call<T>(method:string,params?:unknown[],signal?:AbortSignal):Promise<T>};
 type SignatureRow={signature:string;slot:number;err:unknown;blockTime:number|null;confirmationStatus?:string};
@@ -69,7 +69,7 @@ export function invokedCanonicalSolSwaps(tx:any):CandidateScope[]{
   for(const ix of instructions){
     if(address(ix.programIdIndex)!==PROGRAM)continue;
     need(typeof ix.data==='string'&&ix.data.length<=4096&&Array.isArray(ix.accounts),'UNVERIFIED_SWAP_BYTES');
-    let decoded;try{decoded=coder.instruction.decode(Buffer.from(bs58.decode(ix.data)));}catch{continue;}
+    let decoded;try{decoded=decodePumpSwapInstruction(Buffer.from(bs58.decode(ix.data)));}catch{continue;}
     if(!decoded||!SWAPS.has(decoded.name))continue;
     const definition=idl.instructions.find(i=>i.name===decoded.name);need(definition,'UNKNOWN_SWAP_INSTRUCTION');
     const role=(name:string)=>{const i=definition.accounts.findIndex(a=>a.name===name);need(i>=0,'MISSING_SWAP_ROLE');return address(ix.accounts[i]);};

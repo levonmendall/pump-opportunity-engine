@@ -1,0 +1,3172 @@
+{
+  "schemaVersion": 1,
+  "outcome": "STANDING_RESEARCH_STOPPED_NOT_ACCEPTED",
+  "reason": "STANDING_CAPTURE_STOPPED_OR_QUALITY_UNUSABLE",
+  "startedAt": 1793117874918,
+  "completedAt": 1793117961750,
+  "elapsedMs": 86832.71803799999,
+  "streamAttempted": true,
+  "streamReserved": true,
+  "physicalSettled": true,
+  "preflight": {
+    "startedAt": 1793117874975,
+    "completedAt": 1793117875438,
+    "scope": {
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "baseUnits": "436723517",
+      "minSlot": 462135269,
+      "supportedPoolEvidence": "43331ed92e3ad533a371d06b87685012e5abb1cd29b3e38564806ba15ece1472"
+    },
+    "verifiedSwap": {
+      "signature": "3TfN1mxQcG5TJ5PWQYWiXcLj9t9J6hBUzGtyLxAuCbJ1YSGrzBct348LRo39LoBjumCKFGZw54yQzbLvLCs5QavH",
+      "slot": 462135269,
+      "blockTime": 1793117874,
+      "trades": [
+        {
+          "identity": {
+            "signature": "3TfN1mxQcG5TJ5PWQYWiXcLj9t9J6hBUzGtyLxAuCbJ1YSGrzBct348LRo39LoBjumCKFGZw54yQzbLvLCs5QavH",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 4,
+            "eventIndex": 0
+          },
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "trader": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+          "side": "sell",
+          "tokenUnits": "12283184567",
+          "curveQuoteLamports": "243455954",
+          "userQuoteLamports": "241264850",
+          "fees": {
+            "lp_fee": "486912",
+            "protocol_fee": "121728",
+            "coin_creator_fee": "1582464",
+            "cashback": "0",
+            "buyback_fee": "60864",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462135269,
+          "identityKey": "3TfN1mxQcG5TJ5PWQYWiXcLj9t9J6hBUzGtyLxAuCbJ1YSGrzBct348LRo39LoBjumCKFGZw54yQzbLvLCs5QavH:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:0:4:0",
+          "chainBlockTime": 1793117874,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793117875427,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "95855f5a79387ffe9a778f701ae58ecef3bf61dc30b7fa74f3fd63e105118be3",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ]
+    },
+    "history": {
+      "historyAvailableAt": 1793117875310,
+      "oldestAt": 1793117587000,
+      "spanMs": 288310,
+      "poolAddressTransactionsLast75s": 8,
+      "expectedEnrichmentUpperBound": 8,
+      "maximumAllowedEnrichments": 10,
+      "projectionOnly": true,
+      "swapsNotInferredFromAddressCounts": true
+    },
+    "checked": [
+      {
+        "signature": "3TfN1mxQcG5TJ5PWQYWiXcLj9t9J6hBUzGtyLxAuCbJ1YSGrzBct348LRo39LoBjumCKFGZw54yQzbLvLCs5QavH",
+        "compiledSelectedSwaps": 1
+      }
+    ],
+    "currentPoolAccounts": "REQUIRES_FRESH_PREWARM",
+    "entryEligibility": "PUMP_ORIGIN_AND_ENTRY_AGE_UNVERIFIED; no entry permitted"
+  },
+  "capture": {
+    "openedAt": 1793117886716,
+    "logicalCutoff": {
+      "enabled": true,
+      "durationMs": 75000,
+      "logicalCutoffAt": 1793117961716,
+      "logicalCutoffMonotonicAt": 87601.414525,
+      "exclusive": true,
+      "lastAcceptedInformationAt": 1793117959924,
+      "lastAcceptedTradeAt": 1793117906655,
+      "lastAcceptedPriceAt": 1793117959924,
+      "admittedObservationEndAt": 1793117961716,
+      "admissionClosedAt": 1793117961717,
+      "admissionClosedMonotonicAt": 87601.572071,
+      "transportStopRequestedAt": 1793117961717,
+      "transportStopRequestedMonotonicAt": 87602.327861,
+      "transportSettledAt": 1793117961719,
+      "transportSettledMonotonicAt": 87604.132515,
+      "socketBytesAtStop": 97702483,
+      "applicationBytesAtStop": 97441494,
+      "socketBytesAfterStop": 0,
+      "applicationBytesAfterStop": 0,
+      "drainFrames": 0,
+      "drainApplicationBytes": 0,
+      "postCutoffFrames": 0,
+      "postCutoffApplicationBytes": 0,
+      "transportTimingGuarantee": "Logical data admission is bounded; actual OS/socket closure may occur later and is measured separately."
+    },
+    "openMs": 75001,
+    "normalizedEvents": 3,
+    "normalizedBuys": 0,
+    "normalizedSells": 3,
+    "pending": 0,
+    "qualityGaps": [
+      {
+        "at": 1793117954162,
+        "reason": "confirmed-transaction-mapping-unavailable"
+      }
+    ],
+    "firstQualityFailure": {
+      "at": 1793117954162,
+      "reason": "confirmed-transaction-mapping-unavailable",
+      "responsibility": "flow"
+    },
+    "socketBytes": 97702483,
+    "applicationBytes": 97441494,
+    "protection": {
+      "everyMs": 2000,
+      "attempts": 38,
+      "unavailable": 0,
+      "unavailableQuoteFraction": 0,
+      "pricingCacheUnavailableFraction": 0.01859999999999995,
+      "missedSchedules": 0,
+      "maxCompletedEvaluationGapMs": 2085,
+      "p95CompletedEvaluationGapMs": 2064,
+      "maxUsableEvaluationGapMs": 2085,
+      "maximumScheduleDelayMs": 6,
+      "gaps": [],
+      "serviceQuality": "NO_PROTECTION_GAP_OBSERVED",
+      "outcomes": [
+        {
+          "scheduledAt": 1793117886716,
+          "requestedAt": 1793117886722,
+          "availableAt": 1793117887031,
+          "pricingReturnedAt": 1793117887030,
+          "decisionAt": 1793117887030,
+          "deadlineAt": 1793117890716,
+          "startDelayMs": 6,
+          "requests": 1,
+          "quoteAgeAtUseMs": 30,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117888716,
+          "requestedAt": 1793117888721,
+          "availableAt": 1793117888883,
+          "pricingReturnedAt": 1793117888883,
+          "decisionAt": 1793117888883,
+          "deadlineAt": 1793117891031,
+          "startDelayMs": 5,
+          "requests": 1,
+          "quoteAgeAtUseMs": 30,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117890716,
+          "requestedAt": 1793117890717,
+          "availableAt": 1793117890848,
+          "pricingReturnedAt": 1793117890847,
+          "decisionAt": 1793117890848,
+          "deadlineAt": 1793117892883,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 29,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117892716,
+          "requestedAt": 1793117892718,
+          "availableAt": 1793117892900,
+          "pricingReturnedAt": 1793117892900,
+          "decisionAt": 1793117892900,
+          "deadlineAt": 1793117894848,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117894716,
+          "requestedAt": 1793117894270,
+          "availableAt": 1793117894380,
+          "pricingReturnedAt": 1793117894379,
+          "decisionAt": 1793117894379,
+          "deadlineAt": 1793117896900,
+          "startDelayMs": -446,
+          "requests": 1,
+          "quoteAgeAtUseMs": 26,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117896278,
+          "requestedAt": 1793117896280,
+          "availableAt": 1793117896394,
+          "pricingReturnedAt": 1793117896394,
+          "decisionAt": 1793117896394,
+          "deadlineAt": 1793117898380,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 34,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117898278,
+          "requestedAt": 1793117898279,
+          "availableAt": 1793117898384,
+          "pricingReturnedAt": 1793117898383,
+          "decisionAt": 1793117898384,
+          "deadlineAt": 1793117900394,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 25,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117900278,
+          "requestedAt": 1793117900279,
+          "availableAt": 1793117900401,
+          "pricingReturnedAt": 1793117900401,
+          "decisionAt": 1793117900401,
+          "deadlineAt": 1793117902384,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117902278,
+          "requestedAt": 1793117902279,
+          "availableAt": 1793117902413,
+          "pricingReturnedAt": 1793117902412,
+          "decisionAt": 1793117902412,
+          "deadlineAt": 1793117904401,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117904278,
+          "requestedAt": 1793117904278,
+          "availableAt": 1793117904360,
+          "pricingReturnedAt": 1793117904360,
+          "decisionAt": 1793117904360,
+          "deadlineAt": 1793117906413,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 25,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117906278,
+          "requestedAt": 1793117906280,
+          "availableAt": 1793117906364,
+          "pricingReturnedAt": 1793117906364,
+          "decisionAt": 1793117906364,
+          "deadlineAt": 1793117908360,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117908278,
+          "requestedAt": 1793117908279,
+          "availableAt": 1793117908351,
+          "pricingReturnedAt": 1793117908351,
+          "decisionAt": 1793117908351,
+          "deadlineAt": 1793117910364,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 17,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117910278,
+          "requestedAt": 1793117910278,
+          "availableAt": 1793117910380,
+          "pricingReturnedAt": 1793117910380,
+          "decisionAt": 1793117910380,
+          "deadlineAt": 1793117912351,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 18,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117912278,
+          "requestedAt": 1793117912282,
+          "availableAt": 1793117912384,
+          "pricingReturnedAt": 1793117912384,
+          "decisionAt": 1793117912384,
+          "deadlineAt": 1793117914380,
+          "startDelayMs": 4,
+          "requests": 1,
+          "quoteAgeAtUseMs": 30,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117914278,
+          "requestedAt": 1793117914280,
+          "availableAt": 1793117914377,
+          "pricingReturnedAt": 1793117914377,
+          "decisionAt": 1793117914377,
+          "deadlineAt": 1793117916384,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117916278,
+          "requestedAt": 1793117916279,
+          "availableAt": 1793117916357,
+          "pricingReturnedAt": 1793117916356,
+          "decisionAt": 1793117916356,
+          "deadlineAt": 1793117918377,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 26,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117918278,
+          "requestedAt": 1793117918279,
+          "availableAt": 1793117918362,
+          "pricingReturnedAt": 1793117918362,
+          "decisionAt": 1793117918362,
+          "deadlineAt": 1793117920357,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 28,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117920278,
+          "requestedAt": 1793117920282,
+          "availableAt": 1793117920426,
+          "pricingReturnedAt": 1793117920426,
+          "decisionAt": 1793117920426,
+          "deadlineAt": 1793117922362,
+          "startDelayMs": 4,
+          "requests": 1,
+          "quoteAgeAtUseMs": 34,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117922278,
+          "requestedAt": 1793117922279,
+          "availableAt": 1793117922368,
+          "pricingReturnedAt": 1793117922368,
+          "decisionAt": 1793117922368,
+          "deadlineAt": 1793117924426,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 27,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117924278,
+          "requestedAt": 1793117924278,
+          "availableAt": 1793117924365,
+          "pricingReturnedAt": 1793117924365,
+          "decisionAt": 1793117924365,
+          "deadlineAt": 1793117926368,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 28,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117926278,
+          "requestedAt": 1793117926278,
+          "availableAt": 1793117926364,
+          "pricingReturnedAt": 1793117926364,
+          "decisionAt": 1793117926364,
+          "deadlineAt": 1793117928365,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 25,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117928278,
+          "requestedAt": 1793117928278,
+          "availableAt": 1793117928381,
+          "pricingReturnedAt": 1793117928381,
+          "decisionAt": 1793117928381,
+          "deadlineAt": 1793117930364,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 31,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117930278,
+          "requestedAt": 1793117930278,
+          "availableAt": 1793117930466,
+          "pricingReturnedAt": 1793117930466,
+          "decisionAt": 1793117930466,
+          "deadlineAt": 1793117932381,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 87,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117932278,
+          "requestedAt": 1793117932278,
+          "availableAt": 1793117932396,
+          "pricingReturnedAt": 1793117932396,
+          "decisionAt": 1793117932396,
+          "deadlineAt": 1793117934466,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117934278,
+          "requestedAt": 1793117934280,
+          "availableAt": 1793117934400,
+          "pricingReturnedAt": 1793117934400,
+          "decisionAt": 1793117934400,
+          "deadlineAt": 1793117936396,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 35,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117936278,
+          "requestedAt": 1793117936280,
+          "availableAt": 1793117936406,
+          "pricingReturnedAt": 1793117936405,
+          "decisionAt": 1793117936406,
+          "deadlineAt": 1793117938400,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117938278,
+          "requestedAt": 1793117938279,
+          "availableAt": 1793117938376,
+          "pricingReturnedAt": 1793117938376,
+          "decisionAt": 1793117938376,
+          "deadlineAt": 1793117940406,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 21,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117940278,
+          "requestedAt": 1793117940279,
+          "availableAt": 1793117940378,
+          "pricingReturnedAt": 1793117940378,
+          "decisionAt": 1793117940378,
+          "deadlineAt": 1793117942376,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 28,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117942278,
+          "requestedAt": 1793117942279,
+          "availableAt": 1793117942425,
+          "pricingReturnedAt": 1793117942425,
+          "decisionAt": 1793117942425,
+          "deadlineAt": 1793117944378,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 40,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117944278,
+          "requestedAt": 1793117944280,
+          "availableAt": 1793117944362,
+          "pricingReturnedAt": 1793117944361,
+          "decisionAt": 1793117944361,
+          "deadlineAt": 1793117946425,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 25,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117946278,
+          "requestedAt": 1793117946280,
+          "availableAt": 1793117946369,
+          "pricingReturnedAt": 1793117946369,
+          "decisionAt": 1793117946369,
+          "deadlineAt": 1793117948362,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 25,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117948278,
+          "requestedAt": 1793117948279,
+          "availableAt": 1793117948372,
+          "pricingReturnedAt": 1793117948372,
+          "decisionAt": 1793117948372,
+          "deadlineAt": 1793117950369,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 26,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117950278,
+          "requestedAt": 1793117950280,
+          "availableAt": 1793117950416,
+          "pricingReturnedAt": 1793117950416,
+          "decisionAt": 1793117950416,
+          "deadlineAt": 1793117952372,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 48,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117952278,
+          "requestedAt": 1793117952279,
+          "availableAt": 1793117952385,
+          "pricingReturnedAt": 1793117952385,
+          "decisionAt": 1793117952385,
+          "deadlineAt": 1793117954416,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 24,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117954278,
+          "requestedAt": 1793117953837,
+          "availableAt": 1793117953921,
+          "pricingReturnedAt": 1793117953921,
+          "decisionAt": 1793117953921,
+          "deadlineAt": 1793117956385,
+          "startDelayMs": -441,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117955843,
+          "requestedAt": 1793117955845,
+          "availableAt": 1793117955934,
+          "pricingReturnedAt": 1793117955934,
+          "decisionAt": 1793117955934,
+          "deadlineAt": 1793117957921,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117957843,
+          "requestedAt": 1793117957844,
+          "availableAt": 1793117957927,
+          "pricingReturnedAt": 1793117957927,
+          "decisionAt": 1793117957927,
+          "deadlineAt": 1793117959934,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793117959843,
+          "requestedAt": 1793117959844,
+          "availableAt": 1793117959924,
+          "pricingReturnedAt": 1793117959924,
+          "decisionAt": 1793117959924,
+          "deadlineAt": 1793117961927,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        }
+      ]
+    },
+    "sharedScheduler": {
+      "policy": "protected-deadline-proposed",
+      "schedulerWaits": 740,
+      "schedulerRefusals": 0,
+      "earlyEvaluations": 2,
+      "earlyEvaluationCap": 5,
+      "totalProtectionCap": 43,
+      "phaseChangesAreEquivalent": false,
+      "acceptedMaximumCompletedEvaluationGapMs": null,
+      "proposedTimingStandard": {
+        "status": "PROPOSED_UNAPPROVED",
+        "targetMs": 2000,
+        "maximumUsableEvaluationGapMs": 4000,
+        "quoteAgeMs": 2000,
+        "sourceAgeMs": 30000,
+        "enrichmentDeadlineMs": 5000
+      },
+      "candidateSuspended": true,
+      "candidateSuspensions": [
+        {
+          "at": 1793117954162,
+          "reason": "confirmed-transaction-mapping-unavailable"
+        }
+      ],
+      "timingContract": {
+        "targetPollingMs": 2000,
+        "quoteAgeAtUseMs": 2000,
+        "sourceStateAgeMs": 30000,
+        "enrichmentDelayMs": 1000,
+        "enrichmentCompletionDeadlineMs": 5000,
+        "postProcessingReserveMs": 200,
+        "dispatchQuantumMs": 100
+      },
+      "completedGapsOverTarget": 19,
+      "maximumTargetStartMissMs": 6
+    }
+  },
+  "audit": null,
+  "usage": {
+    "grantId": "standing-01-paced-combined",
+    "limits": {
+      "maxNewUnits": 100,
+      "maxCumulativeUnits": null,
+      "maxHttpBytes": 25165824,
+      "maxWsBytes": 8388608,
+      "maxCombinedBytes": 33554432,
+      "maxCumulativeBytes": null,
+      "minSpacingMs": 250,
+      "maxStartsPerMinute": 60,
+      "maxStartsPer10s": 10
+    },
+    "baseline": {
+      "calls": 221,
+      "bytes": 4411710,
+      "starts": [
+        1793069031002,
+        1793069031314,
+        1793069031396,
+        1793069031462,
+        1793069031573,
+        1793069031683,
+        1793070868114,
+        1793070868438,
+        1793070868560,
+        1793070868620,
+        1793070868784,
+        1793070868860,
+        1793070868907,
+        1793070868987,
+        1793070869076,
+        1793070869128,
+        1793070869216,
+        1793070869294,
+        1793070869347,
+        1793070869405,
+        1793081386306,
+        1793081387309,
+        1793081388313,
+        1793081389315,
+        1793083252240,
+        1793083253245,
+        1793083254248,
+        1793083255251,
+        1793083256255,
+        1793083419722,
+        1793083420725,
+        1793083421729,
+        1793083422732,
+        1793083423735,
+        1793083780796,
+        1793083781799,
+        1793084322691,
+        1793084323694,
+        1793084666467,
+        1793084713873,
+        1793084714877,
+        1793084715881,
+        1793084716884,
+        1793084911356,
+        1793084921822,
+        1793084922823,
+        1793084937183,
+        1793085437929,
+        1793085438942,
+        1793085439945,
+        1793085440949,
+        1793085771700,
+        1793085772703,
+        1793085773707,
+        1793085774709,
+        1793085775711,
+        1793085776716,
+        1793085777718,
+        1793085778721,
+        1793085779723,
+        1793085780726,
+        1793085781729,
+        1793085782732,
+        1793085783781,
+        1793085785780,
+        1793085787779,
+        1793085789779,
+        1793085790782,
+        1793085791784,
+        1793086393178,
+        1793086394181,
+        1793086395184,
+        1793086396187,
+        1793086397190,
+        1793086398193,
+        1793086399199,
+        1793086400202,
+        1793086401205,
+        1793086402208,
+        1793086403210,
+        1793086404213,
+        1793086405256,
+        1793086407255,
+        1793086409255,
+        1793086411256,
+        1793086412260,
+        1793086413263,
+        1793086414266,
+        1793086415269,
+        1793086416271,
+        1793086417275,
+        1793086418278,
+        1793086419281,
+        1793086420284,
+        1793086421288,
+        1793086422291,
+        1793086423294,
+        1793086424297,
+        1793086425300,
+        1793086426302,
+        1793086427305,
+        1793086428308,
+        1793086429314,
+        1793086431255,
+        1793086433254,
+        1793086434258,
+        1793086435262,
+        1793086436265,
+        1793086437268,
+        1793086438271,
+        1793086439275,
+        1793087302346,
+        1793087303348,
+        1793087304352,
+        1793087305356,
+        1793087306926,
+        1793087307929,
+        1793087308962,
+        1793087310169,
+        1793087311172,
+        1793087312174,
+        1793087313177,
+        1793087315004,
+        1793087316916,
+        1793087318949,
+        1793087320975,
+        1793087322989,
+        1793087325000,
+        1793087326912,
+        1793087328936,
+        1793087330958,
+        1793087332967,
+        1793087334988,
+        1793087337000,
+        1793087338915,
+        1793087340922,
+        1793087342934,
+        1793087343937,
+        1793087344949,
+        1793087346059,
+        1793087347062,
+        1793087348979,
+        1793087350993,
+        1793087353000,
+        1793087354914,
+        1793087356926,
+        1793087358940,
+        1793087360954,
+        1793087362966,
+        1793087364977,
+        1793087366991,
+        1793087368998,
+        1793087370909,
+        1793087372923,
+        1793087373932,
+        1793088220236,
+        1793088221239,
+        1793088222242,
+        1793088223245,
+        1793088224248,
+        1793088581011,
+        1793088582014,
+        1793090239498,
+        1793114342630,
+        1793114343632,
+        1793114344635,
+        1793114345638,
+        1793114346641,
+        1793114347646,
+        1793114349298,
+        1793114351298,
+        1793114353299,
+        1793114355297,
+        1793114357299,
+        1793114359300,
+        1793114361298,
+        1793114363297,
+        1793114365299,
+        1793114367297,
+        1793114369299,
+        1793114371300,
+        1793114373299,
+        1793114375297,
+        1793114376303,
+        1793114377306,
+        1793114378311,
+        1793114380311,
+        1793114382308,
+        1793114384308,
+        1793114386309,
+        1793114388308,
+        1793114390016,
+        1793114391022,
+        1793114392028,
+        1793114393033,
+        1793114394036,
+        1793114395042,
+        1793114396044,
+        1793114397049,
+        1793114398054,
+        1793114399058,
+        1793114400065,
+        1793114402063,
+        1793114404062,
+        1793114406060,
+        1793114408062,
+        1793114410063,
+        1793114412060,
+        1793114414060,
+        1793114416059,
+        1793114418061,
+        1793114420063,
+        1793114422059,
+        1793114423062,
+        1793114424065,
+        1793114425070,
+        1793114426074,
+        1793114427093,
+        1793114428097,
+        1793114429102,
+        1793114430106
+      ],
+      "refusal": "RPC_HTTP_429",
+      "refusalAt": 1793070869405,
+      "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2"
+    },
+    "cumulativeUnits": 268,
+    "newUnits": 47,
+    "actualInvokedUnits": 47,
+    "cumulativeResponseBytes": 5053099,
+    "httpBytes": 641176,
+    "wsBytes": 213,
+    "newResponseBytes": 641389,
+    "remainingGrantUnits": 53,
+    "remainingCumulativeUnits": null,
+    "remainingGrantResponseBytes": 32913043,
+    "remainingCumulativeResponseBytes": null,
+    "pending": [],
+    "uncertainResponseBytes": 0,
+    "rolling60SecondStarts": 32,
+    "rolling10SecondStarts": 6,
+    "starts": [
+      1793117874977,
+      1793117875312,
+      1793117875565,
+      1793117875818,
+      1793117886068,
+      1793117886726,
+      1793117888731,
+      1793117890722,
+      1793117892726,
+      1793117894278,
+      1793117894531,
+      1793117894784,
+      1793117896287,
+      1793117898283,
+      1793117900294,
+      1793117902283,
+      1793117904283,
+      1793117906284,
+      1793117906568,
+      1793117908283,
+      1793117910283,
+      1793117912287,
+      1793117914284,
+      1793117916283,
+      1793117918283,
+      1793117920287,
+      1793117922283,
+      1793117924283,
+      1793117926284,
+      1793117928283,
+      1793117930285,
+      1793117932284,
+      1793117934285,
+      1793117936285,
+      1793117938283,
+      1793117940284,
+      1793117942284,
+      1793117944284,
+      1793117946284,
+      1793117948289,
+      1793117950289,
+      1793117952285,
+      1793117953843,
+      1793117954096,
+      1793117955850,
+      1793117957848,
+      1793117959849
+    ],
+    "actualInvocations": [
+      {
+        "id": 222,
+        "at": 1793117874977
+      },
+      {
+        "id": 223,
+        "at": 1793117875312
+      },
+      {
+        "id": 224,
+        "at": 1793117875565
+      },
+      {
+        "id": 225,
+        "at": 1793117875818
+      },
+      {
+        "id": 226,
+        "at": 1793117886068
+      },
+      {
+        "id": 227,
+        "at": 1793117886726
+      },
+      {
+        "id": 228,
+        "at": 1793117888731
+      },
+      {
+        "id": 229,
+        "at": 1793117890722
+      },
+      {
+        "id": 230,
+        "at": 1793117892726
+      },
+      {
+        "id": 231,
+        "at": 1793117894278
+      },
+      {
+        "id": 232,
+        "at": 1793117894531
+      },
+      {
+        "id": 233,
+        "at": 1793117894784
+      },
+      {
+        "id": 234,
+        "at": 1793117896287
+      },
+      {
+        "id": 235,
+        "at": 1793117898283
+      },
+      {
+        "id": 236,
+        "at": 1793117900294
+      },
+      {
+        "id": 237,
+        "at": 1793117902283
+      },
+      {
+        "id": 238,
+        "at": 1793117904283
+      },
+      {
+        "id": 239,
+        "at": 1793117906284
+      },
+      {
+        "id": 240,
+        "at": 1793117906568
+      },
+      {
+        "id": 241,
+        "at": 1793117908283
+      },
+      {
+        "id": 242,
+        "at": 1793117910283
+      },
+      {
+        "id": 243,
+        "at": 1793117912287
+      },
+      {
+        "id": 244,
+        "at": 1793117914284
+      },
+      {
+        "id": 245,
+        "at": 1793117916283
+      },
+      {
+        "id": 246,
+        "at": 1793117918283
+      },
+      {
+        "id": 247,
+        "at": 1793117920287
+      },
+      {
+        "id": 248,
+        "at": 1793117922283
+      },
+      {
+        "id": 249,
+        "at": 1793117924283
+      },
+      {
+        "id": 250,
+        "at": 1793117926284
+      },
+      {
+        "id": 251,
+        "at": 1793117928283
+      },
+      {
+        "id": 252,
+        "at": 1793117930285
+      },
+      {
+        "id": 253,
+        "at": 1793117932284
+      },
+      {
+        "id": 254,
+        "at": 1793117934285
+      },
+      {
+        "id": 255,
+        "at": 1793117936285
+      },
+      {
+        "id": 256,
+        "at": 1793117938283
+      },
+      {
+        "id": 257,
+        "at": 1793117940284
+      },
+      {
+        "id": 258,
+        "at": 1793117942284
+      },
+      {
+        "id": 259,
+        "at": 1793117944284
+      },
+      {
+        "id": 260,
+        "at": 1793117946284
+      },
+      {
+        "id": 261,
+        "at": 1793117948289
+      },
+      {
+        "id": 262,
+        "at": 1793117950289
+      },
+      {
+        "id": 263,
+        "at": 1793117952285
+      },
+      {
+        "id": 264,
+        "at": 1793117953843
+      },
+      {
+        "id": 265,
+        "at": 1793117954096
+      },
+      {
+        "id": 266,
+        "at": 1793117955850
+      },
+      {
+        "id": 267,
+        "at": 1793117957848
+      },
+      {
+        "id": 268,
+        "at": 1793117959849
+      }
+    ],
+    "reservationStarts": [
+      1793117874976,
+      1793117875310,
+      1793117875563,
+      1793117875816,
+      1793117886066,
+      1793117886724,
+      1793117888726,
+      1793117890720,
+      1793117892723,
+      1793117894272,
+      1793117894529,
+      1793117894782,
+      1793117896284,
+      1793117898282,
+      1793117900283,
+      1793117902281,
+      1793117904280,
+      1793117906282,
+      1793117906566,
+      1793117908281,
+      1793117910280,
+      1793117912284,
+      1793117914282,
+      1793117916281,
+      1793117918281,
+      1793117920284,
+      1793117922281,
+      1793117924280,
+      1793117926281,
+      1793117928281,
+      1793117930281,
+      1793117932281,
+      1793117934283,
+      1793117936282,
+      1793117938281,
+      1793117940281,
+      1793117942282,
+      1793117944282,
+      1793117946282,
+      1793117948282,
+      1793117950282,
+      1793117952282,
+      1793117953839,
+      1793117954094,
+      1793117955848,
+      1793117957846,
+      1793117959846
+    ],
+    "byOperation": {
+      "http:getSignaturesForAddress": 1,
+      "http:getTransaction": 5,
+      "http:getMultipleAccounts": 40,
+      "ws-upgrade:upgrade": 1
+    },
+    "durationsMs": [
+      331.826102,
+      113.17396299999996,
+      100.55000000000018,
+      131.29297500000007,
+      651.1084030000002,
+      274.1710660000008,
+      118.08825500000057,
+      94.5746029999973,
+      148.7238430000034,
+      74.64538399999947,
+      98.85266899999988,
+      89.54616399999941,
+      70.02406999999948,
+      73.35821100000248,
+      83.66489199999705,
+      104.61087600000246,
+      50.27460300000166,
+      53.65113500000007,
+      84.5967469999996,
+      49.21894600000087,
+      78.41923400000087,
+      64.79315499999939,
+      69.07255199999781,
+      47.07853900000191,
+      50.636265999994066,
+      103.58211099999608,
+      56.38092699999834,
+      52.852020999998786,
+      52.96264500000689,
+      64.2866240000003,
+      92.01613299999735,
+      88.83800299999712,
+      77.33811699999933,
+      96.76494999999704,
+      70.07768600000418,
+      63.83032999999705,
+      99.622080000001,
+      51.95651899999939,
+      58.224400000006426,
+      53.331955999994534,
+      77.44950900001277,
+      72.83138699999836,
+      56.34958100000222,
+      59.53001300001051,
+      60.165726999999606,
+      55.21555900000385,
+      50.810041000004276
+    ],
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "haltedReason": null,
+    "startedAt": 1793117874918,
+    "totalMs": 120000,
+    "deadlineAt": 1793117994918,
+    "closed": false,
+    "storageFailed": false
+  },
+  "actualCumulative": {
+    "requestUnits": 268,
+    "observedRelatedBytes": 2955947,
+    "unknownRelatedBytesRetained": 2097152,
+    "accountedRelatedBytes": 5053099,
+    "observedPumpApiSocketBytes": 369652102,
+    "observedPumpApiBytesAreLowerBound": false,
+    "unknownPumpApiReservationBytesRetained": 0,
+    "historicLifetimeCeilingsAreNotProviderLimits": true
+  },
+  "resources": {
+    "peakRssBytes": 203776000,
+    "peakCpuMs": 9909.105,
+    "peakEventLoopLagMs": 80.52361000000383,
+    "externalPrlimitRequired": true,
+    "externalWallGuardRequired": true
+  },
+  "oldEvidenceUnchanged": true,
+  "oldMismatches": [],
+  "sourceUnchanged": true,
+  "sourceMismatches": [],
+  "phaseReceipts": [
+    {
+      "phase": "01-preflight",
+      "at": 1793117875439,
+      "usage": {
+        "grantId": "standing-01-paced-combined",
+        "limits": {
+          "maxNewUnits": 100,
+          "maxCumulativeUnits": null,
+          "maxHttpBytes": 25165824,
+          "maxWsBytes": 8388608,
+          "maxCombinedBytes": 33554432,
+          "maxCumulativeBytes": null,
+          "minSpacingMs": 250,
+          "maxStartsPerMinute": 60,
+          "maxStartsPer10s": 10
+        },
+        "baseline": {
+          "calls": 221,
+          "bytes": 4411710,
+          "starts": [
+            1793069031002,
+            1793069031314,
+            1793069031396,
+            1793069031462,
+            1793069031573,
+            1793069031683,
+            1793070868114,
+            1793070868438,
+            1793070868560,
+            1793070868620,
+            1793070868784,
+            1793070868860,
+            1793070868907,
+            1793070868987,
+            1793070869076,
+            1793070869128,
+            1793070869216,
+            1793070869294,
+            1793070869347,
+            1793070869405,
+            1793081386306,
+            1793081387309,
+            1793081388313,
+            1793081389315,
+            1793083252240,
+            1793083253245,
+            1793083254248,
+            1793083255251,
+            1793083256255,
+            1793083419722,
+            1793083420725,
+            1793083421729,
+            1793083422732,
+            1793083423735,
+            1793083780796,
+            1793083781799,
+            1793084322691,
+            1793084323694,
+            1793084666467,
+            1793084713873,
+            1793084714877,
+            1793084715881,
+            1793084716884,
+            1793084911356,
+            1793084921822,
+            1793084922823,
+            1793084937183,
+            1793085437929,
+            1793085438942,
+            1793085439945,
+            1793085440949,
+            1793085771700,
+            1793085772703,
+            1793085773707,
+            1793085774709,
+            1793085775711,
+            1793085776716,
+            1793085777718,
+            1793085778721,
+            1793085779723,
+            1793085780726,
+            1793085781729,
+            1793085782732,
+            1793085783781,
+            1793085785780,
+            1793085787779,
+            1793085789779,
+            1793085790782,
+            1793085791784,
+            1793086393178,
+            1793086394181,
+            1793086395184,
+            1793086396187,
+            1793086397190,
+            1793086398193,
+            1793086399199,
+            1793086400202,
+            1793086401205,
+            1793086402208,
+            1793086403210,
+            1793086404213,
+            1793086405256,
+            1793086407255,
+            1793086409255,
+            1793086411256,
+            1793086412260,
+            1793086413263,
+            1793086414266,
+            1793086415269,
+            1793086416271,
+            1793086417275,
+            1793086418278,
+            1793086419281,
+            1793086420284,
+            1793086421288,
+            1793086422291,
+            1793086423294,
+            1793086424297,
+            1793086425300,
+            1793086426302,
+            1793086427305,
+            1793086428308,
+            1793086429314,
+            1793086431255,
+            1793086433254,
+            1793086434258,
+            1793086435262,
+            1793086436265,
+            1793086437268,
+            1793086438271,
+            1793086439275,
+            1793087302346,
+            1793087303348,
+            1793087304352,
+            1793087305356,
+            1793087306926,
+            1793087307929,
+            1793087308962,
+            1793087310169,
+            1793087311172,
+            1793087312174,
+            1793087313177,
+            1793087315004,
+            1793087316916,
+            1793087318949,
+            1793087320975,
+            1793087322989,
+            1793087325000,
+            1793087326912,
+            1793087328936,
+            1793087330958,
+            1793087332967,
+            1793087334988,
+            1793087337000,
+            1793087338915,
+            1793087340922,
+            1793087342934,
+            1793087343937,
+            1793087344949,
+            1793087346059,
+            1793087347062,
+            1793087348979,
+            1793087350993,
+            1793087353000,
+            1793087354914,
+            1793087356926,
+            1793087358940,
+            1793087360954,
+            1793087362966,
+            1793087364977,
+            1793087366991,
+            1793087368998,
+            1793087370909,
+            1793087372923,
+            1793087373932,
+            1793088220236,
+            1793088221239,
+            1793088222242,
+            1793088223245,
+            1793088224248,
+            1793088581011,
+            1793088582014,
+            1793090239498,
+            1793114342630,
+            1793114343632,
+            1793114344635,
+            1793114345638,
+            1793114346641,
+            1793114347646,
+            1793114349298,
+            1793114351298,
+            1793114353299,
+            1793114355297,
+            1793114357299,
+            1793114359300,
+            1793114361298,
+            1793114363297,
+            1793114365299,
+            1793114367297,
+            1793114369299,
+            1793114371300,
+            1793114373299,
+            1793114375297,
+            1793114376303,
+            1793114377306,
+            1793114378311,
+            1793114380311,
+            1793114382308,
+            1793114384308,
+            1793114386309,
+            1793114388308,
+            1793114390016,
+            1793114391022,
+            1793114392028,
+            1793114393033,
+            1793114394036,
+            1793114395042,
+            1793114396044,
+            1793114397049,
+            1793114398054,
+            1793114399058,
+            1793114400065,
+            1793114402063,
+            1793114404062,
+            1793114406060,
+            1793114408062,
+            1793114410063,
+            1793114412060,
+            1793114414060,
+            1793114416059,
+            1793114418061,
+            1793114420063,
+            1793114422059,
+            1793114423062,
+            1793114424065,
+            1793114425070,
+            1793114426074,
+            1793114427093,
+            1793114428097,
+            1793114429102,
+            1793114430106
+          ],
+          "refusal": "RPC_HTTP_429",
+          "refusalAt": 1793070869405,
+          "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2"
+        },
+        "cumulativeUnits": 223,
+        "newUnits": 2,
+        "actualInvokedUnits": 2,
+        "cumulativeResponseBytes": 4444202,
+        "httpBytes": 32492,
+        "wsBytes": 0,
+        "newResponseBytes": 32492,
+        "remainingGrantUnits": 98,
+        "remainingCumulativeUnits": null,
+        "remainingGrantResponseBytes": 33521940,
+        "remainingCumulativeResponseBytes": null,
+        "pending": [],
+        "uncertainResponseBytes": 0,
+        "rolling60SecondStarts": 2,
+        "rolling10SecondStarts": 2,
+        "starts": [
+          1793117874977,
+          1793117875312
+        ],
+        "actualInvocations": [
+          {
+            "id": 222,
+            "at": 1793117874977
+          },
+          {
+            "id": 223,
+            "at": 1793117875312
+          }
+        ],
+        "reservationStarts": [
+          1793117874976,
+          1793117875310
+        ],
+        "byOperation": {
+          "http:getSignaturesForAddress": 1,
+          "http:getTransaction": 1
+        },
+        "durationsMs": [
+          331.826102,
+          113.17396299999996
+        ],
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "haltedReason": null,
+        "startedAt": 1793117874918,
+        "totalMs": 120000,
+        "deadlineAt": 1793117994918,
+        "closed": false,
+        "storageFailed": false
+      }
+    },
+    {
+      "phase": "02-combined",
+      "at": 1793117961724,
+      "usage": {
+        "grantId": "standing-01-paced-combined",
+        "limits": {
+          "maxNewUnits": 100,
+          "maxCumulativeUnits": null,
+          "maxHttpBytes": 25165824,
+          "maxWsBytes": 8388608,
+          "maxCombinedBytes": 33554432,
+          "maxCumulativeBytes": null,
+          "minSpacingMs": 250,
+          "maxStartsPerMinute": 60,
+          "maxStartsPer10s": 10
+        },
+        "baseline": {
+          "calls": 221,
+          "bytes": 4411710,
+          "starts": [
+            1793069031002,
+            1793069031314,
+            1793069031396,
+            1793069031462,
+            1793069031573,
+            1793069031683,
+            1793070868114,
+            1793070868438,
+            1793070868560,
+            1793070868620,
+            1793070868784,
+            1793070868860,
+            1793070868907,
+            1793070868987,
+            1793070869076,
+            1793070869128,
+            1793070869216,
+            1793070869294,
+            1793070869347,
+            1793070869405,
+            1793081386306,
+            1793081387309,
+            1793081388313,
+            1793081389315,
+            1793083252240,
+            1793083253245,
+            1793083254248,
+            1793083255251,
+            1793083256255,
+            1793083419722,
+            1793083420725,
+            1793083421729,
+            1793083422732,
+            1793083423735,
+            1793083780796,
+            1793083781799,
+            1793084322691,
+            1793084323694,
+            1793084666467,
+            1793084713873,
+            1793084714877,
+            1793084715881,
+            1793084716884,
+            1793084911356,
+            1793084921822,
+            1793084922823,
+            1793084937183,
+            1793085437929,
+            1793085438942,
+            1793085439945,
+            1793085440949,
+            1793085771700,
+            1793085772703,
+            1793085773707,
+            1793085774709,
+            1793085775711,
+            1793085776716,
+            1793085777718,
+            1793085778721,
+            1793085779723,
+            1793085780726,
+            1793085781729,
+            1793085782732,
+            1793085783781,
+            1793085785780,
+            1793085787779,
+            1793085789779,
+            1793085790782,
+            1793085791784,
+            1793086393178,
+            1793086394181,
+            1793086395184,
+            1793086396187,
+            1793086397190,
+            1793086398193,
+            1793086399199,
+            1793086400202,
+            1793086401205,
+            1793086402208,
+            1793086403210,
+            1793086404213,
+            1793086405256,
+            1793086407255,
+            1793086409255,
+            1793086411256,
+            1793086412260,
+            1793086413263,
+            1793086414266,
+            1793086415269,
+            1793086416271,
+            1793086417275,
+            1793086418278,
+            1793086419281,
+            1793086420284,
+            1793086421288,
+            1793086422291,
+            1793086423294,
+            1793086424297,
+            1793086425300,
+            1793086426302,
+            1793086427305,
+            1793086428308,
+            1793086429314,
+            1793086431255,
+            1793086433254,
+            1793086434258,
+            1793086435262,
+            1793086436265,
+            1793086437268,
+            1793086438271,
+            1793086439275,
+            1793087302346,
+            1793087303348,
+            1793087304352,
+            1793087305356,
+            1793087306926,
+            1793087307929,
+            1793087308962,
+            1793087310169,
+            1793087311172,
+            1793087312174,
+            1793087313177,
+            1793087315004,
+            1793087316916,
+            1793087318949,
+            1793087320975,
+            1793087322989,
+            1793087325000,
+            1793087326912,
+            1793087328936,
+            1793087330958,
+            1793087332967,
+            1793087334988,
+            1793087337000,
+            1793087338915,
+            1793087340922,
+            1793087342934,
+            1793087343937,
+            1793087344949,
+            1793087346059,
+            1793087347062,
+            1793087348979,
+            1793087350993,
+            1793087353000,
+            1793087354914,
+            1793087356926,
+            1793087358940,
+            1793087360954,
+            1793087362966,
+            1793087364977,
+            1793087366991,
+            1793087368998,
+            1793087370909,
+            1793087372923,
+            1793087373932,
+            1793088220236,
+            1793088221239,
+            1793088222242,
+            1793088223245,
+            1793088224248,
+            1793088581011,
+            1793088582014,
+            1793090239498,
+            1793114342630,
+            1793114343632,
+            1793114344635,
+            1793114345638,
+            1793114346641,
+            1793114347646,
+            1793114349298,
+            1793114351298,
+            1793114353299,
+            1793114355297,
+            1793114357299,
+            1793114359300,
+            1793114361298,
+            1793114363297,
+            1793114365299,
+            1793114367297,
+            1793114369299,
+            1793114371300,
+            1793114373299,
+            1793114375297,
+            1793114376303,
+            1793114377306,
+            1793114378311,
+            1793114380311,
+            1793114382308,
+            1793114384308,
+            1793114386309,
+            1793114388308,
+            1793114390016,
+            1793114391022,
+            1793114392028,
+            1793114393033,
+            1793114394036,
+            1793114395042,
+            1793114396044,
+            1793114397049,
+            1793114398054,
+            1793114399058,
+            1793114400065,
+            1793114402063,
+            1793114404062,
+            1793114406060,
+            1793114408062,
+            1793114410063,
+            1793114412060,
+            1793114414060,
+            1793114416059,
+            1793114418061,
+            1793114420063,
+            1793114422059,
+            1793114423062,
+            1793114424065,
+            1793114425070,
+            1793114426074,
+            1793114427093,
+            1793114428097,
+            1793114429102,
+            1793114430106
+          ],
+          "refusal": "RPC_HTTP_429",
+          "refusalAt": 1793070869405,
+          "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2"
+        },
+        "cumulativeUnits": 268,
+        "newUnits": 47,
+        "actualInvokedUnits": 47,
+        "cumulativeResponseBytes": 5053099,
+        "httpBytes": 641176,
+        "wsBytes": 213,
+        "newResponseBytes": 641389,
+        "remainingGrantUnits": 53,
+        "remainingCumulativeUnits": null,
+        "remainingGrantResponseBytes": 32913043,
+        "remainingCumulativeResponseBytes": null,
+        "pending": [],
+        "uncertainResponseBytes": 0,
+        "rolling60SecondStarts": 32,
+        "rolling10SecondStarts": 6,
+        "starts": [
+          1793117874977,
+          1793117875312,
+          1793117875565,
+          1793117875818,
+          1793117886068,
+          1793117886726,
+          1793117888731,
+          1793117890722,
+          1793117892726,
+          1793117894278,
+          1793117894531,
+          1793117894784,
+          1793117896287,
+          1793117898283,
+          1793117900294,
+          1793117902283,
+          1793117904283,
+          1793117906284,
+          1793117906568,
+          1793117908283,
+          1793117910283,
+          1793117912287,
+          1793117914284,
+          1793117916283,
+          1793117918283,
+          1793117920287,
+          1793117922283,
+          1793117924283,
+          1793117926284,
+          1793117928283,
+          1793117930285,
+          1793117932284,
+          1793117934285,
+          1793117936285,
+          1793117938283,
+          1793117940284,
+          1793117942284,
+          1793117944284,
+          1793117946284,
+          1793117948289,
+          1793117950289,
+          1793117952285,
+          1793117953843,
+          1793117954096,
+          1793117955850,
+          1793117957848,
+          1793117959849
+        ],
+        "actualInvocations": [
+          {
+            "id": 222,
+            "at": 1793117874977
+          },
+          {
+            "id": 223,
+            "at": 1793117875312
+          },
+          {
+            "id": 224,
+            "at": 1793117875565
+          },
+          {
+            "id": 225,
+            "at": 1793117875818
+          },
+          {
+            "id": 226,
+            "at": 1793117886068
+          },
+          {
+            "id": 227,
+            "at": 1793117886726
+          },
+          {
+            "id": 228,
+            "at": 1793117888731
+          },
+          {
+            "id": 229,
+            "at": 1793117890722
+          },
+          {
+            "id": 230,
+            "at": 1793117892726
+          },
+          {
+            "id": 231,
+            "at": 1793117894278
+          },
+          {
+            "id": 232,
+            "at": 1793117894531
+          },
+          {
+            "id": 233,
+            "at": 1793117894784
+          },
+          {
+            "id": 234,
+            "at": 1793117896287
+          },
+          {
+            "id": 235,
+            "at": 1793117898283
+          },
+          {
+            "id": 236,
+            "at": 1793117900294
+          },
+          {
+            "id": 237,
+            "at": 1793117902283
+          },
+          {
+            "id": 238,
+            "at": 1793117904283
+          },
+          {
+            "id": 239,
+            "at": 1793117906284
+          },
+          {
+            "id": 240,
+            "at": 1793117906568
+          },
+          {
+            "id": 241,
+            "at": 1793117908283
+          },
+          {
+            "id": 242,
+            "at": 1793117910283
+          },
+          {
+            "id": 243,
+            "at": 1793117912287
+          },
+          {
+            "id": 244,
+            "at": 1793117914284
+          },
+          {
+            "id": 245,
+            "at": 1793117916283
+          },
+          {
+            "id": 246,
+            "at": 1793117918283
+          },
+          {
+            "id": 247,
+            "at": 1793117920287
+          },
+          {
+            "id": 248,
+            "at": 1793117922283
+          },
+          {
+            "id": 249,
+            "at": 1793117924283
+          },
+          {
+            "id": 250,
+            "at": 1793117926284
+          },
+          {
+            "id": 251,
+            "at": 1793117928283
+          },
+          {
+            "id": 252,
+            "at": 1793117930285
+          },
+          {
+            "id": 253,
+            "at": 1793117932284
+          },
+          {
+            "id": 254,
+            "at": 1793117934285
+          },
+          {
+            "id": 255,
+            "at": 1793117936285
+          },
+          {
+            "id": 256,
+            "at": 1793117938283
+          },
+          {
+            "id": 257,
+            "at": 1793117940284
+          },
+          {
+            "id": 258,
+            "at": 1793117942284
+          },
+          {
+            "id": 259,
+            "at": 1793117944284
+          },
+          {
+            "id": 260,
+            "at": 1793117946284
+          },
+          {
+            "id": 261,
+            "at": 1793117948289
+          },
+          {
+            "id": 262,
+            "at": 1793117950289
+          },
+          {
+            "id": 263,
+            "at": 1793117952285
+          },
+          {
+            "id": 264,
+            "at": 1793117953843
+          },
+          {
+            "id": 265,
+            "at": 1793117954096
+          },
+          {
+            "id": 266,
+            "at": 1793117955850
+          },
+          {
+            "id": 267,
+            "at": 1793117957848
+          },
+          {
+            "id": 268,
+            "at": 1793117959849
+          }
+        ],
+        "reservationStarts": [
+          1793117874976,
+          1793117875310,
+          1793117875563,
+          1793117875816,
+          1793117886066,
+          1793117886724,
+          1793117888726,
+          1793117890720,
+          1793117892723,
+          1793117894272,
+          1793117894529,
+          1793117894782,
+          1793117896284,
+          1793117898282,
+          1793117900283,
+          1793117902281,
+          1793117904280,
+          1793117906282,
+          1793117906566,
+          1793117908281,
+          1793117910280,
+          1793117912284,
+          1793117914282,
+          1793117916281,
+          1793117918281,
+          1793117920284,
+          1793117922281,
+          1793117924280,
+          1793117926281,
+          1793117928281,
+          1793117930281,
+          1793117932281,
+          1793117934283,
+          1793117936282,
+          1793117938281,
+          1793117940281,
+          1793117942282,
+          1793117944282,
+          1793117946282,
+          1793117948282,
+          1793117950282,
+          1793117952282,
+          1793117953839,
+          1793117954094,
+          1793117955848,
+          1793117957846,
+          1793117959846
+        ],
+        "byOperation": {
+          "http:getSignaturesForAddress": 1,
+          "http:getTransaction": 5,
+          "http:getMultipleAccounts": 40,
+          "ws-upgrade:upgrade": 1
+        },
+        "durationsMs": [
+          331.826102,
+          113.17396299999996,
+          100.55000000000018,
+          131.29297500000007,
+          651.1084030000002,
+          274.1710660000008,
+          118.08825500000057,
+          94.5746029999973,
+          148.7238430000034,
+          74.64538399999947,
+          98.85266899999988,
+          89.54616399999941,
+          70.02406999999948,
+          73.35821100000248,
+          83.66489199999705,
+          104.61087600000246,
+          50.27460300000166,
+          53.65113500000007,
+          84.5967469999996,
+          49.21894600000087,
+          78.41923400000087,
+          64.79315499999939,
+          69.07255199999781,
+          47.07853900000191,
+          50.636265999994066,
+          103.58211099999608,
+          56.38092699999834,
+          52.852020999998786,
+          52.96264500000689,
+          64.2866240000003,
+          92.01613299999735,
+          88.83800299999712,
+          77.33811699999933,
+          96.76494999999704,
+          70.07768600000418,
+          63.83032999999705,
+          99.622080000001,
+          51.95651899999939,
+          58.224400000006426,
+          53.331955999994534,
+          77.44950900001277,
+          72.83138699999836,
+          56.34958100000222,
+          59.53001300001051,
+          60.165726999999606,
+          55.21555900000385,
+          50.810041000004276
+        ],
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "haltedReason": null,
+        "startedAt": 1793117874918,
+        "totalMs": 120000,
+        "deadlineAt": 1793117994918,
+        "closed": false,
+        "storageFailed": false
+      }
+    }
+  ],
+  "admittedHoldingEvaluations": [
+    {
+      "preparedAt": 1793117875991,
+      "usedAt": 1793117875991,
+      "slot": 462135275,
+      "requests": 2,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 40,
+          "bankClockAgeAtUseMs": 991
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 40,
+          "bankClockAgeAtUseMs": 991
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 40,
+          "bankClockAgeAtUseMs": 991
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117887029,
+      "usedAt": 1793117887030,
+      "slot": 462135327,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 29,
+          "bankClockAgeAtUseMs": 1030
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 29,
+          "bankClockAgeAtUseMs": 1030
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 29,
+          "bankClockAgeAtUseMs": 1030
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117888882,
+      "usedAt": 1793117888883,
+      "slot": 462135335,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 30,
+          "bankClockAgeAtUseMs": 883
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 30,
+          "bankClockAgeAtUseMs": 883
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 30,
+          "bankClockAgeAtUseMs": 883
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117890847,
+      "usedAt": 1793117890847,
+      "slot": 462135344,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 847
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 847
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 847
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117892900,
+      "usedAt": 1793117892900,
+      "slot": 462135354,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 900
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 900
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 900
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117894379,
+      "usedAt": 1793117894379,
+      "slot": 462135361,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1379
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1379
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1379
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117896393,
+      "usedAt": 1793117896394,
+      "slot": 462135370,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 34,
+          "bankClockAgeAtUseMs": 1394
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 34,
+          "bankClockAgeAtUseMs": 1394
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 34,
+          "bankClockAgeAtUseMs": 1394
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117898383,
+      "usedAt": 1793117898383,
+      "slot": 462135379,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 1383
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 1383
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 1383
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117900400,
+      "usedAt": 1793117900401,
+      "slot": 462135389,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 1401
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 1401
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 1401
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117902412,
+      "usedAt": 1793117902412,
+      "slot": 462135399,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1412
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1412
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1412
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117904360,
+      "usedAt": 1793117904360,
+      "slot": 462135408,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1360
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1360
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1360
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117906364,
+      "usedAt": 1793117906364,
+      "slot": 462135418,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1364
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1364
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1364
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117908351,
+      "usedAt": 1793117908351,
+      "slot": 462135427,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 17,
+          "bankClockAgeAtUseMs": 1351
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 17,
+          "bankClockAgeAtUseMs": 1351
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 17,
+          "bankClockAgeAtUseMs": 1351
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117910380,
+      "usedAt": 1793117910380,
+      "slot": 462135437,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 380
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 380
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 380
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117912384,
+      "usedAt": 1793117912384,
+      "slot": 462135446,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 30,
+          "bankClockAgeAtUseMs": 1384
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 30,
+          "bankClockAgeAtUseMs": 1384
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 30,
+          "bankClockAgeAtUseMs": 1384
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117914377,
+      "usedAt": 1793117914377,
+      "slot": 462135456,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 377
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 377
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 377
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117916356,
+      "usedAt": 1793117916356,
+      "slot": 462135466,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 356
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 356
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 356
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117918362,
+      "usedAt": 1793117918362,
+      "slot": 462135475,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1362
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1362
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1362
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117920425,
+      "usedAt": 1793117920426,
+      "slot": 462135485,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 34,
+          "bankClockAgeAtUseMs": 1426
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 34,
+          "bankClockAgeAtUseMs": 1426
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 34,
+          "bankClockAgeAtUseMs": 1426
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117922367,
+      "usedAt": 1793117922368,
+      "slot": 462135495,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 1368
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 1368
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 1368
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117924364,
+      "usedAt": 1793117924365,
+      "slot": 462135504,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1365
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1365
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1365
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117926364,
+      "usedAt": 1793117926364,
+      "slot": 462135514,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 364
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 364
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 364
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117928380,
+      "usedAt": 1793117928381,
+      "slot": 462135523,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 1381
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 1381
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 1381
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117930465,
+      "usedAt": 1793117930465,
+      "slot": 462135532,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 86,
+          "bankClockAgeAtUseMs": 1465
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 86,
+          "bankClockAgeAtUseMs": 1465
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 86,
+          "bankClockAgeAtUseMs": 1465
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117932396,
+      "usedAt": 1793117932396,
+      "slot": 462135542,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 396
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 396
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 396
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117934400,
+      "usedAt": 1793117934400,
+      "slot": 462135552,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 35,
+          "bankClockAgeAtUseMs": 400
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 35,
+          "bankClockAgeAtUseMs": 400
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 35,
+          "bankClockAgeAtUseMs": 400
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117936405,
+      "usedAt": 1793117936405,
+      "slot": 462135561,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1405
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1405
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 1405
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117938376,
+      "usedAt": 1793117938376,
+      "slot": 462135571,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 1376
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 1376
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 1376
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117940377,
+      "usedAt": 1793117940378,
+      "slot": 462135578,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1378
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1378
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1378
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117942425,
+      "usedAt": 1793117942425,
+      "slot": 462135586,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 40,
+          "bankClockAgeAtUseMs": 1425
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 40,
+          "bankClockAgeAtUseMs": 1425
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 40,
+          "bankClockAgeAtUseMs": 1425
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117944361,
+      "usedAt": 1793117944361,
+      "slot": 462135595,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 1361
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 1361
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 1361
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117946368,
+      "usedAt": 1793117946369,
+      "slot": 462135605,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 369
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 369
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 369
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117948372,
+      "usedAt": 1793117948372,
+      "slot": 462135614,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 26,
+          "bankClockAgeAtUseMs": 372
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 26,
+          "bankClockAgeAtUseMs": 372
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 26,
+          "bankClockAgeAtUseMs": 372
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117950415,
+      "usedAt": 1793117950416,
+      "slot": 462135623,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 48,
+          "bankClockAgeAtUseMs": 1416
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 48,
+          "bankClockAgeAtUseMs": 1416
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 48,
+          "bankClockAgeAtUseMs": 1416
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117952384,
+      "usedAt": 1793117952384,
+      "slot": 462135632,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 384
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 384
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 384
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117953921,
+      "usedAt": 1793117953921,
+      "slot": 462135640,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 921
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 921
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 921
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117955934,
+      "usedAt": 1793117955934,
+      "slot": 462135649,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 934
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 934
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 934
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117957927,
+      "usedAt": 1793117957927,
+      "slot": 462135659,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 927
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 927
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 927
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793117959924,
+      "usedAt": 1793117959924,
+      "slot": 462135669,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 924
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 924
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 924
+        }
+      ]
+    }
+  ],
+  "protectionAcceptance": false,
+  "productionChanged": false,
+  "financialAccountChanged": false,
+  "paperEntries": false,
+  "naturalPaperTrades": 0,
+  "liveTrading": false,
+  "acceptanceClock": false
+}

@@ -1,0 +1,87 @@
+{
+  "recordedAt": "2026-10-27T16:25:04.032Z",
+  "scope": "New isolated combined experiment01. Original raw receipt remains unchanged.",
+  "sourceCommit": "3297490",
+  "classification": "SCHEDULER_TIMING_OBSERVED_WITH_CANDIDATE_MAPPING_FAILURE",
+  "elapsedMs": 86832.71803799999,
+  "openedAt": 1793117886716,
+  "logicalEndAt": 1793117961716,
+  "stopRequestedAt": 1793117961717,
+  "settledAt": 1793117961719,
+  "acceptedAfterLogicalCutoff": false,
+  "holdingChecks": 38,
+  "hypotheticalHoldings": 3,
+  "maxGapMs": 2085,
+  "p95GapMs": 2064,
+  "targetExceedances": 19,
+  "quoteAgeMs": {
+    "min": 17,
+    "p95": 48,
+    "max": 87
+  },
+  "bankClockAgeMs": {
+    "min": 356,
+    "max": 1465
+  },
+  "httpResponseMs": {
+    "count": 46,
+    "p50": 68,
+    "p95": 143,
+    "max": 329
+  },
+  "physicalStartSpacingMs": 253,
+  "maximumRollingMinuteStarts": 35,
+  "maximumRolling10sStarts": 8,
+  "flow": {
+    "selected": 4,
+    "normalized": 3,
+    "buys": 0,
+    "sells": 3,
+    "failedTransactions": 1,
+    "validationDelays": {
+      "samples": 4,
+      "p50": 1325,
+      "p95": 1491,
+      "maximum": 1491
+    },
+    "queueAges": {
+      "samples": 4,
+      "p50": 1256,
+      "p95": 1395,
+      "maximum": 1395
+    },
+    "qualityGaps": [
+      {
+        "at": 1793117954162,
+        "reason": "confirmed-transaction-mapping-unavailable"
+      }
+    ],
+    "candidateSuspended": true,
+    "targetEndAt": 1793117950000,
+    "rawClosedTargetReadyRowsBeforeFailure": 2,
+    "interpretation": "Raw closed-target warmth precedes the later mapping failure, but no independent audit ran and the complete capture failed. No window is promoted to independently verified completeness."
+  },
+  "naturalThresholdCrossings": [],
+  "actualUsage": {
+    "requestUnits": 268,
+    "observedRelatedBytes": 2955947,
+    "unknownRelatedBytesRetained": 2097152,
+    "accountedRelatedBytes": 5053099,
+    "observedPumpApiSocketBytes": 369652102,
+    "observedPumpApiBytesAreLowerBound": false,
+    "unknownPumpApiReservationBytesRetained": 0,
+    "historicLifetimeCeilingsAreNotProviderLimits": true
+  },
+  "streamBytes": 97702483,
+  "frames": 65193,
+  "resources": {
+    "peakRssBytes": 203776000,
+    "peakCpuMs": 9909.105,
+    "peakEventLoopLagMs": 80.52361000000383,
+    "externalPrlimitRequired": true,
+    "externalWallGuardRequired": true
+  },
+  "developmentConcurrency": "A TypeScript compiler ran in the Cloud environment during part of the capture. Its separate CPU pressure was not measured; no provider-only latency attribution is made.",
+  "productionChanged": false,
+  "protectionAccepted": false
+}
