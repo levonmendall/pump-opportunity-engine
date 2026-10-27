@@ -44,7 +44,10 @@ Next bounded experiment (requires attached key and implementation review):
    Preserve exactly when confirmations/corrections became available.
 5. Project costs from observed rates and compare against owner-visible charge/
    balance changes. Provider message counts are estimates until reconciled. Reserve
-   held-position monitoring before admitting candidates in the future runtime.
+   monitoring actually required by the frozen holding policy before admitting
+   candidates. Current cost/price/time exits need RPC protection, not a paid
+   stream for every holding. Do not remove any future flow-dependent exit to
+   reduce fees. See OBSERVATION_DESIGN.md for the matched provider comparison.
 6. Before 24/72-hour gates, establish measured sustainable coverage and budget,
    including headroom and held positions. If insufficient, request a measured
    minimum daily/total budget and await approval; do not quietly shrink coverage.

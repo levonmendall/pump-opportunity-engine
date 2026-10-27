@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-27T01:03:13.642Z",
+  "httpStatus": 200,
+  "sequence": "278",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "source": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "sourceAgeMs": 57122,
+  "reconciliationAgeMs": 57122,
+  "state": "observing-with-zero-trades",
+  "entries": "disabled",
+  "positions": 0,
+  "trades": 0,
+  "liveTrading": false,
+  "marketRequests": 0,
+  "controlsInvoked": false
+}

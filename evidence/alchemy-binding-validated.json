@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-27T00:58:01.152Z",
+  "repository": "levonmendall/The-Meme-Machine",
+  "branch": "poe-provider-presence-20261027",
+  "head": "fed6fa0e2289b0466b401d763c20a00c63d867ef",
+  "runId": 40429568969,
+  "jobId": 121943672110,
+  "receipts": [
+    {
+      "binding": "MM_SOLANA_READ_RPC_URL",
+      "credentialBound": true,
+      "credentialStoredOutsideJob": false,
+      "credentialValuesExported": false,
+      "deployment": false,
+      "embeddedUserInfoAbsent": true,
+      "freeQuotaVerified": false,
+      "https": true,
+      "pathCarriesAppKey": true,
+      "project": "pump-opportunity-engine",
+      "providerAuthenticationVerified": false,
+      "providerRequests": 0,
+      "recognizedProvider": "Alchemy Solana mainnet",
+      "recognizedPublicHost": "solana-mainnet.g.alchemy.com",
+      "scope": "repository"
+    }
+  ],
+  "actualAlchemyRequests": 0,
+  "oldMainChanged": false,
+  "applicationDeployments": false,
+  "EC2Changes": false,
+  "credentialValuesPrintedOrExported": false,
+  "scope": "Existing named secret parsed only in protected ephemeral job memory; only approved public hostname and booleans returned."
+}

@@ -1,0 +1,38 @@
+{
+  "reservedBytes": 117440512,
+  "reservedMs": 100000,
+  "attempts": [
+    {
+      "id": "schema-2026-10-27T01-30-23-258Z",
+      "stage": "schema",
+      "at": "2026-10-27T01:30:23.259Z",
+      "reservedBytes": 8388608,
+      "reservedMs": 15000,
+      "status": "completed-with-receipt",
+      "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.ndjson",
+      "summary": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.json",
+      "supervisorStop": null,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "observedSocketBytes": 7341091
+    },
+    {
+      "id": "capture-2026-10-27T01-35-40-166Z",
+      "stage": "capture",
+      "at": "2026-10-27T01:35:40.166Z",
+      "reservedBytes": 109051904,
+      "reservedMs": 85000,
+      "status": "completed-with-receipt",
+      "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.ndjson",
+      "summary": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.json",
+      "supervisorStop": null,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "observedSocketBytes": 99653847
+    }
+  ]
+}

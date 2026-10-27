@@ -1,0 +1,27 @@
+{
+  "recordedAt": "2026-10-27T01:45:05.484657+00:00",
+  "branch": "poe-free-data-evaluation-20261027",
+  "build": "passed",
+  "compile": "passed",
+  "rootTests": {
+    "passed": 235,
+    "failed": 0,
+    "durationMs": 31910.78672
+  },
+  "independentReview": "report corrected unchanged-notification wording; current limits reviewed",
+  "newEvidenceBytesBeforeReceipt": 253675,
+  "newEvidenceMaximumBytes": 33554432,
+  "incrementalProviderFeesUsd": "0.00",
+  "alchemyDataRequests": 0,
+  "heliusDataRequests": 0,
+  "pumpPortalMeteredSubscriptions": 0,
+  "productionRestarted": false,
+  "paperEntriesEnabled": false,
+  "acceptanceClockStarted": false,
+  "sourceFiles": {
+    "src/pool.ts": "7ad31c8eff0eb6331bd439889c897e0cd58b536a1ca370d3311f23b4d7a1915c",
+    "src/network.ts": "db385176ffe1f89eb7f5a3811a5b81c39b98a0d755e825b05af0d73d06294505",
+    "src/source-version.ts": "c8b3c5de50c958470041a2f4ce6f7d1f4a35a1a628531bb1573610845e0e46f7",
+    "src/pumpapi-probe.ts": "e4c50b237efb9595cf0d95c41a7843a1c7ddc03ee082b2f26bb99b003b1c4257"
+  }
+}

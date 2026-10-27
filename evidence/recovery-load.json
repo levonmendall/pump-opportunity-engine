@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "classification": "DISPOSABLE_SYNTHETIC_OFFLINE_RECOVERY_LOAD",
+  "acceptanceGateCompleted": false,
+  "acceptanceClockStarted": false,
+  "naturalTrades": 0,
+  "productionPaperEntriesEnabled": false,
+  "liveTradingDisabled": true,
+  "actualStartedAt": "2026-10-27T00:20:58.360Z",
+  "actualCompletedAt": "2026-10-27T00:20:59.766Z",
+  "actualWallDurationMs": 1405.31,
+  "environment": {
+    "kind": "Codex workspace, not EC2",
+    "node": "v24.19.0",
+    "platform": "linux",
+    "architecture": "x64",
+    "availableParallelism": 4
+  },
+  "reproduce": "node --import tsx scripts/recovery-load.ts",
+  "sourceHashes": {
+    "ledger": "7b399a38ccc066ff6956a3535ad89b390fcc40d1828cbca051b8e8fa2c85b192",
+    "execution": "dc496f9bb634a6b970c9ee7ae6a815a713d5031704a9492825619c0c843f9dc2",
+    "trader": "b005d1201866d1a4f40644f24a74cc1b7a4f7f0e6f0b32dabcf61909158120d6",
+    "recorder": "65c1e0f68dbb387b059a062fa530ba8407df7092214ecc119cdcbf7fceed0a40",
+    "backup": "de42f564b7c325e403826bfb468e9750fca1a4a6eb141ead80988141b8a71483",
+    "backup-worker": "17a634185fa5878ebf7a66e78642ba9a7b8d321368d609ed43754e45aebfa7df",
+    "reporting": "c23aea1d06e0ddc1d15a708017937c342fbe6f7fde46ce09bcf367b6ad9de3cd",
+    "strategy": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+    "script": "97c4551a2a9fad33d010536abf4dc5993dd4a2e49501a79c4be720dac28f21c9"
+  },
+  "fixture": {
+    "accountId": "poe-fixture-recovery-load",
+    "mode": "PAPER",
+    "disposable": true,
+    "initialVirtualUsd": 1000,
+    "initialUsdPerSol": 100,
+    "syntheticOutageMs": 21600000,
+    "syntheticTimeIsNotElapsedWallTime": true,
+    "temporaryFinancialFilesDeleted": true,
+    "note": "One temporary PAPER-schema account permits the real SnapshotPublisher identity validator; no authoritative/forward account used and no external delivery. Seed entry is a coordinator fixture; unfrozen PaperTrader entry guard remains active."
+  },
+  "faults": {
+    "processKill": {
+      "signal": "SIGKILL",
+      "marker": "EXIT_QUOTE_PENDING",
+      "wallMs": 212.217,
+      "openPositionAndPendingExitPreserved": true,
+      "uncertainExitQuarantinedWithoutRequote": true,
+      "secondWriterRefused": true
+    },
+    "longOutage": {
+      "modeledMs": 21600000,
+      "expiredUncertainExitWithoutQuote": true,
+      "unknownMarkRemainedUnknown": true,
+      "heldPositionPreserved": true,
+      "replayedMissedFlow": false
+    },
+    "interruptedWrite": {
+      "signal": "SIGKILL",
+      "marker": "UNCOMMITTED_WRITE",
+      "wallMs": 198.546,
+      "walBytes": 193672,
+      "exactStateRollback": true,
+      "financialIntegrity": "ok"
+    },
+    "staleQuote": {
+      "decisionQuoteRejected": true,
+      "noFillOrNewPending": true
+    },
+    "storagePressure": {
+      "method": "Recorder byte cap plus unrecognized backup-directory file; no host disk filled",
+      "recorderCapBytes": 16384,
+      "actualRecorderBytes": 16325,
+      "completedPressureRecords": 39,
+      "overflowStopsEvidence": true,
+      "entriesDisabled": true,
+      "originalBackupPreserved": true,
+      "unrelatedFilePreserved": true,
+      "protectiveExitCompletedDespitePressure": true
+    },
+    "protectiveExecution": {
+      "syntheticSeedEntries": 1,
+      "syntheticExits": 1,
+      "exactHeldUnits": "1000",
+      "modeledExecutionCostLamports": "20000",
+      "rentRefundedOnce": true,
+      "reconciledCashInvariantPassed": true
+    },
+    "reportingOutage": {
+      "offered": 281,
+      "actualNetworkRequests": 0,
+      "injectedOutageAttempts": 9,
+      "successes": 0,
+      "failures": 9,
+      "failuresBeforeProtection": 1,
+      "protectiveExitCompletedWithoutSuccessfulPublication": true,
+      "latestSlotSequence": "281",
+      "pressureBurstOffers": 200,
+      "pressureSequence": "201",
+      "retainedSlots": 1
+    },
+    "backupRestore": {
+      "consistentSourceApi": true,
+      "completedRetainedCopies": 2,
+      "accountInceptionPreserved": true,
+      "cashPositionsPendingHistoryCostsPreserved": true,
+      "completeFinancialJournalAndSnapshotSequencePreserved": true,
+      "openPositionAndUncertainExitRestoredInSeparateDisposableBranch": true,
+      "restoredUncertainExitNotRequoted": true,
+      "oneWriterAtATime": true,
+      "journalRowsBeforeRestore": 100,
+      "restoreAddsOnlyExplicitPauseRevision": true,
+      "entriesDisabled": true
+    }
+  },
+  "load": {
+    "syntheticDurationMs": 79800,
+    "actualWallMs": 260.218,
+    "recordedAcceptedTrades": 4800,
+    "duplicates": 40,
+    "recordedTradeRowsVerified": 4840,
+    "recordedUniqueIdentitiesVerified": 4800,
+    "normalizedRecordSha256": "d7f8037df5f45a1c68b9a12cbcd920e8612c2d7fababefd917629085e2f1662e",
+    "completedReconciliationTicks": 80,
+    "coalescedCalls": 80,
+    "completedRuleEvaluations": 108,
+    "unverifiedFlowQualified": 0,
+    "syntheticEntries": 0,
+    "completedInputRowsPerSecond": 18599.787,
+    "usefulReconciliationTicksPerSecond": 307.435,
+    "batchCompletionMs": {
+      "p50": 0.114,
+      "p95": 2.016,
+      "p99": 7.331,
+      "max": 10.754
+    },
+    "eventLoop": {
+      "histogramSamples": 133,
+      "p99DelayMs": 8.749,
+      "maxDelayMs": 10.592,
+      "oneMsTimerSamples": 134,
+      "maxTimerGapMs": 21.781
+    },
+    "cpu": {
+      "userMs": 439.837,
+      "systemMs": 59.994,
+      "eventLoopUtilization": 1
+    },
+    "memory": {
+      "beforeRssBytes": 121606144,
+      "afterRssBytes": 134381568,
+      "sampledMaxRssBytes": 146636800,
+      "beforeHeapBytes": 14879392,
+      "afterHeapBytes": 17594824,
+      "sampledMaxHeapBytes": 22269184
+    },
+    "recordedBytes": 2159292,
+    "recordByteCap": 4000000,
+    "candidateCap": 12,
+    "thirteenthCandidateRefused": true,
+    "finiteInputScheduling": "12 unique rows plus at most 1 duplicate/batch, cooperative yield each batch; no growing input queue; reporting retains one latest slot"
+  },
+  "limitations": [
+    "No actual PumpPortal migrations/trade fields, RPC/pool pricing, provider costs, real Render endpoint or deployed EC2 capacity verified.",
+    "No acceptance interval began; six-hour outage and 79.8s load timestamps are synthetic information times, not unattended elapsed operation.",
+    "A deliberate fixture seed buy and protective exit exercise integer accounting, not the unfrozen strategy or natural opportunity profitability.",
+    "PAPER mode is used only for same-account reporting schema validation; all funds, prices, marks and expenses are invented and isolated.",
+    "Pressure is controlled byte-cap/unknown-file refusal, not ENOSPC or full filesystem exhaustion; source financial write retries and host survival under ENOSPC remain unproven.",
+    "SIGKILL proves process-crash/WAL behavior, not host power failure, filesystem corruption or disaster recovery across machines.",
+    "Load measures recorder, selected flow, refusal decisions, reconciliation, snapshot projection/publication failure, and concurrent backup work; no qualified entry/execution quote is in its timed load loop.",
+    "Short local rates share CPU with artifact worker and OS scheduling; sampled RSS includes prior phases and is not a hard peak memory bound.",
+    "Only bounded sanitized invariant summaries retained; temporary journals, observations and backups are deleted after assertions."
+  ]
+}

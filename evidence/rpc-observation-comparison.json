@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "project": "pump-opportunity-engine",
+  "mode": "READ_ONLY_QUOTE_RESEARCH",
+  "generatedAt": "2026-10-27T00:30:08.589Z",
+  "scriptSha256": "5d91fa2fa96b8354ce7a1efa6b9400300ce38c38eaae4cd4c48d21c5187f4650",
+  "sourceVersion": "local working tree; not deployed or acceptance-tested",
+  "setupOkay": true,
+  "fatal": null,
+  "originProof": "evidence/integration-proof-2026-10-26T23-32-41.255Z.json",
+  "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+  "originAt": "2026-10-26T23:34:11.000Z",
+  "migrationAgeAtCommonStartMs": 3297313,
+  "qualificationAgeScope": "within provisional5–120minute migration age only",
+  "comparisonInputBaseUnits": "25229743127804",
+  "inputMeaning": "historical comparison quantity, no held position or PAPER order",
+  "addresses": [
+    "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+    "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw",
+    "5PHirr8joyTMp9JMm6nW7hNDVyEYdkzDqazxPD7RaTjx",
+    "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+    "So11111111111111111111111111111111111111112",
+    "6VCbdm3ZFD9oXDubKuKMd56dFPtuc9yE892RoC26GAXA",
+    "BYFJC7DSYinhm1QZ6Cmim3fcYxrU6yX5RZw9WxEwua6a"
+  ],
+  "startedAt": "2026-10-27T00:29:07.486Z",
+  "commonStart": "2026-10-27T00:29:08.313Z",
+  "commonEnd": "2026-10-27T00:30:08.383Z",
+  "attemptedWindowMs": 60070,
+  "observedCommonWindowMs": 58329,
+  "commonReadyAtStart": true,
+  "poll": {
+    "attempts": 8,
+    "freshQuotes": 7,
+    "quotePreparationMs": {
+      "count": 8,
+      "min": 138.56260900000052,
+      "p50": 199.23652499999844,
+      "p95": 301.0084969999989,
+      "max": 303.51831899999524
+    },
+    "twoSecondFreshStateFraction": 0.22570334609622109,
+    "httpRequests": 24,
+    "unavailable": {
+      "maxUnavailableMs": 13066,
+      "unavailableIntervals": 8,
+      "meaning": "No completed quote within2seconds of its original batch receipt; not a proved live exit failure/latency"
+    }
+  },
+  "subscription": {
+    "connections": [
+      {
+        "connection": 1,
+        "openedAt": 1793060948176,
+        "readyAt": 1793060948312,
+        "readyEndedAt": 1793060978333,
+        "closedAt": 1793060978334,
+        "reason": "initial",
+        "code": 1006
+      },
+      {
+        "connection": 2,
+        "openedAt": 1793060978574,
+        "readyAt": 1793060978648,
+        "readyEndedAt": 1793061006957,
+        "closedAt": 1793061006957,
+        "reason": "planned-reconnect",
+        "code": 1006
+      }
+    ],
+    "acknowledgedSubscriptions": 14,
+    "readyMs": 58329,
+    "totalReadyMsIncludingSetupAndShutdown": 58330,
+    "notifications": 17,
+    "uniqueNotifications": 17,
+    "bytes": 24825,
+    "duplicates": 0,
+    "slotRegressions": 0,
+    "malformed": 0,
+    "preAckDropped": 0,
+    "notificationsCapped": false,
+    "changeRefreshes": 3,
+    "changeRefreshCapped": true,
+    "periodicOrTriggeredQuotes": 7,
+    "freshQuotes": 7,
+    "twoSecondFreshStateFraction": 0.22255701681371734,
+    "reconnectAttempted": true,
+    "reconnectRestored": true,
+    "reconnectAt": 1793060978333,
+    "firstPostReconnectQuoteAt": 1793060978956,
+    "postReconnectCoherentRecoveryMs": 623,
+    "httpRequests": 21,
+    "websocketRequests": 14,
+    "unavailable": {
+      "maxUnavailableMs": 13244,
+      "unavailableIntervals": 7,
+      "meaning": "No completed quote within2seconds of its original batch receipt; not a proved live exit failure/latency"
+    }
+  },
+  "matchedChanges": {
+    "count": 0,
+    "conditionalPollMinusNotificationMs": {
+      "count": 0,
+      "min": null,
+      "p50": null,
+      "p95": null,
+      "max": null
+    },
+    "rows": [],
+    "meaning": "UNMEASURED: zero changed account content or watched pool/vault updates in this window. Unchanged-byte write notifications cannot measure changed-state delivery latency."
+  },
+  "requests": {
+    "total": 65,
+    "http": 51,
+    "websocket": 14,
+    "maximum": 80,
+    "rpc": {
+      "profile": "runtime",
+      "calls": 51,
+      "bytes": 173593,
+      "inFlight": 0,
+      "rollingMinuteCalls": 42,
+      "rollingMinuteLimit": 60,
+      "durationSamples": 51
+    },
+    "httpBytes": 173593,
+    "httpFailureCount": 1,
+    "rpcDurationMs": {
+      "count": 51,
+      "min": 36.514584000004106,
+      "p50": 59.24754700000085,
+      "p95": 137.32661900000312,
+      "max": 196.132879
+    }
+  },
+  "gaps": [
+    {
+      "at": 1793061006957,
+      "reason": "unexpected socket close"
+    }
+  ],
+  "failures": [
+    {
+      "lane": "poll",
+      "at": 1793060993522,
+      "reason": "RPC_ERROR_-32004:Block not available for slot 461867743"
+    }
+  ],
+  "transactionSample": {
+    "signature": "4nk2FyQKKf8j5WdP6TpKtvDhMf1FdvHcx2fcGvAAtXHchG2h9mBoF662aYRpykmowcYG5Gwme5VoRkcXXuSmoqCx",
+    "slot": 461861847,
+    "blockTime": 1793059741,
+    "successful": true,
+    "withinObservedSlots": false,
+    "classification": "one transaction touching pool; not classified as a swap or feed-equivalent flow"
+  },
+  "costs": {
+    "paidDataEvents": 0,
+    "paidDataCostSol": "0",
+    "rpc": "public endpoint, no paid key/charge; no provider unit price or daily economic savings verified"
+  },
+  "conclusions": {
+    "verifiedCoherentQuotes": 14,
+    "flowDecisionEquivalence": "UNMEASURED: no selected-token PumpPortal reference flow; account changes cannot verify participation/net-buying features",
+    "threeWayEconomicComparison": "UNMEASURED: paid flow costs and decision quality unavailable",
+    "productionReplacement": "NOT DEPLOYED; healthy EC2 observer/protection untouched",
+    "acceptanceClockStarted": false,
+    "naturalPaperTrades": 0,
+    "protectionComparison": "NOT ACCEPTABLE as continuous2second-fresh protection: both deliberately slow cadences leave stale intervals; fallback cadence differs and no relevant content change was observed."
+  },
+  "limits": [
+    "One pool and one short matched window; no universal coverage/reliability claim",
+    "Same public RPC provider across transports, not independent ground truth",
+    "Individual account notifications never form an atomic priced pool",
+    "Quotes retain original batch receive/context and use fresh coherent SDK reconciliation",
+    "Planned reconnect is an injected transport drill, not measured natural reliability",
+    "Different7.5second polling and15second fallback reconciliation cadences confound traffic comparison; no equivalent-protection savings claim",
+    "Polling/reconciliation cadence creates deliberately stale intervals; these snapshots do not continuously satisfy2second mark freshness or set a production policy",
+    "Bounded optional transaction sample is not complete swap/trade-flow verification",
+    "17 raw account write notifications had unchanged selected content; no delivery-latency/coverage inference is made from matching unchanged bytes."
+  ],
+  "postCaptureAnalysis": {
+    "at": "2026-10-27T00:32:01.435Z",
+    "sourceSha256": "9037b11285605ff144720f4bad20116634779115cc59a2f7c4a828401c458ffd",
+    "rawRecordSha256": "9f3b9f6575878595beb532fee8a0bcaa9579dda96a01ded308101cfc0714a304",
+    "changes": "Derive changed-content-only interpretation and freshness gaps from retained original observations. No additional network calls. Capture scriptSha256 remains unchanged."
+  },
+  "accountContent": {
+    "changedNotifications": 0,
+    "unchangedByteNotifications": 17,
+    "poolOrVaultChangedNotifications": 0,
+    "notificationsByAddress": {
+      "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw": 15,
+      "So11111111111111111111111111111111111111112": 2
+    },
+    "meaning": "Compare canonical data/owner/lamports/executable to initial coherent batch and successive notifications. Write notification is not content change."
+  }
+}

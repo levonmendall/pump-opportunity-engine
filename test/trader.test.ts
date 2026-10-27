@@ -7,6 +7,7 @@ import {DisposableLedger,PaperLedger,type Position} from '../src/ledger.js';
 import {Recorder} from '../src/recorder.js';
 import {PaperTrader,type SizeQuote,type SizeRequest,type TraderOptions} from '../src/trader.js';
 import {PROVISIONAL_RULE,type EventIdentity,type NormalizedTrade} from '../src/strategy.js';
+import {planObservation} from '../src/observation.js';
 
 const T=Date.parse('2026-10-26T12:00:00Z'),MINT='fixture-mint';
 type Recorded={kind:string;data:any};
@@ -45,6 +46,30 @@ test('unverified field contract defaults closed and current unfrozen rule cannot
     assert.equal(f.trader.funnel.qualified,0);assert.equal(f.trader.funnel.paperFilled,0);
     assert.equal(f.trader.decisions().at(-1)!.stage,config.verified===false?'missing-data':'risk-rejection');
   }
+});
+
+test('budget-loss retirement durably cancels an unexpired entry before flow stops, without an invented gas charge',async t=>{
+  const f=fixture(t);f.admit();f.warm();f.ready();await f.trader.tick();
+  const plan=planObservation({now:f.now(),candidates:[],financial:f.ledger.state(),currentTradeSubscriptions:[],rpcProtection:{},budgetAllowsObservation:false});
+  assert.equal(plan.closeEntryRiskBeforeRetirement,true);assert.equal(plan.pendingEntryIdsToCancelOrQuarantine.length,1);
+  const cash=f.ledger.state().lamports;
+  // The orchestrator closes financial entry risk before calling upstream
+  // unsubscribe/deactivate. Financially uncertain actions must be quarantined,
+  // never discarded or allowed to extend paid traffic past its cap.
+  f.trader.feedGap();assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.deepEqual(f.ledger.state().pending,{});
+  f.trader.deactivateFlow(MINT,'DISPOSABLE budget ceiling; upstream retirement after durable cancellation');
+  f.set(T+61_000);await f.trader.tick();assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().lamports,cash);assert.equal(f.ledger.state().executionCosts,'0');assert.equal(f.trader.funnel.paperFilled,0);
+});
+
+test('intentional held-flow retirement keeps RPC exits working and never retires an unexpired entry',async t=>{
+  const f=fixture(t);f.admit();f.warm();f.ready();await f.trader.tick();
+  const before=f.ledger.state();assert.throws(()=>f.trader.deactivateFlow(MINT,'DISPOSABLE premature subscription retirement'),/pending entry flow/);assert.deepEqual(f.ledger.state(),before);
+  f.set(T+61_000);await f.trader.tick();assert.equal(f.ledger.state().positions[MINT]!.units,'1000');
+  const held=f.ledger.state();f.trader.deactivateFlow(MINT,'DISPOSABLE tested full-size RPC handoff; no holding-flow exit rule');assert.deepEqual(f.ledger.state(),held);
+  assert.equal(f.trader.ingest({identity:{signature:'fixture-retired-flow',instructionIndex:0,eventIndex:0},mint:MINT,wallet:'fixture-wallet',side:'buy',quoteLamports:'1',tokenUnits:'1',receivedAt:f.now(),commitment:'processed'}),'unselected');
+  f.set(T+62_000);f.stopNet();await f.trader.tick();assert.equal(Object.values(f.ledger.state().pending)[0]!.side,'sell');
+  f.set(T+63_000);await f.trader.tick();assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.trader.funnel.exited,1);assert.equal(f.ledger.state().inceptionAt,T);
+  assert.ok(f.records().some(r=>r.kind==='trader-input'&&r.data.kind==='flow-stop'));
 });
 
 test('candidate evidence is bounded; a gap requires fresh activation and a complete fresh window',async t=>{

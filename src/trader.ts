@@ -73,6 +73,17 @@ export class PaperTrader{
   }
   reverse(mint:string,identity:EventIdentity){const c=this.candidates.get(mint);if(c){c.window.reverse(identity,this.clock());c.interrupted=true;}this.record('trader-input',{kind:'reversal',at:this.clock(),mint,identity:{signature:identity.signature,instructionIndex:identity.instructionIndex,eventIndex:identity.eventIndex}});}
   feedGap(){const at=this.clock();for(const c of this.candidates.values()){c.window.invalidate(at,'feed-gap');c.active=false;c.interrupted=true;}this.pause('feed gap; selected windows require fresh subscription and warming');this.record('trader-input',{kind:'gap',at});}
+  /** Intentional upstream retirement is separate from losing the whole feed.
+   * Held-position management comes from the ledger/RPC context, not this window.
+   * The caller still must apply the upstream unsubscribe and verify its outcome.
+   */
+  deactivateFlow(mint:string,evidence:string){
+    const c=this.candidates.get(mint),at=this.clock();
+    if(!c||!validText(evidence))throw new Error('admitted token and subscription-retirement evidence required');
+    if(Object.values(this.options.ledger.state().pending).some(o=>o.mint===mint&&o.side==='buy'&&o.expiresAt>at))throw new Error('pending entry flow remains required until outcome or expiry');
+    c.window.invalidate(at,'feed-gap');c.active=false;c.interrupted=true;
+    this.record('trader-input',{kind:'flow-stop',at,mint,evidence});
+  }
   remove(mint:string){const state=this.options.ledger.state();if(state.positions[mint]||Object.values(state.pending).some(o=>o.mint===mint))throw new Error('held/pending observation has priority');this.candidates.delete(mint);}
   decisions(){return structuredClone(this.recent);}
   tick(){if(!this.started)return Promise.reject(new Error('trader recovery required'));if(this.active)return this.active;this.active=this.drain().finally(()=>{this.active=undefined;});return this.active;}

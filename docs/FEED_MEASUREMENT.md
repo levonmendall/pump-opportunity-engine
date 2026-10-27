@@ -11,7 +11,11 @@ are still unverified. No 24/72-hour acceptance interval starts from this module.
 The proposed adapter uses the existing single shared WebSocket. Before a selected
 token subscription, inject a fresh public balance for the existing approved
 billing address 6BajxF2CSXTCv5F1HdYH9SFNkqJT94AMW9cCfUq8sSTQ and fresh SOL/USD,
-plus remaining approved budgets and held-position monitoring reserves. The core
+plus remaining approved budgets and actual requirement-based paid-monitoring
+reserves. Do not multiply a per-token paid reserve by every held position: the
+current rule uses RPC liquidation/cost/time exits, with no holding-flow feature.
+Only a separately justified initial handoff/future flow-dependent rule can need
+paid held-flow allowance. RPC protection capacity remains mandatory. The core
 rejects a different wallet address, future/stale valuations, raised caps and a
 selected token already held. Verified pool identity must come from the real RPC
 integration, not a symbol. The caller must separately establish key/wallet binding;
@@ -30,10 +34,17 @@ the measurement token upstream without closing discovery or held-position access
 
 The wallet floor remains0.02 SOL. Approved caps remain0.01 SOL/day,0.04 SOL total,
 also $2.50/day / $10 total whichever binds. Existing held-monitoring reserves come
-before new observation. If held capacity is insufficient, new admissions pause
+before new observation when such paid capacity is actually required. Settled
+holdings need tested RPC capacity rather than an automatic paid trade stream.
+If required held capacity is insufficient, new admissions pause
 and an authorized RPC protection fallback is required. This measurement component
 does not alter held subscriptions or authorize spending beyond a limit merely
 because positions exist.
+
+The explicit control projection distinguishes heldTradeFlowRequired=false from
+heldFullSizeRpcMonitoringRequired. See OBSERVATION_DESIGN.md for candidate flow,
+holding protection, budget-loss cancellation ordering and the matched three-way
+comparison; no field or budget verification is implied by these requirement flags.
 
 Admission reserves the full planned experiment plus headroom, using the
 documented provisional 1000 lamports/event and current SOL/USD. USD event estimates

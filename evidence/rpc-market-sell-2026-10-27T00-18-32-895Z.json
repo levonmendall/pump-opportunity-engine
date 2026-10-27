@@ -1,0 +1,48 @@
+{
+  "project": "pump-opportunity-engine",
+  "mode": "QUOTE_ONLY",
+  "runId": "2026-10-27T00-18-32-895Z",
+  "startedAt": "2026-10-27T00:18:32.896Z",
+  "completedAt": "2026-10-27T00:18:33.253Z",
+  "wallDurationMs": 357,
+  "sourceDigest": "eee118d12732a3ccb89d2f461e517d3a917a5411e2255ce2210b35202584012d",
+  "endpoint": "public Solana mainnet RPC",
+  "request": {
+    "mint": "A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump",
+    "side": "sell",
+    "inputUnits": "456133100519472"
+  },
+  "inputProvenance": "Historical verified integration comparison size; not a real held position, PAPER order or fill",
+  "quote": {
+    "mint": "A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump",
+    "side": "sell",
+    "inputUnits": "456133100519472",
+    "outputUnits": "2457387",
+    "at": 1793060313192,
+    "evidence": "rpc-market:3639cd8d81ed38f0c577856c069d8c4f68dd56beb82e4e5425f943580cf3edcb",
+    "effectiveQuoteLiquidityLamports": "10217548"
+  },
+  "status": "CURRENT_SUPPORTED_SIZE_SPECIFIC_SELL_QUOTE",
+  "rpc": {
+    "profile": "runtime",
+    "calls": 3,
+    "bytes": 10161,
+    "inFlight": 0,
+    "rollingMinuteCalls": 3,
+    "rollingMinuteLimit": 3,
+    "durationSamples": 3
+  },
+  "durationsMs": [
+    220.272513,
+    69.91106599999989,
+    49.17618900000002
+  ],
+  "paidDataEvents": 0,
+  "paidDataCostSol": "0",
+  "naturalPaperTrades": 0,
+  "limitations": [
+    "Bounded one-shot quote-only proof, not deployed runtime or acceptance evidence",
+    "Gas/priority are explicit illustrative assumptions",
+    "Current RPC no-charge endpoint; no paid quota or provider key used"
+  ]
+}

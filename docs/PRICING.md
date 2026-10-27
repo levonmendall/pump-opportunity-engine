@@ -67,7 +67,10 @@ these integration bounds alone do not prove a usable two-second execution quote.
 
 One pricing call makes the existing three bounded RPC reads: pool links, coherent
 pool/config/mint/vault batch, and block time. The current ReadOnlyRpc adapter has
-a100-call integration cap. It is not a production daemon RPC scheduler or a
+a100-call integration cap by default. The explicit runtime profile now provides
+shared rolling60/minute/concurrency bounds with abort handling; RpcMarket connects
+actual-size reads to the trader context/quote interfaces. It is not a deployed
+daemon RPC scheduler or a
 coverage/SLA claim; no new provider or paid RPC was introduced.
 
 Tests replay the two retained real pool records without network calls. Synthetic

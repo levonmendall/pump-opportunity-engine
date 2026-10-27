@@ -1,5 +1,54 @@
 # POE operating runbook
 
+## Current zero incremental data cost experiment — 2026-10-27
+
+Use review branch `poe-free-data-evaluation-20261027`. This is isolated research,
+not a production rollout. Do not restart the observer, initialize an account,
+publish test snapshots, enable entries, sign/simulate/submit transactions, fund
+wallets or activate paid PumpPortal trades. Existing wallet tasks are deferred,
+not prerequisites for this experiment. Read `FREE_DATA_EVALUATION.md` for actual
+results, limits and the exact proposed next steps.
+
+Alchemy/Helius data budgets remain zero until current Free eligibility and
+remaining allowance are verified. Hard assignment caps after verification are
+`min(250000, floor(0.02 * remainingFreeCu))` and
+`min(20000, floor(0.02 * remainingFreeCredits))`. PumpApi is credential-free,
+one connection/IP, at most128MiB total received/30minutes aggregate; all new
+experiment evidence is limited to32MiB. The probe reserves limits before network
+use and never automatically refunds uncertain attempts. Check its budget receipt
+before repeating it. No test was run on EC2; Cloud containment does not prove
+EC2 resource compatibility.
+
+## Prior unmetered development checkpoint — 2026-10-27
+
+The installed C2 observer/account/inception remain unchanged. Development RPC
+market integration, requirement-based observation planning and offline recovery/
+load checks passed before this assignment; final combined build/compile and235root
+tests pass. Earlier unsigned-funding checks remain separate and out of scope. They are not installed
+trading evidence. New commands, isolated from production financial state:
+
+```sh
+node --import tsx scripts/recovery-load.ts /tmp/poe-recovery-check.json
+node --use-env-proxy --import tsx scripts/rpc-observation-probe.ts
+```
+
+The second command is a bounded public-RPC research capture, not a daemon or
+provider replacement; it replaces its named research artifacts. Read
+RPC_OBSERVATION.md before repeating. Tested slow schedules did not validate
+protection replacement, trade flow or cost savings. The2s quote-age rule applies
+at use; holding-check cadence/maximum response still require explicit freezing.
+
+Alchemy is the next targeted investigation before paid Helius. Existing repository
+secret MM_SOLANA_READ_RPC_URL in levonmendall/The-Meme-Machine is confirmed and its
+public Alchemy Solana host validated in protected job memory, without provider
+requests or secret export. Isolated metadata branches never change old main or
+deployment history; deployment:false is explicit. Existing direct GitHub secret
+binding is usable for a bounded operator process, not an instruction to export
+credentials through outputs/artifacts. Quota/overage proof is still required;
+an app key cannot read billing. No new key or Admin credential is requested.
+See PROVIDER_BINDINGS.md, ALCHEMY_ASSESSMENT.md, TARGETED_TRANSACTION_FLOW.md and
+OBSERVATION_DESIGN.md. No continuous paid subscription or paid Helius plan.
+
 ## Verified installation
 
 The existing instance i-00044d4ea1471b957 in account133857166104/us-west-2 runs
@@ -23,9 +72,9 @@ held positions/pending sells until supported management is connected.
 Use the existing read-only administration workflow in meme-machine-admin,
 poe-install-preflight.yml ("POE read-only installation status"). The filename is
 historical; current contents only inspect identity, units, bounded public status,
-resources and fact times. Run40415427271 attempt2/job121918984748 at23:47UTC
+resources and fact times. Run40415427271/job121958414861 at01:41:36UTC
 verified active/running/enabled, zero restarts since22:30:55UTC, reconciliation
-age3.465seconds. It does not read private financial files or independently audit
+age0.425seconds. It does not read private financial files or independently audit
 DB balances. The runner's root start permission is denied; never bypass it.
 
 Private controls use /run/poe/control.sock,0600. Execute as poe-runtime through
@@ -114,7 +163,8 @@ operator-only, never trader/Render. Local SDK stamping requires actual material;
 network-secret placeholders cannot sign requests. Do not alter credentials,
 rebuild Turnkey, export private keys or sign a test.
 
-FUNDING.md/OWNER_ACTIONS.md retain only actual recovery/funding dependencies.
+FUNDING.md retains historical deferred recovery/funding dependencies;
+OWNER_ACTIONS.md lists only the current free-data assignment input.
 The earlier private-route reply is still a placeholder; no callable vault/transfer
 route is identified. Never send the protected billing bundle through chat,
 GitHub, Actions, logs, Render or public artifacts. Keep the existing wallet.

@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-10-27T01:41:32.760Z",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "httpStatus": 200,
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "sequence": "349",
+  "source": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "times": {
+    "generatedAt": "2026-10-27T01:41:16.471Z",
+    "marketAt": "2026-10-27T01:41:16.471Z",
+    "reconciledAt": "2026-10-27T01:41:16.471Z",
+    "usefulProgressAt": "2026-10-27T01:41:16.471Z"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "disabled",
+    "reconciled": true,
+    "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+  },
+  "freshness": {
+    "state": "observing-with-zero-trades",
+    "receivedAt": "2026-10-27T01:41:24.739Z",
+    "generatedAt": "2026-10-27T01:41:16.471Z",
+    "marketAt": "2026-10-27T01:41:16.471Z",
+    "reconciledAt": "2026-10-27T01:41:16.471Z",
+    "usefulProgressAt": "2026-10-27T01:41:16.471Z",
+    "sourceAgeMs": 16252,
+    "marketAgeMs": 16252,
+    "reconciliationAgeMs": 16252
+  },
+  "positions": 0,
+  "trades": 0,
+  "mode": "PAPER",
+  "liveTrading": false,
+  "productionModifiedByExperiment": false
+}

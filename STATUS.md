@@ -1,87 +1,100 @@
-# POE status — 2026-10-26 UTC
+# POE status — 2026-10-27 UTC
 
-**EC2 healthy; authenticated reporting accepted; public dashboard fresh.**
-Natural PAPER trades: **0**. Cash-only reconciliation is current. New metered
-data/cloud spending: none; existing hosting allocation/invoices remain unknown.
-No supported-market coverage or production throughput claim. Main blocker:
-billing-wallet recovery/funding and real selected-token flow verification.
-**No acceptance clock has started. Edge UNPROVEN; LIVE DISABLED.**
+**EC2 observer healthy; authoritative cash reconciliation progressing;
+authenticated reporting accepted; public dashboard fresh. Natural PAPER trades:0.**
+Entries remain disabled; this is not an autonomous PAPER trader. The zero
+incremental data cost investigation is complete to available access/samples:
+free discovery/pricing work at bounded scope, but complete candidate flow and
+continuous protection are unproved. Current owner-only input is verified
+Alchemy Free usage/quota metadata. No funding or replacement key is needed for
+this assignment. No production change or acceptance clock. **Edge UNPROVEN;
+LIVE TRADING DISABLED.**
 
-| Status | Evidence |
-|---|---|
-| BUILT | Observer/accounting/reporting installed; development strategy, execution, costs and backup core tested |
-| RUNNING | One restricted EC2 observer and existing free Render viewer |
-| OBSERVING CURRENT DATA | Free PumpPortal migrations and public Coinbase SOL/USD; no selected-token flow |
-| PAPER-ENTRY ENABLED | **No**: feed fields/budget unverified, rule unfrozen, production management integration incomplete |
-| NATURAL PAPER TRADES | **0**, positions0; disposable tests remain separate |
-| ACCOUNTING RECONCILED | Fresh authoritative cash-account reconciliation; independent private DB balance audit unavailable through runner |
-| DASHBOARD FRESH | Same actual account/inception/runtime/strategy; public GET, private machine POST |
-| OPERATIONALLY ACCEPTED | **No**; Gates A–D incomplete,24/72-hour clocks unstarted |
+| Status | Current evidence |
+| --- | --- |
+| BUILT | Installed observer; undeployed development accounting/execution/recovery components and small research adapters |
+| RUNNING | One nonroot EC2 observer and the existing Free Render viewer |
+| OBSERVING CURRENT DATA | Free PumpPortal migrations and public SOL/USD; no production selected-token trade flow |
+| PAPER-ENTRY ENABLED | No: raw flow/coverage unverified, rule unfrozen, production trading scheduler/management incomplete |
+| NATURAL PAPER TRADES |0; positions0. Hypothetical pricing and disposable tests never count |
+| ACCOUNTING RECONCILED | Authoritative cash-account source freshly reconciled; private DB independently unreadable to administration runner |
+| DASHBOARD FRESH | Real identity/inception agree; snapshot349 at01:41:32UTC, underlying facts16.25seconds old |
+| OPERATIONALLY ACCEPTED | No. Gates A–D incomplete;24/72-hour clocks unstarted |
 
-## Installed authority
+## Installed authority preserved
 
-Instance i-00044d4ea1471b957, account133857166104, us-west-2.
-poe-runtime.service runs enabled/nonroot uid988 since22:30:55UTC, zero restarts.
-Installed release **bce3d22bb434eb429aafacb788a18f39ec189c1b**.
-The owner-completed standard Node launch override fixes C2's symlink main-path
-bug; no bootstrap rerun, replacement/reseed or key change occurred.
+AWS133857166104/us-west-2, instancei-00044d4ea1471b957.
+Servicepoe-runtime.service enabled/nonroot uid988, active since
+2026-10-26T22:30:55Z, **zero restarts**. Installed release
+bce3d22bb434eb429aafacb788a18f39ec189c1b; strategyUNIMPLEMENTED_FLOW_BLOCKED.
+Accountpoe-3123e352-4581-455b-85db-acd7e825e99e, original inception
+2026-10-26T22:07:36.212Z, one VIRTUAL $1,000 conversion. No bootstrap, reseed,
+cleanup, credential change, financial-state access, deployment or experiment
+process on EC2 occurred.
 
-Account **poe-3123e352-4581-455b-85db-acd7e825e99e**.
-Original inception **2026-10-26T22:07:36.212Z**, one $1,000 VIRTUAL conversion.
-Strategy **UNIMPLEMENTED_FLOW_BLOCKED**. No legacy/fixture history imported.
+Existing read-only status workflow run40415427271/job121958414861 succeeded:
+01:41:36UTC reconciliation/USD/useful-progress age0.425seconds; feed connected,
+latest migration01:38:30.525Z (186.378seconds since last event), shortlist12/12,
+NTPyes. RSS66,904,064bytes, cumulativeCPU26.8114seconds; rootavailable
+57,810,591,744bytes. Silence since a migration is not a measured feed delay or
+coverage guarantee. See evidence/free-data-20261027/production-observer-final.json.
 
-Read-only run40415427271 attempt3/job121922314841 during Render rollout:
-reconciliation/USD facts aged4.168seconds, latest migration117.275seconds,
-shortlist12/12, NTPyes, memory63,074,304bytes, cumulative CPU12.525seconds,
-root filesystem57,831,047,168bytes available. No cleanup needed/performed.
-This is a low-load observer sample, not a trading capacity benchmark.
+Original public viewer remains
+https://meme-machine-dashboard-staging.onrender.com . Existing servicesrv-daqon53tqb8s73bdceq0,
+Free, auto-deployoff, main sourcePOE, no changes. Dedicated machine ingestion stays
+authenticated; public viewing is owner-authorized. Snapshot349 has the actual
+C2account/inception, positions/trades0 and reconciledtrue. Accepted new snapshots
+and matching fresh facts prove reporting progress, not an independent DB audit.
+See production-reporting-final.json/render-service-final.json in the same directory.
 
-## Dashboard
+## Completed isolated free-data evaluation
 
-https://meme-machine-dashboard-staging.onrender.com .
-Only srv-daqon53tqb8s73bdceq0 / tea-daqk6h8jo6nc73eojtp0, free, auto-deploy off.
-Verified live web source **b3df32ce098d5de0c38c706bf9cf8e6066eccec1**,
-deploy **dep-dbfuh559el5s73bbf3pg**, finished23:57:11UTC.
+Review branchpoe-free-data-evaluation-20261027; no merge/deployment.
+Read [docs/FREE_DATA_EVALUATION.md](docs/FREE_DATA_EVALUATION.md).
 
-Owner explicitly confirmed PUBLIC read-only viewing. Dedicated machine ingestion
-remains authenticated; wallet/provider/Turnkey keys never reached Render.
-Earlier41 live protocol checks passed; a concurrent UI passed20 current core/
-mobile checks but dropped visible release/strategy metadata. The dashboard-only
-fix restores those fields while preserving design and financial identity.
-Final22/22 deployed checks pass at23:57:48UTC: sequence159, source facts
-34.7–35.7seconds old, full versions visible,12cards/actual history agree,
-no mobile overflow, controls, script errors or external requests. One waiting503
-resolved by natural full republication; no EC2 restart. See
-evidence/render-current-live.json. Final23:59:47UTC source check: sequence163,
-source/reconciliation age26.3seconds, correct identity, zero trades/positions.
+- One new actual migration-to-supported-pool buy/sell estimate:5publicRPCreads,
+  29,781bytes,34.243seconds. Modified research source explicitly disclosed.
+- PumpApi:two bounded sequential connections,84.526seconds open,102.04MiB socket
+  receipt; longer leg61,948messages/17,018pump-amm labels.0selected events,
+  0verified usable feature windows. Two bounded public signature reads found no
+  pool activity in the corresponding windows; no completeness/latency denominator.
+- PublicRPC shared pricing:two actual supported pools/three immediate rounds,
+  9reads/38,298bytes,6usable hypothetical quotes,209–432ms per cycle. All agree
+  with the original helper on identical captured bytes.3pool9→3request saving
+  is an offline fixture proof; continuous changed-state protection remains untested.
+- Chronological captured replay:16batches/15usable quotes, unchanged decisions
+  across baseline/RpcMarket/batched decoder, explicitly synthetic exit scenarios.
+- Build/compile and235root tests pass. Focused malformed/quota/gap/pressure,
+  supervisor death/retained lock and source-version tests pass. No production
+  fault was induced and no new authoritative account was created.
 
-EC2 remained active with unchanged startup/account through cache/redeploy outages.
-Normal full republication restores bounded history and genuine gaps; dashboard
-heartbeat does not refresh underlying facts. Zero-trade movements are SOL price
-effects, not strategy profit. Missing operating allocations keep economic P&L
-unavailable. Some installed observer projections remain explicitly unavailable.
+Incremental data/provider fees:$0 for public/credential-free tests; no paid
+PumpPortal subscription, Alchemy request, Helius request, transfer or newhosting.
+Existing infrastructure allocations/possible transfer cost remain unverified;
+economic P&L is unavailable. All new evidence is bounded separately below32MiB.
+Current source supports complete60-second candidate flow and actual-size2-second
+at-use quote freshness; these were not shortened to fit a free tier. Current
+held exits use price/cost/time, with no flow input. Monitoring cadence/response
+remain unfrozen, so paid held-flow retention is not presumed necessary.
 
-## Development and next work
+Alchemy key binding is resolved:MM_SOLANA_READ_RPC_URL in
+levonmendall/The-Meme-Machine. Only current plan/remaining account-wide FreeCU/
+overage state/POEallocation are missing. Owner's10million estimate is not verified
+quota. Effective Alchemy/Helius experiment data budgets remain0 pending eligibility.
+Helius binding/remainder were not located in tested scopes; no paid plan requested.
+See [docs/OWNER_ACTIONS.md](docs/OWNER_ACTIONS.md).
 
-Reviewed commit b3df32c adds bounded normalized features/rule, measurement core,
-delayed one-attempt execution, connected DISPOSABLE trader, actual-size sell
-pricing, same-writer operating costs and asynchronous bounded backups.
-Typecheck, compiled build,185/185 regressions and11 operator tests pass.
-Strict script checking/independent review also pass. Synthetic replay preserves
-information availability and drains its tested workload; it is not EC2 capacity
-or forward performance. Actual free migration/Mayhem Token-2022 quote evidence
-is preserved, explicitly QUOTE_ONLY and modified-source where applicable.
+## Remaining engineering and acceptance
 
-**These trading/backup changes are not installed on EC2.** Finish actual feed
-field/rate/charge proof; production RPC/management/scheduler and projections;
-freeze rules/cost assumptions; deploy an account-preserving reviewed release;
-prove actual backup/restore, restart/outage/pressure/headroom and alert delivery.
-No critical-alert channel is verified. No full gate or economic edge claimed.
+No tested free combination yet supplies verified complete selected-pool flow.
+Need active same-pool direct/routed/multiple instruction validation, exact amounts
+and trader roles, independent coverage/receipt timing, measured quota/charges and
+freshness/failure tests. Review the small batching adapter; preserve existing
+protection until an alternative passes. Capacity reservations and actual upstream
+budget-loss/storage-failure orchestration are not yet fully integrated.
 
-Turnkey authentication/source identification are complete and credentials unchanged.
-Existing source cannot fund requested0.06SOL plus fee; billing wallet remains0SOL.
-Durable owner recovery lacks an actual named private route. No key export,
-transfer approval/signing/broadcast, paid RPC/hosting upgrade or automatic top-up.
-Measurement caps remain0.01SOL/day,0.04SOL/four-day total,$2.50/day/$10total
-whichever binds,0.02SOL floor. They do not establish continuous-window capacity.
-See docs/OWNER_ACTIONS.md for only actual owner dependencies.
+Production scheduling, frozen rules/assumptions, actual backup/restore/alert proving
+and reviewed account-preserving deployment remain. No verified critical alert
+channel. Earlier isolated SIGKILL/WAL/restore/load evidence is development evidence,
+not EC2 or elapsed acceptance. Turnkey/PumpPortal wallet material is preserved;
+funding/recovery tasks are deferred outside this no-transfer assignment.

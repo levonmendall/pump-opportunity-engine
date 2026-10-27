@@ -1,0 +1,185 @@
+{
+  "checkedAt": "2026-10-27T00:54:33.412Z",
+  "scope": "Named binding nonempty checks through normal GitHub Actions contexts, no secret inventory permission bypass, no secret values exported/read by job, no provider calls.",
+  "runs": [
+    {
+      "repository": "levonmendall/solana-roi-convergence",
+      "id": 40428907568,
+      "branch": "poe-provider-presence-20261027",
+      "head": "3695c7c190537ab5bc8e9ddf256b75363ad6bb14",
+      "receipts": [
+        {
+          "jobId": 121941511639,
+          "bindings": {
+            "ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "ALCHEMY_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_RPC_ENDPOINTS_JSON": {
+              "secretPresent": false,
+              "variablePresent": false
+            }
+          },
+          "deployment": false,
+          "presenceOnly": true,
+          "project": "pump-opportunity-engine",
+          "providerRequests": 0,
+          "scope": "environment:main - solana-roi-convergence",
+          "secretValuesReadByJob": false
+        },
+        {
+          "jobId": 121941511997,
+          "bindings": {
+            "ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "ALCHEMY_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_RPC_ENDPOINTS_JSON": {
+              "secretPresent": false,
+              "variablePresent": false
+            }
+          },
+          "deployment": false,
+          "presenceOnly": true,
+          "project": "pump-opportunity-engine",
+          "providerRequests": 0,
+          "scope": "repository",
+          "secretValuesReadByJob": false
+        }
+      ]
+    },
+    {
+      "repository": "levonmendall/The-Meme-Machine",
+      "id": 40429216240,
+      "branch": "poe-provider-presence-20261027",
+      "head": "e594dd0dc0e415306d135d9799ffd9cf2aef6195",
+      "receipts": [
+        {
+          "jobId": 121942523347,
+          "bindings": {
+            "ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "ALCHEMY_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "MM_SOLANA_READ_RPC_URL": {
+              "secretPresent": true,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_RPC_ENDPOINTS_JSON": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            }
+          },
+          "deployment": false,
+          "presenceOnly": true,
+          "project": "pump-opportunity-engine",
+          "providerRequests": 0,
+          "scope": "environment:release/portfolio-dashboard-v1 - meme-machine-dashboard-staging",
+          "secretValuesReadByJob": false
+        },
+        {
+          "jobId": 121942523526,
+          "bindings": {
+            "ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "ALCHEMY_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "HELIUS_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "MM_SOLANA_READ_RPC_URL": {
+              "secretPresent": true,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_ALCHEMY_API_KEY": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_ROI_RPC_ENDPOINTS_JSON": {
+              "secretPresent": false,
+              "variablePresent": false
+            },
+            "SOLANA_RPC_URL": {
+              "secretPresent": false,
+              "variablePresent": false
+            }
+          },
+          "deployment": false,
+          "presenceOnly": true,
+          "project": "pump-opportunity-engine",
+          "providerRequests": 0,
+          "scope": "repository",
+          "secretValuesReadByJob": false
+        }
+      ]
+    }
+  ],
+  "oldMainBranchesChanged": false,
+  "applicationOrEC2Changes": false,
+  "deploymentsCreated": false,
+  "providerCalls": 0,
+  "newPaidCompute": false,
+  "runnerBasis": "Verified public repositories; standard ubuntu-latest hosted runners, no caches/artifacts. GitHub docs state standard public-repository runners free.",
+  "credentialValuesPrinted": false
+}
