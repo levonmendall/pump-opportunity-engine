@@ -166,6 +166,18 @@ function featureSnapshot(f:FlowFeatures,now:number):FlowFeatures|null {
     return {mint:f.mint,asOf:f.asOf,windowStartAt:f.windowStartAt,windowEndAt:f.windowEndAt,sufficientlyObserved:f.sufficientlyObserved,qualityReason:f.qualityReason,buyLamports:f.buyLamports,sellLamports:f.sellLamports,netBuyLamports:f.netBuyLamports,tradeCount:f.tradeCount,provisionalTradeCount:f.provisionalTradeCount,distinctBuyerWallets:f.distinctBuyerWallets,largestBuyerBps:f.largestBuyerBps,positiveNetBuckets:f.positiveNetBuckets,priceReturnBps:f.priceReturnBps,firstPrice:ratio(f.firstPrice),lastPrice:ratio(f.lastPrice)};
   }catch{return null;}
 }
+export type PredictiveBuyingAssessment={status:'failed'|'not-rejected'|'unavailable';reason:string;features:FlowFeatures|null;qualified:false};
+/** The existing predictive predicates only. This does not assess eligibility,
+ * execution, liquidity or financial permission and can never qualify an entry. */
+export function assessPredictiveBuying(features:FlowFeatures,now:number):PredictiveBuyingAssessment{
+  at(now);const snapshot=featureSnapshot(features,now),result=(status:PredictiveBuyingAssessment['status'],reason:string):PredictiveBuyingAssessment=>({status,reason,features:snapshot,qualified:false});
+  if(!snapshot)return result('unavailable','malformed-or-unavailable-features');
+  if(snapshot.sufficientlyObserved!==true)return result('unavailable',snapshot.qualityReason??'feature-availability-mismatch');
+  if(BigInt(snapshot.netBuyLamports)<BigInt(PROVISIONAL_RULE.minimumNetBuyLamports)||snapshot.positiveNetBuckets<PROVISIONAL_RULE.minimumPositiveBuckets||snapshot.distinctBuyerWallets<PROVISIONAL_RULE.minimumBuyers||snapshot.largestBuyerBps>PROVISIONAL_RULE.maximumLargestBuyerBps)return result('failed','persistent-broad-buying-rule-not-met');
+  if(snapshot.priceReturnBps===null)return result('unavailable','price-structure-unavailable');
+  if(snapshot.priceReturnBps<0)return result('failed','persistent-broad-buying-rule-not-met');
+  return result('not-rejected','persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed');
+}
 export function evaluatePrimary(features:FlowFeatures,context:RuleContext):RuleDecision {
   at(context.now);
   const snapshot=featureSnapshot(features,context.now);
@@ -184,9 +196,9 @@ export function evaluatePrimary(features:FlowFeatures,context:RuleContext):RuleD
   if(q.mint!==context.mint)return no('missing-data','candidate-quote-identity-mismatch');
   if(typeof q.allInInitialCostMicroUsd!=='string'||!/^[1-9][0-9]{0,38}$/.test(q.allInInitialCostMicroUsd)||BigInt(q.allInInitialCostMicroUsd)>BigInt(PROVISIONAL_RULE.maximumInitialCostMicroUsd))return no('risk-rejection','initial-cost-including-execution-exceeds-limit');
   if(typeof q.expectedBaseUnits!=='string'||!/^[1-9][0-9]{0,38}$/.test(q.expectedBaseUnits)||!Number.isSafeInteger(q.sizeToEffectiveLiquidityBps)||q.sizeToEffectiveLiquidityBps<0||q.sizeToEffectiveLiquidityBps>PROVISIONAL_RULE.maximumSizeToLiquidityBps)return no('market-exclusion','order-size-exceeds-execution-liquidity-bound');
-  if(BigInt(snapshot.netBuyLamports)<BigInt(PROVISIONAL_RULE.minimumNetBuyLamports)||snapshot.positiveNetBuckets<PROVISIONAL_RULE.minimumPositiveBuckets||snapshot.distinctBuyerWallets<PROVISIONAL_RULE.minimumBuyers||snapshot.largestBuyerBps>PROVISIONAL_RULE.maximumLargestBuyerBps)return no('strategy-rejection','persistent-broad-buying-rule-not-met');
-  if(snapshot.priceReturnBps===null)return no('missing-data','price-structure-unavailable');
-  if(snapshot.priceReturnBps<0)return no('strategy-rejection','persistent-broad-buying-rule-not-met');
+  const predictive=assessPredictiveBuying(snapshot,context.now);
+  if(predictive.status==='failed')return no('strategy-rejection',predictive.reason);
+  if(predictive.status==='unavailable')return no('missing-data',predictive.reason);
   return no('qualified','provisional-rule-passed; execution-and-accounting-still-required');
 }
 

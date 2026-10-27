@@ -1,6 +1,6 @@
 import {PaperLedger,type ExecutionQuote,type Mark,type Position} from './ledger.js';
 import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,type QuoteRequest} from './execution.js';
-import {FlowWindow,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
+import {FlowWindow,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
 import {assertPilotBaseline,resolvePilotBinding,type PilotBinding,type ResolvedPilotBinding} from './pilot-contract.js';
 
 export type CandidateEvidence={mint:string;migrationAt:number;migrationVerified:boolean;supportedPool:boolean;evidence:string};
@@ -21,12 +21,14 @@ export type TraderOptions={
   candidateReadiness?:(mint:string,at:number)=>boolean;
   /** Isolated research opt-in. Default quote ordering is unchanged. */
   deferPredictivelyRejectedQuotes?:true;
+  /** Isolated pilot selection diagnostics only; never entry permission. */
+  predictiveDiagnostics?:true;
   experimentalPilot?:PilotBinding;
   pilotExecution?:{context:(positions:Readonly<Record<string,Position>>,signal:AbortSignal)=>Promise<ExecutionContext>;quote:(request:PilotQuoteRequest,signal:AbortSignal)=>Promise<PilotExecutionQuote|null>};
   timeoutMs?:number;
 };
 export type TraderTickOptions={evaluateCandidates?:boolean;candidateMint?:string;reuseFreshContext?:boolean;maximumDueActions?:1|2|3};
-type Candidate=CandidateEvidence&{window:FlowWindow;active:boolean;everActivated:boolean;interrupted:boolean;evaluatedBucket:number;knownSlot:number|null;informationPending:boolean};
+type Candidate=CandidateEvidence&{window:FlowWindow;active:boolean;everActivated:boolean;interrupted:boolean;evaluatedBucket:number;predictiveAssessedBucket:number;knownSlot:number|null;informationPending:boolean};
 type Decision={mint:string;at:number;stage:string;reason:string;ruleVersion:string;features?:RuleDecision['features'];quote?:SizeQuote|null};
 const validText=(s:unknown,max=512):s is string=>typeof s==='string'&&s.length>0&&s.length<=max&&!/[\u0000-\u001f]/.test(s);
 const unsigned=(s:string)=>{if(typeof s!=='string'||!/^(0|[1-9][0-9]{0,38})$/.test(s))throw new Error('bounded integer amount required');return BigInt(s);};
@@ -34,9 +36,9 @@ const unsigned=(s:string)=>{if(typeof s!=='string'||!/^(0|[1-9][0-9]{0,38})$/.te
  * validated this feature snapshot. This cannot qualify an entry or replace any
  * quote/support/liquidity check. Only the refusal's order/knowledge changes. */
 function quoteIndependentRefusal(decision:RuleDecision):RuleDecision|null {
-  const f=decision.features;if(!f)return null;
-  if(BigInt(f.netBuyLamports)<BigInt(PROVISIONAL_RULE.minimumNetBuyLamports)||f.positiveNetBuckets<PROVISIONAL_RULE.minimumPositiveBuckets||f.distinctBuyerWallets<PROVISIONAL_RULE.minimumBuyers||f.largestBuyerBps>PROVISIONAL_RULE.maximumLargestBuyerBps||f.priceReturnBps!==null&&f.priceReturnBps<0)return {...decision,qualified:false,kind:'strategy-rejection',reason:'persistent-broad-buying-rule-not-met'};
-  return f.priceReturnBps===null?{...decision,qualified:false,kind:'missing-data',reason:'price-structure-unavailable'}:null;
+  const f=decision.features;if(!f)return null;const predictive=assessPredictiveBuying(f,decision.at);
+  if(predictive.status==='failed')return {...decision,qualified:false,kind:'strategy-rejection',reason:predictive.reason};
+  return predictive.status==='unavailable'&&predictive.reason==='price-structure-unavailable'?{...decision,qualified:false,kind:'missing-data',reason:predictive.reason}:null;
 }
 
 /** Adapter-driven PAPER integration. It never initializes capital, enables
@@ -67,6 +69,7 @@ export class PaperTrader{
     this.maximumCandidates=options.maximumCandidates??12;if(!Number.isSafeInteger(this.maximumCandidates)||this.maximumCandidates<1||this.maximumCandidates>20)throw Error('bounded deep candidate capacity required');
     this.pilot=options.experimentalPilot!==undefined;
     this.pilotConfig=this.pilot?resolvePilotBinding(options.experimentalPilot):null;
+    if(options.predictiveDiagnostics===true&&!this.pilot)throw Error('predictive diagnostics require the isolated pilot contract');
     if(this.pilot){const state=options.ledger.state();assertPilotBaseline();if(!this.pilotConfig||state.mode!=='PAPER'||!/^poe-pilot-[a-z0-9-]+$/.test(state.accountId)||options.costs.gasLamports!=='7000'||options.costs.slippageBps!==100||(options.timeoutMs??3000)>3000||typeof options.pilotExecution?.context!=='function'||typeof options.pilotExecution?.quote!=='function')throw Error('isolated pilot identity, frozen contract and fresh execution adapters required');}
     else if(options.pilotExecution)throw Error('pilot execution adapters require the isolated pilot contract');
     // Match evaluatePrimary's existing 128-character evidence contract before
@@ -114,7 +117,7 @@ export class PaperTrader{
     const deepCount=[...this.candidates.keys()].filter(mint=>!owned.positions[mint]).length,capacity=deepCount>=this.maximumCandidates||this.candidates.size>=this.maximumCandidates+3;
     this.record('trader-input',{kind:'candidate',at:now,candidate:{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence}});
     if(input.migrationVerified!==true||input.supportedPool!==true||capacity){this.decision({mint:input.mint,at:now,stage:'market-exclusion',reason:capacity?'candidate-capacity':'unsupported-or-unverified-pool',ruleVersion:PROVISIONAL_RULE.version});return false;}
-    this.candidates.set(input.mint,{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence,window:new FlowWindow(input.mint,now),active:false,everActivated:false,interrupted:false,evaluatedBucket:-1,knownSlot:null,informationPending:false});this.funnel.supported++;return true;
+    this.candidates.set(input.mint,{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence,window:new FlowWindow(input.mint,now),active:false,everActivated:false,interrupted:false,evaluatedBucket:-1,predictiveAssessedBucket:-1,knownSlot:null,informationPending:false});this.funnel.supported++;return true;
   }
   activateFlow(mint:string,evidence:string){const c=this.candidates.get(mint);if(!c||!validText(evidence))throw new Error('admitted pool and actual subscription evidence required');const at=this.clock();c.window.features(at);if(c.everActivated||c.interrupted)c.window.invalidate(at,'feed-gap');else c.window=new FlowWindow(mint,at);c.everActivated=true;c.active=true;c.informationPending=false;c.evaluatedBucket=-1;this.record('trader-input',{kind:'flow-start',at,mint,evidence});}
   setCandidateInformationPending(mint:string,pending:boolean){const c=this.candidates.get(mint);if(!c||typeof pending!=='boolean')throw Error('admitted candidate and explicit information state required');c.informationPending=pending;this.record('trader-input',{kind:'candidate-information-pending',at:this.clock(),mint,pending});}
@@ -210,6 +213,18 @@ export class PaperTrader{
       return keys.every(mint=>{const p=positions[mint]!,m=this.context.marks[mint];return this.contextInventory![mint]===p.units&&!!m&&m.pricedBaseUnits===p.units&&Number.isSafeInteger(m.at)&&m.at>=0&&m.at<=now&&now-m.at<=PROVISIONAL_RULE.maximumQuoteAgeMs&&validText(m.evidence)&&unsigned(m.netLamports)>=0n;});
     }catch{return false;}
   }
+  private predictiveAssessment(c:Candidate,decision:RuleDecision){
+    if(!this.pilot||this.options.predictiveDiagnostics!==true||!c.active||c.informationPending||this.options.flowVerification?.verified!==true||!decision.features)return;
+    const initialAt=this.clock(),bucket=Math.floor(initialAt/PROVISIONAL_RULE.bucketMs);
+    if(c.predictiveAssessedBucket===bucket||Math.floor(decision.at/PROVISIONAL_RULE.bucketMs)!==bucket)return;
+    const original=assessPredictiveBuying(decision.features,decision.at);if(!original.features?.sufficientlyObserved)return;
+    let ready=false;try{ready=this.options.candidateReadiness?.(c.mint,initialAt)===true;}catch{return;}
+    const availableAt=this.clock();if(!ready||Math.floor(availableAt/PROVISIONAL_RULE.bucketMs)!==bucket||this.candidates.get(c.mint)!==c||!c.active||c.informationPending)return;
+    // Re-read only bounded in-memory features at actual diagnostic availability;
+    // no quote/provider work or change to the existing primary risk decision.
+    const assessment=assessPredictiveBuying(c.window.features(availableAt),availableAt);if(assessment.status==='unavailable'||!assessment.features)return;
+    c.predictiveAssessedBucket=bucket;this.record('trader-predictive-assessment',{mint:c.mint,at:availableAt,windowEndAt:assessment.features.windowEndAt,status:assessment.status,reason:assessment.reason,features:assessment.features,riskDecision:{kind:decision.kind,reason:decision.reason},meaning:'Predictive predicates only; no eligibility, quote, risk or entry permission is granted.'});
+  }
   private async drain(options:Readonly<{evaluateCandidates:boolean;candidateMint:string|undefined;reuseFreshContext:boolean;maximumDueActions:1|2|3|undefined}>){
     this.tickActionsRemaining=options.maximumDueActions??null;
     const execution:ExecutionResult[]=[];
@@ -272,6 +287,7 @@ export class PaperTrader{
       c.evaluatedBucket=Math.max(c.evaluatedBucket,Math.floor(decision.at/PROVISIONAL_RULE.bucketMs));
       this.funnel.evaluated++;if(features.sufficientlyObserved&&c.active&&fields?.verified===true)this.funnel.sufficientlyObserved++;
       this.decision({mint:c.mint,at:this.clock(),stage:decision.kind,reason:decision.reason,ruleVersion:decision.ruleVersion,features:decision.features,quote:q});
+      this.predictiveAssessment(c,decision);
       if(decision.qualified&&q&&this.options.candidateReadiness!==undefined)q=this.cleanQuote(q,this.withKnownFloor({mint:c.mint,side:'buy',inputUnits:q.inputUnits,...(this.pilot?{requiredDepositLamports:entryDeposit}:{})}));
       const reservationAt=this.clock(),reservationReady=decision.qualified&&q&&!this.evidenceUnavailable&&this.entriesAllowed(c,reservationAt);
       if(reservationReady&&q){this.funnel.qualified++;const at=reservationAt,min=unsigned(q.outputUnits)*BigInt(10_000-this.options.costs.slippageBps)/10_000n;

@@ -143,3 +143,12 @@ production risk tolerance. Candidate gaps close the affected entry window.
 financial authority. Restart keeps awareness/counters and discards old deep-flow
 readiness. Actual ledger positions/pending actions determine owned watch states.
 The original EC2 observer/account and Render portfolio remain separate.
+
+Selection policy v3 records feature-only assessments even while financial entries
+are paused. It reuses the exact primary predictive predicates on a fresh, complete,
+independently audited window. The original primary risk decision is retained. A
+feature-only failure can release a deep slot; a pass never authorizes an entry or
+substitutes for eligibility, quotes, liquidity or financial limits. These counters
+are separate from primary strategy rejections and must not be summed as independent
+observations. Capacity-failed scopes retain awareness and use120/300/600second
+backoff. Every re-promotion still requires fresh support and a new complete window.

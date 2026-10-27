@@ -178,7 +178,7 @@ test('repeated enrichment capacity failures retain awareness while preventing th
  const reason='candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY';
  assert.deepEqual([0,1,2,5].map(n=>pilotCandidateDeferral(reason,n).delayMs),[120000,300000,600000,600000]);
  assert.equal(pilotCandidateDeferral('required enrichment cannot fit method rate limit and usefulness deadline',0).capacitySpecific,true);
- assert.equal(pilotCandidateDeferral('valid-window-currently-weak',0).delayMs,60000);
+ assert.equal(pilotCandidateDeferral('valid-window-currently-weak',0).delayMs,60000);assert.equal(pilotCandidateDeferral('valid-window-predictive-assessment-failed',0).delayMs,60000);
  assert.deepEqual(pilotCandidateDeferral('temporary feed failure',9),{capacitySpecific:false,delayMs:30000});
  assert.throws(()=>pilotCandidateDeferral(reason,-1),/CAPACITY_HISTORY/);
 });
