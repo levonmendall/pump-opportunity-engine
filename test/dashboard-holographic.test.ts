@@ -14,12 +14,12 @@ const start=source.indexOf(marker)+marker.length;
 const end=source.indexOf('`;\n',start);
 assert.ok(start>=marker.length && end>start,'actual dashboard template must exist');
 const original=source.slice(start,end);
-const full=()=>withConnectionDiagnostics(original).replace('</main>',CONNECTIONS_HTML+'</main>').replace('</body>',CONNECTIONS_SCRIPT+'</body>');
+const full=()=>withConnectionDiagnostics(original).replace('<div class="section-heading" id="system">',CONNECTIONS_HTML+'<div class="section-heading" id="system">').replace('</body>',CONNECTIONS_SCRIPT+'</body>');
 const ids=(s:string)=>Array.from(s.matchAll(/\bid="([^"]+)"/g),m=>m[1]!);
 const scripts=(s:string)=>Array.from(s.matchAll(/<script>([\s\S]*?)<\/script>/g),m=>m[1]!);
 
 test('holographic presentation is deterministic and idempotent',()=>{
- assert.equal(HOLOGRAPHIC_VERSION,'poe-holographic-v1');
+ assert.equal(HOLOGRAPHIC_VERSION,'poe-holographic-v2');
  const a=holographicDashboard(original);
  assert.equal(a,holographicDashboard(original));
  assert.equal(a,holographicDashboard(a));
@@ -52,9 +52,17 @@ test('original and experimental diagnostics remain separate and visible',()=>{
  assert.match(rendered,/No pilot balances or results are merged into it/);
  assert.match(rendered,/SOURCE STALE/);
  assert.match(rendered,/PUBLISHER DISCONNECTED/);
- assert.ok(rendered.indexOf('id="overview"')<rendered.indexOf('id="reportingConnections"'));
- assert.ok(rendered.indexOf('class="status-strip"')<rendered.indexOf('id="reportingConnections"'));
- assert.ok(rendered.indexOf('id="reportingConnections"')<rendered.indexOf('id="portfolio"'));
+ assert.ok(rendered.indexOf('id="overview"')<rendered.indexOf('id="portfolio"'));
+ assert.ok(rendered.indexOf('id="portfolio"')<rendered.indexOf('id="performance"'));
+ assert.ok(rendered.indexOf('id="performance"')<rendered.indexOf('id="activity"'));
+ assert.ok(rendered.indexOf('id="activity"')<rendered.indexOf('id="pilot-telemetry-panel"'));
+ assert.ok(rendered.indexOf('id="pilot-telemetry-panel"')<rendered.indexOf('id="system"'));
+ assert.ok(rendered.indexOf('id="system"')<rendered.indexOf('id="decisions"'));
+ assert.ok(rendered.indexOf('id="decisions"')<rendered.indexOf('id="metrics"'));
+ assert.ok(rendered.indexOf('id="metrics"')<rendered.indexOf('class="status-strip reporting-bottom"'));
+ assert.ok(rendered.indexOf('class="status-strip reporting-bottom"')<rendered.indexOf('id="reportingConnections"'));
+ assert.match(rendered,/SYSTEM STATUS &amp; REPORTING/);
+ assert.match(rendered,/Candidate progression &amp; decisions/);
 });
 
 test('visual layer adds no new client script, external dependency or request',()=>{
