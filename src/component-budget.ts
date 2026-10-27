@@ -1,0 +1,124 @@
+/** A single linked public-RPC component grant. No endpoint, wallet or transport.
+ * The old counterbook/refusal is an immutable baseline, never rewritten here.
+ */
+import {spawnSync} from 'node:child_process';
+import {performance} from 'node:perf_hooks';
+import {constants,openSync,closeSync,lstatSync,fstatSync,readFileSync,writeFileSync,fsyncSync,renameSync,unlinkSync} from 'node:fs';
+import {dirname,resolve} from 'node:path';
+import {validateRpc} from './network.js';
+
+const MIB=1024*1024;
+export const COMPONENT_LIMITS=Object.freeze({units:70,totalMs:90_000,starts60s:60,starts10s:30,startGapMs:1000,httpBytes:24*MIB,wsBytes:8*MIB,combinedBytes:32*MIB,cumulativeBytes:64*MIB,httpResponseBytes:2*MIB,physicalHeadroomBytes:2*MIB,wsOperationReserveBytes:64*1024});
+export type ComponentBaseline={calls:number;bytes:number;starts:number[];refusal:'RPC_HTTP_429';refusalAt:number;sha256:string};
+export type ComponentKind={transport:'http'|'ws-upgrade'|'ws';method:string};
+export type ComponentOperation={id:number;signal:AbortSignal;chargeHttp:(bytes:number)=>void;completeResponse:()=>void};
+export type ComponentBudgetOptions={statePath:string;grantId:string;baseline:ComponentBaseline;startedAt:number;notBefore?:number;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number,signal?:AbortSignal)=>Promise<void>;/** Offline durability-latency injection; never configured by the live harness. */beforePersist?:()=>void};
+type Pending={id:number;transport:ComponentKind['transport'];reservedBytes:number};
+type State={schemaVersion:1;grantId:string;baseline:ComponentBaseline;startedAt:number;deadlineAt:number;lastObservedAt:number;starts:number[];actualInvocations:Array<{id:number;at:number}>;byOperation:Record<string,number>;httpBytes:number;wsBytes:number;pending:Pending[];haltedReason:string|null;durationsMs:number[]};
+const integer=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
+function need(v:unknown,code:string):asserts v {if(!v)throw Error(code);}
+function pause(ms:number,signal?:AbortSignal):Promise<void>{
+  if(signal?.aborted)return Promise.reject(Error('COMPONENT_ABORTED'));
+  return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(Error('COMPONENT_ABORTED'));};const timer=setTimeout(()=>{signal?.removeEventListener('abort',abort);resolve();},ms);signal?.addEventListener('abort',abort,{once:true});});
+}
+const operationKey=(kind:ComponentKind)=>kind.transport+':'+kind.method;
+function validateKind(kind:ComponentKind){
+  need(kind&&['http','ws','ws-upgrade'].includes(kind.transport),'COMPONENT_OPERATION_DENIED');
+  if(kind.transport==='http')validateRpc({method:kind.method});
+  else need(kind.transport==='ws-upgrade'?kind.method==='upgrade':['accountSubscribe','accountUnsubscribe'].includes(kind.method),'COMPONENT_OPERATION_DENIED');
+}
+const errorCode=(e:unknown)=>{const m=e instanceof Error?e.message:'';return /^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(m)?m:'COMPONENT_OPERATION_FAILED';};
+
+/** Caller owns one dispatcher. This gate paces actual starts; it never queues
+ * or retries an operation. Notifications charge bytes without taking a request
+ * slot. A caller-facing abort does not release a physical operation's slot.
+ */
+export class ComponentBudget {
+  private readonly path:string;private readonly lease:number;private readonly now:()=>number;private readonly mono:()=>number;private readonly sleep:(ms:number,signal?:AbortSignal)=>Promise<void>;
+  private readonly notBefore:number;private readonly beforePersist:(()=>void)|undefined;private state:State;private active=0;private busy=false;private closed=false;private storageFailed=false;private lastStartMono:number|null=null;private readonly resumedMono:number;
+  private currentController:AbortController|null=null;
+  constructor(options:ComponentBudgetOptions){
+    this.path=resolve(options.statePath);this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.sleep=options.sleep??pause;this.beforePersist=options.beforePersist;this.resumedMono=this.monotonic();this.notBefore=options.notBefore??0;
+    const b=options.baseline;need(b&&integer(b.calls)&&b.calls<=240&&integer(b.bytes)&&b.bytes<=64*MIB&&Array.isArray(b.starts)&&b.starts.length===b.calls&&b.starts.every((t,i)=>integer(t)&&(i===0||t>=b.starts[i-1]!))&&b.refusal==='RPC_HTTP_429'&&integer(b.refusalAt)&&/^[a-f0-9]{64}$/.test(b.sha256),'COMPONENT_INVALID_BASELINE');
+    need(/^[a-z0-9-]{1,100}$/.test(options.grantId)&&integer(options.startedAt)&&integer(this.notBefore)&&b.refusalAt<=options.startedAt&&b.starts.every(t=>t<=options.startedAt),'COMPONENT_INVALID_GRANT');
+    const dir=lstatSync(dirname(this.path));need(dir.isDirectory()&&!dir.isSymbolicLink()&&dir.uid===process.getuid?.()&&(dir.mode&0o022)===0,'COMPONENT_UNSAFE_DIRECTORY');
+    this.lease=openSync(this.path+'.lock',constants.O_RDWR|constants.O_CREAT|constants.O_NOFOLLOW,0o600);
+    try{
+      const lock=fstatSync(this.lease);need(lock.isFile()&&lock.nlink===1&&lock.uid===process.getuid?.()&&(lock.mode&0o077)===0,'COMPONENT_UNSAFE_LOCK');
+      const lease=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',this.lease],timeout:5000});need(!lease.error&&lease.status===0,'COMPONENT_BUDGET_OWNED');
+      let saved:State|undefined;
+      try{const file=lstatSync(this.path);need(file.isFile()&&!file.isSymbolicLink()&&file.nlink===1&&file.uid===process.getuid?.()&&(file.mode&0o077)===0&&file.size<=128*1024,'COMPONENT_UNSAFE_STATE');saved=JSON.parse(readFileSync(this.path,'utf8'));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
+      this.state=saved??{schemaVersion:1,grantId:options.grantId,baseline:structuredClone(b),startedAt:options.startedAt,deadlineAt:options.startedAt+COMPONENT_LIMITS.totalMs,lastObservedAt:this.now(),starts:[],actualInvocations:[],byOperation:{},httpBytes:0,wsBytes:0,pending:[],haltedReason:null,durationsMs:[]};
+      need(this.state.grantId===options.grantId&&JSON.stringify(this.state.baseline)===JSON.stringify(b)&&this.state.startedAt===options.startedAt,'COMPONENT_BASELINE_OR_GRANT_CONFLICT');this.validate();this.clock();if(!saved)this.persist();
+    }catch(e){closeSync(this.lease);throw e;}
+  }
+  private monotonic(){const n=this.mono();need(Number.isFinite(n)&&n>=0,'COMPONENT_MONOTONIC_CLOCK');return n;}
+  private clock(){const at=this.now();need(integer(at)&&at>=this.state.lastObservedAt,'COMPONENT_CLOCK_REGRESSION');this.state.lastObservedAt=at;return at;}
+  private validate(){
+    const s=this.state;need(s?.schemaVersion===1&&integer(s.lastObservedAt)&&s.lastObservedAt>=s.startedAt&&s.deadlineAt===s.startedAt+COMPONENT_LIMITS.totalMs&&Array.isArray(s.starts)&&s.starts.length<=70&&s.baseline.calls+s.starts.length<=240&&s.starts.every((t,i)=>integer(t)&&t>=s.startedAt&&t<=s.lastObservedAt&&(i===0||t>=s.starts[i-1]!+1000)),'COMPONENT_INVALID_STATE');
+    need(Array.isArray(s.actualInvocations)&&s.actualInvocations.length<=s.starts.length&&s.actualInvocations.every((r,i)=>integer(r.id)&&r.id>s.baseline.calls&&r.id<=s.baseline.calls+s.starts.length&&integer(r.at)&&r.at>=s.starts[r.id-s.baseline.calls-1]!&&r.at<=s.lastObservedAt&&(i===0||r.id>s.actualInvocations[i-1]!.id&&r.at>=s.actualInvocations[i-1]!.at+1000)),'COMPONENT_INVALID_INVOCATIONS');
+    need(integer(s.httpBytes)&&integer(s.wsBytes)&&s.httpBytes<=COMPONENT_LIMITS.httpBytes+COMPONENT_LIMITS.httpResponseBytes&&s.wsBytes<=COMPONENT_LIMITS.wsBytes+65536,'COMPONENT_INVALID_BYTES');
+    need(s.byOperation&&typeof s.byOperation==='object'&&Object.keys(s.byOperation).length<=20&&Object.values(s.byOperation).every(integer)&&Object.values(s.byOperation).reduce((n,x)=>n+x,0)===s.starts.length,'COMPONENT_INVALID_OPERATIONS');
+    for(const key of Object.keys(s.byOperation)){const [transport,method,...rest]=key.split(':');need(rest.length===0,'COMPONENT_INVALID_OPERATIONS');try{validateKind({transport:transport as ComponentKind['transport'],method:method!});}catch{throw Error('COMPONENT_INVALID_OPERATIONS');}}
+    need(Array.isArray(s.pending)&&s.pending.length<=s.starts.length&&s.pending.every((p,i)=>integer(p.id)&&p.id>s.baseline.calls&&p.id<=s.baseline.calls+s.starts.length&&['http','ws','ws-upgrade'].includes(p.transport)&&integer(p.reservedBytes)&&p.reservedBytes<=2*MIB&&s.pending.findIndex(q=>q.id===p.id)===i),'COMPONENT_INVALID_PENDING');
+    need(s.haltedReason===null||/^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(s.haltedReason),'COMPONENT_INVALID_HALT');need(Array.isArray(s.durationsMs)&&s.durationsMs.length<=70&&s.durationsMs.every(x=>Number.isFinite(x)&&x>=0),'COMPONENT_INVALID_DURATIONS');
+  }
+  private persist(){
+    const tmp=this.path+'.pending-'+process.pid;let fd:number|undefined,created=false;
+    try{this.beforePersist?.();const encoded=JSON.stringify(this.state)+'\n';need(Buffer.byteLength(encoded)<=128*1024,'COMPONENT_STATE_SIZE');fd=openSync(tmp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);created=true;writeFileSync(fd,encoded);fsyncSync(fd);closeSync(fd);fd=undefined;renameSync(tmp,this.path);created=false;const parent=openSync(dirname(this.path),constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(parent);}finally{closeSync(parent);}}
+    catch{this.storageFailed=true;if(fd!==undefined)try{closeSync(fd);}catch{}if(created)try{unlinkSync(tmp);}catch{}throw Error('COMPONENT_STORAGE_UNAVAILABLE');}
+  }
+  private ready(){need(!this.closed,'COMPONENT_CLOSED');need(!this.storageFailed,'COMPONENT_STORAGE_UNAVAILABLE');need(!this.state.haltedReason,'COMPONENT_HALTED');}
+  get calls(){return this.state.baseline.calls+this.state.starts.length;}get newUnits(){return this.state.starts.length;}get bytes(){return this.state.baseline.bytes+this.state.httpBytes+this.state.wsBytes;}get inFlight(){return this.active;}
+  private effectiveStarts(){const actual=new Map(this.state.actualInvocations.map(r=>[r.id,r.at]));return [...this.state.baseline.starts,...this.state.starts.map((at,i)=>actual.get(this.state.baseline.calls+i+1)??at)];}
+  usage(){
+    const now=this.clock(),starts=this.effectiveStarts(),short=starts.filter(t=>t>now-10000),minute=starts.filter(t=>t>now-60000),reserved=this.state.pending.reduce((n,p)=>n+p.reservedBytes,0);
+    return {grantId:this.state.grantId,baseline:structuredClone(this.state.baseline),cumulativeUnits:this.calls,newUnits:this.newUnits,actualInvokedUnits:this.state.actualInvocations.length,cumulativeResponseBytes:this.bytes,httpBytes:this.state.httpBytes,wsBytes:this.state.wsBytes,newResponseBytes:this.state.httpBytes+this.state.wsBytes,remainingGrantUnits:70-this.newUnits,remainingCumulativeUnits:240-this.calls,remainingGrantResponseBytes:Math.max(0,32*MIB-this.state.httpBytes-this.state.wsBytes-reserved),remainingCumulativeResponseBytes:Math.max(0,64*MIB-this.bytes-reserved),pending:structuredClone(this.state.pending),uncertainResponseBytes:reserved,rolling60SecondStarts:minute.length,rolling10SecondStarts:short.length,starts:this.state.actualInvocations.map(r=>r.at),actualInvocations:structuredClone(this.state.actualInvocations),reservationStarts:[...this.state.starts],byOperation:{...this.state.byOperation},durationsMs:[...this.state.durationsMs],inFlight:this.active,waitingOrOperating:this.busy,haltedReason:this.state.haltedReason,startedAt:this.state.startedAt,deadlineAt:this.state.deadlineAt,closed:this.closed,storageFailed:this.storageFailed};
+  }
+  halt(reason:string){need(/^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(reason),'COMPONENT_INVALID_HALT');if(!this.state.haltedReason){this.state.haltedReason=reason;this.clock();this.persist();}this.currentController?.abort();}
+  /** Charge measured WebSocket receipt once, before payload parsing. Caller
+   * separately stops at7MiB socket/6MiB application to retain in-flight room. */
+  chargeWs(n:number){
+    need(!this.closed&&!this.storageFailed,'COMPONENT_CLOSED');need(integer(n)&&n<=COMPONENT_LIMITS.httpResponseBytes,'COMPONENT_INVALID_BYTE_CHARGE');this.state.wsBytes+=n;this.clock();this.persist();
+    if(this.state.lastObservedAt>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
+    if(this.state.wsBytes>COMPONENT_LIMITS.wsBytes||this.state.httpBytes+this.state.wsBytes>COMPONENT_LIMITS.combinedBytes||this.bytes>COMPONENT_LIMITS.cumulativeBytes){this.halt('COMPONENT_RESPONSE_BYTE_CAP');throw Error('COMPONENT_RESPONSE_BYTE_CAP');}
+  }
+  async operate<T>(kind:ComponentKind,work:(context:ComponentOperation)=>Promise<T>,outer?:AbortSignal,options:{timeoutMs?:number}={}):Promise<T>{
+    validateKind(kind);need(!this.busy,'COMPONENT_DISPATCH_BUSY');if(outer?.aborted)throw Error('COMPONENT_ABORTED');this.ready();need(this.active===0,'COMPONENT_PHYSICAL_SLOT_OCCUPIED');need(this.state.pending.length===0,'COMPONENT_UNCERTAIN_PRIOR_OPERATION');
+    const timeout=options.timeoutMs??5000;need(integer(timeout)&&timeout>0&&timeout<=12000,'COMPONENT_INVALID_TIMEOUT');this.busy=true;
+    let controller:AbortController|undefined,timer:ReturnType<typeof setTimeout>|undefined,abortListener:(()=>void)|undefined;
+    try{
+      for(;;){
+        if(outer?.aborted)throw Error('COMPONENT_ABORTED');this.ready();const now=this.clock();if(now>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
+        const starts=this.effectiveStarts(),short=starts.filter(t=>t>now-10000),minute=starts.filter(t=>t>now-60000),last=starts.at(-1),mono=this.monotonic();
+        const monoOrigin=this.lastStartMono??(this.state.starts.length?this.resumedMono:null);
+        const wait=Math.ceil(Math.max(0,this.notBefore-now,last===undefined?0:last+1000-now,monoOrigin===null?0:monoOrigin+1000-mono,short.length>=30?short[short.length-30]!+10000-now:0,minute.length>=60?minute[minute.length-60]!+60000-now:0));
+        if(!wait)break;await this.sleep(Math.min(wait,this.state.deadlineAt-now),outer);need(this.monotonic()>mono||outer?.aborted,'COMPONENT_CLOCK_DID_NOT_ADVANCE');
+      }
+      if(outer?.aborted)throw Error('COMPONENT_ABORTED');this.ready();if(!(this.newUnits<70&&this.calls<240)){this.halt('COMPONENT_UNIT_CAP');throw Error('COMPONENT_UNIT_CAP');}
+      const reserve=kind.transport==='http'?2*MIB:64*1024,pendingBytes=this.state.pending.reduce((n,p)=>n+p.reservedBytes,0);
+      if(!((kind.transport==='http'?this.state.httpBytes+reserve+2*MIB<=24*MIB:this.state.wsBytes+reserve<=8*MIB)&&this.state.httpBytes+this.state.wsBytes+pendingBytes+reserve+2*MIB<=32*MIB&&this.bytes+pendingBytes+reserve+2*MIB<=64*MIB)){this.halt('COMPONENT_RESPONSE_RESERVE');throw Error('COMPONENT_RESPONSE_RESERVE');}
+      const at=this.clock();if(at>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
+      const id=this.calls+1,pending:Pending={id,transport:kind.transport,reservedBytes:reserve};this.state.starts.push(at);this.state.byOperation[operationKey(kind)]=(this.state.byOperation[operationKey(kind)]??0)+1;this.state.pending.push(pending);this.persist();this.active++;
+      const began=this.monotonic();controller=new AbortController();this.currentController=controller;const signal=outer?AbortSignal.any([outer,controller.signal]):controller.signal;let complete=false,responseBytes=0;
+      const chargeHttp=(n:number)=>{need(kind.transport==='http'&&integer(n)&&n<=2*MIB,'COMPONENT_INVALID_BYTE_CHARGE');responseBytes+=n;this.state.httpBytes+=n;pending.reservedBytes=Math.max(0,2*MIB-responseBytes);this.clock();this.persist();if(responseBytes>2*MIB||this.state.httpBytes>24*MIB||this.state.httpBytes+this.state.wsBytes>32*MIB||this.bytes>64*MIB){this.halt('COMPONENT_RESPONSE_BYTE_CAP');throw Error('COMPONENT_RESPONSE_BYTE_CAP');}};
+      const operation=Promise.resolve().then(()=>{
+        signal.throwIfAborted();const invokedAt=this.clock();if(invokedAt>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
+        // Reservation is already durable. Stamp immediately before invoking
+        // transport, AFTER variable fsync/rename latency, and persist the actual
+        // stamp after invocation. A crash still leaves the conservative pending
+        // reservation, which prevents resuming an uncertain operation.
+        this.lastStartMono=this.monotonic();this.state.actualInvocations.push({id,at:invokedAt});
+        try{return work({id,signal,chargeHttp,completeResponse(){complete=true;}});}finally{this.persist();}
+      }).catch(e=>{
+        const message=e instanceof Error?e.message:'';const code=message.includes('429')?'COMPONENT_HTTP_429':message.includes('-32005')?'COMPONENT_RPC_OVERLOAD':signal.aborted?(this.state.haltedReason??'COMPONENT_ABORTED'):errorCode(e);
+        this.halt(code);throw Error(code);
+      }).finally(()=>{this.active--;if(complete)this.state.pending=this.state.pending.filter(p=>p.id!==id);else pending.reservedBytes=reserve;this.state.durationsMs.push(Math.max(0,this.monotonic()-began));this.clock();this.persist();if(this.currentController===controller)this.currentController=null;});
+      try{return await Promise.race([operation,new Promise<never>((_resolve,reject)=>{
+        abortListener=()=>{const code=this.state.haltedReason??'COMPONENT_ABORTED';this.halt(code);reject(Error(code));};signal.addEventListener('abort',abortListener,{once:true});
+        timer=setTimeout(()=>{this.halt(this.now()>=this.state.deadlineAt?'COMPONENT_TIME_CAP':'COMPONENT_PHYSICAL_TIMEOUT');},Math.max(0,Math.min(timeout,this.state.deadlineAt-this.clock())));if(signal.aborted)abortListener();
+      })]);}finally{clearTimeout(timer);if(abortListener)signal.removeEventListener('abort',abortListener);}
+    }finally{this.busy=false;}
+  }
+  close(){need(!this.closed,'COMPONENT_CLOSED');need(!this.busy&&this.active===0,'COMPONENT_PHYSICAL_SLOT_OCCUPIED');this.closed=true;closeSync(this.lease);}
+}

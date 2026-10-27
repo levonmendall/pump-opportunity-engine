@@ -342,7 +342,7 @@ answered from quiet quotes and isolated sells. Do not remove it from A or claim
 C is better merely because it needs fewer transactions. No entry or monitoring
 policy was deployed.
 
-## Exact next action and remaining evidence
+## Prepared component proposal — historical state at4bbb213
 
 The strongest next measurement is the equivalent pricing/notification component,
 not a strategy change. [next-live-proposal.json](../evidence/adaptive-monitoring/next-live-proposal.json)
@@ -377,7 +377,105 @@ acceptance. No provider purchase, larger budget or repeated marginal experiment
 is requested. The current exact owner-only next action, if continuing live research,
 is approval of the one concrete component proposal; no infrastructure action.
 
+The owner subsequently approved that exact proposal. Its single execution and
+current linked counters are recorded below; this historical proposal is no longer
+a pending owner action or an active grant.
+
 Evidence lives in `evidence/adaptive-monitoring/`. Detailed matrices are losslessly
 compressed; hashes and the preserved initial fixture result are retained. Software
 checks, replay and synthetic outcomes do not establish production capacity,
 profitable trading, a24/72-hour unattended interval or economic edge.
+
+
+## Approved public-RPC component — actual 2026-10-27 result
+
+**INCONCLUSIVE: no supported active pool was established within the four-read
+selection allocation.** The grant was executed once and stopped during setup.
+It did not reach Clock validation, position pricing, subscriptions or reconnect.
+This is a selection failure of this bounded sample, not evidence that Clock-based
+pricing or free data is unsuitable. No second session or retry ran. The unchanged
+proposal at 4bbb213 remains the historical limit specification, not a new grant.
+
+Authoritative receipts: [summary.json](../evidence/public-component-20261027/summary.json),
+[supervisor.json](../evidence/public-component-20261027/supervisor.json), and the
+linked [rpc-budget.json](../evidence/public-component-20261027/rpc-budget.json).
+The exact retained responses and availability times are in `observations.ndjson`;
+no provider or wallet credential is present. Reproducible code is
+`scripts/public-rpc-component.ts` (local tested harness commit 83b0623). The source
+hashes in `grant.json` identify the exact code used independently of later report
+commits. `node --use-env-proxy --import tsx scripts/public-rpc-component.ts` is a
+network-free inspection; adding `run-approved` is the one-use live command and
+now refuses because the completed grant directory exists. Do not delete that
+directory to rerun it. Offline checks: `npm run build`, `npm test`, and strict
+TypeScript checking of the two component scripts; 397 tests passed before the run.
+
+| Actual measurement | Observed result |
+| --- | --- |
+| Total supervised wall time |3.992 seconds,06:09:45.482–06:09:49.474UTC (child completed06:09:49.447UTC) |
+| HTTP operations |2 `getSignaturesForAddress`,2 `getTransaction`; 4 new units |
+| HTTP response bodies / WebSocket receipt |104,424 bytes / 0 bytes |
+| Actual start spacing |1,003 ms,1,004 ms,1,002 ms; one physical operation at a time |
+| HTTP response times |52–564 ms; lower-median 121 ms; p95 564 ms |
+| New429 / overload / retry |None / none / none |
+| Supervisory peak RSS / CPU |137.57 MiB / 1.270 CPU seconds including Node/SDK startup |
+| Child event-loop lag maximum |0.800 ms after the child's watcher began |
+| Pricing / notifications / reconnect |0 completed quotes / 0 connections /not attempted |
+| New evidence before supervisor receipt |198,036 bytes; below 8 MiB and cumulative 32 MiB limits |
+| Original records and source hashes |All checked prior evidence and test source unchanged |
+
+The seed pool `6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv` returned eight
+successful address transactions, but the newest was approximately 4.5 hours old.
+It did not meet the fixed 30-second activity requirement. One current program page
+contained 256 transactions (197 successful) in two chain seconds. The two systematic
+successful-transaction samples did not establish an invoked canonical SOL swap.
+Program-address activity alone was correctly insufficient to admit a pool. This
+was activity-biased transport selection, not an opportunity cohort or strategy
+performance test. The [offline selection audit](../evidence/public-component-20261027/offline-selection-audit.json)
+resolved both exclusions against the captured instructions and pinned SDK IDL:
+
+- The first successful v1 transaction invokes `multi_hop_swap`: two canonical
+  pools with non-SOL quotes and a non-SOL bonding-curve hop. None is a canonical
+  SOL pool. The selector does not currently discover/normalize `multi_hop_swap`;
+  that named coverage limitation did not exclude an in-scope pool in this record.
+- The second successful v0 transaction carries PumpSwap in its account list but
+  has no PumpSwap instruction invocation. Its log says `No profitable route`.
+
+Three retained-evidence regression tests reproduce the cumulative counters,
+actual start spacing, route account/PDA exclusions and address-only refusal:
+`node --import tsx --test test/component-live-evidence.test.ts`. They add no
+network use and do not claim trade-flow or pricing acceptance.
+
+The old counterbook remains byte-for-byte **20 units / 272,634 bytes with
+`RPC_HTTP_429` retained**. The new linked chapter adds4units /104,424 bytes, giving
+**24 cumulative units / 377,058 measured response bytes**, with no pending response
+reservation. Remaining aggregate ceiling: 216 units / 66,731,806 response bytes.
+The unused 66 units of this completed component grant are inactive; unused ceilings
+are not another test authorization. Original PumpApi actual/reserved counters,
+time reservations and unused capture remain unchanged. No PumpApi, Alchemy,
+Helius, wallet or production endpoint was used. Public-RPC API fees were $0;
+existing infrastructure and unverified transfer costs are separate.
+
+Live Clock layout/owner/context/source-time behavior, same-byte SDK parity on
+current accounts, independent slot block timestamps, two-second quote freshness,
+evaluation gaps, actual price changes, threshold recognition, notification
+delivery and the planned reconnect are **all unmeasured by this attempt**.
+Offline tests for those mechanics remain offline evidence. No natural trading
+result, continuous protection, three-pool saving, combined workload capacity,
+profitability or unattended acceptance follows from the four successful reads.
+
+The smallest remaining component gap is a current supported canonical SOL pool
+identity that can be established within the fixed setup budget, followed by
+actual Clock/pricing/notification observations. The captured transaction
+exclusions are now resolved offline; the next setup
+would need a fresh in-scope seed, preferably an identity already discovered by the
+existing free migration path, instead of this 4.5-hour-old seed or two unfiltered
+program-transaction samples. This is a test-selection correction, not a candidate
+strategy screen. No additional selection or live capture ran. Do not add a price screen, alter strategy,
+weaken quote validity, adopt blanket 5-second polling or silently expand selection reads.
+A further live attempt requires a separately reviewed grant. No new allowance,
+provider purchase or owner infrastructure action is requested here.
+
+The two-second reference remains the recommendation. The observer, account and
+inception, financial history, public Render viewer and machine authentication
+were untouched. No production health/freshness check was performed this session.
+PAPER entries/live trading remain disabled; acceptance clocks remain unstarted.

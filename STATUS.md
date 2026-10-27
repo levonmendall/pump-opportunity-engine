@@ -2,7 +2,8 @@
 
 **Observer/account preserved; last verified reporting snapshot522 (03:16UTC)
 reconciled the original account with0fills/positions and entries disabled.**
-This task was offline and makes no new host/dashboard freshness claim. No
+The new isolated public-RPC component stopped after four setup reads and makes
+no new host/dashboard freshness claim. No
 production restart/deployment, account reset or acceptance-clock start.
 
 Latest adaptive evaluation rejects a blanket5s/event-triggered replacement:
@@ -15,8 +16,8 @@ and all production risk/quote rules remain unchanged. Price-only entry economics
 are not assessable from the retained quiet/isolated-sell data. See
 [docs/ADAPTIVE_MONITORING_EVALUATION.md](docs/ADAPTIVE_MONITORING_EVALUATION.md).
 
-No infrastructure/access action or extra budget is requested. A concrete optional
-next live-research component needs a new explicit grant; none ran automatically.
+No infrastructure/access action or extra budget is requested. The exact component proposal was approved and executed once; selection failed
+within its four-read allocation. No quote, socket or reconnect began. No retry ran.
 The existing429/counters and all prior receipts remain intact. PAPER entries and
 **LIVE TRADING remain DISABLED; edge UNPROVEN.**
 
@@ -27,7 +28,7 @@ The existing429/counters and all prior receipts remain intact. PAPER entries and
 | OBSERVING CURRENT DATA | Free PumpPortal migrations and public SOL/USD; no production selected-token trade flow |
 | PAPER-ENTRY ENABLED | No: raw flow/coverage unverified, rule unfrozen, production trading scheduler/management incomplete |
 | NATURAL PAPER TRADES |0; positions0. Hypothetical pricing and disposable tests never count |
-| ACCOUNTING RECONCILED | Authoritative cash-account source freshly reconciled; private DB independently unreadable to administration runner |
+| ACCOUNTING RECONCILED | At the last check, authoritative cash-account source reconciled; private DB independently unreadable to administration runner |
 | DASHBOARD FRESH | Real identity/inception agree; snapshot522 at03:16UTC, underlying facts24.283seconds old at HTTP observation |
 | OPERATIONALLY ACCEPTED | No. Gates A–D incomplete;24/72-hour clocks unstarted |
 
@@ -58,7 +59,24 @@ and matching fresh facts prove reporting progress, not an independent DB audit.
 See active-continuation-production-check.json and the earlier service/status receipts in
 the same directory.
 
-## Adaptive monitoring and data-reduction evaluation — 2026-10-27
+## Approved public-RPC component — 2026-10-27
+
+Single execution06:09:45–06:09:49UTC,3.992seconds under the supervisor. The seed
+had no recent activity; two sampled current program transactions did not establish
+an invoked canonical SOL swap. Four physical reads were spaced1,003/1,004/1,002ms,
+104,424HTTP response-body bytes; no new429/retry, no WebSocket connection, no Clock
+batch or position quote. Result INCONCLUSIVE for pricing/protection, not evidence
+that free sources are unsuitable. See evidence/public-component-20261027/summary.json
+and docs/ADAPTIVE_MONITORING_EVALUATION.md. The one-use grant is completed.
+
+Old book20/272,634bytes/sticky429 and all prior evidence are unchanged. A separate
+linked chapter records cumulative24units/377,058bytes (216units/66,731,806bytes below
+the aggregate ceiling); unused component units do not authorize another attempt.
+API fees$0; infrastructure transfer costs unverified. No production/account,
+inception, dashboard, credential or strategy change; PAPER/live entries disabled.
+No acceptance clock or current production-health claim. No owner action requested.
+
+## Adaptive monitoring and data-reduction evaluation — historical offline state
 
 Offline work only; production account/inception/dashboard were not modified.
 Read docs/ADAPTIVE_MONITORING_EVALUATION.md. The blanket5s+trigger replacement

@@ -1,9 +1,13 @@
 # POE free-data evaluation — offline design decision
 
 **Later focused evaluation:** see [ADAPTIVE_MONITORING_EVALUATION.md](ADAPTIVE_MONITORING_EVALUATION.md).
-Its single bounded public-RPC component proposal supersedes the older proposed
-next-measurement sequence below. Both are proposals, not active grants; counters
-and the completed429 remain unchanged. No duplicated screening layer is deployed.
+The owner approved its exact public-RPC component at4bbb213. It ran once and
+stopped after four paced setup reads; no active supported pool was established,
+so no Clock quote or WebSocket began. The original20-unit/272,634-byte429 record
+is unchanged; the new linked chapter brings cumulative use to24units/377,058bytes.
+The grant is closed. See that report and evidence/public-component-20261027/ for
+the actual result; historical proposals/counters below are not current authority.
+No duplicated screening layer is deployed.
 
 2026-10-27 UTC · review branch `poe-free-data-evaluation-20261027` · no deployment
 
