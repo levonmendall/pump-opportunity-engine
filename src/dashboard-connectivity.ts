@@ -1,4 +1,5 @@
 import type { SnapshotCache } from './reporting.js';
+import { holographicDashboard } from './dashboard-holographic.js';
 
 /** Reporting projections only. Never reads a ledger, provider credential, or pilot workspace. */
 export function connectionReport(cache: SnapshotCache, now = Date.now(), pilot?: {state:string; snapshot:unknown; lastContactAt?:number|null; sourceAgeMs?:number|null; publisherConnected?:boolean}) {
@@ -126,5 +127,5 @@ fetch('/api/connections',{cache:'no-store',credentials:'same-origin',signal:Abor
 
 export function withConnectionDiagnostics(html: string): string {
   if (!html.includes('<main>') || !html.includes('</style>') || !html.includes('</body>')) throw new Error('dashboard template anchors missing');
-  return html.replace('</style>', STYLE + '</style>').replace('<main>', '<main>' + PANEL).replace('</body>', '<script>' + CONNECTION_SCRIPT + '</script></body>');
+  return holographicDashboard(html.replace('</style>', STYLE + '</style>').replace('<main>', '<main>' + PANEL).replace('</body>', '<script>' + CONNECTION_SCRIPT + '</script></body>'));
 }
