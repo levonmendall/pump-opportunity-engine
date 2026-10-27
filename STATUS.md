@@ -1,77 +1,60 @@
 # POE status — 2026-10-27 UTC
 
-Offline continuation now corrects actual-ready dispatch, bounded enrichment
-admission and post-validation information availability. It reconstructs the
-actual3.224s gap and tests real-trace rescheduling, strict starvation, bursts,
-pending actions, reconnect work, processing delays and cancellation settlement.
-The new policy is research-only and has explicit phase/timing tradeoffs; no new
-acceptable protection gap or production capacity is claimed.
+One authorized diagnostic obtained5validated on-chain market swaps and one usable
+60s recorded-information window; bounded independent chain audit5/5matched.
+There were no PAPER orders/fills. Production, original account/inception and
+Render were untouched; no fresh production-health check occurred in this task.
 
-No market-data/RPC request, production change, account reset or entry enablement
-occurred in this continuation. Current counters remain163units/3,587,908accounted
-response bytes and256MiB/230s PumpApi reservations. The concrete proposed new
-stream allocation is in evidence/scheduler-correction-20261027/forward-proposal.json;
-it is not active authorization. See the final shared-scheduling section of
-[the existing evaluation](docs/ADAPTIVE_MONITORING_EVALUATION.md).
+Protection is not accepted:40three-holding checks had2056ms maxgap/2033ms p95,
+21gaps above2s target and no natural stop/TP/max-hold crossing. Recorded observation
+75002ms exceeded the75s bound by2ms; no decision information was admitted after
+cutoff. This remains a disclosed harness deficiency, not an approved tolerance.
 
-The following production facts are the last overnight checks, not a fresh health
-claim from this offline continuation.
-
-Read [the overnight handoff](docs/OVERNIGHT_HANDOFF.md) for the decision and
-[evidence rollup](evidence/overnight-20261027/final-summary.json) for exact usage.
+[Actual decision](evidence/scheduler-forward-20261027/decision.json),
+[bounded audit](evidence/scheduler-forward-20261027/audit.json) and the final
+section of [the evaluation](docs/ADAPTIVE_MONITORING_EVALUATION.md) separate
+mapping/window evidence from timing and integration limitations.
 
 | Status | Actual evidence |
 | --- | --- |
-| BUILT | Installed observer; undeployed trader/ledger/recovery components and isolated coherent pricing/execution adapter |
-| RUNNING | Source reports running in accepted Render snapshot1049 at08:04:36UTC; EC2 host not checked this run |
-| OBSERVING CURRENT DATA | Installed source reports free migrations/public SOL/USD; isolated matched PumpApi captures are closed |
-| PAPER-ENTRY ENABLED | No. Installed strategy remains UNIMPLEMENTED_FLOW_BLOCKED; full-flow coverage, frozen contract, scheduler and production wiring incomplete |
-| NATURAL PAPER TRADES |0; positions0. Disposable ledgers and hypothetical quotes never count |
-| ACCOUNTING RECONCILED | Source reports true at08:03:56.948UTC; no independent private-database audit this run |
-| DASHBOARD FRESH | Snapshot1049 facts were39.682seconds old at08:04:36UTC; original identity/release agree. Later freshness not checked |
-| OPERATIONALLY ACCEPTED | No. Gates A–D incomplete; no24/72-hour clock |
-| EDGE | UNPROVEN; no natural token-trading outcome |
+| BUILT | Installed observer; undeployed trader/accounting/recovery and isolated diagnostic components. Capture source349e67b, approved proposalde102ee |
+| RUNNING | Existing EC2 observer preserved; not directly checked in this task. Diagnostic process/socket ended normally |
+| OBSERVING CURRENT DATA | New captured interval15:19:07.293–15:20:22.295UTC is closed; no continuing research subscription |
+| PAPER-ENTRY ENABLED | No. Installed strategyUNIMPLEMENTED_FLOW_BLOCKED; frozen contract, management wiring, robustness and acceptance incomplete |
+| NATURAL PAPER TRADES | Last production source reported0; this diagnostic created0orders/fills/positions |
+| ACCOUNTING RECONCILED | Last source report true08:03:56.948UTC; no private financial DB audit in this task |
+| DASHBOARD FRESH | Last check08:04:36UTC/snapshot1049, facts39.682s old then. Current freshness not checked; research never published |
+| OPERATIONALLY ACCEPTED | No. No24/72-hour clock started |
+| EDGE | UNPROVEN |
 | LIVE TRADING | DISABLED |
 
-## Installed authority preserved
+## Preserved authority
 
-Instance `i-00044d4ea1471b957`, AWS133857166104/us-west-2; original restricted
-`poe-runtime.service`. Last installed release:
-`bce3d22bb434eb429aafacb788a18f39ec189c1b`.
-Account `poe-3123e352-4581-455b-85db-acd7e825e99e`, inception
-`2026-10-26T22:07:36.212Z`, one $1,000 virtual conversion. Nothing was reseeded.
-No EC2 load test, restart, installation, credential or infrastructure change.
+Instancei-00044d4ea1471b957, AWS133857166104/us-west-2; restrictedpoe-runtime.service.
+Installed releasebce3d22bb434eb429aafacb788a18f39ec189c1b. Original account
+poe-3123e352-4581-455b-85db-acd7e825e99e, inception2026-10-26T22:07:36.212Z,
+one $1,000 virtual conversion. No bootstrap/reseed, service/credential change,
+root installation, wallet operation or infrastructure change.
+Public viewer https://meme-machine-dashboard-staging.onrender.com unchanged;
+authenticated machine publishing unchanged. No synthetic performance was sent.
 
-Original public viewer: https://meme-machine-dashboard-staging.onrender.com .
-Machine ingestion remains authenticated; public viewing is owner-authorized.
-The read-only check returned health200 and the accepted original account with
-zero positions/trades, cash/equity9.961647656SOL, virtual equity$995.865917.
-The USD change equals passive-SOL exposure, not token-selection profit.
-Operating costs/economic P&L remain unavailable. No research data was published.
+## Diagnostic scope and counters
 
-## Research result and limits
+Actual1routed buy_v2,3direct Sells and1routed Sell. All5independent confirmed
+responses match original fingerprints/amounts/transfers;2Sells also passed
+finalized executed-byte rechecks. Exact-quote Buy variants/multiswap were absent.
+All5fall inside the recorded15:19:10–15:20:10availability window; the5/5chain-time
+audit does not establish generic receive-window completeness or market coverage.
+One buyer100% concentration, negative net buying and0positivebins reject the
+existing predictive rule; origin/entry-age eligibility remained unverified.
 
-One-pool current Clock/account/SDK parity and live three-pool union parity passed.
-One changed notification version matched a full refresh; seven subscriptions
-were restored after a planned reconnect. Changed-state delivery after reconnect
-and actual stop/take-profit recognition remain unverified.
+58newunits bring cumulative usage to221/240;19unused is not retry permission.
+Related bytes2,314,558measured +2,097,152olduncertain =4,411,710/67,108,864.
+PumpApi actual271,949,619bytes cumulative; reservations396MiB/320s fully committed,
+no refunds. New run76,013,520bytes/48,819frames. API fees$0; infrastructure/transfer
+costs unverified. Cloud resource results do not establish EC2 capacity.
 
-The combined light workload priced three hypothetical holdings while enriching
-six transactions. Four sells normalized forward; two buys failed the old mapper.
-The independent interior audit found5swaps/5hints but only3forward normalizations.
-The later corrected chronological replay has one raw warmed closed window that
-still fails net-buying/concentration rules. It is not a forward completeness pass.
-Maximum completed evaluation gap3.224seconds; actual-use quote ages15–41ms.
-No natural exit threshold crossing was sampled. Blanket5s monitoring and a new
-price screen remain rejected; preserve the two-second reference for research.
-
-Cumulative research163/240units; measured related bytes1,490,756 plus retained
-uncertain2,097,152 =3,587,908/67,108,864. Old429 remains unchanged; no new429.
-PumpApi actual195,936,099bytes; reservations256MiB/230seconds, byte allowance
-fully committed without refund. All captures and test children are closed.
-API/data fees$0; existing infrastructure/network costs were not established.
-
-Next: review the single corrected forward window/audit proposal and its narrow
-offline scheduler envelope. The demonstrated admission defect is corrected;
-high-jitter/burst capacity and an accepted completion-gap limit remain unproven. No routine owner infrastructure, wallet or
-provider action is required. No deployable autonomous-trader release is claimed.
+The single grant is complete. Keep the scheduler in research: offline cutoff/
+shutdown hardening and known50/100ms-jitter,3-event-burst and pending-contention
+failures must be addressed before production review. No merge/deployment/entries,
+new capture, paid provider, wallet or completed setup action is requested.

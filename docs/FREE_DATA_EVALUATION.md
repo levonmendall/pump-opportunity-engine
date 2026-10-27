@@ -1,6 +1,23 @@
 # POE free-data evaluation — current decision and historical research
 
 
+## Latest bounded forward result — 2026-10-27
+
+The approved single diagnostic obtained5validated market swaps (one routed BuyV2,
+four Sells) and one usable60s recorded-information window; a bounded independent
+chain audit matched5/5. Generic receive-window completeness and exact-quote Buy
+forward variants remain unverified.40three-holding checks had2056ms maximum gap;
+no natural exit crossing. The recorded75.002s observation has a2ms bound deviation.
+No continuous-protection or production acceptance follows. No entries, trades,
+account resets, deployment or production experiment occurred.
+
+The grant is closed:221RPC units cumulatively,396MiB/320s stream reservations
+committed without refunds. API$0for this scope is not free continuous operation
+or free infrastructure. Read the final actual-result section of
+[the existing evaluation](ADAPTIVE_MONITORING_EVALUATION.md) and
+[decision.json](../evidence/scheduler-forward-20261027/decision.json). Next work is
+offline timing/admission hardening, not another automatic capture.
+
 ## Current overnight result — 2026-10-27
 
 **$0 additional API fees are verified for the tested components, not continuous

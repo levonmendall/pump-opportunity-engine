@@ -1,53 +1,64 @@
-# POE continuation checkpoint — offline scheduling correction
+# POE continuation checkpoint — single forward grant completed
 
-Branch poe-free-data-evaluation-20261027; base52855aa. Use the containing final
-commit for this correction. Main/EC2/Render unchanged; no merge/deploy/entryenable.
-Preserve unrelated docs/FUNDING.md, operator/funding/ and empty research locks.
+Review branchpoe-free-data-evaluation-20261027. Approved proposalde102ee;
+actual capture source349e67b. Use containing final commit for results/docs/tests.
+Main/EC2/Render unchanged. Preserve unrelated docs/FUNDING.md, operator/funding/
+and emptylocks. No merge/deploy/productionrestart orPAPER/live entries.
 
-Protected accountpoe-3123e352-4581-455b-85db-acd7e825e99e, inception
-2026-10-26T22:07:36.212Z, installedbce3d22bb434eb429aafacb788a18f39ec189c1b.
-No production check in this continuation; last reporting read1049/08:04:36UTC
-is historical. Original authoritative account/history/credentials untouched.
+Protected EC2i-00044d4ea1471b957, installedbce3d22bb434eb429aafacb788a18f39ec189c1b;
+accountpoe-3123e352-4581-455b-85db-acd7e825e99e, inception2026-10-26T22:07:36.212Z.
+No production check this task; last dashboard1049 at08:04UTC is historical only.
+No research balances/trades/performance published and no financialwriter started.
 
-Completed: exact retained3.224s gap audit =1878+373+898+47+5+23ms. Two enrichment
-jobs and future pacing ownership delayed due pricing; no provider saturation proof.
-Oldstrictguard starvation reproduced. Newresearch-dispatch helper operates over
-sameComponentBudget, peeks hints, waits outsidephysicalgate, admits max1lowerjob
-perprotectioncycle, usesfinite100mswindow with25msreservationheadroom, hardstart
-recheckafterpersist andexplicit5senrichmentcompletion. Adaptivewakeavoidsfixedgrid.
-Up to5earlyrefreshes can create fair service slots; phase changes/extra requests
-are explicit, not protection/timing equivalence. All quotes/sourceage unchanged.
+## Actual completed result
 
-Fixed validation availability: all swaps validate before atomic flow ingestion;
-actual usable timestamp separate from original RPC receipt, wholedeadline5s.
-Fixed diagnostics ordering/failed-recorder physical settlement. Legacy capture
-caller now snapshots actual post-validation time. Buy/Sell execution fields,
-fees/transfers/trader/eventidentities and original fixed-time replay unchanged.
+Directory evidence/scheduler-forward-20261027 is the durable consumed-attempt
+marker. DO NOT delete/rerun it. Summary/capture/audit/supervisor/observations and
+new linkedstreamreservation are immutable. Offline decision.json and independent
+counteranalysis/trade-field-analysis/window-analysis/independent-review document
+limits; original failed experiments/correctedreplay also remain unchanged.
 
-Evidence: evidence/scheduler-correction-20261027/{trace-analysis,forward-proposal,
-mapper-regression,scheduler-evaluation-v4,completion}.json. Prior prototypes/v2/v3
-are retained but superseded by the final evaluation. Actualforward failures and
-original corrected replay unchanged; rescheduling is counterfactual, not newprices.
-Full build/test and exact finalresults are in completion.json and the final
-shared-scheduling section of docs/ADAPTIVE_MONITORING_EVALUATION.md.
+Preflight1history+1verifiedswap, fresh3holdingprewarm2reads, ONEkeyless PumpApi
+connection. Aggregate88.802s. Observation15:19:07.293–15:20:22.295UTC (75002ms):
+2msrecordedbounddeviation, no postcutoff decisioninformation. Datawindow
+15:19:10–15:20:10UTC usable263ms afterend;10repeatrows=ONEwindow.5market swaps:
+1routedbuy_v2,3directSells,1routedSell.5independentconfirmedmatches+2finalizedSell
+rechecks. ExactquoteBuy/multiswapabsent; genericreceivecoverageunproved.
 
-Realcounters unchanged163/240units, measured1490756bytes+retained2097152unknown
-=3587908/67108864. Remaining77units/63520956bytes. Old429 preserved; no newmarket
-network calls or transientstreamreservation. PumpApi actual195936099bytes; all
-256MiB/230s reservations committed, no refunds. All test state disposableCloud;
-noEC2loadrun, accountreset, walletoperation, strategychange orRenderpublication.
+40coherent3holdingchecks/4earlyphases;maxgap2056ms,p952033ms,21gaps>2starget,
+quotesatuse14–39ms,Clockage365–1431ms. Cacheunavailable1323ms/1.764%.
+No15%stop/30%TP/maxholdcross. No enrichmentrefusal/gap/pending;maxvalidateddelay
+3582ms. Bothfeeconventions rejectbuying (negative net,1buyer100%,0positivebins).
+No fullentrydecision orP&L; origin/ageunverified. No protectionacceptance/frozenmaxgap.
 
-One proposedcapture: new140MiB/90s reservation ->cumulative396MiB/320s. This needs
-+140MiB bytes and+20s beyondcurrent300stimeceiling, using70sexistingunreserved.
-3hypoholdings+1boundedactivepool;75sopen/5sdrain/120saggregate;73plannedRPC+4head
-insideexisting77. Independent14unitaudit countsall10candidate transactions;
-streamheadroom2×measuredmean, notverifiedpeak. API$0; infrastructurecostunverified.
-Noactivegrant: do NOTopen oldrunner/proposals. Futureapproved profile mustapply
-140MiBstops/10enrichcap/phasebudgets without changingoldreceipts orcapitals.
+## Authoritative research accounting
 
-Remaining: live correctedflow window+bounded independent audit, actual price/
-response validation and frozen maximumacceptablecompletedgap. Strongjitter,
-three-eventbursts and simultaneouspendingactions canfail thecombinedworkload;
-failedwindows unusuable. Production wiring/backup/hostcapacity/alerts and24/72h
-acceptance stillpending. PAPER/live disabled, edgeUNPROVEN. Nooldinfra/wallet/
-provider setup action is required.
+Original old+component+14overnight books must be followed by newphasebooks:
+evidence/scheduler-forward-20261027/{01-preflight,02-combined,03-audit}/rpc-budget.json.
+New2+48+8=58units =>221/240,19unused.2,314,558measuredrelatedbytes+unchanged
+2,097,152oldunknown=4,411,710;62,697,154bytes remain.0new429/overload,oldrefusals
+untouched; minphysicalgap1002ms,max41/60s and10/10s. Newuncertainty0.
+
+Newstreambooklinksold256MiB/230s plus140MiB/90s =>396MiB/320s. NOrefunds.
+Actualnew76,013,520socketbytes;actualcumulative271,949,619bytes. Fullreservations
+arecommitted. NounusedRPC/request/receiptallowanceauthorizesanothercapture.
+72bytesamples1000–1102msapart;onlysampledintervalpeaks,notexactcontinuouspeaks.
+ChildobservedCPU7.770s+parent6.936s,RSS197.59MB/170.34MB;Cloudonly,notEC2.
+API$0;infrastructure/transfercostunverified. Allevidence<32MiB,newrun<6MiB.
+
+## Source and next decision
+
+Corrected dispatcher remainsbounded-deadline-v1 (actual-ready,1lowerjob/pricecycle,
+finite100mswindow with25mssetupreserve,up to5early/43totalchecks). Sourceprofile
+140/138/136MiB caps10enrichments,75sfromopen; firstessentialqualitystop, no retry.
+Parent/nonrootchildbounded120s,globalCPU20/resourcecaps,3phases3/56/14maxunits,
+no morethan73planned/77absolute. Datavalidationavailabilityandwhole-txatomicity
+remaincorrect; originalRPCreceipttimes/executedamounts/fingerprintsunchanged.
+All259priorhashes/74launchedsourcesmatched349e67b. Build/compile550testspass.
+
+Keep policy RESEARCH ONLY. Next offline work: reserve shutdown headroom and
+separate fixed admission cutoff/monotonic durations/actual closure, then address
+known50/100ms-jitter,3eventburst andsimultaneouspending/reconnectfailures. No
+newlivecapture simplytoobtainfavorablecoverage. Productionwiring/backup/host
+capacity/alerts/frozencontractand24/72hacceptance remainpending. No oldsetup,
+wallet/funding/paid-provider/ownerpermissionstep is currently required.

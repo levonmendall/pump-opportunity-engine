@@ -1,0 +1,983 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_AUDIT_OF_ACTUAL_FORWARD_CAPTURE; NOT_A_NEW_CAPTURE_OR_PERFORMANCE_TEST",
+  "generatedAt": "2026-10-27T15:24:21.476Z",
+  "sources": [
+    {
+      "path": "evidence/scheduler-forward-20261027/capture.json",
+      "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce"
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/audit.json",
+      "sha256": "c3c5cd6dd605e5e6f2b89a8930aa0a1f4470e246342c5b6a59afa50b4c651fd5"
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/observations.ndjson",
+      "sha256": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b"
+    }
+  ],
+  "mapper": {
+    "path": "src/pumpapi-mapping.ts",
+    "sha256": "76aa0ae24e0e66fc7ae04c0ca076137a15d81454cf02a954cae014a1a0bf3e96",
+    "sdkPackage": "@pump-fun/pump-swap-sdk",
+    "sdkVersion": "2.2.0",
+    "packagedIdlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61"
+  },
+  "observedScope": {
+    "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+    "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+    "openedAt": 1793114347293,
+    "endedAt": 1793114422295,
+    "openMs": 75002,
+    "selectedMessages": 5,
+    "successfulTransactions": 5,
+    "swapEvents": 5,
+    "buys": 1,
+    "sells": 4,
+    "directEvents": 3,
+    "nestedCpiEvents": 2,
+    "multiSwapTransactions": 0,
+    "duplicateHints": 0,
+    "duplicateExecutedEvents": 0,
+    "corrections": 0,
+    "qualityGaps": [],
+    "pending": 0,
+    "distinctVerifiedTraders": 5,
+    "distinctVerifiedBuyers": 1,
+    "countsDescribeOnlyThisActivityBiasedPoolAndInterval": true
+  },
+  "keyFinding": "An actual forward buy_v2 CPI and four Sells passed integer executed-transfer, fee, trader-role and identity validation when their confirmed RPC responses became available. Five separately fetched audit responses reproduce all original fingerprints. This does not freeze an amount convention or establish general receive-window completeness.",
+  "totals": {
+    "buy": {
+      "baseUnits": "6838952530",
+      "curveQuoteLamports": "146338375",
+      "userQuoteLamports": "147582253"
+    },
+    "sell": {
+      "baseUnits": "34733842482",
+      "curveQuoteLamports": "742919162",
+      "userQuoteLamports": "736604342"
+    }
+  },
+  "trades": [
+    {
+      "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+      "identity": {
+        "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 4,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 6,
+        "eventIndex": 0
+      },
+      "identityKey": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+      "instruction": {
+        "name": "sell",
+        "discriminatorHex": "33e685a4017f83ad",
+        "event": "SellEvent",
+        "exactPackagedEventLayout": true,
+        "classification": "DIRECT_PUMPSWAP",
+        "parentStackHeight": 1,
+        "outerProgram": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "transactionVersion": 0
+      },
+      "scope": {
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "poolRoleMatches": true,
+        "baseMintRoleMatches": true
+      },
+      "amounts": {
+        "baseUnits": "6689043481",
+        "baseDecimals": 6,
+        "curveQuoteLamports": "143130089",
+        "userQuoteLamports": "141913481",
+        "fees": {
+          "lp_fee": "286261",
+          "protocol_fee": "71566",
+          "coin_creator_fee": "858781",
+          "cashback": "0",
+          "buyback_fee": "35783",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "totalLpProtocolCreatorLamports": "1216608",
+        "userCurveDifferenceLamports": "1216608",
+        "feeIdentityHolds": true,
+        "buybackFeeIsProtocolSubsetNotAdditionalCharge": true,
+        "quoteTransferFeeObserved": "0"
+      },
+      "executedTransfers": {
+        "baseTransferExact": true,
+        "userQuoteSumLamports": "141913481",
+        "userQuoteTransferExact": true,
+        "checkedTransfers": [
+          {
+            "innerInstructionIndex": 1,
+            "stackHeight": 2,
+            "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "source": "3nvKPzpBzHj2MzzHVjrJaCFQK1PK93B6xG2XJnmHZUVi",
+            "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+            "destination": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+            "authority": "4MPfjjYmPmdALuskh6r34A9uoM21sooKSnFzm5sZPBAw",
+            "amount": "6689043481",
+            "decimals": 6
+          },
+          {
+            "innerInstructionIndex": 2,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "8CRUKNshLsNoy3pF61ergZvgYZAMyTobZLX4TMgd1v8h",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "141913481",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 3,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "94qWNrtmfn42h3ZjUZwWvK1MEo9uVmmrBPd2hpNjYDjb",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "35783",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 4,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "JC643MqXPebvHzhF1u96MFmHJ8giCmZSHcAPynEvJz5X",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "858781",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 5,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "HjQjngTDqoHE6aaGhUqfz9aQ7WZcBRjy5xB8PScLSr8i",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "35783",
+            "decimals": 9
+          }
+        ]
+      },
+      "attribution": {
+        "verifiedSwapUser": "4MPfjjYmPmdALuskh6r34A9uoM21sooKSnFzm5sZPBAw",
+        "eventUser": "4MPfjjYmPmdALuskh6r34A9uoM21sooKSnFzm5sZPBAw",
+        "userRole": "4MPfjjYmPmdALuskh6r34A9uoM21sooKSnFzm5sZPBAw",
+        "feePayer": "4MPfjjYmPmdALuskh6r34A9uoM21sooKSnFzm5sZPBAw",
+        "providerTxSigner": "4MPfjjYmPmdALuskh6r34A9uoM21sooKSnFzm5sZPBAw",
+        "providerBreakdownTrader": "4MPfjjYmPmdALuskh6r34A9uoM21sooKSnFzm5sZPBAw",
+        "allEqualInThisTransaction": true,
+        "notProofFeePayerAlwaysTrader": true,
+        "notProofIndependentPerson": true
+      },
+      "providerFields": {
+        "rawBase": {
+          "literal": "6689.043481",
+          "integerUnits": "6689043481",
+          "decimals": 6,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "rawQuote": {
+          "literal": "0.143130089",
+          "integerUnits": "143130089",
+          "decimals": 9,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "quoteMatchesCurve": true,
+        "quoteMatchesUser": false,
+        "breakdownMatchesActionAndTrader": true,
+        "providerSlot": 462118831,
+        "verifiedSlot": 462118831,
+        "slotMatches": true,
+        "providerTimestampClaim": 1793114375509,
+        "providerCommitmentFieldPresent": false,
+        "providerCommitment": "UNKNOWN_FROM_PAYLOAD; confirmed only by subsequent RPC",
+        "noInstructionOrEventIndexInPayload": true
+      },
+      "availability": {
+        "chainBlockTimeSeconds": 1793114375,
+        "providerReceivedAt": 1793114375566,
+        "confirmedRpcAvailableAt": 1793114377362,
+        "fullyValidatedAvailableAt": 1793114377368,
+        "confirmedAfterFeedMs": 1796,
+        "fullyValidatedAfterFeedMs": 1802,
+        "normalizedCurveReceivedAt": 1793114377368,
+        "normalizedUserReceivedAt": 1793114377368,
+        "independentConfirmedAvailableAt": 1793114428155,
+        "backdated": false,
+        "allInsideApplicationTarget": true,
+        "inNominalChainTarget": true
+      },
+      "independentVerification": {
+        "differentRead": true,
+        "originalResponseReused": false,
+        "requestCommitment": "confirmed",
+        "requestedAt": 1793114427158,
+        "availableAt": 1793114428155,
+        "sameIdentity": true,
+        "sameIntegerAmountsFeesTraderAndTransferChecks": true,
+        "originalFingerprint": "c7266f87bfae66f4c8d286921cbaca79239c6a8a158ec6242b8218eb8be06d8f",
+        "recomputedOriginalFingerprint": "c7266f87bfae66f4c8d286921cbaca79239c6a8a158ec6242b8218eb8be06d8f",
+        "independentFingerprint": "c7266f87bfae66f4c8d286921cbaca79239c6a8a158ec6242b8218eb8be06d8f",
+        "unchanged": true
+      },
+      "finality": {
+        "laterHistoryConfirmationStatus": "finalized",
+        "laterHistorySlot": 462118831,
+        "finalizedExecutedBytesRecheck": null,
+        "scope": "No finalized getTransaction recheck for this transaction; finalized history status is separate evidence"
+      }
+    },
+    {
+      "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+      "identity": {
+        "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 2,
+        "swapInnerInstructionIndex": 27,
+        "eventInnerInstructionIndex": 31,
+        "eventIndex": 0
+      },
+      "identityKey": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:27:31:0",
+      "instruction": {
+        "name": "buy_v2",
+        "discriminatorHex": "b817ee6167c5d33d",
+        "event": "BuyEvent",
+        "exactPackagedEventLayout": true,
+        "classification": "NESTED_PUMPSWAP_CPI",
+        "parentStackHeight": 2,
+        "outerProgram": "DF1ow4tspfHX9JwWJsAb9epbkA8hmpSEAtxXy1V27QBH",
+        "transactionVersion": 0
+      },
+      "scope": {
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "poolRoleMatches": true,
+        "baseMintRoleMatches": true
+      },
+      "amounts": {
+        "baseUnits": "6838952530",
+        "baseDecimals": 6,
+        "curveQuoteLamports": "146338375",
+        "userQuoteLamports": "147582253",
+        "fees": {
+          "lp_fee": "292677",
+          "protocol_fee": "73170",
+          "coin_creator_fee": "878031",
+          "cashback": "0",
+          "buyback_fee": "36585",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "totalLpProtocolCreatorLamports": "1243878",
+        "userCurveDifferenceLamports": "1243878",
+        "feeIdentityHolds": true,
+        "buybackFeeIsProtocolSubsetNotAdditionalCharge": true,
+        "quoteTransferFeeObserved": "0"
+      },
+      "executedTransfers": {
+        "baseTransferExact": true,
+        "userQuoteSumLamports": "147582253",
+        "userQuoteTransferExact": true,
+        "checkedTransfers": [
+          {
+            "innerInstructionIndex": 28,
+            "stackHeight": 3,
+            "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "source": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+            "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+            "destination": "2JvGVSGFiG4iRYMSMVdgYiFUeFRkV5j1cPxyMfi7ExuH",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "6838952530",
+            "decimals": 6
+          },
+          {
+            "innerInstructionIndex": 29,
+            "stackHeight": 3,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "8GDXTEsNQ8FeosSL1FEghfNdCetpxLThZ5tmTLZCQbK",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "authority": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+            "amount": "147545668",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 30,
+            "stackHeight": 3,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "8GDXTEsNQ8FeosSL1FEghfNdCetpxLThZ5tmTLZCQbK",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "AktftA98kSWAxn6kVSoqBXBELUArjKu2H9WmKB48ULFY",
+            "authority": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+            "amount": "36585",
+            "decimals": 9
+          }
+        ]
+      },
+      "attribution": {
+        "verifiedSwapUser": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+        "eventUser": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+        "userRole": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+        "feePayer": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+        "providerTxSigner": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+        "providerBreakdownTrader": "DonKfU1BVhxVSq2EH3n2JATmF7FbR1UT24JDjXfKkdj1",
+        "allEqualInThisTransaction": true,
+        "notProofFeePayerAlwaysTrader": true,
+        "notProofIndependentPerson": true
+      },
+      "providerFields": {
+        "rawBase": {
+          "literal": "6838.95253",
+          "integerUnits": "6838952530",
+          "decimals": 6,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "rawQuote": {
+          "literal": "0.146338375",
+          "integerUnits": "146338375",
+          "decimals": 9,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "quoteMatchesCurve": true,
+        "quoteMatchesUser": false,
+        "breakdownMatchesActionAndTrader": true,
+        "providerSlot": 462118898,
+        "verifiedSlot": 462118898,
+        "slotMatches": true,
+        "providerTimestampClaim": 1793114389934,
+        "providerCommitmentFieldPresent": false,
+        "providerCommitment": "UNKNOWN_FROM_PAYLOAD; confirmed only by subsequent RPC",
+        "noInstructionOrEventIndexInPayload": true
+      },
+      "availability": {
+        "chainBlockTimeSeconds": 1793114389,
+        "providerReceivedAt": 1793114389995,
+        "confirmedRpcAvailableAt": 1793114391075,
+        "fullyValidatedAvailableAt": 1793114391079,
+        "confirmedAfterFeedMs": 1080,
+        "fullyValidatedAfterFeedMs": 1084,
+        "normalizedCurveReceivedAt": 1793114391079,
+        "normalizedUserReceivedAt": 1793114391079,
+        "independentConfirmedAvailableAt": 1793114427153,
+        "backdated": false,
+        "allInsideApplicationTarget": true,
+        "inNominalChainTarget": true
+      },
+      "independentVerification": {
+        "differentRead": true,
+        "originalResponseReused": false,
+        "requestCommitment": "confirmed",
+        "requestedAt": 1793114426121,
+        "availableAt": 1793114427153,
+        "sameIdentity": true,
+        "sameIntegerAmountsFeesTraderAndTransferChecks": true,
+        "originalFingerprint": "842a2ff65b6230a37051c1f864746e6c22b3ef420a1cc759d4ac63b3e3eeac32",
+        "recomputedOriginalFingerprint": "842a2ff65b6230a37051c1f864746e6c22b3ef420a1cc759d4ac63b3e3eeac32",
+        "independentFingerprint": "842a2ff65b6230a37051c1f864746e6c22b3ef420a1cc759d4ac63b3e3eeac32",
+        "unchanged": true
+      },
+      "finality": {
+        "laterHistoryConfirmationStatus": "finalized",
+        "laterHistorySlot": 462118898,
+        "finalizedExecutedBytesRecheck": null,
+        "scope": "No finalized getTransaction recheck for this transaction; finalized history status is separate evidence"
+      }
+    },
+    {
+      "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+      "identity": {
+        "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 3,
+        "eventIndex": 0
+      },
+      "identityKey": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+      "instruction": {
+        "name": "sell_v2",
+        "discriminatorHex": "5df6823ce7e940b2",
+        "event": "SellEvent",
+        "exactPackagedEventLayout": true,
+        "classification": "DIRECT_PUMPSWAP",
+        "parentStackHeight": 1,
+        "outerProgram": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "transactionVersion": 0
+      },
+      "scope": {
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "poolRoleMatches": true,
+        "baseMintRoleMatches": true
+      },
+      "amounts": {
+        "baseUnits": "11953887192",
+        "baseDecimals": 6,
+        "curveQuoteLamports": "255755043",
+        "userQuoteLamports": "253581123",
+        "fees": {
+          "lp_fee": "511511",
+          "protocol_fee": "127878",
+          "coin_creator_fee": "1534531",
+          "cashback": "0",
+          "buyback_fee": "63939",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "totalLpProtocolCreatorLamports": "2173920",
+        "userCurveDifferenceLamports": "2173920",
+        "feeIdentityHolds": true,
+        "buybackFeeIsProtocolSubsetNotAdditionalCharge": true,
+        "quoteTransferFeeObserved": "0"
+      },
+      "executedTransfers": {
+        "baseTransferExact": true,
+        "userQuoteSumLamports": "253581123",
+        "userQuoteTransferExact": true,
+        "checkedTransfers": [
+          {
+            "innerInstructionIndex": 0,
+            "stackHeight": 2,
+            "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "source": "7AKWpWgrqa4weWk5EGwPqhg7ztb5azwGdeGFUx54vKRa",
+            "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+            "destination": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+            "authority": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+            "amount": "11953887192",
+            "decimals": 6
+          },
+          {
+            "innerInstructionIndex": 1,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "2TMKZwUANH8Lo4QnCBUY4DVHy8jCaBsEWg6FwMN87tnP",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "253581123",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 2,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "GAFuhgcd328SkkBYHpfadzmef9hTGAFRCi9QoCnsZQug",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "63939",
+            "decimals": 9
+          }
+        ]
+      },
+      "attribution": {
+        "verifiedSwapUser": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "eventUser": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "userRole": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "feePayer": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "providerTxSigner": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "providerBreakdownTrader": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "allEqualInThisTransaction": true,
+        "notProofFeePayerAlwaysTrader": true,
+        "notProofIndependentPerson": true
+      },
+      "providerFields": {
+        "rawBase": {
+          "literal": "11953.887192",
+          "integerUnits": "11953887192",
+          "decimals": 6,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "rawQuote": {
+          "literal": "0.255755043",
+          "integerUnits": "255755043",
+          "decimals": 9,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "quoteMatchesCurve": true,
+        "quoteMatchesUser": false,
+        "breakdownMatchesActionAndTrader": true,
+        "providerSlot": 462118910,
+        "verifiedSlot": 462118910,
+        "slotMatches": true,
+        "providerTimestampClaim": 1793114392382,
+        "providerCommitmentFieldPresent": false,
+        "providerCommitment": "UNKNOWN_FROM_PAYLOAD; confirmed only by subsequent RPC",
+        "noInstructionOrEventIndexInPayload": true
+      },
+      "availability": {
+        "chainBlockTimeSeconds": 1793114392,
+        "providerReceivedAt": 1793114392439,
+        "confirmedRpcAvailableAt": 1793114394083,
+        "fullyValidatedAvailableAt": 1793114394085,
+        "confirmedAfterFeedMs": 1644,
+        "fullyValidatedAfterFeedMs": 1646,
+        "normalizedCurveReceivedAt": 1793114394085,
+        "normalizedUserReceivedAt": 1793114394085,
+        "independentConfirmedAvailableAt": 1793114426119,
+        "backdated": false,
+        "allInsideApplicationTarget": true,
+        "inNominalChainTarget": true
+      },
+      "independentVerification": {
+        "differentRead": true,
+        "originalResponseReused": false,
+        "requestCommitment": "confirmed",
+        "requestedAt": 1793114425125,
+        "availableAt": 1793114426119,
+        "sameIdentity": true,
+        "sameIntegerAmountsFeesTraderAndTransferChecks": true,
+        "originalFingerprint": "3e6ddc5b64b4b7ba8c2f9090ae03ca54da7f40445e8befb1191a973df34e5256",
+        "recomputedOriginalFingerprint": "3e6ddc5b64b4b7ba8c2f9090ae03ca54da7f40445e8befb1191a973df34e5256",
+        "independentFingerprint": "3e6ddc5b64b4b7ba8c2f9090ae03ca54da7f40445e8befb1191a973df34e5256",
+        "unchanged": true
+      },
+      "finality": {
+        "laterHistoryConfirmationStatus": "finalized",
+        "laterHistorySlot": 462118910,
+        "finalizedExecutedBytesRecheck": null,
+        "scope": "No finalized getTransaction recheck for this transaction; finalized history status is separate evidence"
+      }
+    },
+    {
+      "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+      "identity": {
+        "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 3,
+        "eventIndex": 0
+      },
+      "identityKey": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+      "instruction": {
+        "name": "sell_v2",
+        "discriminatorHex": "5df6823ce7e940b2",
+        "event": "SellEvent",
+        "exactPackagedEventLayout": true,
+        "classification": "DIRECT_PUMPSWAP",
+        "parentStackHeight": 1,
+        "outerProgram": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "transactionVersion": 0
+      },
+      "scope": {
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "poolRoleMatches": true,
+        "baseMintRoleMatches": true
+      },
+      "amounts": {
+        "baseUnits": "120329007",
+        "baseDecimals": 6,
+        "curveQuoteLamports": "2573705",
+        "userQuoteLamports": "2551827",
+        "fees": {
+          "lp_fee": "5148",
+          "protocol_fee": "1287",
+          "coin_creator_fee": "15443",
+          "cashback": "0",
+          "buyback_fee": "643",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "totalLpProtocolCreatorLamports": "21878",
+        "userCurveDifferenceLamports": "21878",
+        "feeIdentityHolds": true,
+        "buybackFeeIsProtocolSubsetNotAdditionalCharge": true,
+        "quoteTransferFeeObserved": "0"
+      },
+      "executedTransfers": {
+        "baseTransferExact": true,
+        "userQuoteSumLamports": "2551827",
+        "userQuoteTransferExact": true,
+        "checkedTransfers": [
+          {
+            "innerInstructionIndex": 0,
+            "stackHeight": 2,
+            "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "source": "F78Q21r7NKxvok5dTUnN5bW64mwKnYF6xU5LK5TreKQ4",
+            "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+            "destination": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+            "authority": "DLhusdUQhSMuRSbNUjLsbufysaW87vHmMNrhSeNTAXRN",
+            "amount": "120329007",
+            "decimals": 6
+          },
+          {
+            "innerInstructionIndex": 1,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "7mhTjjt6zzXc5J9ssiXkNxbyPn4WrnjVGBJKv7zDQUTu",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "2551827",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 2,
+            "stackHeight": 2,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "HjQjngTDqoHE6aaGhUqfz9aQ7WZcBRjy5xB8PScLSr8i",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "643",
+            "decimals": 9
+          }
+        ]
+      },
+      "attribution": {
+        "verifiedSwapUser": "DLhusdUQhSMuRSbNUjLsbufysaW87vHmMNrhSeNTAXRN",
+        "eventUser": "DLhusdUQhSMuRSbNUjLsbufysaW87vHmMNrhSeNTAXRN",
+        "userRole": "DLhusdUQhSMuRSbNUjLsbufysaW87vHmMNrhSeNTAXRN",
+        "feePayer": "DLhusdUQhSMuRSbNUjLsbufysaW87vHmMNrhSeNTAXRN",
+        "providerTxSigner": "DLhusdUQhSMuRSbNUjLsbufysaW87vHmMNrhSeNTAXRN",
+        "providerBreakdownTrader": "DLhusdUQhSMuRSbNUjLsbufysaW87vHmMNrhSeNTAXRN",
+        "allEqualInThisTransaction": true,
+        "notProofFeePayerAlwaysTrader": true,
+        "notProofIndependentPerson": true
+      },
+      "providerFields": {
+        "rawBase": {
+          "literal": "120.329007",
+          "integerUnits": "120329007",
+          "decimals": 6,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "rawQuote": {
+          "literal": "0.002573705",
+          "integerUnits": "2573705",
+          "decimals": 9,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "quoteMatchesCurve": true,
+        "quoteMatchesUser": false,
+        "breakdownMatchesActionAndTrader": true,
+        "providerSlot": 462118910,
+        "verifiedSlot": 462118910,
+        "slotMatches": true,
+        "providerTimestampClaim": 1793114392448,
+        "providerCommitmentFieldPresent": false,
+        "providerCommitment": "UNKNOWN_FROM_PAYLOAD; confirmed only by subsequent RPC",
+        "noInstructionOrEventIndexInPayload": true
+      },
+      "availability": {
+        "chainBlockTimeSeconds": 1793114392,
+        "providerReceivedAt": 1793114392508,
+        "confirmedRpcAvailableAt": 1793114396087,
+        "fullyValidatedAvailableAt": 1793114396090,
+        "confirmedAfterFeedMs": 3579,
+        "fullyValidatedAfterFeedMs": 3582,
+        "normalizedCurveReceivedAt": 1793114396090,
+        "normalizedUserReceivedAt": 1793114396090,
+        "independentConfirmedAvailableAt": 1793114425122,
+        "backdated": false,
+        "allInsideApplicationTarget": true,
+        "inNominalChainTarget": true
+      },
+      "independentVerification": {
+        "differentRead": true,
+        "originalResponseReused": false,
+        "requestCommitment": "confirmed",
+        "requestedAt": 1793114424124,
+        "availableAt": 1793114425122,
+        "sameIdentity": true,
+        "sameIntegerAmountsFeesTraderAndTransferChecks": true,
+        "originalFingerprint": "898cb75d1cc0ebc1e449799230b4acfd9a03c63dd94699b0222f9b6a950dab8b",
+        "recomputedOriginalFingerprint": "898cb75d1cc0ebc1e449799230b4acfd9a03c63dd94699b0222f9b6a950dab8b",
+        "independentFingerprint": "898cb75d1cc0ebc1e449799230b4acfd9a03c63dd94699b0222f9b6a950dab8b",
+        "unchanged": true
+      },
+      "finality": {
+        "laterHistoryConfirmationStatus": "finalized",
+        "laterHistorySlot": 462118910,
+        "finalizedExecutedBytesRecheck": {
+          "requestCommitment": "finalized",
+          "requestedAt": 1793114429182,
+          "availableAt": 1793114430172,
+          "sameExecutedFingerprint": true,
+          "fingerprint": "898cb75d1cc0ebc1e449799230b4acfd9a03c63dd94699b0222f9b6a950dab8b"
+        },
+        "scope": "This transaction executed evidence independently rechecked at finalized commitment"
+      }
+    },
+    {
+      "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+      "identity": {
+        "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": 7,
+        "eventInnerInstructionIndex": 14,
+        "eventIndex": 0
+      },
+      "identityKey": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:7:14:0",
+      "instruction": {
+        "name": "sell",
+        "discriminatorHex": "33e685a4017f83ad",
+        "event": "SellEvent",
+        "exactPackagedEventLayout": true,
+        "classification": "NESTED_PUMPSWAP_CPI",
+        "parentStackHeight": 2,
+        "outerProgram": "T1TANpTeScyeqVzzgNViGDNrkQ6qHz9KrSBS4aNXvGT",
+        "transactionVersion": 0
+      },
+      "scope": {
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "poolRoleMatches": true,
+        "baseMintRoleMatches": true
+      },
+      "amounts": {
+        "baseUnits": "15970582802",
+        "baseDecimals": 6,
+        "curveQuoteLamports": "341460325",
+        "userQuoteLamports": "338557911",
+        "fees": {
+          "lp_fee": "682921",
+          "protocol_fee": "170731",
+          "coin_creator_fee": "2048762",
+          "cashback": "0",
+          "buyback_fee": "85365",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "totalLpProtocolCreatorLamports": "2902414",
+        "userCurveDifferenceLamports": "2902414",
+        "feeIdentityHolds": true,
+        "buybackFeeIsProtocolSubsetNotAdditionalCharge": true,
+        "quoteTransferFeeObserved": "0"
+      },
+      "executedTransfers": {
+        "baseTransferExact": true,
+        "userQuoteSumLamports": "338557911",
+        "userQuoteTransferExact": true,
+        "checkedTransfers": [
+          {
+            "innerInstructionIndex": 9,
+            "stackHeight": 3,
+            "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "source": "14dB2haasHPSUatvN9osTGSrRjoDdW77gtokEMuQQ3WT",
+            "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+            "destination": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+            "authority": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+            "amount": "15970582802",
+            "decimals": 6
+          },
+          {
+            "innerInstructionIndex": 10,
+            "stackHeight": 3,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "97K6es57XZPonGKqxkNAA8bdtihttai4FbHcmmCZzUtr",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "338557911",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 11,
+            "stackHeight": 3,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "Bvtgim23rfocUzxVX9j9QFxTbBnH8JZxnaGLCEkXvjKS",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "85366",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 12,
+            "stackHeight": 3,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "JC643MqXPebvHzhF1u96MFmHJ8giCmZSHcAPynEvJz5X",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "2048762",
+            "decimals": 9
+          },
+          {
+            "innerInstructionIndex": 13,
+            "stackHeight": 3,
+            "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "source": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+            "mint": "So11111111111111111111111111111111111111112",
+            "destination": "6rVkF4HSgy1jrnC3HogfRgPHrq4CtLg5f11URpsC4i9D",
+            "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "amount": "85365",
+            "decimals": 9
+          }
+        ]
+      },
+      "attribution": {
+        "verifiedSwapUser": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+        "eventUser": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+        "userRole": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+        "feePayer": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+        "providerTxSigner": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+        "providerBreakdownTrader": "7nqPw2VHavCqPwUJ8wC4cBrLWCGcVwRxw948SK1XG8Xj",
+        "allEqualInThisTransaction": true,
+        "notProofFeePayerAlwaysTrader": true,
+        "notProofIndependentPerson": true
+      },
+      "providerFields": {
+        "rawBase": {
+          "literal": "15970.582802",
+          "integerUnits": "15970582802",
+          "decimals": 6,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "rawQuote": {
+          "literal": "0.341460325",
+          "integerUnits": "341460325",
+          "decimals": 9,
+          "method": "Original retained JSON decimal token parsed directly to integer; no IEEE754 scaling"
+        },
+        "quoteMatchesCurve": true,
+        "quoteMatchesUser": false,
+        "breakdownMatchesActionAndTrader": true,
+        "providerSlot": 462118934,
+        "verifiedSlot": 462118934,
+        "slotMatches": true,
+        "providerTimestampClaim": 1793114397317,
+        "providerCommitmentFieldPresent": false,
+        "providerCommitment": "UNKNOWN_FROM_PAYLOAD; confirmed only by subsequent RPC",
+        "noInstructionOrEventIndexInPayload": true
+      },
+      "availability": {
+        "chainBlockTimeSeconds": 1793114397,
+        "providerReceivedAt": 1793114397371,
+        "confirmedRpcAvailableAt": 1793114399118,
+        "fullyValidatedAvailableAt": 1793114399121,
+        "confirmedAfterFeedMs": 1747,
+        "fullyValidatedAfterFeedMs": 1750,
+        "normalizedCurveReceivedAt": 1793114399121,
+        "normalizedUserReceivedAt": 1793114399121,
+        "independentConfirmedAvailableAt": 1793114424120,
+        "backdated": false,
+        "allInsideApplicationTarget": true,
+        "inNominalChainTarget": true
+      },
+      "independentVerification": {
+        "differentRead": true,
+        "originalResponseReused": false,
+        "requestCommitment": "confirmed",
+        "requestedAt": 1793114423109,
+        "availableAt": 1793114424120,
+        "sameIdentity": true,
+        "sameIntegerAmountsFeesTraderAndTransferChecks": true,
+        "originalFingerprint": "fd4d7f63d523edb98758fdb2a32575d49a7db940aff1ea794e5bf264687e9e18",
+        "recomputedOriginalFingerprint": "fd4d7f63d523edb98758fdb2a32575d49a7db940aff1ea794e5bf264687e9e18",
+        "independentFingerprint": "fd4d7f63d523edb98758fdb2a32575d49a7db940aff1ea794e5bf264687e9e18",
+        "unchanged": true
+      },
+      "finality": {
+        "laterHistoryConfirmationStatus": "finalized",
+        "laterHistorySlot": 462118934,
+        "finalizedExecutedBytesRecheck": {
+          "requestCommitment": "finalized",
+          "requestedAt": 1793114428162,
+          "availableAt": 1793114429175,
+          "sameExecutedFingerprint": true,
+          "fingerprint": "fd4d7f63d523edb98758fdb2a32575d49a7db940aff1ea794e5bf264687e9e18"
+        },
+        "scope": "This transaction executed evidence independently rechecked at finalized commitment"
+      }
+    }
+  ],
+  "closedWindow": {
+    "applicationAvailabilityTarget": {
+      "startAt": 1793114350000,
+      "endAt": 1793114410000,
+      "interval": "[startAt,endAt)",
+      "timeBasis": "fully validated application availability; never chain or feed time"
+    },
+    "nominalChainTarget": {
+      "startAt": 1793114350000,
+      "endAt": 1793114410000,
+      "interval": "[startAt,endAt)",
+      "boundaryExclusionMs": 0,
+      "timeBasis": "on-chain blockTime seconds; separate from the application window"
+    },
+    "rawFullyEnrichedClosedTargets": 1,
+    "allFiveValidatedTimesInsideTarget": true,
+    "independentAudit": {
+      "historyPages": 1,
+      "historyRangeCovered": true,
+      "historyBoundary": "OLDER_THAN_EXACT_TARGET_START_OBSERVED",
+      "independentlyReadTransactions": 5,
+      "relevantCompiledSwapInstructions": 5,
+      "verifiedEvents": 5,
+      "matchedOriginalEvents": 5,
+      "unretrievedSignatures": [],
+      "unsupported": [],
+      "originalResponsesReused": false,
+      "denominator": "All five successful relevant pool transactions in the separately defined exact60s on-chain blockTime interval, plus all five explicitly recorded selected signatures; each has one swap event",
+      "boundedDenominatorMatch": "5/5 underlying swap events",
+      "receiveWindowCompleteness": "NOT_PROVEN: chain time and fully validated local availability are different intervals. Boundary-delayed or never-delivered events outside the audited chain-time interval remain outside this denominator."
+    },
+    "entryEligibility": "PUMP_ORIGIN_AND_ENTRY_AGE_UNVERIFIED",
+    "primaryFlowAmountConvention": "NOT_FROZEN; curve and user views remain separately labeled",
+    "qualificationEnabled": false,
+    "completeProductionWindowClaim": false
+  },
+  "requiredRpcDependency": {
+    "adapterValidationOnly": [
+      "This offline analysis recomputes existing bytes and uses no requests.",
+      "The five independent audit reads and two finality reads are verification overhead, not inputs backdated into original features."
+    ],
+    "perSelectedTransactionUnderCurrentAdapter": [
+      "Confirmed transaction success, genuine program/pool/mint/user roles, instruction/event identity and exact raw integer amounts.",
+      "Executed base transfer and all relevant user quote transfers, fee fields and transaction commitment.",
+      "The feed has no proven complete instruction/event identities or universally verified exact integer/full-debit semantics; sampled agreement cannot complete unobserved payloads."
+    ],
+    "providerObservations": "All five raw tokenAmount decimals match six-decimal base units and quoteAmount matches curve amount. For this buy_v2, quoteAmount is net curve input, whereas prior retained exact-quote-in Buy captures matched full debit. Do not generalize a universal PumpApi quote convention.",
+    "operatingDependencyStillOneGetTransactionPerSelectedSignature": true
+  },
+  "unobservedCases": [
+    "Direct/top-level Buy.",
+    "buy and buy_exact_quote_in or buy_exact_quote_in_v2 forward variants in this session.",
+    "Multiple supported swaps in one transaction.",
+    "A distinct fee payer versus verified trader in this session.",
+    "Nonzero cashback, holder rewards or quote-transfer fee.",
+    "Actual duplicate feed delivery, corrected/reversed execution or unsuccessful transaction.",
+    "Finalized executed-transaction recheck for the Buy or the other two unrechecked Sells.",
+    "General full-market coverage, receive-window completeness beyond the bounded denominator, natural PAPER trading or economic profitability."
+  ],
+  "finalitySummary": {
+    "laterFinalizedHistoryStatuses": 5,
+    "finalizedTransactionByteRechecks": 2,
+    "recheckedSides": [
+      "sell",
+      "sell"
+    ],
+    "unchangedFingerprints": 2,
+    "buyConfirmedIndependentRequery": true,
+    "buyFinalizedTransactionByteRecheck": false,
+    "noFinalizedDataBackdated": true
+  },
+  "networkRequests": 0,
+  "sourceEvidenceChanged": false,
+  "productionChanged": false,
+  "financialAccountChanged": false,
+  "paperEntriesEnabled": false,
+  "liveTradingEnabled": false,
+  "acceptanceClockStarted": false
+}

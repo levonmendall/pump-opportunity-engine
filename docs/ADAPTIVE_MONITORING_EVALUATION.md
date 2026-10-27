@@ -710,3 +710,106 @@ node --import tsx scripts/replay-overnight-correction.ts --verify-existing
 
 The trace and scheduler test modules recompute the retained trace, shared deadline
 policy, stress failures and phase counterexamples without contacting providers.
+
+
+## Single approved forward diagnostic — actual result, 2026-10-27
+
+Owner approved the pinned de102ee proposal once. Capture code349e67b applied the
+approved profile; the earlier proposal and all historical counters/refusals were
+not rewritten. The run is closed, with no retry. Raw receipts and independent
+reviews are in `evidence/scheduler-forward-20261027/`; `decision.json` is the final
+classification, not the supervisor's generic completion label.
+
+**Mixed result:** useful forward mapping and one scoped candidate window were
+obtained. Scheduler timing was measured on a light workload; continuous protection
+and production integration remain unaccepted. A recorded2ms observation-limit
+deviation prevents an exact-duration compliance claim.
+
+| Question | Actual result | Classification |
+| --- | --- | --- |
+| Current preflight | One page covered151.887s; three pool-address transactions in the preceding75s; one independently decoded recent swap; all3holdings freshly validated | Passed bounded preparation; origin/entry age still unverified |
+| Mapping |5selected hints,5confirmed transactions,5validated swaps:1routed buy_v2,3direct Sells and1routed Sell | Supported for observed shapes; no exact-quote Buy or multi-swap appeared |
+| Application window |15:19:10–15:20:10UTC, fully observed; first usable closed-bin view15:20:10.263; ten repeat views describe ONEwindow | One raw usable recorded-information window |
+| Independent audit |1history page,5fresh confirmed transaction lookups,2finalized Sell rechecks:5compiled swaps/5events/5matching fingerprints | Verified exact bounded chain interval and recorded hints; generic receive-window completeness remains unproved |
+| Enrichment | No refusal, gap, correction, duplicate or pending work; maximum full-validation availability delay3582ms | Met5s deadline for these5transactions |
+| Holding checks |40coherent3holding evaluations,4early phase shifts,40usable selected quotes;123same-byte SDK checks including prewarm | Current sizing/state math reproduced, not live fills |
+| Timing | Maximum completed gap2056ms,p952033ms;21gaps over2s target; actual-use quote ages14–39ms; Clock age365–1431ms | Measured, not accepted continuous protection |
+| Cache |1323ms/1.764% pipeline cache unavailable or stale; initial availability included | Not continuous fresh valuation; no zero-unavailability claim |
+| Observation bound | Recorded open-to-end75002ms versus approved75000ms; no selected/normalized/feature/price information admitted after cutoff |2ms stated-bound deviation; raw timestamps retained |
+| Exit response | Selected liquidation changed modestly; other2holdings unchanged; no15%stop,30%TP or max-hold crossing | Natural threshold response remains unverified |
+
+The5actual market swaps are not PAPER fills. No financial account, order, position,
+profit, entry authorization or Render performance point was created. Entry-age/
+Pump-migration origin were unverified. Both recorded flow conventions already
+fail the existing buying predicates: net−0.596580787SOL(curve) /−0.589022089SOL(user),
+one buyer at100% concentration,0positive10s buckets and−8bps price structure.
+No missing entry quote or financial/risk input was invented to call evaluatePrimary.
+
+The observed Buy was `buy_v2`:6,838,952,530base units,146,338,375lamports curve
+input and147,582,253lamports user debit. LP292,677+protocol73,170+creator878,031
+explain1,243,878lamports difference; transfer proofs, actual trader roles and full
+instruction/event identity agree with the independent confirmed response. The
+Buy was not an executed-byte finalized recheck; those checks covered2Sells only.
+Prior exact-quote Buy fixes retain their separate actual-byte/offline evidence;
+this run did not forward-exercise those variants. Provider UI amount semantics
+are not universal, so per-selected-transaction enrichment remains necessary.
+
+The audit keeps domains separate: blockTime establishes its exact chain interval;
+original validated application timestamps establish feature availability. Neither
+later audit/finality data nor post-close work was backdated. A5/5 scoped audit
+cannot prove every potential receive-time event outside its chain denominator or
+all PumpSwap variants. No broad discovery coverage or profitable opportunity claim.
+
+The source's `NO_PROTECTION_GAP_OBSERVED` label means no declared scheduledAt+2s
+job deadline or quote-validity failure; it does not override2056ms completed gaps,
+1323ms unavailable cache, an unfrozen maximum acceptable gap, or absent natural
+exit crossings. The early policy changed observation phase; comparison is not
+same-time market-state equivalence. Known50/100ms-jitter, three-event-burst and
+pending-action contention failures remain inadequate workloads for this design.
+This successful low-activity sample does not repair those failures.
+
+Recorded observation was15:19:07.293–15:20:22.295UTC. The2ms late stop is preserved,
+not rounded into a strict75s pass. No post-cutoff selected/normalization/feature/
+price-use information appeared; the last price use was171ms before cutoff. Clock
+quantization versus termination scheduling was not separately isolated. Future
+harness work must reserve shutdown headroom and record admission cutoff,
+monotonic duration and actual shutdown separately without backdating them.
+
+### Actual usage, costs and integrity
+
+Aggregate88.802s (parent88.848s),58new request units:2preparation +48combined +8audit.
+Methods:42getMultipleAccounts,13getTransaction,2getSignaturesForAddress,1WS upgrade.
+All physical starts shared one gate: minimum1002ms apart, phase boundaries1003ms,
+maximum41/rolling minute and10/rolling10s. No new429 or overload. HTTP body timings
+p5054ms,p9594ms,max253ms; these combine proxy/network/provider time.
+
+Real cumulative RPC use is now221/240units, with19unused. New related receipt
+823,802bytes gives2,314,558measured +unchanged2,097,152uncertain =4,411,710accounted
+bytes;62,697,154remain under64MiB. New uncertainty0. All3new phase books must be
+appended after the prior14overnight books in later accounting; do not restart from
+the old163-unit proposal baseline.
+
+PumpApi received76,013,520socket bytes/48,819frames (75,818,027application bytes).
+Actual cumulative receipt271,949,619bytes. The new140MiB/90s reservation is retained
+in full: cumulative396MiB/320s, with no refund.72counter samples were1000–1102ms
+apart. Largest sampled near1s rate:1,932,957bytes/1.082s=1.786MB/s; near10s rate:
+12,600,757bytes/10.336s=1.219MB/s. These are actual counter differences over the
+stated intervals, not exact continuous1.000s/10.000s peaks. Broad traffic was
+filtered locally, not archived; filtering does not reduce incoming bytes.
+
+Sampled child CPU7.770s plus parent6.936s=14.706s; child peak RSS197.59MB, parent
+170.34MB, field loop lag41.07ms. These are Cloud observations, not EC2 capacity.
+API/data fees$0; existing infrastructure/transfer/storage allocations remain
+unverified. All259prior evidence hashes and74launched source hashes matched;
+independent analyses preserve original raw receipts. Financial records and
+production were untouched. Offline build/compile and550regressions pass.
+
+### Concrete next decision
+
+**Keep this scheduler in research; do not deploy or enable entries.** The next
+work is offline cutoff/shutdown hardening and the already demonstrated jitter/
+burst/pending-workload admission failures. This is not a request for another
+capture until a favorable event appears. The single grant is complete; unused
+RPC bytes/units and unused physical receipt below reserved ceilings authorize no
+retry. All reservations remain committed. No owner infrastructure, wallet,
+credential, paid-provider or completed setup action is needed.

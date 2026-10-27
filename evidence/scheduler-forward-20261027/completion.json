@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "scope": "FINAL_OFFLINE_HANDOFF_OF_ONE_CLOSED_DIAGNOSTIC",
+  "generatedAt": "2026-10-27T15:41:40.726691+00:00",
+  "approvedProposalCommit": "de102ee038b9b3cfa46fbd5d5560884d715429bf",
+  "actualCapturedSourceCommit": "349e67b",
+  "finalResultsCommit": "containing git commit",
+  "grantClosed": true,
+  "additionalProviderCallsAfterRun": 0,
+  "additionalCaptures": 0,
+  "originalDataUnchanged": true,
+  "priorEvidenceHashesVerified": 259,
+  "launchedSourceHashesVerified": 74,
+  "validation": {
+    "build": "PASS",
+    "compile": "PASS",
+    "regressions": 550,
+    "failed": 0,
+    "independentReviews": [
+      "independent-review.json",
+      "trade-field-analysis.json",
+      "window-analysis.json",
+      "counteranalysis.json"
+    ]
+  },
+  "evidence": {
+    "newDirectoryBytesBeforeReceipt": 2440643,
+    "allEvidenceBytesBeforeReceipt": 14719290,
+    "newLimitBytes": 6291456,
+    "cumulativeLimitBytes": 33554432,
+    "artifacts": [
+      {
+        "path": "evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+        "bytes": 2934,
+        "sha256": "d5e605be37b1bbc0f6d1497b5675a550aea3e97085b2be0b202319acb1728edb"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/01-preflight/summary.json",
+        "bytes": 5272,
+        "sha256": "4452e68c0c6e3aed83605946fcb09067697f37f7f5c9bfc7c5ecaa02165cf62e"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+        "bytes": 5839,
+        "sha256": "7b1eb9d4b5528664aa916c4d65b3d99b7e1b2ac3650ed95c3dd37a472d1cdef2"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/02-combined/summary.json",
+        "bytes": 11380,
+        "sha256": "90ae3738589c6aad445460b9eaf130aef29b71bc49fb251f0237ea96bd0ea04a"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+        "bytes": 4002,
+        "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/03-audit/summary.json",
+        "bytes": 7202,
+        "sha256": "fdb79a87df267ca47f3cbf4307f4c2acd5d007a332ce2a3fa0cc8d78ca8c0eb8"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/audit.json",
+        "bytes": 67562,
+        "sha256": "c3c5cd6dd605e5e6f2b89a8930aa0a1f4470e246342c5b6a59afa50b4c651fd5"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/authorization.json",
+        "bytes": 62521,
+        "sha256": "c958263aaac3a49b2bbd5c3a03791c4a4a7e2e67fe7727306faa51bac5b7e62d"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/baseline.json",
+        "bytes": 9907,
+        "sha256": "4c064249e8dad686c834ae1bfd7450108ec334a8e0e48b92a5c1b8624cfd739b"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/capture.json",
+        "bytes": 316117,
+        "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/counteranalysis.json",
+        "bytes": 18425,
+        "sha256": "0afe2f64a95293c97f79718dc254204c6ee26724c3e7b250e41baab933a703a6"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/decision.json",
+        "bytes": 5492,
+        "sha256": "1287c700b688a3cb17e12deae3046b067ed3cb0b4cba89094a9829c299e5bd31"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/independent-review.json",
+        "bytes": 5025,
+        "sha256": "ad1d54de072f466ff19ca87ab3b21c325b5ac17af5c4123a0b984ab253c19c99"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/observations.ndjson",
+        "bytes": 1635776,
+        "sha256": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/pumpapi-budget.json",
+        "bytes": 641,
+        "sha256": "8c82938fb754d7fadc7439f6e9825bdcfa7e48fc4d29b7898bf1f6719d5a3878"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/summary.json",
+        "bytes": 104932,
+        "sha256": "59d374166cc0a01b4a0e4eab8e656309a1e5e36c3f6d5c874dc9129650bbbfc8"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/supervisor.json",
+        "bytes": 112999,
+        "sha256": "67a2e999ec4a70523d06f6bc23ac5b60e6837bd5acf6e6bf481569e3b5a04a24"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/trade-field-analysis.json",
+        "bytes": 42980,
+        "sha256": "8c79f4cead5724cb71ee89bce793a77a0f0cec64b3e2548630e53d6fe51d2182"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/window-analysis.json",
+        "bytes": 21637,
+        "sha256": "02ed880b1553d3d67469868f2ef9d7f13ff496f5df8b62aa56625e7987c7ce2f"
+      }
+    ]
+  },
+  "decision": "See decision.json: scoped mapping/window evidence obtained; continuous protection unaccepted; recorded2ms observation overrun; no production readiness.",
+  "nextAction": "Keep research-only and fix cutoff/shutdown plus known deadline/contention failures offline. No further live capture authorized.",
+  "productionChanged": false,
+  "accountOrInceptionChanged": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

@@ -1,5 +1,27 @@
 # POE operating runbook
 
+## Latest single forward diagnostic — completed, no retry
+
+Owner's de102ee grant was executed once with capture code349e67b. Read the final
+actual-result section of ADAPTIVE_MONITORING_EVALUATION.md and
+`evidence/scheduler-forward-20261027/decision.json`. The exclusive output directory
+is a durable consumed-attempt marker. Do not delete it or run the CLI again.
+
+Latest accounting chain: the original old/component and14overnight books, then
+`01-preflight`, `02-combined`, `03-audit` rpc-budget.json files under that directory.
+221units/4,411,710accounted bytes include the old2MiB uncertainty. New linked
+pumpapi-budget.json preserves old256MiB/230s plus140MiB/90s:396MiB/320s. Never
+ignore these3new phases or refund the reservation because actual receipt was lower.
+No remaining unused allowance is an active capture grant.
+
+The trial produced5validated market swaps and one scoped closed window, not a
+PAPER trade.40holding checks had max2056ms gap; no natural exit crossing. The
+recorded75002ms observation exceeds75s by2ms; this is not exact-duration compliance.
+Next offline work must separate fixed admission cutoff from actual shutdown and
+address known high-jitter/burst/pending failures. Real held-position management
+must continue during feed failure; the diagnostic's whole-process stop is not a
+production recovery policy. No production service or account was changed.
+
 ## Latest offline scheduler correction
 
 Read the final shared-scheduling section of ADAPTIVE_MONITORING_EVALUATION.md and

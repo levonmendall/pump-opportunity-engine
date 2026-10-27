@@ -1,0 +1,3234 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T15:20:30.234Z",
+  "startedAt": 1793114341387,
+  "deadlineAt": 1793114461387,
+  "supervisor": {
+    "wallMs": 88847.593234,
+    "peakRssBytes": 197591040,
+    "peakCpuMs": 7770,
+    "peakParentCpuMs": 6935.931,
+    "peakParentRssBytes": 170336256,
+    "peakParentLagMs": 3.9826389999943785,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "stopReason": null,
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "resourceErrors": [],
+    "activeEvidenceAccounting": {
+      "atomicTempHeadroomBytes": 393216,
+      "vanishedAtomicFiles": 0
+    }
+  },
+  "usage": {
+    "newUnits": 58,
+    "plannedUnits": 73,
+    "headroomUnitsRemaining": 19,
+    "cumulativeUnits": 221,
+    "observedBytes": 823802,
+    "uncertainBytes": 0,
+    "accountedBytes": 823802,
+    "cumulativeAccountedBytes": 4411710,
+    "phases": [
+      {
+        "phase": "01-preflight",
+        "units": 2,
+        "observedBytes": 22118,
+        "uncertainBytes": 0,
+        "haltedReason": null
+      },
+      {
+        "phase": "02-combined",
+        "units": 48,
+        "observedBytes": 659362,
+        "uncertainBytes": 0,
+        "haltedReason": null
+      },
+      {
+        "phase": "03-audit",
+        "units": 8,
+        "observedBytes": 142322,
+        "uncertainBytes": 0,
+        "haltedReason": null
+      }
+    ],
+    "firstProviderFailure": null
+  },
+  "outcome": "DIAGNOSTIC_BOUNDED_AUDIT_COMPLETED_REVIEW_REQUIRED",
+  "summary": {
+    "outcome": "DIAGNOSTIC_BOUNDED_AUDIT_COMPLETED_REVIEW_REQUIRED",
+    "reason": null,
+    "startedAt": 1793114341387,
+    "completedAt": 1793114430189,
+    "elapsedMs": 88802,
+    "streamAttempted": true,
+    "streamReserved": true,
+    "preflight": {
+      "verifiedSignature": "3JnjeNnsZaHVJyA8FsgtK71qHEi15CdioVomfywbQBzaktTM2PDbTNxGiE64QS3vUBe8Vi4hwV3xsw2cebwaNVqY",
+      "history": {
+        "historyAvailableAt": 1793114342887,
+        "oldestAt": 1793114191000,
+        "spanMs": 151887,
+        "poolAddressTransactionsLast75s": 3,
+        "expectedEnrichmentUpperBound": 3,
+        "maximumAllowedEnrichments": 10,
+        "projectionOnly": true,
+        "swapsNotInferredFromAddressCounts": true
+      },
+      "entryEligibility": "PUMP_ORIGIN_AND_ENTRY_AGE_UNVERIFIED; no entry permitted"
+    },
+    "capture": {
+      "openedAt": 1793114347293,
+      "endedAt": 1793114422295,
+      "openMs": 75002,
+      "stopReason": "COMPONENT_FIELD_DURATION_LIMIT",
+      "firstQualityFailure": null,
+      "normalizedEvents": 5,
+      "normalizedBuys": 1,
+      "normalizedSells": 4,
+      "pending": 0,
+      "qualityGaps": [],
+      "queueAgeMs": {
+        "samples": 5,
+        "p50": 1685,
+        "p95": 3534,
+        "maximum": 3534
+      },
+      "enrichmentAvailableAfterHintMs": {
+        "samples": 5,
+        "p50": 1752,
+        "p95": 3582,
+        "maximum": 3582
+      },
+      "socketBytes": 76013520,
+      "applicationBytes": 75818027,
+      "frames": 48819,
+      "protection": {
+        "everyMs": 2000,
+        "attempts": 40,
+        "unavailable": 0,
+        "unavailableQuoteFraction": 0,
+        "pricingCacheUnavailableFraction": 0.01763952961254367,
+        "missedSchedules": 0,
+        "maxCompletedEvaluationGapMs": 2056,
+        "p95CompletedEvaluationGapMs": 2033,
+        "maxUsableEvaluationGapMs": 2056,
+        "maximumScheduleDelayMs": 349,
+        "gaps": [],
+        "serviceQuality": "NO_PROTECTION_GAP_OBSERVED",
+        "outcomes": [
+          {
+            "scheduledAt": 1793114347293,
+            "requestedAt": 1793114347642,
+            "availableAt": 1793114347751,
+            "deadlineAt": 1793114349293,
+            "startDelayMs": 349,
+            "requests": 1,
+            "quoteAgeAtUseMs": 27,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114349293,
+            "requestedAt": 1793114349293,
+            "availableAt": 1793114349378,
+            "deadlineAt": 1793114351293,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 28,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114351293,
+            "requestedAt": 1793114351295,
+            "availableAt": 1793114351411,
+            "deadlineAt": 1793114353293,
+            "startDelayMs": 2,
+            "requests": 1,
+            "quoteAgeAtUseMs": 28,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114353293,
+            "requestedAt": 1793114353293,
+            "availableAt": 1793114353415,
+            "deadlineAt": 1793114355293,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114355293,
+            "requestedAt": 1793114355294,
+            "availableAt": 1793114355395,
+            "deadlineAt": 1793114357293,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 28,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114357293,
+            "requestedAt": 1793114357293,
+            "availableAt": 1793114357410,
+            "deadlineAt": 1793114359293,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 22,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114359293,
+            "requestedAt": 1793114359295,
+            "availableAt": 1793114359373,
+            "deadlineAt": 1793114361293,
+            "startDelayMs": 2,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114361293,
+            "requestedAt": 1793114361294,
+            "availableAt": 1793114361367,
+            "deadlineAt": 1793114363293,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114363293,
+            "requestedAt": 1793114363293,
+            "availableAt": 1793114363396,
+            "deadlineAt": 1793114365293,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114365293,
+            "requestedAt": 1793114365294,
+            "availableAt": 1793114365380,
+            "deadlineAt": 1793114367293,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 22,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114367293,
+            "requestedAt": 1793114367294,
+            "availableAt": 1793114367398,
+            "deadlineAt": 1793114369293,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 16,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114369293,
+            "requestedAt": 1793114369295,
+            "availableAt": 1793114369381,
+            "deadlineAt": 1793114371293,
+            "startDelayMs": 2,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114371293,
+            "requestedAt": 1793114371293,
+            "availableAt": 1793114371431,
+            "deadlineAt": 1793114373293,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 39,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114373293,
+            "requestedAt": 1793114373294,
+            "availableAt": 1793114373366,
+            "deadlineAt": 1793114375293,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 21,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114375293,
+            "requestedAt": 1793114375294,
+            "availableAt": 1793114375370,
+            "deadlineAt": 1793114377293,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 17,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114377293,
+            "requestedAt": 1793114376299,
+            "availableAt": 1793114376370,
+            "deadlineAt": 1793114379293,
+            "startDelayMs": -994,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114378303,
+            "requestedAt": 1793114378307,
+            "availableAt": 1793114378393,
+            "deadlineAt": 1793114380303,
+            "startDelayMs": 4,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114380303,
+            "requestedAt": 1793114380304,
+            "availableAt": 1793114380413,
+            "deadlineAt": 1793114382303,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 23,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114382303,
+            "requestedAt": 1793114382304,
+            "availableAt": 1793114382378,
+            "deadlineAt": 1793114384303,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 25,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114384303,
+            "requestedAt": 1793114384304,
+            "availableAt": 1793114384390,
+            "deadlineAt": 1793114386303,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 26,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114386303,
+            "requestedAt": 1793114386303,
+            "availableAt": 1793114386393,
+            "deadlineAt": 1793114388303,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 26,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114388303,
+            "requestedAt": 1793114388303,
+            "availableAt": 1793114388395,
+            "deadlineAt": 1793114390303,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 21,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114390303,
+            "requestedAt": 1793114390012,
+            "availableAt": 1793114390114,
+            "deadlineAt": 1793114392303,
+            "startDelayMs": -291,
+            "requests": 1,
+            "quoteAgeAtUseMs": 31,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114392016,
+            "requestedAt": 1793114392023,
+            "availableAt": 1793114392095,
+            "deadlineAt": 1793114394016,
+            "startDelayMs": 7,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114394016,
+            "requestedAt": 1793114393030,
+            "availableAt": 1793114393092,
+            "deadlineAt": 1793114396016,
+            "startDelayMs": -986,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114395033,
+            "requestedAt": 1793114395038,
+            "availableAt": 1793114395116,
+            "deadlineAt": 1793114397033,
+            "startDelayMs": 5,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114397033,
+            "requestedAt": 1793114397045,
+            "availableAt": 1793114397133,
+            "deadlineAt": 1793114399033,
+            "startDelayMs": 12,
+            "requests": 1,
+            "quoteAgeAtUseMs": 16,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114399033,
+            "requestedAt": 1793114398050,
+            "availableAt": 1793114398119,
+            "deadlineAt": 1793114401033,
+            "startDelayMs": -983,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114400054,
+            "requestedAt": 1793114400059,
+            "availableAt": 1793114400137,
+            "deadlineAt": 1793114402054,
+            "startDelayMs": 5,
+            "requests": 1,
+            "quoteAgeAtUseMs": 21,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114402054,
+            "requestedAt": 1793114402056,
+            "availableAt": 1793114402193,
+            "deadlineAt": 1793114404054,
+            "startDelayMs": 2,
+            "requests": 1,
+            "quoteAgeAtUseMs": 31,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114404054,
+            "requestedAt": 1793114404054,
+            "availableAt": 1793114404146,
+            "deadlineAt": 1793114406054,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 25,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114406054,
+            "requestedAt": 1793114406054,
+            "availableAt": 1793114406136,
+            "deadlineAt": 1793114408054,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114408054,
+            "requestedAt": 1793114408055,
+            "availableAt": 1793114408143,
+            "deadlineAt": 1793114410054,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114410054,
+            "requestedAt": 1793114410056,
+            "availableAt": 1793114410126,
+            "deadlineAt": 1793114412054,
+            "startDelayMs": 2,
+            "requests": 1,
+            "quoteAgeAtUseMs": 16,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114412054,
+            "requestedAt": 1793114412054,
+            "availableAt": 1793114412139,
+            "deadlineAt": 1793114414054,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 21,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114414054,
+            "requestedAt": 1793114414055,
+            "availableAt": 1793114414149,
+            "deadlineAt": 1793114416054,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 23,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114416054,
+            "requestedAt": 1793114416055,
+            "availableAt": 1793114416123,
+            "deadlineAt": 1793114418054,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114418054,
+            "requestedAt": 1793114418055,
+            "availableAt": 1793114418129,
+            "deadlineAt": 1793114420054,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 17,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114420054,
+            "requestedAt": 1793114420055,
+            "availableAt": 1793114420139,
+            "deadlineAt": 1793114422054,
+            "startDelayMs": 1,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793114422054,
+            "requestedAt": 1793114422054,
+            "availableAt": 1793114422122,
+            "deadlineAt": 1793114424054,
+            "startDelayMs": 0,
+            "requests": 1,
+            "quoteAgeAtUseMs": 14,
+            "usable": true,
+            "late": false,
+            "reason": null
+          }
+        ]
+      },
+      "sharedScheduler": {
+        "policy": "bounded-deadline-v1",
+        "schedulerWaits": 715,
+        "schedulerRefusals": 0,
+        "earlyEvaluations": 4,
+        "earlyEvaluationCap": 5,
+        "totalProtectionCap": 43,
+        "phaseChangesAreEquivalent": false,
+        "acceptedMaximumCompletedEvaluationGapMs": null,
+        "timingContract": {
+          "targetPollingMs": 2000,
+          "quoteAgeAtUseMs": 2000,
+          "sourceStateAgeMs": 30000,
+          "enrichmentDelayMs": 1000,
+          "enrichmentCompletionDeadlineMs": 5000,
+          "postProcessingReserveMs": 200,
+          "dispatchQuantumMs": 100
+        },
+        "completedGapsOverTarget": 21,
+        "maximumTargetStartMissMs": 349
+      }
+    },
+    "targetWindow": {
+      "startAt": 1793114350000,
+      "endAt": 1793114410000
+    },
+    "rawFullyEnrichedClosedTargetRows": [
+      {
+        "at": 1793114410263,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114410263,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114410263,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114411265,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114411265,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114411265,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114412362,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114412362,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114412362,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114413363,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114413363,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114413363,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114414462,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114414462,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114414462,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114415464,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114415464,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114415464,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114416561,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114416561,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114416561,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114417561,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114417561,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114417561,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114418663,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114418663,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114418663,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      },
+      {
+        "at": 1793114419763,
+        "curve": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114419763,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "146338375",
+          "sellLamports": "742919162",
+          "netBuyLamports": "-596580787",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "143130089",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "341460325",
+            "tokenUnits": "15970582802"
+          }
+        },
+        "user": {
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "asOf": 1793114419763,
+          "windowStartAt": 1793114350000,
+          "windowEndAt": 1793114410000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "147582253",
+          "sellLamports": "736604342",
+          "netBuyLamports": "-589022089",
+          "tradeCount": 5,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 1,
+          "largestBuyerBps": 10000,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": -8,
+          "firstPrice": {
+            "quoteLamports": "141913481",
+            "tokenUnits": "6689043481"
+          },
+          "lastPrice": {
+            "quoteLamports": "338557911",
+            "tokenUnits": "15970582802"
+          }
+        }
+      }
+    ],
+    "independentAudit": {
+      "classification": "BOUNDED_INDEPENDENT_CHAIN_AND_CAPTURED_HINT_AUDIT",
+      "complete": true,
+      "completeScope": "Exact nominal chain interval plus every explicitly recorded selected signature; not proof of receive-window completeness",
+      "applicationAvailabilityTarget": {
+        "startAt": 1793114350000,
+        "endAt": 1793114410000,
+        "interval": "[startAt,endAt)",
+        "timeBasis": "fully validated application availability; never chain or feed time"
+      },
+      "chainAuditTarget": {
+        "startAt": 1793114350000,
+        "endAt": 1793114410000,
+        "interval": "[startAt,endAt)",
+        "boundaryExclusionMs": 0,
+        "timeBasis": "on-chain blockTime seconds; separate from the application window"
+      },
+      "limits": {
+        "historyPages": 2,
+        "signaturesPerPage": 50,
+        "independentTransactions": 10,
+        "finalityRechecks": 2,
+        "requestUnits": 14,
+        "elapsedMs": 20000
+      },
+      "startedAt": 1793114422378,
+      "history": [
+        {
+          "blockTime": 1793114397,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+          "slot": 462118934,
+          "transactionIndex": 147
+        },
+        {
+          "blockTime": 1793114392,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": "[18] dipscooper-copy-v2",
+          "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+          "slot": 462118910,
+          "transactionIndex": 353
+        },
+        {
+          "blockTime": 1793114392,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+          "slot": 462118910,
+          "transactionIndex": 250
+        },
+        {
+          "blockTime": 1793114389,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+          "slot": 462118898,
+          "transactionIndex": 168
+        },
+        {
+          "blockTime": 1793114375,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+          "slot": 462118831,
+          "transactionIndex": 19
+        },
+        {
+          "blockTime": 1793114344,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3M6GNeCMzdYcQZ9tYeRGayx2ZFfv9Lz49qCcqEZF3fxR6XDuEBxnLYiAfsWGifPGqVsFjaji3qaJKcWze5PMuTF",
+          "slot": 462118686,
+          "transactionIndex": 64
+        },
+        {
+          "blockTime": 1793114322,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": "[18] dipscooper-copy-v2",
+          "signature": "3JnjeNnsZaHVJyA8FsgtK71qHEi15CdioVomfywbQBzaktTM2PDbTNxGiE64QS3vUBe8Vi4hwV3xsw2cebwaNVqY",
+          "slot": 462118582,
+          "transactionIndex": 37
+        },
+        {
+          "blockTime": 1793114322,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "8rdyqkY57KoD5h4nQ7LdU4vkHKdmYkYaoDAx3KajWVnFJysPdrcHEN9y3iGWuGqzUKD1Hfo62VF477EU3cNDLBC",
+          "slot": 462118581,
+          "transactionIndex": 103
+        },
+        {
+          "blockTime": 1793114292,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4Xz2uXUUNoa2UR56JNstsiPTYQzNzettcFbHMCurm42FJbM3bLM9BGRqVe2XX8RoTqWu5QByDGnfrWr5onSbDf4h",
+          "slot": 462118439,
+          "transactionIndex": 180
+        },
+        {
+          "blockTime": 1793114252,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": "[18] dipscooper-copy-v2",
+          "signature": "2Vn5XKGPHX9H12XCm4HVVj6nc5AFXs7g6Yg8vpnEJhmsrzXiAqnsudEFY4HFLoZaWb1gRwwEFqaFZZNvEVgjq4jS",
+          "slot": 462118250,
+          "transactionIndex": 43
+        },
+        {
+          "blockTime": 1793114252,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2Q6fUzMrVdeGcJDvCnARVA7CNVqLyg97fpyvKYmTSECRykcUZUwdS1cgjmqyEMq2Qja7u2RH1SbhmNPaq3erLgpz",
+          "slot": 462118249,
+          "transactionIndex": 230
+        },
+        {
+          "blockTime": 1793114252,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4bMNX1DbSHQC6YmPpWkYh1nbiHbqA8P7wDPRgifFCcbLh1oFNZN2mvaaPTJxr1zWkLdH8diNuRpV3zyz4DKL7euh",
+          "slot": 462118248,
+          "transactionIndex": 100
+        },
+        {
+          "blockTime": 1793114236,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "Pus6VvEWuB417BFPywBAA7puSGMBzk5H3Fd78cszRBZ2wFg9GUqcshB41Z3qwLn8sMRtE1on4CnaSkaJ9tMpsmE",
+          "slot": 462118175,
+          "transactionIndex": 294
+        },
+        {
+          "blockTime": 1793114196,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3BdGGA9kWgq84d32WNHCqauzVzzaW1wVXRH64jvTDMyEna7y16sGheDCwVcqrGVULD1uDaKVmPZt1fatetAocTF3",
+          "slot": 462117987,
+          "transactionIndex": 445
+        },
+        {
+          "blockTime": 1793114196,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "BRgBDYojcZCzWdZDMxmpJXPxGCq1if7DDessShzf6a8bbq3jzL3pPHUGG3y8fcfbNgVCJrXFfwFnG6TP931jTjL",
+          "slot": 462117987,
+          "transactionIndex": 197
+        },
+        {
+          "blockTime": 1793114196,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4XM7q1XTxPS6rGqQ7CvukKKGCG3gdf5QUqE8ARihCNXjDQ7sw91SJYYDt3DphCaaKZ5xhu3ofWDzruY34h8EZN2k",
+          "slot": 462117986,
+          "transactionIndex": 516
+        },
+        {
+          "blockTime": 1793114196,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "27Hp5gbkYwoCRXjPLprc7pEJGmr9EVWj7oQsMnNidfLrdn2uV8LnnuPcEJ2Pidnh28wowTkYshRKMefbivmS1Q5F",
+          "slot": 462117986,
+          "transactionIndex": 305
+        },
+        {
+          "blockTime": 1793114196,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "63h8dPp9DRv8NBeiQfdW7WKUikjCi5Yu6JBrW6Enk6fHp8x9JuXpisdJnBdmYzF23SJgaz7LBmk4MKeqQjD9c5gq",
+          "slot": 462117985,
+          "transactionIndex": 428
+        },
+        {
+          "blockTime": 1793114196,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "49CcGR9BKbKCc7FGc9cZG2gxWrXz8azqCAvK9Uy4MxGiJCPdpbGHWCzndNiBhJqSw1yH7PwqjsXqQxT9iChWpTXj",
+          "slot": 462117985,
+          "transactionIndex": 90
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5gB8yovWFT9ztBuWDp4P3GcTx3FSSk29kRFn5cCzFsaKMcP9qWRgYMFACs4GqmY2Wf2YFJEAWyPiQAJLTjvw8Sns",
+          "slot": 462117983,
+          "transactionIndex": 428
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "4f6JdQzkY92WzxrcL7bB5A3byS2AjaTwYwDpZahizarS7F77S5f4naE53rB2VsgEzDhXF85kkvRbHbyFTY2qSqt",
+          "slot": 462117983,
+          "transactionIndex": 141
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3NYctUg81MSQngVCQVShL42761yaSLbboYyYbmFZMTGpxdYu5X73mZTukrYNx9Tfjf2swPgFfbpzm6BoFf6FUDjQ",
+          "slot": 462117982,
+          "transactionIndex": 244
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4y9hnkVXQAi6R1Xtk4syQzroSkJVixnLHEMomZyPaU4HjdoUwNTvDye5w5nymVQe7tUgbVTGAi4xfErRfhmuvT2Z",
+          "slot": 462117982,
+          "transactionIndex": 47
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "5qbxrsx8CeCVd2RsauqtjpVBa2qn5vMij3bUdEMf7TxBdLqU8Z7UXKqpGNKSC3UjZ5WX5B8SH3U6wwCN2KAtqfFt",
+          "slot": 462117981,
+          "transactionIndex": 179
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "4c7Dab575oGS76maCsV53mp8mjjvg7GrrFjC786NSDoGYPhSFMFSdd1pA42RP8UnuQEXGkFBc1tjVqsNLYHJZqTL",
+          "slot": 462117980,
+          "transactionIndex": 331
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "4aniNXAEayzbUXpuexUeT393p5MWKAtNLq4EbbBeJWjCMi9xt267PEShSq8midQsLLAa84Lcz1C2TDs28DxSkV9e",
+          "slot": 462117980,
+          "transactionIndex": 158
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5ipiLhgt13sXfcucPTTfrGbvtX9PHE1ahG9B72AV3ZUNJ9UHfR14zDL2HspEcSEAbm85z69SdLBngLSAzvc5faMF",
+          "slot": 462117979,
+          "transactionIndex": 356
+        },
+        {
+          "blockTime": 1793114195,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "3FpL2n9s4XZBUMXL4Zekgva9BHe7W3tQFHKJA1T7xjvkSvQedUtHHT3A9AqrpHQtkMrakcBHAVfAiwMsbB4qqCMJ",
+          "slot": 462117979,
+          "transactionIndex": 61
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2ohXX3ypfCrd25hpb1ohpzvJjZWmLt4EJYYr8Qdnftza9425f2CS3a2fhggwVNzybygLatYLxw2u2ExRrLrtXQcS",
+          "slot": 462117978,
+          "transactionIndex": 213
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "43Ky4PmHeacsy8Moi7cDCoT9CTKHhdwkBNnHeyUeNNKtES2M7Gqspos6BZgtNrycYALQfeLkCguhGGQYQiFtX88K",
+          "slot": 462117978,
+          "transactionIndex": 32
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4CBRxReLJT7eDoadLVPARM3WpuNa34WBt95TinvtEuDfknmrzJwd9yjpXimsfdTyaNR7dtwRjFXx9xKDd32jSZXL",
+          "slot": 462117977,
+          "transactionIndex": 199
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4eTG1ySm5ag2UJ9RfnWsCawYttt3VAtLafkKhhbV68PNTq29P1rh4v6ME2SBYqq67Tnc6wTHmSW4FQvLu265882W",
+          "slot": 462117976,
+          "transactionIndex": 475
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "3qP61rQ68YqNTVZdD1Sh1wVdngM2CJj3RzbEsdo9MXPtsPxszv6gicaoswPEVzVZeovxzs3DwGckUMAtoWH8HsDW",
+          "slot": 462117976,
+          "transactionIndex": 180
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5VxwkfpF6B5ySp3HsG9UaAKB831EHrXCXWHtckaunVH7Ne4VyAieD7mhHgj9DQxZUY1gjL86NfffDTq7v8EuC4Um",
+          "slot": 462117975,
+          "transactionIndex": 138
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3kMsmDYaQcPYAqkoehFTyVkuJyJzuhGZKNGM6jNze9WoLRmzhVBBsfmTm1aNbp6uEf6nAiLoLbyAwSV9yrVPq6pD",
+          "slot": 462117974,
+          "transactionIndex": 272
+        },
+        {
+          "blockTime": 1793114194,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5SXohA6zp6EfJRNmGGwwYCLnMDVHqwbQQhq3Z48vNkaUYjqqk29fp7TyvTcUTng8h5qAQjE9S38wD8nB4NRUTDSh",
+          "slot": 462117974,
+          "transactionIndex": 130
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "UBPCtQNkE9X9KKWUEcG3RoUSzg9HcKLNW8MW3gjKRwNZU2X1VcPQC4NVtV9sviGbmQE5XNdJZo9pc3fkB9PHpLy",
+          "slot": 462117973,
+          "transactionIndex": 220
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3wukDB6BzETd8y1VZ18Q1zwwvJZD5diJAfYva74LxHWUC6LDuFjTbjh9RXjtNNEJ5Yx4M1ZY9zYjbvzSmWJ2PSzt",
+          "slot": 462117973,
+          "transactionIndex": 64
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "51eyEQy6JkiK42t46z8KS62RXXPDBuVpmcZPXERy7LkTNDfywbHSodxFCJJhNB4EgCfuunS7sKm4X4RaeA6cF14Z",
+          "slot": 462117972,
+          "transactionIndex": 167
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "qFdtVbbCz7ovNscLfR5juFHB6Gicz3x4RTbsYhi5JpRAe6cgMaPBEj58N6KbD7yUAZxNhMxcGQi61BYJPjgKnFF",
+          "slot": 462117971,
+          "transactionIndex": 328
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "4Ly8ui2AXD6tBHteu9EhSaKgf7CyDWRjqEeVzQx6dqRJ3ezQ6xGrpn4fFgXqfG98E6L5taYMFJvM7Pt8XHvL8FRw",
+          "slot": 462117971,
+          "transactionIndex": 125
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "67Vioj3Dx2c4twqYowXvaXNGzYdZwWDEkgRaxecYiEUcDJ2hAks6sJa9ZqZjSEANyBEaAHrmH6goT398aptfwnWw",
+          "slot": 462117970,
+          "transactionIndex": 303
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "38f3cX2HiVnyv27iuxuXzWTw3mLEd7paDVzCpDtw8XdWA6CwLjn8BATfzTbExqoVyR8t6E2fvXNsmoqSumHoyvT9",
+          "slot": 462117970,
+          "transactionIndex": 36
+        },
+        {
+          "blockTime": 1793114193,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "4tyZbfokc4bW2ziJ72K4gGNnHfMejDESYLbSVwMateyDrtV5MWLqumm5z4uPdFSsrnyq9fpMe1dSs4z1CXdFARuU",
+          "slot": 462117969,
+          "transactionIndex": 215
+        },
+        {
+          "blockTime": 1793114192,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "4JGGLReb3SdojjT2n9rrJ53RYvuqwVPnk4q7XEv9rfqUaJNZToVCGT9nAFrbC2Nh7JcSrCsQUisc3Tsfgs9YLd5h",
+          "slot": 462117968,
+          "transactionIndex": 312
+        },
+        {
+          "blockTime": 1793114192,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "4d8K8BbG9GDrtUscAusZhiyFWJJ75sFJKEinxyPFPKsNtnoQ5h9bnis88HjUybMRGGHMxiaud2gATcxrPr4ymozi",
+          "slot": 462117968,
+          "transactionIndex": 98
+        },
+        {
+          "blockTime": 1793114192,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "3ZqgkqBghQVgPfuot69ReVSozfBQpGnkk7bRRBFtdbqhKmZc9sCC9i1nUort51T76irG6hDMwqWYsYnd7hjgkM8y",
+          "slot": 462117967,
+          "transactionIndex": 255
+        },
+        {
+          "blockTime": 1793114192,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "5cfrf8p1bHjRj5LuzU3HZuLM4qYscHe17szVGRaUcyyv8JiY7YVp8pafYyNjRi58ccqrhUcEfLaaLjNmCy7AwzHV",
+          "slot": 462117967,
+          "transactionIndex": 115
+        },
+        {
+          "blockTime": 1793114192,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "49tZC3VN8kiqMvMZfym6sPJMrn82FPRpwqSSbqQesEHz8rumbVaH1UYBL7pq2gVezvkVwCitMses4pU25v1vkjfv",
+          "slot": 462117966,
+          "transactionIndex": 338
+        },
+        {
+          "blockTime": 1793114192,
+          "confirmationStatus": "finalized",
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "memo": null,
+          "signature": "29ABBthunoUdfg6gDkKy5smgyt7k2ABukqxwh1PdKzi2EZjqoPb6mKeiYqx2Czg8RfgR3tEDZ4Q4AF7CZn6Qv7qt",
+          "slot": 462117966,
+          "transactionIndex": 206
+        }
+      ],
+      "historyPages": [
+        {
+          "page": 0,
+          "requestedAt": 1793114422378,
+          "availableAt": 1793114423108,
+          "before": null,
+          "limit": 50,
+          "rows": [
+            {
+              "blockTime": 1793114397,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+              "slot": 462118934,
+              "transactionIndex": 147
+            },
+            {
+              "blockTime": 1793114392,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": "[18] dipscooper-copy-v2",
+              "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+              "slot": 462118910,
+              "transactionIndex": 353
+            },
+            {
+              "blockTime": 1793114392,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+              "slot": 462118910,
+              "transactionIndex": 250
+            },
+            {
+              "blockTime": 1793114389,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+              "slot": 462118898,
+              "transactionIndex": 168
+            },
+            {
+              "blockTime": 1793114375,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+              "slot": 462118831,
+              "transactionIndex": 19
+            },
+            {
+              "blockTime": 1793114344,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "3M6GNeCMzdYcQZ9tYeRGayx2ZFfv9Lz49qCcqEZF3fxR6XDuEBxnLYiAfsWGifPGqVsFjaji3qaJKcWze5PMuTF",
+              "slot": 462118686,
+              "transactionIndex": 64
+            },
+            {
+              "blockTime": 1793114322,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": "[18] dipscooper-copy-v2",
+              "signature": "3JnjeNnsZaHVJyA8FsgtK71qHEi15CdioVomfywbQBzaktTM2PDbTNxGiE64QS3vUBe8Vi4hwV3xsw2cebwaNVqY",
+              "slot": 462118582,
+              "transactionIndex": 37
+            },
+            {
+              "blockTime": 1793114322,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "8rdyqkY57KoD5h4nQ7LdU4vkHKdmYkYaoDAx3KajWVnFJysPdrcHEN9y3iGWuGqzUKD1Hfo62VF477EU3cNDLBC",
+              "slot": 462118581,
+              "transactionIndex": 103
+            },
+            {
+              "blockTime": 1793114292,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "4Xz2uXUUNoa2UR56JNstsiPTYQzNzettcFbHMCurm42FJbM3bLM9BGRqVe2XX8RoTqWu5QByDGnfrWr5onSbDf4h",
+              "slot": 462118439,
+              "transactionIndex": 180
+            },
+            {
+              "blockTime": 1793114252,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": "[18] dipscooper-copy-v2",
+              "signature": "2Vn5XKGPHX9H12XCm4HVVj6nc5AFXs7g6Yg8vpnEJhmsrzXiAqnsudEFY4HFLoZaWb1gRwwEFqaFZZNvEVgjq4jS",
+              "slot": 462118250,
+              "transactionIndex": 43
+            },
+            {
+              "blockTime": 1793114252,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "2Q6fUzMrVdeGcJDvCnARVA7CNVqLyg97fpyvKYmTSECRykcUZUwdS1cgjmqyEMq2Qja7u2RH1SbhmNPaq3erLgpz",
+              "slot": 462118249,
+              "transactionIndex": 230
+            },
+            {
+              "blockTime": 1793114252,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "4bMNX1DbSHQC6YmPpWkYh1nbiHbqA8P7wDPRgifFCcbLh1oFNZN2mvaaPTJxr1zWkLdH8diNuRpV3zyz4DKL7euh",
+              "slot": 462118248,
+              "transactionIndex": 100
+            },
+            {
+              "blockTime": 1793114236,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "Pus6VvEWuB417BFPywBAA7puSGMBzk5H3Fd78cszRBZ2wFg9GUqcshB41Z3qwLn8sMRtE1on4CnaSkaJ9tMpsmE",
+              "slot": 462118175,
+              "transactionIndex": 294
+            },
+            {
+              "blockTime": 1793114196,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "3BdGGA9kWgq84d32WNHCqauzVzzaW1wVXRH64jvTDMyEna7y16sGheDCwVcqrGVULD1uDaKVmPZt1fatetAocTF3",
+              "slot": 462117987,
+              "transactionIndex": 445
+            },
+            {
+              "blockTime": 1793114196,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "BRgBDYojcZCzWdZDMxmpJXPxGCq1if7DDessShzf6a8bbq3jzL3pPHUGG3y8fcfbNgVCJrXFfwFnG6TP931jTjL",
+              "slot": 462117987,
+              "transactionIndex": 197
+            },
+            {
+              "blockTime": 1793114196,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "4XM7q1XTxPS6rGqQ7CvukKKGCG3gdf5QUqE8ARihCNXjDQ7sw91SJYYDt3DphCaaKZ5xhu3ofWDzruY34h8EZN2k",
+              "slot": 462117986,
+              "transactionIndex": 516
+            },
+            {
+              "blockTime": 1793114196,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "27Hp5gbkYwoCRXjPLprc7pEJGmr9EVWj7oQsMnNidfLrdn2uV8LnnuPcEJ2Pidnh28wowTkYshRKMefbivmS1Q5F",
+              "slot": 462117986,
+              "transactionIndex": 305
+            },
+            {
+              "blockTime": 1793114196,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "63h8dPp9DRv8NBeiQfdW7WKUikjCi5Yu6JBrW6Enk6fHp8x9JuXpisdJnBdmYzF23SJgaz7LBmk4MKeqQjD9c5gq",
+              "slot": 462117985,
+              "transactionIndex": 428
+            },
+            {
+              "blockTime": 1793114196,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "49CcGR9BKbKCc7FGc9cZG2gxWrXz8azqCAvK9Uy4MxGiJCPdpbGHWCzndNiBhJqSw1yH7PwqjsXqQxT9iChWpTXj",
+              "slot": 462117985,
+              "transactionIndex": 90
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "5gB8yovWFT9ztBuWDp4P3GcTx3FSSk29kRFn5cCzFsaKMcP9qWRgYMFACs4GqmY2Wf2YFJEAWyPiQAJLTjvw8Sns",
+              "slot": 462117983,
+              "transactionIndex": 428
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "4f6JdQzkY92WzxrcL7bB5A3byS2AjaTwYwDpZahizarS7F77S5f4naE53rB2VsgEzDhXF85kkvRbHbyFTY2qSqt",
+              "slot": 462117983,
+              "transactionIndex": 141
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "3NYctUg81MSQngVCQVShL42761yaSLbboYyYbmFZMTGpxdYu5X73mZTukrYNx9Tfjf2swPgFfbpzm6BoFf6FUDjQ",
+              "slot": 462117982,
+              "transactionIndex": 244
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "4y9hnkVXQAi6R1Xtk4syQzroSkJVixnLHEMomZyPaU4HjdoUwNTvDye5w5nymVQe7tUgbVTGAi4xfErRfhmuvT2Z",
+              "slot": 462117982,
+              "transactionIndex": 47
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "5qbxrsx8CeCVd2RsauqtjpVBa2qn5vMij3bUdEMf7TxBdLqU8Z7UXKqpGNKSC3UjZ5WX5B8SH3U6wwCN2KAtqfFt",
+              "slot": 462117981,
+              "transactionIndex": 179
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "4c7Dab575oGS76maCsV53mp8mjjvg7GrrFjC786NSDoGYPhSFMFSdd1pA42RP8UnuQEXGkFBc1tjVqsNLYHJZqTL",
+              "slot": 462117980,
+              "transactionIndex": 331
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "4aniNXAEayzbUXpuexUeT393p5MWKAtNLq4EbbBeJWjCMi9xt267PEShSq8midQsLLAa84Lcz1C2TDs28DxSkV9e",
+              "slot": 462117980,
+              "transactionIndex": 158
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "5ipiLhgt13sXfcucPTTfrGbvtX9PHE1ahG9B72AV3ZUNJ9UHfR14zDL2HspEcSEAbm85z69SdLBngLSAzvc5faMF",
+              "slot": 462117979,
+              "transactionIndex": 356
+            },
+            {
+              "blockTime": 1793114195,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "3FpL2n9s4XZBUMXL4Zekgva9BHe7W3tQFHKJA1T7xjvkSvQedUtHHT3A9AqrpHQtkMrakcBHAVfAiwMsbB4qqCMJ",
+              "slot": 462117979,
+              "transactionIndex": 61
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "2ohXX3ypfCrd25hpb1ohpzvJjZWmLt4EJYYr8Qdnftza9425f2CS3a2fhggwVNzybygLatYLxw2u2ExRrLrtXQcS",
+              "slot": 462117978,
+              "transactionIndex": 213
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "43Ky4PmHeacsy8Moi7cDCoT9CTKHhdwkBNnHeyUeNNKtES2M7Gqspos6BZgtNrycYALQfeLkCguhGGQYQiFtX88K",
+              "slot": 462117978,
+              "transactionIndex": 32
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "4CBRxReLJT7eDoadLVPARM3WpuNa34WBt95TinvtEuDfknmrzJwd9yjpXimsfdTyaNR7dtwRjFXx9xKDd32jSZXL",
+              "slot": 462117977,
+              "transactionIndex": 199
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "4eTG1ySm5ag2UJ9RfnWsCawYttt3VAtLafkKhhbV68PNTq29P1rh4v6ME2SBYqq67Tnc6wTHmSW4FQvLu265882W",
+              "slot": 462117976,
+              "transactionIndex": 475
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "3qP61rQ68YqNTVZdD1Sh1wVdngM2CJj3RzbEsdo9MXPtsPxszv6gicaoswPEVzVZeovxzs3DwGckUMAtoWH8HsDW",
+              "slot": 462117976,
+              "transactionIndex": 180
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "5VxwkfpF6B5ySp3HsG9UaAKB831EHrXCXWHtckaunVH7Ne4VyAieD7mhHgj9DQxZUY1gjL86NfffDTq7v8EuC4Um",
+              "slot": 462117975,
+              "transactionIndex": 138
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "3kMsmDYaQcPYAqkoehFTyVkuJyJzuhGZKNGM6jNze9WoLRmzhVBBsfmTm1aNbp6uEf6nAiLoLbyAwSV9yrVPq6pD",
+              "slot": 462117974,
+              "transactionIndex": 272
+            },
+            {
+              "blockTime": 1793114194,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "5SXohA6zp6EfJRNmGGwwYCLnMDVHqwbQQhq3Z48vNkaUYjqqk29fp7TyvTcUTng8h5qAQjE9S38wD8nB4NRUTDSh",
+              "slot": 462117974,
+              "transactionIndex": 130
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "UBPCtQNkE9X9KKWUEcG3RoUSzg9HcKLNW8MW3gjKRwNZU2X1VcPQC4NVtV9sviGbmQE5XNdJZo9pc3fkB9PHpLy",
+              "slot": 462117973,
+              "transactionIndex": 220
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "3wukDB6BzETd8y1VZ18Q1zwwvJZD5diJAfYva74LxHWUC6LDuFjTbjh9RXjtNNEJ5Yx4M1ZY9zYjbvzSmWJ2PSzt",
+              "slot": 462117973,
+              "transactionIndex": 64
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "51eyEQy6JkiK42t46z8KS62RXXPDBuVpmcZPXERy7LkTNDfywbHSodxFCJJhNB4EgCfuunS7sKm4X4RaeA6cF14Z",
+              "slot": 462117972,
+              "transactionIndex": 167
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "qFdtVbbCz7ovNscLfR5juFHB6Gicz3x4RTbsYhi5JpRAe6cgMaPBEj58N6KbD7yUAZxNhMxcGQi61BYJPjgKnFF",
+              "slot": 462117971,
+              "transactionIndex": 328
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "4Ly8ui2AXD6tBHteu9EhSaKgf7CyDWRjqEeVzQx6dqRJ3ezQ6xGrpn4fFgXqfG98E6L5taYMFJvM7Pt8XHvL8FRw",
+              "slot": 462117971,
+              "transactionIndex": 125
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "67Vioj3Dx2c4twqYowXvaXNGzYdZwWDEkgRaxecYiEUcDJ2hAks6sJa9ZqZjSEANyBEaAHrmH6goT398aptfwnWw",
+              "slot": 462117970,
+              "transactionIndex": 303
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "38f3cX2HiVnyv27iuxuXzWTw3mLEd7paDVzCpDtw8XdWA6CwLjn8BATfzTbExqoVyR8t6E2fvXNsmoqSumHoyvT9",
+              "slot": 462117970,
+              "transactionIndex": 36
+            },
+            {
+              "blockTime": 1793114193,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "4tyZbfokc4bW2ziJ72K4gGNnHfMejDESYLbSVwMateyDrtV5MWLqumm5z4uPdFSsrnyq9fpMe1dSs4z1CXdFARuU",
+              "slot": 462117969,
+              "transactionIndex": 215
+            },
+            {
+              "blockTime": 1793114192,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "4JGGLReb3SdojjT2n9rrJ53RYvuqwVPnk4q7XEv9rfqUaJNZToVCGT9nAFrbC2Nh7JcSrCsQUisc3Tsfgs9YLd5h",
+              "slot": 462117968,
+              "transactionIndex": 312
+            },
+            {
+              "blockTime": 1793114192,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "4d8K8BbG9GDrtUscAusZhiyFWJJ75sFJKEinxyPFPKsNtnoQ5h9bnis88HjUybMRGGHMxiaud2gATcxrPr4ymozi",
+              "slot": 462117968,
+              "transactionIndex": 98
+            },
+            {
+              "blockTime": 1793114192,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "3ZqgkqBghQVgPfuot69ReVSozfBQpGnkk7bRRBFtdbqhKmZc9sCC9i1nUort51T76irG6hDMwqWYsYnd7hjgkM8y",
+              "slot": 462117967,
+              "transactionIndex": 255
+            },
+            {
+              "blockTime": 1793114192,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "5cfrf8p1bHjRj5LuzU3HZuLM4qYscHe17szVGRaUcyyv8JiY7YVp8pafYyNjRi58ccqrhUcEfLaaLjNmCy7AwzHV",
+              "slot": 462117967,
+              "transactionIndex": 115
+            },
+            {
+              "blockTime": 1793114192,
+              "confirmationStatus": "finalized",
+              "err": null,
+              "memo": null,
+              "signature": "49tZC3VN8kiqMvMZfym6sPJMrn82FPRpwqSSbqQesEHz8rumbVaH1UYBL7pq2gVezvkVwCitMses4pU25v1vkjfv",
+              "slot": 462117966,
+              "transactionIndex": 338
+            },
+            {
+              "blockTime": 1793114192,
+              "confirmationStatus": "finalized",
+              "err": {
+                "InstructionError": [
+                  4,
+                  {
+                    "Custom": 7
+                  }
+                ]
+              },
+              "memo": null,
+              "signature": "29ABBthunoUdfg6gDkKy5smgyt7k2ABukqxwh1PdKzi2EZjqoPb6mKeiYqx2Czg8RfgR3tEDZ4Q4AF7CZn6Qv7qt",
+              "slot": 462117966,
+              "transactionIndex": 206
+            }
+          ]
+        }
+      ],
+      "historyRangeCovered": true,
+      "historyBoundary": "OLDER_THAN_EXACT_TARGET_START_OBSERVED",
+      "requiredIndependentSignatures": [
+        "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+        "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+        "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+        "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+        "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5"
+      ],
+      "independentTransactions": [
+        {
+          "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+          "requestedAt": 1793114423109,
+          "availableAt": 1793114424120,
+          "slot": 462118934,
+          "chainBlockTime": 1793114397,
+          "inChainTarget": true,
+          "compiledSwapInstructions": 1,
+          "events": [
+            {
+              "identity": {
+                "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+                "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+                "outerInstructionIndex": 3,
+                "swapInnerInstructionIndex": 7,
+                "eventInnerInstructionIndex": 14,
+                "eventIndex": 0
+              },
+              "identityKey": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:7:14:0",
+              "fingerprint": "fd4d7f63d523edb98758fdb2a32575d49a7db940aff1ea794e5bf264687e9e18",
+              "matchedOriginal": true,
+              "originalRpcAvailableAt": 1793114399118,
+              "originalValidationCompletedAt": 1793114399121,
+              "validationInsideApplicationTarget": true,
+              "independentAvailableAt": 1793114424120
+            }
+          ]
+        },
+        {
+          "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+          "requestedAt": 1793114424124,
+          "availableAt": 1793114425122,
+          "slot": 462118910,
+          "chainBlockTime": 1793114392,
+          "inChainTarget": true,
+          "compiledSwapInstructions": 1,
+          "events": [
+            {
+              "identity": {
+                "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+                "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+                "outerInstructionIndex": 3,
+                "swapInnerInstructionIndex": null,
+                "eventInnerInstructionIndex": 3,
+                "eventIndex": 0
+              },
+              "identityKey": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+              "fingerprint": "898cb75d1cc0ebc1e449799230b4acfd9a03c63dd94699b0222f9b6a950dab8b",
+              "matchedOriginal": true,
+              "originalRpcAvailableAt": 1793114396087,
+              "originalValidationCompletedAt": 1793114396090,
+              "validationInsideApplicationTarget": true,
+              "independentAvailableAt": 1793114425122
+            }
+          ]
+        },
+        {
+          "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+          "requestedAt": 1793114425125,
+          "availableAt": 1793114426119,
+          "slot": 462118910,
+          "chainBlockTime": 1793114392,
+          "inChainTarget": true,
+          "compiledSwapInstructions": 1,
+          "events": [
+            {
+              "identity": {
+                "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+                "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+                "outerInstructionIndex": 3,
+                "swapInnerInstructionIndex": null,
+                "eventInnerInstructionIndex": 3,
+                "eventIndex": 0
+              },
+              "identityKey": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+              "fingerprint": "3e6ddc5b64b4b7ba8c2f9090ae03ca54da7f40445e8befb1191a973df34e5256",
+              "matchedOriginal": true,
+              "originalRpcAvailableAt": 1793114394083,
+              "originalValidationCompletedAt": 1793114394085,
+              "validationInsideApplicationTarget": true,
+              "independentAvailableAt": 1793114426119
+            }
+          ]
+        },
+        {
+          "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+          "requestedAt": 1793114426121,
+          "availableAt": 1793114427153,
+          "slot": 462118898,
+          "chainBlockTime": 1793114389,
+          "inChainTarget": true,
+          "compiledSwapInstructions": 1,
+          "events": [
+            {
+              "identity": {
+                "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+                "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+                "outerInstructionIndex": 2,
+                "swapInnerInstructionIndex": 27,
+                "eventInnerInstructionIndex": 31,
+                "eventIndex": 0
+              },
+              "identityKey": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:27:31:0",
+              "fingerprint": "842a2ff65b6230a37051c1f864746e6c22b3ef420a1cc759d4ac63b3e3eeac32",
+              "matchedOriginal": true,
+              "originalRpcAvailableAt": 1793114391075,
+              "originalValidationCompletedAt": 1793114391079,
+              "validationInsideApplicationTarget": true,
+              "independentAvailableAt": 1793114427153
+            }
+          ]
+        },
+        {
+          "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+          "requestedAt": 1793114427158,
+          "availableAt": 1793114428155,
+          "slot": 462118831,
+          "chainBlockTime": 1793114375,
+          "inChainTarget": true,
+          "compiledSwapInstructions": 1,
+          "events": [
+            {
+              "identity": {
+                "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+                "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+                "outerInstructionIndex": 4,
+                "swapInnerInstructionIndex": null,
+                "eventInnerInstructionIndex": 6,
+                "eventIndex": 0
+              },
+              "identityKey": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+              "fingerprint": "c7266f87bfae66f4c8d286921cbaca79239c6a8a158ec6242b8218eb8be06d8f",
+              "matchedOriginal": true,
+              "originalRpcAvailableAt": 1793114377362,
+              "originalValidationCompletedAt": 1793114377368,
+              "validationInsideApplicationTarget": true,
+              "independentAvailableAt": 1793114428155
+            }
+          ]
+        }
+      ],
+      "unretrievedSignatures": [],
+      "denominatorChecks": [
+        {
+          "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+          "requestCommitment": "confirmed",
+          "compiledSwapInstructions": 1,
+          "decodedSwapEvents": 1
+        },
+        {
+          "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+          "requestCommitment": "confirmed",
+          "compiledSwapInstructions": 1,
+          "decodedSwapEvents": 1
+        },
+        {
+          "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+          "requestCommitment": "confirmed",
+          "compiledSwapInstructions": 1,
+          "decodedSwapEvents": 1
+        },
+        {
+          "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+          "requestCommitment": "confirmed",
+          "compiledSwapInstructions": 1,
+          "decodedSwapEvents": 1
+        },
+        {
+          "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+          "requestCommitment": "confirmed",
+          "compiledSwapInstructions": 1,
+          "decodedSwapEvents": 1
+        },
+        {
+          "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+          "requestCommitment": "finalized",
+          "compiledSwapInstructions": 1,
+          "decodedSwapEvents": 1
+        },
+        {
+          "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+          "requestCommitment": "finalized",
+          "compiledSwapInstructions": 1,
+          "decodedSwapEvents": 1
+        }
+      ],
+      "relevantInstructionChecks": [
+        {
+          "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+          "requestCommitment": "confirmed",
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": 7,
+          "discriminatorHex": "33e685a4017f83ad",
+          "instructionName": "sell",
+          "exactPackagedLayout": true,
+          "knownNonSwap": false
+        },
+        {
+          "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+          "requestCommitment": "confirmed",
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": null,
+          "discriminatorHex": "5df6823ce7e940b2",
+          "instructionName": "sell_v2",
+          "exactPackagedLayout": true,
+          "knownNonSwap": false
+        },
+        {
+          "signature": "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+          "requestCommitment": "confirmed",
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": null,
+          "discriminatorHex": "5df6823ce7e940b2",
+          "instructionName": "sell_v2",
+          "exactPackagedLayout": true,
+          "knownNonSwap": false
+        },
+        {
+          "signature": "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+          "requestCommitment": "confirmed",
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 27,
+          "discriminatorHex": "b817ee6167c5d33d",
+          "instructionName": "buy_v2",
+          "exactPackagedLayout": true,
+          "knownNonSwap": false
+        },
+        {
+          "signature": "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5",
+          "requestCommitment": "confirmed",
+          "outerInstructionIndex": 4,
+          "innerInstructionIndex": null,
+          "discriminatorHex": "33e685a4017f83ad",
+          "instructionName": "sell",
+          "exactPackagedLayout": true,
+          "knownNonSwap": false
+        },
+        {
+          "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+          "requestCommitment": "finalized",
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": 7,
+          "discriminatorHex": "33e685a4017f83ad",
+          "instructionName": "sell",
+          "exactPackagedLayout": true,
+          "knownNonSwap": false
+        },
+        {
+          "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+          "requestCommitment": "finalized",
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": null,
+          "discriminatorHex": "5df6823ce7e940b2",
+          "instructionName": "sell_v2",
+          "exactPackagedLayout": true,
+          "knownNonSwap": false
+        }
+      ],
+      "compiledSwapInstructions": 5,
+      "verifiedSwapEvents": 5,
+      "matchedOriginalEvents": 5,
+      "unmatchedOriginalEvents": [],
+      "unsupported": [],
+      "unresolvedSelectedHints": [],
+      "rechecks": [
+        {
+          "signature": "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+          "requestedAt": 1793114428162,
+          "availableAt": 1793114429175,
+          "requestCommitment": "finalized",
+          "finalizedAvailable": true,
+          "executedEvidenceIdentical": true
+        },
+        {
+          "signature": "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+          "requestedAt": 1793114429182,
+          "availableAt": 1793114430172,
+          "requestCommitment": "finalized",
+          "finalizedAvailable": true,
+          "executedEvidenceIdentical": true
+        }
+      ],
+      "calls": 8,
+      "attemptedOperations": {
+        "history": 1,
+        "independent": 5,
+        "finality": 2
+      },
+      "originalResponseReuse": false,
+      "reason": "BOUNDED_CHAIN_INTERVAL_AND_RECORDED_HINTS_MATCHED",
+      "receiveWindowCompleteness": "NOT_ESTABLISHED_BY_CHAIN_TIME_ALONE",
+      "entryEligibility": "UNVERIFIED_SEPARATE_REQUIREMENT",
+      "primaryStrategyEnabled": false,
+      "paperTradesCreated": 0,
+      "financialAccountChanged": false,
+      "applicationTargetReadiness": {
+        "rawReadyFeatureRows": [
+          {
+            "at": 1793114410263,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114410263,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114410263,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114411265,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114411265,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114411265,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114412362,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114412362,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114412362,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114413363,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114413363,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114413363,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114414462,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114414462,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114414462,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114415464,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114415464,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114415464,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114416561,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114416561,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114416561,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114417561,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114417561,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114417561,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114418663,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114418663,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114418663,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          },
+          {
+            "at": 1793114419763,
+            "curve": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114419763,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "146338375",
+              "sellLamports": "742919162",
+              "netBuyLamports": "-596580787",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "143130089",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "341460325",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "user": {
+              "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+              "asOf": 1793114419763,
+              "windowStartAt": 1793114350000,
+              "windowEndAt": 1793114410000,
+              "sufficientlyObserved": true,
+              "qualityReason": null,
+              "buyLamports": "147582253",
+              "sellLamports": "736604342",
+              "netBuyLamports": "-589022089",
+              "tradeCount": 5,
+              "provisionalTradeCount": 0,
+              "distinctBuyerWallets": 1,
+              "largestBuyerBps": 10000,
+              "positiveNetBuckets": 0,
+              "priceReturnBps": -8,
+              "firstPrice": {
+                "quoteLamports": "141913481",
+                "tokenUnits": "6689043481"
+              },
+              "lastPrice": {
+                "quoteLamports": "338557911",
+                "tokenUnits": "15970582802"
+              }
+            },
+            "fullyEnriched": true,
+            "researchOnly": true
+          }
+        ],
+        "rawReadyClosedTargetWindows": 1,
+        "independentlyProvenReceiveWindowCompleteness": false,
+        "explanation": "Independent blockTime coverage audits a separate chain interval. Original validated receive times remain explicit, including events before/after this target; later audit data never enters the original feature window."
+      },
+      "finishedAt": 1793114430178,
+      "elapsedMs": 7800.356028999988,
+      "physicalSlotUncertain": false,
+      "independentTransactionAttempts": [
+        "67596QEHxYEkgCr88v87o6jBDMj7REBRJNazYDwqD5WF3pZuxVuT5nBJimNdWUEuehtg6KaeuQ6hmVL5TWQ4G9y9",
+        "3DYcDusG6Aiw7QUESPJsLb3zBzxtFBna6wnZ3iHUme6nwr8bK3LS9zeYdCtb9RkvxYL1Ki8iiiMWnZoVMYDAXrjf",
+        "5JHPLYhW8qws3tgQ2equTr2tR5gQ1kxN6Nekqvavu42WZ9zJoABiKzEkZJv589buo9eAApYuCEWiFPeKU43JFhtK",
+        "4BCrw5BpsTwaYiFKJqypYCYWq52nkAD4bJWeczZhgS3TBKq9JFKm8UXedYFgTftjvi1d9BUZPsdMuFC3v6CUkety",
+        "3MRarMN1GkTbwAyeqKB19VCmgA1Xi9g6biUpAjfacYUVrWk8QYMyUkgt74pwaaYorda8FMbZMLCtSS4z3C96LWq5"
+      ],
+      "firstQualityFailure": null,
+      "stopsOnFirstQualityFailure": true,
+      "noRetry": true,
+      "laterAuditInformationBackdated": false
+    },
+    "usage": {
+      "cumulativeUnits": 221,
+      "observedRelatedBytes": 2314558,
+      "retainedUnknownBytes": 2097152,
+      "accountedRelatedBytes": 4411710,
+      "newUnits": 58,
+      "newAccountedBytes": 823802,
+      "physicalSettled": true,
+      "chainValid": true
+    },
+    "resources": {
+      "peakRssBytes": 197050368,
+      "peakCpuMs": 6218.721,
+      "peakLoopLagMs": 31.93521200000032
+    },
+    "protectionAcceptance": false,
+    "productionChanged": false,
+    "paperEntries": false,
+    "liveTrading": false,
+    "acceptanceClock": false
+  },
+  "uncertainAttempt": false,
+  "priorEvidenceUnchanged": true,
+  "priorMismatches": [],
+  "sourceUnchanged": true,
+  "sourceMismatches": [],
+  "noRetry": true,
+  "productionChanged": false,
+  "paperEntries": false,
+  "liveTrading": false,
+  "acceptanceClock": false
+}

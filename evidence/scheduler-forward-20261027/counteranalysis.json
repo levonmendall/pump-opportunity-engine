@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-27T15:25:58.578398+00:00",
+  "classification": "OFFLINE_INDEPENDENT_COUNTER_AND_RESOURCE_ANALYSIS_OF_SINGLE_COMPLETED_DIAGNOSTIC",
+  "noNetworkRequests": true,
+  "noRetriesOrExtraCaptures": true,
+  "rawEvidenceFilesBefore": [
+    {
+      "path": "evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+      "sha256": "d5e605be37b1bbc0f6d1497b5675a550aea3e97085b2be0b202319acb1728edb",
+      "bytes": 2934
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/01-preflight/summary.json",
+      "sha256": "4452e68c0c6e3aed83605946fcb09067697f37f7f5c9bfc7c5ecaa02165cf62e",
+      "bytes": 5272
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+      "sha256": "7b1eb9d4b5528664aa916c4d65b3d99b7e1b2ac3650ed95c3dd37a472d1cdef2",
+      "bytes": 5839
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/02-combined/rpc-budget.json.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/02-combined/summary.json",
+      "sha256": "90ae3738589c6aad445460b9eaf130aef29b71bc49fb251f0237ea96bd0ea04a",
+      "bytes": 11380
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+      "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2",
+      "bytes": 4002
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/03-audit/rpc-budget.json.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/03-audit/summary.json",
+      "sha256": "fdb79a87df267ca47f3cbf4307f4c2acd5d007a332ce2a3fa0cc8d78ca8c0eb8",
+      "bytes": 7202
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/audit.json",
+      "sha256": "c3c5cd6dd605e5e6f2b89a8930aa0a1f4470e246342c5b6a59afa50b4c651fd5",
+      "bytes": 67562
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/authorization.json",
+      "sha256": "c958263aaac3a49b2bbd5c3a03791c4a4a7e2e67fe7727306faa51bac5b7e62d",
+      "bytes": 62521
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/baseline.json",
+      "sha256": "4c064249e8dad686c834ae1bfd7450108ec334a8e0e48b92a5c1b8624cfd739b",
+      "bytes": 9907
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/capture.json",
+      "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce",
+      "bytes": 316117
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/independent-review.json",
+      "sha256": "ad1d54de072f466ff19ca87ab3b21c325b5ac17af5c4123a0b984ab253c19c99",
+      "bytes": 5025
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/observations.ndjson",
+      "sha256": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b",
+      "bytes": 1635776
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/pumpapi-budget.json",
+      "sha256": "8c82938fb754d7fadc7439f6e9825bdcfa7e48fc4d29b7898bf1f6719d5a3878",
+      "bytes": 641
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/summary.json",
+      "sha256": "59d374166cc0a01b4a0e4eab8e656309a1e5e36c3f6d5c874dc9129650bbbfc8",
+      "bytes": 104932
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/supervisor.json",
+      "sha256": "67a2e999ec4a70523d06f6bc23ac5b60e6837bd5acf6e6bf481569e3b5a04a24",
+      "bytes": 112999
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/trade-field-analysis.json",
+      "sha256": "8c79f4cead5724cb71ee89bce793a77a0f0cec64b3e2548630e53d6fe51d2182",
+      "bytes": 42980
+    }
+  ],
+  "rawEvidenceFilesAfter": [
+    {
+      "path": "evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+      "sha256": "d5e605be37b1bbc0f6d1497b5675a550aea3e97085b2be0b202319acb1728edb",
+      "bytes": 2934
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/01-preflight/summary.json",
+      "sha256": "4452e68c0c6e3aed83605946fcb09067697f37f7f5c9bfc7c5ecaa02165cf62e",
+      "bytes": 5272
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+      "sha256": "7b1eb9d4b5528664aa916c4d65b3d99b7e1b2ac3650ed95c3dd37a472d1cdef2",
+      "bytes": 5839
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/02-combined/rpc-budget.json.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/02-combined/summary.json",
+      "sha256": "90ae3738589c6aad445460b9eaf130aef29b71bc49fb251f0237ea96bd0ea04a",
+      "bytes": 11380
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+      "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2",
+      "bytes": 4002
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/03-audit/rpc-budget.json.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/03-audit/summary.json",
+      "sha256": "fdb79a87df267ca47f3cbf4307f4c2acd5d007a332ce2a3fa0cc8d78ca8c0eb8",
+      "bytes": 7202
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/audit.json",
+      "sha256": "c3c5cd6dd605e5e6f2b89a8930aa0a1f4470e246342c5b6a59afa50b4c651fd5",
+      "bytes": 67562
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/authorization.json",
+      "sha256": "c958263aaac3a49b2bbd5c3a03791c4a4a7e2e67fe7727306faa51bac5b7e62d",
+      "bytes": 62521
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/baseline.json",
+      "sha256": "4c064249e8dad686c834ae1bfd7450108ec334a8e0e48b92a5c1b8624cfd739b",
+      "bytes": 9907
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/capture.json",
+      "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce",
+      "bytes": 316117
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/independent-review.json",
+      "sha256": "ad1d54de072f466ff19ca87ab3b21c325b5ac17af5c4123a0b984ab253c19c99",
+      "bytes": 5025
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/observations.ndjson",
+      "sha256": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b",
+      "bytes": 1635776
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/pumpapi-budget.json",
+      "sha256": "8c82938fb754d7fadc7439f6e9825bdcfa7e48fc4d29b7898bf1f6719d5a3878",
+      "bytes": 641
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/summary.json",
+      "sha256": "59d374166cc0a01b4a0e4eab8e656309a1e5e36c3f6d5c874dc9129650bbbfc8",
+      "bytes": 104932
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/supervisor.json",
+      "sha256": "67a2e999ec4a70523d06f6bc23ac5b60e6837bd5acf6e6bf481569e3b5a04a24",
+      "bytes": 112999
+    },
+    {
+      "path": "evidence/scheduler-forward-20261027/trade-field-analysis.json",
+      "sha256": "8c79f4cead5724cb71ee89bce793a77a0f0cec64b3e2548630e53d6fe51d2182",
+      "bytes": 42980
+    }
+  ],
+  "allRawEvidenceUnchanged": true,
+  "integrity": {
+    "priorEvidenceFilesChecked": 259,
+    "priorEvidenceMismatches": [],
+    "currentSourceFilesChecked": 74,
+    "currentSourceMismatches": [],
+    "sourceProfileCommit": "349e67bcdf223ff4c61298dad5338b51664a93d4",
+    "sourceProfileCommitFilesChecked": 74,
+    "sourceProfileCommitMismatches": [],
+    "sourceProfileCommitMissingPaths": [],
+    "ownerProposalCommit": "de102ee038b9b3cfa46fbd5d5560884d715429bf",
+    "ownerProposalHashVerifiedAgainstCommit": true,
+    "originalOldHttp429": "RPC_HTTP_429",
+    "originalRefusalAt": 1793070869405
+  },
+  "actualElapsed": {
+    "childSummaryMs": 88802,
+    "parentWallMs": 88847.593234,
+    "parentHardCeilingMs": 120000,
+    "childExit": {
+      "code": 0,
+      "signal": null
+    },
+    "parentStopReason": null,
+    "openObservationMs": 75002,
+    "timerOvershootAbove75000ms": 2,
+    "observationOvershootMeaning": "Actual open wall duration is75002ms, including2ms timer/dispatch overshoot. It is not represented as exactly75000ms. The entire connection reservation and120s aggregate bounds were respected."
+  },
+  "rpc": {
+    "startingCumulativeUnits": 163,
+    "newUnits": 58,
+    "cumulativeUnits": 221,
+    "absoluteCumulativeUnitCeiling": 240,
+    "remainingUnusedUnitCeiling": 19,
+    "phaseIncrements": [
+      {
+        "phase": "01-preflight",
+        "newRequestUnits": 2,
+        "httpBytes": 22118,
+        "rpcRelatedWebSocketBytes": 0,
+        "observedRelatedBytes": 22118,
+        "newUncertainResponseReservationBytes": 0,
+        "haltedReason": null,
+        "firstActualStartAt": 1793114342630,
+        "lastActualStartAt": 1793114343632,
+        "bookSha256": "d5e605be37b1bbc0f6d1497b5675a550aea3e97085b2be0b202319acb1728edb"
+      },
+      {
+        "phase": "02-combined",
+        "newRequestUnits": 48,
+        "httpBytes": 656580,
+        "rpcRelatedWebSocketBytes": 2782,
+        "observedRelatedBytes": 659362,
+        "newUncertainResponseReservationBytes": 0,
+        "haltedReason": null,
+        "firstActualStartAt": 1793114344635,
+        "lastActualStartAt": 1793114422059,
+        "bookSha256": "7b1eb9d4b5528664aa916c4d65b3d99b7e1b2ac3650ed95c3dd37a472d1cdef2"
+      },
+      {
+        "phase": "03-audit",
+        "newRequestUnits": 8,
+        "httpBytes": 142322,
+        "rpcRelatedWebSocketBytes": 0,
+        "observedRelatedBytes": 142322,
+        "newUncertainResponseReservationBytes": 0,
+        "haltedReason": null,
+        "firstActualStartAt": 1793114423062,
+        "lastActualStartAt": 1793114430106,
+        "bookSha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2"
+      }
+    ],
+    "byMethodAndPurpose": {
+      "http:getSignaturesForAddress": 2,
+      "http:getTransaction": 13,
+      "http:getMultipleAccounts": 42,
+      "ws-upgrade:upgrade": 1
+    },
+    "allActualStartsContiguousUniqueAndMatchedToRecords": true,
+    "minimumActualStartGapMs": 1002,
+    "maxRolling1sActualStarts": 1,
+    "maxRolling10sActualStarts": 10,
+    "maxRolling60sActualStarts": 41,
+    "rollingWindowConvention": "(t-window,t], using actual physical invocation timestamps across all3 phase books, including phase boundaries. Reservation/requestedAt timestamps are not substituted.",
+    "phaseBoundaryActualStartGaps": [
+      {
+        "from": "01-preflight",
+        "to": "02-combined",
+        "gapMs": 1003
+      },
+      {
+        "from": "02-combined",
+        "to": "03-audit",
+        "gapMs": 1003
+      }
+    ],
+    "newHttp429Responses": 0,
+    "httpStatuses": {
+      "200": 57
+    },
+    "newProviderOverloadOrThrottleStops": [],
+    "actualHttpResponseTimingsMs": {
+      "samples": 57,
+      "p50": 54,
+      "p95": 94,
+      "maximum": 253
+    },
+    "newObservedRelatedResponseBytes": 823802,
+    "newUncertainResponseReservationBytes": 0,
+    "oldUncertainResponseReservationBytesStillCharged": 2097152,
+    "cumulativeObservedRelatedBytes": 2314558,
+    "cumulativeAccountedRelatedBytes": 4411710,
+    "cumulativeAccountedByteCeiling": 67108864,
+    "remainingAccountedByteCeiling": 62697154,
+    "unusedNew32MiBRelatedResponseCeiling": 32730630,
+    "headroomIsNotAuthorization": "The single diagnostic is complete.19 unused request units and unused response bytes do not authorize another attempt, provider request, grant reopening or retry."
+  },
+  "pumpApi": {
+    "oldLinkedBookSha256Verified": true,
+    "oldReservedBytesUnchanged": 268435456,
+    "oldReservedMsUnchanged": 230000,
+    "newReservationBytes": 146800640,
+    "newReservationMs": 90000,
+    "newCumulativeReservedBytes": 415236096,
+    "newCumulativeReservedMiB": 396.0,
+    "newCumulativeReservedMs": 320000,
+    "newCumulativeReservedSeconds": 320.0,
+    "refunded": false,
+    "connectionsAuthorized": 1,
+    "actualPriorReceivedSocketBytes": 195936099,
+    "actualNewReceivedSocketBytes": 76013520,
+    "actualCumulativeReceivedSocketBytes": 271949619,
+    "reservedMinusActualBytesNotRefunded": 143286477,
+    "broadReceiptAndRelatedRpcOverlapBytes": 2782,
+    "overlapMeaning": "Full PumpApi socket receipt includes the initial observed upgrade prefix; that same prefix is conservatively charged in the related-RPC WS budget. Do not sum those budgets as deduplicated physical traffic.",
+    "meanNewSocketBytesPerSecond": 1013486.5736913683,
+    "byteAccounting": "Node socket bytesRead plus application payload counts; not packet-captured TLS/proxy/IP overhead.",
+    "$0ApiFees": "Public read/data-only configuration; infrastructure transfer allocation remains separately unverified."
+  },
+  "sampledBroadTraffic": {
+    "samples": 72,
+    "firstSampleAt": 1793114347298,
+    "lastSampleAt": 1793114421866,
+    "counterSampleIntervalMinimumMs": 1000,
+    "counterSampleIntervalMaximumMs": 1102,
+    "sampled1sRate": {
+      "targetDurationMs": 1000,
+      "eligibleObservedIntervals": 71,
+      "maximumObservedSocketRateInterval": {
+        "startAt": 1793114404972,
+        "endAt": 1793114406054,
+        "elapsedMs": 1082,
+        "observedSocketBytes": 1932957,
+        "socketBytesPerSecond": 1786466.7282809613,
+        "socketMiBPerSecond": 1.7037074358758557,
+        "observedApplicationBytes": 1927913,
+        "applicationBytesPerSecond": 1781804.9907578558
+      },
+      "algorithm": "For each actual counter sample, use the first later recorded sample at least the target duration away; divide the exact counter difference by the actual recorded duration. No interpolation."
+    },
+    "sampled10sRate": {
+      "targetDurationMs": 10000,
+      "eligibleObservedIntervals": 62,
+      "maximumObservedSocketRateInterval": {
+        "startAt": 1793114384303,
+        "endAt": 1793114394639,
+        "elapsedMs": 10336,
+        "observedSocketBytes": 12600757,
+        "socketBytesPerSecond": 1219113.4868421052,
+        "socketMiBPerSecond": 1.1626372211857845,
+        "observedApplicationBytes": 12567589,
+        "applicationBytesPerSecond": 1215904.5085139319
+      },
+      "algorithm": "For each actual counter sample, use the first later recorded sample at least the target duration away; divide the exact counter difference by the actual recorded duration. No interpolation."
+    },
+    "exactContinuous1sPeakBytesPerSecond": null,
+    "exactContinuous10sPeakBytesPerSecond": null,
+    "limits": "The1s samples are1000\u20131102ms apart, not continuous traffic tracing. Reported peaks are exact counter differences over those actual sampled intervals, not exact continuous1.000s/10.000s peaks; no interpolation or intra-sample spike precision is claimed. Initial coalesced data and the final tail are included in total socket receipt but not assigned invented sample times.",
+    "firstSampleAfterOpenMs": 5,
+    "lastSampleBeforeObservationEndMs": 429,
+    "socketBytesAfterLastSampleToFinalCounter": 630184
+  },
+  "resources": {
+    "childProcSampledCpuMs": 7770,
+    "childSelfReportedCpuAfterScriptImportsMs": 6218.721,
+    "parentObservedCpuMs": 6935.931,
+    "observedParentPlusChildCpuMs": 14705.931,
+    "cpuAccountingLimitation": "Parent/proc sampling includes child startup; child self-report starts later. These values are not added to each other. The cross-process sum uses parent CPU plus proc-sampled child CPU; a final unsampled child CPU tail is not invented.",
+    "childPeakRssBytes": 197591040,
+    "parentPeakRssBytes": 170336256,
+    "sumOfSeparateRssPeaksUpperBoundBytes": 367927296,
+    "rssAccountingLimitation": "The sum of separate process peaks is an upper bound, not a measured simultaneous aggregate peak. The256MiB child limit does not mean parent memory was zero.",
+    "parentLoopLagMaximumMs": 3.9826389999943785,
+    "childSummaryLoopLagMaximumMs": 31.93521200000032,
+    "childCaptureLoopLagMaximumMs": 41.06894100000136,
+    "childRssLimitBytes": 268435456,
+    "childCpuLimitMs": 20000,
+    "lagLimitMs": 500,
+    "parentResourceErrors": [],
+    "cloudMeasurementOnly": true,
+    "ec2ResourceSuitabilityEstablished": false
+  },
+  "evidence": {
+    "newRawFilesCount": 17,
+    "newDirectoryBytesBeforeAnalysis": 2395089,
+    "newEvidenceCeilingBytes": 6291456,
+    "allEvidenceBytesBeforeAnalysis": 14673736,
+    "cumulativeEvidenceCeilingBytes": 33554432,
+    "supervisorReservedAtomicTempHeadroomBytes": 393216,
+    "analysisArtifactExcludedFromRawHashes": true,
+    "analysisCountsTowardRetention": true,
+    "analysisArtifactBytes": 18425,
+    "newDirectoryBytesAfterAnalysis": 2413514,
+    "allEvidenceBytesAfterAnalysis": 14692161,
+    "newDirectoryFilesBeforeAnalysisCount": 19,
+    "earlierSeparateOfflineArtifactsAlsoHashChecked": [
+      "evidence/scheduler-forward-20261027/independent-review.json",
+      "evidence/scheduler-forward-20261027/trade-field-analysis.json"
+    ],
+    "hashManifestScope": "All actual raw diagnostic files, plus any separate offline reports already present when this analysis began. Later reports are not claimed as original raw evidence.",
+    "retentionSnapshotMeaning": "The file-size scan was taken before writing this analysis. The after totals below add this artifact itself; concurrent or later independent offline reports must be included in the final aggregate scan."
+  },
+  "limitations": [
+    "One75s open observation with3 hypothetical holdings and1 tracked candidate is not unattended acceptance, universal coverage or economic-performance evidence.",
+    "The independently retrieved chain-time audit is separate from receive-window completeness and migration/entry-age eligibility.",
+    "No budget is reset or refunded; neither leftover RPC ceiling nor unused stream reservation permits an automatic second test."
+  ],
+  "productionChanged": false,
+  "paperEntriesEnabled": false,
+  "naturalPaperTradesCreated": 0,
+  "financialStateChanged": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

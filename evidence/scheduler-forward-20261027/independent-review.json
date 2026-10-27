@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "classification": "INDEPENDENT_OFFLINE_REVIEW_OF_SINGLE_RETAINED_LIVE_DIAGNOSTIC_NOT_ACCEPTANCE",
+  "reviewedAt": "2026-10-27T15:24:09.140088+00:00",
+  "sourceSha256": {
+    "evidence/scheduler-forward-20261027/summary.json": "59d374166cc0a01b4a0e4eab8e656309a1e5e36c3f6d5c874dc9129650bbbfc8",
+    "evidence/scheduler-forward-20261027/capture.json": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce",
+    "evidence/scheduler-forward-20261027/audit.json": "c3c5cd6dd605e5e6f2b89a8930aa0a1f4470e246342c5b6a59afa50b4c651fd5",
+    "evidence/scheduler-forward-20261027/supervisor.json": "67a2e999ec4a70523d06f6bc23ac5b60e6837bd5acf6e6bf481569e3b5a04a24",
+    "evidence/scheduler-forward-20261027/observations.ndjson": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b"
+  },
+  "sourceModules": {
+    "src/component-parity.ts": "15bd52ea79c7dfda9a999cc462921a0d7bad199a38cac7d5b6c1b143046a3eb0",
+    "src/pumpapi-mapping.ts": "76aa0ae24e0e66fc7ae04c0ca076137a15d81454cf02a954cae014a1a0bf3e96",
+    "src/active-pipeline.ts": "6411e2b672372bf37741da37f0775858f050ed4b32a296bf3b272022fa8714cd"
+  },
+  "sameByteParity": {
+    "recomputedQuoteChecks": 123,
+    "coherentMarksIncludingPrewarm": 41,
+    "holdingsPerMark": 3,
+    "methods": "Reused established decoder and pinned SDK with original captured bytes, context, quantity and observation times. No current provider query."
+  },
+  "mapping": {
+    "reproducedExactEvidenceRecords": 5,
+    "buys": 1,
+    "sells": 4,
+    "observedInstructionVariants": [
+      "buy_v2",
+      "sell",
+      "sell_v2"
+    ],
+    "directSwaps": 3,
+    "routedSwaps": 2,
+    "multipleSwapTransactions": 0,
+    "executedTransferProofsPassed": true,
+    "corrections": 0,
+    "duplicates": 0,
+    "normalizationAvailabilityPreserved": true,
+    "unobservedVariants": "This capture does not retest exact-quote Buy variants or multiple swaps in one transaction."
+  },
+  "closedWindow": {
+    "startAt": 1793114350000,
+    "endAt": 1793114410000,
+    "events": 5,
+    "allSelectedSignaturesIndependentlyMatched": true,
+    "exactNominalChainDenominator": {
+      "supportedSwaps": 5,
+      "matchedEvents": 5,
+      "finalityRechecks": 2,
+      "changedFinalityEvidence": false
+    },
+    "genericReceiveWindowCompleteness": "NOT_ESTABLISHED_BY_CHAIN_TIME_ALONE",
+    "entryEligibility": "PUMP_ORIGIN_AND_ENTRY_AGE_UNVERIFIED",
+    "qualification": "Both amount conventions fail provisional net-buying, participation, concentration and persistence requirements. No natural entry eligibility, order or profit claim.",
+    "curveNetBuyLamports": "-596580787",
+    "userNetBuyLamports": "-589022089",
+    "distinctBuyerWallets": 1,
+    "largestBuyerBps": 10000,
+    "positiveNetBuckets": 0,
+    "rawFullyWarmedClosedWindowCount": 1
+  },
+  "timing": {
+    "inStreamEvaluations": 40,
+    "earlyPhaseChanges": 4,
+    "maximumCompletedEvaluationGapMs": 2056,
+    "p95CompletedEvaluationGapMs": 2033,
+    "completedGapsAbove2000ms": 21,
+    "openingEvaluationGapMs": 458,
+    "rightCensoredTailMs": 173,
+    "pointOfUseQuoteAgeRangeMs": [
+      14,
+      39
+    ],
+    "bankClockAgeAtUseRangeMs": [
+      365,
+      1431
+    ],
+    "unavailableOrStaleCacheMs": 1323,
+    "unavailableOrStaleCacheFraction": 0.01763952961254367,
+    "declaredJobCompletionDeadlinesMissed": 0,
+    "acceptedMaximumCompletedGapMs": null,
+    "protectionAcceptance": false
+  },
+  "hypotheticalPriceChanges": {
+    "selectedHoldingDistinctNetLiquidationValues": 5,
+    "selectedHoldingMinimumChangePercentFromFirstMark": -0.13473230593650454,
+    "otherTwoHoldingsChanged": false,
+    "observedStopLossCrossings": 0,
+    "observedTakeProfitCrossings": 0,
+    "observedMaximumHoldCrossings": 0,
+    "exitResponseDelay": "NOT_MEASURABLE_WITHOUT_AN_OBSERVED_TRIGGER; no synthetic outcome substituted.",
+    "baseline": "First observed net hypothetical liquidation value, not a modeled actual entry cost or P&L."
+  },
+  "observationDurationDeviation": {
+    "approvedMaximumOpenMs": 75000,
+    "recordedOpenMs": 75002,
+    "excessMs": 2,
+    "noPostCutoffSelectedNormalizedFeatureOrPricingInformationFound": true,
+    "lastSelectedHintRelativeToCutoffMs": -24922,
+    "lastPricingUseRelativeToCutoffMs": -171,
+    "endRecordRelativeToCutoffMs": 3,
+    "socketCloseRelativeToCutoffMs": 67,
+    "interpretation": "Report the2ms bound deviation. Useful retained component evidence remains reviewable; exact hard cutoff enforcement is not certified and no automatic repeat is authorized."
+  },
+  "decision": "The corrected components completed the tested light one-candidate/three-hypothetical-holding workload with matched bounded chain evidence. This is not accepted protection, complete market coverage, production capacity, unattended operation or economic performance.",
+  "networkRequests": 0,
+  "newCaptureOpened": false,
+  "productionChanged": false,
+  "originalAccountChanged": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}
