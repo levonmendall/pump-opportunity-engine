@@ -70,3 +70,19 @@ positions exist; samepilotledger preserved. Dashboardreportingbranch9617d52
 basedonconcurrentmain6802407 preservesnewUI; reportingonlydeploypending. Root
 alone ownsforwardnetwork/ledger. Nextfreezecommitthen3slotlive interval; do not
 advance6/12if3failscompletenessorprotection.
+
+20:59UTC: source2dbcda7/run09 stopped cleanly after100.113s. Configured3deep
+slots but only1allocated;69RPCunits/zero selectedtrades. Local support preparation
+repeatedlyspent5reads before testing openingheadroom. This is an inadequate
+preparation scheduler, not evidence ofprovider saturation. Backup22/revision3209
+reconcile, sameaccount/inception, zeroexposure. Rawnegative result preserved.
+Correction reserves5supportreads+openingheadroom before anysupportnetwork,
+defers toactualrollingreadyAt withoutinlinewait, andseparates canonicalidentity
+verification/cache fromsupportphase. Perphysical holding/enrichmentpriority
+unchanged. IndependentreviewGO; strictbuild+780fulltests+77focusedchecksPASS.
+Importedproofavailabilitywasalso wronglycountedas localregistrywaiting. A
+separate auditablecorrection reconstructswaitsfromactual localdiscoveryrecords;
+originalresult andcheckpoint retained, financial/usagecountersunchanged.
+Reportingonly Renderdeploy9617d52/dep-dbggvr0u01pc73fca5cg isLIVE, preserving
+concurrentmain6802407 andoriginalservice. Independentpublisherrestartawaits
+freshpilotstatus. Nextfreeze correctedsourceandresume3deep slots.

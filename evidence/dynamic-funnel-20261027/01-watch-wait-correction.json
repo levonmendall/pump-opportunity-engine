@@ -1,0 +1,57 @@
+{
+  "classification": "APPEND_ONLY_DIAGNOSTIC_CORRECTION_RECEIPT",
+  "originalRunUnchanged": true,
+  "financialStateUntouched": true,
+  "usageCountersUntouched": true,
+  "reason": "Historical proof availability was incorrectly interpreted as measured local registry waiting; correct replaceable checkpoint using actual recorded local admission times. Original result/trace/checkpoint preserved.",
+  "beforeSha256": "120b14fe039c907791889fbedf8a62cfe2d71f624192c7f2e7c4c656b824b2f8",
+  "afterSha256": "04d7f64b0f7367a3bab03e97c8dc8d09787a12cbc6d8dec66deda71f4025c3fc",
+  "beforeCounters": {
+    "promotionWaitTotalMs": 1768100,
+    "promotionWaitMaximumMs": 1768100
+  },
+  "afterCounters": {
+    "promotionWaitTotalMs": 10306,
+    "promotionWaitMaximumMs": 10306
+  },
+  "rowCorrections": [
+    {
+      "signature": "3tryiSnSvACqJLse1u3XkzgeEmBb6DbcCfJqhWEnMrRTHtHi4xKPv5A6bvjNm4rcQ3P41RR1txBKbSKDCTqkijcV",
+      "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+      "oldImportedFirstSeenAt": 1793132585135,
+      "localRegistryAdmissionAt": 1793134499794
+    },
+    {
+      "signature": "3wSHHKKqmWrVsi72oR7rKAmEFJHwJvbhVE9VFGB441g4Sx9X6PXugzxGpQk5DuukfYy2sPsijTqZM75N9QGEMUvn",
+      "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+      "oldImportedFirstSeenAt": 1793132597242,
+      "localRegistryAdmissionAt": 1793134499794
+    },
+    {
+      "signature": "iEcoiH3MNTd6hPcN2z5x3pLNLNnxuSKKpGe1QCt4o14yqhXyxyKAGLnAFGeuXWvRxYgmBRPqbgwgsjgsic267dK",
+      "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+      "oldImportedFirstSeenAt": 1793132608116,
+      "localRegistryAdmissionAt": 1793134499794
+    },
+    {
+      "signature": "39iBdjoxpqeeCwyfWTEF6NtJTuRCPJE98ywRxQ6t5qAwWjCSF6pZR8fjmXngBq1Af8W3F1rdNFVyoJdVmewZT5LW",
+      "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+      "oldImportedFirstSeenAt": 1793132619027,
+      "localRegistryAdmissionAt": 1793134499795
+    },
+    {
+      "signature": "3hF5ofCKSWsp4yrMJGuHNWP3Hcr3ZPuhq6Ma3tePnqjcPxvqt51gj5pFMq7392uz4aoajAHR6viLo5YeTXCLUQzW",
+      "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+      "oldImportedFirstSeenAt": 1793132798345,
+      "localRegistryAdmissionAt": 1793134499795
+    },
+    {
+      "signature": "2Xnz3WyVuDeSsemJaUMoGb9UJNxs2jmEt35DLGcrGPktLCfZRrNibQUWwRjj7AfkW9dE3HfSBAPLfjGSEgcr48wc",
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "oldImportedFirstSeenAt": 1793132819216,
+      "localRegistryAdmissionAt": 1793134499795
+    }
+  ],
+  "historicalWaitingBeforeLocalRegistry": "unknown; not measured",
+  "sourceForCorrection": "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/events.ndjson"
+}

@@ -159,3 +159,16 @@ test('warm-up audit deferral never bypasses the first complete closed-window or 
  assert.equal(pilotCandidateWindowReady({warm:true,fullyEnriched:true,hasQualityLoss:false,windowEndAt:70000,auditedThrough:1001,flowAt,connected:true},75000),false);
  assert.equal(pilotCandidateWindowReady({warm:true,fullyEnriched:true,hasQualityLoss:false,windowEndAt:70000,auditedThrough:70000,flowAt,connected:true},75000),true);
 });
+
+
+test('support phase reserves all five reads before consuming the opening headroom',()=>{
+ const starts=[10000,10250,10500,10750,11000],now=11250;
+ // Old post-phase check required15free slots only after spendingfive calls.
+ assert.equal(pilotObservationReadyAt(starts,now,20,{short:15,minute:20}),now);
+ const ready=pilotObservationReadyAt(starts,now,20,{short:20,minute:25});assert.equal(ready,21000);
+ assert.equal(pilotObservationReadyAt(starts,ready,20,{short:20,minute:25}),ready);
+ const five=Array.from({length:5},(_,i)=>ready+i*250);
+ assert.equal(pilotObservationReadyAt(five,ready+1250,20,{short:15,minute:20}),ready+1250,'after admission allfive freshreads stillleaveopeningheadroom');
+ const discretionary=Array.from({length:16},(_,i)=>10000+i*250);assert.equal(pilotDiscretionaryAdmission(discretionary,15000).admitted,true);assert.equal(pilotDiscretionaryAdmission(discretionary,15000,false,5).admitted,false);
+ assert.equal(pilotDiscretionaryAdmission(discretionary,70000,false,5).admitted,true);
+});

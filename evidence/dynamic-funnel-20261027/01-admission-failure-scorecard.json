@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "classification": "COMPLETED_ISOLATED_PAPER_SCORECARD",
+  "runId": "pilot-20261027205459767-1840d6f4",
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "source": {
+    "commit": "2dbcda7898180e7e145c597fdd368eada4917896",
+    "sha256": "7e1360a4b934dbf866e81a4d05ecb829a15dad0d09729980e2286e72fe014309"
+  },
+  "strategyVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+  "workloadStage": "three",
+  "candidateStatus": [
+    {
+      "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+      "pool": "Hs4r9Sw2FReth7JnRzNXb6k9vHBDrPWoLz6VPtjHxRVD",
+      "migrationAt": 1793132442000,
+      "flowAt": 1793134510708,
+      "auditedThrough": 1793134590000,
+      "auditRetryAt": 0
+    }
+  ],
+  "cutoffAt": 1793134599880,
+  "startedAt": 1793134499767,
+  "observedElapsedMs": 100113,
+  "observation": {
+    "candidates": [
+      {
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "migrationAt": 1793132442000,
+        "admittedAt": 1793134510099,
+        "entryAgeEligibleAt": 1793132742000,
+        "entryAgeExpiresAt": 1793139642000,
+        "observedFlowIntervals": [
+          {
+            "startAt": 1793134510711,
+            "endAt": 1793134599648
+          }
+        ],
+        "ageEligibleFlowIntervals": [
+          {
+            "startAt": 1793134510711,
+            "endAt": 1793134599648
+          }
+        ],
+        "ageEligibleFlowObservationMs": 88937,
+        "meaning": "Admitted active-flow collection at eligible migration age; not complete windows, permission or a qualified entry."
+      }
+    ],
+    "ageEligibleFlowObservationMsAcrossCandidates": 88937,
+    "ageEligibleFlowDistinctWallTimeMs": 88937,
+    "scopeResolution": {
+      "unknownRecords": [],
+      "unknownRecordCount": 0,
+      "legacyUnscopedRecordsAcceptedOnlyWithOneActiveScope": true,
+      "explicitGlobalGapClosesAllScopes": true,
+      "ambiguousStopEndsKnownObservationAsLowerBound": true
+    },
+    "verificationUnavailable": {
+      "intervals": [],
+      "candidateMilliseconds": 0,
+      "distinctWallTimeMs": 0,
+      "meaning": "From first recorded audit deferral until a scoped audit succeeds or observation ends. Flow collection may continue; no watermark advancement or entry permission is inferred."
+    },
+    "closedWindows": {
+      "featureReadyCount": 2,
+      "boundedAuditCoveredCount": 2,
+      "rows": [
+        {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "startAt": 1793134520000,
+          "endAt": 1793134580000,
+          "firstFeatureReadyAt": 1793134581003,
+          "boundedAuditCovered": true,
+          "auditedReadyAt": 1793134585187,
+          "features": {
+            "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+            "asOf": 1793134581003,
+            "windowStartAt": 1793134520000,
+            "windowEndAt": 1793134580000,
+            "sufficientlyObserved": true,
+            "qualityReason": null,
+            "buyLamports": "0",
+            "sellLamports": "0",
+            "netBuyLamports": "0",
+            "tradeCount": 0,
+            "provisionalTradeCount": 0,
+            "distinctBuyerWallets": 0,
+            "largestBuyerBps": 0,
+            "positiveNetBuckets": 0,
+            "priceReturnBps": null,
+            "firstPrice": null,
+            "lastPrice": null
+          }
+        },
+        {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "startAt": 1793134530000,
+          "endAt": 1793134590000,
+          "firstFeatureReadyAt": 1793134590030,
+          "boundedAuditCovered": true,
+          "auditedReadyAt": 1793134595121,
+          "features": {
+            "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+            "asOf": 1793134590030,
+            "windowStartAt": 1793134530000,
+            "windowEndAt": 1793134590000,
+            "sufficientlyObserved": true,
+            "qualityReason": null,
+            "buyLamports": "0",
+            "sellLamports": "0",
+            "netBuyLamports": "0",
+            "tradeCount": 0,
+            "provisionalTradeCount": 0,
+            "distinctBuyerWallets": 0,
+            "largestBuyerBps": 0,
+            "positiveNetBuckets": 0,
+            "priceReturnBps": null,
+            "firstPrice": null,
+            "lastPrice": null
+          }
+        }
+      ],
+      "unionByMint": [
+        {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "intervals": [
+            {
+              "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+              "startAt": 1793134520000,
+              "endAt": 1793134590000,
+              "firstFeatureReadyAt": 1793134581003,
+              "boundedAuditCovered": true,
+              "auditedReadyAt": 1793134585187,
+              "features": {
+                "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+                "asOf": 1793134581003,
+                "windowStartAt": 1793134520000,
+                "windowEndAt": 1793134580000,
+                "sufficientlyObserved": true,
+                "qualityReason": null,
+                "buyLamports": "0",
+                "sellLamports": "0",
+                "netBuyLamports": "0",
+                "tradeCount": 0,
+                "provisionalTradeCount": 0,
+                "distinctBuyerWallets": 0,
+                "largestBuyerBps": 0,
+                "positiveNetBuckets": 0,
+                "priceReturnBps": null,
+                "firstPrice": null,
+                "lastPrice": null
+              }
+            }
+          ],
+          "unionLookbackMs": 70000
+        }
+      ],
+      "totalCandidateLookbackUnionMs": 70000,
+      "distinctWallTimeUnionMs": 70000,
+      "sumOfWindowLengthsMs": 120000,
+      "coverage": "Recorded confirmed pool-history audit scope only; not full market or proven receive-time/finality completeness."
+    }
+  },
+  "entryControls": {
+    "status": "READ_ONLY_COMPLETED_BACKUP_JOURNAL",
+    "intervals": [],
+    "enabledMs": 0,
+    "unknownIntervals": [],
+    "coverageThrough": 1793134599880,
+    "uncoveredTailMs": null,
+    "firstEnabledInstantReportedBySnapshot": null,
+    "enabledAtSnapshot": false,
+    "meaning": "Literal successful-resume control flag intervals; not simultaneous strategy qualification, fresh quotes, exposure or complete risk permission."
+  },
+  "decisions": {
+    "total": 9,
+    "predictiveRejectionCount": 0,
+    "predictiveRejections": [],
+    "allDecisionRows": [
+      {
+        "recordedAt": 1793134510744,
+        "decisionAt": 1793134510744,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "missing-data",
+        "reason": "warming",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134510743,
+          "windowStartAt": 1793134450000,
+          "windowEndAt": 1793134510000,
+          "sufficientlyObserved": false,
+          "qualityReason": "warming",
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134520052,
+        "decisionAt": 1793134520052,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "missing-data",
+        "reason": "warming",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134520052,
+          "windowStartAt": 1793134460000,
+          "windowEndAt": 1793134520000,
+          "sufficientlyObserved": false,
+          "qualityReason": "warming",
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134530020,
+        "decisionAt": 1793134530020,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "missing-data",
+        "reason": "warming",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134530020,
+          "windowStartAt": 1793134470000,
+          "windowEndAt": 1793134530000,
+          "sufficientlyObserved": false,
+          "qualityReason": "warming",
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134540022,
+        "decisionAt": 1793134540022,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "missing-data",
+        "reason": "warming",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134540022,
+          "windowStartAt": 1793134480000,
+          "windowEndAt": 1793134540000,
+          "sufficientlyObserved": false,
+          "qualityReason": "warming",
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134550008,
+        "decisionAt": 1793134550008,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "missing-data",
+        "reason": "warming",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134550007,
+          "windowStartAt": 1793134490000,
+          "windowEndAt": 1793134550000,
+          "sufficientlyObserved": false,
+          "qualityReason": "warming",
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134560049,
+        "decisionAt": 1793134560049,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "missing-data",
+        "reason": "warming",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134560049,
+          "windowStartAt": 1793134500000,
+          "windowEndAt": 1793134560000,
+          "sufficientlyObserved": false,
+          "qualityReason": "warming",
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134570031,
+        "decisionAt": 1793134570031,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "missing-data",
+        "reason": "warming",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134570030,
+          "windowStartAt": 1793134510000,
+          "windowEndAt": 1793134570000,
+          "sufficientlyObserved": false,
+          "qualityReason": "warming",
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134585191,
+        "decisionAt": 1793134585191,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "risk-rejection",
+        "reason": "entries-not-authorized-by-ledger",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134585191,
+          "windowStartAt": 1793134520000,
+          "windowEndAt": 1793134580000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793134595125,
+        "decisionAt": 1793134595125,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "risk-rejection",
+        "reason": "entries-not-authorized-by-ledger",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793134595124,
+          "windowStartAt": 1793134530000,
+          "windowEndAt": 1793134590000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      }
+    ],
+    "fullyQualifiedDecisionCount": 0,
+    "fullyQualifiedDecisionInstants": [],
+    "observedQualifiedDecisionDurationMs": 0,
+    "continuousQualifiedDurationMs": null,
+    "qualifiedOrderCorrelations": [],
+    "qualifiedButNotFilledAssessment": "Joined bounded order/attempt records below; decision points are not automatically reservations."
+  },
+  "orders": [],
+  "naturalPaper": {
+    "entriesFromRecordedFilledActions": 0,
+    "exitsFromRecordedFilledActions": 0,
+    "source": "Unique filled order IDs in recorded trader-execution events; confirm against completed financial journal when provided.",
+    "snapshotReported": {
+      "entries": 0,
+      "exits": 0
+    },
+    "snapshotCountAgreement": {
+      "entries": true,
+      "exits": true
+    },
+    "executionRows": [],
+    "forwardEventsOnly": true
+  },
+  "workload": {
+    "parsedRowsThroughCutoff": 1063,
+    "physicalStarts": 69,
+    "httpCompletedBodies": 66,
+    "httpBodyResponseMs": {
+      "samples": 66,
+      "p50": 55,
+      "p95": 139,
+      "maximum": 253
+    },
+    "normalizedEvents": 0,
+    "normalizationDelayFromProviderMs": {
+      "samples": 0,
+      "p50": null,
+      "p95": null,
+      "maximum": null
+    },
+    "normalizationProviderTimeUnavailable": 0,
+    "heldMarkAgeAtRecordedContextMs": {
+      "samples": 0,
+      "p50": null,
+      "p95": null,
+      "maximum": null
+    },
+    "contextRows": 81,
+    "heldContextRows": 0,
+    "refusals": {
+      "candidate-preparation-unavailable": 9,
+      "entry-capacity-refusal": 2
+    },
+    "faults": {},
+    "actualSnapshotUsage": {
+      "rpc": {
+        "cumulativeUnits": 1003,
+        "newUnits": 69,
+        "accountedCumulativeResponseBytes": 36208340,
+        "newAccountedResponseBytes": 178671,
+        "uncertainResponseBytes": 23068672,
+        "cooldownUntil": 1793126555459,
+        "controlCooldownUntil": 0,
+        "inFlight": 0,
+        "closed": true,
+        "fatal": null
+      },
+      "feeds": {
+        "pumpApiSocketBytes": 114137209,
+        "discoverySocketBytes": 238,
+        "controlBytesCharged": 451,
+        "frames": 74246,
+        "irrelevantFrames": 74245,
+        "selectedFrames": 0,
+        "normalizedTrades": 0,
+        "gaps": 0,
+        "physicalTransportsSettled": true
+      }
+    }
+  },
+  "financial": {
+    "snapshotRevision": 3209,
+    "backup": {
+      "path": "/workspace/poe-pilot/backups/poe-financial-00000000000000000022.sqlite",
+      "bytes": 1744896,
+      "sha256": "9928e0f96830e946607950e42afab6a8c8a9e6d3bf1732ea87b6c628339f0141",
+      "revision": 3209,
+      "matchesFinalRevision": true
+    },
+    "openPositionsAtSnapshot": 0,
+    "pendingActionsAtSnapshot": 0,
+    "snapshotValues": {
+      "cashLamports": "9920142850",
+      "reservedLamports": "0",
+      "lockedDepositLamports": "0",
+      "equityLamports": "9920142850",
+      "totalPnlLamports": "0",
+      "equityMicroUsd": "1001091216",
+      "totalPnlMicroUsd": "1091216",
+      "solPriceEffectMicroUsd": "1091216",
+      "executionCostsLamports": "0",
+      "operatingCostsMicroUsd": null,
+      "economicPnlMicroUsd": null,
+      "operatingCostClassification": "unavailable"
+    },
+    "valuesNotRepriced": true
+  },
+  "limitations": [
+    "Metrics end at the selected snapshot timestamp; later captured records are excluded, and a running status is provisional.",
+    "Age-eligible collection, audited feature-ready lookbacks, control-enabled intervals and full qualification are different measurements.",
+    "Overlapping60s windows are unioned; their count times60 is not continuous eligible trading time.",
+    "Audit availability is retained separately from window end; confirmation or history cannot be backdated into decisions.",
+    "Control duration needs durable action results: a resume journal entry alone may have returned enabled:false.",
+    "Qualification is observed at discrete decision times; continuous qualification or missed economic outcomes cannot be reconstructed from sparse observations.",
+    "No P&L, hypothetical fill or unobserved threshold crossing is manufactured. API fees, infrastructure and simulated execution costs retain their original classifications."
+  ],
+  "networkRequests": 0,
+  "financialWriterOpened": false,
+  "productionDataRead": false,
+  "inputs": {
+    "events": {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/events.ndjson",
+      "bytes": 525800,
+      "sha256": "5a94d4e4ed7af3d4485ba9676f2d11670ca3328ed1b6d358036fb565acb36079"
+    },
+    "snapshot": {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/result.json",
+      "bytes": 59909,
+      "sha256": "6bb9c1edeea96f175303ec861401c7378f767df13b81def1c7052b79e1a0ce07"
+    },
+    "eventsAreAnAtOpenPrefix": false,
+    "trailingIncompleteBytes": 0,
+    "immutableResultUsed": true
+  },
+  "dataQuality": "PARSED_SELECTED_INPUT_PREFIX"
+}

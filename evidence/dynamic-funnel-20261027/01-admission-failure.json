@@ -1,0 +1,25 @@
+{
+  "classification": "INADEQUATE_LOCAL_PREPARATION_SCHEDULING",
+  "source": {
+    "commit": "2dbcda7898180e7e145c597fdd368eada4917896",
+    "sha256": "7e1360a4b934dbf866e81a4d05ecb829a15dad0d09729980e2286e72fe014309"
+  },
+  "runId": "pilot-20261027205459767-1840d6f4",
+  "elapsedMs": 100113,
+  "maximumActualDeepScopes": 1,
+  "configuredDeepScopes": 3,
+  "newPhysicalUnits": 69,
+  "newAccountedResponseBytes": 178671,
+  "pumpApiBytes": 114137209,
+  "positions": 0,
+  "naturalEntries": 0,
+  "naturalExits": 0,
+  "fullAuditCoveredWindows": 2,
+  "predictiveRejections": 0,
+  "qualifiedUnfilled": 0,
+  "failure": "Repeated support reads consumed the headroom tested only after the phase; no observed selected trades or provider saturation explained it.",
+  "correction": "Reserve all5 support reads plus opening reserve before support, separately resolve/cache new identities, keep perphysical higherpriority admission.",
+  "oldResultPreserved": true,
+  "waitMetricCorrectionReceipt": "01-watch-wait-correction.json",
+  "productionChanged": false
+}

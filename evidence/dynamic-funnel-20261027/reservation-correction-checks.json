@@ -1,0 +1,15 @@
+{
+  "classification": "OFFLINE_REPAIR_VERIFICATION",
+  "fullSuite": {
+    "passed": 780,
+    "failed": 0,
+    "durationMs": 50980.960105
+  },
+  "focused": 77,
+  "typecheck": "PASS",
+  "independentReview": "GO isolated3-slot forward",
+  "failurePreserved": "01-admission-failure.json",
+  "noProductionChange": true,
+  "noRiskOrStrategyChange": true,
+  "timingLimitsUnchanged": true
+}
