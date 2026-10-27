@@ -10,7 +10,7 @@ export const CONNECTIONS_HTML=String.raw`
 <p id="pilot-source-detail"></p>
 <div id="pilot-funnel" class="metric-grid"></div>
 <h3>Market watch and deep analysis</h3><div id="pilot-watch" class="metric-grid"></div>
-<p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. Registry promotion and complete-window totals persist across research runs; feature-only, primary strategy rejection, incomplete-data and enrichment-deadline counts describe the current run. Feature-only assessments inform slot allocation; they do not qualify an entry or grant risk permission. Queue and completed-admission waits measure elapsed wall time, including stopped intervals—not provider latency or delay caused solely by capacity. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
+<p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. The ready queue excludes cooldown and backoff; deferred identities remain in the watch total. Registry promotion and complete-window totals persist across research runs; feature-only, primary strategy rejection, incomplete-data and enrichment-deadline counts describe the current run. Feature-only assessments inform slot allocation; they do not qualify an entry or grant risk permission. Queue and completed-admission waits measure elapsed wall time, including stopped intervals—not provider latency or delay caused solely by capacity. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
 <div id="pilot-metrics" class="metric-grid pilot-grids"></div>
 <p class="pilot-note">Funnel, swap and accounting counters describe the identified pilot run. Validated swap events are market observations; PAPER fills and exits are simulated portfolio actions. Accounting reconciliations include zero-trade checks. Source age describes the local status file, not complete market coverage or continuous position protection.</p>
 <h3>Recent pilot decisions</h3><div id="pilot-decisions" class="identity-line">No pilot report received.</div>
@@ -63,7 +63,7 @@ function showPilot(p){
  const w=s.watch;
  if(w){grid('pilot-watch',[
   ['Recent identities known',w.known],['Eligible verified identities',w.eligibleKnown],['Watch candidates',w.watch],
-  ['Deep slots active / maximum',pretty(w.deepActive)+' / '+pretty(w.maximumDeep)],['Waiting for deep observation',w.queued],
+  ['Deep slots active / maximum',pretty(w.deepActive)+' / '+pretty(w.maximumDeep)],['Ready deep-analysis queue',w.queued],
   ['Current queue wait: average / maximum (s)',pretty(typeof w.waitMs?.mean==='number'?w.waitMs.mean/1000:null)+' / '+pretty(typeof w.waitMs?.maximum==='number'?w.waitMs.maximum/1000:null)],
   ['Completed admission wait: average / maximum (s)',pretty(typeof w.promotionWaitMs?.mean==='number'?w.promotionWaitMs.mean/1000:null)+' / '+pretty(typeof w.promotionWaitMs?.maximum==='number'?w.promotionWaitMs.maximum/1000:null)],
   ['Promotions / re-promotions',pretty(w.promoted)+' / '+pretty(w.repromoted)],['Demotions',w.demoted],['Complete 60-second windows',w.completeWindows],
