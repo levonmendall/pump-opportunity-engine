@@ -80,20 +80,20 @@ export class RpcMarket {
     return {depositLamports:required.toString(),plan:{...plan},rents:Object.fromEntries([...rents].map(([bytes,rent])=>[bytes,rent.toString()])),gas:{...this.options.gas},gasLamports:this.gasLamports,classification:'simulated' as const};
   }
   private async readQuote(request:SizeRequest,signal:AbortSignal):Promise<SizeQuote|null>{
-    const r=Object.freeze({mint:request.mint,side:request.side,inputUnits:request.inputUnits}),pool=this.pools.get(r.mint);if(!pool||!['buy','sell'].includes(r.side)||uint(r.inputUnits)===0n)return null;
-    const floor=Math.max(pool.migrationSlot,this.slots.get(r.mint)??0),mint=new PublicKey(r.mint);
+    const r=Object.freeze({mint:request.mint,side:request.side,inputUnits:request.inputUnits,...(request.minSlot===undefined?{}:{minSlot:request.minSlot})}),pool=this.pools.get(r.mint);if(!pool||!['buy','sell'].includes(r.side)||uint(r.inputUnits)===0n||r.minSlot!==undefined&&(!Number.isSafeInteger(r.minSlot)||r.minSlot<0))return null;
+    const floor=Math.max(pool.migrationSlot,this.slots.get(r.mint)??0,r.minSlot??0),mint=new PublicKey(r.mint);
     const state=r.side==='buy'?await quotePool(this.options.rpc,mint,uint(r.inputUnits),this.options.recorder,floor,signal):await quotePositionSell(this.options.rpc,mint,uint(r.inputUnits),this.options.recorder,floor,signal);
     let costs:Awaited<ReturnType<RpcMarket['entryCosts']>>|undefined;
     if(r.side==='buy')costs=await this.entryCosts(r.mint,state,signal);
-    signal.throwIfAborted();const at=this.fresh(state);
+    signal.throwIfAborted();if(!Number.isSafeInteger(state.slot)||state.slot<floor)throw new Error('RPC_MARKET_REQUEST_SLOT_UNAVAILABLE');const at=this.fresh(state);
     const output='buy' in state?state.buy.outputBaseUnits:state.sell.outputLamports;
     if(r.side==='sell'&&uint(output)<=uint(this.gasLamports))return null;
     const evidence='rpc-market:'+createHash('sha256').update(JSON.stringify({request:r,state,costs,gas:this.options.gas,migrationEvidence:pool.evidence})).digest('hex');
-    const quote:SizeQuote={...r,outputUnits:output,at,evidence,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve};
+    const quote:SizeQuote={...r,outputUnits:output,at,evidence,slot:state.slot,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve};
     this.options.recorder.record('rpc-market-quote',{request:r,quote,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,marketBlockTime:state.marketBlockTime,migrationSlot:pool.migrationSlot},costs:costs??{gas:{...this.options.gas},gasLamports:this.gasLamports,classification:'simulated',refundableDepositRefund:'not assumed'}});
     signal.throwIfAborted();this.fresh(state);return quote;
   }
-  readonly quote=(request:SizeRequest,signal:AbortSignal):Promise<SizeQuote|null>=>{const expected=Object.freeze({mint:request.mint,side:request.side,inputUnits:request.inputUnits});return this.bounded(signal,s=>this.readQuote(expected,s),()=>null);};
+  readonly quote=(request:SizeRequest,signal:AbortSignal):Promise<SizeQuote|null>=>{const expected=Object.freeze({mint:request.mint,side:request.side,inputUnits:request.inputUnits,...(request.minSlot===undefined?{}:{minSlot:request.minSlot})});return this.bounded(signal,s=>this.readQuote(expected,s),()=>null);};
   readonly context=(positions:Readonly<Record<string,Position>>,signal:AbortSignal):Promise<ExecutionContext>=>{
     const entries=Object.entries(positions).map(([mint,p])=>[mint,{mint:p.mint,units:p.units}] as const);
     const result=empty();

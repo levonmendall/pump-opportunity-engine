@@ -1,9 +1,12 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {ReadOnlyRpc} from '../src/network.js';
 import {RpcMarket,type RpcMarketOptions} from '../src/rpc-market.js';
-import type {Position} from '../src/ledger.js';
+import {DisposableLedger,type Position} from '../src/ledger.js';
+import {PaperTrader} from '../src/trader.js';
 
 // Retained real pool bytes replayed with explicit synthetic availability times.
 // No forward price, financial account or network call is created by these tests.
@@ -14,9 +17,9 @@ function fixture(options:{advanceBlockMs?:number;gas?:string;deposit?:string|nul
     return {proof,state:structuredClone(rows.find(x=>x.kind==='pool-state').data)};
   });
   let now=Date.parse(captures[1]!.proof.quote.validatedAt),missing=false,blockAge=0,rentUnavailable=false;
-  const rows:Array<{kind:string;data:any}>=[],methods:string[]=[],rentBytes:number[]=[];
+  const rows:Array<{kind:string;data:any}>=[],methods:string[]=[],rentBytes:number[]=[],requests:Array<{method:string;params:any[]}>=[];
   const rpc=new ReadOnlyRpc('https://fixture.invalid',(async(_url,init)=>{
-    const b=JSON.parse(String(init?.body));methods.push(b.method);let result;
+    const b=JSON.parse(String(init?.body));methods.push(b.method);requests.push({method:b.method,params:structuredClone(b.params)});let result;
     if(b.method==='getMultipleAccounts'){
       const capture=captures.find(x=>x.proof.quote.pool===b.params[0][0]);assert.ok(capture);
       assert.ok(b.params[1].minContextSlot>=capture.proof.origin.slot);
@@ -31,7 +34,7 @@ function fixture(options:{advanceBlockMs?:number;gas?:string;deposit?:string|nul
   const market=new RpcMarket(config);for(const {proof} of captures)market.registerPool({mint:proof.quote.mint,migrationSlot:proof.origin.slot,migrationVerified:true,evidence:'retained confirmed migration evidence'});
   const position=(index=0,scale=1n):Position=>{const q=captures[index]!.proof.quote;return {mint:q.mint,units:String(BigInt(q.buy.outputBaseUnits)*scale),entryLamports:'10000000',entryGas:'7000',costMicroUsd:'2001400',deposit:'0',enteredAt:now-100_000};};
   const at=now,realNow=Date.now;Date.now=()=>now;
-  return {market,rpc,rows,methods,rentBytes,captures,position,at,config,clock:()=>now,advance:(ms:number)=>{now+=ms;},missing:()=>{missing=true;},staleBlock:()=>{blockAge=60_000;},missingRent:()=>{rentUnavailable=true;},close:()=>{Date.now=realNow;}};
+  return {market,rpc,rows,methods,rentBytes,requests,captures,position,at,config,clock:()=>now,advance:(ms:number)=>{now+=ms;},missing:()=>{missing=true;},staleBlock:()=>{blockAge=60_000;},missingRent:()=>{rentUnavailable=true;},close:()=>{Date.now=realNow;}};
 }
 const signal=()=>new AbortController().signal;
 
@@ -137,4 +140,39 @@ test('slow recording cannot refresh a mark or USD snapshot after its final fresh
     market.registerPool({mint:p.mint,migrationSlot:f.captures[0]!.proof.origin.slot,migrationVerified:true,evidence:'retained migration'});
     const context=await market.context({[p.mint]:p},signal());assert.deepEqual(context.marks,{});assert.equal(context.price,null);
   }finally{f.close();}
+});
+
+test('optional candidate slot floor reaches actual RPC reads and returned verified quote context',async()=>{
+  const f=fixture({accounts:true,deposit:'0'});try{
+    const p=f.position(),slot=f.captures[0]!.state.context.slot,q=await f.market.quote({mint:p.mint,side:'buy',inputUnits:'10000000',minSlot:slot},signal());assert.ok(q);assert.equal(q.slot,slot);
+    const reads=f.requests.filter(r=>r.method==='getMultipleAccounts');assert.equal(reads.length,2);assert.ok(reads.every(r=>r.params[1].minContextSlot===slot));assert.equal(f.rpc.calls,3);
+    const before=f.rpc.calls,unavailable=await f.market.quote({mint:p.mint,side:'sell',inputUnits:p.units,minSlot:slot+1},signal());assert.equal(unavailable,null);assert.equal(f.rpc.calls,before+1);assert.equal(f.requests.at(-1)!.params[1].minContextSlot,slot+1);
+  }finally{f.close();}
+});
+
+test('malformed request floors never request data and asynchronous caller mutation cannot lower the copied floor',async()=>{
+  const f=fixture();try{
+    const p=f.position(),slot=f.captures[0]!.state.context.slot;
+    for(const minSlot of [-1,0.5,Number.NaN,Number.POSITIVE_INFINITY])assert.equal(await f.market.quote({mint:p.mint,side:'sell',inputUnits:p.units,minSlot},signal()),null);
+    assert.equal(f.rpc.calls,0);
+    const request={mint:p.mint,side:'sell' as const,inputUnits:p.units,minSlot:slot},pending=f.market.quote(request,signal());request.minSlot=0;
+    const q=await pending;assert.ok(q);assert.equal(q.slot,slot);assert.ok(f.requests.filter(r=>r.method==='getMultipleAccounts').every(r=>r.params[1].minContextSlot===slot));
+  }finally{f.close();}
+});
+
+test('research trader slot floor reaches the retained-byte RpcMarket adapter before disposable reservation',async()=>{
+  const f=fixture({accounts:true,deposit:'0'}),directory=mkdtempSync(join(tmpdir(),'poe-lazy-market-DISPOSABLE-')),ledger=new DisposableLedger(join(directory,'fixture.sqlite'),'fixture-lazy-market');
+  try{
+    const began=Math.ceil(f.clock()/10000)*10000;f.advance(began-f.clock());
+    const p=f.position(),slot=f.captures[0]!.state.context.slot,price={microUsdPerSol:'200000000',at:began,source:'DISPOSABLE timestamped USD'};
+    ledger.initialize(price,began);
+    const engine=new PaperTrader({ledger,now:f.clock,context:f.market.context,quote:f.market.quote,deferPredictivelyRejectedQuotes:true,recorder:f.config.recorder,costs:{gasLamports:'7000',depositLamports:'0',slippageBps:500,evidence:'DISPOSABLE explicit gas/account plan'},flowVerification:{verified:true,evidence:'DISPOSABLE synthetic flow; no provider or economic validation'}});engine.start();
+    engine.admit({mint:p.mint,migrationAt:began-300000,migrationVerified:true,supportedPool:true,evidence:'DISPOSABLE admitted identity tied to retained migration'});engine.activateFlow(p.mint,'DISPOSABLE ACK');
+    for(let i=0;i<6;i++){
+      f.advance(began+i*10000+100-f.clock());engine.ingest({identity:{signature:`fixture-end-to-end-${i}`,instructionIndex:0,eventIndex:0},mint:p.mint,wallet:`fixture-wallet-${i}`,side:'buy',quoteLamports:'300000000',tokenUnits:String(300000-i*20000),receivedAt:f.clock(),commitment:'confirmed',slot:slot-5+i});
+    }
+    f.advance(began+60000-f.clock());const current={microUsdPerSol:'200000000',at:f.clock(),source:'DISPOSABLE timestamped USD'};ledger.reconcile('fixture-ready',f.clock(),current,{});ledger.resume('fixture-resume',f.clock(),current,{}, {version:'DISPOSABLE',evidence:'isolated software handoff only',marketAt:f.clock(),recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
+    await engine.tick();assert.equal(engine.funnel.reserved,1);assert.equal(engine.funnel.paperFilled,0);assert.equal(Object.keys(ledger.state().pending).length,1);
+    const q=f.rows.find(r=>r.kind==='rpc-market-quote')!.data;assert.equal(q.request.minSlot,slot);assert.equal(q.quote.slot,slot);assert.ok(f.requests.filter(r=>r.method==='getMultipleAccounts').every(r=>r.params[1].minContextSlot===slot));assert.equal(f.rpc.calls,3);assert.equal(ledger.state().inceptionAt,began);
+  }finally{ledger.close();rmSync(directory,{recursive:true,force:true});f.close();}
 });

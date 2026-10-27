@@ -246,3 +246,79 @@ test('another held-position estimate cannot starve an already-reserved exit',{ti
   }});engine.start();startReal=Date.now();live=true;await engine.tick();
   assert.equal(aborted,true);assert.equal(f.ledger.state().positions['fixture-held-a'],undefined);assert.equal(f.ledger.state().positions['fixture-held-b']!.units,'1000');assert.equal(engine.funnel.exited,1);
 });
+
+test('research lazy quotes preserve existing predictive qualification at10s cadence while skipping already-rejected reads',async t=>{
+  const cases=['net','persistence','buyers','concentration','price','qualified'] as const;
+  for(const name of cases){
+    const outputs=[];
+    for(const lazy of [false,true]){
+      const f=fixture(t),engine=new PaperTrader({...f.options(),...(lazy?{deferPredictivelyRejectedQuotes:true as const}:{}),quote:async request=>{const q=await f.quote(request);return q?{...q,slot:1000}:null;}});engine.start();f.admit(engine);
+      for(let i=0;i<6;i++){
+        f.set(T+(name==='persistence'?Math.floor(i/2):i)*10_000+100+i);
+        engine.ingest({identity:{signature:`fixture-lazy-${name}-${i}`,instructionIndex:0,eventIndex:0},mint:MINT,wallet:`fixture-wallet-${name==='buyers'?i%4:name==='concentration'&&i<3?0:i}`,side:'buy',quoteLamports:name==='net'?'1000000':'300000000',tokenUnits:String(name==='price'?100_000+i*20_000:300_000-i*20_000),receivedAt:f.now(),commitment:'confirmed',slot:100+i});
+      }
+      f.set(T+60_000);f.ready();await engine.tick();const calls=f.quoteCalls.length;
+      await engine.tick();assert.equal(f.quoteCalls.length,calls,'same closed bin is not recalculated');assert.equal(engine.funnel.evaluated,1);
+      outputs.push({qualified:engine.funnel.qualified,reserved:engine.funnel.reserved,calls,last:engine.decisions().at(-1),deferred:f.records().filter(r=>r.kind==='trader-quote-deferred')});
+      assert.equal(f.ledger.state().inceptionAt,T);assert.equal(engine.funnel.paperFilled,0);
+    }
+    assert.equal(outputs[0]!.qualified,outputs[1]!.qualified,name);assert.equal(outputs[0]!.reserved,outputs[1]!.reserved,name);
+    assert.equal(outputs[0]!.calls,1);assert.equal(outputs[1]!.calls,name==='qualified'?1:0,name);
+    assert.equal(outputs[1]!.qualified,name==='qualified'?1:0,name);
+    if(name!=='qualified'){assert.equal(outputs[1]!.deferred.length,1);assert.equal(outputs[1]!.deferred[0]!.data.quoteSupportRefreshed,false);assert.equal(outputs[1]!.last!.features!.tradeCount,6);}
+  }
+});
+
+test('research candidates require a returned quote slot at or after every known selected-flow slot',async t=>{
+  for(const slot of [undefined,104,105]){
+    const f=fixture(t),engine=new PaperTrader({...f.options(),deferPredictivelyRejectedQuotes:true,quote:async request=>{const q=await f.quote(request);return q?{...q,...(slot===undefined?{}:{slot})}:null;}});engine.start();f.admit(engine);f.warm(engine);f.ready();await engine.tick();
+    assert.equal(f.quoteCalls[0]!.minSlot,105);assert.equal(engine.funnel.reserved,slot===105?1:0);assert.equal(engine.funnel.paperFilled,0);
+  }
+});
+
+test('flow arriving during a quote raises the knowledge floor before that quote can qualify',async t=>{
+  const f=fixture(t);let engine:PaperTrader;
+  engine=new PaperTrader({...f.options(),deferPredictivelyRejectedQuotes:true,quote:async request=>{
+    const q=await f.quote(request);f.set(T+60_100);engine.ingest({identity:{signature:'fixture-during-quote',instructionIndex:0,eventIndex:0},mint:MINT,wallet:'fixture-new-wallet',side:'buy',quoteLamports:'1',tokenUnits:'1',receivedAt:f.now(),commitment:'confirmed',slot:700});return q?{...q,slot:600}:null;
+  }});engine.start();f.admit(engine);f.warm(engine);f.ready();await engine.tick();
+  assert.equal(f.quoteCalls[0]!.minSlot,105);assert.equal(engine.funnel.reserved,0);assert.deepEqual(f.ledger.state().pending,{});assert.equal(engine.decisions().at(-1)!.reason,'fresh-size-specific-quote-unavailable');
+});
+
+test('deferred quotes neither invent newer slots nor forget a previously accepted slot floor',async t=>{
+  const f=fixture(t);let calls=0;
+  const engine=new PaperTrader({...f.options(),deferPredictivelyRejectedQuotes:true,quote:async request=>{calls++;const q=await f.quote(request);return q?{...q,slot:calls===1?500:499,...(calls===1?{effectiveQuoteLiquidityLamports:'1'}:{})}:null;}});engine.start();f.admit(engine);f.warm(engine);f.ready();await engine.tick();
+  assert.equal(engine.decisions().at(-1)!.reason,'order-size-exceeds-execution-liquidity-bound');assert.equal(f.quoteCalls.length,1);
+  f.set(T+60_100);engine.ingest({identity:{signature:'fixture-lazy-sell',instructionIndex:0,eventIndex:0},mint:MINT,wallet:'fixture-seller',side:'sell',quoteLamports:'3000000000',tokenUnits:'1000000',receivedAt:f.now(),commitment:'confirmed',slot:200});
+  f.set(T+70_000);f.ready();await engine.tick();assert.equal(f.quoteCalls.length,1);assert.equal(f.records().findLast(r=>r.kind==='trader-quote-deferred')!.data.knownSlotFloor,500);
+  f.warm(engine,MINT,T+70_000);f.ready();await engine.tick();assert.equal(f.quoteCalls.length,2);assert.equal(f.quoteCalls[1]!.minSlot,500);assert.equal(engine.funnel.reserved,0);
+});
+
+test('opt-in deferral retains quote freshness, liquidity, production closure and delayed execution checks',async t=>{
+  for(const kind of ['stale','liquidity','paper','unverified'] as const){
+    const f=fixture(t,{...(kind==='paper'?{paper:true}:{}),...(kind==='unverified'?{verified:false}:{})}),engine=new PaperTrader({...f.options(),deferPredictivelyRejectedQuotes:true,quote:async request=>{const q=await f.quote(request);return q?{...q,slot:1000,...(kind==='stale'?{at:f.now()-2001}:{}),...(kind==='liquidity'?{effectiveQuoteLiquidityLamports:'1'}:{})}:null;}});engine.start();f.admit(engine);f.warm(engine);f.ready();await engine.tick();assert.equal(engine.funnel.reserved,0,kind);assert.equal(engine.funnel.paperFilled,0);assert.equal(f.quoteCalls.length,kind==='paper'||kind==='unverified'?0:1);
+  }
+  const f=fixture(t);let calls=0;const engine=new PaperTrader({...f.options(),deferPredictivelyRejectedQuotes:true,quote:async request=>{calls++;const q=await f.quote(request);return q?{...q,slot:calls===1?1000:999}:null;}});engine.start();f.admit(engine);f.warm(engine);f.ready();await engine.tick();assert.equal(engine.funnel.reserved,1);
+  f.set(T+61_000);await engine.tick();assert.equal(f.quoteCalls[1]!.minSlot,1000);assert.equal(engine.funnel.paperFilled,0);assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().executionCosts,'10000');
+});
+
+test('a quote refused for malformed optional fields cannot raise the accepted quote-slot floor',async t=>{
+  const f=fixture(t);let calls=0;
+  const engine=new PaperTrader({...f.options(),deferPredictivelyRejectedQuotes:true,quote:async request=>{calls++;const q=await f.quote(request);return q?{...q,slot:calls===1?1000:105,...(calls===1?{effectiveQuoteLiquidityLamports:'malformed'}:{})}:null;}});engine.start();f.admit(engine);f.warm(engine);f.ready();await engine.tick();
+  assert.equal(engine.funnel.reserved,0);assert.equal(f.quoteCalls[0]!.minSlot,105);
+  f.set(T+70_000);f.ready();await engine.tick();assert.equal(f.quoteCalls[1]!.minSlot,105);assert.equal(engine.funnel.reserved,1);assert.equal(engine.funnel.paperFilled,0);
+});
+
+test('an exit quote that ages while a due action is handled cannot reserve an exit or erase the held exposure',async t=>{
+  const f=fixture(t),other='fixture-due-exit';f.ready();
+  for(const [i,mint]of [MINT,other].entries())f.ledger.order({id:`fixture-stale-seed-${i}`,mint,side:'buy',decidedAt:T,executeAt:T+500,expiresAt:T+2000,gas:'10000',deposit:'0',maxSpend:'499990000',minReceive:'1',decisionEvidence:'DISPOSABLE held setup'},(await f.context({})).price!,{});
+  f.set(T+500);for(let i=0;i<2;i++)f.ledger.attempt(`fixture-stale-fill-${i}`,`fixture-stale-seed-${i}`,f.now(),{at:f.now(),spendLamports:'499990000',receiveUnits:'1000',evidence:'DISPOSABLE actual-size quote'},(await f.context({})).price!,(await f.context(f.ledger.state().positions)).marks);
+  const engine=new PaperTrader({...f.options(),quote:async request=>{
+    if(request.mint===MINT){const q=await f.quote(request);f.set(T+62_000);return q;}
+    f.set(T+65_000);const q=await f.quote(request);return q?{...q,refundedDepositLamports:'0'}:null;
+  }});engine.start();f.stopNet();f.set(T+61_000);const before=await f.context(f.ledger.state().positions);
+  f.ledger.order({id:'fixture-higher-priority-exit',mint:other,side:'sell',decidedAt:f.now(),executeAt:T+62_000,expiresAt:T+67_000,gas:'10000',deposit:'0',maxSpend:'0',minReceive:'1',decisionEvidence:'DISPOSABLE earlier exit reservation'},before.price!,before.marks);
+  f.set(T+61_900);await engine.tick();
+  assert.deepEqual(f.quoteCalls.map(q=>q.mint),[MINT,other]);assert.equal(engine.funnel.exited,1);assert.equal(f.ledger.state().positions[MINT]!.units,'1000');assert.equal(f.ledger.state().positions[other],undefined);assert.deepEqual(f.ledger.state().pending,{});
+  assert.equal(engine.decisions().at(-1)!.stage,'execution-unavailable');assert.equal(f.ledger.state().executionCosts,'30000');assert.equal(f.ledger.state().inceptionAt,T);
+  assert.equal(f.ledger.projection(f.now(),(await f.context({})).price!,before.marks).equityMicroUsd,null);
+});

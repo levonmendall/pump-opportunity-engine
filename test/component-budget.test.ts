@@ -96,6 +96,26 @@ test('grant deadline and explicit cooldown are enforced during pacing before ano
   finally{b.close();}
 });
 
+test('explicit ten-minute migration listener duration persists and cannot be enlarged or silently resumed with another duration',async t=>{
+  const f=fixture(t),options={...f.options,totalMs:600000},b=new ComponentBudget(options);
+  try{
+    await b.operate({transport:'ws',method:'subscribeMigration'},done);
+    assert.equal(b.usage().totalMs,600000);assert.equal(b.usage().deadlineAt,700000);assert.equal(f.read().totalMs,600000);
+    f.now=650000;await b.operate(HTTP,done);assert.equal(b.calls,22);
+    b.close();assert.throws(()=>new ComponentBudget(f.options),/INVALID_STATE/);
+    const resumed=new ComponentBudget(options);assert.equal(resumed.usage().deadlineAt,700000);resumed.close();
+  }finally{if(!b.usage().closed)b.close();}
+  for(const totalMs of [0,600001,1.5,Number.NaN])assert.throws(()=>new ComponentBudget({...f.options,totalMs}),/INVALID_DURATION/);
+});
+
+test('minimum duration is bounded and free migration permission does not permit metered or trading subscriptions',async t=>{
+  const f=fixture(t),b=new ComponentBudget({...f.options,totalMs:1});
+  try{
+    for(const method of ['subscribeTokenTrade','unsubscribeTokenTrade','subscribeAccountTrade','subscribeNewToken','trade','signTransaction','sendTransaction'])await assert.rejects(b.operate({transport:'ws',method},done),/DENIED/);
+    assert.equal(b.calls,20);f.now++;await assert.rejects(b.operate({transport:'ws',method:'subscribeMigration'},done),/TIME_CAP/);assert.equal(b.calls,20);
+  }finally{b.close();}
+});
+
 test('signing/simulation/trading, concurrent ownership and malformed baseline are denied offline',async t=>{
   const f=fixture(t),b=new ComponentBudget(f.options);
   try{

@@ -5,16 +5,16 @@ import {spawnSync} from 'node:child_process';
 import {performance} from 'node:perf_hooks';
 import {constants,openSync,closeSync,lstatSync,fstatSync,readFileSync,writeFileSync,fsyncSync,renameSync,unlinkSync} from 'node:fs';
 import {dirname,resolve} from 'node:path';
-import {validateRpc} from './network.js';
+import {validateRpc,dataMessage} from './network.js';
 
 const MIB=1024*1024;
 export const COMPONENT_LIMITS=Object.freeze({units:70,totalMs:90_000,starts60s:60,starts10s:30,startGapMs:1000,httpBytes:24*MIB,wsBytes:8*MIB,combinedBytes:32*MIB,cumulativeBytes:64*MIB,httpResponseBytes:2*MIB,physicalHeadroomBytes:2*MIB,wsOperationReserveBytes:64*1024});
 export type ComponentBaseline={calls:number;bytes:number;starts:number[];refusal:'RPC_HTTP_429';refusalAt:number;sha256:string};
 export type ComponentKind={transport:'http'|'ws-upgrade'|'ws';method:string};
 export type ComponentOperation={id:number;signal:AbortSignal;chargeHttp:(bytes:number)=>void;completeResponse:()=>void};
-export type ComponentBudgetOptions={statePath:string;grantId:string;baseline:ComponentBaseline;startedAt:number;notBefore?:number;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number,signal?:AbortSignal)=>Promise<void>;/** Offline durability-latency injection; never configured by the live harness. */beforePersist?:()=>void};
+export type ComponentBudgetOptions={statePath:string;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;notBefore?:number;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number,signal?:AbortSignal)=>Promise<void>;/** Offline durability-latency injection; never configured by the live harness. */beforePersist?:()=>void};
 type Pending={id:number;transport:ComponentKind['transport'];reservedBytes:number};
-type State={schemaVersion:1;grantId:string;baseline:ComponentBaseline;startedAt:number;deadlineAt:number;lastObservedAt:number;starts:number[];actualInvocations:Array<{id:number;at:number}>;byOperation:Record<string,number>;httpBytes:number;wsBytes:number;pending:Pending[];haltedReason:string|null;durationsMs:number[]};
+type State={schemaVersion:1;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;deadlineAt:number;lastObservedAt:number;starts:number[];actualInvocations:Array<{id:number;at:number}>;byOperation:Record<string,number>;httpBytes:number;wsBytes:number;pending:Pending[];haltedReason:string|null;durationsMs:number[]};
 const integer=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
 function need(v:unknown,code:string):asserts v {if(!v)throw Error(code);}
 function pause(ms:number,signal?:AbortSignal):Promise<void>{
@@ -25,6 +25,7 @@ const operationKey=(kind:ComponentKind)=>kind.transport+':'+kind.method;
 function validateKind(kind:ComponentKind){
   need(kind&&['http','ws','ws-upgrade'].includes(kind.transport),'COMPONENT_OPERATION_DENIED');
   if(kind.transport==='http')validateRpc({method:kind.method});
+  else if(kind.transport==='ws'&&kind.method==='subscribeMigration')dataMessage('subscribeMigration');
   else need(kind.transport==='ws-upgrade'?kind.method==='upgrade':['accountSubscribe','accountUnsubscribe'].includes(kind.method),'COMPONENT_OPERATION_DENIED');
 }
 const errorCode=(e:unknown)=>{const m=e instanceof Error?e.message:'';return /^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(m)?m:'COMPONENT_OPERATION_FAILED';};
@@ -35,10 +36,11 @@ const errorCode=(e:unknown)=>{const m=e instanceof Error?e.message:'';return /^C
  */
 export class ComponentBudget {
   private readonly path:string;private readonly lease:number;private readonly now:()=>number;private readonly mono:()=>number;private readonly sleep:(ms:number,signal?:AbortSignal)=>Promise<void>;
-  private readonly notBefore:number;private readonly beforePersist:(()=>void)|undefined;private state:State;private active=0;private busy=false;private closed=false;private storageFailed=false;private lastStartMono:number|null=null;private readonly resumedMono:number;
+  private readonly notBefore:number;private readonly totalMs:number;private readonly beforePersist:(()=>void)|undefined;private state:State;private active=0;private busy=false;private closed=false;private storageFailed=false;private lastStartMono:number|null=null;private readonly resumedMono:number;
   private currentController:AbortController|null=null;
   constructor(options:ComponentBudgetOptions){
-    this.path=resolve(options.statePath);this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.sleep=options.sleep??pause;this.beforePersist=options.beforePersist;this.resumedMono=this.monotonic();this.notBefore=options.notBefore??0;
+    this.path=resolve(options.statePath);this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.sleep=options.sleep??pause;this.beforePersist=options.beforePersist;this.resumedMono=this.monotonic();this.notBefore=options.notBefore??0;this.totalMs=options.totalMs??COMPONENT_LIMITS.totalMs;
+    need(integer(this.totalMs)&&this.totalMs>=1&&this.totalMs<=600000,'COMPONENT_INVALID_DURATION');
     const b=options.baseline;need(b&&integer(b.calls)&&b.calls<=240&&integer(b.bytes)&&b.bytes<=64*MIB&&Array.isArray(b.starts)&&b.starts.length===b.calls&&b.starts.every((t,i)=>integer(t)&&(i===0||t>=b.starts[i-1]!))&&b.refusal==='RPC_HTTP_429'&&integer(b.refusalAt)&&/^[a-f0-9]{64}$/.test(b.sha256),'COMPONENT_INVALID_BASELINE');
     need(/^[a-z0-9-]{1,100}$/.test(options.grantId)&&integer(options.startedAt)&&integer(this.notBefore)&&b.refusalAt<=options.startedAt&&b.starts.every(t=>t<=options.startedAt),'COMPONENT_INVALID_GRANT');
     const dir=lstatSync(dirname(this.path));need(dir.isDirectory()&&!dir.isSymbolicLink()&&dir.uid===process.getuid?.()&&(dir.mode&0o022)===0,'COMPONENT_UNSAFE_DIRECTORY');
@@ -48,14 +50,14 @@ export class ComponentBudget {
       const lease=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',this.lease],timeout:5000});need(!lease.error&&lease.status===0,'COMPONENT_BUDGET_OWNED');
       let saved:State|undefined;
       try{const file=lstatSync(this.path);need(file.isFile()&&!file.isSymbolicLink()&&file.nlink===1&&file.uid===process.getuid?.()&&(file.mode&0o077)===0&&file.size<=128*1024,'COMPONENT_UNSAFE_STATE');saved=JSON.parse(readFileSync(this.path,'utf8'));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
-      this.state=saved??{schemaVersion:1,grantId:options.grantId,baseline:structuredClone(b),startedAt:options.startedAt,deadlineAt:options.startedAt+COMPONENT_LIMITS.totalMs,lastObservedAt:this.now(),starts:[],actualInvocations:[],byOperation:{},httpBytes:0,wsBytes:0,pending:[],haltedReason:null,durationsMs:[]};
+      this.state=saved??{schemaVersion:1,grantId:options.grantId,baseline:structuredClone(b),startedAt:options.startedAt,totalMs:this.totalMs,deadlineAt:options.startedAt+this.totalMs,lastObservedAt:this.now(),starts:[],actualInvocations:[],byOperation:{},httpBytes:0,wsBytes:0,pending:[],haltedReason:null,durationsMs:[]};
       need(this.state.grantId===options.grantId&&JSON.stringify(this.state.baseline)===JSON.stringify(b)&&this.state.startedAt===options.startedAt,'COMPONENT_BASELINE_OR_GRANT_CONFLICT');this.validate();this.clock();if(!saved)this.persist();
     }catch(e){closeSync(this.lease);throw e;}
   }
   private monotonic(){const n=this.mono();need(Number.isFinite(n)&&n>=0,'COMPONENT_MONOTONIC_CLOCK');return n;}
   private clock(){const at=this.now();need(integer(at)&&at>=this.state.lastObservedAt,'COMPONENT_CLOCK_REGRESSION');this.state.lastObservedAt=at;return at;}
   private validate(){
-    const s=this.state;need(s?.schemaVersion===1&&integer(s.lastObservedAt)&&s.lastObservedAt>=s.startedAt&&s.deadlineAt===s.startedAt+COMPONENT_LIMITS.totalMs&&Array.isArray(s.starts)&&s.starts.length<=70&&s.baseline.calls+s.starts.length<=240&&s.starts.every((t,i)=>integer(t)&&t>=s.startedAt&&t<=s.lastObservedAt&&(i===0||t>=s.starts[i-1]!+1000)),'COMPONENT_INVALID_STATE');
+    const s=this.state;need(s?.schemaVersion===1&&integer(s.lastObservedAt)&&s.lastObservedAt>=s.startedAt&&(s.totalMs??COMPONENT_LIMITS.totalMs)===this.totalMs&&s.deadlineAt===s.startedAt+this.totalMs&&Array.isArray(s.starts)&&s.starts.length<=70&&s.baseline.calls+s.starts.length<=240&&s.starts.every((t,i)=>integer(t)&&t>=s.startedAt&&t<=s.lastObservedAt&&(i===0||t>=s.starts[i-1]!+1000)),'COMPONENT_INVALID_STATE');
     need(Array.isArray(s.actualInvocations)&&s.actualInvocations.length<=s.starts.length&&s.actualInvocations.every((r,i)=>integer(r.id)&&r.id>s.baseline.calls&&r.id<=s.baseline.calls+s.starts.length&&integer(r.at)&&r.at>=s.starts[r.id-s.baseline.calls-1]!&&r.at<=s.lastObservedAt&&(i===0||r.id>s.actualInvocations[i-1]!.id&&r.at>=s.actualInvocations[i-1]!.at+1000)),'COMPONENT_INVALID_INVOCATIONS');
     need(integer(s.httpBytes)&&integer(s.wsBytes)&&s.httpBytes<=COMPONENT_LIMITS.httpBytes+COMPONENT_LIMITS.httpResponseBytes&&s.wsBytes<=COMPONENT_LIMITS.wsBytes+65536,'COMPONENT_INVALID_BYTES');
     need(s.byOperation&&typeof s.byOperation==='object'&&Object.keys(s.byOperation).length<=20&&Object.values(s.byOperation).every(integer)&&Object.values(s.byOperation).reduce((n,x)=>n+x,0)===s.starts.length,'COMPONENT_INVALID_OPERATIONS');
@@ -73,7 +75,7 @@ export class ComponentBudget {
   private effectiveStarts(){const actual=new Map(this.state.actualInvocations.map(r=>[r.id,r.at]));return [...this.state.baseline.starts,...this.state.starts.map((at,i)=>actual.get(this.state.baseline.calls+i+1)??at)];}
   usage(){
     const now=this.clock(),starts=this.effectiveStarts(),short=starts.filter(t=>t>now-10000),minute=starts.filter(t=>t>now-60000),reserved=this.state.pending.reduce((n,p)=>n+p.reservedBytes,0);
-    return {grantId:this.state.grantId,baseline:structuredClone(this.state.baseline),cumulativeUnits:this.calls,newUnits:this.newUnits,actualInvokedUnits:this.state.actualInvocations.length,cumulativeResponseBytes:this.bytes,httpBytes:this.state.httpBytes,wsBytes:this.state.wsBytes,newResponseBytes:this.state.httpBytes+this.state.wsBytes,remainingGrantUnits:70-this.newUnits,remainingCumulativeUnits:240-this.calls,remainingGrantResponseBytes:Math.max(0,32*MIB-this.state.httpBytes-this.state.wsBytes-reserved),remainingCumulativeResponseBytes:Math.max(0,64*MIB-this.bytes-reserved),pending:structuredClone(this.state.pending),uncertainResponseBytes:reserved,rolling60SecondStarts:minute.length,rolling10SecondStarts:short.length,starts:this.state.actualInvocations.map(r=>r.at),actualInvocations:structuredClone(this.state.actualInvocations),reservationStarts:[...this.state.starts],byOperation:{...this.state.byOperation},durationsMs:[...this.state.durationsMs],inFlight:this.active,waitingOrOperating:this.busy,haltedReason:this.state.haltedReason,startedAt:this.state.startedAt,deadlineAt:this.state.deadlineAt,closed:this.closed,storageFailed:this.storageFailed};
+    return {grantId:this.state.grantId,baseline:structuredClone(this.state.baseline),cumulativeUnits:this.calls,newUnits:this.newUnits,actualInvokedUnits:this.state.actualInvocations.length,cumulativeResponseBytes:this.bytes,httpBytes:this.state.httpBytes,wsBytes:this.state.wsBytes,newResponseBytes:this.state.httpBytes+this.state.wsBytes,remainingGrantUnits:70-this.newUnits,remainingCumulativeUnits:240-this.calls,remainingGrantResponseBytes:Math.max(0,32*MIB-this.state.httpBytes-this.state.wsBytes-reserved),remainingCumulativeResponseBytes:Math.max(0,64*MIB-this.bytes-reserved),pending:structuredClone(this.state.pending),uncertainResponseBytes:reserved,rolling60SecondStarts:minute.length,rolling10SecondStarts:short.length,starts:this.state.actualInvocations.map(r=>r.at),actualInvocations:structuredClone(this.state.actualInvocations),reservationStarts:[...this.state.starts],byOperation:{...this.state.byOperation},durationsMs:[...this.state.durationsMs],inFlight:this.active,waitingOrOperating:this.busy,haltedReason:this.state.haltedReason,startedAt:this.state.startedAt,totalMs:this.totalMs,deadlineAt:this.state.deadlineAt,closed:this.closed,storageFailed:this.storageFailed};
   }
   halt(reason:string){need(/^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(reason),'COMPONENT_INVALID_HALT');if(!this.state.haltedReason){this.state.haltedReason=reason;this.clock();this.persist();}this.currentController?.abort();}
   /** Charge measured WebSocket receipt once, before payload parsing. Caller

@@ -1,4 +1,5 @@
-/** ONE owner-approved public-RPC component session. Defaults to no network. */
+/** Closed original component launcher; offline corrections do not authorize a new run.
+ * The staged follow-up proposal must be separately approved and pinned. */
 import {appendFileSync,readFileSync,writeFileSync,statSync,readdirSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {createHash} from 'node:crypto';
@@ -6,7 +7,8 @@ import {performance} from 'node:perf_hooks';
 import {PublicKey} from '@solana/web3.js';
 import {ComponentBudget,type ComponentBaseline} from '../src/component-budget.js';
 import {ComponentTransport,type ComponentNotice} from '../src/component-transport.js';
-import {selectComponentPool} from '../src/component-selection.js';
+import {componentSeedFromRetainedEvidence,prepareComponentPool} from '../src/component-selection.js';
+import {componentObjectiveResults,type ComponentBasicResult,type ComponentAck} from '../src/component-results.js';
 import {ResearchClockPositionPricer,type ResearchClockQuote} from '../src/research-clock-pricing.js';
 import {deriveComponentHypothetical,validateComponentParity,type ComponentSnapshot} from '../src/component-parity.js';
 import {SelectionRejections} from '../src/selection-rejections.js';
@@ -28,7 +30,8 @@ async function child(){
   const baseline:ComponentBaseline={calls:old.calls,bytes:old.bytes,starts:old.starts,refusal:'RPC_HTTP_429',refusalAt:old.lastObservedAt,sha256:oldHash};
   const budget=new ComponentBudget({statePath:join(out,'rpc-budget.json'),grantId:'public-component-20261027',baseline,startedAt,notBefore:old.lastObservedAt+300000});
   const controller=new AbortController();let failure:string|null=null,stage='setup',recorded=0,latest:ComponentSnapshot|null=null;
-  const httpTimings:any[]=[];
+  const httpTimings:any[]=[],acknowledgements:ComponentAck[]=[],validatedSnapshots:ComponentSnapshot[]=[];
+  let basicResult:ComponentBasicResult|null=null;let expectedAddresses:string[]=[];
   let maxRss=process.memoryUsage().rss,maxLag=0,dirty=0,pricedDirty=0,noticeSlot=0;const cpu0=process.cpuUsage();
   const records=join(out,'observations.ndjson');
   const record=(kind:string,data:unknown)=>{
@@ -37,6 +40,7 @@ async function child(){
     appendFileSync(records,line,{mode:0o600});recorded+=Buffer.byteLength(line);
     if(kind==='research-clock-pool-state')latest=data as ComponentSnapshot;
     if(kind==='http-response-timing')httpTimings.push(data);
+    if(kind==='ws-ack')acknowledgements.push(data as ComponentAck);
   };
   const notices=(n:ComponentNotice)=>{noticeSlot=Math.max(noticeSlot,n.slot);if(n.changed)dirty++;};
   const transport=new ComponentTransport(budget,record,notices),pricer=new ResearchClockPositionPricer(transport,{record});
@@ -63,31 +67,40 @@ async function child(){
     const q=await pricer.quote({mint:new PublicKey(selected.mint),fullBaseUnits:units,minSlot:Math.max(selected.minSlot,noticeSlot)},controller.signal);
     const availableAt=Date.now(),s=snapshot(),parity=validateComponentParity(s,selected.mint,units,q);
     need(q.slot===s.context.slot&&availableAt-Date.parse(q.receivedAt)<=2000,'COMPONENT_QUOTE_AGE_AT_USE');
-    parities.push({at:availableAt,...parity});
+    parities.push({at:availableAt,...parity});validatedSnapshots.push(s);
+    if(basicResult===null){basicResult={pool:selected.pool,slot:q.slot,availableAt,fullBaseUnits:units.toString(),quoteAgeAtUseMs:availableAt-Date.parse(q.receivedAt),sameBytesSdkParity:true,bankClockValidated:true};record('component-basic-current-state',basicResult);}
     const net=BigInt(q.sell.outputLamports)-7000n,cost=hypothetical?BigInt(hypothetical.entryCostLamports):null;
     const condition=cost===null?null:net*100n<=cost*85n?'STOP_LOSS':net*100n>=cost*130n?'TAKE_PROFIT':null;
     const actualStart=httpTimings.at(-1)?.requestedAt;need(Number.isSafeInteger(actualStart),'COMPONENT_MISSING_ACTUAL_HTTP_START');
-    const row={kind,dispatchedAt,requestedAt:actualStart,expectedAt,availableAt,startLatenessMs:expectedAt===null?null:actualStart-expectedAt,slot:q.slot,receivedAt:q.receivedAt,sourceUnixSeconds:q.marketClockUnixSeconds,quoteAgeAtUseMs:availableAt-Date.parse(q.receivedAt),sourceAgeAtUseMs:availableAt-q.marketClockUnixSeconds*1000,sell:q.sell,netAfterSimulatedExitGasLamports:net.toString(),hypotheticalExitCondition:condition,reserves:{base:q.rawBaseReserve,quote:q.rawQuoteReserve,virtual:q.virtualQuoteReserves,fees:q.feeBuckets},snapshotHash:SHA(JSON.stringify(s.value)),dirtyVersion:version};
+    const row={kind,pool:selected.pool,dispatchedAt,requestedAt:actualStart,expectedAt,availableAt,startLatenessMs:expectedAt===null?null:actualStart-expectedAt,slot:q.slot,receivedAt:q.receivedAt,sourceUnixSeconds:q.marketClockUnixSeconds,quoteAgeAtUseMs:availableAt-Date.parse(q.receivedAt),sourceAgeAtUseMs:availableAt-q.marketClockUnixSeconds*1000,sell:q.sell,netAfterSimulatedExitGasLamports:net.toString(),hypotheticalExitCondition:condition,reserves:{base:q.rawBaseReserve,quote:q.rawQuoteReserve,virtual:q.virtualQuoteReserves,fees:q.feeBuckets},snapshotHash:SHA(JSON.stringify(s.value)),dirtyVersion:version};
     evaluations.push(row);record('component-evaluation',row);pricedDirty=version;
-    if(planned.allAcknowledgedAt&&!planned.firstCoherentQuoteAt)planned.firstCoherentQuoteAt=availableAt;
+    if(planned.upgradedAt&&!planned.firstCoherentQuoteAt)planned.firstCoherentQuoteAt=availableAt;
     return q;
   };
   try{
     record('scope',{startedAt,deadline,provider:'api.mainnet.solana.com',oldBaseline:baseline,productionTouched:false,hypotheticalOnly:true,referenceCadenceMs:2000,wallClock:new Date(startedAt).toISOString()});
     rejections=new SelectionRejections({path:'evidence/free-data-20261027/selection-rejections.json',policyVersion:'pump-swap-sdk2.2.0-supported-sol-v1'});
-    const selection=await selectComponentPool({rpc:transport,rejectionStore:rejections,signal:controller.signal,record});record('component-selection-result',selection);
-    need(selection.ok,selection.ok?'COMPONENT_SELECTION_FAILURE':selection.reason);selected=selection.candidate;
-    // Activity validates an actual current supported swap, not entry eligibility.
+    const proofRef='evidence/integration-proof-2026-10-26T23-32-41.255Z.json',swapRef='evidence/targeted-transaction-sample.json';
+    const verifiedSeed=componentSeedFromRetainedEvidence({integrationProof:{ref:proofRef,bytes:readFileSync(proofRef)},swapProof:{ref:swapRef,bytes:readFileSync(swapRef)}});
+    const preparation=await prepareComponentPool({purpose:'basic-current-state',verifiedSeed,priorRejections:rejections.snapshot(),supportPolicyVersion:'pump-swap-sdk2.2.0-supported-sol-v1',signal:controller.signal,record});record('component-basic-preparation',preparation);
+    need(preparation.ok,preparation.ok?'COMPONENT_PREPARATION_FAILURE':preparation.reason);selected=preparation.candidate;
+    // Old proof chooses identity/quantity only. No history/30s-swap gate precedes
+    // full freshly fetched Clock, mint, vault, fee and actual-size validation.
     await quote('preflight',BigInt(selected.baseUnits),null);
     hypothetical=deriveComponentHypothetical(snapshot(),selected.mint);record('hypothetical-holding',hypothetical);
+    const basicSnapshot=snapshot(),timestampRequestedAt=Date.now();
+    const independentBlockTime=await transport.call<number|null>('getBlockTime',[basicSnapshot.context.slot],controller.signal);
+    need(Number.isSafeInteger(independentBlockTime)&&independentBlockTime!==null,'COMPONENT_BLOCK_TIME_UNAVAILABLE');
+    const bankClock=Buffer.from(basicSnapshot.value[basicSnapshot.addresses.indexOf('SysvarC1ock11111111111111111111111111111111')]!.data[0],'base64').readBigInt64LE(32);
+    const reference={slot:basicSnapshot.context.slot,requestedAt:timestampRequestedAt,availableAt:Date.now(),originalAccountReceivedAt:basicSnapshot.receivedAt,independentlyRetrievedBlockTime:independentBlockTime,bankClockUnixSeconds:bankClock.toString(),differenceSeconds:Number(bankClock)-independentBlockTime,backdated:false};blockTimes.push(reference);record('actual-slot-block-time-reference',reference);
     const base=snapshot(),addresses=base.addresses.filter(a=>a!=='SysvarC1ock11111111111111111111111111111111');
-    need(addresses.length===7,'COMPONENT_SUBSCRIPTION_SCOPE');
+    need(addresses.length===7,'COMPONENT_SUBSCRIPTION_SCOPE');expectedAddresses=addresses;
     transport.seedAccountHashes(addresses,addresses.map(a=>base.value[base.addresses.indexOf(a)]));
     await transport.connect(controller.signal);
     for(const address of addresses)await transport.manage('accountSubscribe',address,controller.signal);
     need(Date.now()-startedAt<=15000,'COMPONENT_SETUP_PHASE_CAP');
     commonStartedAt=Date.now();stage='observation';record('common-window-start',{at:commonStartedAt,addresses,referenceCadenceMs:2000});
-    let nextPeriodic=0,nextAux=0,reconnectIndex=-1,blockIndex=0;const referenceSnapshots:ComponentSnapshot[]=[base];
+    let nextPeriodic=0,nextAux=0,reconnectIndex=-1,blockIndex=1;const referenceSnapshots:ComponentSnapshot[]=[base];
     const commonEnd=commonStartedAt+60000;
     while(Date.now()<commonEnd){
       controller.signal.throwIfAborted();if(transport.error())throw transport.error();
@@ -136,7 +149,8 @@ async function child(){
     // Never issue network cleanup after any fault. A pending transport remains uncertain.
     const settleUntil=Math.min(deadline-200,Date.now()+1500);while(budget.inFlight&&Date.now()<settleUntil)await sleep(10);
     const usage=budget.usage(),quotes=evaluations.filter(e=>e.kind!=='preflight'),gaps=quotes.slice(1).map((e,i)=>e.availableAt-quotes[i]!.availableAt),changes=quotes.slice(1).filter((e,i)=>e.sell.outputLamports!==quotes[i]!.sell.outputLamports),cpu=process.cpuUsage(cpu0);
-    const summary={schemaVersion:1,classification:failure?'STOPPED_COMPONENT_TEST':'COMPLETED_COMPONENT_TEST',outcome:failure?'STOPPED_'+failure:'ONE_POOL_COMPONENT_COMPLETED',startedAt:new Date(startedAt).toISOString(),finishedAt:new Date().toISOString(),elapsedMs:Date.now()-startedAt,stopReason:failure,setupMs:commonStartedAt===null?null:commonStartedAt-startedAt,commonObservationMs:commonStartedAt===null?0:(commonEndedAt??Date.now())-commonStartedAt,selectedPool:selected,hypothetical,usage,httpResponseTimesMs:metrics(httpTimings.map(t=>t.availableAt-t.requestedAt)),pricing:{completedPeriodic:periodic,completedTriggered:extras,sameBytesSdkParityChecks:parities.length,clockEvidence:parities[0]??null,quoteAgeAtUseMs:metrics(quotes.map(e=>e.quoteAgeAtUseMs)),sourceAgeAtUseMs:metrics(quotes.map(e=>e.sourceAgeAtUseMs)),completedEvaluationGapsMs:metrics(gaps),referenceLatenessMs:metrics(quotes.filter(e=>e.expectedAt!==null).map(e=>e.startLatenessMs)),realLiquidationOutputChanges:changes.length,notionalExitConditions:quotes.filter(e=>e.hypotheticalExitCondition).map(e=>({at:e.availableAt,condition:e.hypotheticalExitCondition,netLamports:e.netAfterSimulatedExitGasLamports})),evaluations:quotes},webSocket:{connections:transport.connection,notifications:transport.notifications,changedNotifications:transport.changes,socketBytes:transport.socketBytes,applicationBytes:transport.applicationBytes,reconnect:planned},independentBlockTimestampReferences:blockTimes,resources:{location:'Cloud-only; EC2 compatibility untested',maxRssBytes:maxRss,maxEventLoopLagMs:maxLag,cpuMs:(cpu.user+cpu.system)/1000},newEvidenceBytesBeforeSummary:directoryBytes(out),oldBaselineUnchanged:SHA(readFileSync(OLD))===oldHash,limitations:['No PumpApi capture or complete trade-flow measurement.','Clock bank time is distinct from independently retrieved block timestamps.','Same-byte decoder/SDK parity is not independent on-chain or live execution proof.','No real holdings, financial fill, account write, production deployment, natural-trading performance or acceptance clock.','HTTP bytes count response bodies; WebSocket bytes count Node socket receipt, not exact TLS/proxy wire transfer. Unknown transfer costs remain separate.','No live three-pool batching or combined candidate/protection workload acceptance.'],paperEntries:false,liveTrading:false,productionTouched:false};
+    const objectives=componentObjectiveResults({basic:basicResult,blockTimeReferences:blockTimes,acknowledgements,expectedAddresses,reconnect:planned,notifications:transport.notices,validatedSnapshots,evaluations,stopReason:failure});
+    const summary={schemaVersion:1,objectives,classification:failure?'STOPPED_COMPONENT_TEST':'COMPLETED_COMPONENT_TEST',outcome:failure?'STOPPED_'+failure:'ONE_POOL_COMPONENT_COMPLETED',startedAt:new Date(startedAt).toISOString(),finishedAt:new Date().toISOString(),elapsedMs:Date.now()-startedAt,stopReason:failure,setupMs:commonStartedAt===null?null:commonStartedAt-startedAt,commonObservationMs:commonStartedAt===null?0:(commonEndedAt??Date.now())-commonStartedAt,selectedPool:selected,hypothetical,usage,httpResponseTimesMs:metrics(httpTimings.map(t=>t.availableAt-t.requestedAt)),pricing:{completedPeriodic:periodic,completedTriggered:extras,sameBytesSdkParityChecks:parities.length,clockEvidence:parities[0]??null,quoteAgeAtUseMs:metrics(quotes.map(e=>e.quoteAgeAtUseMs)),sourceAgeAtUseMs:metrics(quotes.map(e=>e.sourceAgeAtUseMs)),completedEvaluationGapsMs:metrics(gaps),referenceLatenessMs:metrics(quotes.filter(e=>e.expectedAt!==null).map(e=>e.startLatenessMs)),realLiquidationOutputChanges:changes.length,notionalExitConditions:quotes.filter(e=>e.hypotheticalExitCondition).map(e=>({at:e.availableAt,condition:e.hypotheticalExitCondition,netLamports:e.netAfterSimulatedExitGasLamports})),evaluations:quotes},webSocket:{connections:transport.connection,notifications:transport.notifications,changedNotifications:transport.changes,socketBytes:transport.socketBytes,applicationBytes:transport.applicationBytes,reconnect:planned},independentBlockTimestampReferences:blockTimes,resources:{location:'Cloud-only; EC2 compatibility untested',maxRssBytes:maxRss,maxEventLoopLagMs:maxLag,cpuMs:(cpu.user+cpu.system)/1000},newEvidenceBytesBeforeSummary:directoryBytes(out),oldBaselineUnchanged:SHA(readFileSync(OLD))===oldHash,limitations:['No PumpApi capture or complete trade-flow measurement.','Clock bank time is distinct from independently retrieved block timestamps.','Same-byte decoder/SDK parity is not independent on-chain or live execution proof.','No real holdings, financial fill, account write, production deployment, natural-trading performance or acceptance clock.','HTTP bytes count response bodies; WebSocket bytes count Node socket receipt, not exact TLS/proxy wire transfer. Unknown transfer costs remain separate.','No live three-pool batching or combined candidate/protection workload acceptance.'],paperEntries:false,liveTrading:false,productionTouched:false};
     need(summary.oldBaselineUnchanged,'COMPONENT_OLD_BASELINE_CHANGED');
     writeFileSync(join(out,'summary.json'),JSON.stringify(summary,null,2)+'\n',{mode:0o600,flag:'wx'});process.send?.({kind:'final',summary});
     if(!budget.inFlight)budget.close();process.exitCode=failure?2:0;process.disconnect?.();
