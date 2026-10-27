@@ -66,6 +66,13 @@ export class PilotMarket {
     this.held.registerPool(pool);
     this.pools.set(pool.mint,Object.freeze({...pool}));
   }
+  /** Release only a retired, unowned pool's replaceable market state. Locked
+   * deposits and the caller's durable origin/financial history are preserved. */
+  unregisterPool(mint:string){
+    need(!this.active,'PILOT_MARKET_READ_IN_FLIGHT');
+    const removed=this.held.unregisterPool(mint);if(!removed)return false;
+    this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);return true;
+  }
   minimumSlot(mint:string,slot:number){this.held.minimumSlot(mint,slot);this.floors.set(mint,Math.max(this.floors.get(mint)??0,slot));}
   invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.held.invalidate(reason);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
@@ -145,5 +152,5 @@ export class PilotMarket {
       return {...q,slot:entry.slot,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-execution-validated-costs:'+hash({preparation:plan.evidence,quote:q.evidence,deposit:plan.depositLamports})};
     }catch{return null;}
   };
-  usage(){return {classification:'isolated PAPER pilot only',preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,held:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:MODEL,depositRefundsAssumed:false};}
+  usage(){return {classification:'isolated PAPER pilot only',registeredPools:this.pools.size,preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,held:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:MODEL,depositRefundsAssumed:false};}
 }

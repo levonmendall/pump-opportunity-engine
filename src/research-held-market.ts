@@ -31,6 +31,7 @@ export class ResearchHeldMarket {
   private readonly floors=new Map<string,number>();
   private readonly snapshots=new Map<string,ResearchClockQuote>();
   private busy=false;
+  private inFlightQuotes=0;
   private generation=0;
   private readonly now:()=>number;
   constructor(private readonly options:Options){
@@ -42,6 +43,20 @@ export class ResearchHeldMarket {
     need(this.pools.has(pool.mint)||this.pools.size<15,'RESEARCH_HELD_POOL_CAPACITY');
     const old=this.pools.get(pool.mint);need(!old||old.migrationSlot===pool.migrationSlot,'RESEARCH_HELD_MIGRATION_CONFLICT');
     this.pools.set(pool.mint,Object.freeze({...pool}));
+  }
+  /** Retire replaceable observation ownership only. Financial inventory and
+   * its migration/accounting evidence belong to the caller and are untouched.
+   * Other held snapshots remain usable; the pricer's at-most-three link cache
+   * already evicts unrequested mints on its next coherent holding read.
+   */
+  unregisterPool(mint:string){
+    need(new PublicKey(mint).toBase58()===mint,'RESEARCH_HELD_INVALID_RETIREMENT_MINT');
+    const inventory=this.options.inventory();
+    need(!inventory.positions[mint]&&!Object.values(inventory.pending).some(order=>order.mint===mint),'RESEARCH_HELD_OWNED_FINANCIAL_EXPOSURE');
+    need(!this.busy&&this.inFlightQuotes===0,'RESEARCH_HELD_MARKET_READ_IN_FLIGHT');
+    if(!this.pools.has(mint))return false;
+    this.options.recorder.record('research-held-market-pool-retired',{at:this.clock(),mint,financialStateChanged:false,otherHeldSnapshotsPreserved:true});
+    this.generation++;this.pools.delete(mint);this.floors.delete(mint);this.snapshots.delete(mint);return true;
   }
   minimumSlot(mint:string,slot:number){
     need(this.pools.has(mint)&&Number.isSafeInteger(slot)&&slot>=0,'RESEARCH_HELD_MINIMUM_SLOT');
@@ -73,6 +88,16 @@ export class ResearchHeldMarket {
     if(this.busy||signal.aborted)return result;
     const selected=Object.entries(positions).map(([mint,p])=>({mint,units:p.units,positionMint:p.mint}));
     if(selected.length>3)throw Error('RESEARCH_HELD_POSITION_CAPACITY');
+    const sourceExpiry=()=>{
+      // Missing/changed holdings cannot inherit the expiry of an unaffected
+      // subset. Cash-only context has no invented bank Clock or source expiry.
+      delete result.sourceValidUntil;
+      if(!selected.length||!selected.every(p=>p.mint===p.positionMint&&this.current(p.mint,p.units)&&result.marks[p.mint]?.pricedBaseUnits===p.units&&this.snapshots.get(p.mint)?.sell.inputBaseUnits===p.units))return;
+      const expiry=Math.min(...selected.map(p=>this.snapshots.get(p.mint)!.marketClockUnixSeconds*1000+30000));
+      // Preserve a known expiry even if wall time crossed it after the last
+      // source check. Missing metadata must never disguise known stale facts.
+      if(Number.isSafeInteger(expiry))result.sourceValidUntil=expiry;
+    };
     this.snapshots.clear();this.busy=true;const generation=this.generation;
     try{
       signal.throwIfAborted();
@@ -91,11 +116,11 @@ export class ResearchHeldMarket {
           }catch{/* This holding stays explicitly unmarked; unaffected holdings may continue. */}
         }
       }
-      result.price=this.price();this.options.recorder.record('research-held-market-context',{at:this.clock(),context:result,classification:'ISOLATED_RESEARCH_ONLY',gasLamports:this.options.gasLamports,gasClassification:'simulated; subtracted once from marks, gross sell quote excludes separate execution gas'});
+      result.price=this.price();sourceExpiry();this.options.recorder.record('research-held-market-context',{at:this.clock(),context:result,classification:'ISOLATED_RESEARCH_ONLY',gasLamports:this.options.gasLamports,gasClassification:'simulated; subtracted once from marks, gross sell quote excludes separate execution gas'});
       signal.throwIfAborted();need(generation===this.generation,'RESEARCH_HELD_INTERRUPTED_CONTEXT');
       // Recorder delay or simultaneous account changes cannot leave stale marks.
       for(const [mint,q]of this.snapshots){try{this.source(q);need(this.current(mint,q.sell.inputBaseUnits),'RESEARCH_HELD_POSITION_CHANGED');}catch{this.snapshots.delete(mint);delete result.marks[mint];}}
-      result.price=this.price();
+      result.price=this.price();sourceExpiry();
       return structuredClone(result);
     }catch{this.snapshots.clear();return {price:this.price(),marks:{}};}
     finally{this.busy=false;}
@@ -105,6 +130,7 @@ export class ResearchHeldMarket {
    */
   readonly quote=async(request:SizeRequest,signal:AbortSignal):Promise<SizeQuote|null>=>{
     const r=Object.freeze({...request});if(signal.aborted||!this.pools.has(r.mint))return null;
+    this.inFlightQuotes++;
     try{
       need(['buy','sell'].includes(r.side)&&amount(r.inputUnits)>0n,'RESEARCH_HELD_SIZE_REQUEST');
       const floor=r.minSlot??0;need(Number.isSafeInteger(floor)&&floor>=0,'RESEARCH_HELD_MINIMUM_SLOT');
@@ -117,6 +143,7 @@ export class ResearchHeldMarket {
       const time=this.source(q!,floor);signal.throwIfAborted();
       return {...r,slot:q!.slot,outputUnits:q!.sell.outputLamports,at:time.receivedAt,evidence:this.evidence(q!),effectiveQuoteLiquidityLamports:q!.effectiveQuoteReserve};
     }catch{return null;}
+    finally{this.inFlightQuotes--;}
   };
   /** Coordinator context must run AFTER the modeled delay. A pre-delay batch
    * cannot fill merely because its receive timestamp or age looks acceptable.

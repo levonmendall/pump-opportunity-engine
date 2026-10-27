@@ -1,3 +1,49 @@
+# Progressive validation — 2026-10-27
+
+The temporary single-position contract remains immutable. Explicit stages now
+permit shadow observation and two/three simultaneous isolated PAPER positions,
+without changing the predictive strategy, order size, fees, quote validity,
+exposure or daily-loss rules. Source changes are reviewed on the research branch;
+no production installation or original-account entry enablement is included.
+
+Offline composition passed one same-account lifecycle, backup, restart,
+quarantined-exit expiry/recovery, two shadow candidates while holding, three
+positions and three overlapping exits. Four fixture entries/exits reconcile with
+56,000 modeled gas lamports and preserved locked rent. The synthetic adverse move
+produces a loss and persistent daily-loss pause. Original retained low-liquidity
+refusal is preserved; later concurrency mechanics explicitly change in-memory
+liquidity/Clock/flow/USD. This is not natural forward trading or an economic edge.
+
+The shared-policy replay retained these failures and limits:
+
+| Synthetic workload | Measured simulated result |
+|---|---|
+| 3 holdings, 2 quiet candidates, 100-ms jitter | Peak47 starts/min; maximum2,100-ms evaluation gap; 8/8 selected transactions enriched; 12 usable overlapping windows |
+| 3 holdings, 3 quiet candidates | One scope lacks independent audit coverage despite complete selected trade enrichment |
+| Three-event bursts across two candidates | 18/72 enriched; 54 explicitly lost; zero usable windows; holdings continue at maximum2,100-ms gap |
+| 4.5-second nonpreemptible operation | Protection fails:6,610-ms gap |
+| Three-second processing overrun | Protection fails:5,200-ms gap; stale quote refused |
+| Three fast pending actions | Complete actions; lose candidate coverage |
+| Slow simultaneous actions | Two remain explicitly unresolved; no fabricated fills |
+| Reconnect | Invalidate old windows; fresh warming can produce later usable windows |
+
+These are rescheduling/stress simulations using the actual dispatch/admission
+policies, not observations of endpoint entitlement or a full pilot-loop test.
+Both target misses above2seconds and failures above the unapproved4-second
+research boundary remain reported. Missing audit coverage blocks entry. Actual
+source-time/quote-age validation is unchanged. No blanket five-second polling,
+extra price screen, or strategy relaxation is introduced.
+
+The narrow next forward workload is at most two active candidates under the
+explicit two-position stage. Three-position accounting mechanics pass; live
+three-position management and bursty multi-candidate capacity remain unproven.
+Detailed bounded fixtures/replay are in `evidence/progressive-pilot-20261027/`.
+The actual forward scorecard must be appended after the frozen run, including
+entry-eligible time, all predictive rejections, qualified-but-unfilled orders,
+coverage loss, actual physical usage and retained adverse outcomes.
+
+## Historical review (retained)
+
 # Isolated PAPER pilot review
 
 Reviewed release: `f8bdf1e3945703756d35daf57f115d160ca80f52` (2026-10-27).

@@ -307,10 +307,13 @@ export class PaperLedger {
     });
   }
 
-  cancelEntryOrders(id: string, now: number, reason: string) {
+  cancelEntryOrders(id: string, now: number, reason: string, mint?: string) {
     if (!boundedText(reason)) throw new Error('bounded entry cancellation reason required');
-    return this.apply(id, 'cancel-entry-orders', now, { now, reason }, s => {
-      const canceledEntries = Object.values(s.pending).filter(o => o.side === 'buy').map(o => o.id);
+    if (mint !== undefined && !boundedText(mint, 96)) throw new Error('bounded cancellation mint required');
+    // The legacy three-argument payload remains byte-for-byte equivalent for
+    // existing idempotency keys. A scoped action includes its exact mint.
+    return this.apply(id, 'cancel-entry-orders', now, { now, reason, ...(mint === undefined ? {} : { mint }) }, s => {
+      const canceledEntries = Object.values(s.pending).filter(o => o.side === 'buy' && (mint === undefined || o.mint === mint)).map(o => o.id);
       for (const orderId of canceledEntries) delete s.pending[orderId];
       return { canceledEntries, preservedExitOrders: Object.values(s.pending).filter(o => o.side === 'sell').map(o => o.id) };
     });

@@ -20,7 +20,7 @@ function fixture(t:TestContext){
   // These two pools were NOT captured simultaneously. Deliberately synthetic
   // shared bank/time/Clock is used to test adapter+financial mechanics only.
   const accounts=new Map<string,PoolWireAccount|null>();for(const r of retained)for(let i=0;i<7;i++)if(!accounts.has(r.state.addresses[i]))accounts.set(r.state.addresses[i],r.state.value[i]);
-  let at=Math.max(...retained.map(r=>Date.parse(r.proof.quote.validatedAt))),slot=Math.max(...retained.map(r=>r.state.context.slot)),calls:Array<{method:string;addresses:string[];at:number}>=[];
+  let at=Math.max(...retained.map(r=>Date.parse(r.proof.quote.validatedAt))),slot=Math.max(...retained.map(r=>r.state.context.slot)),clockSeconds:number|null=null,calls:Array<{method:string;addresses:string[];at:number}>=[];
   const realNow=Date.now;Date.now=()=>at;
   const directory=mkdtempSync(join(tmpdir(),'poe-DISPOSABLE-research-held-')),path=join(directory,'fixture.sqlite'),id='fixture-research-held';
   let ledger=new DisposableLedger(path,id),pauseRead:(()=>Promise<void>)|null=null;
@@ -30,7 +30,7 @@ function fixture(t:TestContext){
   const rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{
     assert.equal(method,'getMultipleAccounts');const addresses=params[0] as string[];calls.push({method,addresses:[...addresses],at});
     if(pauseRead){const gate=pauseRead;pauseRead=null;await gate();}
-    const raw=Buffer.alloc(40);raw.writeBigUInt64LE(BigInt(slot),0);raw.writeBigInt64LE(BigInt(Math.floor(at/1000)),32);
+    const raw=Buffer.alloc(40);raw.writeBigUInt64LE(BigInt(slot),0);raw.writeBigInt64LE(BigInt(clockSeconds??Math.floor(at/1000)),32);
     const clock:PoolWireAccount={owner:'Sysvar1111111111111111111111111111111111111',data:[raw.toString('base64'),'base64'],lamports:1169280,executable:false,rentEpoch:0};
     return {context:{slot},value:addresses.map(a=>a===SYSVAR_CLOCK_PUBKEY.toBase58()?clock:structuredClone(accounts.get(a)??null))} as T;
   }};
@@ -53,7 +53,7 @@ function fixture(t:TestContext){
   // supplied to the coordinator rather than bypassing ledger risk checks.
   let setupMarket:ResearchHeldMarket|undefined;
   const contextMarks=async()=>setupMarket?(await setupMarket.context(ledger.state().positions,signal())).marks:{};
-  return {retained,accounts,records,price,inception,initial,makeMarket,coordinator,ready,buy,calls,get ledger(){return ledger;},setSetupMarket:(m:ResearchHeldMarket)=>{setupMarket=m;},advance:(ms:number)=>{at+=ms;},now:()=>at,slot:()=>slot,bumpSlot:()=>slot++,pause:(gate:()=>Promise<void>)=>{pauseRead=gate;},restart:()=>{ledger.close();ledger=new DisposableLedger(path,id);},clearCalls:()=>{calls.length=0;}};
+  return {retained,accounts,records,price,inception,initial,makeMarket,coordinator,ready,buy,calls,get ledger(){return ledger;},setSetupMarket:(m:ResearchHeldMarket)=>{setupMarket=m;},advance:(ms:number)=>{at+=ms;},now:()=>at,slot:()=>slot,bumpSlot:()=>slot++,setClockSeconds:(value:number|null)=>{clockSeconds=value;},pause:(gate:()=>Promise<void>)=>{pauseRead=gate;},restart:()=>{ledger.close();ledger=new DisposableLedger(path,id);},clearCalls:()=>{calls.length=0;}};
 }
 
 test('two-held union marks and post-delay exit reuse integrate with one disposable writer and exact gas accounting',async t=>{
@@ -127,4 +127,26 @@ test('delegated entry result is refused if a gap or higher slot floor arrives wh
     release();assert.equal(await pending,null,change);assert.deepEqual(f.ledger.state(),before);
   }
   assert.equal(f.calls.length,0);
+});
+
+test('held context carries original inclusive bank-source expiry and refuses a still-recent quote after that expiry',async t=>{
+  const f=fixture(t),market=f.makeMarket(),c=f.coordinator(market);f.setSetupMarket(market);c.recover();f.ready();assert.equal((await market.context({},signal())).sourceValidUntil,undefined);await f.buy(c,0);
+  f.advance((1000-f.now()%1000)%1000);f.setClockSeconds(f.now()/1000-30);const context=await market.context(f.ledger.state().positions,signal()),p=Object.values(f.ledger.state().positions)[0]!;
+  assert.equal(context.sourceValidUntil,f.now());assert.ok(context.marks[p.mint]);assert.ok(await market.quote({mint:p.mint,side:'sell',inputUnits:p.units},signal()));f.advance(1);
+  assert.equal(f.now()-context.marks[p.mint]!.at,1,'receipt-age remains within2s but source is older than30s');assert.equal(await market.quote({mint:p.mint,side:'sell',inputUnits:p.units},signal()),null);const refused=await market.context(f.ledger.state().positions,signal());assert.deepEqual(refused.marks,{});assert.equal(refused.sourceValidUntil,undefined);assert.ok(f.ledger.state().positions[p.mint]);
+});
+
+test('source expiry covers every required full-size holding, uses the minimum and is absent for an incomplete batch',async t=>{
+  const f=fixture(t),market=f.makeMarket(),c=f.coordinator(market);f.setSetupMarket(market);c.recover();f.ready();await f.buy(c,0);await f.buy(c,1);await market.context(f.ledger.state().positions,signal());
+  const quotes=Object.fromEntries(f.records.filter(r=>r.kind==='research-clock-position-sell-quote').map(r=>[r.data.mint,structuredClone(r.data)])),mints=Object.keys(f.ledger.state().positions),oldest=quotes[mints[0]!]!;oldest.marketClockUnixSeconds-=3;
+  // Conservative aggregation over injected individually valid quote summaries.
+  // Real current union reads share one Clock; this is not a live mixed bank.
+  let omit=false;const mock=f.makeMarket({pricer:{invalidate(){},async quoteMany(){return {quotes:Object.fromEntries(mints.filter((_,i)=>!omit||i===0).map(mint=>[mint,quotes[mint]])),unavailable:{},context:{slot:oldest.slot,requestedAt:oldest.requestedAt,receivedAt:oldest.receivedAt,marketClockUnixSeconds:oldest.marketClockUnixSeconds}};}}});
+  const full=await mock.context(f.ledger.state().positions,signal());assert.equal(Object.keys(full.marks).length,2);assert.equal(full.sourceValidUntil,Math.min(...mints.map(mint=>quotes[mint].marketClockUnixSeconds*1000+30000)));omit=true;const incomplete=await mock.context(f.ledger.state().positions,signal());assert.equal(Object.keys(incomplete.marks).length,1);assert.equal(incomplete.sourceValidUntil,undefined);
+});
+
+test('a Clock boundary crossed after final source validation stays explicitly expired instead of losing metadata',async t=>{
+  const f=fixture(t),setup=f.makeMarket(),c=f.coordinator(setup);f.setSetupMarket(setup);c.recover();f.ready();await f.buy(c,0);f.advance((1000-f.now()%1000)%1000);f.setClockSeconds(f.now()/1000-30);const expiry=f.now();let crossAfterRead=false;
+  const market=f.makeMarket({now:()=>{const observed=f.now();if(crossAfterRead){crossAfterRead=false;f.advance(1);}return observed;},recorder:{record(kind){if(kind==='research-held-market-context')crossAfterRead=true;}}});
+  const context=await market.context(f.ledger.state().positions,signal()),position=Object.values(f.ledger.state().positions)[0]!;assert.equal(f.now(),expiry+1);assert.ok(context.marks[position.mint]);assert.equal(context.sourceValidUntil,expiry);assert.ok(context.sourceValidUntil!<f.now(),'consumer can reject the explicit known expiry at actual use');assert.equal(await market.quote({mint:position.mint,side:'sell',inputUnits:position.units},signal()),null);
 });

@@ -189,3 +189,27 @@ test('a thrown return path after durable commit resolves through the stored outc
   assert.equal((await coordinator.runDue()).results[0]!.status,'filled');assert.equal(f.ledger.state().positions['fixture-mint']!.units,'1000');
   assert.equal(f.ledger.state().executionCosts,'10000');assert.equal(quotes,1);assert.deepEqual((await coordinator.runDue()).results,[]);assert.equal(quotes,1);
 });
+
+test('an optional bounded drain services one due exit and retains immediate wake and exact ownership for the rest',async t=>{
+  const f=fixture(t),quoted:string[]=[],coordinator=f.create({quote:async request=>{quoted.push(request.order.id);return request.order.side==='buy'?{at:f.now(),spendLamports:'480000000',receiveUnits:'1000',evidence:'DISPOSABLE setup'}:{at:f.now(),spendLamports:'0',receiveUnits:'500000000',pricedBaseUnits:request.fullPositionBaseUnits!,evidence:'DISPOSABLE current full-size exit'};}});
+  coordinator.recover();f.ready();for(const mint of ['a','b','c'])coordinator.reserve(buy('setup-'+mint,AT,mint),f.context());f.set(AT+500);await coordinator.runDue();assert.equal(Object.keys(f.ledger.state().positions).length,3);
+  f.set(AT+600);for(const mint of ['a','b','c'])coordinator.reserve(sell('exit-'+mint,f.now(),mint),f.context());const orders=structuredClone(f.ledger.state().pending);f.set(AT+1100);const before=quoted.length;
+  const first=await coordinator.runDue({maxActions:1});assert.equal(first.servicedActions,1);assert.deepEqual(first.results.map(r=>r.orderId),['exit-a']);assert.equal(quoted.length-before,1);assert.equal(first.nextDueAt,f.now());assert.deepEqual(f.ledger.state().pending['exit-b'],orders['exit-b']);assert.deepEqual(f.ledger.state().pending['exit-c'],orders['exit-c']);
+  const second=await coordinator.runDue({maxActions:1});assert.equal(second.servicedActions,1);assert.deepEqual(second.results.map(r=>r.orderId),['exit-b']);assert.equal(second.nextDueAt,f.now());
+  const defaultDrain=await coordinator.runDue();assert.equal(defaultDrain.servicedActions,undefined);assert.deepEqual(defaultDrain.results.map(r=>r.orderId),['exit-c']);assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().executionCosts,'60000');assert.equal(f.ledger.state().inceptionAt,AT);
+});
+
+test('bounded expiry needs no quote or gas, while a quarantined exit cannot starve a separately owned fresh due exit',async t=>{
+  const expired=fixture(t),first=expired.create();first.recover();expired.ready();for(const mint of ['a','b','c'])first.reserve(buy('expire-'+mint,AT,mint),expired.context());expired.set(AT+2000);
+  const one=await first.runDue({maxActions:1});assert.equal(one.servicedActions,1);assert.equal(one.results[0]!.status,'expired');assert.equal(Object.keys(expired.ledger.state().pending).length,2);assert.equal(one.nextDueAt,AT+500);assert.equal(expired.ledger.state().executionCosts,'0');const rest=await first.runDue({maxActions:2});assert.equal(rest.servicedActions,2);assert.ok(rest.results.every(r=>r.status==='expired'));assert.deepEqual(expired.ledger.state().pending,{});
+  const f=fixture(t),setup=f.create();setup.recover();f.ready();for(const mint of ['a','b'])setup.reserve(buy('setup-'+mint,AT,mint),f.context());f.set(AT+500);await setup.runDue();f.set(AT+600);setup.reserve(sell('a-quarantined',f.now(),'a'),f.context());
+  let quotes=0;const recovered=f.create({quote:async request=>{quotes++;assert.equal(request.order.id,'z-fresh-exit');return {at:f.now(),spendLamports:'0',receiveUnits:'500000000',pricedBaseUnits:request.fullPositionBaseUnits!,evidence:'DISPOSABLE current owned exit'};}});recovered.recover();recovered.reserve(sell('z-fresh-exit',f.now(),'b'),f.context());f.set(AT+1100);
+  const batch=await recovered.runDue({maxActions:1});assert.equal(batch.servicedActions,1);assert.equal(batch.results.find(r=>r.orderId==='a-quarantined')!.status,'uncertain');assert.equal(batch.results.find(r=>r.orderId==='z-fresh-exit')!.status,'filled');assert.equal(quotes,1);assert.ok(f.ledger.state().positions.a);assert.ok(f.ledger.state().pending['a-quarantined']);assert.equal(batch.nextDueAt,AT+3000);
+  const before=f.ledger.state();await assert.rejects(recovered.runDue({maxActions:4 as 1}),/bounded due-action/);assert.deepEqual(f.ledger.state(),before);
+});
+
+test('source expiry during a fresh entry quote makes held equity unavailable before gas without deleting exposure',async t=>{
+  const f=fixture(t),setup=f.create();setup.recover();f.ready();setup.reserve(buy('held'),f.context());f.set(AT+500);await setup.runDue();f.set(AT+600);
+  const execution=f.create({context:async()=>({...f.context(),sourceValidUntil:f.now()+1}),quote:async()=>{f.set(f.now()+2);return {at:f.now(),spendLamports:'480000000',receiveUnits:'1000',evidence:'DISPOSABLE fresh entry quote after old bank-source expired'};}});execution.recover();f.ready();execution.reserve(buy('next',f.now(),'other-mint'),f.context());f.set(AT+1100);const held=f.ledger.state().positions['fixture-mint'],cash=f.ledger.state().lamports;
+  const result=await execution.runDue();assert.equal(result.results[0]!.status,'failed');assert.match(result.results[0]!.reason,/unknown liquidation marks/);assert.deepEqual(f.ledger.state().positions['fixture-mint'],held);assert.equal(f.ledger.state().positions['other-mint'],undefined);assert.equal(f.ledger.state().executionCosts,'10000');assert.equal(f.ledger.state().lamports,cash);assert.deepEqual(f.ledger.state().pending,{});
+});

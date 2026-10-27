@@ -1,10 +1,11 @@
 import {performance} from 'node:perf_hooks';
 import {PaperLedger,type ExecutionQuote,type Mark,type Order,type OrderOutcome,type UsdPrice} from './ledger.js';
 
-export type ExecutionContext={price:UsdPrice|null;marks:Record<string,Mark>};
+export type ExecutionContext={price:UsdPrice|null;marks:Record<string,Mark>;/** Original bank-source expiry for every required holding; never a publishing heartbeat. */sourceValidUntil?:number};
 export type QuoteRequest={order:Readonly<Order>;attemptedAt:number;fullPositionBaseUnits:string|null};
 export type ExecutionResult={orderId:string;status:OrderOutcome['status']|'uncertain'|'canceled';reason:string;at:number};
-export type ExecutionBatch={results:ExecutionResult[];adapterBlocked:boolean;nextDueAt:number|null};
+export type ExecutionBatch={results:ExecutionResult[];adapterBlocked:boolean;nextDueAt:number|null;/** Present only for an explicitly bounded drain. */servicedActions?:number};
+export type ExecutionRunOptions={maxActions?:1|2|3};
 export type ExecutionOptions={
   ledger:PaperLedger;
   /** These adapters must honor AbortSignal. They may only read market/account context. */
@@ -71,10 +72,11 @@ export class PaperExecutionCoordinator{
     const times=Object.values(this.options.ledger.state().pending).map(o=>this.outstanding||this.uncertain.has(o.id)||o.side==='buy'&&this.uncertain.size>0?Math.max(o.expiresAt,this.financialRetryAt.get(o.id)??0):o.executeAt);
     return times.length?Math.min(...times):null;
   }
-  runDue():Promise<ExecutionBatch>{
+  runDue(options:ExecutionRunOptions={}):Promise<ExecutionBatch>{
     if(!this.recovered)return Promise.reject(new Error('execution recovery required'));
+    if(!options||typeof options!=='object'||Array.isArray(options)||options.maxActions!==undefined&&(!Number.isSafeInteger(options.maxActions)||options.maxActions<1||options.maxActions>3))return Promise.reject(new Error('bounded due-action count required'));
     if(this.active)return this.active;
-    this.active=this.drain().finally(()=>{this.active=undefined;});return this.active;
+    this.active=this.drain(options.maxActions).finally(()=>{this.active=undefined;});return this.active;
   }
   /** Indexed durable lookup, independent of bounded journal export windows. */
   recordedOutcome(orderId:string):OrderOutcome|null{
@@ -98,18 +100,22 @@ export class PaperExecutionCoordinator{
     try{return await Promise.race([request,new Promise<never>((_resolve,reject)=>{timer=setTimeout(()=>{timedOut=true;controller.abort();reject(new Error('execution preparation timeout'));},remaining);})]);}
     finally{clearTimeout(timer);controller.abort();}
   }
-  private async drain():Promise<ExecutionBatch>{
-    const results:ExecutionResult[]=[];
+  private async drain(maxActions:number|undefined):Promise<ExecutionBatch>{
+    const results:ExecutionResult[]=[];let servicedActions=0;
     const pending=this.options.ledger.state().pending;
     for(const id of this.uncertain)if(!pending[id]){this.uncertain.delete(id);this.financialRetryAt.delete(id);}
     const orders=Object.values(pending).sort((a,b)=>(a.side==='sell'?0:1)-(b.side==='sell'?0:1)||a.executeAt-b.executeAt||a.id.localeCompare(b.id));
     for(const original of orders){
+      if(maxActions!==undefined&&servicedActions>=maxActions)break;
       const order=this.options.ledger.state().pending[original.id];if(!order){this.uncertain.delete(original.id);this.financialRetryAt.delete(original.id);continue;}
       const at=this.clock();
       if(at<order.executeAt)continue;
       if((this.uncertain.has(order.id)||order.side==='buy'&&this.uncertain.size>0)&&at<order.expiresAt){results.push({orderId:order.id,status:'uncertain',reason:'financial action requires expiry or reconciliation before a new management decision; no re-quote',at});continue;}
       if((this.financialRetryAt.get(order.id)??0)>at){results.push({orderId:order.id,status:'uncertain',reason:'financial finalization retry backoff; preserve action and do not re-quote',at});continue;}
       if(this.outstanding&&at<order.expiresAt)continue; // At most one uncanceled adapter request.
+      // Known quarantined/backoff actions above retain their own future wake;
+      // they cannot consume this admission and starve a different due exit.
+      servicedActions++;
       let context:ExecutionContext={price:null,marks:{}},quote:ExecutionQuote|null=null;
       if(at<order.expiresAt){
         const deadline=performance.now()+Math.min(this.timeoutMs,order.expiresAt-at);
@@ -124,6 +130,10 @@ export class PaperExecutionCoordinator{
         }
       }
       const finalizedAt=this.clock();
+      // A context can cross its original bank-source expiry while preparing
+      // another quote. Keep USD/exposure, but never let stale held marks admit
+      // an entry merely because their receive timestamps are still recent.
+      if(Object.keys(this.options.ledger.state().positions).length&&context.sourceValidUntil!==undefined&&(!Number.isSafeInteger(context.sourceValidUntil)||context.sourceValidUntil<finalizedAt))context={...context,marks:{}};
       if(!this.options.ledger.state().pending[order.id]){this.uncertain.delete(order.id);this.financialRetryAt.delete(order.id);results.push({orderId:order.id,status:'canceled',reason:'financial owner canceled action during preparation',at:finalizedAt});continue;}
       try{
         const outcome=this.options.ledger.attempt(`execution-attempt:${order.id}`,order.id,finalizedAt,quote,context.price??UNKNOWN_PRICE,context.marks);
@@ -138,6 +148,6 @@ export class PaperExecutionCoordinator{
         results.push({orderId:order.id,status:'uncertain',reason:'financial commit unavailable; preserve action and block re-quote',at:finalizedAt});
       }
     }
-    return {results,adapterBlocked:!!this.outstanding,nextDueAt:this.nextDueAt()};
+    return {results,adapterBlocked:!!this.outstanding,nextDueAt:this.nextDueAt(),...(maxActions===undefined?{}:{servicedActions})};
   }
 }

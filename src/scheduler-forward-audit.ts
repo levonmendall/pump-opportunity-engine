@@ -4,12 +4,9 @@
  */
 import {performance} from 'node:perf_hooks';
 import bs58 from 'bs58';
-import {invokedCanonicalSolSwaps} from './active-selection.js';
-import {decodePumpSwapInstruction,mapConfirmedPumpSwapEvidence,type MappedTradeEvidence} from './pumpapi-mapping.js';
+import {inspectScopedPumpSwapInstructions,ScopedPumpSwapInstructionError,mapConfirmedPumpSwapEvidence,type MappedTradeEvidence} from './pumpapi-mapping.js';
 import type {ActiveScope} from './active-pipeline.js';
-import {PUMP_AMM_PROGRAM_ID} from './sdk.js';
 
-const SWAPS=new Set(['buy','buy_exact_quote_in','buy_v2','buy_exact_quote_in_v2','sell','sell_v2']);
 
 export const SCHEDULER_FORWARD_AUDIT_LIMITS=Object.freeze({historyPages:2,signaturesPerPage:50,independentTransactions:10,finalityRechecks:2,requestUnits:14,elapsedMs:20000});
 /** Explicit bounded standing experiment; the caller still owns the shared
@@ -52,26 +49,13 @@ export async function auditSchedulerForward(options:SchedulerForwardAuditOptions
     need(integer(tx.slot)&&integer(tx.blockTime),'TRANSACTION_CHAIN_CONTEXT');
     if(history)need(tx.slot===history.slot&&(history.blockTime===null||tx.blockTime===history.blockTime)&&(history.err===null)===(tx.meta?.err===null),'HISTORY_CONTEXT_MISMATCH');
     if(tx.meta?.err!==null){problem('FAILED_TRANSACTION',{signature:sig,commitment});return null;}
-    const compiled=invokedCanonicalSolSwaps(tx).filter(s=>s.pool===scope.pool&&s.mint===scope.mint);
-    // A program mention is insufficient, but a genuine AMM invocation whose
-    // account list contains this pool cannot disappear as zero trades merely
-    // because the packaged IDL does not recognize its new instruction bytes.
-    const keys=[...tx.transaction.message.accountKeys,...(tx.meta.loadedAddresses?.writable??[]),...(tx.meta.loadedAddresses?.readonly??[])];
-    const positioned=[...tx.transaction.message.instructions.map((ix:any,i:number)=>({ix,outerInstructionIndex:i,innerInstructionIndex:null})),...tx.meta.innerInstructions.flatMap((g:any)=>g.instructions.map((ix:any,i:number)=>({ix,outerInstructionIndex:g.index,innerInstructionIndex:i})))];
-    for(const p of positioned){
-      const ix=p.ix;if(keys[ix.programIdIndex]!==PUMP_AMM_PROGRAM_ID.toBase58())continue;
-      need(Array.isArray(ix.accounts)&&ix.accounts.every((i:unknown)=>integer(i)&&i<keys.length),'AMM_ACCOUNT_INDICES');
-      if(!ix.accounts.some((i:number)=>keys[i]===scope.pool))continue;
-      need(typeof ix.data==='string'&&ix.data.length<=4096,'AMM_INSTRUCTION_BYTES');let raw:Buffer;try{raw=Buffer.from(bs58.decode(ix.data));}catch{throw Error('FORWARD_AUDIT_AMM_INSTRUCTION_BYTES');}
-      let decoded:ReturnType<typeof decodePumpSwapInstruction>|null=null;try{decoded=decodePumpSwapInstruction(raw);}catch{}
-      const checked={signature:sig,requestCommitment:commitment,outerInstructionIndex:p.outerInstructionIndex,innerInstructionIndex:p.innerInstructionIndex,discriminatorHex:raw.subarray(0,8).toString('hex'),instructionName:decoded?.name??null,exactRecognizedLayout:decoded?.exactLayout??false,exactPackagedLayout:decoded?.layout==='pinned-sdk',instructionLayout:decoded?.layout??null,trackVolumeAvailable:decoded?.trackVolumeAvailable??null,knownNonSwap:!!decoded&&!SWAPS.has(decoded.name)};result.relevantInstructionChecks.push(checked);
-      need(decoded&&decoded.exactLayout,'RELEVANT_AMM_INSTRUCTION_UNSUPPORTED');
-      need(!/^(buy|sell)(_|$)/.test(decoded.name)||SWAPS.has(decoded.name),'RELEVANT_SWAP_VARIANT_UNSUPPORTED');
-    }
+    let compiled:number;
+    try{const inspected=inspectScopedPumpSwapInstructions(tx,{signature:sig,mint:scope.mint,pool:scope.pool});compiled=inspected.supportedSwapInstructions;result.relevantInstructionChecks.push(...inspected.checks.map(check=>({signature:sig,requestCommitment:commitment,...check})));}
+    catch(error){if(error instanceof ScopedPumpSwapInstructionError){result.relevantInstructionChecks.push(...error.checks.map(check=>({signature:sig,requestCommitment:commitment,...check})));throw Error('FORWARD_AUDIT_'+error.message);}throw error;}
     const mapped=mapConfirmedPumpSwapEvidence(tx,{mint:scope.mint,pool:scope.pool,signature:sig,providerReceivedAt:null,availableAt:at});
-    result.denominatorChecks.push({signature:sig,requestCommitment:commitment,compiledSwapInstructions:compiled.length,decodedSwapEvents:mapped.length});
-    need(compiled.length===mapped.length,'COMPILED_SWAP_EVENT_COUNT_MISMATCH');need(mapped.every(e=>e.transferChecks.baseTransfer&&e.transferChecks.userQuoteTransfer),'EXECUTED_TRANSFER_UNVERIFIED');
-    return {compiled:compiled.length,mapped,slot:tx.slot as number,blockTime:tx.blockTime as number};
+    result.denominatorChecks.push({signature:sig,requestCommitment:commitment,compiledSwapInstructions:compiled,decodedSwapEvents:mapped.length});
+    need(compiled===mapped.length,'COMPILED_SWAP_EVENT_COUNT_MISMATCH');need(mapped.every(e=>e.transferChecks.baseTransfer&&e.transferChecks.userQuoteTransfer),'EXECUTED_TRANSFER_UNVERIFIED');
+    return {compiled,mapped,slot:tx.slot as number,blockTime:tx.blockTime as number};
   };
   const independent=new Map<string,ReturnType<typeof decode>>();
   try{

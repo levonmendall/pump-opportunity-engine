@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "classification": "DISPOSABLE OFFLINE COMPOSITION; NOT NATURAL PAPER PERFORMANCE",
+  "networkRequests": 0,
+  "productionTouched": false,
+  "pilotAccountTouched": false,
+  "account": {
+    "id": "poe-pilot-disposable-progressive-fixture",
+    "inceptionAt": 1793063780000,
+    "initialMicroUsd": "1000000000",
+    "inceptionCount": 1
+  },
+  "maximumObserved": {
+    "positions": 3,
+    "candidates": 2,
+    "pending": 3,
+    "aggregatePositionCostMicroUsd": "143998995"
+  },
+  "simulated": {
+    "entries": 4,
+    "exits": 4,
+    "executionCostsLamports": "56000",
+    "realizedLamports": "-74831366",
+    "lockedDepositLamports": "8001340",
+    "dailyLossPausePersisted": true
+  },
+  "physicalFixtureRequests": {
+    "total": 232,
+    "maximumAccountsInCoherentBatch": 16,
+    "byMethod": {
+      "getMultipleAccounts": 181,
+      "getBlockTime": 17,
+      "getMinimumBalanceForRentExemption": 34
+    }
+  },
+  "syntheticTiming": {
+    "maximumCompletedExitEvaluationGapMs": 900000,
+    "unavailableChecks": 3,
+    "notProviderCapacity": true,
+    "intentionalMaximumHoldTimeJumpMs": 900000
+  },
+  "syntheticLiquidityChanges": [
+    {
+      "mint": "A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump",
+      "vault": "3p2311H7FLZxSdKPAfYisroj5YXvNtbQZDKsqWgPo1B6",
+      "originalAccountSha256": "1e7603652d1eeeac6e1fd0a329691ff5bd9ef7e89cd6a42affb0bddce44ece58",
+      "beforeLamports": "18089768",
+      "afterLamports": "100000000000"
+    },
+    {
+      "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+      "vault": "BYFJC7DSYinhm1QZ6Cmim3fcYxrU6yX5RZw9WxEwua6a",
+      "originalAccountSha256": "0a58ba2609e04c2e3f3dbef82a7b774641e3844b814fbed2f3d5c21714a5994f",
+      "beforeLamports": "64879143",
+      "afterLamports": "100000000000"
+    },
+    {
+      "mint": "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump",
+      "vault": "AyrBjs3xcmuocbLpsA1BC63Z7cpEwcpmjyYe3yLprh9N",
+      "originalAccountSha256": "e3b4658bf0d20ce271c5867d76dd370c2169290f4644066dce3a1e8ce2b42fb6",
+      "beforeLamports": "169684136",
+      "afterLamports": "100000000000"
+    }
+  ],
+  "phases": [
+    {
+      "stage": "single-lifecycle-complete",
+      "positions": 0,
+      "candidates": 0,
+      "pending": 0,
+      "physicalRequests": 22,
+      "executionCostsLamports": "14000",
+      "at": 1793064757000,
+      "details": {
+        "openBackup": {
+          "generation": "00000000000000000001",
+          "revision": 8
+        },
+        "restartPreservedEntireState": true,
+        "uncertainExitRetainedUntilExpiry": true,
+        "idempotentRepeat": true
+      }
+    },
+    {
+      "stage": "retained-low-liquidity-safety-refusal",
+      "positions": 0,
+      "candidates": 1,
+      "pending": 0,
+      "physicalRequests": 32,
+      "executionCostsLamports": "14000",
+      "at": 1793064830000,
+      "details": {
+        "mint": "A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump",
+        "reason": "order-size-exceeds-execution-liquidity-bound",
+        "inputLamports": "47992665",
+        "effectiveQuoteLiquidityLamports": "13438483",
+        "notAFill": true
+      }
+    },
+    {
+      "stage": "shadow-two-candidates-while-held",
+      "positions": 1,
+      "candidates": 2,
+      "pending": 0,
+      "physicalRequests": 100,
+      "executionCostsLamports": "21000",
+      "at": 1793064980000,
+      "details": {
+        "syntheticDiscoveryCallbacks": 2,
+        "completeSyntheticFlowTrades": 12,
+        "exposureUnchanged": true,
+        "maximumCompletedExitEvaluationGapMs": 2000
+      }
+    },
+    {
+      "stage": "two-held-with-one-shadow-candidate",
+      "positions": 2,
+      "candidates": 1,
+      "pending": 0,
+      "physicalRequests": 162,
+      "executionCostsLamports": "28000",
+      "at": 1793065051000,
+      "details": {}
+    },
+    {
+      "stage": "three-held-frozen-baseline",
+      "positions": 3,
+      "candidates": 0,
+      "pending": 0,
+      "physicalRequests": 223,
+      "executionCostsLamports": "35000",
+      "at": 1793065131000,
+      "details": {}
+    },
+    {
+      "stage": "rpc-outage-retains-three-positions",
+      "positions": 3,
+      "candidates": 0,
+      "pending": 0,
+      "physicalRequests": 226,
+      "executionCostsLamports": "35000",
+      "at": 1793065135000,
+      "details": {
+        "unavailableChecks": 3
+      }
+    },
+    {
+      "stage": "three-simultaneous-exit-reservations",
+      "positions": 3,
+      "candidates": 0,
+      "pending": 3,
+      "physicalRequests": 227,
+      "executionCostsLamports": "35000",
+      "at": 1793065137000,
+      "details": {
+        "shock": "SYNTHETIC quote-vault balance halved; not natural market evidence"
+      }
+    },
+    {
+      "stage": "three-exits-reconciled",
+      "positions": 0,
+      "candidates": 0,
+      "pending": 0,
+      "physicalRequests": 232,
+      "executionCostsLamports": "56000",
+      "at": 1793065138000,
+      "details": {
+        "finalBackup": {
+          "generation": "00000000000000000002",
+          "revision": 173
+        },
+        "lockedRentPreserved": true,
+        "dailyLossPausePreservedAcrossRestart": true,
+        "bankrollIdentity": "cash + locked deposits - initial SOL = realized SOL after all gas and pool fees"
+      }
+    }
+  ],
+  "limitations": [
+    "Four independently captured pools are composed in a synthetic common bank; no concurrent natural bank claimed.",
+    "The retained low-liquidity refusal remains recorded; only in-memory WSOL vault balances are increased to100SOL for the subsequent concurrency mechanics scenario.",
+    "Discovery callbacks and complete curve trades are synthetic fixtures, not provider completeness evidence.",
+    "Clock, USD valuation, availability and reserve shock are synthetic.",
+    "No real request pacing/CPU/latency/endpoint entitlement is established.",
+    "No jitter, burst or pending-action deadline capacity claim follows from zero-duration fixture RPC responses.",
+    "Natural maximum-hold/stop/profit behavior remains a separate forward question."
+  ]
+}

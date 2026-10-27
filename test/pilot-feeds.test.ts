@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {readFileSync} from 'node:fs';
 import WebSocket from 'ws';
+import bs58 from 'bs58';
 import {PilotFeeds,type PilotFeedControl,type PilotFeedsOptions} from '../src/pilot-feeds.js';
 import type {ComponentKind,ComponentOperation} from '../src/component-budget.js';
 
@@ -17,14 +18,15 @@ class Socket extends EventEmitter{
   terminate(){if(this.closed)return;this.closed=true;queueMicrotask(()=>this.emit('close'));}
   drop(){this.closed=true;this.emit('close');}
 }
-function setup(config:{validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;chargeFailure?:boolean}={}){
+function setup(config:{maximumCandidates?:1|2|3;responses?:Record<string,unknown>;onGap?:(gap:{mint?:string;reason:string;at:number},feeds:PilotFeeds)=>void;validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;chargeFailure?:boolean}={}){
   let at=Date.parse(fixtureTx.fetchedAt),mono=0,sequence=0,active=0,controlBytes=0,rpcCalls=0;const timers=new Map<number,{at:number;callback:()=>void}>(),sockets:Socket[]=[],operations:ComponentKind[]=[],records:Array<{kind:string;data:any}>=[],trades:any[]=[],migrations:any[]=[],gaps:any[]=[],opens:any[]=[],hints:any[]=[];
   const advance=async(ms:number)=>{const end=mono+ms;while(true){const next=[...timers].filter(([,v])=>v.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;const delta=next[1].at-mono;at+=delta;mono=next[1].at;timers.delete(next[0]);next[1].callback();for(let i=0;i<8;i++)await Promise.resolve();}at+=end-mono;mono=end;for(let i=0;i<8;i++)await Promise.resolve();};
   const control:PilotFeedControl={async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal){assert.equal(active,0,'one physical control operation');operations.push(kind);active++;if(config.closeBeforeSubscribe&&kind.method==='subscribeMigration')sockets[0]!.drop();try{return await work({id:operations.length,signal:signal??new AbortController().signal,chargeHttp(){},completeResponse(){}});}finally{active--; }},accountControlBytes(n){if(config.chargeFailure)throw Error('COMPONENT_STORAGE_UNAVAILABLE');controlBytes+=n;},noteThrottle(){return at+15000;}};
-  const feeds=new PilotFeeds({control,amountConvention:'user',durationMs:config.durationMs??300000,maxPumpApiBytes:config.maxPumpApiBytes,admitControl:config.admitControl,record(kind,data){records.push({kind,data});if(kind==='research-enrichment-validation-prepared'){at+=config.validationDelay??0;mono+=config.validationDelay??0;}if(kind==='research-normalized-trade'){at+=config.afterRecordDelay??0;mono+=config.afterRecordDelay??0;}},onMigration:s=>migrations.push(s),onFlowOpen:(mint,at)=>opens.push({mint,at}),onHint:(mint,at)=>hints.push({mint,at}),onTrade:t=>trades.push(t),onGap:g=>gaps.push(g)},
+  const feedOptions:PilotFeedsOptions={control,amountConvention:'user',maximumCandidates:config.maximumCandidates,durationMs:config.durationMs??300000,maxPumpApiBytes:config.maxPumpApiBytes,admitControl:config.admitControl,record(kind,data){records.push({kind,data});if(kind==='research-enrichment-validation-prepared'){at+=config.validationDelay??0;mono+=config.validationDelay??0;}if(kind==='research-normalized-trade'){at+=config.afterRecordDelay??0;mono+=config.afterRecordDelay??0;}},onMigration:s=>migrations.push(s),onFlowOpen:(mint,at)=>opens.push({mint,at}),onHint:(mint,at)=>hints.push({mint,at}),onTrade:t=>trades.push(t),onGap:g=>{gaps.push(g);config.onGap?.(g,feeds);}};
+  const feeds=new PilotFeeds(feedOptions,
     {now:()=>at,monotonic:()=>mono,setTimer(callback,ms){const id=++sequence;timers.set(id,{at:mono+ms,callback});return id;},clearTimer(id){timers.delete(id as number);},makeSocket(endpoint,options){assert.equal(options.maxPayload,65536);assert.equal(options.followRedirects,false);const socket=new Socket(endpoint);sockets.push(socket);if(config.refuseUpgrade)queueMicrotask(()=>socket.emit('unexpected-response',{}, {socket:{bytesRead:200},statusCode:429,headers:{'retry-after':'10'},destroy(){}}));else if(!config.hangOpen)queueMicrotask(()=>socket.emit('open'));return socket as unknown as WebSocket;}});
-  const rpc={async call<T>(method:string,params:unknown[]){rpcCalls++;assert.equal(method,'getTransaction');assert.equal(params[0],fixtureTx.signature);at+=10;mono+=10;return fixtureTx.transaction as T;}};
-  return {feeds,control,rpc,advance,sockets,operations,records,trades,migrations,gaps,opens,hints,get now(){return at;},get rpcCalls(){return rpcCalls;},get controlBytes(){return controlBytes;},get active(){return active;}};
+  const rpc={async call<T>(method:string,params:unknown[]){rpcCalls++;assert.equal(method,'getTransaction');assert.ok(params[0]===fixtureTx.signature||Object.hasOwn(config.responses??{},String(params[0])));at+=10;mono+=10;return (config.responses?.[String(params[0])]??fixtureTx.transaction) as T;}};
+  return {feeds,feedOptions,control,rpc,advance,sockets,operations,records,trades,migrations,gaps,opens,hints,get now(){return at;},get rpcCalls(){return rpcCalls;},get controlBytes(){return controlBytes;},get active(){return active;}};
 }
 
 test('one free discovery connection restores only migration subscription and emits unverified public hints',async()=>{
@@ -74,4 +76,91 @@ test('current feature projection advances beyond the bounded hundred-row diagnos
 
 test('background duration shutdown reports an unsettled transport without an unhandled promise rejection',async()=>{
   const f=setup({durationMs:1000});await f.feeds.startDiscovery();const socket=f.sockets[0]!;socket.terminate=()=>{};await f.advance(4000);assert.ok(f.gaps.some(g=>g.reason==='PILOT_FEED_TRANSPORT_UNSETTLED'));assert.equal(f.feeds.usage().physicalTransportsSettled,false);socket.drop();await f.feeds.stop();assert.equal(f.feeds.usage().physicalTransportsSettled,true);
+});
+
+// Retained transactions below are delivered at declared synthetic test times.
+// These cases prove scoped dispatch mechanics, not live concurrent coverage.
+const secondCapture=JSON.parse(readFileSync('evidence/overnight-20261027/07-field/capture.json','utf8'));
+const secondScope={...secondCapture.scope,supportedPoolEvidence:'OFFLINE_CONCURRENT_SCOPE_ONLY'};
+const secondEvidence=secondCapture.executedEvidence[0],secondSignature=secondEvidence.identity.signature;
+const secondPayload=()=>({mint:secondScope.mint,poolId:secondScope.pool,pool:'pump-amm',signature:secondSignature,action:secondEvidence.side});
+const otherScope=(run:string)=>{const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));return {mint:proof.quote.mint,pool:proof.quote.pool,baseUnits:proof.quote.buy.outputBaseUnits,minSlot:proof.origin.slot,supportedPoolEvidence:'OFFLINE_CONCURRENT_SCOPE_ONLY'};};
+const thirdScope=otherScope('2026-10-26T19-42-16.130Z'),fourthScope=otherScope('2026-10-26T19-57-35.882Z');
+
+test('explicit three-scope mode uses one socket, while default capacity and legacy replacement remain unchanged',async()=>{
+  const single=setup();await single.feeds.addCandidate(scope);await assert.rejects(single.feeds.addCandidate(secondScope),/CANDIDATE_CAPACITY/);await single.feeds.stop();
+  const f=setup({maximumCandidates:3});await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);await f.feeds.addCandidate(thirdScope);
+  assert.equal(f.sockets.length,1);assert.equal(f.operations.length,1);assert.equal(f.sockets[0]!.sent.length,0);assert.equal(Object.keys(f.feeds.snapshots()).length,3);assert.equal(f.opens.length,3);
+  await f.feeds.addCandidate(scope);assert.equal(f.opens.length,3,'identical add is idempotent and never clears a warmed window');
+  await assert.rejects(f.feeds.addCandidate(fourthScope),/CANDIDATE_CAPACITY/);
+  await f.feeds.selectCandidate(secondScope);assert.equal(f.sockets.length,2);assert.deepEqual(Object.keys(f.feeds.snapshots()),[secondScope.mint]);assert.equal(f.feeds.snapshot()?.scope.mint,secondScope.mint);await f.feeds.stop();
+});
+
+test('malformed selected data or removal of one scope preserves the other scopes and shared socket',async()=>{
+  const f=setup({maximumCandidates:3});await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);await f.feeds.addCandidate(thirdScope);const socket=f.sockets[0]!;
+  socket.frame({...selected(),signature:null});assert.equal(f.feeds.snapshot(scope.mint)?.failedCandidate,true);assert.equal(f.feeds.snapshot(secondScope.mint)?.failedCandidate,false);assert.equal(f.feeds.snapshot(thirdScope.mint)?.failedCandidate,false);assert.equal(f.feeds.usage().pumpApiConnected,true);
+  assert.equal(f.feeds.usage().pumpApiSocketBytes,socket._socket.bytesRead,'broad raw bytes counted once, not once per candidate');
+  await f.feeds.removeCandidate(scope.mint);assert.equal(socket.closed,false);await f.feeds.removeCandidate(secondScope.mint);assert.equal(socket.closed,false);assert.equal(f.feeds.snapshot(thirdScope.mint)?.failedCandidate,false);
+  await f.feeds.removeCandidate(thirdScope.mint);assert.equal(socket.closed,true);await f.feeds.stop();
+});
+
+test('earliest scope deadline dispatches first and concurrent callers cannot start a second physical enrichment',async()=>{
+  const f=setup({maximumCandidates:3,responses:{[secondSignature]:secondCapture.enrichmentTransactions[secondSignature]}});await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);const socket=f.sockets[0]!;
+  socket.frame(secondPayload());await f.advance(100);socket.frame(selected());await f.advance(1000);
+  assert.equal(f.feeds.peekHint()?.mint,secondScope.mint);await f.feeds.enrichNext(f.rpc);assert.equal(f.trades.length,1);assert.equal(f.trades[0].trade.mint,secondScope.mint);assert.equal(f.feeds.snapshot(secondScope.mint)?.pending,0);assert.equal(f.feeds.peekHint()?.mint,scope.mint);
+  let release!:(value:any)=>void,calls=0;const pending=f.feeds.enrichNext({async call<T>():Promise<T>{calls++;return await new Promise<T>(resolve=>{release=resolve;});}});
+  await Promise.resolve();assert.deepEqual(await f.feeds.enrichNext(f.rpc),[]);assert.equal(calls,1);assert.equal(f.feeds.usage().enrichmentInFlight,true);release(fixtureTx.transaction);await pending;
+  assert.equal(f.trades.length,2);assert.equal(f.feeds.snapshot(scope.mint)?.fullyEnriched,true);assert.equal(f.feeds.snapshot(secondScope.mint)?.fullyEnriched,true);await f.feeds.stop();
+});
+
+test('currently eligible identical signatures share one confirmed read without inventing a second-pool trade',async()=>{
+  const f=setup({maximumCandidates:3});await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);const socket=f.sockets[0]!;
+  socket.frame(selected());socket.frame({...secondPayload(),signature:fixtureTx.signature});await f.advance(1000);await f.feeds.enrichNext(f.rpc);
+  assert.equal(f.rpcCalls,1);assert.equal(f.trades.length,1);assert.equal(f.trades[0].trade.mint,scope.mint);assert.equal(f.feeds.snapshot(scope.mint)?.fullyEnriched,true);assert.equal(f.feeds.snapshot(secondScope.mint)?.failedCandidate,true,'actual response lacks the claimed second-pool swap');
+  assert.equal(f.feeds.usage().pumpApiConnected,true);const record=f.records.find(row=>row.kind==='pilot-confirmed-enrichment')!;assert.equal(record.data.selectedHints.length,2);await f.feeds.stop();
+});
+
+test('shared disconnect invalidates every affected window once and requires explicit fresh warming',async()=>{
+  const f=setup({maximumCandidates:3});await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);await f.feeds.addCandidate(thirdScope);f.sockets[0]!.drop();
+  assert.ok(Object.values(f.feeds.snapshots()).every(snapshot=>snapshot!.failedCandidate));assert.equal(f.gaps.length,3);assert.equal(f.feeds.usage().candidateRetryAt,f.now+2000,'one transport episode uses one backoff, not three');
+  await f.advance(2100);assert.equal(f.sockets.length,1,'no automatic reuse of old windows');await f.feeds.addCandidate(scope);assert.equal(f.sockets.length,2);assert.equal(f.feeds.snapshot(scope.mint)?.failedCandidate,false);assert.equal(f.feeds.snapshot(scope.mint)?.warm,false);assert.equal(f.feeds.snapshot(secondScope.mint)?.failedCandidate,true);await f.feeds.stop();
+});
+
+test('aggregate required-hint backlog stays bounded at sixteen across three scopes',async()=>{
+  const f=setup({maximumCandidates:3});await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);await f.feeds.addCandidate(thirdScope);const socket=f.sockets[0]!;
+  for(let i=1;i<=15;i++)socket.frame({...selected(),signature:bs58.encode(Buffer.alloc(64,i))});socket.frame(secondPayload());socket.frame({mint:thirdScope.mint,poolId:thirdScope.pool,pool:'pump-amm',signature:bs58.encode(Buffer.alloc(64,30)),action:'buy'});
+  assert.equal(f.feeds.snapshot(scope.mint)?.pending,15);assert.equal(f.feeds.snapshot(secondScope.mint)?.pending,1);assert.equal(f.feeds.snapshot(thirdScope.mint)?.failedCandidate,true);assert.equal(f.feeds.snapshot(scope.mint)?.failedCandidate,false);assert.equal(f.feeds.snapshot(secondScope.mint)?.failedCandidate,false);assert.ok(f.gaps.some(g=>g.mint===thirdScope.mint&&g.reason==='PILOT_AGGREGATE_ENRICHMENT_CAPACITY'));assert.equal(f.rpcCalls,0);await f.feeds.stop();
+});
+
+test('owner gap callback can retire that same scope without recursion or disturbing another scope',async()=>{
+  const retirements:Promise<void>[]=[];
+  const f=setup({maximumCandidates:3,onGap(gap,feeds){if(gap.mint===scope.mint)retirements.push(feeds.removeCandidate(gap.mint,'OWNER_RETIREMENT'));}});
+  await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);f.sockets[0]!.frame({...selected(),signature:null});await Promise.all(retirements);
+  assert.equal(f.feeds.snapshot(scope.mint),null);assert.equal(f.feeds.snapshot(secondScope.mint)?.failedCandidate,false);assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.gaps.filter(g=>g.mint===scope.mint).length,2,'one failure and one intentional retirement; no recursive third callback');await f.feeds.stop();
+});
+
+
+test('validated candidate cap cannot be raised by mutating caller-owned options',async()=>{
+  const options={maximumCandidates:2 as 1|2|3};const f=setup(options);
+  await f.feeds.addCandidate(scope);await f.feeds.addCandidate(secondScope);
+  f.feedOptions.maximumCandidates=3;
+  await assert.rejects(f.feeds.addCandidate(thirdScope),/CANDIDATE_CAPACITY/);
+  assert.equal(f.feeds.usage().maximumCandidates,2);await f.feeds.stop();
+});
+
+test('validated amount convention cannot change after observation begins',async()=>{
+  const f=setup();await f.feeds.selectCandidate(scope);f.feedOptions.amountConvention='curve';f.sockets[0]!.frame(selected());await f.advance(1000);await f.feeds.enrichNext(f.rpc);
+  assert.equal(f.trades.length,1);assert.equal(f.trades[0].trade.quoteLamports,f.trades[0].evidence.userQuoteLamports);assert.notEqual(f.trades[0].trade.quoteLamports,f.trades[0].evidence.curveQuoteLamports);await f.feeds.stop();
+});
+
+
+test('held-priority retirement does not await a delayed stream close or reuse its draining transport',async()=>{
+ const f=setup();await f.feeds.selectCandidate(scope);const old=f.sockets[0]!;let terminating=false;
+ old.terminate=()=>{terminating=true;};
+ await f.feeds.removeCandidate(scope.mint,'ISOLATED protection-first retirement',{waitForSettlement:false});
+ assert.equal(terminating,true);assert.equal(f.feeds.snapshot(scope.mint),null);assert.equal(f.feeds.usage().pumpApiConnected,false);assert.equal(f.feeds.usage().physicalTransportsSettled,false);
+ const bytes=f.feeds.usage().pumpApiSocketBytes,selectedBefore=f.feeds.usage().selectedFrames;
+ old.frame(selected(),400);assert.ok(f.feeds.usage().pumpApiSocketBytes>=bytes+400);assert.equal(f.feeds.usage().selectedFrames,selectedBefore);
+ await f.feeds.addCandidate(scope);assert.equal(f.sockets.length,1,'no new upgrade while the retired transport is unsettled');assert.equal(f.opens.length,1,'draining transport cannot activate new flow');
+ old.drop();await f.advance(2100);assert.equal(f.sockets.length,2);assert.equal(f.opens.length,2);assert.equal(f.feeds.snapshot()?.warm,false);assert.equal(f.feeds.snapshot()?.pending,0);await f.feeds.stop();
 });

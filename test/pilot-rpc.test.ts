@@ -6,9 +6,9 @@ import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {PilotRpc,PilotRpcUnavailable,type PilotRpcOptions} from '../src/pilot-rpc.js';
 const MIB=1024*1024,turn=()=>new Promise<void>(r=>setImmediate(r));
-function fixture(options:Partial<PilotRpcOptions>={}){
+function fixture(options:Partial<PilotRpcOptions>={},recent=false){
   const directory=mkdtempSync(join(tmpdir(),'poe-pilot-rpc-')),old=join(directory,'old.json');let now=200000,mono=200000;
-  writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:20,bytes:272634,lastObservedAt:2000,starts:Array.from({length:20},(_,i)=>1000+i),pending:[{id:20,unobservedBytes:2*MIB}]}),{mode:0o600});
+  writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:20,bytes:272634,lastObservedAt:recent?199999:2000,starts:Array.from({length:20},(_,i)=>(recent?199000:1000)+i),pending:[{id:20,unobservedBytes:2*MIB}]}),{mode:0o600});
   const before=readFileSync(old),records:Array<{kind:string;data:any}>=[],invocations:Array<{at:number;method:string}>=[];
   const response=(body:string,status=200,headers:Record<string,string>={})=>new Response(body,{status,headers});
   const success=(async(_url,init)=>{const b=JSON.parse(String(init?.body));invocations.push({at:now,method:b.method});now+=5;mono+=5;return response(JSON.stringify({jsonrpc:'2.0',id:b.id,result:123}));}) as typeof fetch;
@@ -22,6 +22,32 @@ test('chapter rollover preserves cumulative counters, inherited uncertainty, rea
     await assert.rejects(f.client.call('getSlot'),/RUN_UNIT_CAP/);assert.equal(f.invocations.length,5);assert.equal(f.client.available(),false);
     const first=JSON.parse(readFileSync(join(f.directory,'run/chapter-001.json'),'utf8'));assert.equal(first.starts.length,2);assert.equal(first.baseline.calls,20);assert.equal(first.baseline.bytes,272634+2*MIB);
   }finally{f.close();}
+});
+test('optional getTransaction gate refuses without a physical reservation or hidden wait and keeps held-price methods available',async()=>{
+  const f=fixture({maxStartsPer10s:20,maxGetTransactionStartsPer10s:8,chapterUnits:3});try{
+    for(let i=0;i<8;i++)await f.client.call('getTransaction');const before=f.client.usage(),at=f.now(),book=readFileSync(before.activeChapterPath!);assert.equal(before.chapter,3);assert.equal(before.methodPacing.getTransactionStartsLast10s.length,8);assert.equal(f.client.methodReadyAt('getTransaction'),210000);assert.equal(f.client.methodReadyAt('getTransaction',2),210250);assert.equal(f.client.methodReadyAt('getTransaction',8),211750);
+    await assert.rejects(f.client.call('getTransaction'),e=>e instanceof PilotRpcUnavailable&&e.code==='METHOD_PACING'&&e.retryAt===210000);assert.equal(f.now(),at);assert.equal(f.invocations.length,8);assert.equal(f.client.usage().newUnits,8);assert.equal(f.client.usage().newAccountedResponseBytes,before.newAccountedResponseBytes);assert.deepEqual(readFileSync(before.activeChapterPath!),book);assert.equal(f.client.usage().methodPacing.capacityRefusals,1);assert.ok(f.records.some(r=>r.kind==='pilot-method-capacity-refusal'&&r.data.physicalRequestStarted===false));
+    assert.equal(await f.client.call('getMultipleAccounts'),123);assert.equal(f.invocations.at(-1)!.method,'getMultipleAccounts');assert.equal(f.client.usage().methodPacing.getTransactionStartsLast10s.length,8);f.advance(210000-f.now());assert.equal(await f.client.call('getTransaction'),123);assert.equal(f.invocations.at(-1)!.at,210000);assert.equal(f.client.usage().newUnits,10);
+  }finally{f.close();}
+});
+test('immediate linked run conservatively inherits all recent unknown-method starts and persists its bounded method cache',async()=>{
+  const f=fixture({maxStartsPer10s:20,maxGetTransactionStartsPer10s:8},true);try{
+    assert.equal(f.client.usage().methodPacing.getTransactionStartsLast10s.length,20);assert.ok(f.client.usage().methodPacing.getTransactionStartsLast10s.every(r=>r.origin==='inherited-unknown'));assert.equal(f.client.methodReadyAt('getTransaction'),209012);assert.equal(f.client.methodReadyAt('getTransaction',8),209019);
+    await assert.rejects(f.client.call('getTransaction'),e=>e instanceof PilotRpcUnavailable&&e.retryAt===209012);assert.equal(f.client.usage().chapter,0);assert.equal(f.client.usage().newUnits,0);assert.equal(f.invocations.length,0);const persisted=JSON.parse(readFileSync(join(f.directory,'run/status.json'),'utf8'));assert.equal(persisted.methodPacing.getTransactionStartsLast10s.length,20);assert.equal(persisted.requestLimits.maxGetTransactionStartsPer10s,8);
+    f.advance(9012);assert.equal(f.client.usage().methodPacing.getTransactionStartsLast10s.length,7);await f.client.call('getTransaction');assert.equal(f.invocations[0]!.at,209012);assert.equal(f.client.usage().methodPacing.getTransactionStartsLast10s.length,3);assert.equal(f.client.usage().methodPacing.getTransactionStartsLast10s.at(-1)!.origin,'getTransaction');assert.equal(f.client.usage().cumulativeUnits,21);
+  }finally{f.close();}
+});
+test('legacy method pacing is unrestricted beyond shared caps, with explicit bounded configuration and reserve validation',async()=>{
+  const legacy=fixture({maxStartsPer10s:20});try{for(let i=0;i<9;i++)await legacy.client.call('getTransaction');assert.equal(legacy.client.usage().newUnits,9);assert.equal(legacy.client.usage().requestLimits.maxGetTransactionStartsPer10s,null);assert.equal(legacy.client.methodReadyAt('getTransaction',8),legacy.now());}
+  finally{legacy.close();}
+  const f=fixture({maxGetTransactionStartsPer10s:2});try{assert.equal(f.client.methodReadyAt('getTransaction',3),Infinity);assert.equal(f.client.methodReadyAt('getSlot',8),f.now());for(const n of [0,9,1.5])assert.throws(()=>f.client.methodReadyAt('getTransaction',n),/INVALID_METHOD_RESERVE/);for(const n of [1,9,2.5])assert.throws(()=>new PilotRpc({directory:join(f.directory,'bad-'+n),runId:'invalid-method',baselinePaths:[f.old],priorPhysicalSettled:true,maxGetTransactionStartsPer10s:n}),/INVALID_OPTIONS/);assert.equal(f.client.usage().newUnits,0);}
+  finally{f.close();}
+});
+test('failed actual getTransaction attempts count, while dispatch refusal and cancellation do not invent starts or bypass HTTP429',async()=>{
+  const refused=fixture({maxGetTransactionStartsPer10s:2});try{await assert.rejects(refused.client.call('getTransaction',[],undefined,{latestStartAt:refused.now()-1}),/DISPATCH_EXPIRED/);assert.equal(refused.client.usage().newUnits,0);assert.equal(refused.client.usage().methodPacing.getTransactionStartsLast10s.length,0);const signal=new AbortController();signal.abort();await assert.rejects(refused.client.call('getTransaction',[],signal.signal),/ABORTED/);assert.equal(refused.client.usage().methodPacing.getTransactionStartsLast10s.length,0);}
+  finally{refused.close();}
+  let calls=0;const limited=fixture({maxGetTransactionStartsPer10s:2,fetcher:(async()=>{calls++;return new Response('no',{status:429,headers:{'retry-after':'10'}});}) as typeof fetch});try{await assert.rejects(limited.client.call('getTransaction'),/HTTP_429/);await turn();assert.equal(limited.client.usage().methodPacing.getTransactionStartsLast10s.length,1);assert.equal(limited.client.usage().methodPacing.getTransactionStartsLast10s[0]!.origin,'getTransaction');const until=limited.client.cooldownUntil();await assert.rejects(limited.client.call('getTransaction'),/COOLDOWN/);assert.equal(calls,1);assert.equal(limited.client.cooldownUntil(),until);assert.equal(limited.client.usage().uncertainResponseBytes,4*MIB);assert.equal(limited.client.usage().methodPacing.capacityRefusals,0);}
+  finally{limited.close();}
 });
 test('HTTP429 never retries; Retry-After plus5s gates a settled new chapter and retains both uncertainty reservations',async()=>{
   let calls=0;const f=fixture({fetcher:(async(_u,init)=>{calls++;const b=JSON.parse(String(init?.body));return calls===1?new Response('denied',{status:429,headers:{'retry-after':'10'}}):new Response(JSON.stringify({jsonrpc:'2.0',id:b.id,result:'fresh'}));}) as typeof fetch});

@@ -1,3 +1,30 @@
+# Progressive pilot continuation — 2026-10-27
+
+Current isolated integration lives in `/workspace/poe-stage-review`, based on
+87708b4. Root is finalizing the progressive change set for the existing
+`poe-free-data-evaluation-20261027` branch. The Cloud environment disconnected
+and recovered; prior failed/interrupted checks remain historical. No production
+or account reset occurred. The pilot remains the original experimental account
+poe-pilot-8468add6-f916-48cf-a585-6cd008a81360, inception17:56:13.252Z.
+
+Progressive disposable mechanics now pass single lifecycle/restart/recovery,
+two shadow candidates while holding, three positions and three overlapping exits,
+exact gas/rent and persistent daily-loss pause. Original liquidity refusal is
+preserved before the declared synthetic-liquidity concurrency fixture. No natural
+multi-position claim follows. Timing correction records actual completed exit
+evaluations, original source expiry, first-position origin and open outage tails;
+candidate retirement no longer waits for delayed transport close. Source/financial
+review and full regressions are running before a frozen forward interval.
+
+Next: finish source review/full checks, commit on the existing review branch,
+resume the SAME pilot account in a bounded concurrent stage, capture honest
+coverage/entry-eligible/rejection/unfilled/timing/usage results. Do not mutate
+pinned source during the run. No owner approval is needed for these isolated
+PAPER stages. Original EC2 observer/account and Render portfolio remain untouched.
+Dashboard diagnostics use their existing separate reporting-only publisher.
+
+## Earlier checkpoint history (retained)
+
 # POE continuation checkpoint — standing research, 2026-10-27
 
 Branch `poe-free-data-evaluation-20261027`, base `5a0fa96`. Standing owner authorization supersedes the old one-capture, lifetime-request and no-reservation-release restrictions. It authorizes bounded read-only research using PumpApi, public Solana RPC and free PumpPortal discovery. Alchemy/Helius/paid feeds remain excluded. No production change, account reset, deployment, entries, signing or spending.
