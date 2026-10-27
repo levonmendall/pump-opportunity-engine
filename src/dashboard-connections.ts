@@ -10,9 +10,9 @@ export const CONNECTIONS_HTML=String.raw`
 <p id="pilot-source-detail"></p>
 <div id="pilot-funnel" class="metric-grid"></div>
 <h3>Market watch and deep analysis</h3><div id="pilot-watch" class="metric-grid"></div>
-<p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
+<p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. Registry promotion and complete-window totals persist across research runs; predictive rejection, incomplete-data and enrichment-deadline counts describe the current run. Queue and completed-admission waits measure elapsed wall time, including stopped intervals—not provider latency or delay caused solely by capacity. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
 <div id="pilot-metrics" class="metric-grid pilot-grids"></div>
-<p class="pilot-note">Counters describe the identified pilot run. Validated swap events are market observations; PAPER fills and exits are simulated portfolio actions. Accounting reconciliations include zero-trade checks. Source age describes the local status file, not complete market coverage or continuous position protection.</p>
+<p class="pilot-note">Funnel, swap and accounting counters describe the identified pilot run. Validated swap events are market observations; PAPER fills and exits are simulated portfolio actions. Accounting reconciliations include zero-trade checks. Source age describes the local status file, not complete market coverage or continuous position protection.</p>
 <h3>Recent pilot decisions</h3><div id="pilot-decisions" class="identity-line">No pilot report received.</div>
 <h3>Pilot refusals</h3><div id="pilot-refusals" class="identity-line">No pilot report received.</div>
 </section>`;
