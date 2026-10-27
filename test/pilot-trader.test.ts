@@ -37,6 +37,20 @@ test('only explicit confirmed curve flow may warm a pilot window; violations clo
     assert.throws(()=>engine.ingest({...event,...(bad==='processed'?{commitment:'processed' as const}:{}),...(bad==='slot'?{slot:undefined}:{})},bad==='missing'?undefined:bad==='user'?'user':'curve'),/explicit curve amounts/);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(engine.ingest(event,'curve'),'unselected');}
 });
 
+test('pilot refuses incompatible flow-verification configuration before any adapter or financial action',t=>{
+  const f=fixture(t),before=f.ledger.state();
+  for(const flowVerification of [undefined,{verified:false,evidence:'unverified fixture'},{verified:true,evidence:''},{verified:true,evidence:'x'.repeat(129)},{verified:true,evidence:'x'.repeat(182)},{verified:true,evidence:'embedded\ncontrol'}]){
+    assert.throws(()=>new PaperTrader({...f.options,flowVerification}),/pilot requires verified flow fields and bounded evidence/);
+    assert.deepEqual(f.ledger.state(),before);assert.deepEqual(f.reads,[]);assert.deepEqual(f.decisionCalls,[]);assert.deepEqual(f.rows,[]);
+  }
+  assert.doesNotThrow(()=>new PaperTrader({...f.options,flowVerification:{verified:true,evidence:'x'.repeat(128)}}));
+  assert.doesNotThrow(()=>new PaperTrader({...f.options,flowVerification:{verified:true,evidence:'pilot-confirmed-curve-v1:'+PILOT_CONTRACT_SHA256}}));
+  // Ordinary PAPER keeps its existing missing-data decision behavior; this
+  // startup guard belongs only to the explicitly frozen isolated pilot.
+  assert.doesNotThrow(()=>new PaperTrader({...f.options,experimentalPilot:undefined,pilotExecution:undefined,flowVerification:{verified:true,evidence:'x'.repeat(182)}}));
+  assert.deepEqual(f.ledger.state(),before);assert.deepEqual(f.reads,[]);
+});
+
 test('frozen pilot admits one delayed position with exact prepared rent and manages its exit while entries are paused',async t=>{
   const f=fixture(t),engine=new PaperTrader(f.options);engine.start();assert.equal(f.ledger.state().controls.entriesEnabled,false);engine.setPilotEntryDeposit('2000000','ISOLATED current account-size rent');f.admit(engine);f.admit(engine,'fixture-second-token');f.warm(engine,[MINT,'fixture-second-token']);f.ready();
   await engine.tick();const buy=Object.values(f.ledger.state().pending)[0]!;assert.equal(buy.side,'buy');assert.equal(buy.deposit,'2000000');assert.equal(buy.gas,'7000');assert.equal(buy.reserved,'500000000');assert.equal(buy.minReceive,'990');assert.equal(engine.nextDueAt(),T+61000);assert.equal(engine.frozenVersion,PILOT_VERSION);assert.throws(()=>engine.setPilotEntryDeposit('1','cannot change pending entry'),/no pending entry/);

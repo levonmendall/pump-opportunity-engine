@@ -1,0 +1,4107 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_DISPOSABLE_CONCURRENCY_AND_COUNTERFACTUAL_TIMING_ONLY",
+  "networkRequests": 0,
+  "productionChanged": false,
+  "livePilotSettingsChanged": false,
+  "authoritativeAccountAccessed": false,
+  "acceptanceClockStarted": false,
+  "limitations": [
+    "Three different historical pools are assigned a synthetic common Clock/context only for decoder and financial-interface mechanics; this is not a live three-pool observation.",
+    "The candidate transaction is retained natural executed evidence, delivered at synthetic test times. It does not create a natural qualifying window, entry or performance result.",
+    "Simulation operation durations and jitter are declared synthetic inputs. A single batched holding read prices three positions in the fixture, but its live three-pool service time is unverified.",
+    "The existing proposed four-second completion envelope is an assessment label, not production acceptance or a stop-price guarantee. The two-second reference target and quote-age-at-use requirement remain reported separately.",
+    "Candidate suspension invalidates its complete window. Financial positions, pending actions and owner identity survive independently.",
+    "No source, risk limit, live pilot max-one setting, production observer, Render account, prior grant or counter is modified."
+  ],
+  "threeHeldAndCandidate": {
+    "classification": "RETAINED_ACCOUNT_BYTE_DECODING_WITH_SYNTHETIC_TIME_AND_RETIMED_RETAINED_CANDIDATE",
+    "distinctHeldMints": [
+      "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+      "A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump",
+      "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump"
+    ],
+    "coherentBatchAccounts": 16,
+    "steadyHoldingRequestsPerEvaluation": 1,
+    "candidateRequests": 1,
+    "candidateSignature": "3cuSKandC1XbpD1BTxN6SkvQ6wvrC4UxGY96YgxGa1rfAd5kVfGL3xurVFHaExB5838G3ihbYyfFP95QV9xoP7aB",
+    "normalizedEvents": 1,
+    "normalizedFingerprint": "72eea8852c9e5218fc7050d3b7880fe2b9b364412ad179a9d1f31b3660865fed",
+    "queueAgeMs": 1000,
+    "enrichmentCompletionDelayMs": 1080,
+    "financialStateUnchanged": true,
+    "allThreeFullSizeMarks": true,
+    "physicalOperations": 11,
+    "responseBytes": 93909,
+    "maximumPhysicalInFlight": 1,
+    "minimumPhysicalStartGapMs": 250,
+    "syntheticHttpServiceMs": 80,
+    "liveThreePoolLatencyVerified": false,
+    "completeCandidateWindowVerified": false
+  },
+  "freshReconciliationEntry": {
+    "classification": "DISPOSABLE_PACED_ENTRY_WITH_LAUNCHER_CONTEXT_RECONCILIATION_POLICY",
+    "status": "filled",
+    "initialReconciliationAt": 1793085011398,
+    "decisionAt": 1793085011978,
+    "attemptedAt": 1793085012978,
+    "postDelayReconciliationAt": 1793085012978,
+    "filledAt": 1793085013558,
+    "executionQuoteAt": 1793085013308,
+    "originalReconciliationAgeAtFillMs": 2160,
+    "freshReconciliationAgeAtFillMs": 580,
+    "quoteAgeAtFillMs": 250,
+    "postDelayPhysicalRequests": 3,
+    "simulatedGasLamports": "7000",
+    "riskAndQuoteAgeLimitsChanged": false,
+    "financialLockHeldAcrossNetwork": false,
+    "limitation": "This proves the existing coordinator/market/ledger policy composition in isolated state. Pilot opt-in, exact real rent checks and same-account lifecycle have separate pilot-integration fixture coverage; no live capacity claim follows."
+  },
+  "pendingAndRecovery": {
+    "classification": "DISPOSABLE_LEDGER_AND_REAL_COORDINATOR_ADAPTER_COMPOSITION",
+    "heldBeforeOverlap": 2,
+    "pendingAtOverlap": 2,
+    "executionOrder": [
+      {
+        "orderId": "exit-first",
+        "status": "filled",
+        "reason": "single modeled PAPER attempt; no live fill claim",
+        "at": 1793085016218
+      },
+      {
+        "orderId": "entry-third",
+        "status": "failed",
+        "reason": "entry gate closed; canceled before attempt",
+        "at": 1793085017218
+      }
+    ],
+    "heldAfterOverlap": 1,
+    "sharedGatePhysicalRequestsDuringOverlappingActions": 5,
+    "candidateWindowInvalidated": true,
+    "financialStateUnaffectedByCandidateGap": true,
+    "overlappingEntryResult": "SAFELY_REFUSED: fresh financial reconciliation exceeded its2s validity while priority exit and fresh entry pricing completed; no buy gas charged",
+    "successfulSimultaneousEntryExitCapacityProven": false,
+    "restartSameAccount": true,
+    "inceptionPreserved": true,
+    "unresolvedExitPreserved": true,
+    "quarantinedActionRequoted": false,
+    "expiredActionGasLamports": "0",
+    "exposureAfterExpiry": 1,
+    "totalModeledGasLamports": "21000",
+    "physicalOperations": 15,
+    "responseBytes": 94458,
+    "limitation": "The coordinator prioritizes exits inside the due batch. A caller must route every multi-read action through the shared gate, preserve fresh financial reconciliation and reserve the whole envelope; this fixture exposes a failure instead of claiming concurrent-entry capacity."
+  },
+  "scheduling": {
+    "classification": "EXISTING_PURE_SCHEDULER_COUNTERFACTUAL_WITH_DECLARED_SYNTHETIC_SERVICE_COSTS",
+    "heldPositionsPerCoherentEvaluation": 3,
+    "requestsPerSteadyCoherentEvaluation": 1,
+    "localLimits": {
+      "startsPerMinute": 60,
+      "startsPerTenSeconds": 10,
+      "minimumStartSpacingMs": 250,
+      "maximumPhysicalInFlight": 1
+    },
+    "unchangedTwoSecondTargetMs": 2000,
+    "componentAssumption": "The same single read covers three holdings only if all their current dependencies fit one coherent supported union batch. Cost80ms HTTP+20ms processing is synthetic, not a measured live three-pool latency.",
+    "scenarios": [
+      {
+        "input": {
+          "name": "three-held-union-plus-burst3-jitter50",
+          "jobs": [
+            {
+              "id": "trade-0",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "trade-1",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "trade-2",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            }
+          ],
+          "priceCosts": [
+            {
+              "httpMs": 80,
+              "parseMs": 20,
+              "actuationMs": 2
+            }
+          ],
+          "timerJitterMs": 50
+        },
+        "simulation": {
+          "name": "three-held-union-plus-burst3-jitter50",
+          "policy": "proposed-protected-v2",
+          "minimumStartSpacingMs": 250,
+          "maximumStartsPer10Seconds": 10,
+          "classification": "DETERMINISTIC_COUNTERFACTUAL_SCHEDULING_NOT_MARKET_PERFORMANCE",
+          "durationMs": 18000,
+          "executedServiceHorizonMs": 18000,
+          "rightCensoredAfterStopMs": 0,
+          "timeoutBehavior": "capture-stop",
+          "timerJitterMs": 50,
+          "arrivalJitterMs": 0,
+          "wakeMode": "adaptive-gate",
+          "operationBoundAssumptionMs": 1200,
+          "reservationStartReserveMs": 25,
+          "dynamicDeadlineCap": true,
+          "physicalOperationOverlapMaximum": 1,
+          "minimumStartGapMs": 300,
+          "maximumRolling60SecondStarts": 13,
+          "maximumRolling10SecondStarts": 9,
+          "requests": 13,
+          "durablyChargedUnits": 13,
+          "unstartedReservedOperation": null,
+          "requestsByKind": {
+            "protection": 10,
+            "enrichment": 3,
+            "pending": 0,
+            "reconnect": 0
+          },
+          "earlyProtectionStarts": 1,
+          "completedProtectionEvaluations": 10,
+          "maximumCompletedEvaluationGapMs": 2052,
+          "p95CompletedEvaluationGapMs": 2052,
+          "completedGapsBeyondTwoSecondReference": 4,
+          "maximumProtectionStartDelayMs": 52,
+          "referenceTargetsWithoutFollowingEvaluation": 1,
+          "maximumReferenceTargetToNextEvaluationMs": 1854,
+          "modeledFreshTransportCacheMs": 17570,
+          "modeledUnavailableOrStaleTransportCacheMs": 430,
+          "maximumModeledQuoteAgeAtUseMs": 20,
+          "enrichments": {
+            "knownInputArrivals": 3,
+            "submitted": 3,
+            "completedWithinFiveSeconds": 3,
+            "refused": 0,
+            "timedOut": 0,
+            "completedLate": 0,
+            "pendingAtEnd": 0,
+            "inFlightAtEnd": 0,
+            "deadlineCensoredPendingAtEnd": 0,
+            "maximumArrivalToParseMs": 2002
+          },
+          "requiredEvidenceLosses": 0,
+          "postProcessingReserveOverruns": 0,
+          "serviceEnvelopeOverruns": 0,
+          "unresolvedFinancialActions": 0,
+          "unstartedJobsAtEnd": [],
+          "physicalUnsettledAtEnd": null,
+          "haltReason": null,
+          "candidateInvalidations": [],
+          "candidateWindowActiveAtEnd": true,
+          "protectionGuardEvents": [
+            {
+              "at": 50,
+              "protectionDeadlineAt": 4000,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 200,
+              "protectionDeadlineAt": 4152,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 1850,
+              "protectionDeadlineAt": 5802,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 3902,
+              "protectionDeadlineAt": 7854,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 5852,
+              "protectionDeadlineAt": 9804,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 7902,
+              "protectionDeadlineAt": 11854,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 9852,
+              "protectionDeadlineAt": 13804,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 11902,
+              "protectionDeadlineAt": 15854,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 13852,
+              "protectionDeadlineAt": 17804,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 15902,
+              "protectionDeadlineAt": 19854,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 17852,
+              "protectionDeadlineAt": 21804,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            }
+          ],
+          "waitChecks": {
+            "shared-physical-pacing": 13,
+            "waiting-for-eligible-work": 95
+          },
+          "outcomes": [
+            {
+              "id": "protection:1",
+              "kind": "protection",
+              "enqueuedAt": 0,
+              "eligibleAt": 0,
+              "deadlineAt": 4000,
+              "logicalDispatchedAt": 50,
+              "physicalStartedAt": 52,
+              "responseCompletedAt": 132,
+              "sourceReceivedAt": 132,
+              "physicalSettledAt": 132,
+              "parsedAt": 152,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 0,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "trade-0",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "logicalDispatchedAt": 1100,
+              "physicalStartedAt": 1102,
+              "responseCompletedAt": 1182,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 1182,
+              "parsedAt": 1202,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 1502,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "trade-1",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "logicalDispatchedAt": 1400,
+              "physicalStartedAt": 1402,
+              "responseCompletedAt": 1482,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 1482,
+              "parsedAt": 1502,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 1502,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:2",
+              "kind": "protection",
+              "enqueuedAt": 2000,
+              "eligibleAt": 2000,
+              "deadlineAt": 4152,
+              "logicalDispatchedAt": 1700,
+              "physicalStartedAt": 1702,
+              "responseCompletedAt": 1782,
+              "sourceReceivedAt": 1782,
+              "physicalSettledAt": 1782,
+              "parsedAt": 1802,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 2000,
+              "advance": true,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "trade-2",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "logicalDispatchedAt": 2000,
+              "physicalStartedAt": 2002,
+              "responseCompletedAt": 2082,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 2082,
+              "parsedAt": 2102,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3152,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:3",
+              "kind": "protection",
+              "enqueuedAt": 3702,
+              "eligibleAt": 3702,
+              "deadlineAt": 5802,
+              "logicalDispatchedAt": 3752,
+              "physicalStartedAt": 3754,
+              "responseCompletedAt": 3834,
+              "sourceReceivedAt": 3834,
+              "physicalSettledAt": 3834,
+              "parsedAt": 3854,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 3702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:4",
+              "kind": "protection",
+              "enqueuedAt": 5702,
+              "eligibleAt": 5702,
+              "deadlineAt": 7854,
+              "logicalDispatchedAt": 5702,
+              "physicalStartedAt": 5704,
+              "responseCompletedAt": 5784,
+              "sourceReceivedAt": 5784,
+              "physicalSettledAt": 5784,
+              "parsedAt": 5804,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 5702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:5",
+              "kind": "protection",
+              "enqueuedAt": 7702,
+              "eligibleAt": 7702,
+              "deadlineAt": 9804,
+              "logicalDispatchedAt": 7752,
+              "physicalStartedAt": 7754,
+              "responseCompletedAt": 7834,
+              "sourceReceivedAt": 7834,
+              "physicalSettledAt": 7834,
+              "parsedAt": 7854,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 7702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:6",
+              "kind": "protection",
+              "enqueuedAt": 9702,
+              "eligibleAt": 9702,
+              "deadlineAt": 11854,
+              "logicalDispatchedAt": 9702,
+              "physicalStartedAt": 9704,
+              "responseCompletedAt": 9784,
+              "sourceReceivedAt": 9784,
+              "physicalSettledAt": 9784,
+              "parsedAt": 9804,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 9702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:7",
+              "kind": "protection",
+              "enqueuedAt": 11702,
+              "eligibleAt": 11702,
+              "deadlineAt": 13804,
+              "logicalDispatchedAt": 11752,
+              "physicalStartedAt": 11754,
+              "responseCompletedAt": 11834,
+              "sourceReceivedAt": 11834,
+              "physicalSettledAt": 11834,
+              "parsedAt": 11854,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 11702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:8",
+              "kind": "protection",
+              "enqueuedAt": 13702,
+              "eligibleAt": 13702,
+              "deadlineAt": 15854,
+              "logicalDispatchedAt": 13702,
+              "physicalStartedAt": 13704,
+              "responseCompletedAt": 13784,
+              "sourceReceivedAt": 13784,
+              "physicalSettledAt": 13784,
+              "parsedAt": 13804,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 13702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:9",
+              "kind": "protection",
+              "enqueuedAt": 15702,
+              "eligibleAt": 15702,
+              "deadlineAt": 17804,
+              "logicalDispatchedAt": 15752,
+              "physicalStartedAt": 15754,
+              "responseCompletedAt": 15834,
+              "sourceReceivedAt": 15834,
+              "physicalSettledAt": 15834,
+              "parsedAt": 15854,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 15702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:10",
+              "kind": "protection",
+              "enqueuedAt": 17702,
+              "eligibleAt": 17702,
+              "deadlineAt": 19854,
+              "logicalDispatchedAt": 17702,
+              "physicalStartedAt": 17704,
+              "responseCompletedAt": 17784,
+              "sourceReceivedAt": 17784,
+              "physicalSettledAt": 17784,
+              "parsedAt": 17804,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 17702,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            }
+          ],
+          "decisions": [
+            {
+              "at": 50,
+              "kind": "protection"
+            },
+            {
+              "at": 1100,
+              "kind": "job",
+              "jobId": "trade-0"
+            },
+            {
+              "at": 1400,
+              "kind": "job",
+              "jobId": "trade-1"
+            },
+            {
+              "at": 1700,
+              "kind": "protection"
+            },
+            {
+              "at": 2000,
+              "kind": "job",
+              "jobId": "trade-2"
+            },
+            {
+              "at": 3752,
+              "kind": "protection"
+            },
+            {
+              "at": 5702,
+              "kind": "protection"
+            },
+            {
+              "at": 7752,
+              "kind": "protection"
+            },
+            {
+              "at": 9702,
+              "kind": "protection"
+            },
+            {
+              "at": 11752,
+              "kind": "protection"
+            },
+            {
+              "at": 13702,
+              "kind": "protection"
+            },
+            {
+              "at": 15752,
+              "kind": "protection"
+            },
+            {
+              "at": 17702,
+              "kind": "protection"
+            }
+          ],
+          "referenceTargets": [
+            {
+              "at": 0,
+              "nextCompletedAt": 152
+            },
+            {
+              "at": 2000,
+              "nextCompletedAt": 3854
+            },
+            {
+              "at": 4000,
+              "nextCompletedAt": 5804
+            },
+            {
+              "at": 6000,
+              "nextCompletedAt": 7854
+            },
+            {
+              "at": 8000,
+              "nextCompletedAt": 9804
+            },
+            {
+              "at": 10000,
+              "nextCompletedAt": 11854
+            },
+            {
+              "at": 12000,
+              "nextCompletedAt": 13804
+            },
+            {
+              "at": 14000,
+              "nextCompletedAt": 15854
+            },
+            {
+              "at": 16000,
+              "nextCompletedAt": 17804
+            },
+            {
+              "at": 18000,
+              "nextCompletedAt": null
+            }
+          ],
+          "assumptions": [
+            "All services share60 starts/rolling minute,10/rolling10s,>=250ms physical starts and one nonpreemptible physical operation.",
+            "HTTP durations, parsing costs and start overhead are sampled from retained measurements or explicitly synthetic scenario inputs. Rescheduling them is counterfactual.",
+            "Adaptive wake uses only existing gate readiness, protection target and already queued head eligibility, with at most100ms poll interval plus separately declared synthetic timer jitter.",
+            "Admission reserves25ms for durability before the unchanged latest physical-start deadline; an actual larger overhead still stops the capture after reservation and retains uncertainty.",
+            "Cache availability is a transport/processing model assuming each fresh response were valid; no old pool state is relabeled fresh or assigned to a new time.",
+            "No prices, threshold crossings, fills, profitability, new accepted maximum evaluation gap or production protection guarantee are inferred.",
+            "Refused/timed-out selected jobs mark required evidence unusable. Pending financial actions remain explicitly unresolved, never silently erased.",
+            "A physical timeout or post-persistence dispatch expiry stops the modeled capture and retains uncertainty; no automatic retry follows.",
+            "A reconnect job represents one control/upgrade operation. A full seven-account subscription restoration is not modeled by this combined PumpApi path."
+          ],
+          "networkRequests": 0,
+          "productionChanged": false
+        },
+        "assessment": {
+          "standard": {
+            "version": "proposed-research-timing-v1",
+            "status": "PROPOSED_NOT_APPROVED",
+            "targetMs": 2000,
+            "maximumCompletedGapMs": 4000,
+            "maximumQuoteAgeAtUseMs": 2000,
+            "maximumSourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+          "protection": {
+            "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+            "completedEvaluations": 10,
+            "wholeRequestedHorizonObserved": true,
+            "maximumGapIncludingOpeningAndObservedTailMs": 2052,
+            "openingGapMs": 152,
+            "rightCensoredTailAtServiceEndMs": 196,
+            "hardCompletedGapMs": 4000,
+            "deadlineMisses": 0,
+            "physicalOrCallerTimeout": false,
+            "protectionTimeout": false,
+            "quoteAgeAtUsePass": true,
+            "declaredProtectionEnvelopeRespected": true,
+            "normalInFlightAtRightBoundary": false,
+            "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+          },
+          "flow": {
+            "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+            "allRequiredEventsCompleted": true,
+            "completedWithinFiveSeconds": 3,
+            "knownRequiredEvents": 3,
+            "invalidations": [],
+            "windowMayEnter": false,
+            "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+          },
+          "financial": {
+            "unresolvedActions": 0,
+            "retainedActions": [],
+            "financialAccountAccessed": false
+          },
+          "combined": {
+            "modeledTimingAndEventsPass": true,
+            "operationalAcceptance": false,
+            "marketPerformanceAssessed": false
+          },
+          "limitsUnchanged": {
+            "quoteAgeAtUseMs": 2000,
+            "sourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "networkRequests": 0
+        }
+      },
+      {
+        "input": {
+          "name": "overlapping-financial-with-burst-reconnect-jitter50",
+          "jobs": [
+            {
+              "id": "later-entry",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 4800,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "earlier-exit",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 3600,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "restore-control",
+              "kind": "reconnect",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 10000,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "burst-0",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "burst-1",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "burst-2",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            }
+          ],
+          "priceCosts": [
+            {
+              "httpMs": 80,
+              "parseMs": 20,
+              "actuationMs": 2
+            }
+          ],
+          "timerJitterMs": 50
+        },
+        "simulation": {
+          "name": "overlapping-financial-with-burst-reconnect-jitter50",
+          "policy": "proposed-protected-v2",
+          "minimumStartSpacingMs": 250,
+          "maximumStartsPer10Seconds": 10,
+          "classification": "DETERMINISTIC_COUNTERFACTUAL_SCHEDULING_NOT_MARKET_PERFORMANCE",
+          "durationMs": 18000,
+          "executedServiceHorizonMs": 18000,
+          "rightCensoredAfterStopMs": 0,
+          "timeoutBehavior": "capture-stop",
+          "timerJitterMs": 50,
+          "arrivalJitterMs": 0,
+          "wakeMode": "adaptive-gate",
+          "operationBoundAssumptionMs": 1200,
+          "reservationStartReserveMs": 25,
+          "dynamicDeadlineCap": true,
+          "physicalOperationOverlapMaximum": 1,
+          "minimumStartGapMs": 300,
+          "maximumRolling60SecondStarts": 12,
+          "maximumRolling10SecondStarts": 8,
+          "requests": 12,
+          "durablyChargedUnits": 12,
+          "unstartedReservedOperation": null,
+          "requestsByKind": {
+            "protection": 10,
+            "enrichment": 0,
+            "pending": 1,
+            "reconnect": 1
+          },
+          "earlyProtectionStarts": 0,
+          "completedProtectionEvaluations": 9,
+          "maximumCompletedEvaluationGapMs": 2050,
+          "p95CompletedEvaluationGapMs": 2050,
+          "completedGapsBeyondTwoSecondReference": 4,
+          "maximumProtectionStartDelayMs": 52,
+          "referenceTargetsWithoutFollowingEvaluation": 1,
+          "maximumReferenceTargetToNextEvaluationMs": 152,
+          "modeledFreshTransportCacheMs": 17572,
+          "modeledUnavailableOrStaleTransportCacheMs": 428,
+          "maximumModeledQuoteAgeAtUseMs": 20,
+          "enrichments": {
+            "knownInputArrivals": 3,
+            "submitted": 3,
+            "completedWithinFiveSeconds": 0,
+            "refused": 3,
+            "timedOut": 0,
+            "completedLate": 0,
+            "pendingAtEnd": 0,
+            "inFlightAtEnd": 0,
+            "deadlineCensoredPendingAtEnd": 0,
+            "maximumArrivalToParseMs": null
+          },
+          "requiredEvidenceLosses": 3,
+          "postProcessingReserveOverruns": 0,
+          "serviceEnvelopeOverruns": 0,
+          "unresolvedFinancialActions": 1,
+          "unstartedJobsAtEnd": [],
+          "physicalUnsettledAtEnd": {
+            "id": "protection:10",
+            "settlementDueAt": 18102
+          },
+          "haltReason": null,
+          "candidateInvalidations": [
+            {
+              "at": 2600,
+              "reason": "pending-and-protection-deadlines-jointly-infeasible"
+            }
+          ],
+          "candidateWindowActiveAtEnd": false,
+          "protectionGuardEvents": [
+            {
+              "at": 50,
+              "protectionDeadlineAt": 4000,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 200,
+              "protectionDeadlineAt": 4152,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 2150,
+              "protectionDeadlineAt": 6102,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 2600,
+              "protectionDeadlineAt": 6102,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": "pending-and-protection-deadlines-jointly-infeasible"
+            },
+            {
+              "at": 2750,
+              "protectionDeadlineAt": 6102,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "pending-financial-action"
+            },
+            {
+              "at": 2900,
+              "protectionDeadlineAt": 6102,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "recovery-work"
+            },
+            {
+              "at": 3200,
+              "protectionDeadlineAt": 6102,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 4200,
+              "protectionDeadlineAt": 8152,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 6150,
+              "protectionDeadlineAt": 10102,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 8200,
+              "protectionDeadlineAt": 12152,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 10150,
+              "protectionDeadlineAt": 14102,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 12200,
+              "protectionDeadlineAt": 16152,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 14150,
+              "protectionDeadlineAt": 18102,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 16200,
+              "protectionDeadlineAt": 20152,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            }
+          ],
+          "waitChecks": {
+            "shared-physical-pacing": 11,
+            "waiting-for-eligible-work": 98
+          },
+          "outcomes": [
+            {
+              "id": "protection:1",
+              "kind": "protection",
+              "enqueuedAt": 0,
+              "eligibleAt": 0,
+              "deadlineAt": 4000,
+              "logicalDispatchedAt": 50,
+              "physicalStartedAt": 52,
+              "responseCompletedAt": 132,
+              "sourceReceivedAt": 132,
+              "physicalSettledAt": 132,
+              "parsedAt": 152,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 0,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:2",
+              "kind": "protection",
+              "enqueuedAt": 2000,
+              "eligibleAt": 2000,
+              "deadlineAt": 4152,
+              "logicalDispatchedAt": 2000,
+              "physicalStartedAt": 2002,
+              "responseCompletedAt": 2082,
+              "sourceReceivedAt": 2082,
+              "physicalSettledAt": 2082,
+              "parsedAt": 2102,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 2000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "burst-0",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "logicalDispatchedAt": 2600,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "Original candidate window suspended/invalidated: pending-and-protection-deadlines-jointly-infeasible",
+              "retainedIfFinancial": false,
+              "windowUnusable": true
+            },
+            {
+              "id": "burst-1",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "logicalDispatchedAt": 2600,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "Original candidate window suspended/invalidated: pending-and-protection-deadlines-jointly-infeasible",
+              "retainedIfFinancial": false,
+              "windowUnusable": true
+            },
+            {
+              "id": "burst-2",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "logicalDispatchedAt": 2600,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "Original candidate window suspended/invalidated: pending-and-protection-deadlines-jointly-infeasible",
+              "retainedIfFinancial": false,
+              "windowUnusable": true
+            },
+            {
+              "id": "earlier-exit",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 3600,
+              "logicalDispatchedAt": 2600,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 900,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "financial-action-retained-for-reconciliation:joint-deadlines-infeasible",
+              "retainedIfFinancial": true,
+              "windowUnusable": false
+            },
+            {
+              "id": "later-entry",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 4800,
+              "logicalDispatchedAt": 2750,
+              "physicalStartedAt": 2752,
+              "responseCompletedAt": 2832,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 2832,
+              "parsedAt": 2852,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3452,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": true,
+              "windowUnusable": false
+            },
+            {
+              "id": "restore-control",
+              "kind": "reconnect",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 10000,
+              "logicalDispatchedAt": 3050,
+              "physicalStartedAt": 3052,
+              "responseCompletedAt": 3132,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 3132,
+              "parsedAt": 3152,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3452,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:3",
+              "kind": "protection",
+              "enqueuedAt": 4000,
+              "eligibleAt": 4000,
+              "deadlineAt": 6102,
+              "logicalDispatchedAt": 4050,
+              "physicalStartedAt": 4052,
+              "responseCompletedAt": 4132,
+              "sourceReceivedAt": 4132,
+              "physicalSettledAt": 4132,
+              "parsedAt": 4152,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 4000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:4",
+              "kind": "protection",
+              "enqueuedAt": 6000,
+              "eligibleAt": 6000,
+              "deadlineAt": 8152,
+              "logicalDispatchedAt": 6000,
+              "physicalStartedAt": 6002,
+              "responseCompletedAt": 6082,
+              "sourceReceivedAt": 6082,
+              "physicalSettledAt": 6082,
+              "parsedAt": 6102,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 6000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:5",
+              "kind": "protection",
+              "enqueuedAt": 8000,
+              "eligibleAt": 8000,
+              "deadlineAt": 10102,
+              "logicalDispatchedAt": 8050,
+              "physicalStartedAt": 8052,
+              "responseCompletedAt": 8132,
+              "sourceReceivedAt": 8132,
+              "physicalSettledAt": 8132,
+              "parsedAt": 8152,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 8000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:6",
+              "kind": "protection",
+              "enqueuedAt": 10000,
+              "eligibleAt": 10000,
+              "deadlineAt": 12152,
+              "logicalDispatchedAt": 10000,
+              "physicalStartedAt": 10002,
+              "responseCompletedAt": 10082,
+              "sourceReceivedAt": 10082,
+              "physicalSettledAt": 10082,
+              "parsedAt": 10102,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 10000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:7",
+              "kind": "protection",
+              "enqueuedAt": 12000,
+              "eligibleAt": 12000,
+              "deadlineAt": 14102,
+              "logicalDispatchedAt": 12050,
+              "physicalStartedAt": 12052,
+              "responseCompletedAt": 12132,
+              "sourceReceivedAt": 12132,
+              "physicalSettledAt": 12132,
+              "parsedAt": 12152,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 12000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:8",
+              "kind": "protection",
+              "enqueuedAt": 14000,
+              "eligibleAt": 14000,
+              "deadlineAt": 16152,
+              "logicalDispatchedAt": 14000,
+              "physicalStartedAt": 14002,
+              "responseCompletedAt": 14082,
+              "sourceReceivedAt": 14082,
+              "physicalSettledAt": 14082,
+              "parsedAt": 14102,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 14000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:9",
+              "kind": "protection",
+              "enqueuedAt": 16000,
+              "eligibleAt": 16000,
+              "deadlineAt": 18102,
+              "logicalDispatchedAt": 16050,
+              "physicalStartedAt": 16052,
+              "responseCompletedAt": 16132,
+              "sourceReceivedAt": 16132,
+              "physicalSettledAt": 16132,
+              "parsedAt": 16152,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 16000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:10",
+              "kind": "protection",
+              "enqueuedAt": 18000,
+              "eligibleAt": 18000,
+              "deadlineAt": 20152,
+              "logicalDispatchedAt": 18000,
+              "physicalStartedAt": 18002,
+              "responseCompletedAt": 18082,
+              "sourceReceivedAt": 18082,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 18000,
+              "advance": false,
+              "status": "waiting-or-running",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            }
+          ],
+          "decisions": [
+            {
+              "at": 50,
+              "kind": "protection"
+            },
+            {
+              "at": 2000,
+              "kind": "protection"
+            },
+            {
+              "at": 2600,
+              "kind": "refuse",
+              "reason": "financial-action-retained-for-reconciliation:joint-deadlines-infeasible",
+              "jobId": "earlier-exit"
+            },
+            {
+              "at": 2750,
+              "kind": "job",
+              "jobId": "later-entry"
+            },
+            {
+              "at": 3050,
+              "kind": "job",
+              "jobId": "restore-control"
+            },
+            {
+              "at": 4050,
+              "kind": "protection"
+            },
+            {
+              "at": 6000,
+              "kind": "protection"
+            },
+            {
+              "at": 8050,
+              "kind": "protection"
+            },
+            {
+              "at": 10000,
+              "kind": "protection"
+            },
+            {
+              "at": 12050,
+              "kind": "protection"
+            },
+            {
+              "at": 14000,
+              "kind": "protection"
+            },
+            {
+              "at": 16050,
+              "kind": "protection"
+            },
+            {
+              "at": 18000,
+              "kind": "protection"
+            }
+          ],
+          "referenceTargets": [
+            {
+              "at": 0,
+              "nextCompletedAt": 152
+            },
+            {
+              "at": 2000,
+              "nextCompletedAt": 2102
+            },
+            {
+              "at": 4000,
+              "nextCompletedAt": 4152
+            },
+            {
+              "at": 6000,
+              "nextCompletedAt": 6102
+            },
+            {
+              "at": 8000,
+              "nextCompletedAt": 8152
+            },
+            {
+              "at": 10000,
+              "nextCompletedAt": 10102
+            },
+            {
+              "at": 12000,
+              "nextCompletedAt": 12152
+            },
+            {
+              "at": 14000,
+              "nextCompletedAt": 14102
+            },
+            {
+              "at": 16000,
+              "nextCompletedAt": 16152
+            },
+            {
+              "at": 18000,
+              "nextCompletedAt": null
+            }
+          ],
+          "assumptions": [
+            "All services share60 starts/rolling minute,10/rolling10s,>=250ms physical starts and one nonpreemptible physical operation.",
+            "HTTP durations, parsing costs and start overhead are sampled from retained measurements or explicitly synthetic scenario inputs. Rescheduling them is counterfactual.",
+            "Adaptive wake uses only existing gate readiness, protection target and already queued head eligibility, with at most100ms poll interval plus separately declared synthetic timer jitter.",
+            "Admission reserves25ms for durability before the unchanged latest physical-start deadline; an actual larger overhead still stops the capture after reservation and retains uncertainty.",
+            "Cache availability is a transport/processing model assuming each fresh response were valid; no old pool state is relabeled fresh or assigned to a new time.",
+            "No prices, threshold crossings, fills, profitability, new accepted maximum evaluation gap or production protection guarantee are inferred.",
+            "Refused/timed-out selected jobs mark required evidence unusable. Pending financial actions remain explicitly unresolved, never silently erased.",
+            "A physical timeout or post-persistence dispatch expiry stops the modeled capture and retains uncertainty; no automatic retry follows.",
+            "A reconnect job represents one control/upgrade operation. A full seven-account subscription restoration is not modeled by this combined PumpApi path."
+          ],
+          "networkRequests": 0,
+          "productionChanged": false
+        },
+        "assessment": {
+          "standard": {
+            "version": "proposed-research-timing-v1",
+            "status": "PROPOSED_NOT_APPROVED",
+            "targetMs": 2000,
+            "maximumCompletedGapMs": 4000,
+            "maximumQuoteAgeAtUseMs": 2000,
+            "maximumSourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+          "protection": {
+            "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+            "completedEvaluations": 9,
+            "wholeRequestedHorizonObserved": true,
+            "maximumGapIncludingOpeningAndObservedTailMs": 2050,
+            "openingGapMs": 152,
+            "rightCensoredTailAtServiceEndMs": 1848,
+            "hardCompletedGapMs": 4000,
+            "deadlineMisses": 0,
+            "physicalOrCallerTimeout": false,
+            "protectionTimeout": false,
+            "quoteAgeAtUsePass": true,
+            "declaredProtectionEnvelopeRespected": true,
+            "normalInFlightAtRightBoundary": true,
+            "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+          },
+          "flow": {
+            "verdict": "CANDIDATE_WINDOW_UNUSABLE_OR_CENSORED",
+            "allRequiredEventsCompleted": false,
+            "completedWithinFiveSeconds": 0,
+            "knownRequiredEvents": 3,
+            "invalidations": [
+              {
+                "at": 2600,
+                "reason": "pending-and-protection-deadlines-jointly-infeasible"
+              }
+            ],
+            "windowMayEnter": false,
+            "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+          },
+          "financial": {
+            "unresolvedActions": 1,
+            "retainedActions": [
+              {
+                "id": "earlier-exit",
+                "status": "refused",
+                "retained": true
+              }
+            ],
+            "financialAccountAccessed": false
+          },
+          "combined": {
+            "modeledTimingAndEventsPass": false,
+            "operationalAcceptance": false,
+            "marketPerformanceAssessed": false
+          },
+          "limitsUnchanged": {
+            "quoteAgeAtUseMs": 2000,
+            "sourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "networkRequests": 0
+        }
+      },
+      {
+        "input": {
+          "name": "three-held-union-plus-burst3-jitter100",
+          "jobs": [
+            {
+              "id": "trade-0",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "trade-1",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "trade-2",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            }
+          ],
+          "priceCosts": [
+            {
+              "httpMs": 80,
+              "parseMs": 20,
+              "actuationMs": 2
+            }
+          ],
+          "timerJitterMs": 100
+        },
+        "simulation": {
+          "name": "three-held-union-plus-burst3-jitter100",
+          "policy": "proposed-protected-v2",
+          "minimumStartSpacingMs": 250,
+          "maximumStartsPer10Seconds": 10,
+          "classification": "DETERMINISTIC_COUNTERFACTUAL_SCHEDULING_NOT_MARKET_PERFORMANCE",
+          "durationMs": 18000,
+          "executedServiceHorizonMs": 18000,
+          "rightCensoredAfterStopMs": 0,
+          "timeoutBehavior": "capture-stop",
+          "timerJitterMs": 100,
+          "arrivalJitterMs": 0,
+          "wakeMode": "adaptive-gate",
+          "operationBoundAssumptionMs": 1200,
+          "reservationStartReserveMs": 25,
+          "dynamicDeadlineCap": true,
+          "physicalOperationOverlapMaximum": 1,
+          "minimumStartGapMs": 352,
+          "maximumRolling60SecondStarts": 13,
+          "maximumRolling10SecondStarts": 9,
+          "requests": 13,
+          "durablyChargedUnits": 13,
+          "unstartedReservedOperation": null,
+          "requestsByKind": {
+            "protection": 10,
+            "enrichment": 3,
+            "pending": 0,
+            "reconnect": 0
+          },
+          "earlyProtectionStarts": 1,
+          "completedProtectionEvaluations": 10,
+          "maximumCompletedEvaluationGapMs": 2096,
+          "p95CompletedEvaluationGapMs": 2096,
+          "completedGapsBeyondTwoSecondReference": 3,
+          "maximumProtectionStartDelayMs": 102,
+          "referenceTargetsWithoutFollowingEvaluation": 1,
+          "maximumReferenceTargetToNextEvaluationMs": 1756,
+          "modeledFreshTransportCacheMs": 17495,
+          "modeledUnavailableOrStaleTransportCacheMs": 505,
+          "maximumModeledQuoteAgeAtUseMs": 20,
+          "enrichments": {
+            "knownInputArrivals": 3,
+            "submitted": 3,
+            "completedWithinFiveSeconds": 3,
+            "refused": 0,
+            "timedOut": 0,
+            "completedLate": 0,
+            "pendingAtEnd": 0,
+            "inFlightAtEnd": 0,
+            "deadlineCensoredPendingAtEnd": 0,
+            "maximumArrivalToParseMs": 2258
+          },
+          "requiredEvidenceLosses": 0,
+          "postProcessingReserveOverruns": 0,
+          "serviceEnvelopeOverruns": 0,
+          "unresolvedFinancialActions": 0,
+          "unstartedJobsAtEnd": [],
+          "physicalUnsettledAtEnd": null,
+          "haltReason": null,
+          "candidateInvalidations": [],
+          "candidateWindowActiveAtEnd": true,
+          "protectionGuardEvents": [
+            {
+              "at": 100,
+              "protectionDeadlineAt": 4000,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 300,
+              "protectionDeadlineAt": 4202,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 1752,
+              "protectionDeadlineAt": 5654,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 3808,
+              "protectionDeadlineAt": 7710,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 5760,
+              "protectionDeadlineAt": 9662,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 7854,
+              "protectionDeadlineAt": 11756,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 9806,
+              "protectionDeadlineAt": 13708,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 11758,
+              "protectionDeadlineAt": 15660,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 13854,
+              "protectionDeadlineAt": 17756,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 15806,
+              "protectionDeadlineAt": 19708,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 17758,
+              "protectionDeadlineAt": 21660,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            }
+          ],
+          "waitChecks": {
+            "shared-physical-pacing": 13,
+            "waiting-for-eligible-work": 68
+          },
+          "outcomes": [
+            {
+              "id": "protection:1",
+              "kind": "protection",
+              "enqueuedAt": 0,
+              "eligibleAt": 0,
+              "deadlineAt": 4000,
+              "logicalDispatchedAt": 100,
+              "physicalStartedAt": 102,
+              "responseCompletedAt": 182,
+              "sourceReceivedAt": 182,
+              "physicalSettledAt": 182,
+              "parsedAt": 202,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 0,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "trade-0",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "logicalDispatchedAt": 1200,
+              "physicalStartedAt": 1202,
+              "responseCompletedAt": 1282,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 1282,
+              "parsedAt": 1302,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 1552,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:2",
+              "kind": "protection",
+              "enqueuedAt": 2000,
+              "eligibleAt": 2000,
+              "deadlineAt": 4202,
+              "logicalDispatchedAt": 1552,
+              "physicalStartedAt": 1554,
+              "responseCompletedAt": 1634,
+              "sourceReceivedAt": 1634,
+              "physicalSettledAt": 1634,
+              "parsedAt": 1654,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 2000,
+              "advance": true,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "trade-1",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "logicalDispatchedAt": 1904,
+              "physicalStartedAt": 1906,
+              "responseCompletedAt": 1986,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 1986,
+              "parsedAt": 2006,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3004,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "trade-2",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "logicalDispatchedAt": 2256,
+              "physicalStartedAt": 2258,
+              "responseCompletedAt": 2338,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 2338,
+              "parsedAt": 2358,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3004,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:3",
+              "kind": "protection",
+              "enqueuedAt": 3554,
+              "eligibleAt": 3554,
+              "deadlineAt": 5654,
+              "logicalDispatchedAt": 3608,
+              "physicalStartedAt": 3610,
+              "responseCompletedAt": 3690,
+              "sourceReceivedAt": 3690,
+              "physicalSettledAt": 3690,
+              "parsedAt": 3710,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 3554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:4",
+              "kind": "protection",
+              "enqueuedAt": 5554,
+              "eligibleAt": 5554,
+              "deadlineAt": 7710,
+              "logicalDispatchedAt": 5560,
+              "physicalStartedAt": 5562,
+              "responseCompletedAt": 5642,
+              "sourceReceivedAt": 5642,
+              "physicalSettledAt": 5642,
+              "parsedAt": 5662,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 5554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:5",
+              "kind": "protection",
+              "enqueuedAt": 7554,
+              "eligibleAt": 7554,
+              "deadlineAt": 9662,
+              "logicalDispatchedAt": 7654,
+              "physicalStartedAt": 7656,
+              "responseCompletedAt": 7736,
+              "sourceReceivedAt": 7736,
+              "physicalSettledAt": 7736,
+              "parsedAt": 7756,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 7554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:6",
+              "kind": "protection",
+              "enqueuedAt": 9554,
+              "eligibleAt": 9554,
+              "deadlineAt": 11756,
+              "logicalDispatchedAt": 9606,
+              "physicalStartedAt": 9608,
+              "responseCompletedAt": 9688,
+              "sourceReceivedAt": 9688,
+              "physicalSettledAt": 9688,
+              "parsedAt": 9708,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 9554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:7",
+              "kind": "protection",
+              "enqueuedAt": 11554,
+              "eligibleAt": 11554,
+              "deadlineAt": 13708,
+              "logicalDispatchedAt": 11558,
+              "physicalStartedAt": 11560,
+              "responseCompletedAt": 11640,
+              "sourceReceivedAt": 11640,
+              "physicalSettledAt": 11640,
+              "parsedAt": 11660,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 11554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:8",
+              "kind": "protection",
+              "enqueuedAt": 13554,
+              "eligibleAt": 13554,
+              "deadlineAt": 15660,
+              "logicalDispatchedAt": 13654,
+              "physicalStartedAt": 13656,
+              "responseCompletedAt": 13736,
+              "sourceReceivedAt": 13736,
+              "physicalSettledAt": 13736,
+              "parsedAt": 13756,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 13554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:9",
+              "kind": "protection",
+              "enqueuedAt": 15554,
+              "eligibleAt": 15554,
+              "deadlineAt": 17756,
+              "logicalDispatchedAt": 15606,
+              "physicalStartedAt": 15608,
+              "responseCompletedAt": 15688,
+              "sourceReceivedAt": 15688,
+              "physicalSettledAt": 15688,
+              "parsedAt": 15708,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 15554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:10",
+              "kind": "protection",
+              "enqueuedAt": 17554,
+              "eligibleAt": 17554,
+              "deadlineAt": 19708,
+              "logicalDispatchedAt": 17558,
+              "physicalStartedAt": 17560,
+              "responseCompletedAt": 17640,
+              "sourceReceivedAt": 17640,
+              "physicalSettledAt": 17640,
+              "parsedAt": 17660,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 17554,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            }
+          ],
+          "decisions": [
+            {
+              "at": 100,
+              "kind": "protection"
+            },
+            {
+              "at": 1200,
+              "kind": "job",
+              "jobId": "trade-0"
+            },
+            {
+              "at": 1552,
+              "kind": "protection"
+            },
+            {
+              "at": 1904,
+              "kind": "job",
+              "jobId": "trade-1"
+            },
+            {
+              "at": 2256,
+              "kind": "job",
+              "jobId": "trade-2"
+            },
+            {
+              "at": 3608,
+              "kind": "protection"
+            },
+            {
+              "at": 5560,
+              "kind": "protection"
+            },
+            {
+              "at": 7654,
+              "kind": "protection"
+            },
+            {
+              "at": 9606,
+              "kind": "protection"
+            },
+            {
+              "at": 11558,
+              "kind": "protection"
+            },
+            {
+              "at": 13654,
+              "kind": "protection"
+            },
+            {
+              "at": 15606,
+              "kind": "protection"
+            },
+            {
+              "at": 17558,
+              "kind": "protection"
+            }
+          ],
+          "referenceTargets": [
+            {
+              "at": 0,
+              "nextCompletedAt": 202
+            },
+            {
+              "at": 2000,
+              "nextCompletedAt": 3710
+            },
+            {
+              "at": 4000,
+              "nextCompletedAt": 5662
+            },
+            {
+              "at": 6000,
+              "nextCompletedAt": 7756
+            },
+            {
+              "at": 8000,
+              "nextCompletedAt": 9708
+            },
+            {
+              "at": 10000,
+              "nextCompletedAt": 11660
+            },
+            {
+              "at": 12000,
+              "nextCompletedAt": 13756
+            },
+            {
+              "at": 14000,
+              "nextCompletedAt": 15708
+            },
+            {
+              "at": 16000,
+              "nextCompletedAt": 17660
+            },
+            {
+              "at": 18000,
+              "nextCompletedAt": null
+            }
+          ],
+          "assumptions": [
+            "All services share60 starts/rolling minute,10/rolling10s,>=250ms physical starts and one nonpreemptible physical operation.",
+            "HTTP durations, parsing costs and start overhead are sampled from retained measurements or explicitly synthetic scenario inputs. Rescheduling them is counterfactual.",
+            "Adaptive wake uses only existing gate readiness, protection target and already queued head eligibility, with at most100ms poll interval plus separately declared synthetic timer jitter.",
+            "Admission reserves25ms for durability before the unchanged latest physical-start deadline; an actual larger overhead still stops the capture after reservation and retains uncertainty.",
+            "Cache availability is a transport/processing model assuming each fresh response were valid; no old pool state is relabeled fresh or assigned to a new time.",
+            "No prices, threshold crossings, fills, profitability, new accepted maximum evaluation gap or production protection guarantee are inferred.",
+            "Refused/timed-out selected jobs mark required evidence unusable. Pending financial actions remain explicitly unresolved, never silently erased.",
+            "A physical timeout or post-persistence dispatch expiry stops the modeled capture and retains uncertainty; no automatic retry follows.",
+            "A reconnect job represents one control/upgrade operation. A full seven-account subscription restoration is not modeled by this combined PumpApi path."
+          ],
+          "networkRequests": 0,
+          "productionChanged": false
+        },
+        "assessment": {
+          "standard": {
+            "version": "proposed-research-timing-v1",
+            "status": "PROPOSED_NOT_APPROVED",
+            "targetMs": 2000,
+            "maximumCompletedGapMs": 4000,
+            "maximumQuoteAgeAtUseMs": 2000,
+            "maximumSourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+          "protection": {
+            "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+            "completedEvaluations": 10,
+            "wholeRequestedHorizonObserved": true,
+            "maximumGapIncludingOpeningAndObservedTailMs": 2096,
+            "openingGapMs": 202,
+            "rightCensoredTailAtServiceEndMs": 340,
+            "hardCompletedGapMs": 4000,
+            "deadlineMisses": 0,
+            "physicalOrCallerTimeout": false,
+            "protectionTimeout": false,
+            "quoteAgeAtUsePass": true,
+            "declaredProtectionEnvelopeRespected": true,
+            "normalInFlightAtRightBoundary": false,
+            "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+          },
+          "flow": {
+            "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+            "allRequiredEventsCompleted": true,
+            "completedWithinFiveSeconds": 3,
+            "knownRequiredEvents": 3,
+            "invalidations": [],
+            "windowMayEnter": false,
+            "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+          },
+          "financial": {
+            "unresolvedActions": 0,
+            "retainedActions": [],
+            "financialAccountAccessed": false
+          },
+          "combined": {
+            "modeledTimingAndEventsPass": true,
+            "operationalAcceptance": false,
+            "marketPerformanceAssessed": false
+          },
+          "limitsUnchanged": {
+            "quoteAgeAtUseMs": 2000,
+            "sourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "networkRequests": 0
+        }
+      },
+      {
+        "input": {
+          "name": "overlapping-financial-with-burst-reconnect-jitter100",
+          "jobs": [
+            {
+              "id": "later-entry",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 4800,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "earlier-exit",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 3600,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "restore-control",
+              "kind": "reconnect",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 10000,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "burst-0",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "burst-1",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "burst-2",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            }
+          ],
+          "priceCosts": [
+            {
+              "httpMs": 80,
+              "parseMs": 20,
+              "actuationMs": 2
+            }
+          ],
+          "timerJitterMs": 100
+        },
+        "simulation": {
+          "name": "overlapping-financial-with-burst-reconnect-jitter100",
+          "policy": "proposed-protected-v2",
+          "minimumStartSpacingMs": 250,
+          "maximumStartsPer10Seconds": 10,
+          "classification": "DETERMINISTIC_COUNTERFACTUAL_SCHEDULING_NOT_MARKET_PERFORMANCE",
+          "durationMs": 18000,
+          "executedServiceHorizonMs": 18000,
+          "rightCensoredAfterStopMs": 0,
+          "timeoutBehavior": "capture-stop",
+          "timerJitterMs": 100,
+          "arrivalJitterMs": 0,
+          "wakeMode": "adaptive-gate",
+          "operationBoundAssumptionMs": 1200,
+          "reservationStartReserveMs": 25,
+          "dynamicDeadlineCap": true,
+          "physicalOperationOverlapMaximum": 1,
+          "minimumStartGapMs": 352,
+          "maximumRolling60SecondStarts": 11,
+          "maximumRolling10SecondStarts": 7,
+          "requests": 11,
+          "durablyChargedUnits": 11,
+          "unstartedReservedOperation": null,
+          "requestsByKind": {
+            "protection": 9,
+            "enrichment": 0,
+            "pending": 1,
+            "reconnect": 1
+          },
+          "earlyProtectionStarts": 0,
+          "completedProtectionEvaluations": 9,
+          "maximumCompletedEvaluationGapMs": 2096,
+          "p95CompletedEvaluationGapMs": 2096,
+          "completedGapsBeyondTwoSecondReference": 3,
+          "maximumProtectionStartDelayMs": 102,
+          "referenceTargetsWithoutFollowingEvaluation": 1,
+          "maximumReferenceTargetToNextEvaluationMs": 202,
+          "modeledFreshTransportCacheMs": 17501,
+          "modeledUnavailableOrStaleTransportCacheMs": 499,
+          "maximumModeledQuoteAgeAtUseMs": 20,
+          "enrichments": {
+            "knownInputArrivals": 3,
+            "submitted": 3,
+            "completedWithinFiveSeconds": 0,
+            "refused": 3,
+            "timedOut": 0,
+            "completedLate": 0,
+            "pendingAtEnd": 0,
+            "inFlightAtEnd": 0,
+            "deadlineCensoredPendingAtEnd": 0,
+            "maximumArrivalToParseMs": null
+          },
+          "requiredEvidenceLosses": 3,
+          "postProcessingReserveOverruns": 0,
+          "serviceEnvelopeOverruns": 0,
+          "unresolvedFinancialActions": 1,
+          "unstartedJobsAtEnd": [],
+          "physicalUnsettledAtEnd": null,
+          "haltReason": null,
+          "candidateInvalidations": [
+            {
+              "at": 2604,
+              "reason": "pending-and-protection-deadlines-jointly-infeasible"
+            }
+          ],
+          "candidateWindowActiveAtEnd": false,
+          "protectionGuardEvents": [
+            {
+              "at": 100,
+              "protectionDeadlineAt": 4000,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 300,
+              "protectionDeadlineAt": 4202,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 2252,
+              "protectionDeadlineAt": 6154,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 2604,
+              "protectionDeadlineAt": 6154,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": "pending-and-protection-deadlines-jointly-infeasible"
+            },
+            {
+              "at": 2804,
+              "protectionDeadlineAt": 6154,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "pending-financial-action"
+            },
+            {
+              "at": 3004,
+              "protectionDeadlineAt": 6154,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "recovery-work"
+            },
+            {
+              "at": 3356,
+              "protectionDeadlineAt": 6154,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 4300,
+              "protectionDeadlineAt": 8202,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 6252,
+              "protectionDeadlineAt": 10154,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 8204,
+              "protectionDeadlineAt": 12106,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 10300,
+              "protectionDeadlineAt": 14202,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 12252,
+              "protectionDeadlineAt": 16154,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 14204,
+              "protectionDeadlineAt": 18106,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            },
+            {
+              "at": 16300,
+              "protectionDeadlineAt": 20202,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": "candidate-window-not-active"
+            }
+          ],
+          "waitChecks": {
+            "shared-physical-pacing": 11,
+            "waiting-for-eligible-work": 70
+          },
+          "outcomes": [
+            {
+              "id": "protection:1",
+              "kind": "protection",
+              "enqueuedAt": 0,
+              "eligibleAt": 0,
+              "deadlineAt": 4000,
+              "logicalDispatchedAt": 100,
+              "physicalStartedAt": 102,
+              "responseCompletedAt": 182,
+              "sourceReceivedAt": 182,
+              "physicalSettledAt": 182,
+              "parsedAt": 202,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 0,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:2",
+              "kind": "protection",
+              "enqueuedAt": 2000,
+              "eligibleAt": 2000,
+              "deadlineAt": 4202,
+              "logicalDispatchedAt": 2052,
+              "physicalStartedAt": 2054,
+              "responseCompletedAt": 2134,
+              "sourceReceivedAt": 2134,
+              "physicalSettledAt": 2134,
+              "parsedAt": 2154,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 2000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "burst-0",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "logicalDispatchedAt": 2604,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "Original candidate window suspended/invalidated: pending-and-protection-deadlines-jointly-infeasible",
+              "retainedIfFinancial": false,
+              "windowUnusable": true
+            },
+            {
+              "id": "burst-1",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "logicalDispatchedAt": 2604,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "Original candidate window suspended/invalidated: pending-and-protection-deadlines-jointly-infeasible",
+              "retainedIfFinancial": false,
+              "windowUnusable": true
+            },
+            {
+              "id": "burst-2",
+              "kind": "enrichment",
+              "enqueuedAt": 2500,
+              "eligibleAt": 3500,
+              "deadlineAt": 7500,
+              "logicalDispatchedAt": 2604,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "Original candidate window suspended/invalidated: pending-and-protection-deadlines-jointly-infeasible",
+              "retainedIfFinancial": false,
+              "windowUnusable": true
+            },
+            {
+              "id": "earlier-exit",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 3600,
+              "logicalDispatchedAt": 2604,
+              "physicalStartedAt": null,
+              "responseCompletedAt": null,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 896,
+              "httpTimeoutMs": 0,
+              "latestStartAt": null,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "refused",
+              "reason": "financial-action-retained-for-reconciliation:joint-deadlines-infeasible",
+              "retainedIfFinancial": true,
+              "windowUnusable": false
+            },
+            {
+              "id": "later-entry",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 4800,
+              "logicalDispatchedAt": 2804,
+              "physicalStartedAt": 2806,
+              "responseCompletedAt": 2886,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 2886,
+              "parsedAt": 2906,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3475,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": true,
+              "windowUnusable": false
+            },
+            {
+              "id": "restore-control",
+              "kind": "reconnect",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 10000,
+              "logicalDispatchedAt": 3156,
+              "physicalStartedAt": 3158,
+              "responseCompletedAt": 3238,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 3238,
+              "parsedAt": 3258,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3504,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:3",
+              "kind": "protection",
+              "enqueuedAt": 4000,
+              "eligibleAt": 4000,
+              "deadlineAt": 6154,
+              "logicalDispatchedAt": 4100,
+              "physicalStartedAt": 4102,
+              "responseCompletedAt": 4182,
+              "sourceReceivedAt": 4182,
+              "physicalSettledAt": 4182,
+              "parsedAt": 4202,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 4000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:4",
+              "kind": "protection",
+              "enqueuedAt": 6000,
+              "eligibleAt": 6000,
+              "deadlineAt": 8202,
+              "logicalDispatchedAt": 6052,
+              "physicalStartedAt": 6054,
+              "responseCompletedAt": 6134,
+              "sourceReceivedAt": 6134,
+              "physicalSettledAt": 6134,
+              "parsedAt": 6154,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 6000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:5",
+              "kind": "protection",
+              "enqueuedAt": 8000,
+              "eligibleAt": 8000,
+              "deadlineAt": 10154,
+              "logicalDispatchedAt": 8004,
+              "physicalStartedAt": 8006,
+              "responseCompletedAt": 8086,
+              "sourceReceivedAt": 8086,
+              "physicalSettledAt": 8086,
+              "parsedAt": 8106,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 8000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:6",
+              "kind": "protection",
+              "enqueuedAt": 10000,
+              "eligibleAt": 10000,
+              "deadlineAt": 12106,
+              "logicalDispatchedAt": 10100,
+              "physicalStartedAt": 10102,
+              "responseCompletedAt": 10182,
+              "sourceReceivedAt": 10182,
+              "physicalSettledAt": 10182,
+              "parsedAt": 10202,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 10000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:7",
+              "kind": "protection",
+              "enqueuedAt": 12000,
+              "eligibleAt": 12000,
+              "deadlineAt": 14202,
+              "logicalDispatchedAt": 12052,
+              "physicalStartedAt": 12054,
+              "responseCompletedAt": 12134,
+              "sourceReceivedAt": 12134,
+              "physicalSettledAt": 12134,
+              "parsedAt": 12154,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 12000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:8",
+              "kind": "protection",
+              "enqueuedAt": 14000,
+              "eligibleAt": 14000,
+              "deadlineAt": 16154,
+              "logicalDispatchedAt": 14004,
+              "physicalStartedAt": 14006,
+              "responseCompletedAt": 14086,
+              "sourceReceivedAt": 14086,
+              "physicalSettledAt": 14086,
+              "parsedAt": 14106,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 14000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:9",
+              "kind": "protection",
+              "enqueuedAt": 16000,
+              "eligibleAt": 16000,
+              "deadlineAt": 18106,
+              "logicalDispatchedAt": 16100,
+              "physicalStartedAt": 16102,
+              "responseCompletedAt": 16182,
+              "sourceReceivedAt": 16182,
+              "physicalSettledAt": 16182,
+              "parsedAt": 16202,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 16000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            }
+          ],
+          "decisions": [
+            {
+              "at": 100,
+              "kind": "protection"
+            },
+            {
+              "at": 2052,
+              "kind": "protection"
+            },
+            {
+              "at": 2604,
+              "kind": "refuse",
+              "reason": "financial-action-retained-for-reconciliation:joint-deadlines-infeasible",
+              "jobId": "earlier-exit"
+            },
+            {
+              "at": 2804,
+              "kind": "job",
+              "jobId": "later-entry"
+            },
+            {
+              "at": 3156,
+              "kind": "job",
+              "jobId": "restore-control"
+            },
+            {
+              "at": 4100,
+              "kind": "protection"
+            },
+            {
+              "at": 6052,
+              "kind": "protection"
+            },
+            {
+              "at": 8004,
+              "kind": "protection"
+            },
+            {
+              "at": 10100,
+              "kind": "protection"
+            },
+            {
+              "at": 12052,
+              "kind": "protection"
+            },
+            {
+              "at": 14004,
+              "kind": "protection"
+            },
+            {
+              "at": 16100,
+              "kind": "protection"
+            }
+          ],
+          "referenceTargets": [
+            {
+              "at": 0,
+              "nextCompletedAt": 202
+            },
+            {
+              "at": 2000,
+              "nextCompletedAt": 2154
+            },
+            {
+              "at": 4000,
+              "nextCompletedAt": 4202
+            },
+            {
+              "at": 6000,
+              "nextCompletedAt": 6154
+            },
+            {
+              "at": 8000,
+              "nextCompletedAt": 8106
+            },
+            {
+              "at": 10000,
+              "nextCompletedAt": 10202
+            },
+            {
+              "at": 12000,
+              "nextCompletedAt": 12154
+            },
+            {
+              "at": 14000,
+              "nextCompletedAt": 14106
+            },
+            {
+              "at": 16000,
+              "nextCompletedAt": 16202
+            },
+            {
+              "at": 18000,
+              "nextCompletedAt": null
+            }
+          ],
+          "assumptions": [
+            "All services share60 starts/rolling minute,10/rolling10s,>=250ms physical starts and one nonpreemptible physical operation.",
+            "HTTP durations, parsing costs and start overhead are sampled from retained measurements or explicitly synthetic scenario inputs. Rescheduling them is counterfactual.",
+            "Adaptive wake uses only existing gate readiness, protection target and already queued head eligibility, with at most100ms poll interval plus separately declared synthetic timer jitter.",
+            "Admission reserves25ms for durability before the unchanged latest physical-start deadline; an actual larger overhead still stops the capture after reservation and retains uncertainty.",
+            "Cache availability is a transport/processing model assuming each fresh response were valid; no old pool state is relabeled fresh or assigned to a new time.",
+            "No prices, threshold crossings, fills, profitability, new accepted maximum evaluation gap or production protection guarantee are inferred.",
+            "Refused/timed-out selected jobs mark required evidence unusable. Pending financial actions remain explicitly unresolved, never silently erased.",
+            "A physical timeout or post-persistence dispatch expiry stops the modeled capture and retains uncertainty; no automatic retry follows.",
+            "A reconnect job represents one control/upgrade operation. A full seven-account subscription restoration is not modeled by this combined PumpApi path."
+          ],
+          "networkRequests": 0,
+          "productionChanged": false
+        },
+        "assessment": {
+          "standard": {
+            "version": "proposed-research-timing-v1",
+            "status": "PROPOSED_NOT_APPROVED",
+            "targetMs": 2000,
+            "maximumCompletedGapMs": 4000,
+            "maximumQuoteAgeAtUseMs": 2000,
+            "maximumSourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+          "protection": {
+            "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+            "completedEvaluations": 9,
+            "wholeRequestedHorizonObserved": true,
+            "maximumGapIncludingOpeningAndObservedTailMs": 2096,
+            "openingGapMs": 202,
+            "rightCensoredTailAtServiceEndMs": 1798,
+            "hardCompletedGapMs": 4000,
+            "deadlineMisses": 0,
+            "physicalOrCallerTimeout": false,
+            "protectionTimeout": false,
+            "quoteAgeAtUsePass": true,
+            "declaredProtectionEnvelopeRespected": true,
+            "normalInFlightAtRightBoundary": false,
+            "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+          },
+          "flow": {
+            "verdict": "CANDIDATE_WINDOW_UNUSABLE_OR_CENSORED",
+            "allRequiredEventsCompleted": false,
+            "completedWithinFiveSeconds": 0,
+            "knownRequiredEvents": 3,
+            "invalidations": [
+              {
+                "at": 2604,
+                "reason": "pending-and-protection-deadlines-jointly-infeasible"
+              }
+            ],
+            "windowMayEnter": false,
+            "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+          },
+          "financial": {
+            "unresolvedActions": 1,
+            "retainedActions": [
+              {
+                "id": "earlier-exit",
+                "status": "refused",
+                "retained": true
+              }
+            ],
+            "financialAccountAccessed": false
+          },
+          "combined": {
+            "modeledTimingAndEventsPass": false,
+            "operationalAcceptance": false,
+            "marketPerformanceAssessed": false
+          },
+          "limitsUnchanged": {
+            "quoteAgeAtUseMs": 2000,
+            "sourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "networkRequests": 0
+        }
+      },
+      {
+        "input": {
+          "name": "three-held-processing-overrun",
+          "jobs": [
+            {
+              "id": "selected-during-overrun",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            }
+          ],
+          "priceCosts": [
+            {
+              "httpMs": 990,
+              "parseMs": 220,
+              "actuationMs": 2
+            }
+          ],
+          "timerJitterMs": 50
+        },
+        "simulation": {
+          "name": "three-held-processing-overrun",
+          "policy": "proposed-protected-v2",
+          "minimumStartSpacingMs": 250,
+          "maximumStartsPer10Seconds": 10,
+          "classification": "DETERMINISTIC_COUNTERFACTUAL_SCHEDULING_NOT_MARKET_PERFORMANCE",
+          "durationMs": 18000,
+          "executedServiceHorizonMs": 18000,
+          "rightCensoredAfterStopMs": 0,
+          "timeoutBehavior": "capture-stop",
+          "timerJitterMs": 50,
+          "arrivalJitterMs": 0,
+          "wakeMode": "adaptive-gate",
+          "operationBoundAssumptionMs": 1200,
+          "reservationStartReserveMs": 25,
+          "dynamicDeadlineCap": true,
+          "physicalOperationOverlapMaximum": 1,
+          "minimumStartGapMs": 600,
+          "maximumRolling60SecondStarts": 11,
+          "maximumRolling10SecondStarts": 7,
+          "requests": 11,
+          "durablyChargedUnits": 11,
+          "unstartedReservedOperation": null,
+          "requestsByKind": {
+            "protection": 10,
+            "enrichment": 1,
+            "pending": 0,
+            "reconnect": 0
+          },
+          "earlyProtectionStarts": 0,
+          "completedProtectionEvaluations": 9,
+          "maximumCompletedEvaluationGapMs": 2050,
+          "p95CompletedEvaluationGapMs": 2050,
+          "completedGapsBeyondTwoSecondReference": 4,
+          "maximumProtectionStartDelayMs": 52,
+          "referenceTargetsWithoutFollowingEvaluation": 1,
+          "maximumReferenceTargetToNextEvaluationMs": 1262,
+          "modeledFreshTransportCacheMs": 14986,
+          "modeledUnavailableOrStaleTransportCacheMs": 3014,
+          "maximumModeledQuoteAgeAtUseMs": 220,
+          "enrichments": {
+            "knownInputArrivals": 1,
+            "submitted": 1,
+            "completedWithinFiveSeconds": 1,
+            "refused": 0,
+            "timedOut": 0,
+            "completedLate": 0,
+            "pendingAtEnd": 0,
+            "inFlightAtEnd": 0,
+            "deadlineCensoredPendingAtEnd": 0,
+            "maximumArrivalToParseMs": 1402
+          },
+          "requiredEvidenceLosses": 0,
+          "postProcessingReserveOverruns": 9,
+          "serviceEnvelopeOverruns": 9,
+          "unresolvedFinancialActions": 0,
+          "unstartedJobsAtEnd": [],
+          "physicalUnsettledAtEnd": {
+            "id": "protection:10",
+            "settlementDueAt": 19212
+          },
+          "haltReason": null,
+          "candidateInvalidations": [],
+          "candidateWindowActiveAtEnd": true,
+          "protectionGuardEvents": [
+            {
+              "at": 50,
+              "protectionDeadlineAt": 4000,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 200,
+              "protectionDeadlineAt": 4000,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 1400,
+              "protectionDeadlineAt": 5262,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 2150,
+              "protectionDeadlineAt": 5262,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 3350,
+              "protectionDeadlineAt": 7212,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 4200,
+              "protectionDeadlineAt": 7212,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 5400,
+              "protectionDeadlineAt": 9262,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 6150,
+              "protectionDeadlineAt": 9262,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 7350,
+              "protectionDeadlineAt": 11212,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 8200,
+              "protectionDeadlineAt": 11212,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 9400,
+              "protectionDeadlineAt": 13262,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 10150,
+              "protectionDeadlineAt": 13262,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 11350,
+              "protectionDeadlineAt": 15212,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 12200,
+              "protectionDeadlineAt": 15212,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 13400,
+              "protectionDeadlineAt": 17262,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 14150,
+              "protectionDeadlineAt": 17262,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 15350,
+              "protectionDeadlineAt": 19212,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 16200,
+              "protectionDeadlineAt": 19212,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 17400,
+              "protectionDeadlineAt": 21262,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            }
+          ],
+          "waitChecks": {
+            "physical-operation-or-cancellation-unsettled": 72,
+            "shared-physical-pacing": 1,
+            "waiting-for-eligible-work": 38
+          },
+          "outcomes": [
+            {
+              "id": "protection:1",
+              "kind": "protection",
+              "enqueuedAt": 0,
+              "eligibleAt": 0,
+              "deadlineAt": 4000,
+              "logicalDispatchedAt": 50,
+              "physicalStartedAt": 52,
+              "responseCompletedAt": 1042,
+              "sourceReceivedAt": 1042,
+              "physicalSettledAt": 1042,
+              "parsedAt": 1262,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 0,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "selected-during-overrun",
+              "kind": "enrichment",
+              "enqueuedAt": 100,
+              "eligibleAt": 1100,
+              "deadlineAt": 5100,
+              "logicalDispatchedAt": 1400,
+              "physicalStartedAt": 1402,
+              "responseCompletedAt": 1482,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": 1482,
+              "parsedAt": 1502,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 2612,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:2",
+              "kind": "protection",
+              "enqueuedAt": 2000,
+              "eligibleAt": 2000,
+              "deadlineAt": 5262,
+              "logicalDispatchedAt": 2000,
+              "physicalStartedAt": 2002,
+              "responseCompletedAt": 2992,
+              "sourceReceivedAt": 2992,
+              "physicalSettledAt": 2992,
+              "parsedAt": 3212,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 2000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:3",
+              "kind": "protection",
+              "enqueuedAt": 4000,
+              "eligibleAt": 4000,
+              "deadlineAt": 7212,
+              "logicalDispatchedAt": 4050,
+              "physicalStartedAt": 4052,
+              "responseCompletedAt": 5042,
+              "sourceReceivedAt": 5042,
+              "physicalSettledAt": 5042,
+              "parsedAt": 5262,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 4000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:4",
+              "kind": "protection",
+              "enqueuedAt": 6000,
+              "eligibleAt": 6000,
+              "deadlineAt": 9262,
+              "logicalDispatchedAt": 6000,
+              "physicalStartedAt": 6002,
+              "responseCompletedAt": 6992,
+              "sourceReceivedAt": 6992,
+              "physicalSettledAt": 6992,
+              "parsedAt": 7212,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 6000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:5",
+              "kind": "protection",
+              "enqueuedAt": 8000,
+              "eligibleAt": 8000,
+              "deadlineAt": 11212,
+              "logicalDispatchedAt": 8050,
+              "physicalStartedAt": 8052,
+              "responseCompletedAt": 9042,
+              "sourceReceivedAt": 9042,
+              "physicalSettledAt": 9042,
+              "parsedAt": 9262,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 8000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:6",
+              "kind": "protection",
+              "enqueuedAt": 10000,
+              "eligibleAt": 10000,
+              "deadlineAt": 13262,
+              "logicalDispatchedAt": 10000,
+              "physicalStartedAt": 10002,
+              "responseCompletedAt": 10992,
+              "sourceReceivedAt": 10992,
+              "physicalSettledAt": 10992,
+              "parsedAt": 11212,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 10000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:7",
+              "kind": "protection",
+              "enqueuedAt": 12000,
+              "eligibleAt": 12000,
+              "deadlineAt": 15212,
+              "logicalDispatchedAt": 12050,
+              "physicalStartedAt": 12052,
+              "responseCompletedAt": 13042,
+              "sourceReceivedAt": 13042,
+              "physicalSettledAt": 13042,
+              "parsedAt": 13262,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 12000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:8",
+              "kind": "protection",
+              "enqueuedAt": 14000,
+              "eligibleAt": 14000,
+              "deadlineAt": 17262,
+              "logicalDispatchedAt": 14000,
+              "physicalStartedAt": 14002,
+              "responseCompletedAt": 14992,
+              "sourceReceivedAt": 14992,
+              "physicalSettledAt": 14992,
+              "parsedAt": 15212,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 14000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:9",
+              "kind": "protection",
+              "enqueuedAt": 16000,
+              "eligibleAt": 16000,
+              "deadlineAt": 19212,
+              "logicalDispatchedAt": 16050,
+              "physicalStartedAt": 16052,
+              "responseCompletedAt": 17042,
+              "sourceReceivedAt": 17042,
+              "physicalSettledAt": 17042,
+              "parsedAt": 17262,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 16000,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:10",
+              "kind": "protection",
+              "enqueuedAt": 18000,
+              "eligibleAt": 18000,
+              "deadlineAt": 21262,
+              "logicalDispatchedAt": 18000,
+              "physicalStartedAt": 18002,
+              "responseCompletedAt": 18992,
+              "sourceReceivedAt": 18992,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 18000,
+              "advance": false,
+              "status": "waiting-or-running",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            }
+          ],
+          "decisions": [
+            {
+              "at": 50,
+              "kind": "protection"
+            },
+            {
+              "at": 1400,
+              "kind": "job",
+              "jobId": "selected-during-overrun"
+            },
+            {
+              "at": 2000,
+              "kind": "protection"
+            },
+            {
+              "at": 4050,
+              "kind": "protection"
+            },
+            {
+              "at": 6000,
+              "kind": "protection"
+            },
+            {
+              "at": 8050,
+              "kind": "protection"
+            },
+            {
+              "at": 10000,
+              "kind": "protection"
+            },
+            {
+              "at": 12050,
+              "kind": "protection"
+            },
+            {
+              "at": 14000,
+              "kind": "protection"
+            },
+            {
+              "at": 16050,
+              "kind": "protection"
+            },
+            {
+              "at": 18000,
+              "kind": "protection"
+            }
+          ],
+          "referenceTargets": [
+            {
+              "at": 0,
+              "nextCompletedAt": 1262
+            },
+            {
+              "at": 2000,
+              "nextCompletedAt": 3212
+            },
+            {
+              "at": 4000,
+              "nextCompletedAt": 5262
+            },
+            {
+              "at": 6000,
+              "nextCompletedAt": 7212
+            },
+            {
+              "at": 8000,
+              "nextCompletedAt": 9262
+            },
+            {
+              "at": 10000,
+              "nextCompletedAt": 11212
+            },
+            {
+              "at": 12000,
+              "nextCompletedAt": 13262
+            },
+            {
+              "at": 14000,
+              "nextCompletedAt": 15212
+            },
+            {
+              "at": 16000,
+              "nextCompletedAt": 17262
+            },
+            {
+              "at": 18000,
+              "nextCompletedAt": null
+            }
+          ],
+          "assumptions": [
+            "All services share60 starts/rolling minute,10/rolling10s,>=250ms physical starts and one nonpreemptible physical operation.",
+            "HTTP durations, parsing costs and start overhead are sampled from retained measurements or explicitly synthetic scenario inputs. Rescheduling them is counterfactual.",
+            "Adaptive wake uses only existing gate readiness, protection target and already queued head eligibility, with at most100ms poll interval plus separately declared synthetic timer jitter.",
+            "Admission reserves25ms for durability before the unchanged latest physical-start deadline; an actual larger overhead still stops the capture after reservation and retains uncertainty.",
+            "Cache availability is a transport/processing model assuming each fresh response were valid; no old pool state is relabeled fresh or assigned to a new time.",
+            "No prices, threshold crossings, fills, profitability, new accepted maximum evaluation gap or production protection guarantee are inferred.",
+            "Refused/timed-out selected jobs mark required evidence unusable. Pending financial actions remain explicitly unresolved, never silently erased.",
+            "A physical timeout or post-persistence dispatch expiry stops the modeled capture and retains uncertainty; no automatic retry follows.",
+            "A reconnect job represents one control/upgrade operation. A full seven-account subscription restoration is not modeled by this combined PumpApi path."
+          ],
+          "networkRequests": 0,
+          "productionChanged": false
+        },
+        "assessment": {
+          "standard": {
+            "version": "proposed-research-timing-v1",
+            "status": "PROPOSED_NOT_APPROVED",
+            "targetMs": 2000,
+            "maximumCompletedGapMs": 4000,
+            "maximumQuoteAgeAtUseMs": 2000,
+            "maximumSourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+          "protection": {
+            "verdict": "MODELED_PROTECTION_TIMING_UNSERVABLE_OR_UNVERIFIED",
+            "completedEvaluations": 9,
+            "wholeRequestedHorizonObserved": true,
+            "maximumGapIncludingOpeningAndObservedTailMs": 2050,
+            "openingGapMs": 1262,
+            "rightCensoredTailAtServiceEndMs": 738,
+            "hardCompletedGapMs": 4000,
+            "deadlineMisses": 0,
+            "physicalOrCallerTimeout": false,
+            "protectionTimeout": false,
+            "quoteAgeAtUsePass": true,
+            "declaredProtectionEnvelopeRespected": false,
+            "normalInFlightAtRightBoundary": true,
+            "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+          },
+          "flow": {
+            "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+            "allRequiredEventsCompleted": true,
+            "completedWithinFiveSeconds": 1,
+            "knownRequiredEvents": 1,
+            "invalidations": [],
+            "windowMayEnter": false,
+            "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+          },
+          "financial": {
+            "unresolvedActions": 0,
+            "retainedActions": [],
+            "financialAccountAccessed": false
+          },
+          "combined": {
+            "modeledTimingAndEventsPass": false,
+            "operationalAcceptance": false,
+            "marketPerformanceAssessed": false
+          },
+          "limitsUnchanged": {
+            "quoteAgeAtUseMs": 2000,
+            "sourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "networkRequests": 0
+        }
+      },
+      {
+        "input": {
+          "name": "unsettled-cancellation-retains-financial",
+          "jobs": [
+            {
+              "id": "stalled-selected",
+              "kind": "enrichment",
+              "enqueuedAt": 500,
+              "eligibleAt": 1500,
+              "deadlineAt": 5500,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 9000,
+                "parseMs": 20,
+                "actuationMs": 2,
+                "settlementMs": 10000
+              }
+            },
+            {
+              "id": "owned-exit-during-outage",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 6000,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            },
+            {
+              "id": "restore-after-settlement",
+              "kind": "reconnect",
+              "enqueuedAt": 11000,
+              "eligibleAt": 11000,
+              "deadlineAt": 16000,
+              "operationBoundMs": 1200,
+              "cost": {
+                "httpMs": 80,
+                "parseMs": 20,
+                "actuationMs": 2
+              }
+            }
+          ],
+          "priceCosts": [
+            {
+              "httpMs": 80,
+              "parseMs": 20,
+              "actuationMs": 2
+            }
+          ],
+          "timerJitterMs": 100
+        },
+        "simulation": {
+          "name": "unsettled-cancellation-retains-financial",
+          "policy": "proposed-protected-v2",
+          "minimumStartSpacingMs": 250,
+          "maximumStartsPer10Seconds": 10,
+          "classification": "DETERMINISTIC_COUNTERFACTUAL_SCHEDULING_NOT_MARKET_PERFORMANCE",
+          "durationMs": 18000,
+          "executedServiceHorizonMs": 2954,
+          "rightCensoredAfterStopMs": 15046,
+          "timeoutBehavior": "capture-stop",
+          "timerJitterMs": 100,
+          "arrivalJitterMs": 0,
+          "wakeMode": "adaptive-gate",
+          "operationBoundAssumptionMs": 1200,
+          "reservationStartReserveMs": 25,
+          "dynamicDeadlineCap": true,
+          "physicalOperationOverlapMaximum": 1,
+          "minimumStartGapMs": 352,
+          "maximumRolling60SecondStarts": 3,
+          "maximumRolling10SecondStarts": 3,
+          "requests": 3,
+          "durablyChargedUnits": 3,
+          "unstartedReservedOperation": null,
+          "requestsByKind": {
+            "protection": 2,
+            "enrichment": 1,
+            "pending": 0,
+            "reconnect": 0
+          },
+          "earlyProtectionStarts": 1,
+          "completedProtectionEvaluations": 2,
+          "maximumCompletedEvaluationGapMs": 1500,
+          "p95CompletedEvaluationGapMs": 1500,
+          "completedGapsBeyondTwoSecondReference": 0,
+          "maximumProtectionStartDelayMs": 102,
+          "referenceTargetsWithoutFollowingEvaluation": 1,
+          "maximumReferenceTargetToNextEvaluationMs": 202,
+          "modeledFreshTransportCacheMs": 2752,
+          "modeledUnavailableOrStaleTransportCacheMs": 202,
+          "maximumModeledQuoteAgeAtUseMs": 20,
+          "enrichments": {
+            "knownInputArrivals": 1,
+            "submitted": 1,
+            "completedWithinFiveSeconds": 0,
+            "refused": 0,
+            "timedOut": 1,
+            "completedLate": 0,
+            "pendingAtEnd": 1,
+            "inFlightAtEnd": 1,
+            "deadlineCensoredPendingAtEnd": 0,
+            "maximumArrivalToParseMs": null
+          },
+          "requiredEvidenceLosses": 1,
+          "postProcessingReserveOverruns": 0,
+          "serviceEnvelopeOverruns": 0,
+          "unresolvedFinancialActions": 1,
+          "unstartedJobsAtEnd": [
+            {
+              "id": "owned-exit-during-outage",
+              "kind": "pending",
+              "enqueuedAt": 2500,
+              "eligibleAt": 2500,
+              "deadlineAt": 6000,
+              "financialActionRetained": true
+            }
+          ],
+          "physicalUnsettledAtEnd": {
+            "id": "stalled-selected",
+            "settlementDueAt": 11954
+          },
+          "haltReason": "component-budget-sticky-timeout",
+          "candidateInvalidations": [
+            {
+              "at": 2504,
+              "reason": "pending-financial-action"
+            }
+          ],
+          "candidateWindowActiveAtEnd": false,
+          "protectionGuardEvents": [
+            {
+              "at": 100,
+              "protectionDeadlineAt": 4000,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 300,
+              "protectionDeadlineAt": 4202,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 1800,
+              "protectionDeadlineAt": 5702,
+              "protectionFeasible": true,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 2152,
+              "protectionDeadlineAt": 5702,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": null
+            },
+            {
+              "at": 2504,
+              "protectionDeadlineAt": 5702,
+              "protectionFeasible": false,
+              "protectionBreach": false,
+              "reason": "pending-financial-action"
+            }
+          ],
+          "waitChecks": {
+            "shared-physical-pacing": 2,
+            "waiting-for-eligible-work": 6,
+            "physical-operation-or-cancellation-unsettled": 5
+          },
+          "outcomes": [
+            {
+              "id": "protection:1",
+              "kind": "protection",
+              "enqueuedAt": 0,
+              "eligibleAt": 0,
+              "deadlineAt": 4000,
+              "logicalDispatchedAt": 100,
+              "physicalStartedAt": 102,
+              "responseCompletedAt": 182,
+              "sourceReceivedAt": 182,
+              "physicalSettledAt": 182,
+              "parsedAt": 202,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 0,
+              "advance": false,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "protection:2",
+              "kind": "protection",
+              "enqueuedAt": 2000,
+              "eligibleAt": 2000,
+              "deadlineAt": 4202,
+              "logicalDispatchedAt": 1600,
+              "physicalStartedAt": 1602,
+              "responseCompletedAt": 1682,
+              "sourceReceivedAt": 1682,
+              "physicalSettledAt": 1682,
+              "parsedAt": 1702,
+              "callerTimedOutAt": null,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": null,
+              "scheduledAt": 2000,
+              "advance": true,
+              "status": "completed",
+              "reason": null,
+              "retainedIfFinancial": false,
+              "windowUnusable": false
+            },
+            {
+              "id": "stalled-selected",
+              "kind": "enrichment",
+              "enqueuedAt": 500,
+              "eligibleAt": 1500,
+              "deadlineAt": 5500,
+              "logicalDispatchedAt": 1952,
+              "physicalStartedAt": 1954,
+              "responseCompletedAt": 10954,
+              "sourceReceivedAt": null,
+              "physicalSettledAt": null,
+              "parsedAt": null,
+              "callerTimedOutAt": 2954,
+              "operationBoundMs": 1200,
+              "httpTimeoutMs": 1000,
+              "latestStartAt": 3052,
+              "scheduledAt": null,
+              "advance": false,
+              "status": "timed-out-physical-unsettled",
+              "reason": "HTTP deadline; caller cancellation does not release the physical operation",
+              "retainedIfFinancial": false,
+              "windowUnusable": true
+            }
+          ],
+          "decisions": [
+            {
+              "at": 100,
+              "kind": "protection"
+            },
+            {
+              "at": 1600,
+              "kind": "protection"
+            },
+            {
+              "at": 1952,
+              "kind": "job",
+              "jobId": "stalled-selected"
+            }
+          ],
+          "referenceTargets": [
+            {
+              "at": 0,
+              "nextCompletedAt": 202
+            },
+            {
+              "at": 2000,
+              "nextCompletedAt": null
+            }
+          ],
+          "assumptions": [
+            "All services share60 starts/rolling minute,10/rolling10s,>=250ms physical starts and one nonpreemptible physical operation.",
+            "HTTP durations, parsing costs and start overhead are sampled from retained measurements or explicitly synthetic scenario inputs. Rescheduling them is counterfactual.",
+            "Adaptive wake uses only existing gate readiness, protection target and already queued head eligibility, with at most100ms poll interval plus separately declared synthetic timer jitter.",
+            "Admission reserves25ms for durability before the unchanged latest physical-start deadline; an actual larger overhead still stops the capture after reservation and retains uncertainty.",
+            "Cache availability is a transport/processing model assuming each fresh response were valid; no old pool state is relabeled fresh or assigned to a new time.",
+            "No prices, threshold crossings, fills, profitability, new accepted maximum evaluation gap or production protection guarantee are inferred.",
+            "Refused/timed-out selected jobs mark required evidence unusable. Pending financial actions remain explicitly unresolved, never silently erased.",
+            "A physical timeout or post-persistence dispatch expiry stops the modeled capture and retains uncertainty; no automatic retry follows.",
+            "A reconnect job represents one control/upgrade operation. A full seven-account subscription restoration is not modeled by this combined PumpApi path."
+          ],
+          "networkRequests": 0,
+          "productionChanged": false
+        },
+        "assessment": {
+          "standard": {
+            "version": "proposed-research-timing-v1",
+            "status": "PROPOSED_NOT_APPROVED",
+            "targetMs": 2000,
+            "maximumCompletedGapMs": 4000,
+            "maximumQuoteAgeAtUseMs": 2000,
+            "maximumSourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+          "protection": {
+            "verdict": "MODELED_PROTECTION_TIMING_UNSERVABLE_OR_UNVERIFIED",
+            "completedEvaluations": 2,
+            "wholeRequestedHorizonObserved": false,
+            "maximumGapIncludingOpeningAndObservedTailMs": 1500,
+            "openingGapMs": 202,
+            "rightCensoredTailAtServiceEndMs": 1252,
+            "hardCompletedGapMs": 4000,
+            "deadlineMisses": 0,
+            "physicalOrCallerTimeout": true,
+            "protectionTimeout": false,
+            "quoteAgeAtUsePass": true,
+            "declaredProtectionEnvelopeRespected": true,
+            "normalInFlightAtRightBoundary": false,
+            "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+          },
+          "flow": {
+            "verdict": "CANDIDATE_WINDOW_UNUSABLE_OR_CENSORED",
+            "allRequiredEventsCompleted": false,
+            "completedWithinFiveSeconds": 0,
+            "knownRequiredEvents": 1,
+            "invalidations": [
+              {
+                "at": 2504,
+                "reason": "pending-financial-action"
+              }
+            ],
+            "windowMayEnter": false,
+            "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+          },
+          "financial": {
+            "unresolvedActions": 1,
+            "retainedActions": [
+              {
+                "id": "owned-exit-during-outage",
+                "status": "unstarted-at-censored-end",
+                "retained": true
+              }
+            ],
+            "financialAccountAccessed": false
+          },
+          "combined": {
+            "modeledTimingAndEventsPass": false,
+            "operationalAcceptance": false,
+            "marketPerformanceAssessed": false
+          },
+          "limitsUnchanged": {
+            "quoteAgeAtUseMs": 2000,
+            "sourceAgeMs": 30000,
+            "enrichmentDeadlineMs": 5000
+          },
+          "networkRequests": 0
+        }
+      }
+    ]
+  },
+  "sources": [
+    {
+      "path": "evidence/integration-proof-2026-10-26T19-57-35.882Z.json",
+      "sha256": "e9e62040863a4319cf86e1de5f6f1361e24410f4cc55e34ac9287336e089e298"
+    },
+    {
+      "path": "evidence/integration-2026-10-26T19-57-35.882Z.ndjson",
+      "sha256": "19acb6d1f94e3e01f4e2224776fda7880995562e4cd54ff6014f71eabc2f6904"
+    },
+    {
+      "path": "evidence/integration-proof-2026-10-26T19-42-16.130Z.json",
+      "sha256": "0cac0463b64d7f961dedcb2ee3f6029da1d81ee44af01e712141fe8e22114e5d"
+    },
+    {
+      "path": "evidence/integration-2026-10-26T19-42-16.130Z.ndjson",
+      "sha256": "28197fc79de98666f8636f6b824e04c240c9fb0e16b806c529bdec8238cf4f46"
+    },
+    {
+      "path": "evidence/integration-proof-2026-10-26T23-32-41.255Z.json",
+      "sha256": "266564115883ab3be50fac6157d21dbb95d3e55a505eb87508a75f4693f1356b"
+    },
+    {
+      "path": "evidence/integration-2026-10-26T23-32-41.255Z.ndjson",
+      "sha256": "968f2b67e39d0f6ae8673f9c29c4a93ac030c23244193931328b651b8fc1506f"
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/capture.json",
+      "sha256": "15d42d745b83f84dd2549a7f6c259565f036a3b83fda8a6818cfcf63b99272e1"
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/observations.ndjson",
+      "sha256": "a0882224e205e662a680c2e38c79d57a2cd20857266ded37cf37f166e53b069a"
+    },
+    {
+      "path": "src/research-dispatch.ts",
+      "sha256": "a8ae442f1ae72e6fc2820301a0a68de5e1589360538bf9b664d51d61d560ec38"
+    },
+    {
+      "path": "src/component-budget.ts",
+      "sha256": "474b36d83a9bd918f728cb06a10e3bbc0df3570ba19fcc0b684126dfcfc91e08"
+    },
+    {
+      "path": "src/research-held-market.ts",
+      "sha256": "7f3753e3cea8edea00a92bb158637dc6c9721c51dc34506e5d029b6b9f787de4"
+    },
+    {
+      "path": "src/research-clock-pricing.ts",
+      "sha256": "f5d048465083f8182a314bd93a1af110caa5feecff90814141bd9ab474d6080f"
+    },
+    {
+      "path": "src/execution.ts",
+      "sha256": "dc496f9bb634a6b970c9ee7ae6a815a713d5031704a9492825619c0c843f9dc2"
+    },
+    {
+      "path": "src/ledger.ts",
+      "sha256": "7b399a38ccc066ff6956a3535ad89b390fcc40d1828cbca051b8e8fa2c85b192"
+    },
+    {
+      "path": "scripts/evaluate-shared-scheduler.ts",
+      "sha256": "90a4aba9ee74208314de2e242d171371714eb56bc0f988a2f51dc569a21639a9"
+    },
+    {
+      "path": "test/pilot-concurrency.test.ts",
+      "sha256": "433d6650e85d13f24ef3450b22b87db29697b07fa85259bb883a0bd1115324bd"
+    }
+  ],
+  "decision": "Three-holding coherent pricing plus one retained candidate enrichment is supported for the disposable tested mechanics. Fresh post-delay financial reconciliation permits the paced one-position entry. Overlapping-action capacity is not established: the negative path safely refuses an entry with stale financial reconciliation. Bursts, processing overruns and unresolved cancellation retain separate protection/flow verdicts. No live three-pool, endpoint, strategy-performance or unattended-acceptance conclusion follows.",
+  "testProcessResources": {
+    "classification": "CLOUD_OFFLINE_TEST_PROCESS_ONLY_NOT_EC2_OR_LIVE_CAPACITY",
+    "elapsedMs": 314,
+    "cpu": {
+      "user": 350577,
+      "system": 75542
+    },
+    "processHighWaterRssBytes": 167096320
+  },
+  "reproduce": "POE_WRITE_CONCURRENCY_EVIDENCE=1 node --import tsx --test test/pilot-concurrency.test.ts (exclusive artifact creation; ordinary tests do not write evidence)"
+}
