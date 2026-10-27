@@ -76,3 +76,9 @@ test('aborted work and provider throttle do not retry or open a history scan',as
   let calls=0;const rpc:PilotMigrationRpc={async call<T>():Promise<T>{calls++;throw Error('PILOT_RPC_COMPONENT_HTTP_429');}};
   assert.deepEqual(await resolvePilotMigration(f.seed,rpc,signal()),{ok:false,reason:'PILOT_RPC_COMPONENT_HTTP_429'});assert.equal(calls,1);
 });
+
+
+test('verified outside-program-family seed does not start canonical-history fallback or another origin read',async()=>{
+ const actual=JSON.parse(readFileSync('evidence/dynamic-funnel-20261027/outside-family-migration.json','utf8')),f=fixture();f.seed.signature=actual.seed.signature;f.seed.feedMint=actual.seed.feedMint;f.setInitial(actual.transaction);
+ assert.deepEqual(await resolvePilotMigration(f.seed,f.rpc,signal()),{ok:false,reason:'MIGRATION_IDENTITY_OUTSIDE_PUMP_PROGRAM_FAMILY'});assert.equal(f.calls.length,1);assert.equal(f.calls[0]!.method,'getTransaction');
+});

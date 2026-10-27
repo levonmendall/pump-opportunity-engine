@@ -8,7 +8,7 @@ import {BorshCoder,type Idl} from '@coral-xyz/anchor';
 import bs58 from 'bs58';
 import {PublicKey} from '@solana/web3.js';
 import {decodeMigrationIdentity,type MigrationIdentityInput} from '../src/migration-identity.js';
-import {canonicalPumpPoolPda,PUMP_PROGRAM_ID} from '../src/sdk.js';
+import {canonicalPumpPoolPda,PUMP_PROGRAM_ID,PUMP_AMM_PROGRAM_ID} from '../src/sdk.js';
 
 const require=createRequire(import.meta.url),idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl,coder=new BorshCoder(idl);
 function recorded(path:string){return readFileSync(path,'utf8').trim().split('\n').map(x=>JSON.parse(x));}
@@ -85,4 +85,23 @@ test('current successful migration hints with no inner instructions provide no c
   }
   // A genuinely present current create_pool still decodes in the same pass.
   const actual=rows.find(r=>r.data.seed.signature.startsWith('eZZ919'))!.data,result=decodeMigrationIdentity(actual.transaction,{signature:actual.seed.signature,feedMint:actual.seed.feedMint,commitment:'confirmed',availableAt:actual.availableAt});assert.equal(result.ok,true);if(result.ok){assert.equal(result.identity.classification,'EXCLUDED_CUSTOM_QUOTE');assert.equal(result.identity.feedHintRole,'quote');assert.equal(result.identity.baseMint,'Afdp5Eg9XAoPDEa2sBRcbeVyGqx5smW5GUeKDuF2pump');assert.equal(result.identity.quoteMint,actual.seed.feedMint);}
+});
+
+
+test('retained outside-family migration is a seed exclusion only after successful structural validation',()=>{
+ const fixture=JSON.parse(readFileSync('evidence/dynamic-funnel-20261027/outside-family-migration.json','utf8')),input={signature:fixture.seed.signature,feedMint:fixture.seed.feedMint,commitment:'confirmed' as const,availableAt:fixture.availableAt};
+ assert.deepEqual(decodeMigrationIdentity(fixture.transaction,input),{ok:false,reason:'MIGRATION_IDENTITY_OUTSIDE_PUMP_PROGRAM_FAMILY'});
+ const failed=copy(fixture.transaction);failed.meta.err={InstructionError:[0,'fixture failure']};assert.deepEqual(decodeMigrationIdentity(failed,input),{ok:false,reason:'MIGRATION_IDENTITY_UNSUCCESSFUL_OR_UNSUPPORTED_TRANSACTION'});
+ const missing=copy(fixture.transaction);delete missing.meta.innerInstructions;assert.deepEqual(decodeMigrationIdentity(missing,input),{ok:false,reason:'MIGRATION_IDENTITY_INNER_INSTRUCTIONS'});
+ const badIndex=copy(fixture.transaction);badIndex.transaction.message.instructions[0].programIdIndex=9999;assert.deepEqual(decodeMigrationIdentity(badIndex,input),{ok:false,reason:'MIGRATION_IDENTITY_ACCOUNT_INDEX'});
+ const badTime=copy(fixture.transaction);badTime.blockTime=null;assert.deepEqual(decodeMigrationIdentity(badTime,input),{ok:false,reason:'MIGRATION_IDENTITY_CHAIN_CONTEXT'});
+ assert.deepEqual(decodeMigrationIdentity(fixture.transaction,{...input,signature:solInput.signature}),{ok:false,reason:'MIGRATION_IDENTITY_SIGNATURE_MISMATCH'});
+});
+
+test('unknown Pump and AMM invocations remain unverified rather than outside-family',()=>{
+ for(const program of [PUMP_PROGRAM_ID,PUMP_AMM_PROGRAM_ID]){
+  const tx=copy(sol),keys=[...tx.transaction.message.accountKeys,...(tx.meta.loadedAddresses?.writable??[]),...(tx.meta.loadedAddresses?.readonly??[])],index=keys.indexOf(program.toBase58());assert.ok(index>=0);
+  tx.transaction.message.instructions=[{programIdIndex:index,accounts:[],data:bs58.encode(Buffer.alloc(8))}];tx.meta.innerInstructions=[];
+  assert.deepEqual(decodeMigrationIdentity(tx,solInput),{ok:false,reason:'MIGRATION_IDENTITY_MIGRATION_INSTRUCTION_NOT_VERIFIED'});
+ }
 });

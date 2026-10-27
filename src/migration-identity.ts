@@ -60,9 +60,10 @@ export function decodeMigrationIdentity(tx:any,input:MigrationIdentityInput):Mig
     const address=(index:unknown)=>{need(Number.isSafeInteger(index)&&Number(index)>=0&&Number(index)<keys.length,'ACCOUNT_INDEX');return keys[Number(index)] as string;};
     const groups=new Map<number,any[]>();need(Array.isArray(tx.meta.innerInstructions)&&tx.meta.innerInstructions.length<=128,'INNER_INSTRUCTIONS');
     for(const group of tx.meta.innerInstructions){need(Number.isSafeInteger(group.index)&&group.index>=0&&group.index<message.instructions.length&&!groups.has(group.index)&&Array.isArray(group.instructions)&&group.instructions.length<=512,'INNER_GROUP');groups.set(group.index,group.instructions);}
-    const creations:Creation[]=[];let migrationCount=0;
+    const creations:Creation[]=[];let migrationCount=0,pumpInvocationCount=0,ammInvocationCount=0;
     const frame=(ix:any,position:Position):Frame=>{
       const program=address(ix?.programIdIndex),f:Frame={ix,position,program};
+      if(program===PUMP)pumpInvocationCount++;if(program===AMM)ammInvocationCount++;
       if(program===PUMP){const name=migrationNames.get(bytes(ix).subarray(0,8).toString('hex'));if(name){need(Array.isArray(ix.accounts),'MIGRATION_ACCOUNTS');ix.accounts.forEach(address);f.migrationName=name;migrationCount++;}}
       return f;
     };
@@ -96,6 +97,11 @@ export function decodeMigrationIdentity(tx:any,input:MigrationIdentityInput):Mig
         const creation:Creation={position:f.position,migration:{...parent.position,name:parent.migrationName},roles,index};f.creation=creation;creations.push(creation);
       }
     }
+    // An observed migration from an unrelated protocol is a raw-seed scope
+    // exclusion, not a transient missing Pump origin or a ban on its mint hint.
+    // Classify only after all existing structural/success/context checks; an
+    // unknown Pump/AMM invocation retains its original unverified refusal.
+    need(migrationCount>0||pumpInvocationCount>0||ammInvocationCount>0,'OUTSIDE_PUMP_PROGRAM_FAMILY');
     need(migrationCount>0,'MIGRATION_INSTRUCTION_NOT_VERIFIED');need(creations.length>0,'CREATION_CPI_NOT_VERIFIED');need(creations.length===1,'AMBIGUOUS_CREATIONS');
     const c=creations[0]!,r=c.roles;need(c.event,'CREATE_EVENT_UNAVAILABLE');const e=c.event.data;
     for(const name of ['pool','creator','base_mint','quote_mint','lp_mint','user_base_token_account','user_quote_token_account'])need(e[name]?.toBase58?.()===r[name],'EVENT_ROLE_MISMATCH');
