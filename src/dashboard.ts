@@ -83,7 +83,7 @@ export function createDashboard(config: DashboardConfig) {
       'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
       'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     });
-    res.end(withConnectionDiagnostics(HTML).replace('<div class="section-heading" id="system">',CONNECTIONS_HTML+'<div class="section-heading" id="system">').replace('</body>',CONNECTIONS_SCRIPT+'</body>'));
+    res.end(withConnectionDiagnostics(HTML).replace('<div class="section-heading reporting-zone-heading"',CONNECTIONS_HTML+'<div class="section-heading reporting-zone-heading"').replace('</body>',CONNECTIONS_SCRIPT+'</body>'));
   });
   server.keepAliveTimeout = 5000; server.maxRequestsPerSocket = 100;
   return { server, cache, pilotTelemetry };
