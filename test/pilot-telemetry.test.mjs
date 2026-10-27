@@ -47,3 +47,14 @@ test('receiver accepts legacy diagnostic payload without an optional watch secti
  const p=projectPilotStatus(raw());delete p.watch;assert.doesNotThrow(()=>validatePilotTelemetry(p));
  const channel=createPilotTelemetryChannel(config,()=>origin+2000);assert.equal(channel.accept(p),'accepted');
 });
+
+
+test('completed promotion wait is separate from current queue wait and remains optional',()=>{
+ const p=raw();p.watch={summary:{known:1,deepActive:1,maximumDeep:3,waitMs:{mean:0,maximum:0},promotionWaitMs:{mean:2000,maximum:4000}}};
+ const projected=projectPilotStatus(p);assert.equal(projected.watch.waitMs.maximum,0);assert.equal(projected.watch.promotionWaitMs.maximum,4000);
+ delete projected.watch.promotionWaitMs;assert.doesNotThrow(()=>validatePilotTelemetry(projected));
+ delete p.watch.summary.promotionWaitMs;assert.deepEqual(projectPilotStatus(p).watch.promotionWaitMs,{mean:null,maximum:null});
+ for(const measured of [{mean:-1,maximum:2},{mean:3,maximum:2},{mean:NaN,maximum:2},{mean:1,maximum:2,private:'no'}]){
+  const q=projectPilotStatus(p);q.watch.promotionWaitMs=measured;assert.throws(()=>validatePilotTelemetry(q));
+ }
+});

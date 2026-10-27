@@ -10,7 +10,8 @@ type Stage = typeof stages[number];
 type Metric = typeof metricNames[number];
 const watchCounts = ['known','watch','eligibleKnown','deepActive','maximumDeep','queued','promoted','repromoted','demoted','expired','capacityExclusions','structuralExclusions','completeWindows','strategyRejections','incompleteDataExclusions','enrichmentDeadlineFailures'] as const;
 type WatchCount = typeof watchCounts[number];
-export type PilotWatchTelemetry = Record<WatchCount, number | null> & { waitMs: { mean: number | null; maximum: number | null } };
+type WatchWait = { mean: number | null; maximum: number | null };
+export type PilotWatchTelemetry = Record<WatchCount, number | null> & { waitMs: WatchWait; promotionWaitMs?: WatchWait | null };
 export type PilotTelemetry = {
   schemaVersion: 1; kind: 'experimental-pilot'; authoritative: false; liveTrading: false;
   accountId: string; inceptionAt: number; runId: string; generatedAt: number;
@@ -30,7 +31,7 @@ function bool(x: unknown): boolean { if (typeof x !== 'boolean') throw new Error
 const safeText = (x: unknown, max=256) => String(x ?? 'unreported').replace(/https?:\/\/\S+/gi,'[endpoint]').replace(/Bearer\s+\S+/gi,'[credential]').replace(/[\u0000-\u001f]/g,' ').slice(0,max) || 'unreported';
 function keys(o: Record<string,any>, allowed: string[]) { if (Object.keys(o).some(k=>!allowed.includes(k))) throw new Error('unexpected telemetry field'); }
 function validateWatch(value:unknown):PilotWatchTelemetry {
-  const w=object(value);keys(w,[...watchCounts,'waitMs']);
+  const w=object(value);keys(w,[...watchCounts,'waitMs','promotionWaitMs']);
   for(const k of watchCounts){if(!Object.hasOwn(w,k))throw Error('missing watch field');integer(w[k]);}
   const wait=object(w.waitMs);keys(wait,['mean','maximum']);
   if(!Object.hasOwn(wait,'mean')||!Object.hasOwn(wait,'maximum'))throw Error('missing watch wait');
@@ -40,12 +41,18 @@ function validateWatch(value:unknown):PilotWatchTelemetry {
   if(w.deepActive!==null&&(w.deepActive>20||w.maximumDeep!==null&&w.deepActive>w.maximumDeep))throw Error('watch deep limit');
   for(const k of ['watch','eligibleKnown','deepActive'])if(w[k]!==null&&w.known!==null&&w[k]>w.known)throw Error('watch count inconsistent');
   if(wait.mean!==null&&wait.maximum!==null&&wait.mean>wait.maximum)throw Error('watch wait inconsistent');
+  if(w.promotionWaitMs!==undefined&&w.promotionWaitMs!==null){
+    const completed=object(w.promotionWaitMs);keys(completed,['mean','maximum']);
+    if(!Object.hasOwn(completed,'mean')||!Object.hasOwn(completed,'maximum'))throw Error('missing promotion wait');
+    number(completed.mean);number(completed.maximum);
+    if(completed.mean!==null&&completed.maximum!==null&&completed.mean>completed.maximum)throw Error('promotion wait inconsistent');
+  }
   return structuredClone(w) as PilotWatchTelemetry;
 }
 function projectWatch(value:unknown):PilotWatchTelemetry|null {
   if(value===undefined||value===null)return null;
-  const w=object(object(value).summary),wait=w.waitMs===undefined?{}:object(w.waitMs);
-  return validateWatch({...Object.fromEntries(watchCounts.map(k=>[k,integer(w[k])])),waitMs:{mean:number(wait.mean),maximum:number(wait.maximum)}});
+  const w=object(object(value).summary),wait=w.waitMs===undefined?{}:object(w.waitMs),completed=w.promotionWaitMs===undefined||w.promotionWaitMs===null?{}:object(w.promotionWaitMs);
+  return validateWatch({...Object.fromEntries(watchCounts.map(k=>[k,integer(w[k])])),waitMs:{mean:number(wait.mean),maximum:number(wait.maximum)},promotionWaitMs:{mean:number(completed.mean),maximum:number(completed.maximum)}});
 }
 
 /** Explicit allowlist. No journal, financial balances, credential/config objects or arbitrary logs. */

@@ -64,7 +64,8 @@ function showPilot(p){
  if(w){grid('pilot-watch',[
   ['Recent identities known',w.known],['Eligible verified identities',w.eligibleKnown],['Watch candidates',w.watch],
   ['Deep slots active / maximum',pretty(w.deepActive)+' / '+pretty(w.maximumDeep)],['Waiting for deep observation',w.queued],
-  ['Average / maximum slot wait (s)',pretty(typeof w.waitMs?.mean==='number'?w.waitMs.mean/1000:null)+' / '+pretty(typeof w.waitMs?.maximum==='number'?w.waitMs.maximum/1000:null)],
+  ['Current queue wait: average / maximum (s)',pretty(typeof w.waitMs?.mean==='number'?w.waitMs.mean/1000:null)+' / '+pretty(typeof w.waitMs?.maximum==='number'?w.waitMs.maximum/1000:null)],
+  ['Completed admission wait: average / maximum (s)',pretty(typeof w.promotionWaitMs?.mean==='number'?w.promotionWaitMs.mean/1000:null)+' / '+pretty(typeof w.promotionWaitMs?.maximum==='number'?w.promotionWaitMs.maximum/1000:null)],
   ['Promotions / re-promotions',pretty(w.promoted)+' / '+pretty(w.repromoted)],['Demotions',w.demoted],['Complete 60-second windows',w.completeWindows],
   ['Predictive rejections',w.strategyRejections],['Capacity exclusions',w.capacityExclusions],['Incomplete-data exclusions',w.incompleteDataExclusions],
   ['Enrichment deadline failures',w.enrichmentDeadlineFailures],['Structural exclusions',w.structuralExclusions],['Expired identities',w.expired]
