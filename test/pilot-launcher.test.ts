@@ -11,6 +11,8 @@ test('independent history cannot silently omit or change an enriched trade',()=>
   assert.deepEqual(validatePilotHistory([row],known,9000,11000),[]);
   assert.throws(()=>validatePilotHistory([],known,9000,11000),/OMITTED/);
   assert.throws(()=>validatePilotHistory([{...row,slot:99}],known,9000,11000),/CHANGED/);
+  assert.throws(()=>validatePilotHistory([{...row,blockTime:null}],known,9000,11000),/INVALID/);
+  const {err:_err,...withoutErr}=row;assert.throws(()=>validatePilotHistory([withoutErr as typeof row],known,9000,11000),/INVALID/);
   assert.throws(()=>validatePilotHistory([row,row],known,9000,11000),/DUPLICATE/);
   assert.throws(()=>validatePilotHistory([{...row,confirmationStatus:'processed'}],known,9000,11000),/INVALID/);
 });
