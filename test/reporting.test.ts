@@ -248,3 +248,70 @@ test('partial source identity fails configuration and credentials remain mandato
   assert.throws(() => createDashboard({ ...credentials, viewerPassword: '' }), /credentials required/);
   assert.throws(() => createDashboard({ ...credentials, ingestionSecret: '' }), /ingestion secret required/);
 });
+
+
+test('observer connectivity exposes inactive stages without altering accepted financial data', async t => {
+  const observerConfig = {...config, strategy: 'UNIMPLEMENTED_FLOW_BLOCKED', publicViewer: true};
+  const app = await serve(t, observerConfig);
+  const fixture = sample(); fixture.source.strategy = observerConfig.strategy;
+  const before = JSON.stringify(fixture);
+  assert.equal((await app.post(fixture)).status, 200);
+  const response = await app.get('/api/connections');
+  assert.equal(response.status, 200);
+  const report = await response.json();
+  assert.equal(report.sourceConfigured, true);
+  assert.equal(report.sourceRole, 'discovery-observer');
+  assert.equal(report.connection, 'receiving');
+  assert.equal(report.capabilities.candidatePipeline, 'not-implemented-in-source');
+  assert.equal(report.capabilities.decisionTrace, 'not-implemented-in-source');
+  assert.equal(report.experimentalPilot.connected, false);
+  assert.equal(report.source.accountId, config.accountId);
+  assert.equal(report.source.inceptionAt, config.inceptionAt);
+  assert.equal(report.source.sequence, fixture.sequence);
+  assert.ok(!JSON.stringify(report).includes(config.ingestionSecret));
+  const snapshot = await app.get('/api/snapshot').then(r=>r.json());
+  assert.equal(JSON.stringify(snapshot.snapshot), before);
+  assert.equal(snapshot.connections.sourceRole, 'discovery-observer');
+  assert.equal((await app.post(fixture,'Bearer invalid')).status,401);
+});
+
+test('connectivity is read-only, obeys viewer auth, and never invents a source', async t => {
+  const privateApp = await serve(t);
+  assert.equal((await privateApp.get('/api/connections')).status,401);
+  const report = await privateApp.get('/api/connections',viewer).then(r=>r.json());
+  assert.equal(report.connection,'awaiting-source');
+  assert.equal(report.source,null);
+  assert.equal(report.sourceRole,'unknown');
+  const result = await fetch(privateApp.url+'/api/connections',{method:'POST',headers:{authorization:viewer}});
+  assert.equal(result.status,405);
+});
+
+test('connectivity diagnostics age cached source data and do not refresh on duplicate delivery', async () => {
+  const { connectionReport } = await import('../src/dashboard-connectivity.js');
+  const cache = new SnapshotCache(config); const fixture=sample();
+  cache.accept(fixture,NOW);
+  cache.accept(fixture,NOW+30_000);
+  const report=connectionReport(cache,NOW+91_000);
+  assert.equal(report.connection,'stale');
+  assert.equal(report.sourceAgeMs,91_000);
+  assert.equal(report.receivedAgeMs,91_000);
+  assert.equal(report.source?.sequence,fixture.sequence);
+  assert.equal(report.capabilities.candidatePipeline,'runtime-reported');
+});
+
+test('dashboard explains observer placeholders, supports mobile refresh, and has valid scripts', async t => {
+  const app=await serve(t,{...config,publicViewer:true});
+  const html=await app.get('/').then(r=>r.text());
+  assert.match(html,/Source &amp; pipeline status/);
+  assert.match(html,/Not connected to this dashboard/);
+  assert.match(html,/NOT ACTIVE/);
+  assert.match(html,/EVALUATION ENGINE NOT CONNECTED/);
+  assert.match(html,/visibilitychange/);
+  assert.match(html,/setInterval\(refresh,15000\)/);
+  assert.match(html,/refreshInFlight/);
+  assert.match(html,/maximumFractionDigits:decimals/);
+  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  assert.equal(scripts.length,2);
+  for(const match of scripts)assert.doesNotThrow(()=>new Function(match[1]!));
+  assert.equal((await app.get('/healthz').then(r=>r.json())).connectivityDiagnostics,1);
+});
