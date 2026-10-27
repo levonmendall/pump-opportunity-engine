@@ -93,3 +93,53 @@ financial contract and all baseline risk limits; it does not claim that three
 natural positions have been managed. Omitting the optional limit preserves each
 stage's default. Limits above a stage's candidate ceiling or outside1..3 refuse
 startup. The actual cap is frozen and recorded for each run.
+
+## Dynamic market watch (isolated research)
+
+The persistent watch registry retains up to150 lightweight identities independently
+of deep observation. The pending verification queue holds256 seeds. Both are
+bounded; overflow and any lost horizon are recorded rather than called complete
+market coverage. Migration hints remain provisional until canonical identity/time
+are verified. Current support is revalidated before every deep allocation.
+
+Run the same pilot account with three deep slots and the existing three-position
+financial ceiling:
+
+```bash
+bash operator/pilot.sh resume --directory /workspace/poe-pilot --stage three --deep-slots 3 --duration-seconds 1800
+bash operator/pilot.sh status --directory /workspace/poe-pilot
+bash operator/pilot.sh stop --directory /workspace/poe-pilot
+```
+
+`--deep-slots 6` and `--deep-slots 12` are explicit research configurations, not
+verified operating capacity. Advance only after actual completeness, demand and
+protection measurements support the next stage. Do not reset capital or alter
+position-risk contracts when changing observation capacity. The20slot transport
+bound exists for later tests; the launcher deliberately does not enable it yet.
+
+A complete independently audited60second window and the unchanged strategy are
+required for a predictive decision. After a predictive rejection, the candidate
+returns to watch with a60second cooldown. Fresh activity hints can prioritize a
+later promotion, but do not provide trade amounts/buyer identities or bypass
+cooldown, support validation, history audit or a new full observation window.
+Periodic fair revisits remain possible without an activity hint. This is a new
+selection policy and can change opportunity timing; its false-negative/economic
+effects remain unproven. A later price rise alone is not a missed executable trade.
+
+Watch activity is received only from an already-open deep stream. The stream is
+not kept open solely for watch hints. Broad incoming bytes are still charged
+locally before filtering; lightweight filtering does not reduce network traffic.
+No extra getTransaction requests are made for watch activity hints. Every required
+selected deep trade still needs confirmed enrichment. The aggregate pending-hint
+queue remains16; adding slots does not multiply the backlog or completeness claim.
+
+Warm-up audits that cannot authorize an entry are deferred until the first full
+closed window. The current-window independent audit remains mandatory. Holdings,
+pending actions, source validity,2second quote age and the2second reference
+cadence retain priority; the4second research completion boundary is not approved
+production risk tolerance. Candidate gaps close the affected entry window.
+
+`watch.json` is replaceable market context with bounded history; it is not a
+financial authority. Restart keeps awareness/counters and discards old deep-flow
+readiness. Actual ledger positions/pending actions determine owned watch states.
+The original EC2 observer/account and Render portfolio remain separate.

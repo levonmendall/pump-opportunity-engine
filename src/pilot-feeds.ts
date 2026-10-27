@@ -20,11 +20,14 @@ type FeedName='discovery'|'pumpapi';
 export type PilotFeedControl={operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>;accountControlBytes(bytes:number):void;noteThrottle(retryAfter:string|null,at?:number):number};
 export type PilotFeedRpc={call<T>(method:string,params:unknown[],signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>};
 export type PilotFeedsOptions={
-  control:PilotFeedControl;amountConvention:'curve'|'user';maximumCandidates?:1|2|3;durationMs?:number;maxPumpApiBytes?:number;maxDiscoveryBytes?:number;maximumRecordedBytes?:number;
+  control:PilotFeedControl;amountConvention:'curve'|'user';maximumCandidates?:number;durationMs?:number;maxPumpApiBytes?:number;maxDiscoveryBytes?:number;maximumRecordedBytes?:number;
   record:(kind:string,data:unknown)=>void;
   onMigration:(seed:{signature:string;feedMint?:string;receivedAt:number})=>void;
   onFlowOpen?:(mint:string,at:number)=>void;
   onHint?:(mint:string,at:number)=>void;
+  /** Selection hints only; these fields never become strategy or financial evidence. */
+  watchedIdentities?:()=>readonly {mint:string;pool:string}[];
+  onWatchActivity?:(row:{mint:string;pool:string;signature?:string;receivedAt:number;evidence:'unverified-pumpapi-activity-hint'})=>void;
   onTrade:(row:{evidence:MappedTradeEvidence&{rpcAvailableAt:number};trade:NormalizedTrade;validatedAt:number})=>void;
   onGap:(gap:{mint?:string;reason:string;at:number})=>void;
   /** The holdings scheduler may postpone low-priority socket controls. */
@@ -40,8 +43,9 @@ const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,120}$/.test(e.m
 
 export class PilotFeeds {
   private readonly now:()=>number;private readonly mono:()=>number;private readonly timer:(cb:()=>void,ms:number)=>unknown;private readonly cancel:(id:unknown)=>void;
-  private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly pumpLimit:number;private readonly discoveryLimit:number;private readonly recordLimit:number;private readonly maximumCandidates:1|2|3;private readonly amountConvention:'curve'|'user';
+  private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly pumpLimit:number;private readonly discoveryLimit:number;private readonly recordLimit:number;private readonly maximumCandidates:number;private readonly amountConvention:'curve'|'user';
   private readonly controller=new AbortController();private stopped=false;private generation=0;private readonly candidates=new Map<string,Candidate>();private readonly retryByMint=new Map<string,number>();private enriching=false;private watch:unknown;
+  private readonly watchIdentities=new Map<string,{mint:string;pool:string}>();private readonly watchLastEmitted=new Map<string,number>();private readonly watchLastSignature=new Map<string,string>();private watchRefreshAt=-Infinity;private watchFrames=0;private watchParses=0;private watchHints=0;private watchFailures=0;private watchProcessingMs=0;
   private get candidate(){return this.candidates.values().next().value??null;}
   private current(c:Candidate){return this.candidates.get(c.scope.mint)===c;}
   private activeCandidates(){return [...this.candidates.values()].filter(c=>!c.suspended);}
@@ -50,7 +54,7 @@ export class PilotFeeds {
   constructor(private readonly options:PilotFeedsOptions,private readonly dependencies:PilotFeedDependencies={}){
     this.now=dependencies.now??Date.now;this.mono=dependencies.monotonic??(()=>performance.now());this.timer=dependencies.setTimer??((cb,ms)=>setTimeout(cb,ms));this.cancel=dependencies.clearTimer??(id=>clearTimeout(id as ReturnType<typeof setTimeout>));this.startedAt=this.now();this.startedMono=this.mono();
     this.duration=options.durationMs??1800000;this.pumpLimit=options.maxPumpApiBytes??1024*MIB;this.discoveryLimit=options.maxDiscoveryBytes??5*MIB;this.recordLimit=options.maximumRecordedBytes??6*MIB;
-    need(Number.isSafeInteger(this.duration)&&this.duration>0&&this.duration<=1800000&&Number.isSafeInteger(this.pumpLimit)&&this.pumpLimit>=4*MIB&&this.pumpLimit<=1024*MIB&&Number.isSafeInteger(this.discoveryLimit)&&this.discoveryLimit>=256*1024&&this.discoveryLimit<=5*MIB&&Number.isSafeInteger(this.recordLimit)&&this.recordLimit>=64*1024&&this.recordLimit<=8*MIB&&[1,2,3].includes(options.maximumCandidates??1)&&['curve','user'].includes(options.amountConvention),'PILOT_FEED_INVALID_LIMITS');
+    need(Number.isSafeInteger(this.duration)&&this.duration>0&&this.duration<=1800000&&Number.isSafeInteger(this.pumpLimit)&&this.pumpLimit>=4*MIB&&this.pumpLimit<=1024*MIB&&Number.isSafeInteger(this.discoveryLimit)&&this.discoveryLimit>=256*1024&&this.discoveryLimit<=5*MIB&&Number.isSafeInteger(this.recordLimit)&&this.recordLimit>=64*1024&&this.recordLimit<=8*MIB&&Number.isSafeInteger(options.maximumCandidates??1)&&(options.maximumCandidates??1)>=1&&(options.maximumCandidates??1)<=20&&['curve','user'].includes(options.amountConvention),'PILOT_FEED_INVALID_LIMITS');
     this.maximumCandidates=options.maximumCandidates??1;
     this.amountConvention=options.amountConvention;
     this.scheduleWatch();
@@ -99,7 +103,7 @@ export class PilotFeeds {
     const old=this.candidates.get(scope.mint);if(old&&!old.suspended){need(JSON.stringify(old.scope)===JSON.stringify(scope),'PILOT_CANDIDATE_SCOPE_CONFLICT');return;}
     need(old||this.candidates.size<this.maximumCandidates,'PILOT_CANDIDATE_CAPACITY');
     for(const [mint,at]of this.retryByMint)if(at<=this.now()&&!this.candidates.has(mint))this.retryByMint.delete(mint);
-    need(this.retryByMint.has(scope.mint)||this.retryByMint.size<64,'PILOT_CANDIDATE_RETRY_RECORD_CAP');
+    need(this.retryByMint.has(scope.mint)||this.retryByMint.size<256,'PILOT_CANDIDATE_RETRY_RECORD_CAP');
     const c=this.makeCandidate(scope);old?.controller.abort();this.candidates.set(scope.mint,c);this.legs.pumpapi.desired=true;
     if(this.legs.pumpapi.connected){try{const at=this.now();c.pipeline.open(at);this.options.onFlowOpen?.(scope.mint,at);}catch(e){this.invalidate(c,safe(e));throw e;}}else await this.connect(this.legs.pumpapi);
   }
@@ -145,6 +149,37 @@ export class PilotFeeds {
     if(leg.name==='pumpapi'){this.pumpBytes+=delta;if(atUpgrade){for(let left=delta;left;){const d=Math.min(left,65536);this.options.control.accountControlBytes(d);this.controlBytes+=d;left-=d;}}if(this.pumpBytes>=this.pumpLimit-2*MIB){leg.desired=false;this.closeLeg(leg,'PILOT_PUMPAPI_BYTE_LIMIT',true);this.invalidateAll('PILOT_PUMPAPI_BYTE_LIMIT');}}
     else{this.discoveryBytes+=delta;for(let left=delta;left;){const d=Math.min(left,65536);this.options.control.accountControlBytes(d);this.controlBytes+=d;left-=d;}if(this.discoveryBytes>=this.discoveryLimit-128*1024){leg.desired=false;this.closeLeg(leg,'PILOT_DISCOVERY_BYTE_LIMIT',true);this.gap('PILOT_DISCOVERY_BYTE_LIMIT');}}
   }
+  /** The public broad stream has already been received and charged. A cached
+   * lookup gives O(1) identity matching rather than scanning150 watch strings
+   * per frame. Ordinary transport fields only trigger a fresh deep window;
+   * they do not establish a swap, commitment, trader, amount or buying score.
+   * Escaped/unusual field encodings may miss this best-effort hint; periodic
+   * watch revisits must remain independent of notification completeness. */
+  private observeWatchActivity(bytes:Buffer,receivedAt:number){
+    if(!this.options.watchedIdentities||!this.options.onWatchActivity)return;
+    const started=performance.now();this.watchFrames++;
+    try{
+      if(receivedAt>=this.watchRefreshAt){
+        this.watchRefreshAt=receivedAt+1000;
+        const identities=this.options.watchedIdentities();need(Array.isArray(identities)&&identities.length<=512,'PILOT_WATCH_IDENTITY_CAP');
+        this.watchIdentities.clear();
+        for(const row of identities){need(row&&typeof row.mint==='string'&&typeof row.pool==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(row.mint)&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(row.pool),'PILOT_WATCH_IDENTITY');this.watchIdentities.set(row.mint,{mint:row.mint,pool:row.pool});}
+        for(const mint of this.watchLastEmitted.keys())if(!this.watchIdentities.has(mint)){this.watchLastEmitted.delete(mint);this.watchLastSignature.delete(mint);}
+      }
+      if(!this.watchIdentities.size)return;
+      // Pre-filter only. JSON parsing below verifies the actual top-level keys,
+      // so nested metadata or an escaped text match cannot create a watch hint.
+      const text=bytes.toString(),mint=/"mint"\s*:\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"/.exec(text)?.[1];
+      if(!mint)return;const identity=this.watchIdentities.get(mint);if(!identity||receivedAt-(this.watchLastEmitted.get(mint)??-Infinity)<10000)return;
+      this.watchParses++;let payload:any;try{payload=JSON.parse(text);}catch{return;}
+      if(!payload||typeof payload!=='object'||Array.isArray(payload)||payload.mint!==identity.mint||payload.poolId!==identity.pool)return;
+      let signature:string|undefined;try{if(typeof payload.signature==='string'&&payload.signature.length<=100&&bs58.decode(payload.signature).length===64)signature=payload.signature;}catch{}
+      if(!signature||this.watchLastSignature.get(mint)===signature)return;
+      this.watchLastEmitted.set(mint,receivedAt);this.watchLastSignature.set(mint,signature);
+      this.options.onWatchActivity({mint:identity.mint,pool:identity.pool,signature,receivedAt,evidence:'unverified-pumpapi-activity-hint'});this.watchHints++;
+    }catch{this.watchFailures++;}
+    finally{this.watchProcessingMs+=performance.now()-started;}
+  }
   private message(leg:Leg,c:Connection,raw:WebSocket.RawData){
     if(c.closed||leg.connection!==c||!this.live())return;const receivedAt=this.now(),b=Array.isArray(raw)?Buffer.concat(raw):Buffer.from(raw as ArrayBuffer);this.frames++;this.sample(leg,c);need(b.length<=65536,'PILOT_FEED_PAYLOAD_LIMIT');if(!leg.desired||c.closeReason)return;
     if(leg.name==='discovery'){
@@ -154,6 +189,7 @@ export class PilotFeeds {
       let feedMint:string|undefined;try{if(typeof p.mint==='string'&&new PublicKey(p.mint).toBase58()===p.mint)feedMint=p.mint;}catch{}
       const seed={signature:p.signature,...(feedMint?{feedMint}:{}),receivedAt};this.record('pilot-migration-hint',{...seed,commitment:'processed',identityVerified:false});this.options.onMigration(seed);return;
     }
+    this.observeWatchActivity(b,receivedAt);
     const active=this.activeCandidates(),possible=active.filter(candidate=>b.includes(candidate.mintBytes)||b.includes(candidate.poolBytes));if(!possible.length){this.irrelevant++;return;}
     this.rawParses++;let payload:any;
     try{payload=JSON.parse(b.toString());need(payload&&typeof payload==='object'&&!Array.isArray(payload),'PILOT_SELECTED_PAYLOAD_SHAPE');}
@@ -190,6 +226,6 @@ export class PilotFeeds {
   private async waitClosed(c:Connection){if(c.closed)return;let id:unknown;try{await Promise.race([c.closedPromise,new Promise<never>((_r,reject)=>{id=this.timer(()=>reject(Error('PILOT_FEED_TRANSPORT_UNSETTLED')),2500);})]);}finally{if(id!==undefined)this.cancel(id);}}
   snapshot(mint?:string){const c=mint===undefined?this.candidate:this.candidates.get(mint);if(!c)return null;const state=c.pipeline.snapshot(this.now(),{recordFeatures:false}),last=state.latestFeature,fullyEnriched=c.pending.size===0&&!c.suspended;return {...state,latestFeature:last,pending:c.pending.size,fullyEnriched,warm:!c.suspended&&last?.curve.sufficientlyObserved===true&&last?.user.sufficientlyObserved===true,windowEndAt:last?.curve.windowEndAt??null,hasQualityLoss:c.suspended||state.qualityGaps.length>0,failedCandidate:c.suspended};}
   snapshots(){return Object.fromEntries([...this.candidates.keys()].map(mint=>[mint,this.snapshot(mint)]));}
-  usage(){return {maximumCandidates:this.maximumCandidates,candidates:[...this.candidates.values()].map(c=>({mint:c.scope.mint,pool:c.scope.pool,suspended:c.suspended,pending:c.pending.size,normalized:c.normalized,selectedForMs:this.mono()-c.selectedMono})),enrichmentInFlight:this.enriching,startedAt:this.startedAt,durationMs:this.duration,stopped:this.stopped,firstFailure:this.firstFailure,pumpApiSocketBytes:this.pumpBytes,discoverySocketBytes:this.discoveryBytes,controlBytesCharged:this.controlBytes,totalSocketBytes:this.pumpBytes+this.discoveryBytes,lastAnyTrafficAt:this.lastAnyTrafficAt,frames:this.frames,irrelevantFrames:this.irrelevant,selectedFrames:this.selectedFrames,parsedPumpApiFrames:this.rawParses,recordedBytes:this.recordedBytes,normalizedTrades:this.trades,gaps:this.gaps,discoveryConnected:this.legs.discovery.connected,pumpApiConnected:this.legs.pumpapi.connected,discoveryDesired:this.legs.discovery.desired,pumpApiDesired:this.legs.pumpapi.desired,failedCandidate:[...this.candidates.values()].some(c=>c.suspended),candidateRetryAt:this.candidateRetryAt,connections:{discovery:this.legs.discovery.attempts,pumpapi:this.legs.pumpapi.attempts},candidate:this.candidate?{mint:this.candidate.scope.mint,pool:this.candidate.scope.pool,suspended:this.candidate.suspended,pending:this.candidate.pending.size,normalized:this.candidate.normalized,selectedForMs:this.mono()-this.candidate.selectedMono}:null,physicalTransportsSettled:Object.values(this.legs).every(l=>!l.connection||l.connection.closed),streamFieldCompleteness:'REQUIRES_BOUNDED_INDEPENDENT_AUDIT',liveTrading:false};}
+  usage(){return {maximumCandidates:this.maximumCandidates,watchActivity:{semantics:'unverified selection hints only; observed only while a deep stream is already open',knownIdentities:this.watchIdentities.size,framesExamined:this.watchFrames,matchedPayloadParses:this.watchParses,hints:this.watchHints,failures:this.watchFailures,processingMs:this.watchProcessingMs,coalesceMs:10000},candidates:[...this.candidates.values()].map(c=>({mint:c.scope.mint,pool:c.scope.pool,suspended:c.suspended,pending:c.pending.size,normalized:c.normalized,selectedForMs:this.mono()-c.selectedMono})),enrichmentInFlight:this.enriching,startedAt:this.startedAt,durationMs:this.duration,stopped:this.stopped,firstFailure:this.firstFailure,pumpApiSocketBytes:this.pumpBytes,discoverySocketBytes:this.discoveryBytes,controlBytesCharged:this.controlBytes,totalSocketBytes:this.pumpBytes+this.discoveryBytes,lastAnyTrafficAt:this.lastAnyTrafficAt,frames:this.frames,irrelevantFrames:this.irrelevant,selectedFrames:this.selectedFrames,parsedPumpApiFrames:this.rawParses,recordedBytes:this.recordedBytes,normalizedTrades:this.trades,gaps:this.gaps,discoveryConnected:this.legs.discovery.connected,pumpApiConnected:this.legs.pumpapi.connected,discoveryDesired:this.legs.discovery.desired,pumpApiDesired:this.legs.pumpapi.desired,failedCandidate:[...this.candidates.values()].some(c=>c.suspended),candidateRetryAt:this.candidateRetryAt,connections:{discovery:this.legs.discovery.attempts,pumpapi:this.legs.pumpapi.attempts},candidate:this.candidate?{mint:this.candidate.scope.mint,pool:this.candidate.scope.pool,suspended:this.candidate.suspended,pending:this.candidate.pending.size,normalized:this.candidate.normalized,selectedForMs:this.mono()-this.candidate.selectedMono}:null,physicalTransportsSettled:Object.values(this.legs).every(l=>!l.connection||l.connection.closed),streamFieldCompleteness:'REQUIRES_BOUNDED_INDEPENDENT_AUDIT',liveTrading:false};}
   async stop(){if(!this.stopped){this.stopped=true;this.controller.abort();this.cancel(this.watch);for(const c of this.candidates.values())c.controller.abort();for(const leg of Object.values(this.legs)){leg.desired=false;if(leg.timer!==undefined)this.cancel(leg.timer);this.closeLeg(leg,'PILOT_FEEDS_STOP',true);}}await Promise.all(Object.values(this.legs).map(l=>l.connection?this.waitClosed(l.connection):Promise.resolve()));}
 }

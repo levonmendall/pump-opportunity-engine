@@ -10,6 +10,8 @@ export type PilotExecutionQuote=ExecutionQuote&{slot?:number;requiredDepositLamp
 export type PilotQuoteRequest=QuoteRequest&{minSlot?:number};
 export type TraderOptions={
   ledger:PaperLedger;now?:()=>number;
+  /** Deep-analysis capacity, independent of the financial position limit. */
+  maximumCandidates?:number;
   context:(positions:Readonly<Record<string,Position>>,signal:AbortSignal)=>Promise<ExecutionContext>;
   quote:(request:SizeRequest,signal:AbortSignal)=>Promise<SizeQuote|null>;
   costs:{gasLamports:string;depositLamports:string;slippageBps:number;evidence:string};
@@ -43,6 +45,7 @@ function quoteIndependentRefusal(decision:RuleDecision):RuleDecision|null {
  */
 export class PaperTrader{
   private readonly now:()=>number;
+  private readonly maximumCandidates:number;
   private readonly candidates=new Map<string,Candidate>();
   private readonly recent:Decision[]=[];
   private context:ExecutionContext={price:null,marks:{}};
@@ -61,6 +64,7 @@ export class PaperTrader{
   private readonly pilotDeposits=new Map<string,{lamports:string;evidence:string;preparedAt:number}>();
   readonly funnel={discovered:0,supported:0,sufficientlyObserved:0,evaluated:0,qualified:0,reserved:0,attempted:0,paperFilled:0,exited:0,reconciled:0};
   constructor(private readonly options:TraderOptions){
+    this.maximumCandidates=options.maximumCandidates??12;if(!Number.isSafeInteger(this.maximumCandidates)||this.maximumCandidates<1||this.maximumCandidates>20)throw Error('bounded deep candidate capacity required');
     this.pilot=options.experimentalPilot!==undefined;
     this.pilotConfig=this.pilot?resolvePilotBinding(options.experimentalPilot):null;
     if(this.pilot){const state=options.ledger.state();assertPilotBaseline();if(!this.pilotConfig||state.mode!=='PAPER'||!/^poe-pilot-[a-z0-9-]+$/.test(state.accountId)||options.costs.gasLamports!=='7000'||options.costs.slippageBps!==100||(options.timeoutMs??3000)>3000||typeof options.pilotExecution?.context!=='function'||typeof options.pilotExecution?.quote!=='function')throw Error('isolated pilot identity, frozen contract and fresh execution adapters required');}
@@ -88,7 +92,8 @@ export class PaperTrader{
   get frozenVersion():PilotBinding['version']|null{return this.pilotConfig?.version??null;}
   nextDueAt(){return this.execution.nextDueAt();}
   private pilotDepositFor(mint:string){return this.pilotDeposits.get(mint)??(this.pilotConfig?.stage===null?this.pilotDeposit:null);}
-  setPilotEntryDeposit(lamports:string,evidence:string,mint?:string){if(!this.pilot||!validText(evidence)||mint!==undefined&&!validText(mint,96)||Object.values(this.options.ledger.state().pending).some(o=>o.side==='buy'&&(mint===undefined||o.mint===mint)))throw Error('pilot deposit preparation requires no pending entry for the selected mint');if(this.pilotConfig?.stage!==null&&mint===undefined)throw Error('concurrent pilot deposit preparation requires an explicit mint');if(mint!==undefined&&!this.pilotDeposits.has(mint)&&this.pilotDeposits.size>=15)throw Error('bounded pilot deposit capacity');unsigned(lamports);const plan=Object.freeze({lamports,evidence,preparedAt:this.clock()});if(mint===undefined)this.pilotDeposit=plan;else this.pilotDeposits.set(mint,plan);this.record('trader-pilot-entry-deposit',{...plan,...(mint===undefined?{}:{mint}),classification:'required refundable locked capital; not a permanent execution fee'});}
+  setPilotEntryDeposit(lamports:string,evidence:string,mint?:string){if(!this.pilot||!validText(evidence)||mint!==undefined&&!validText(mint,96)||Object.values(this.options.ledger.state().pending).some(o=>o.side==='buy'&&(mint===undefined||o.mint===mint)))throw Error('pilot deposit preparation requires no pending entry for the selected mint');if(this.pilotConfig?.stage!==null&&mint===undefined)throw Error('concurrent pilot deposit preparation requires an explicit mint');if(mint!==undefined&&!this.pilotDeposits.has(mint)&&this.pilotDeposits.size>=this.maximumCandidates+3)throw Error('bounded pilot deposit capacity');unsigned(lamports);const plan=Object.freeze({lamports,evidence,preparedAt:this.clock()});if(mint===undefined)this.pilotDeposit=plan;else this.pilotDeposits.set(mint,plan);this.record('trader-pilot-entry-deposit',{...plan,...(mint===undefined?{}:{mint}),classification:'required refundable locked capital; not a permanent execution fee'});}
+  clearPilotEntryDeposit(mint:string){if(!this.pilot||!validText(mint,96))throw Error('isolated pilot and bounded mint required');const state=this.options.ledger.state();if(state.positions[mint]||Object.values(state.pending).some(order=>order.mint===mint))throw Error('held/pending deposit preparation must be retained');const removed=this.pilotDeposits.delete(mint);if(removed)this.record('trader-pilot-entry-deposit-cleared',{mint,at:this.clock(),reason:'unowned preparation released; financial history unchanged'});return removed;}
   pauseNewEntries(reason:string){if(!validText(reason))throw Error('bounded entry-pause reason required');this.pause(reason);}
   private id(kind:string){return `trader:${kind}:${this.options.ledger.state().revision}:${this.clock()}`;}
   private pause(reason:string){
@@ -101,9 +106,14 @@ export class PaperTrader{
   start(){if(this.started)return;for(const id of this.execution.recover().uncertainExitOrders)this.uncertainOrders.add(id);this.started=true;this.record('trader-config',{mode:this.options.ledger.state().mode,accountId:this.options.ledger.accountId,rule:{...PROVISIONAL_RULE,version:this.effectiveVersion},costs:{...this.options.costs},flowVerification:this.options.flowVerification??{verified:false,evidence:'unverified'},quoteRetrieval:this.options.deferPredictivelyRejectedQuotes===true?'RESEARCH_DEFER_ALREADY_REJECTED_PREDICTIVE_QUOTES':'EXISTING_QUOTE_FIRST_ORDER',...(this.pilotConfig?{pilot:{version:this.pilotConfig.version,contractSha256:this.pilotConfig.contractSha256,maxPositions:this.pilotConfig.maxPositions,...(this.pilotConfig.stage===null?{}:{stage:this.pilotConfig.stage}),amountConvention:'curve',entryDepositPreparation:'required-before-entry',contract:this.pilotConfig.contract}}:{})});}
   admit(input:CandidateEvidence){
     const now=this.clock();if(!validText(input.mint,96)||!validText(input.evidence)||!Number.isSafeInteger(input.migrationAt)||input.migrationAt<0||input.migrationAt>now)throw new Error('verified candidate identity/time required');
+    const owned=this.options.ledger.state(),pendingMints=new Set(Object.values(owned.pending).map(order=>order.mint));
+    // Completed financial history stays in the ledger. Retire only its no-longer
+    // owned market record, so successive closed trades cannot consume deep slots.
+    for(const mint of this.candidates.keys())if(mint!==input.mint&&!owned.positions[mint]&&!pendingMints.has(mint)&&this.options.ledger.hasTradedMint(mint)){this.candidates.delete(mint);this.pilotDeposits.delete(mint);}
     if(this.candidates.has(input.mint))return true;this.funnel.discovered++;
+    const deepCount=[...this.candidates.keys()].filter(mint=>!owned.positions[mint]).length,capacity=deepCount>=this.maximumCandidates||this.candidates.size>=this.maximumCandidates+3;
     this.record('trader-input',{kind:'candidate',at:now,candidate:{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence}});
-    if(input.migrationVerified!==true||input.supportedPool!==true||this.candidates.size>=12){this.decision({mint:input.mint,at:now,stage:'market-exclusion',reason:this.candidates.size>=12?'candidate-capacity':'unsupported-or-unverified-pool',ruleVersion:PROVISIONAL_RULE.version});return false;}
+    if(input.migrationVerified!==true||input.supportedPool!==true||capacity){this.decision({mint:input.mint,at:now,stage:'market-exclusion',reason:capacity?'candidate-capacity':'unsupported-or-unverified-pool',ruleVersion:PROVISIONAL_RULE.version});return false;}
     this.candidates.set(input.mint,{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence,window:new FlowWindow(input.mint,now),active:false,everActivated:false,interrupted:false,evaluatedBucket:-1,knownSlot:null,informationPending:false});this.funnel.supported++;return true;
   }
   activateFlow(mint:string,evidence:string){const c=this.candidates.get(mint);if(!c||!validText(evidence))throw new Error('admitted pool and actual subscription evidence required');const at=this.clock();c.window.features(at);if(c.everActivated||c.interrupted)c.window.invalidate(at,'feed-gap');else c.window=new FlowWindow(mint,at);c.everActivated=true;c.active=true;c.informationPending=false;c.evaluatedBucket=-1;this.record('trader-input',{kind:'flow-start',at,mint,evidence});}

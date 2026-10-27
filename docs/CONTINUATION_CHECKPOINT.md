@@ -60,3 +60,13 @@ New owner directive requires dynamic broad watch registry independent of deep
 slots, progressive3/6/12scope tests, and auditable demotion/re-promotion. Next
 implement that narrow funnel on this review branch before the corrected forward
 interval. No owner approval needed within isolated PAPER/free-data boundaries.
+
+Dynamic funnel integration ready for isolated3slotrun:150boundedregistry,256
+verificationqueue, explicit3/6/12deepconfigs independentmax3financialpositions,
+weakdemotiononlyafterexistingvalidpredictiverejection, freshrewarmre-promotion,
+no redundant warmupaudits. Ownership/proof/deposit/recovery edgecases reviewed.
+Finalstrictbuild and779fulltests PASS;57finalfocused checks PASS. No natural
+positions exist; samepilotledger preserved. Dashboardreportingbranch9617d52
+basedonconcurrentmain6802407 preservesnewUI; reportingonlydeploypending. Root
+alone ownsforwardnetwork/ledger. Nextfreezecommitthen3slotlive interval; do not
+advance6/12if3failscompletenessorprotection.

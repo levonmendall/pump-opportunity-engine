@@ -1,7 +1,7 @@
 /** Controller policies only: no network, live account, or natural trade. */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotPreparationDeferrable,pilotCandidateWindowReady,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
+import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotPreparationDeferrable,pilotCandidateWindowReady,pilotInitialAuditReady,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
 import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
 
 test('explicit stage transitions preserve account/inception and append known capacity contracts',()=>{
@@ -145,4 +145,17 @@ test('local prephysical deferrals preserve discovery seeds and bounded independe
  }
  assert.equal(pilotPreparationDeferrable('PILOT_HISTORY_UNSUPPORTED_EVENT'),false);
  assert.equal(pilotAuditFailurePolicy('PILOT_RPC_COMPONENT_RESPONSE_CAP',null,1000,0).defer,false);
+});
+
+
+test('explicit progressive deep slots leave financial position contracts independent',()=>{
+ for(const slots of [3,6,12]){const c=resolvePilotStage('three',undefined,slots);assert.equal(c.maximumCandidates,slots);assert.equal(c.maximumPositions,3);assert.equal(c.binding.maxPositions,3);assert.equal(c.contract.baseline,PILOT_CONTRACT.baseline);}
+ assert.throws(()=>resolvePilotStage('single',undefined,3),/DEEP_STAGE_LIMIT/);assert.throws(()=>resolvePilotStage('three',2,6),/DEEP_STAGE_LIMIT/);assert.throws(()=>resolvePilotStage('three',undefined,20),/DEEP_STAGE_LIMIT/);
+});
+
+test('warm-up audit deferral never bypasses the first complete closed-window or current audit barrier',()=>{
+ const flowAt=1001;for(const at of [15000,25000,35000,45000,55000,65000,74999])assert.equal(pilotInitialAuditReady(flowAt,at),false);
+ assert.equal(pilotInitialAuditReady(flowAt,75000),true);assert.equal(pilotInitialAuditReady(flowAt,80000),false);assert.equal(pilotInitialAuditReady(flowAt,85000),true);
+ assert.equal(pilotCandidateWindowReady({warm:true,fullyEnriched:true,hasQualityLoss:false,windowEndAt:70000,auditedThrough:1001,flowAt,connected:true},75000),false);
+ assert.equal(pilotCandidateWindowReady({warm:true,fullyEnriched:true,hasQualityLoss:false,windowEndAt:70000,auditedThrough:70000,flowAt,connected:true},75000),true);
 });
