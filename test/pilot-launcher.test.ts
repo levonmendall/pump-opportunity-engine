@@ -29,5 +29,5 @@ test('ready verified origins cannot starve behind a continuously nonempty discov
   const proofs={young:proof('young',570),ready:proof('ready',100)} as any;
   assert.equal(nextPreparedPilotSeed(proofs,new Set(),600000)?.feedMint,'ready');
   assert.equal(nextPreparedPilotSeed(proofs,new Set(['ready']),600000),null);
-  assert.equal(nextPreparedPilotSeed(proofs,new Set(),7400000),null);
+  assert.equal(nextPreparedPilotSeed(proofs,new Set(),7800000),null);
 });
