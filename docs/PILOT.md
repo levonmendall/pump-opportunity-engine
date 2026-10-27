@@ -1,4 +1,24 @@
-# Isolated experimental PAPER pilot
+# Isolated frozen candidate evaluation
+
+Current launcher mode is `candidate-evaluation`, despite historical pilot/PAPER
+module names. It requires the existing account with closed financial permission
+and no positions/pending actions. It cannot initialize capital or dispatch
+financial recovery, contexts, decision quotes, orders, fills or exits. The actor
+uses existing verified-window predictive diagnostics without ledger authorization;
+intentional permission restrictions are explicitly nonperformance outcomes.
+No USD valuation is fetched or financial journal changed by this mode. Financial
+fields are labeled historical references. The same full supported-state decoder
+still validates each deep admission, with three reads and no rent/entry plan.
+
+Current start/resume (after verifying no existing run):
+`bash operator/pilot.sh resume --directory /workspace/poe-pilot --stage three --deep-slots 6 --duration-seconds 900`.
+`stage three` is historical contract identity, not permission for three positions;
+effective financial position capacity is zero. Source/configuration hashes bind
+mode, slot count, duration, strategy and resource/request limits for each run.
+
+The remaining sections describe retained components and earlier authorized PAPER
+fixtures/intervals. Their execution assumptions are not activation authority for
+current candidate tests. See the checkpoint for the exact active freeze.
 
 This launcher is a Cloud research process. It does not replace the EC2 observer, open its account, publish to Render, load wallet credentials, or submit/simulate Solana transactions. The owner explicitly authorized simulated entries only in a distinct `poe-pilot-*` account. There is one ledger writer. Financial history lives outside the repository in `/workspace/poe-pilot`, with private file permissions.
 
