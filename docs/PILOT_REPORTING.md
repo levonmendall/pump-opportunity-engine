@@ -40,7 +40,11 @@ node --use-env-proxy scripts/publish-pilot-status.mjs \
 Use Node's filesystem permission allowlist and ordinary process limits when
 available: read access only to this script, compiled telemetry module, package
 metadata, status file, reporting-secret file and required TLS trust files; no
-filesystem write or subprocess permission. Keep output in a private bounded log.
+filesystem write or subprocess permission. Launch from the separate private
+publisher directory, not `/workspace` or the pilot directory: Node may implicitly
+allow reads beneath the entry/evaluation working directory. Verify the actual
+ledger path is denied by the running permission configuration. Keep output in a
+private bounded log.
 The publisher does not open the ledger, import the trader, control the pilot or
 call a market provider. SIGTERM stops only reporting. A new process resumes from
 the same status file without changing the account or source timestamps.
@@ -69,3 +73,27 @@ To roll back reporting, deploy the preceding reviewed dashboard commit with
 auto-deploy still off. Leave the original snapshot channel untouched. Stop the
 separate publisher if the rollback lacks `/api/pilot`. No financial restore or
 EC2 runtime restart is involved.
+
+## Verified reporting repair
+
+Release `8d9f43cf242690df3fe6cdae464262659cf5c80b`, Render deployment
+`dep-dbgfhdcot0ks73cooaq0`, became live at 2026-10-27T19:18:36.068Z.
+Actual local/API projection equality passed at 19:19:17Z and 19:19:41Z;
+source facts stayed at 18:43:13.922Z while authenticated contacts advanced.
+Publisher-only shutdown was verified after its 90-second contact threshold in
+both API and real Chromium mobile rendering; original EC2 reporting continued.
+Publisher recovery passed at 19:21:48Z with the same source timestamp.
+
+The Cloud publisher uses UID1000, a 64-MiB V8 heap cap, 64 file descriptors,
+a one-MiB output-file ceiling and 300/310-second cumulative CPU limits. Node
+filesystem writes, subprocesses/workers and access to the actual pilot ledger
+are denied. Its PID/log live in `/workspace/poe-dashboard-publisher/` outside Git.
+It remains a development-environment process; availability beyond that
+execution environment's lifetime is not established. These are reporting checks,
+not unattended trader acceptance. The actual pilot was stopped throughout.
+
+Checks: repository typecheck/build, 195 repository tests, 22 separate reporting
+regressions; independent review; deployed authentication/identity/size/order
+rejections; empty receiver cache; exact source/counter agreement; TLS-verified
+390×844 browser checks with no overflow or JavaScript failure. No production
+runtime, account, trading strategy, entry control or credential was changed.

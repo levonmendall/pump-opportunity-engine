@@ -1,3 +1,35 @@
+# Dashboard reporting verification — 2026-10-27 UTC
+
+Reporting-only release `8d9f43cf242690df3fe6cdae464262659cf5c80b` is live on the
+existing Free Render service; deploy `dep-dbgfhdcot0ks73cooaq0` finished
+19:18:36.068Z. Two authenticated cycles at 19:19:17Z and 19:19:41Z match the
+actual local pilot status projection exactly. The independent read-only publisher
+uses a separate reporting credential; the original EC2 channel and account remain
+unchanged. Browser verification at 390×844 passed without overflow or JavaScript
+errors. See [pilot reporting](docs/PILOT_REPORTING.md) and bounded evidence in
+`evidence/dashboard-reporting-20261027/`.
+
+The experimental pilot is **STOPPED**, with last source facts
+**2026-10-27T18:43:13.922Z**, account
+`poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`, original pilot inception
+`2026-10-27T17:56:13.252Z`, source `87708b4c9ff7d96dcb5263dbebd997cdb67db09e`,
+strategy `persistent-buying-pilot-v1`. Its panel reports this truthfully; publisher
+contact does not refresh pilot facts. Run diagnostics include 10 admitted
+candidates, 43 evaluations, 14 usable windows and zero PAPER fills/exits. These
+are experimental diagnostics, never the original portfolio's performance.
+
+Publisher disconnect detection also passed in the API and mobile browser;
+reporting resumed at 19:21:48Z without refreshing pilot source facts. The publisher
+is a separate Cloud development process; no availability beyond this environment's
+lifetime is implied. No owner action is required for this reporting repair.
+
+The original observer's public snapshots still report the original account and
+inception, entries disabled and cash reconciliation. This was a reporting check,
+not a new EC2 systemd check or independent private-ledger audit. No trader was
+restarted, no account reseeded, no strategy changed and no acceptance clock started.
+
+## Historical status (2026-10-26; retained, superseded where noted above)
+
 # POE status — 2026-10-26 UTC
 
 **EC2 healthy; authenticated reporting accepted; public dashboard fresh.**

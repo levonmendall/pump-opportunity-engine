@@ -1,3 +1,13 @@
+# Reporting-only pilot diagnostics (2026-10-27)
+
+The existing Render service has a separate authenticated pilot diagnostics
+receiver. Its independent nonroot publisher only reads
+`/workspace/poe-pilot/status.json`; it never opens the ledger or imports the trader.
+See [PILOT_REPORTING.md](PILOT_REPORTING.md) for source binding, credentials,
+start/stop, stale-source semantics and rollback. Stopping or restarting reporting
+must not start/stop the pilot or the EC2 observer. Pilot diagnostics and portfolio
+financial authority remain separate.
+
 # POE operating runbook
 
 ## Verified installation

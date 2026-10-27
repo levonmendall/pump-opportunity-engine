@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-27T19:19:04.423Z",
+  "health": {
+    "ok": true,
+    "service": "poe-dashboard",
+    "dashboardRelease": "8d9f43cf242690df3fe6cdae464262659cf5c80b",
+    "connectivityDiagnostics": 1
+  },
+  "pilot": {
+    "state": "awaiting-data",
+    "message": "No pilot report received.",
+    "snapshot": null,
+    "receivedAt": null,
+    "lastContactAt": null,
+    "sourceAgeMs": null,
+    "lastContactAgeMs": null,
+    "publisherConnected": false
+  }
+}

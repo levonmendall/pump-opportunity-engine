@@ -1,0 +1,9 @@
+{
+  "package": "poe-dashboard-repair.zip",
+  "sha256": "4107b1c9e02342c448221191fd7044e0a3a46ce1f2930844859a8a971756bd08",
+  "actualBase": "0a2af4afcaf98cac4911983d7ecbdc7b19b9a9b8",
+  "adaptedInsteadOfBlindInstaller": true,
+  "precompiledArtifactsNotPublished": true,
+  "independentReview": "GO; reporting-only channel/auth/source isolation reviewed",
+  "noWalletProviderSecretUsed": true
+}

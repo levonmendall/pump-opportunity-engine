@@ -1,0 +1,33 @@
+{
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "workspaceId": "tea-daqk6h8jo6nc73eojtp0",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "plan": "free",
+  "autoDeploy": "off",
+  "branch": "main",
+  "deployedCommit": "8d9f43cf242690df3fe6cdae464262659cf5c80b",
+  "deployId": "dep-dbgfhdcot0ks73cooaq0",
+  "status": "live",
+  "finishedAt": "2026-10-27T19:18:36.068757Z",
+  "earlierEnvironmentUpdateDeployment": {
+    "id": "dep-dbgfhaa9lscs73f1bsvg",
+    "commit": "0a2af4afcaf98cac4911983d7ecbdc7b19b9a9b8",
+    "reason": "Render environment update automatically deployed the then-current source; later exact reviewed deployment superseded it"
+  },
+  "originalAccountPreserved": true,
+  "pilotBalancesIncluded": false,
+  "runtimeTradingChanges": false,
+  "checks": {
+    "repositoryTests": 195,
+    "separateReportingTests": 22,
+    "mobileViewport": "390x844",
+    "twoRealReportingCycles": true,
+    "staleSource": true,
+    "publisherDisconnect": true,
+    "unauthorizedPost": true,
+    "wrongSourceConflictRegressionPayloadLimits": true,
+    "publisherRecovered": true,
+    "disconnectedMobile": true
+  },
+  "finalVerifiedAt": "2026-10-27T19:21:48.900Z"
+}

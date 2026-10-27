@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-27T19:18:55.806699+00:00",
+  "productionRuntimeModified": false,
+  "pilotSourceCheckoutModified": false,
+  "pilotSourceHead": "87708b4c9ff7d96dcb5263dbebd997cdb67db09e",
+  "reportingCheckout": "/workspace/poe-dashboard-repair",
+  "reportingCommit": "8d9f43cf242690df3fe6cdae464262659cf5c80b",
+  "secretValueLogged": false,
+  "dedicatedCredentialAttachedThroughRenderMerge": true,
+  "publisherSandbox": {
+    "uid": 1000,
+    "filesystemWrite": false,
+    "subprocess": false,
+    "ledgerRead": false,
+    "workingDirectory": "/workspace/poe-dashboard-publisher"
+  }
+}

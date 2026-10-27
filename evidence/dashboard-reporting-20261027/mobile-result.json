@@ -1,0 +1,98 @@
+{
+  "checkedAt": "2026-10-27T19:19:15.955Z",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "mainStatus": 200,
+  "browser": "Chromium",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "tlsVerification": true,
+  "pageState": {
+    "title": "POE // Opportunity Command Center",
+    "viewportWidth": 390,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "pilotState": "STOPPED · SOURCE STALE",
+    "pilotDetail": "Pilot is stopped; no ongoing monitoring is implied. graceful local stop request; exposure retained",
+    "pilotSource": "Account poe-pilot-8468add6-f916-48cf-a585-6cd008a81360 · inception 2026-10-27T17:56:13.252Z\nRun pilot-20261027182846019-d6171b19\nRuntime 87708b4c9ff7d96dcb5263dbebd997cdb67db09e · strategy persistent-buying-pilot-v1\nLocal source 2026-10-27T18:43:13.922Z (2,161.39s old) · first accepted 2026-10-27T19:19:04.869Z\nLast authenticated publisher contact 2026-10-27T19:19:04.869Z (10.44s ago). Receiver contact does not refresh source facts.",
+    "pilotFunnel": "Migration hints (run)10Supported candidates10Verified migration origins15Candidates admitted10Sufficiently observed15Usable windows14Evaluations43Qualified decisions0Orders reserved0PAPER attempts0PAPER entries filled0PAPER exits filled0Accounting reconciliations790",
+    "pilotMetrics": "Read / control request units186Broad feed frames received247,416Validated swap events51Event-loop p95 (ms)20.91Max holding-evaluation gap (ms)Not reportedMax quote age at use (ms)Not reportedProtection boundary breaches0Unavailable checks0Received stream bytes403,598,910",
+    "pilotDecisions": "2026-10-27T18:42:16.828Z · 9QLj1Xobr8rccPVokr68pLWafkuZkErcJsrRTEhNpump · market-exclusion · outside-provisional-migration-age2026-10-27T18:38:51.056Z · 2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump · market-exclusion · outside-provisional-migration-age2026-10-27T18:38:30.744Z · 92zZ43MQcq44ofBZkxDirLG38wiyMEpszkLwXpjj2wy2 · market-exclusion · outside-provisional-migration-age2026-10-27T18:38:28.146Z · 92zZ43MQcq44ofBZkxDirLG38wiyMEpszkLwXpjj2wy2 · market-exclusion · outside-provisional-migration-age2026-10-27T18:35:42.434Z · 2VzZYM4UYkMjvPYPooBFm4zstqco8eeKn2DojNUrpump · market-exclusion · outside-provisional-migration-age2026-10-27T18:35:25.130Z · BYnVXhAC1LczDoCjqAmx3UNYeVHauoXDxboK9Z9pump · missing-data · warming2026-10-27T18:35:10.213Z · DYtHDCcEKgkyxQmxL2zVy1yiDhxygkpcjvyPjfbMpump · missing-data · warming2026-10-27T18:35:09.184Z · DYtHDCcEKgkyxQmxL2zVy1yiDhxygkpcjvyPjfbMpump · missing-data · warming2026-10-27T18:34:39.154Z · FWQx8Q8Nxtc6S4YkcuUcT7eFPHYdAox8V1UZQ4YWpump · missing-data · warming2026-10-27T18:34:25.131Z · 4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump · strategy-rejection · persistent-broad-buying-rule-not-met2026-10-27T18:34:15.192Z · 4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump · strategy-rejection · persistent-broad-buying-rule-not-met2026-10-27T18:34:05.241Z · 4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump · strategy-rejection · persistent-broad-buying-rule-not-met2026-10-27T18:33:55.149Z · 4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump · strategy-rejection · persistent-broad-buying-rule-not-met2026-10-27T18:33:45.134Z · 4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump · strategy-rejection · persistent-broad-buying-rule-not-met2026-10-27T18:33:35.126Z · 4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump · strategy-rejection · persistent-broad-buying-rule-not-met",
+    "originalSource": "Account poe-3123e352-4581-455b-85db-acd7e825e99e · runtime bce3d22bb434eb429aafacb788a18f39ec189c1b · strategy UNIMPLEMENTED_FLOW_BLOCKED · dashboard 8d9f43cf242690df3fe6cdae464262659cf5c80b",
+    "originalStatus": "Discovery observer reporting",
+    "pilotPanelCount": 1,
+    "overflowing": []
+  },
+  "errors": [],
+  "failed": [],
+  "responses": [
+    {
+      "url": "https://meme-machine-dashboard-staging.onrender.com/",
+      "status": 200
+    },
+    {
+      "url": "https://meme-machine-dashboard-staging.onrender.com/api/connections",
+      "status": 200
+    },
+    {
+      "url": "https://meme-machine-dashboard-staging.onrender.com/api/pilot",
+      "status": 200
+    },
+    {
+      "url": "https://meme-machine-dashboard-staging.onrender.com/api/snapshot",
+      "status": 200
+    }
+  ],
+  "pilot": {
+    "status": 200,
+    "state": "stopped",
+    "publisherConnected": true,
+    "sourceStale": true,
+    "receivedAt": 1793128744869,
+    "lastContactAt": 1793128744869,
+    "sourceAgeMs": 2161821,
+    "snapshot": {
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "pilot-20261027182846019-d6171b19",
+      "generatedAt": 1793126593922,
+      "running": false,
+      "entriesEnabled": false,
+      "source": {
+        "release": "87708b4c9ff7d96dcb5263dbebd997cdb67db09e",
+        "strategy": "persistent-buying-pilot-v1",
+        "sha256": "a86fdc777b666952672b7e5d248e284c1bb5dcb598c04768e5846d3b2ca6b047"
+      },
+      "funnel": {
+        "discovered": 10,
+        "supported": 10,
+        "sufficientlyObserved": 15,
+        "evaluated": 43,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 790,
+        "verifiedMigrationOrigins": 15,
+        "admitted": 10,
+        "usableWindows": 14
+      }
+    }
+  },
+  "original": {
+    "status": 200,
+    "account": {
+      "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "initialUsd": 1000
+    },
+    "source": {
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+    },
+    "sequence": "2288",
+    "generatedAt": "2026-10-27T19:18:52.643Z"
+  }
+}

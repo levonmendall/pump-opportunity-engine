@@ -1,0 +1,38 @@
+
+> pump-opportunity-engine@0.1.0 test:pilot-reporting
+> npm run compile && node --test test/pilot-telemetry.test.mjs test/pilot-publisher.test.mjs
+
+
+> pump-opportunity-engine@0.1.0 compile
+> tsc --outDir dist --noEmit false
+
+✔ publisher only reads bounded private owner files, refusing symlinks and unsafe permissions (9.736ms)
+✔ publisher projects only diagnostics and pins source and exact HTTPS destination (26.403477ms)
+✔ projection is an allowlist and does not leak raw financial/source/credential objects (1.966354ms)
+✔ projection cannot accept original account as pilot (0.54687ms)
+✔ projection cannot accept a live or authoritative source (0.181039ms)
+✔ extra top-level fields are rejected rather than cached (0.246495ms)
+✔ invalid negative, nonfinite and noninteger counts rejected (0.529074ms)
+✔ channel pins pilot account and inception (0.50563ms)
+✔ duplicate replay cannot refresh receiver freshness (0.91098ms)
+✔ stale source remains stale even if first received now (0.3175ms)
+✔ source timestamp and same-run counters cannot regress (0.521203ms)
+✔ new run may reset run counters without changing original pilot identity (1.37699ms)
+✔ conflicting equal-time payload rejected (0.348427ms)
+✔ stopped and disconnected are not presented as running (0.258062ms)
+✔ unconfigured pilot channel remains distinct from original snapshot (0.118695ms)
+✔ frontend is syntactically valid and never uses innerHTML for telemetry (0.490998ms)
+✔ HTTP public GET but authenticated POST, no original-token fallback (45.648315ms)
+✔ private viewer mode is preserved (8.625964ms)
+✔ HTTP wrong content type / oversized telemetry rejected (5.940515ms)
+✔ stopped stale source and disconnected publisher remain distinct (0.444409ms)
+✔ no holding evaluations do not become measured zero protection gaps (0.137534ms)
+✔ telemetry requires full explicit nullable shape and integer event counters (0.266955ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 165.058109

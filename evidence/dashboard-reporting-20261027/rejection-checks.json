@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-27T19:19:41.000Z",
+  "results": [
+    {
+      "name": "pilotNoAuth",
+      "httpStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "pilotWrongKey",
+      "httpStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "originalNoAuth",
+      "httpStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "pilotKeyRejectedByOriginal",
+      "httpStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "wrongPilotIdentity",
+      "httpStatus": 400,
+      "passed": true
+    },
+    {
+      "name": "outOfOrderPilot",
+      "httpStatus": 409,
+      "passed": true
+    },
+    {
+      "name": "conflictingPilot",
+      "httpStatus": 409,
+      "passed": true
+    },
+    {
+      "name": "oversizedPilot",
+      "httpStatus": 413,
+      "passed": true
+    }
+  ],
+  "cacheUnchanged": true,
+  "secretShown": false
+}

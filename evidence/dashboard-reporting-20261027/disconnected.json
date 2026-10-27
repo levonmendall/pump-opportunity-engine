@@ -1,0 +1,302 @@
+{
+  "checkedAt": "2026-10-27T19:21:29.397Z",
+  "projectionMatchesActualLocalStatus": true,
+  "pilot": {
+    "state": "stopped",
+    "snapshot": {
+      "schemaVersion": 1,
+      "kind": "experimental-pilot",
+      "authoritative": false,
+      "liveTrading": false,
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "pilot-20261027182846019-d6171b19",
+      "generatedAt": 1793126593922,
+      "source": {
+        "release": "87708b4c9ff7d96dcb5263dbebd997cdb67db09e",
+        "strategy": "persistent-buying-pilot-v1",
+        "sha256": "a86fdc777b666952672b7e5d248e284c1bb5dcb598c04768e5846d3b2ca6b047"
+      },
+      "running": false,
+      "entriesEnabled": false,
+      "status": "graceful local stop request; exposure retained",
+      "funnel": {
+        "discovered": 10,
+        "supported": 10,
+        "sufficientlyObserved": 15,
+        "evaluated": 43,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 790,
+        "verifiedMigrationOrigins": 15,
+        "admitted": 10,
+        "usableWindows": 14
+      },
+      "metrics": {
+        "rpcRequests": 186,
+        "providerEvents": 247416,
+        "normalizedTrades": 51,
+        "eventLoopLagMs": 20.905983,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeMs": null,
+        "protectionBreaches": 0,
+        "unavailableChecks": 0,
+        "streamBytes": 403598910
+      },
+      "decisions": [
+        {
+          "at": 1793125865116,
+          "mint": "Ch7vWP6x2pW5yqPasXyVMGa1FnsWNgqJBvbW5fZCpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793125870276,
+          "mint": "Ch7vWP6x2pW5yqPasXyVMGa1FnsWNgqJBvbW5fZCpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793125889032,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793125890055,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793125900362,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793125910129,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793125920452,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793125930348,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793125940151,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793125950489,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "risk-rejection",
+          "reason": "entries-not-authorized-by-ledger"
+        },
+        {
+          "at": 1793125965131,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793125975211,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793125980364,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793125990334,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126005140,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126015126,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126025134,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126035149,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126045241,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126055192,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126065131,
+          "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+          "stage": "strategy-rejection",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793126079154,
+          "mint": "FWQx8Q8Nxtc6S4YkcuUcT7eFPHYdAox8V1UZQ4YWpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793126109184,
+          "mint": "DYtHDCcEKgkyxQmxL2zVy1yiDhxygkpcjvyPjfbMpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793126110213,
+          "mint": "DYtHDCcEKgkyxQmxL2zVy1yiDhxygkpcjvyPjfbMpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793126125130,
+          "mint": "BYnVXhAC1LczDoCjqAmx3UNYeVHauoXDxboK9Z9pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793126142434,
+          "mint": "2VzZYM4UYkMjvPYPooBFm4zstqco8eeKn2DojNUrpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793126308146,
+          "mint": "92zZ43MQcq44ofBZkxDirLG38wiyMEpszkLwXpjj2wy2",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793126310744,
+          "mint": "92zZ43MQcq44ofBZkxDirLG38wiyMEpszkLwXpjj2wy2",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793126331056,
+          "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793126536828,
+          "mint": "9QLj1Xobr8rccPVokr68pLWafkuZkErcJsrRTEhNpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        }
+      ],
+      "refusals": [
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 2
+        },
+        {
+          "reason": "candidate-enrichment-unavailable",
+          "count": 4
+        },
+        {
+          "reason": "migration-warming-before-entry-age",
+          "count": 5
+        },
+        {
+          "reason": "PILOT_RPC_COMPONENT_HTTP_429",
+          "count": 1
+        },
+        {
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "count": 1
+        }
+      ]
+    },
+    "receivedAt": 1793128744869,
+    "lastContactAt": 1793128790306,
+    "sourceAgeMs": 2295037,
+    "receiverAgeMs": 144090,
+    "lastContactAgeMs": 98653,
+    "sourceStale": true,
+    "publisherConnected": false
+  },
+  "originalAccount": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "originalSource": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "originalStatus": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "disabled",
+    "reconciled": true,
+    "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+  },
+  "originalSequence": "2291",
+  "originalTimes": {
+    "generatedAt": "2026-10-27T19:20:32.616Z",
+    "marketAt": "2026-10-27T19:20:32.616Z",
+    "reconciledAt": "2026-10-27T19:20:32.616Z",
+    "usefulProgressAt": "2026-10-27T19:20:32.616Z"
+  },
+  "originalFreshness": {
+    "state": "observing-with-zero-trades",
+    "receivedAt": "2026-10-27T19:20:36.974Z",
+    "generatedAt": "2026-10-27T19:20:32.616Z",
+    "marketAt": "2026-10-27T19:20:32.616Z",
+    "reconciledAt": "2026-10-27T19:20:32.616Z",
+    "usefulProgressAt": "2026-10-27T19:20:32.616Z",
+    "sourceAgeMs": 56494,
+    "marketAgeMs": 56494,
+    "reconciliationAgeMs": 56494
+  },
+  "health": {
+    "ok": true,
+    "service": "poe-dashboard",
+    "dashboardRelease": "8d9f43cf242690df3fe6cdae464262659cf5c80b",
+    "connectivityDiagnostics": 1
+  }
+}

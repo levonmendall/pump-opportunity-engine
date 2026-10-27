@@ -1,3 +1,26 @@
+# Reporting-only pilot channel — verified 2026-10-27
+
+The existing service and URL now serve reviewed reporting commit
+`8d9f43cf242690df3fe6cdae464262659cf5c80b`, deployment
+`dep-dbgfhdcot0ks73cooaq0`, live at 19:18:36.068Z. Main contains only the
+reporting repair; the research trader branch was not merged. Free plan,
+public read-only viewing and auto-deploy off are preserved.
+
+The separately authenticated `/api/pilot` channel is pinned to the actual local
+pilot account/inception. It forwards bounded diagnostics without financial
+balances. Two real cycles matched source counters/timestamps, and a real mobile
+browser passed. A stopped/stale pilot remains stopped/stale despite publisher
+heartbeats. Original `/api/snapshot` account/inception and reporting remain intact.
+See [PILOT_REPORTING.md](PILOT_REPORTING.md) and
+`evidence/dashboard-reporting-20261027/` for the final deployment checks.
+
+Environment updates triggered a deployment of the then-current old source even
+with auto-deploy off; the subsequent explicit queued deployment used and was
+verified against the reviewed new SHA. Do not treat the intermediate old build
+as the final reporting release.
+
+## Historical cutover record
+
 # Existing Render dashboard — public read-only operation
 
 Only service srv-daqon53tqb8s73bdceq0 in confirmed workspace
