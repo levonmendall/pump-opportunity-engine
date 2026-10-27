@@ -182,3 +182,19 @@ test('repeated enrichment capacity failures retain awareness while preventing th
  assert.deepEqual(pilotCandidateDeferral('temporary feed failure',9),{capacitySpecific:false,delayMs:30000});
  assert.throws(()=>pilotCandidateDeferral(reason,-1),/CAPACITY_HISTORY/);
 });
+
+
+test('shared support wait coalesces all cached identities while fresh verification remains independent',()=>{
+ const cached=Array.from({length:30},(_,i)=>({signature:'cached-'+i,receivedAt:1}));
+ const fresh={signature:'fresh',receivedAt:1},immature={signature:'immature',receivedAt:49000},backedOff={signature:'backoff',receivedAt:1,eligibleAfter:90000};
+ const sharedReadyAt=60000;
+ for(let now=40000;now<sharedReadyAt;now+=50){
+  for(const seed of cached)assert.equal(choosePilotPreparation(seed,[immature,backedOff],now,false,sharedReadyAt),null);
+ }
+ const discovery=choosePilotPreparation(cached[0]!,[immature,backedOff,fresh],40000,false,sharedReadyAt)!;
+ assert.equal(discovery.kind,'fresh-discovery');assert.equal(discovery.index,2);
+ const released=choosePilotPreparation(cached[0]!,[],sharedReadyAt,false,sharedReadyAt)!;
+ assert.equal(released.kind,'verified-cache');assert.equal(released.seed.signature,'cached-0');
+ // A newer shared phase reservation still blocks selection after the old expiry.
+ assert.equal(choosePilotPreparation(cached[0]!,[],sharedReadyAt,false,sharedReadyAt+1000),null);
+});
