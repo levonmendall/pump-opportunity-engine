@@ -9,6 +9,8 @@ export const CONNECTIONS_HTML=String.raw`
 <p id="pilot-link-detail" class="identity-line">Checking the separate reporting channel…</p>
 <p id="pilot-source-detail"></p>
 <div id="pilot-funnel" class="metric-grid"></div>
+<h3>Market watch and deep analysis</h3><div id="pilot-watch" class="metric-grid"></div>
+<p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
 <div id="pilot-metrics" class="metric-grid pilot-grids"></div>
 <p class="pilot-note">Counters describe the identified pilot run. Validated swap events are market observations; PAPER fills and exits are simulated portfolio actions. Accounting reconciliations include zero-trade checks. Source age describes the local status file, not complete market coverage or continuous position protection.</p>
 <h3>Recent pilot decisions</h3><div id="pilot-decisions" class="identity-line">No pilot report received.</div>
@@ -47,8 +49,8 @@ function ageTick(){
  id('pilot-link-detail').textContent=risk+' '+s.status+(!transportOk?' Last report is retained after the failed dashboard read.':'');
  id('pilot-source-detail').textContent='Account '+s.accountId+' · inception '+time(s.inceptionAt)+'\nRun '+s.runId+'\nRuntime '+s.source.release+' · strategy '+s.source.strategy+'\nLocal source '+time(s.generatedAt)+' ('+age(a.source)+' old) · first accepted '+time(pilot.receivedAt)+'\nLast authenticated publisher contact '+time(pilot.lastContactAt??pilot.receivedAt)+' ('+age(a.publisher)+' ago). Receiver contact does not refresh source facts.';
 }
-function grid(target,entries){const root=id(target);root.replaceChildren();entries.forEach(([label,value])=>{const m=el('div',undefined,'metric');m.append(el('div',label,'metric-name'),el('div',pretty(value),'metric-value'));root.append(m);});}
-function clearData(message){id('pilot-funnel').replaceChildren();id('pilot-metrics').replaceChildren();id('pilot-source-detail').textContent='';id('pilot-decisions').replaceChildren(el('p',message));id('pilot-refusals').replaceChildren(el('p',message));}
+function grid(target,entries){const root=id(target);root.replaceChildren();entries.forEach(([label,value])=>{const m=el('div',undefined,'metric');m.append(el('div',label,'metric-name'),el('div',typeof value==='string'?value:pretty(value),'metric-value'));root.append(m);});}
+function clearData(message){id('pilot-funnel').replaceChildren();id('pilot-watch').replaceChildren();id('pilot-metrics').replaceChildren();id('pilot-source-detail').textContent='';id('pilot-decisions').replaceChildren(el('p',message));id('pilot-refusals').replaceChildren(el('p',message));}
 function showPilot(p){
  if(!p||typeof p!=='object'||Array.isArray(p))throw Error('invalid diagnostic response');
  if(p.snapshot){const s=p.snapshot;if(s.kind!=='experimental-pilot'||s.authoritative!==false||s.liveTrading!==false||typeof s.running!=='boolean'||!s.source||typeof s.source.release!=='string'||typeof s.source.strategy!=='string'||!s.funnel||!s.metrics||!Number.isSafeInteger(s.generatedAt)||!Number.isSafeInteger(s.inceptionAt)||typeof s.accountId!=='string'||!/^poe-pilot-[a-z0-9-]+$/.test(s.accountId))throw Error('invalid diagnostic identity');}
@@ -58,6 +60,15 @@ function showPilot(p){
  if(typeof setPilotIntelligence==='function')setPilotIntelligence(s,p.state,p.sourceAgeMs,p.publisherConnected);
  const labels={discovered:'Migration hints (run)',supported:'Supported candidates',verifiedMigrationOrigins:'Verified migration origins',admitted:'Candidates admitted',sufficientlyObserved:'Sufficiently observed',usableWindows:'Usable windows',evaluated:'Evaluations',qualified:'Qualified decisions',reserved:'Orders reserved',attempted:'PAPER attempts',paperFilled:'PAPER entries filled',exited:'PAPER exits filled',reconciled:'Accounting reconciliations'};
  grid('pilot-funnel',Object.entries(labels).map(([k,label])=>[label,s.funnel[k]]));
+ const w=s.watch;
+ if(w){grid('pilot-watch',[
+  ['Recent identities known',w.known],['Eligible verified identities',w.eligibleKnown],['Watch candidates',w.watch],
+  ['Deep slots active / maximum',pretty(w.deepActive)+' / '+pretty(w.maximumDeep)],['Waiting for deep observation',w.queued],
+  ['Average / maximum slot wait (s)',pretty(typeof w.waitMs?.mean==='number'?w.waitMs.mean/1000:null)+' / '+pretty(typeof w.waitMs?.maximum==='number'?w.waitMs.maximum/1000:null)],
+  ['Promotions / re-promotions',pretty(w.promoted)+' / '+pretty(w.repromoted)],['Demotions',w.demoted],['Complete 60-second windows',w.completeWindows],
+  ['Predictive rejections',w.strategyRejections],['Capacity exclusions',w.capacityExclusions],['Incomplete-data exclusions',w.incompleteDataExclusions],
+  ['Enrichment deadline failures',w.enrichmentDeadlineFailures],['Structural exclusions',w.structuralExclusions],['Expired identities',w.expired]
+ ]);}else id('pilot-watch').replaceChildren(el('p','Market-watch metrics are not reported by this source.'));
  const metrics={rpcRequests:'Read / control request units',providerEvents:'Broad feed frames received',normalizedTrades:'Validated swap events',eventLoopLagMs:'Event-loop p95 (ms)',maximumCompletedGapMs:'Max holding-evaluation gap (ms)',maximumQuoteAgeMs:'Max quote age at use (ms)',protectionBreaches:'Protection boundary breaches',unavailableChecks:'Unavailable checks',streamBytes:'Received stream bytes'};
  grid('pilot-metrics',Object.entries(metrics).map(([k,label])=>[label,s.metrics[k]]));
  const decisions=id('pilot-decisions');decisions.replaceChildren();const rows=Array.isArray(s.decisions)?s.decisions.slice(-15):[];if(!rows.length)decisions.append(el('p','No decisions reported by this pilot.'));else rows.reverse().forEach(x=>decisions.append(el('p',time(x.at)+' · '+x.mint+' · '+x.stage+' · '+x.reason)));

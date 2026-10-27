@@ -8,6 +8,9 @@ const stages = ['discovered','supported','sufficientlyObserved','evaluated','qua
 const metricNames = ['rpcRequests','providerEvents','normalizedTrades','eventLoopLagMs','maximumCompletedGapMs','maximumQuoteAgeMs','protectionBreaches','unavailableChecks','streamBytes'] as const;
 type Stage = typeof stages[number];
 type Metric = typeof metricNames[number];
+const watchCounts = ['known','watch','eligibleKnown','deepActive','maximumDeep','queued','promoted','repromoted','demoted','expired','capacityExclusions','structuralExclusions','completeWindows','strategyRejections','incompleteDataExclusions','enrichmentDeadlineFailures'] as const;
+type WatchCount = typeof watchCounts[number];
+export type PilotWatchTelemetry = Record<WatchCount, number | null> & { waitMs: { mean: number | null; maximum: number | null } };
 export type PilotTelemetry = {
   schemaVersion: 1; kind: 'experimental-pilot'; authoritative: false; liveTrading: false;
   accountId: string; inceptionAt: number; runId: string; generatedAt: number;
@@ -16,6 +19,8 @@ export type PilotTelemetry = {
   funnel: Record<Stage, number | null>; metrics: Record<Metric, number | null>;
   decisions: Array<{ at: number; mint: string; stage: string; reason: string }>;
   refusals: Array<{ reason: string; count: number }>;
+  /** Optional for older publishers; never carries watch identities or financial state. */
+  watch?: PilotWatchTelemetry | null;
 };
 function object(x: unknown): Record<string, any> { if (!x || typeof x !== 'object' || Array.isArray(x)) throw new Error('invalid telemetry object'); return x as Record<string, any>; }
 function text(x: unknown, max: number): string { if (typeof x !== 'string' || !x || x.length > max || /[\u0000-\u001f]/.test(x)) throw new Error('invalid telemetry text'); return x; }
@@ -24,6 +29,24 @@ function integer(x: unknown, nullable = true): number | null { const n=number(x,
 function bool(x: unknown): boolean { if (typeof x !== 'boolean') throw new Error('invalid telemetry boolean'); return x; }
 const safeText = (x: unknown, max=256) => String(x ?? 'unreported').replace(/https?:\/\/\S+/gi,'[endpoint]').replace(/Bearer\s+\S+/gi,'[credential]').replace(/[\u0000-\u001f]/g,' ').slice(0,max) || 'unreported';
 function keys(o: Record<string,any>, allowed: string[]) { if (Object.keys(o).some(k=>!allowed.includes(k))) throw new Error('unexpected telemetry field'); }
+function validateWatch(value:unknown):PilotWatchTelemetry {
+  const w=object(value);keys(w,[...watchCounts,'waitMs']);
+  for(const k of watchCounts){if(!Object.hasOwn(w,k))throw Error('missing watch field');integer(w[k]);}
+  const wait=object(w.waitMs);keys(wait,['mean','maximum']);
+  if(!Object.hasOwn(wait,'mean')||!Object.hasOwn(wait,'maximum'))throw Error('missing watch wait');
+  number(wait.mean);number(wait.maximum);
+  for(const k of ['known','watch','eligibleKnown','queued'])if(w[k]!==null&&w[k]>512)throw Error('watch identity limit');
+  if(w.maximumDeep!==null&&(w.maximumDeep<1||w.maximumDeep>20))throw Error('watch deep limit');
+  if(w.deepActive!==null&&(w.deepActive>20||w.maximumDeep!==null&&w.deepActive>w.maximumDeep))throw Error('watch deep limit');
+  for(const k of ['watch','eligibleKnown','deepActive'])if(w[k]!==null&&w.known!==null&&w[k]>w.known)throw Error('watch count inconsistent');
+  if(wait.mean!==null&&wait.maximum!==null&&wait.mean>wait.maximum)throw Error('watch wait inconsistent');
+  return structuredClone(w) as PilotWatchTelemetry;
+}
+function projectWatch(value:unknown):PilotWatchTelemetry|null {
+  if(value===undefined||value===null)return null;
+  const w=object(object(value).summary),wait=w.waitMs===undefined?{}:object(w.waitMs);
+  return validateWatch({...Object.fromEntries(watchCounts.map(k=>[k,integer(w[k])])),waitMs:{mean:number(wait.mean),maximum:number(wait.maximum)}});
+}
 
 /** Explicit allowlist. No journal, financial balances, credential/config objects or arbitrary logs. */
 export function projectPilotStatus(value: unknown): PilotTelemetry {
@@ -39,12 +62,13 @@ export function projectPilotStatus(value: unknown): PilotTelemetry {
     metrics:{rpcRequests:integer(rpc.newUnits),providerEvents:integer(feeds.frames),normalizedTrades:integer(feeds.normalizedTrades),eventLoopLagMs:number(u.eventLoopDelayP95Ms),maximumCompletedGapMs:Array.isArray(t.completedEvaluationGaps)&&t.completedEvaluationGaps.length?number(t.maximumCompletedGapMs):null,maximumQuoteAgeMs:Array.isArray(t.completedEvaluationGaps)&&t.completedEvaluationGaps.length?number(t.maximumQuoteAgeAtUseMs):null,protectionBreaches:integer(t.protectionBreaches),unavailableChecks:integer(t.unavailableChecks),streamBytes:integer(feeds.totalSocketBytes)},
     decisions:(Array.isArray(p.decisions)?p.decisions:[]).slice(-30).map((d:any)=>({at:integer(d.at,false)!,mint:text(d.mint,100),stage:safeText(d.stage,100),reason:safeText(d.reason)})),
     refusals:Object.entries(object(p.refusals??{})).filter(([,v])=>typeof v==='number').slice(0,30).map(([reason,count])=>({reason:safeText(reason),count:integer(count,false)!})),
+    watch:projectWatch(p.watch),
   };
   return validatePilotTelemetry(result);
 }
 export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   const p=object(input);
-  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals']);
+  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals','watch']);
   if(p.schemaVersion!==1||p.kind!=='experimental-pilot'||p.authoritative!==false||p.liveTrading!==false) throw new Error('invalid pilot identity');
   if(!/^poe-pilot-[a-z0-9-]+$/.test(text(p.accountId,100))) throw new Error('pilot account required');
   integer(p.inceptionAt,false);integer(p.generatedAt,false);if(p.generatedAt<p.inceptionAt)throw new Error('invalid source time');
@@ -55,6 +79,7 @@ export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   if(!Array.isArray(p.decisions)||p.decisions.length>30||!Array.isArray(p.refusals)||p.refusals.length>30)throw new Error('telemetry list limit');
   for(const d of p.decisions){keys(object(d),['at','mint','stage','reason']);integer(d.at,false);if(d.at>p.generatedAt)throw new Error('future decision');text(d.mint,100);text(d.stage,100);text(d.reason,256);}
   for(const r of p.refusals){keys(object(r),['reason','count']);text(r.reason,256);integer(r.count,false);}
+  if(p.watch!==undefined&&p.watch!==null)validateWatch(p.watch);
   if(Buffer.byteLength(JSON.stringify(p))>LIMIT)throw new Error('telemetry size limit');
   return structuredClone(p) as PilotTelemetry;
 }

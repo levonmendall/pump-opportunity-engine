@@ -29,3 +29,21 @@ test('HTTP wrong content type / oversized telemetry rejected',async t=>{const ur
 test('stopped stale source and disconnected publisher remain distinct',()=>{let time=origin+2000;const c=createPilotTelemetryChannel(config,()=>time),p=projectPilotStatus(raw());p.running=false;c.accept(p);time+=100000;assert.equal(c.read().state,'stopped');assert.equal(c.read().publisherConnected,false);assert.equal(c.read().sourceStale,true);c.accept(p);assert.equal(c.read().state,'stopped');assert.equal(c.read().publisherConnected,true);assert.equal(c.read().snapshot.generatedAt,p.generatedAt);});
 test('no holding evaluations do not become measured zero protection gaps',()=>{const p=raw();p.timing.completedEvaluationGaps=[];const projected=projectPilotStatus(p);assert.equal(projected.metrics.maximumCompletedGapMs,null);assert.equal(projected.metrics.maximumQuoteAgeMs,null);});
 test('telemetry requires full explicit nullable shape and integer event counters',()=>{const p=projectPilotStatus(raw());delete p.funnel.qualified;assert.throws(()=>validatePilotTelemetry(p),/missing/);const q=projectPilotStatus(raw());q.metrics.providerEvents=1.5;assert.throws(()=>validatePilotTelemetry(q),/integer/);});
+
+
+test('dynamic watch projection excludes identities/history and preserves missing measurements',()=>{
+ const p=raw();p.watch={summary:{known:120,watch:90,eligibleKnown:100,deepActive:3,maximumDeep:6,queued:7,waitMs:{mean:1250,maximum:5000},promoted:18,repromoted:2,demoted:9,expired:4,capacityExclusions:1,structuralExclusions:3,completeWindows:12,private:'NEVER_PUBLISH'},rows:[{secret:'NEVER_PUBLISH'}]};
+ const projected=projectPilotStatus(p);assert.equal(projected.watch.deepActive,3);assert.equal(projected.watch.maximumDeep,6);assert.equal(projected.watch.waitMs.maximum,5000);
+ assert.equal(projected.watch.incompleteDataExclusions,null);assert.equal(projected.watch.enrichmentDeadlineFailures,null);
+ assert.ok(!JSON.stringify(projected).includes('NEVER_PUBLISH'));assert.equal(projectPilotStatus(raw()).watch,null);
+});
+test('dynamic watch validation bounds identities/deep capacity and rejects extra fields',()=>{
+ const source=raw();source.watch={summary:{known:120,watch:90,eligibleKnown:100,deepActive:3,maximumDeep:6,queued:7,waitMs:{mean:1250,maximum:5000}}};
+ for(const [field,value]of [['known',513],['maximumDeep',21],['deepActive',7],['known',2],['queued',-1],['promoted',1.5]]){const p=structuredClone(source);p.watch.summary[field]=value;assert.throws(()=>projectPilotStatus(p));}
+ const p=projectPilotStatus(source);p.watch.apiKey='not-a-permitted-field';assert.throws(()=>validatePilotTelemetry(p),/unexpected/);
+ const q=projectPilotStatus(source);q.watch.waitMs.mean=5001;assert.throws(()=>validatePilotTelemetry(q),/inconsistent/);
+});
+test('receiver accepts legacy diagnostic payload without an optional watch section',()=>{
+ const p=projectPilotStatus(raw());delete p.watch;assert.doesNotThrow(()=>validatePilotTelemetry(p));
+ const channel=createPilotTelemetryChannel(config,()=>origin+2000);assert.equal(channel.accept(p),'accepted');
+});

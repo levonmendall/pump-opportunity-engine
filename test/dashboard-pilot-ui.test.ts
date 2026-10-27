@@ -14,7 +14,7 @@ class Element {
 const now=Date.now();
 function snapshot(){return {kind:'experimental-pilot',authoritative:false,liveTrading:false,accountId:'poe-pilot-ui-fixture',inceptionAt:now-600000,runId:'ui-fixture',generatedAt:now-180000,source:{release:'abc123',strategy:'pilot-v1'},running:false,entriesEnabled:false,status:'graceful stop',funnel:{evaluated:3,reconciled:20},metrics:{rpcRequests:4},decisions:[{at:now-190000,mint:'<img src=x>',stage:'strategy-rejection',reason:'<script>alert(1)</script>'}],refusals:[]};}
 async function browser(first:unknown){
-  const nodes=new Map<string,Element>();for(const id of ['pilot-link-state','pilot-link-detail','pilot-source-detail','pilot-funnel','pilot-metrics','pilot-decisions','pilot-refusals'])nodes.set(id,new Element());
+  const nodes=new Map<string,Element>();for(const id of ['pilot-link-state','pilot-link-detail','pilot-source-detail','pilot-funnel','pilot-watch','pilot-metrics','pilot-decisions','pilot-refusals'])nodes.set(id,new Element());
   let response=first,mono=0,fail=false;const paths:string[]=[],timeouts:Array<()=>Promise<void>>=[],intervals:Array<()=>void>=[],primary:Array<{snapshot:unknown;state:unknown}|null>=[];
   const context=createContext({document:{getElementById:(id:string)=>nodes.get(id),createElement:()=>new Element(),addEventListener:()=>{},hidden:false},performance:{now:()=>mono},Date,Intl,Number,JSON,Array,Object,String,Error,AbortSignal:{timeout:()=>undefined},setPilotIntelligence:(snapshot:unknown,state:unknown)=>primary.push({snapshot,state}),clearPilotIntelligence:()=>primary.push(null),fetch:async(path:string)=>{paths.push(path);if(fail)throw Error('Disconnected');return {ok:true,text:async()=>JSON.stringify(response)};},setTimeout:(fn:()=>Promise<void>)=>{timeouts.push(fn);return 1;},clearTimeout:()=>{},setInterval:(fn:()=>void)=>{intervals.push(fn);return 1;}});
   const code=CONNECTIONS_SCRIPT.replace(/^<script>\s*/,'').replace(/\s*<\/script>$/,'');new Script(code).runInContext(context);await new Promise(setImmediate);
@@ -46,4 +46,18 @@ test('failed browser fetch retains last diagnostics and valid cache loss clears 
 test('malformed response does not replace a valid experimental source',async()=>{
   const b=await browser({snapshot:snapshot(),receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});
   await b.poll({snapshot:{running:true}});assert.match(b.nodes.get('pilot-link-state')!.textContent,/DASHBOARD READ FAILED.*STOPPED/);assert.match(b.nodes.get('pilot-source-detail')!.textContent,/poe-pilot-ui-fixture/);
+});
+
+
+test('dynamic watch capacity stays separate from portfolio and unavailable fields are not zeros',async()=>{
+ const s={...snapshot(),watch:{known:120,watch:90,eligibleKnown:100,deepActive:3,maximumDeep:6,queued:7,waitMs:{mean:1250,maximum:5000},promoted:18,repromoted:2,demoted:9,completeWindows:12,capacityExclusions:1,incompleteDataExclusions:null,enrichmentDeadlineFailures:null,structuralExclusions:3,expired:4}};
+ const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});
+ const cards=b.nodes.get('pilot-watch')!.children;const text=cards.map(c=>c.children.map(v=>v.textContent).join(': ')).join('\n');
+ assert.match(text,/Deep slots active \/ maximum: 3 \/ 6/);assert.match(text,/Promotions \/ re-promotions: 18 \/ 2/);
+ assert.match(text,/Incomplete-data exclusions: Not reported/);assert.doesNotMatch(text,/%|cash|equity|P&L/i);
+ await b.poll({state:'awaiting-data',snapshot:null});assert.equal(b.nodes.get('pilot-watch')!.children.length,0);
+});
+test('older pilot report makes watch unavailability explicit',async()=>{
+ const b=await browser({snapshot:snapshot(),receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});
+ assert.match(b.nodes.get('pilot-watch')!.children[0]!.textContent,/not reported/);
 });
