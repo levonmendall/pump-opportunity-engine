@@ -20,6 +20,6 @@ test('actual burst-truncated activity refuses the stream before support pricing'
   const history=record.find(r=>r.kind==='selection-pool-signatures')!.data;
   const transactions=new Map(record.filter(r=>r.kind==='selection-transaction').map(r=>[r.data.signature,r.data.transaction]));
   let calls=0,quoteCalls=0;
-  const result=await selectActivePool({now:()=>program.queriedAt,rpc:{async call<T>(method:string,params:unknown[]=[]){calls++;if(method==='getSignaturesForAddress')return ((params[0]===analysis.scope.pool)?history.rows:program.rows) as T;if(method==='getTransaction'){const value=transactions.get(params[0]);assert.ok(value);return value as T;}throw Error('unexpected method');}},quote:async()=>{quoteCalls++;throw Error('truncated preflight cannot price or connect');}});
+  const result=await selectActivePool({maxCandidates:1,programLimit:32,maxProgramTransactions:8,now:()=>program.queriedAt,rpc:{async call<T>(method:string,params:unknown[]=[]){calls++;if(method==='getSignaturesForAddress')return ((params[0]===analysis.scope.pool)?history.rows:program.rows) as T;if(method==='getTransaction'){const value=transactions.get(params[0]);assert.ok(value);return value as T;}throw Error('unexpected method');}},quote:async()=>{quoteCalls++;throw Error('truncated preflight cannot price or connect');}});
   assert.equal(result.ok,false);assert.equal(result.ok?null:result.reason,'POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN');assert.equal(calls,6);assert.equal(quoteCalls,0);
 });

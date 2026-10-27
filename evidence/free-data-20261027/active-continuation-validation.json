@@ -1,0 +1,27 @@
+{
+  "recordedAt": "2026-10-27T03:20:42.598836+00:00",
+  "build": "PASS",
+  "compile": "PASS",
+  "runnerStrictTypecheck": "PASS",
+  "tests": {
+    "pass": 293,
+    "fail": 0,
+    "durationMs": 32438.019603,
+    "logSha256": "dfb947d710ed4996fa48e95955728e2236c46d2a397da3db92a90767bd5a78d1"
+  },
+  "runSourceHashesMatch": true,
+  "originalGrantUnchanged": true,
+  "priorPumpApiCountersUnchanged": true,
+  "rpc": {
+    "calls": 20,
+    "bytes": 272634,
+    "pending": [],
+    "blockedReason": "RPC_HTTP_429"
+  },
+  "streamOpened": false,
+  "productionChanged": false,
+  "entriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false,
+  "scope": "Offline decoder/reuse/budget/failure regressions plus one real preflight; not live combined flow or protection acceptance"
+}

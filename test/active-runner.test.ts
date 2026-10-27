@@ -40,3 +40,34 @@ test('available finalized event corrections invalidate a previously matched inte
   const result=await auditPool(candidate,{openedAt:(tx.blockTime-5)*1000,endedAt:(tx.blockTime+80)*1000,enrichmentTransactions:{[raw.signature]:tx},executedEvidence:evidence,featureRows:[],qualityGaps:[]},rpc,()=>{},new AbortController().signal);
   assert.equal(result.matchedEvents,1);assert.equal(result.complete,false);assert.ok(result.unsupported.some((x:any)=>x.reason==='FINALIZED_EXECUTED_CONTENT_CHANGED'));assert.equal(result.rechecks[0].executedEvidenceIdentical,false);
 });
+
+
+test('audit refuses a genuine compiled selected-pool swap whose event CPI is missing',async()=>{
+  const tx=structuredClone(raw.transaction);tx.meta.innerInstructions[0].instructions.splice(5,1);
+  let calls=0;const rpc={get calls(){return calls;},async call(method:string){calls++;return method==='getSignaturesForAddress'?[{signature:raw.signature,slot:tx.slot,err:null,blockTime:tx.blockTime},{signature:'old',err:null,blockTime:tx.blockTime-100}]:tx;}} as unknown as ResearchRpc;
+  const result=await auditPool(candidate,{openedAt:(tx.blockTime-5)*1000,endedAt:(tx.blockTime+80)*1000,enrichmentTransactions:{[raw.signature]:tx},executedEvidence:[],featureRows:[],qualityGaps:[]},rpc,()=>{},new AbortController().signal,{maxCalls:24});
+  assert.equal(result.complete,false);assert.equal(result.maximumCalls,24);
+  assert.ok(result.unsupported.some((x:any)=>x.reason==='AUDIT_COMPILED_SWAP_EVENT_COUNT_MISMATCH'));
+  assert.equal(result.denominatorChecks[0].compiledSwapInstructions,1);assert.equal(result.denominatorChecks[0].decodedSwapEvents,0);
+});
+
+test('audit denominator counts two compiled swaps in one transaction instead of one signature',async()=>{
+  const tx=structuredClone(raw.transaction),nextOuter=tx.transaction.message.instructions.length;
+  tx.transaction.message.instructions.push(structuredClone(tx.transaction.message.instructions[2]));
+  tx.meta.innerInstructions.push({index:nextOuter,instructions:structuredClone(tx.meta.innerInstructions[0].instructions)});
+  const evidence=mapConfirmedPumpSwapEvidence(tx,{...candidate,signature:raw.signature,providerReceivedAt:null,availableAt:Date.now()});assert.equal(evidence.length,2);
+  let calls=0;const rpc={get calls(){return calls;},async call(method:string){calls++;return method==='getSignaturesForAddress'?[{signature:raw.signature,slot:tx.slot,err:null,blockTime:tx.blockTime},{signature:'old',err:null,blockTime:tx.blockTime-100}]:tx;}} as unknown as ResearchRpc;
+  const result=await auditPool(candidate,{openedAt:(tx.blockTime-5)*1000,endedAt:(tx.blockTime+80)*1000,enrichmentTransactions:{[raw.signature]:tx},executedEvidence:evidence,featureRows:[],qualityGaps:[]},rpc,()=>{},new AbortController().signal);
+  assert.equal(result.complete,true);assert.equal(result.compiledSwapInstructions,2);assert.equal(result.verifiedSwapEvents,2);assert.equal(result.matchedEvents,2);assert.equal(result.matchedSignatures,1);
+});
+
+test('audit honors the chosen call allocation and rejects out-of-authority bounds',async()=>{
+  const tx=raw.transaction,evidence=mapConfirmedPumpSwapEvidence(tx,{...candidate,signature:raw.signature,providerReceivedAt:null,availableAt:Date.now()});
+  let calls=0;const rpc={get calls(){return calls;},async call(){calls++;return [{signature:raw.signature,slot:tx.slot,err:null,blockTime:tx.blockTime},{signature:'old',err:null,blockTime:tx.blockTime-100}];}} as unknown as ResearchRpc;
+  const sample={openedAt:(tx.blockTime-5)*1000,endedAt:(tx.blockTime+80)*1000,enrichmentTransactions:{},executedEvidence:evidence,featureRows:[],qualityGaps:[]};
+  const result=await auditPool(candidate,sample,rpc,()=>{},new AbortController().signal,{maxCalls:1});
+  assert.equal(calls,1);assert.equal(result.complete,false);assert.ok(result.unsupported.some((x:any)=>x.reason==='AUDIT_CALL_ALLOCATION_EXHAUSTED'));
+  await assert.rejects(()=>auditPool(candidate,sample,rpc,()=>{},new AbortController().signal,{maxCalls:25}),/INVALID_AUDIT_BOUNDS/);
+  await assert.rejects(()=>auditPool(candidate,sample,rpc,()=>{},new AbortController().signal,{maxElapsedMs:45001}),/INVALID_AUDIT_BOUNDS/);
+  assert.equal(calls,1);
+});

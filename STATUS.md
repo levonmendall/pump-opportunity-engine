@@ -5,8 +5,8 @@ authenticated reporting accepted; public dashboard fresh. Natural PAPER trades:0
 Entries remain disabled; this is not an autonomous PAPER trader. The zero
 incremental data cost investigation is complete to available access/samples:
 free discovery/pricing work at bounded scope, but complete candidate flow and
-continuous protection are unproved. The approved bounded preflight refused the stream because pool history was
-truncated; no new capture opened. No owner action is requested. Alchemy/Helius
+continuous protection are unproved. The bounded continuation stopped on public-RPC HTTP 429 after skipping two
+saturated pool histories; no new capture opened. No owner action is requested. Alchemy/Helius
 remain excluded; no Usage screenshot, funding or replacement key is requested. No production change or acceptance clock. **Edge UNPROVEN;
 LIVE TRADING DISABLED.**
 
@@ -18,14 +18,14 @@ LIVE TRADING DISABLED.**
 | PAPER-ENTRY ENABLED | No: raw flow/coverage unverified, rule unfrozen, production trading scheduler/management incomplete |
 | NATURAL PAPER TRADES |0; positions0. Hypothetical pricing and disposable tests never count |
 | ACCOUNTING RECONCILED | Authoritative cash-account source freshly reconciled; private DB independently unreadable to administration runner |
-| DASHBOARD FRESH | Real identity/inception agree; snapshot482 at02:54:21UTC, underlying facts25.02seconds old |
+| DASHBOARD FRESH | Real identity/inception agree; snapshot522 at03:16UTC, underlying facts24.283seconds old at HTTP observation |
 | OPERATIONALLY ACCEPTED | No. Gates A–D incomplete;24/72-hour clocks unstarted |
 
 ## Installed authority preserved
 
 AWS133857166104/us-west-2, instancei-00044d4ea1471b957.
 Servicepoe-runtime.service enabled/nonroot uid988, active since
-2026-10-26T22:30:55Z, **zero restarts**. Installed release
+2026-10-26T22:30:55Z, **zero restarts at the01:41UTC direct host check**. Installed release
 bce3d22bb434eb429aafacb788a18f39ec189c1b; strategyUNIMPLEMENTED_FLOW_BLOCKED.
 Accountpoe-3123e352-4581-455b-85db-acd7e825e99e, original inception
 2026-10-26T22:07:36.212Z, one VIRTUAL $1,000 conversion. No bootstrap, reseed,
@@ -42,11 +42,36 @@ coverage guarantee. See evidence/free-data-20261027/production-observer-final.js
 Original public viewer remains
 https://meme-machine-dashboard-staging.onrender.com . Existing servicesrv-daqon53tqb8s73bdceq0,
 Free, auto-deployoff, main sourcePOE, no changes. Dedicated machine ingestion stays
-authenticated; public viewing is owner-authorized. Snapshot482 has the actual
+authenticated; public viewing is owner-authorized. Snapshot522 has the actual
 C2account/inception, positions/trades0 and reconciledtrue. Accepted new snapshots
 and matching fresh facts prove reporting progress, not an independent DB audit.
-See active-approved-production-check.json and the earlier service/status receipts in
+See active-continuation-production-check.json and the earlier service/status receipts in
 the same directory.
+
+## Latest bounded continuation — 2026-10-27 03:14 UTC
+
+INCONCLUSIVE: publicRPC HTTP429 ended selection before full supported-pool
+admission; no new PumpApi socket or live combined workload. One predeclared pass
+allowed6distinctpools/48reads/8MiB/70s and a fixed256-signature/24transaction
+sample.14newreads/190,905bytes inspected10successful transactions, decoded2
+canonical directSells, skipped2saturatedhistories, then stopped withoutretry.
+Firstpool was also rejected in the priorpass; currentdeduplication is withinpass.
+No current Buy/routed/multiswap or supportedpoolquote/PumpApimatch was obtained.
+
+Cumulative additionalRPC20/240reads,272,634/67,108,864bytes; remaining220reads/
+66,836,230bytes and stickyRPC_HTTP_429 preserved. PumpApi prior112MiB/100s
+reservations unchanged; the sole newcapture unused. Entireexperiment reservations
+218calls/62MiB fit the234calls/67,027,135bytes available before thispass.
+Researchreuse preserves existingdecoder/currentfullbatchvalidation and reduces
+changing-slotquotes3→2calls;2sresearchcadence stillneeds60/min beforeenrichment.
+Production60/min is unchanged; endpoint/protection/completewindows unverified.
+
+Publicreadcheck snapshot522: originalaccount/inception/release,reconciledtrue,
+facts24.283s old atobservation,0positions/fills,entriesdisabled. No production
+restart/deployment/financialmutation, no acceptanceclock. No owneraction or new
+spendingrequested. Nextengineeringstep offlinepacing/crosspassrejectreview.
+See docs/FREE_DATA_EVALUATION.md and active-continuation-* evidence. Earlier
+sectionsbelow retain historicalresults/quotingcosts, supersededby thisentry.
 
 ## Completed isolated free-data evaluation
 

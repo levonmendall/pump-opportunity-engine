@@ -9,7 +9,7 @@ import WebSocket from 'ws';
 import {HttpsProxyAgent} from 'https-proxy-agent';
 import {PublicKey} from '@solana/web3.js';
 import {ResearchRpc} from '../src/research-rpc.js';
-import {selectActivePool,type ActiveCandidate} from '../src/active-selection.js';
+import {selectActivePool,invokedCanonicalSolSwaps,type ActiveCandidate} from '../src/active-selection.js';
 import {ActivePipeline} from '../src/active-pipeline.js';
 import {quotePositionSell} from '../src/pool.js';
 import type {ReadOnlyRpc} from '../src/network.js';
@@ -132,28 +132,44 @@ export async function capture(candidate:ActiveCandidate,rpc:ResearchRpc,record:(
   const state=pipeline.snapshot(Date.now());return {...state,connectionStartedAt,connectionAttemptMs:Date.now()-connectionStartedAt,openedAt,endedAt,openMs:openedAt===null||endedAt===null?0:endedAt-openedAt,stopReason,frames,applicationBytes,socketBytes,priceAttempts:prices,enrichments,physicalSlotUncertain,peakCaptureLoopLagMs:maxLag,enrichmentTransactions:Object.fromEntries(enrichmentTransactions),enrichmentHints:Object.fromEntries(enrichmentHints)};
 }
 
-export async function auditPool(candidate:ActiveCandidate,capture:any,rpc:ResearchRpc,record:(kind:string,data:unknown)=>void,signal:AbortSignal){
-  const before=rpc.calls,result:any={calls:0,history:[],windowTransactions:[],missingHints:[],verifiedSwapEvents:0,unsupported:[],rechecks:[],complete:false,reason:null};
-  if(capture.openedAt===null||capture.endedAt===null){result.reason='NO_OPEN_OBSERVATION_WINDOW';return result;}
+export async function auditPool(candidate:ActiveCandidate,capture:any,rpc:ResearchRpc,record:(kind:string,data:unknown)=>void,signal:AbortSignal,options:{maxCalls?:number;maxElapsedMs?:number}={}){
+  const maxCalls=options.maxCalls??12,maxElapsedMs=options.maxElapsedMs??45_000;
+  if(!Number.isSafeInteger(maxCalls)||maxCalls<1||maxCalls>24||!Number.isSafeInteger(maxElapsedMs)||maxElapsedMs<1||maxElapsedMs>45_000)throw Error('INVALID_AUDIT_BOUNDS');
+  const before=rpc.calls,began=performance.now(),controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),maxElapsedMs),auditSignal=AbortSignal.any([signal,controller.signal]);timeout.unref?.();
+  const checkBounds=()=>{if(auditSignal.aborted||performance.now()-began>=maxElapsedMs)throw Error('AUDIT_ELAPSED_OR_ABORT_CAP');if(rpc.calls-before>=maxCalls)throw Error('AUDIT_CALL_ALLOCATION_EXHAUSTED');};
+  const result:any={calls:0,maximumCalls:maxCalls,maximumElapsedMs:maxElapsedMs,history:[],windowTransactions:[],missingHints:[],compiledSwapInstructions:0,verifiedSwapEvents:0,denominatorChecks:[],unsupported:[],rechecks:[],complete:false,reason:null};
+  // Count actual compiled swap invocations independently of event decoding. A
+  // pool-address transaction is not necessarily a swap; a swap without its
+  // verifiable event cannot disappear from the completeness denominator.
+  const mappedWithDenominator=(tx:any,signature:string,commitment:'confirmed'|'finalized'='confirmed')=>{
+    const invocations=invokedCanonicalSolSwaps(tx).filter(scope=>scope.pool===candidate.pool&&scope.mint===candidate.mint);
+    const mapped=mapConfirmedPumpSwapEvidence(tx,{mint:candidate.mint,pool:candidate.pool,signature,providerReceivedAt:null,availableAt:Date.now()});
+    result.denominatorChecks.push({signature,commitment,compiledSwapInstructions:invocations.length,decodedSwapEvents:mapped.length});
+    if(invocations.length!==mapped.length)throw Error('AUDIT_COMPILED_SWAP_EVENT_COUNT_MISMATCH');
+    if(mapped.some(m=>!m.transferChecks.baseTransfer||!m.transferChecks.userQuoteTransfer))throw Error('AUDIT_TRANSFER_VALIDATION_FAILED');
+    return {mapped,compiledCount:invocations.length};
+  };
+  if(capture.openedAt===null||capture.endedAt===null){clearTimeout(timeout);result.reason='NO_OPEN_OBSERVATION_WINDOW';return result;}
   const start=Math.ceil(capture.openedAt/1000)+2,end=Math.floor(capture.endedAt/1000)-2;let cursor:string|undefined,covered=false;
   try{
-    for(let page=0;page<3&&rpc.calls-before<LIMITS.auditCalls;page++){
-      const rows=await rpc.call<any[]>('getSignaturesForAddress',[candidate.pool,{commitment:'confirmed',limit:20,...(cursor?{before:cursor}:{})}],signal);record('audit-signature-page',{pool:candidate.pool,availableAt:Date.now(),rows});
+    for(let page=0;page<3&&rpc.calls-before<maxCalls;page++){
+      checkBounds();const rows=await rpc.call<any[]>('getSignaturesForAddress',[candidate.pool,{commitment:'confirmed',limit:20,...(cursor?{before:cursor}:{})}],auditSignal);record('audit-signature-page',{pool:candidate.pool,availableAt:Date.now(),rows});
       if(!Array.isArray(rows)||rows.length>20||rows.some(r=>r.blockTime===null))throw Error('AUDIT_HISTORY_UNAVAILABLE');result.history.push(...rows);if(rows.length<20||rows.some(r=>r.blockTime<start)){covered=true;break;}cursor=rows.at(-1)?.signature;
     }
     result.historyCoversInterior=covered;result.interiorChainTimeSeconds={start,end,boundaryExclusionSeconds:2};
     const inWindow=result.history.filter((r:any)=>r.err===null&&r.blockTime>=start&&r.blockTime<=end);result.windowTransactions=inWindow.map((r:any)=>r.signature);
     const unique=new Set<string>(),observed=new Map<string,any>(capture.executedEvidence.map((e:any)=>[e.identityKey,e]));result.matchedEvents=0;result.matchedSignatures=0;
     for(const row of inWindow){if(unique.has(row.signature))continue;unique.add(row.signature);let tx=capture.enrichmentTransactions[row.signature];
-      if(!tx){result.missingHints.push(row.signature);if(rpc.calls-before>=LIMITS.auditCalls){result.unsupported.push({signature:row.signature,reason:'AUDIT_CALL_ALLOCATION_EXHAUSTED'});continue;}tx=await rpc.call<any>('getTransaction',[row.signature,{commitment:'confirmed',encoding:'json',maxSupportedTransactionVersion:1}],signal);record('audit-unmatched-transaction',{signature:row.signature,availableAt:Date.now(),transaction:tx});}
-      try{const mapped=mapConfirmedPumpSwapEvidence(tx,{mint:candidate.mint,pool:candidate.pool,signature:row.signature,providerReceivedAt:null,availableAt:Date.now()});if(mapped.some(m=>!m.transferChecks.baseTransfer||!m.transferChecks.userQuoteTransfer))throw Error('AUDIT_TRANSFER_VALIDATION_FAILED');result.verifiedSwapEvents+=mapped.length;let allMatched=true;for(const event of mapped){const original=observed.get(event.identityKey);if(!original||original.fingerprint!==event.fingerprint){allMatched=false;result.unsupported.push({signature:row.signature,identity:event.identity,reason:original?'EXECUTED_CONTENT_MISMATCH':'ONCHAIN_SWAP_NOT_NORMALIZED_FROM_STREAM'});}else result.matchedEvents++;}if(mapped.length&&allMatched)result.matchedSignatures++;}
+      if(!tx){result.missingHints.push(row.signature);if(rpc.calls-before>=maxCalls){result.unsupported.push({signature:row.signature,reason:'AUDIT_CALL_ALLOCATION_EXHAUSTED'});continue;}checkBounds();tx=await rpc.call<any>('getTransaction',[row.signature,{commitment:'confirmed',encoding:'json',maxSupportedTransactionVersion:1}],auditSignal);record('audit-unmatched-transaction',{signature:row.signature,availableAt:Date.now(),transaction:tx});}
+      try{const {mapped,compiledCount}=mappedWithDenominator(tx,row.signature);result.compiledSwapInstructions+=compiledCount;result.verifiedSwapEvents+=mapped.length;let allMatched=true;for(const event of mapped){const original=observed.get(event.identityKey);if(!original||original.fingerprint!==event.fingerprint){allMatched=false;result.unsupported.push({signature:row.signature,identity:event.identity,reason:original?'EXECUTED_CONTENT_MISMATCH':'ONCHAIN_SWAP_NOT_NORMALIZED_FROM_STREAM'});}else result.matchedEvents++;}if(mapped.length&&allMatched)result.matchedSignatures++;}
       catch(e){result.unsupported.push({signature:row.signature,reason:safe(e)});}
     }
     // Recheck a small bounded set atfinalized. Null is pending, not reversal.
     for(const signature of Object.keys(capture.enrichmentTransactions).slice(0,2)){
-      if(rpc.calls-before>=LIMITS.auditCalls)break;const tx=await rpc.call<any>('getTransaction',[signature,{commitment:'finalized',encoding:'json',maxSupportedTransactionVersion:1}],signal);let same:boolean|null=null;if(tx){try{const events=mapConfirmedPumpSwapEvidence(tx,{mint:candidate.mint,pool:candidate.pool,signature,providerReceivedAt:null,availableAt:Date.now()});same=events.every(e=>observed.get(e.identityKey)?.fingerprint===e.fingerprint)&&events.length===capture.executedEvidence.filter((e:any)=>e.identity.signature===signature).length;if(!same)result.unsupported.push({signature,reason:'FINALIZED_EXECUTED_CONTENT_CHANGED'});}catch(e){result.unsupported.push({signature,reason:safe(e)});same=false;}}result.rechecks.push({signature,availableAt:Date.now(),finalizedAvailable:!!tx,executedEvidenceIdentical:same});record('audit-finalized-recheck',{signature,availableAt:Date.now(),transaction:tx});
+      if(rpc.calls-before>=maxCalls)break;checkBounds();const tx=await rpc.call<any>('getTransaction',[signature,{commitment:'finalized',encoding:'json',maxSupportedTransactionVersion:1}],auditSignal);let same:boolean|null=null;if(tx){try{const {mapped:events}=mappedWithDenominator(tx,signature,'finalized');same=events.every(e=>observed.get(e.identityKey)?.fingerprint===e.fingerprint)&&events.length===capture.executedEvidence.filter((e:any)=>e.identity.signature===signature).length;if(!same)result.unsupported.push({signature,reason:'FINALIZED_EXECUTED_CONTENT_CHANGED'});}catch(e){result.unsupported.push({signature,reason:'FINALIZED_EXECUTED_CONTENT_CHANGED',detail:safe(e)});same=false;}}result.rechecks.push({signature,availableAt:Date.now(),finalizedAvailable:!!tx,executedEvidenceIdentical:same});record('audit-finalized-recheck',{signature,availableAt:Date.now(),transaction:tx});
     }
     result.complete=covered&&result.unsupported.length===0&&result.verifiedSwapEvents>0&&result.matchedEvents===result.verifiedSwapEvents;const rows=capture.featureRows.filter((r:any)=>r.curve.sufficientlyObserved&&r.user.sufficientlyObserved&&r.fullyEnriched&&r.curve.windowStartAt>=start*1000&&r.curve.windowEndAt<=(end+1)*1000&&!capture.qualityGaps.some((g:any)=>g.at>=r.curve.windowStartAt&&g.at<=r.at));result.auditedFeatureRows=result.complete?rows:[];result.auditedUsableFeatureSeconds=result.complete?rows.slice(1).reduce((n:number,r:any,i:number)=>n+Math.min(1000,Math.max(0,r.at-rows[i].at)),0)/1000:0;result.featureScope='Confirmed RPC-availability research views; bounded chain-time interior, not global provider completeness or entry eligibility';result.reason=result.complete?'BOUNDED_INTERIOR_INSTRUCTION_SAMPLE_MATCHED':'INCOMPLETE_OR_ZERO_TRADE_DENOMINATOR';
   }catch(e){result.reason=safe(e);}
-  result.calls=rpc.calls-before;return result;
+  finally{clearTimeout(timeout);}
+  result.calls=rpc.calls-before;result.actualElapsedMs=performance.now()-began;return result;
 }

@@ -2,11 +2,160 @@
 
 **2026-10-27 UTC · review branch `poe-free-data-evaluation-20261027` · research only**
 
-1. **Decision: Free configuration PROMISING, WITH SPECIFIC REMAINING EVIDENCE GAPS.** The approved experiment stopped at its capacity preflight. No new PumpApi stream opened; no combined-workload or continuous-protection pass is claimed.
-2. **Actual result:**6public-RPC requests/81,729response bytes verified one current v1 CPI-invoked canonical SOL-pool sell_v2. A20-entry pool-history page covered only one chain second, so its sustained activity/enrichment demand could not be bounded. Gate: `POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN`.
-3. **Production capacity:** the proposed3-call pricing cycle every2seconds alone requires90RPCstarts/minute, above production's unchanged60/minute limit. Selected enrichment adds work; it was not measured live. The full tested design is not ready for production.
-4. **Still missing:** supported mint/fee/vault verification for the selected current pool, matched PumpApi Buy/Sell data and precision/commitment contract, complete usable windows, actual enrichment queue/cost and changing-price protection response. This sample establishes no broad coverage or profitability.
-5. **Smallest justified next step:** review the bounded selector's handling of burst-saturated candidates and a moderate-activity cohort before another live attempt. No more budget, Alchemy screenshot, Helius access, paid service or wallet action is requested. Existing unused allowance is preserved; this attempt was not automatically retried.
+1. **Conclusion: INCONCLUSIVE because the public RPC throttled before a supported active pool could be admitted.** No new PumpApi socket opened. This does not establish that free sources are unsuitable, nor verify the combined data path.
+2. **Measured scope:** the authorized continuation made 14 additional RPC requests / 190,905 response bytes in a 1.342-second selection pass. It verified two actual canonical-SOL direct Sell transactions, skipped two saturated pool histories, then stopped on HTTP 429 without retry. Full current mint/vault/fee support was not reached.
+3. **Recommended configuration:** retain the existing production observer. Research-only quote reuse preserves the established decoder and reduces changing-slot pricing from three calls to two per cycle. At the chosen two-second research cadence that is still 60 requests/minute before enrichment; production's unchanged 60/minute ceiling has no demonstrated headroom.
+4. **Verified versus missing:** exact on-chain Sell amounts, transfers, trader and instruction identities; bounded multi-pool selection, safe quote reuse and failure tests. PumpApi-to-enrichment matches, complete candidate windows, changing-price protection and continuous free capacity remain untested. Research capacity is not production readiness.
+5. **Smallest next step:** offline review of selection pacing and carrying rejected pools across passes. No owner action, paid provider, larger allowance or credential is requested now. This continuation is completed; do not clear its sticky429 or automatically rerun it.
+
+## Bounded continuation — actual result, 2026-10-27 03:14 UTC
+
+The owner authorized continuing the unused capture grant without increasing any
+cumulative allowance. Before any further network use, the selector was changed
+from a first-candidate refusal to **one bounded pass**: at most six distinct pools,
+one latest 256-signature program page, 24 systematically spaced successful recent
+transaction samples,48 requests, 8 MiB responses and 70 seconds. Each rejected pool
+is visited at most once **within that pass**; saturated 20-row histories are
+skipped without pagination. This is activity-biased transport selection, not
+unbiased opportunity coverage or a strategy change.
+
+The complete experiment was reserved before selection:
+
+| Suballocation | Request ceiling | Response-byte ceiling | Other bound |
+| --- | ---: | ---: | --- |
+| Selection |48|8MiB|6pools,70s |
+| Capture pricing + enrichment |142|40MiB|94pricing calls +48transaction enrichments;45price cycles |
+| Independent audit |24|12MiB|45s; at most 3 history pages |
+| Shutdown / in-flight reserve |4|2MiB|5s; no new post-close enrichment |
+| Total reserved |218|62MiB|fits234requests /67,027,135bytes available |
+
+Sixteen requests and 2,015,423 response bytes remained unallocated. The response
+ceiling is enforced before every start with a 2 MiB single-response reservation;
+phase exhaustion invalidates observations rather than discarding selected trades.
+This is a bounded stop policy, not a guarantee every possible response fits.
+Prior receipts/counters were retained. A new 128 MiB/95 s PumpApi reservation would
+have been appended only after all preflight gates passed; it was **not appended**.
+
+Actual selection, recorded in `active-continuation-record.ndjson`:
+
+| Candidate pool | History page | Independently decoded swap | Result |
+| --- | --- | --- | --- |
+| `4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW` |20 address rows;19 successful/1 failed;3 chain seconds |1 direct Sell, legacy transaction |Capacity unknown; skip |
+| `4qGqJXSAdT3da5KumRQZZF4JJ1zz2DUfoDbJZzakL2Wd` |20 address rows;20 successful;2 chain seconds |1 direct Sell, v0 transaction |Capacity unknown; skip |
+
+A successful address transaction is not necessarily a swap. These short pages
+supply neither a complete 60-second activity baseline nor an upper sustained rate.
+Ten successfully fetched program-sample transactions were inspected; eight did
+not invoke an eligible canonical SOL pool. The next transaction request returned
+HTTP 429. Total selection: 3 signature requests + 11 transaction attempts, including
+the failed request; 14 requests and 190,905 response bytes. No retries, second pass,
+current support quote, feed connection, live feature window or hypothetical mark.
+
+The first pool had also been rejected in the earlier preflight. The implemented
+no-revisit set was scoped to the current pass, so it did **not** carry that prior
+rejection forward. This limitation is disclosed; it is not evidence of a new pool
+cohort. A future selector should explicitly exclude recorded prior rejects before
+new history reads. No further network attempt was made to repair this result.
+
+The two current executed events add real decoding evidence:
+
+| Field | First Sell | Second Sell |
+| --- | ---: | ---: |
+| Integer base units |45355765675|17862432|
+| Gross curve lamports |75552859|315762|
+| User lamports |74684000|312919|
+| Actual invocation/event identity |outer 4 / direct / event-CPI inner 6|outer 3 / direct / event-CPI inner 6|
+| Transfer validation |base and user WSOL agree|base and user WSOL agree|
+
+Both event users agree with the compiled swap user role and equal their fee
+payers in these two cases; the earlier genuine CPI Sell has a different payer.
+LP+protocol+creator deductions match gross minus user proceeds. Buyback fields
+must not be deducted again. Both base transfer programs are Token2022 and quote
+transfers use legacy WSOL; this does not replace current mint-extension/pool/fee
+support validation, which was not reached. No Buy, new routed or multiple-swap
+case was obtained. An unrelated transaction with loaded addresses is not eligible
+loaded-address swap coverage. Exact public identities, fees and checks are in
+[active-continuation-analysis.json](../evidence/free-data-20261027/active-continuation-analysis.json).
+No PumpApi amount/trader/commitment semantics can be newly verified without a
+selected feed payload. Confirmed RPC availability remains separate from chain
+and hypothetical provider receipt times.
+
+### Software ceiling, endpoint behavior and protection
+
+The shared research client permits 150 starts/rolling60 s, 30/rolling10s and one
+physical request in flight. These are **local safety ceilings, not guaranteed
+endpoint entitlement or a pacing schedule**. The endpoint returned429 on the 14th
+new start, after 1.291 seconds between first and last start; starts remained below
+both local ceilings. The observed rejection does not establish a sustainable
+maximum or identify whether shared egress, burst policing or other provider
+conditions caused it. No retry, alternate endpoint or paid fallback was used.
+The durable counterbook retains `blockedReason: RPC_HTTP_429`; it was not reset.
+Future selection-only pacing must be reviewed offline before another authorized
+measurement. Candidate-search pacing is separate from held-position protection.
+
+`ResearchPositionPricer` is **research-only**. It reuses the already verified
+pool's links solely for discovering dependency addresses, then obtains one fresh
+complete confirmed batch containing pool/config/fee/mint/vault accounts. The
+existing decoder validates those current bytes and rejects changed links, missing
+accounts, unsupported extensions, bad owners, stale block time and regressing
+context. Failure invalidates reuse; highest verified slot survives invalidation.
+No same-call retry or stale liquidation-value reuse occurs. A block timestamp may
+be reused only for the exact same slot and at most 2 s after its original fetch;
+source time is preserved and the 30 s market-state test is still enforced.
+
+Offline parity tests compare fresh full-batch quotes and fee fields, including
+changed-reserve fixtures, against the established helper. They also exercise
+changed links, stale/missing/bad accounts and invalidation.
+First quote needs 3 actual RPC calls; later changing-slot quotes need 2; only a recent
+exact same-slot timestamp can reduce a cycle to 1. Forty-five cycles therefore
+reserve 91 calls in the ordinary changing-slot case, below the 94 call allocation.
+This saving is **proven on retained/mutated fixture bytes, not measured during
+this live continuation**. No hypothetical pricing occurred after the429.
+
+Quote freshness at use is 2 s, and source block age is at most 30 s. The2s research
+schedule was a measurement choice; strategy code does not yet freeze a maximum
+acceptable exit-evaluation delay. Poll cadence alone does not prove quote age,
+continuous mark availability, chain-crossing-to-detection delay or a protected
+stop fill. At that schedule, pricing alone ordinarily needs 60 requests/minute,
+plus `r` additional requests/minute for `r` distinct selected transactions and
+audit/recovery work. It does not fit production's 60/minute limit with active flow
+unless separately measured safe batching/reuse changes that workload. No
+production limit, exit rule, protection requirement or strategy threshold changed.
+
+### Remaining counters, cost and decision
+
+The shared additional-RPC counter is now **20/240 requests, 272,634/67,108,864 bytes**;
+remaining 220 requests / 66,836,230 bytes, pending response reservations 0. Those are
+unused allowances, not permission to clear429 or retry. PumpApi remains
+106,994,938 actual socket bytes,112 MiB/100 s reserved across the original two captures.
+No new socket/time reservation; the sole live capture remains unused.
+`active-continuation-allowance.json`, summary and supervisor preserve this outcome
+and the pre-run source hashes. Retained evidence remains below 1 MiB of 32 MiB.
+
+Cloud preflight sampled RSS 142,712,832 bytes, kernel max 151,887,872 bytes,
+233.012ms CPU after module import, peak measured loop lag 1.47 ms. These are preflight
+resources, not a combined-flow benchmark or EC2 suitability proof. API/data
+charges are documented $0 for these credential-free public reads. Existing
+infrastructure, network-transfer entitlement and total operating cost remain
+separate/unverified. No account, paid service, wallet or infrastructure changed.
+
+**Conclusion: INCONCLUSIVE because required supported-pool admission and the live
+combined observation were not obtained after public-RPC throttling.** The sample
+neither verifies continuous free operation nor rejects free sources. Bursty
+program-address sampling favors busy pools, so it cannot establish candidate
+coverage, monthly capacity, completeness or profitability. The smallest next
+engineering step is offline selection pacing/cross-pass exclusion review. There
+is no pending owner-only action, new budget request or automatic repeat.
+
+Read-only dashboard check 03:16 UTC: snapshot 522, original account/inception and
+installed release, source/reconciliation age 24.283 s at HTTP observation,
+reconciled true, entries disabled, positions/fills 0. Public viewer and authenticated
+reporting continue; no direct financial DB audit or new host-health claim is made.
+The production observer, account, financial history and Render deployment were
+not modified. PAPER entries/live trading remain disabled and no acceptance clock
+started. Build, compile, strict research-runner typecheck and293offline regressions pass;
+these are software checks, not live-data acceptance. Previous evidence below is
+retained as history, not the latest outcome.
 
 ## Approved attempt: actual evidence and stop decision
 

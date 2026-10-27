@@ -9,25 +9,29 @@ wallets or activate paid PumpPortal trades. Existing wallet tasks are deferred,
 not prerequisites for this experiment. Read `FREE_DATA_EVALUATION.md` for actual
 results, limits and the exact proposed next steps.
 
-The approved PumpApi/public-RPC attempt completed its preflight and refused
-POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN. No stream opened; do not rerun
-`run-approved` or delete its grant/budget files. `active-approved-allowance.json`
-and supervisor/summary record that completed attempt; prior PumpApi counters are
-unchanged. No Alchemy/Helius access, Usage screenshot or new owner action is needed.
+The bounded continuation completed and stopped on `RESEARCH_RPC_HTTP_429`
+before a new stream opened. Do not rerun either `run-approved` command, delete
+grant markers, reset counters or clear the sticky provider block. Prior receipts
+remain intact. New `active-continuation-*` receipts share the existing durable
+RPC counterbook; totals20requests/272,634bytes, remaining220/66,836,230bytes.
+PumpApi remains112MiB/100s reserved; no capture was appended. Unused allowances
+are not automatic retry authority. No Alchemy/Helius or owner action is pending.
 
 Safe offline reproduction:
 
 ```sh
-node --import tsx --test test/research-rpc.test.ts test/active-selection.test.ts test/active-pipeline.test.ts test/active-runner.test.ts test/active-current-evidence.test.ts
-node --import tsx scripts/active-pumpapi-trial.ts
+node --import tsx --test test/research-rpc.test.ts test/research-phase.test.ts test/research-pricing.test.ts test/active-selection.test.ts test/active-pipeline.test.ts test/active-runner.test.ts test/active-current-evidence.test.ts test/active-continuation-evidence.test.ts
+node --import tsx scripts/active-pumpapi-continuation.ts
 ```
 
 No-argument CLI prints usage without network. Tests use retained public bytes,
 injected transports/clocks and temporary fixture budgets, never production state.
-Actual current CPI Sell and truncated-history refusal are separate regression
-fixtures, not PumpApi coverage or natural trades. Review selection policy before
-any follow-up network attempt; unused allowance is not a retry loop. Preserve
-32MiB evidence and all original counters. No EC2 experiment was run.
+Research pricing reuses links/exact-slot blocktime but fully validates a fresh
+coherent dependency batch each cycle. It is not installed. A local150/minute
+research ceiling does not guarantee endpoint capacity; the actual429 occurred
+below it. Review candidate pacing and prior-reject exclusion offline before any
+further authorized attempt. Preserve32MiB evidence and every original reservation.
+No EC2 experiment was run; no current-flow/protection acceptance is claimed.
 
 ## Prior unmetered development checkpoint — 2026-10-27
 
