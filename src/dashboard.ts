@@ -165,7 +165,7 @@ main{max-width:1480px;margin:0 auto}
 <section class="panel data-panel" aria-labelledby="tradesTitle"><div class="panel-heading"><div><div class="section-index">04 / EXECUTION LOG</div><h2 id="tradesTitle">Recent PAPER trades</h2></div><div class="panel-tag" id="tradesCount">—</div></div><div id="trades"><div class="no-records"><strong>NO TRADE DATA</strong><span>Execution records will appear after verified reporting begins.</span></div></div></section></div>
 <div class="section-heading" id="system"><div><div class="section-index">05 / SYSTEM INTELLIGENCE</div><h2>Signal pipeline &amp; diagnostics</h2></div><div class="section-note">RAW VERIFIED COUNTS · NO INFERRED COVERAGE</div></div>
 <div class="system-grid">
-<section class="panel" aria-labelledby="funnelTitle"><div class="panel-heading"><div><div class="section-index">OPPORTUNITY FUNNEL</div><h2 id="funnelTitle">Candidate progression</h2></div></div><div id="funnel"><div class="no-records"><strong>NO VERIFIED COUNTS</strong><span>Discovery and qualification metrics are not yet reported.</span></div></div></section>
+<section class="panel" aria-labelledby="funnelTitle"><div class="panel-heading"><div><div class="section-index">OPPORTUNITY FUNNEL</div><h2 id="funnelTitle">Candidate progression</h2></div><div class="panel-tag" id="funnelSource">AWAITING SOURCE</div></div><div id="funnel"><div class="no-records"><strong>NO VERIFIED COUNTS</strong><span>Discovery and qualification metrics are not yet reported.</span></div></div></section>
 <section class="panel" aria-labelledby="metricsTitle"><div class="panel-heading"><div><div class="section-index">TELEMETRY</div><h2 id="metricsTitle">Runtime diagnostics</h2></div></div><div id="metrics"><div class="no-records"><strong>SYSTEM TELEMETRY PENDING</strong><span>Data coverage, lag, and budget indicators require actual EC2 observations.</span></div></div></section>
 </div>
 <section class="panel full-panel" aria-labelledby="decisionsTitle"><div class="panel-heading"><div><div class="section-index">06 / DECISION TRACE</div><h2 id="decisionsTitle">Evaluations &amp; refusals</h2></div><div class="panel-tag" id="decisionsCount">—</div></div><div id="decisions"><div class="no-records"><strong>NO DECISIONS REPORTED</strong><span>Verified decisions and rejection reasons will appear here.</span></div></div></section>
@@ -179,7 +179,36 @@ const money=n=>n===null?'Unavailable':new Intl.NumberFormat('en-US',{style:'curr
 const put=(id,value)=>{byId(id).textContent=String(value)};
 const add=(p,t,value,cls)=>{const n=document.createElement(t);if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;p.append(n);return n};
 const makeSvg=(tag,attrs,txt)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,String(v));if(txt!==undefined)e.textContent=txt;return e};
-let latest=null;
+let latest=null,pilotIntelligence=null;
+function candidateIntelligenceUsesPilot(){return !!pilotIntelligence}
+function candidateTime(at){return Number.isSafeInteger(at)&&at>0?new Date(at).toISOString():'Unavailable'}
+function renderCandidateIntelligence(){
+ if(pilotIntelligence){
+  const p=pilotIntelligence.snapshot;
+  renderFunnel(p.funnel);
+  const state=String(pilotIntelligence.state||'reporting').toUpperCase();
+  put('funnelSource','PILOT · '+state+' · CURRENT RUN');
+  const decisions=Array.isArray(p.decisions)?p.decisions.slice(-30).reverse():[];
+  const refusals=Array.isArray(p.refusals)?p.refusals.slice(0,30):[];
+  const rows=decisions.map(d=>[candidateTime(d.at),d.mint,d.stage,d.reason]);
+  refusals.forEach(x=>rows.push(['RUN TOTAL','—','REFUSAL COUNT',x.reason+' · '+x.count]));
+  put('decisionsCount','PILOT · '+decisions.length+' DECISIONS · '+refusals.length+' REFUSAL TYPES');
+  renderTable('decisions',['UTC','Mint','Stage','Reason'],rows,'NO PILOT DECISIONS','The current pilot run has not reported a decision or refusal.');
+  return;
+ }
+ if(!latest){
+  put('funnelSource','AWAITING SOURCE');put('decisionsCount','—');return;
+ }
+ renderFunnel(latest.funnel);
+ put('funnelSource',latest.source.strategy==='UNIMPLEMENTED_FLOW_BLOCKED'?'OBSERVER · DISCOVERY ONLY':'AUTHORITATIVE RUNTIME');
+ put('decisionsCount',latest.decisions.length+' REPORTED');
+ renderTable('decisions',['UTC','Mint','Stage','Reason'],latest.decisions.map(d=>[d.at,d.mint,d.stage,d.reason]),'NO DECISIONS','No decisions in the current published window.');
+}
+function setPilotIntelligence(snapshot,state,sourceAgeMs,publisherConnected){
+ if(!snapshot||snapshot.kind!=='experimental-pilot'||snapshot.authoritative!==false||snapshot.liveTrading!==false)return false;
+ pilotIntelligence={snapshot,state,sourceAgeMs,publisherConnected};renderCandidateIntelligence();return true;
+}
+function clearPilotIntelligence(){pilotIntelligence=null;renderCandidateIntelligence();}
 function signal(title,message,label,mode,time){put('stateTitle',title);put('state',message);put('sourceLabel',label);put('lastSync',time||'RECEIVER · AWAITING DATA');document.body.dataset.link=mode}
 function clock(){put('utcClock',new Date().toISOString().slice(11,19)+' UTC')}
 function renderCards(s){
@@ -258,11 +287,9 @@ function showSnapshot(s,received,f){
  renderCards(s);
  put('positionsCount',s.positions.length+' REPORTED');
  put('tradesCount',s.trades.length+' REPORTED');
- put('decisionsCount',s.decisions.length+' REPORTED');
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.');
  renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.');
- renderTable('decisions',['UTC','Mint','Stage','Reason'],s.decisions.map(d=>[d.at,d.mint,d.stage,d.reason]),'NO DECISIONS','No decisions in the current published window.');
- renderFunnel(s.funnel);renderMetrics(s.metrics,s.source);plot(s.pnl);
+ renderCandidateIntelligence();renderMetrics(s.metrics,s.source);plot(s.pnl);
  put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED SERIES':'HISTORY UNAVAILABLE');
  put('freshness','Generated '+s.times.generatedAt+' · Market '+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
  put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps.');

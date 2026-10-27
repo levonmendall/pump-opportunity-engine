@@ -15,19 +15,21 @@ const now=Date.now();
 function snapshot(){return {kind:'experimental-pilot',authoritative:false,liveTrading:false,accountId:'poe-pilot-ui-fixture',inceptionAt:now-600000,runId:'ui-fixture',generatedAt:now-180000,source:{release:'abc123',strategy:'pilot-v1'},running:false,entriesEnabled:false,status:'graceful stop',funnel:{evaluated:3,reconciled:20},metrics:{rpcRequests:4},decisions:[{at:now-190000,mint:'<img src=x>',stage:'strategy-rejection',reason:'<script>alert(1)</script>'}],refusals:[]};}
 async function browser(first:unknown){
   const nodes=new Map<string,Element>();for(const id of ['pilot-link-state','pilot-link-detail','pilot-source-detail','pilot-funnel','pilot-metrics','pilot-decisions','pilot-refusals'])nodes.set(id,new Element());
-  let response=first,mono=0,fail=false;const paths:string[]=[],timeouts:Array<()=>Promise<void>>=[],intervals:Array<()=>void>=[];
-  const context=createContext({document:{getElementById:(id:string)=>nodes.get(id),createElement:()=>new Element(),addEventListener:()=>{},hidden:false},performance:{now:()=>mono},Date,Intl,Number,JSON,Array,Object,String,Error,AbortSignal:{timeout:()=>undefined},fetch:async(path:string)=>{paths.push(path);if(fail)throw Error('Disconnected');return {ok:true,text:async()=>JSON.stringify(response)};},setTimeout:(fn:()=>Promise<void>)=>{timeouts.push(fn);return 1;},clearTimeout:()=>{},setInterval:(fn:()=>void)=>{intervals.push(fn);return 1;}});
+  let response=first,mono=0,fail=false;const paths:string[]=[],timeouts:Array<()=>Promise<void>>=[],intervals:Array<()=>void>=[],primary:Array<{snapshot:unknown;state:unknown}|null>=[];
+  const context=createContext({document:{getElementById:(id:string)=>nodes.get(id),createElement:()=>new Element(),addEventListener:()=>{},hidden:false},performance:{now:()=>mono},Date,Intl,Number,JSON,Array,Object,String,Error,AbortSignal:{timeout:()=>undefined},setPilotIntelligence:(snapshot:unknown,state:unknown)=>primary.push({snapshot,state}),clearPilotIntelligence:()=>primary.push(null),fetch:async(path:string)=>{paths.push(path);if(fail)throw Error('Disconnected');return {ok:true,text:async()=>JSON.stringify(response)};},setTimeout:(fn:()=>Promise<void>)=>{timeouts.push(fn);return 1;},clearTimeout:()=>{},setInterval:(fn:()=>void)=>{intervals.push(fn);return 1;}});
   const code=CONNECTIONS_SCRIPT.replace(/^<script>\s*/,'').replace(/\s*<\/script>$/,'');new Script(code).runInContext(context);await new Promise(setImmediate);
-  return {nodes,paths,advance:(ms:number)=>{mono+=ms;for(const fn of intervals)fn();},poll:async(next:unknown,failed=false)=>{response=next;fail=failed;await timeouts.pop()!();await new Promise(setImmediate);}};
+  return {nodes,paths,primary,advance:(ms:number)=>{mono+=ms;for(const fn of intervals)fn();},poll:async(next:unknown,failed=false)=>{response=next;fail=failed;await timeouts.pop()!();await new Promise(setImmediate);}};
 }
-test('pilot extension has no original portfolio hooks, snapshot reads, credentials or financial cards',()=>{
+test('pilot extension updates candidate intelligence only, never authoritative financial portfolio data',()=>{
   assert.match(CONNECTIONS_HTML,/EXPERIMENTAL PAPER/);assert.match(CONNECTIONS_HTML,/No pilot balances or results are merged/);
-  assert.doesNotMatch(CONNECTIONS_SCRIPT,/showSnapshot|renderFunnel|renderMetrics|api\/snapshot|innerHTML|Bearer|ingestionSecret/);
+  assert.doesNotMatch(CONNECTIONS_SCRIPT,/showSnapshot|renderCards|renderMetrics|positionsCount|tradesCount|tradingPnlUsd|balances|api\/snapshot|innerHTML|Bearer|ingestionSecret/);
+  assert.match(CONNECTIONS_SCRIPT,/setPilotIntelligence/);assert.match(CONNECTIONS_SCRIPT,/clearPilotIntelligence/);
   assert.match(CONNECTIONS_SCRIPT,/fetch\('\/api\/pilot'/);
 });
 test('stopped stale source remains separate from active publisher contact and renders untrusted strings as text',async()=>{
   const s=snapshot(),b=await browser({state:'stale',snapshot:s,receivedAt:now-180000,lastContactAt:now-1000,sourceAgeMs:180000,lastContactAgeMs:1000});
   assert.deepEqual(b.paths,['/api/pilot']);
+  assert.equal(b.primary.length,1);assert.equal((b.primary[0] as any).state,'stale');assert.equal((b.primary[0] as any).snapshot.accountId,s.accountId);
   const state=b.nodes.get('pilot-link-state')!.textContent;assert.match(state,/STOPPED/);assert.match(state,/SOURCE STALE/);assert.doesNotMatch(state,/DISCONNECTED/);
   assert.match(b.nodes.get('pilot-link-detail')!.textContent,/no ongoing monitoring/);
   assert.match(b.nodes.get('pilot-source-detail')!.textContent,new RegExp(String(s.runId)));
@@ -39,6 +41,7 @@ test('failed browser fetch retains last diagnostics and valid cache loss clears 
   const count=b.nodes.get('pilot-funnel')!.children.length;assert.ok(count>0);
   await b.poll(null,true);assert.match(b.nodes.get('pilot-link-state')!.textContent,/DASHBOARD READ FAILED/);assert.equal(b.nodes.get('pilot-funnel')!.children.length,count);
   await b.poll({state:'awaiting-data',snapshot:null,message:'No pilot report received.'});assert.equal(b.nodes.get('pilot-funnel')!.children.length,0);assert.equal(b.nodes.get('pilot-link-state')!.textContent,'AWAITING DATA');assert.equal(b.nodes.get('pilot-source-detail')!.textContent,'');
+  assert.equal(b.primary.at(-1),null);
 });
 test('malformed response does not replace a valid experimental source',async()=>{
   const b=await browser({snapshot:snapshot(),receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});
