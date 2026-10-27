@@ -8,6 +8,7 @@ type InformationKind='hint'|'trade'|'price'|'feature';
 type PipelineOptions={scope:ActiveScope;now?:()=>number;record?:(kind:string,data:unknown)=>void;/** Optional research-only exclusive observation boundary. */admitInformation?:(at:number,kind:InformationKind)=>boolean};
 type QuoteFields={mint:string;slot:number;commitment:string;receivedAt:string;sell:{inputBaseUnits:string;outputLamports:string}};
 type SizedQuote=QuoteFields&({marketBlockTime:number;timeEvidence?:never}|{timeEvidence:'confirmed-bank-clock';clockSlot:number;marketClockUnixSeconds:number});
+type FeatureRow={at:number;curve:FlowFeatures;user:FlowFeatures;fullyEnriched:boolean;researchOnly:true};
 const MAX_HINTS=16,MAX_SIGNATURES=64,MAX_EVENTS=128,MAX_ROWS=100,ENRICH_DELAY_MS=1000,ENRICH_DEADLINE_MS=5000,GAS=7000n;
 const integer=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const unsigned=(v:unknown):v is string=>typeof v==='string'&&/^(0|[1-9][0-9]{0,38})$/.test(v);
@@ -25,7 +26,7 @@ export class ActivePipeline {
   private selectedMessages=0;private duplicateHints=0;private uniqueAttempts=0;private completedTransactions=0;private failedTransactions=0;private nonTradeTransactions=0;
   private normalizedDuring=0;private normalizedAfter=0;private normalizedBuys=0;private normalizedSells=0;private routedEvents=0;private multipleSwapTransactions=0;private duplicateEvents=0;private corrections=0;
   private firstNormalizedAt:number|null=null;private lastNormalizedAt:number|null=null;private queueHighWater=0;private queueAges:number[]=[];private completionAges:number[]=[];private qualityGaps:Array<{at:number;reason:string}>=[];
-  private featureRows:Array<{at:number;curve:FlowFeatures;user:FlowFeatures;fullyEnriched:boolean;researchOnly:true}>=[];private lastFeatureAt:number|null=null;private lastFeatureWarm=false;private lastNoPendingWarm=false;private enrichedWarmMs=0;private noPendingWarmMs=0;
+  private featureRows:FeatureRow[]=[];private latestFeature:FeatureRow|null=null;private lastFeatureEmissionAt:number|null=null;private lastFeatureAt:number|null=null;private lastFeatureWarm=false;private lastNoPendingWarm=false;private enrichedWarmMs=0;private noPendingWarmMs=0;
   private quoteRows:Array<Record<string,unknown>>=[];private rejectedQuotes=0;private acceptedQuotes=0;private priceChanges=0;private firstQuoteSeen=false;
   private latestMark:{at:number;availableAt:number;netLamports:string;pricedBaseUnits:string;evidence:string}|null=null;private baseline:{at:number;cost:string}|null=null;private lastNet:string|null=null;private lastExitAction:string|null=null;
   private markIntegratedAt:number|null=null;private freshMarkMs=0;private triggerEvents:Array<Record<string,unknown>>=[];
@@ -166,15 +167,23 @@ export class ActivePipeline {
     this.markIntegratedAt=end;
   }
   tick(at=this.now()){
-    if(this.endedAt===null&&this.admissionAt(at,'feature')===null)return;
-    this.clock(at);this.featureTick(at);
+    this.featureAdvance(at,true);
   }
-  private featureTick(at:number){
+  private featureAdvance(at:number,recordFeatures:boolean){
+    if(this.endedAt===null&&this.admissionAt(at,'feature')===null)return;
+    this.clock(at);this.featureTick(at,recordFeatures);
+  }
+  private featureTick(at:number,recordFeatures=true){
     this.integrateMarks(at);if(!this.windows||this.endedAt!==null||this.closedAt!==null)return;
     const previous=this.lastFeatureAt??at,span=Math.max(0,at-previous);if(this.lastFeatureWarm)this.enrichedWarmMs+=span;if(this.lastNoPendingWarm)this.noPendingWarmMs+=span;
     const curve=this.windows.curve.features(at),user=this.windows.user.features(at),warm=curve.sufficientlyObserved&&user.sufficientlyObserved&&this.normalizedDuring>0,fullyEnriched=this.queue.length===0&&!this.active;
     this.lastFeatureWarm=warm;this.lastNoPendingWarm=warm&&fullyEnriched;this.lastFeatureAt=at;
-    if(!this.featureRows.length||at-this.featureRows.at(-1)!.at>=1000){const row={at,curve,user,fullyEnriched,researchOnly:true as const};if(this.featureRows.length<MAX_ROWS)this.featureRows.push(row);this.emit('research-feature-view',row);}
+    const row:FeatureRow={at,curve,user,fullyEnriched,researchOnly:true};this.latestFeature=row;
+    if(recordFeatures&&(this.lastFeatureEmissionAt===null||at-this.lastFeatureEmissionAt>=1000)){
+      // Retention is not a clock. Advance independently BEFORE the callback so
+      // full history, callback failure or a reentrant read cannot remove pacing.
+      this.lastFeatureEmissionAt=at;this.featureRows.push(row);if(this.featureRows.length>MAX_ROWS)this.featureRows.shift();this.emit('research-feature-view',row);
+    }
   }
   price(quote:SizedQuote|null,availableAt=this.now()){
     const rpcAvailableAt=availableAt,firstAdmission=this.admissionAt(availableAt,'price');if(firstAdmission===null){this.rejectedQuotes++;this.cutoffRejected('price',availableAt);return null;}availableAt=firstAdmission;
@@ -207,8 +216,8 @@ export class ActivePipeline {
     if(this.queue.length||this.active)this.gap('unresolved-enrichment-at-final-close',at);
     this.closedAt=at;this.emit('research-pipeline-close',{at,reason,pending:this.queue.length+(this.active?1:0)});
   }
-  snapshot(at=this.now()){
-    this.tick(at);const observationMs=this.openedAt===null?0:Math.max(0,(this.endedAt??at)-this.openedAt),fresh=Math.min(observationMs,this.freshMarkMs);
-    return {mode:'RESEARCH_ONLY',scope:this.scope,openedAt:this.openedAt,observationEndedAt:this.endedAt,closedAt:this.closedAt,observationMs,lastAcceptedInformationAt:this.lastAcceptedInformationAt,lastAcceptedTradeAt:this.lastAcceptedTradeAt,lastAcceptedPriceAt:this.lastAcceptedPriceAt,rejectedCutoffInformation:this.rejectedCutoffInformation,selectedMessages:this.selectedMessages,uniqueEnrichmentAttempts:this.uniqueAttempts,duplicateSignatureHints:this.duplicateHints,completedTransactions:this.completedTransactions,failedTransactions:this.failedTransactions,nonTradeTransactions:this.nonTradeTransactions,pending:this.queue.length+(this.active?1:0),queueHighWater:this.queueHighWater,queueAgeMs:{samples:this.queueAges.length,p50:percentile(this.queueAges,.5),p95:percentile(this.queueAges,.95),maximum:this.queueAges.length?Math.max(...this.queueAges):null},enrichmentAvailableAfterHintMs:{samples:this.completionAges.length,p50:percentile(this.completionAges,.5),p95:percentile(this.completionAges,.95),maximum:this.completionAges.length?Math.max(...this.completionAges):null},normalizedEvents:this.normalizedDuring,normalizedDuringObservation:this.normalizedDuring,normalizedAfterObservation:this.normalizedAfter,normalizedBuys:this.normalizedBuys,normalizedSells:this.normalizedSells,routedEvents:this.routedEvents,variantCountsIncludeLateEnrichment:true,multipleSwapTransactions:this.multipleSwapTransactions,duplicateExecutedEvents:this.duplicateEvents,corrections:this.corrections,firstNormalizedAt:this.firstNormalizedAt,lastNormalizedAt:this.lastNormalizedAt,qualityGaps:this.qualityGaps,historicalWindowInvalidated:this.historicalWindowInvalidated,enrichedFeatureWarmSeconds:this.enrichedWarmMs/1000,noPendingFeatureWarmSeconds:this.noPendingWarmMs/1000,verifiedUsableFeatureWindowSeconds:0,coverage:'Requires later bounded independent signature/instruction audit; raw warmth is not completeness',featureRows:this.featureRows,prices:{accepted:this.acceptedQuotes,rejected:this.rejectedQuotes,changes:this.priceChanges,firstHypotheticalCost:this.baseline,modeledGasLamports:GAS.toString(),freshCacheMs:fresh,staleCacheMs:observationMs-fresh,freshCacheFraction:observationMs?fresh/observationMs:null,triggerEvents:this.triggerEvents,rows:this.quoteRows},executedEvidence:[...this.evidence.values()],paperEntriesEnabled:false,naturalPaperTrades:0};
+  snapshot(at=this.now(),options:{recordFeatures?:boolean}={}){
+    this.featureAdvance(at,options.recordFeatures!==false);const observationMs=this.openedAt===null?0:Math.max(0,(this.endedAt??at)-this.openedAt),fresh=Math.min(observationMs,this.freshMarkMs);
+    return {mode:'RESEARCH_ONLY',scope:this.scope,openedAt:this.openedAt,observationEndedAt:this.endedAt,closedAt:this.closedAt,observationMs,lastAcceptedInformationAt:this.lastAcceptedInformationAt,lastAcceptedTradeAt:this.lastAcceptedTradeAt,lastAcceptedPriceAt:this.lastAcceptedPriceAt,rejectedCutoffInformation:this.rejectedCutoffInformation,selectedMessages:this.selectedMessages,uniqueEnrichmentAttempts:this.uniqueAttempts,duplicateSignatureHints:this.duplicateHints,completedTransactions:this.completedTransactions,failedTransactions:this.failedTransactions,nonTradeTransactions:this.nonTradeTransactions,pending:this.queue.length+(this.active?1:0),queueHighWater:this.queueHighWater,queueAgeMs:{samples:this.queueAges.length,p50:percentile(this.queueAges,.5),p95:percentile(this.queueAges,.95),maximum:this.queueAges.length?Math.max(...this.queueAges):null},enrichmentAvailableAfterHintMs:{samples:this.completionAges.length,p50:percentile(this.completionAges,.5),p95:percentile(this.completionAges,.95),maximum:this.completionAges.length?Math.max(...this.completionAges):null},normalizedEvents:this.normalizedDuring,normalizedDuringObservation:this.normalizedDuring,normalizedAfterObservation:this.normalizedAfter,normalizedBuys:this.normalizedBuys,normalizedSells:this.normalizedSells,routedEvents:this.routedEvents,variantCountsIncludeLateEnrichment:true,multipleSwapTransactions:this.multipleSwapTransactions,duplicateExecutedEvents:this.duplicateEvents,corrections:this.corrections,firstNormalizedAt:this.firstNormalizedAt,lastNormalizedAt:this.lastNormalizedAt,qualityGaps:this.qualityGaps,historicalWindowInvalidated:this.historicalWindowInvalidated,enrichedFeatureWarmSeconds:this.enrichedWarmMs/1000,noPendingFeatureWarmSeconds:this.noPendingWarmMs/1000,verifiedUsableFeatureWindowSeconds:0,coverage:'Requires later bounded independent signature/instruction audit; raw warmth is not completeness',latestFeature:this.latestFeature,featureRows:this.featureRows,prices:{accepted:this.acceptedQuotes,rejected:this.rejectedQuotes,changes:this.priceChanges,firstHypotheticalCost:this.baseline,modeledGasLamports:GAS.toString(),freshCacheMs:fresh,staleCacheMs:observationMs-fresh,freshCacheFraction:observationMs?fresh/observationMs:null,triggerEvents:this.triggerEvents,rows:this.quoteRows},executedEvidence:[...this.evidence.values()],paperEntriesEnabled:false,naturalPaperTrades:0};
   }
 }

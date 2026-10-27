@@ -164,3 +164,16 @@ test('held-priority retirement does not await a delayed stream close or reuse it
  await f.feeds.addCandidate(scope);assert.equal(f.sockets.length,1,'no new upgrade while the retired transport is unsettled');assert.equal(f.opens.length,1,'draining transport cannot activate new flow');
  old.drop();await f.advance(2100);assert.equal(f.sockets.length,2);assert.equal(f.opens.length,2);assert.equal(f.feeds.snapshot()?.warm,false);assert.equal(f.feeds.snapshot()?.pending,0);await f.feeds.stop();
 });
+
+
+test('two long-lived scopes keep bounded feature evidence while frequent status reads remain read-only',async()=>{
+ const f=setup({maximumCandidates:2});await f.feeds.selectCandidate(scope);
+ const other={...scope,mint:'EPyQ8ZFCuLCJc7zR7ai9ZBnFbVj2LdC1FHLHj71Dpump',pool:'8VC1h9KpX6MktrtTw9uYTdKKCtVBHEF9boLAkqrkwai4'};
+ // A second validated canonical identity from existing fixture evidence.
+ const migration=JSON.parse(readFileSync('evidence/integration-proof-2026-10-26T19-57-35.882Z.json','utf8'));
+ other.mint=migration.quote.mint;other.pool=migration.quote.pool;await f.feeds.addCandidate(other);
+ for(let i=0;i<1600;i++){f.sockets[0]!.frame({fixture:'irrelevant broad stream heartbeat'},64);await f.advance(100);for(let j=0;j<5;j++){f.feeds.snapshot(scope.mint);f.feeds.snapshot(other.mint);}}
+ const rows=f.records.filter(r=>r.kind==='research-feature-view');assert.ok(rows.length<=324,rows.length+' redundant feature emissions');assert.equal(f.feeds.usage().failedCandidate,false);assert.ok(f.feeds.usage().recordedBytes<512*1024);
+ const before=f.feeds.usage().recordedBytes;for(let i=0;i<1000;i++)f.feeds.snapshots();assert.equal(f.feeds.usage().recordedBytes,before);
+ assert.ok(f.feeds.snapshot(scope.mint)!.latestFeature!.at>=f.now-1000);assert.equal(f.feeds.snapshot(scope.mint)!.warm,true);await f.feeds.stop();
+});

@@ -1,3 +1,31 @@
+# Recorder repair continuation — 2026-10-27
+
+Source8c2a639 was published to the existing review branch and ran stage two on
+the SAME pilot account. Actual run `pilot-20261027195343952-418513ae` reached
+about157seconds, two concurrent quiet candidates,15usable windows and13predictive
+rejections, zero selected trades/orders/positions, then failed with
+PILOT_FEED_EVIDENCE_CAP. Original raw events/source remain immutable. Forty new
+RPC units,710cumulative; all RPC physical operations settled and the book closed.
+The final status projection failed too because snapshot reads emitted more
+feature records. An explicit incomplete-run receipt preserves the last known
+facts without manufacturing a final performance snapshot.
+
+Root repair: independent feature-emission cursor, bounded latest100 history,
+read-only snapshot projection, explicit feed-watch feature ticks and a candidate
+recording reserve that closes new admissions while preserving holding management.
+No strategy, quote age, fees or risk thresholds changed. Forty-six focused tests
+pass and a full frozen suite is running. Commit only after final review; then
+resume the same account under a new labeled source interval. Do not reset history
+or claim the failed interval was a forward pass.
+
+The Cloud environment recovered after the earlier interruption. Original EC2
+observer/account and Render portfolio remain untouched. The independent pilot
+reporting publisher is running in this Cloud environment; stale old source facts
+must not be treated as ongoing trading. No owner action is required for the
+current isolated repairs.
+
+## Earlier checkpoint history
+
 # Progressive pilot continuation — 2026-10-27
 
 Current isolated integration lives in `/workspace/poe-stage-review`, based on

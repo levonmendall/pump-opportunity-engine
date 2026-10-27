@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-10-27T19:57:31.615Z",
+  "pilot": {
+    "state": "reporting",
+    "sourceAt": 1793130980095,
+    "lastContactAt": 1793131038629,
+    "source": {
+      "release": "8c2a63943d2b61f6de53eb02dcff0f0e1c49f26d",
+      "strategy": "persistent-buying-pilot-concurrent-stage-2-v1",
+      "sha256": "3c93b520913437c54d7ac7060bd87f016ed295d4b865b5a1168f18ecf2ae75cb"
+    },
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "funnel": {
+      "discovered": 4,
+      "supported": 2,
+      "sufficientlyObserved": 15,
+      "evaluated": 29,
+      "qualified": 0,
+      "reserved": 0,
+      "attempted": 0,
+      "paperFilled": 0,
+      "exited": 0,
+      "reconciled": 149,
+      "verifiedMigrationOrigins": 2,
+      "admitted": 2,
+      "usableWindows": 15
+    }
+  },
+  "original": {
+    "account": {
+      "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "initialUsd": 1000
+    },
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "disabled",
+      "reconciled": true,
+      "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+    },
+    "source": {
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+    },
+    "freshness": {
+      "state": "observing-with-zero-trades",
+      "receivedAt": "2026-10-27T19:57:12.834Z",
+      "generatedAt": "2026-10-27T19:56:52.664Z",
+      "marketAt": "2026-10-27T19:56:52.664Z",
+      "reconciledAt": "2026-10-27T19:56:52.664Z",
+      "usefulProgressAt": "2026-10-27T19:56:52.664Z",
+      "sourceAgeMs": 38916,
+      "marketAgeMs": 38916,
+      "reconciliationAgeMs": 38916
+    }
+  }
+}

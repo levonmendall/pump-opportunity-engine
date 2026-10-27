@@ -76,3 +76,34 @@ test('audit duplicates are harmless but transfer quality corrections invalidate 
   const changed=structuredClone(raw.transaction),ix=changed.meta.innerInstructions[0].instructions[1],encoded=Buffer.from(bs58.decode(ix.data));encoded.writeBigUInt64LE(encoded.readBigUInt64LE(1)+1n,1);ix.data=bs58.encode(encoded);
   core.audit(hint,changed,base+60_200);const s=core.snapshot(base+60_201);assert.equal(s.corrections,1);assert.equal(s.historicalWindowInvalidated,true);assert.equal(s.qualityGaps.at(-1)!.reason,'confirmed-executed-evidence-correction');
 });
+
+test('three-minute20Hz snapshot polling keeps feature emission paced after100rows and preserves executed trade evidence',()=>{
+  const {core,records,set}=fixture();core.observe(payload(),base+100);const hint=core.nextHint(base+1100)!;set(base+1500);core.completeHint(hint,raw.transaction,base+1500);
+  for(let elapsed=1500;elapsed<=180000;elapsed+=50){set(base+elapsed);core.snapshot(base+elapsed);}
+  const s=core.snapshot(base+180000),views=records.filter(r=>r.kind==='research-feature-view');
+  assert.ok(views.length<=181,`one-second emission cursor exceeded: ${views.length}`);assert.ok(views.length>=179);
+  for(let i=1;i<views.length;i++)assert.ok(views[i]!.data.at-views[i-1]!.data.at>=1000,'retention cannot defeat pacing');
+  assert.equal(s.featureRows.length,100);assert.equal(s.featureRows.at(-1)!.at,views.at(-1)!.data.at);assert.ok(base+180000-s.featureRows.at(-1)!.at<1000);
+  assert.equal(s.latestFeature!.at,base+180000);assert.equal(s.latestFeature!.curve.windowEndAt,base+180000);
+  assert.equal(s.normalizedDuringObservation,1);assert.equal(s.executedEvidence.length,1);assert.equal(s.pending,0);assert.equal(s.qualityGaps.length,0);
+  assert.equal(views.find(r=>r.data.at>=base+60000)!.data.curve.tradeCount,1,'the confirmed trade survives its proper window');
+  assert.equal(s.latestFeature!.curve.tradeCount,0,'old trade leaves the actual sixty-second window without erasing evidence');
+  assert.equal(records.filter(r=>r.kind==='research-normalized-trade').length,1);
+});
+
+test('feature emission cursor advances before a recorder callback can reenter snapshot',()=>{
+  let core:ActivePipeline,now=base,count=0;
+  core=new ActivePipeline({scope,now:()=>now,record(kind){if(kind==='research-feature-view'){count++;assert.ok(count<=2,'recursive emission');core.snapshot(now);}}});
+  core.open(now);core.snapshot(now);assert.equal(count,1);now+=1000;core.tick(now);assert.equal(count,2);
+  const s=core.snapshot(now,{recordFeatures:false});assert.equal(s.featureRows.length,2);assert.equal(s.latestFeature!.at,now);
+});
+
+test('read-only feature snapshots remain current after recorder exhaustion without invoking it or appending history',()=>{
+  let now=base,exhausted=false,featureCalls=0;
+  const core=new ActivePipeline({scope,now:()=>now,record(kind){if(kind==='research-feature-view'){featureCalls++;if(exhausted)throw Error('EXHAUSTED_FIXTURE_RECORDER');}}});
+  core.open(now);core.tick(now);exhausted=true;now+=1000;assert.throws(()=>core.tick(now),/EXHAUSTED_FIXTURE_RECORDER/);assert.equal(featureCalls,2);
+  const before=core.snapshot(now,{recordFeatures:false}).featureRows.length;
+  for(let i=1;i<=400;i++){now=base+1000+i*50;const s=core.snapshot(now,{recordFeatures:false});assert.equal(s.latestFeature!.at,now);assert.equal(s.featureRows.length,before);}
+  assert.equal(featureCalls,2,'reporting does not call an exhausted recorder');
+  const s=core.snapshot(now,{recordFeatures:false});assert.equal(s.latestFeature!.curve.windowEndAt,Math.floor(now/10000)*10000);assert.equal(s.pending,0);
+});
