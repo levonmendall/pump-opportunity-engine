@@ -110,3 +110,11 @@ test('prepared selection prefers recent eligible identities and excludes only im
  assert.equal(nextPreparedPilotSeed(pools as any,new Set(['recent']),now)?.feedMint,'older');
  assert.equal(nextPreparedPilotSeed(pools as any,new Set(['recent','older']),now),null);
 });
+
+
+test('observation concurrency is independent of the permitted financial stage',()=>{
+ const stage=resolvePilotStage('three',2);assert.equal(stage.maximumCandidates,2);assert.equal(stage.maximumPositions,3);assert.equal(stage.binding.maxPositions,3);
+ assert.equal(stage.contract.baseline,PILOT_CONTRACT.baseline);assert.equal(stage.contract.execution,PILOT_CONTRACT.execution);
+ assert.equal(resolvePilotStage('two',1).maximumPositions,2);assert.equal(resolvePilotStage('three').maximumCandidates,3);
+ assert.throws(()=>resolvePilotStage('single',2),/CANDIDATE_STAGE_LIMIT/);assert.throws(()=>resolvePilotStage('three',4),/CANDIDATE_STAGE_LIMIT/);assert.throws(()=>resolvePilotStage('three',0),/CANDIDATE_STAGE_LIMIT/);
+});

@@ -63,10 +63,10 @@ export function pilotObservationReadyAt(starts:readonly number[],now:number,shor
 
 
 export type PilotStage='single'|'shadow'|'two'|'three';
-export function resolvePilotStage(value:unknown){
-  need(['single','shadow','two','three'].includes(String(value)),'PILOT_UNKNOWN_STAGE');const stage=value as PilotStage;
-  if(stage==='two'||stage==='three'){const number=stage==='two'?2:3,spec=CONCURRENT_PILOTS[number];return {stage,maximumCandidates:number,maximumPositions:number,concurrent:true,contract:spec.contract,contractSha256:spec.contractSha256,binding:{version:spec.contract.version,stage:number,contractSha256:spec.contractSha256,maxPositions:number} as PilotBinding};}
-  return {stage,maximumCandidates:stage==='shadow'?2:1,maximumPositions:1,concurrent:stage==='shadow',contract:PILOT_CONTRACT,contractSha256:PILOT_CONTRACT_SHA256,binding:{version:PILOT_VERSION,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1} as PilotBinding};
+export function resolvePilotStage(value:unknown,candidateLimit?:number){
+  need(['single','shadow','two','three'].includes(String(value)),'PILOT_UNKNOWN_STAGE');const stage=value as PilotStage;const observationLimit=(maximum:number)=>{const n=candidateLimit??maximum;need(Number.isSafeInteger(n)&&n>=1&&n<=maximum,'PILOT_CANDIDATE_STAGE_LIMIT');return n;};
+  if(stage==='two'||stage==='three'){const number=stage==='two'?2:3,spec=CONCURRENT_PILOTS[number];return {stage,maximumCandidates:observationLimit(number),maximumPositions:number,concurrent:true,contract:spec.contract,contractSha256:spec.contractSha256,binding:{version:spec.contract.version,stage:number,contractSha256:spec.contractSha256,maxPositions:number} as PilotBinding};}
+  return {stage,maximumCandidates:observationLimit(stage==='shadow'?2:1),maximumPositions:1,concurrent:stage==='shadow',contract:PILOT_CONTRACT,contractSha256:PILOT_CONTRACT_SHA256,binding:{version:PILOT_VERSION,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1} as PilotBinding};
 }
 
 export function recordPilotStageTransition<T extends {contractSha256:string;stageHistory?:Array<{runId:string;at:number;stage:PilotStage;contractSha256:string;previousContractSha256:string}>}>(manifest:T,stage:PilotStage,runId:string,at:number){
@@ -119,8 +119,8 @@ export function choosePilotPreparation(cached:Seed|null,seeds:readonly Seed[],no
   return cached?{seed:cached,kind:'verified-cache' as const,index:-1,preferFreshNext:true}:null;
 }
 
-export async function runPilot(directory:string,durationMs:number,resumeOnly=false,stage:PilotStage='single'){
-  const configuration=resolvePilotStage(stage);
+export async function runPilot(directory:string,durationMs:number,resumeOnly=false,stage:PilotStage='single',candidateLimit?:number){
+  const configuration=resolvePilotStage(stage,candidateLimit);
   assertPilotDirectory(directory);need(Number.isSafeInteger(durationMs)&&durationMs>=60000&&durationMs<=1800000,'PILOT_DURATION_BOUND');
   const globalLease=lease('/tmp/poe-public-component-20261027.lock'),pumpLease=lease('/tmp/poe-pumpapi-probe.lock');
   const manifestPath=join(directory,'pilot.json'),dbPath=join(directory,'ledger.sqlite'),stopPath=join(directory,'stop.request');
@@ -292,6 +292,6 @@ export async function runPilot(directory:string,durationMs:number,resumeOnly=fal
 async function main(){const args=process.argv.slice(2),command=args.shift()??'status',options=new Map<string,string>();while(args.length){const k=args.shift(),v=args.shift();need(k!==undefined&&k.startsWith('--')&&v!==undefined,'PILOT_ARGUMENTS');options.set(k.slice(2),v);}const directory=resolve(options.get('directory')??'/workspace/poe-pilot');
   if(command==='status'){assertPilotDirectory(directory);console.log(readFileSync(join(directory,'status.json'),'utf8'));return;}
   if(command==='stop'){assertPilotDirectory(directory);if(existsSync(join(directory,'stop.request'))){console.log('Graceful stop already requested.');return;}const fd=openSync(join(directory,'stop.request'),constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);writeFileSync(fd,new Date().toISOString());closeSync(fd);console.log('Graceful stop requested. Check status; open positions remain recorded.');return;}
-  need(command==='start'||command==='resume','PILOT_COMMAND');await runPilot(directory,Number(options.get('duration-seconds')??1800)*1000,command==='resume',resolvePilotStage(options.get('stage')??'single').stage);
+  need(command==='start'||command==='resume','PILOT_COMMAND');await runPilot(directory,Number(options.get('duration-seconds')??1800)*1000,command==='resume',resolvePilotStage(options.get('stage')??'single').stage,options.has('candidate-limit')?Number(options.get('candidate-limit')):undefined);
 }
 if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.url)void main().catch(e=>{console.error(safe(e));process.exitCode=1;});

@@ -84,3 +84,12 @@ node --import tsx --test test/progressive-pilot-fixture.test.ts test/progressive
 Synthetic liquidity changes are declared in the fixture evidence; original
 retained bytes and the genuine low-liquidity refusal remain intact. No fixture
 outcome is a natural trade or a production-capacity measurement.
+
+
+Observation concurrency can be bounded independently of financial stage. For the
+measured quiet-workload direction of up to three coherent holdings and two active
+candidates, use `--stage three --candidate-limit 2`. This retains the three-position
+financial contract and all baseline risk limits; it does not claim that three
+natural positions have been managed. Omitting the optional limit preserves each
+stage's default. Limits above a stage's candidate ceiling or outside1..3 refuse
+startup. The actual cap is frozen and recorded for each run.
