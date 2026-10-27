@@ -27,7 +27,9 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --include=dev
       - name: Typecheck, compile and regressions
-        run: npm run build && npm run compile && npm test
+        run: |
+          umask 077
+          npm run build && npm run compile && npm test
       - name: Inspect current public reporting path
         continue-on-error: true
         run: |
