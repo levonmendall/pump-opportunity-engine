@@ -13,20 +13,26 @@ import {chooseResearchWork,RESEARCH_DISPATCH,type DispatchDecision} from './rese
 
 const MIB=1024*1024;
 export const OVERNIGHT_FIELD_LIMITS=Object.freeze({connectionMs:30000,shutdownMs:5000,enrichmentAttempts:24,payloadBytes:65536,socketStopBytes:63*MIB,applicationStopBytes:62*MIB,hardSocketBytes:64*MIB,retainedBytes:5*MIB,cpuMs:20000,rssBytes:256*MIB,eventLoopLagMs:500});
+/** One separately approved diagnostic session. The caller's durable grant,
+ * total-run evidence limit and shared RPC budget remain authoritative. */
+export const SCHEDULER_FORWARD_FIELD_LIMITS=Object.freeze({...OVERNIGHT_FIELD_LIMITS,observationMs:75000,enrichmentAttempts:10,socketStopBytes:138*MIB,applicationStopBytes:136*MIB,hardSocketBytes:140*MIB});
 type RecordFn=(kind:string,data:unknown)=>void;
-export type OvernightFieldInput={scope:ActiveScope;budget:ComponentBudget;rpc:ComponentTransport;record:RecordFn;signal:AbortSignal;observationMs?:30000|70000|75000;protection?:{everyMs:2000;quote:(signal:AbortSignal,knownConfirmedSlot:number)=>Promise<unknown>};/** Corrected research dispatcher; legacy remains available only for comparison. */schedulerPolicy?:'bounded-deadline-v1';/** Rejected as a default:10ms phase jitter can starve all candidate work. Explicit offline research counterfactual only. */experimentalStrictStartReservation?:true};
+type FieldQualityFailure={at:number;reason:string;responsibility:'flow'|'protection'};
+export type OvernightFieldInput={scope:ActiveScope;budget:ComponentBudget;rpc:ComponentTransport;record:RecordFn;signal:AbortSignal;profile?:'scheduler-forward-approved';observationMs?:30000|70000|75000;protection?:{everyMs:2000;quote:(signal:AbortSignal,knownConfirmedSlot:number)=>Promise<unknown>};/** Corrected research dispatcher; legacy remains available only for comparison. */schedulerPolicy?:'bounded-deadline-v1';/** Rejected as a default:10ms phase jitter can starve all candidate work. Explicit offline research counterfactual only. */experimentalStrictStartReservation?:true};
 export type OvernightFieldDependencies={makeSocket?:(endpoint:string,options:WebSocket.ClientOptions)=>WebSocket;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number)=>Promise<void>};
 const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,110}$/.test(e.message)?e.message:'COMPONENT_FIELD_FAILURE';
 
 export async function captureOvernightFields(input:OvernightFieldInput,dependencies:OvernightFieldDependencies={}){
   if(input.signal.aborted)throw Error('COMPONENT_FIELD_ABORTED');
   if(input.rpc.budget!==input.budget)throw Error('COMPONENT_FIELD_SHARED_BUDGET_REQUIRED');
-  const observationMs=input.observationMs??30000;
+  const forwardProfile=input.profile==='scheduler-forward-approved',limits=forwardProfile?SCHEDULER_FORWARD_FIELD_LIMITS:OVERNIGHT_FIELD_LIMITS;
+  if(input.profile!==undefined&&!forwardProfile||forwardProfile&&(input.schedulerPolicy!=='bounded-deadline-v1'||!input.protection||input.observationMs!==undefined&&input.observationMs!==75000))throw Error('COMPONENT_FIELD_PROFILE_BOUNDS');
+  const observationMs=forwardProfile?SCHEDULER_FORWARD_FIELD_LIMITS.observationMs:input.observationMs??30000;
   if(![30000,70000,75000].includes(observationMs)||input.protection&&input.protection.everyMs!==2000||input.schedulerPolicy&&input.experimentalStrictStartReservation)throw Error('COMPONENT_FIELD_MONITORING_BOUNDS');
   const now=dependencies.now??Date.now,mono=dependencies.monotonic??(()=>performance.now()),sleep=dependencies.sleep??(ms=>new Promise(r=>setTimeout(r,ms)));
   const cpu0=process.cpuUsage(),connectionStartedAt=now(),connectionStartedMono=mono(),controller=new AbortController(),signal=AbortSignal.any([input.signal,controller.signal]);
-  let retainedBytes=0,recordingFailed=false;
-  const record:RecordFn=(kind,data)=>{if(recordingFailed)return;const size=Buffer.byteLength(JSON.stringify({kind,recordedAt:now(),data})+'\n');if(retainedBytes+size>OVERNIGHT_FIELD_LIMITS.retainedBytes){recordingFailed=true;throw Error('COMPONENT_FIELD_EVIDENCE_CAP');}retainedBytes+=size;try{input.record(kind,data);}catch{recordingFailed=true;throw Error('COMPONENT_FIELD_STORAGE_FAILURE');}};
+  let retainedBytes=0,recordingFailed=false,onQuality:((reason:string,responsibility:'flow'|'protection')=>void)=()=>{};
+  const record:RecordFn=(kind,data)=>{if(recordingFailed)return;const size=Buffer.byteLength(JSON.stringify({kind,recordedAt:now(),data})+'\n');if(retainedBytes+size>limits.retainedBytes){recordingFailed=true;throw Error('COMPONENT_FIELD_EVIDENCE_CAP');}retainedBytes+=size;try{input.record(kind,data);}catch{recordingFailed=true;throw Error('COMPONENT_FIELD_STORAGE_FAILURE');}if(kind==='research-quality-gap'||kind==='field-protection-gap'){const reason=data&&typeof data==='object'&&'reason'in data&&typeof data.reason==='string'?data.reason:'COMPONENT_FIELD_QUALITY_UNAVAILABLE';onQuality(reason,kind==='research-quality-gap'?'flow':'protection');}};
   const pipeline=new ActivePipeline({scope:input.scope,now,record}),mintBytes=Buffer.from(input.scope.mint),poolBytes=Buffer.from(input.scope.pool);
   const transactions:Record<string,unknown>={},hints:Record<string,{signature:string;receivedAt:number;requestedAt:number;availableAt:number}>={};
   let ws:WebSocket|undefined,openedAt:number|null=null,endedAt:number|null=null,stopReason:string|null=null,closed=false,seenSocketBytes=0,socketBytes=0,upgradeObservedBytes=0,applicationBytes=0,frames=0,parsedFrames=0,irrelevantFrames=0,enrichments=0,busy=false,workPromise:Promise<void>|null=null,maxLag=0,maxRss=0,maxCpu=0,lastTick=mono(),lastFeature=0;
@@ -34,6 +40,7 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
   let lowPriorityReservationDeferralChecks=0;
   let otherStartSinceProtection=false,advanceOutstanding=false,earlyEvaluations=0,schedulerWaits=0,schedulerRefusals=0;
   let openedMono:number|null=null,lastTrafficSampleMono=connectionStartedMono,trafficSamples=0;
+  let firstQualityFailure:FieldQualityFailure|null=null;
   const observationElapsed=()=>mono()-(input.schedulerPolicy&&openedMono!==null?openedMono:connectionStartedMono);
   const protectionOutcomes:Array<{scheduledAt:number;requestedAt:number;availableAt:number;deadlineAt:number;startDelayMs:number;requests:number;quoteAgeAtUseMs:number|null;usable:boolean;late:boolean;reason:string|null}>=[],protectionGaps:Array<{at:number;reason:string;blocksCombinedAcceptance:true}>=[],evaluationGapsMs:number[]=[];
   let resolveClosed!:()=>void;const closedPromise=new Promise<void>(r=>{resolveClosed=r;});
@@ -41,13 +48,20 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
     if(stopReason)return;stopReason=reason;endedAt=now();
     try{if(openedAt!==null){if(gap)pipeline.gap(reason,endedAt);pipeline.endObservation(endedAt,reason);}}finally{ws?.terminate();}
   };
+  onQuality=(reason,responsibility)=>{
+    // A2s reference miss is diagnostic: no maximum completed-evaluation gap
+    // has been accepted. Invalid/missing pricing and flow evidence are fatal
+    // for this single forward diagnostic; the legacy comparison is unchanged.
+    if(!forwardProfile||stopReason||responsibility==='protection'&&['COMPONENT_PROTECTION_MISSED_SCHEDULE','COMPONENT_PROTECTION_LATE_EVALUATION'].includes(reason))return;
+    firstQualityFailure={at:now(),reason,responsibility};stop('COMPONENT_FIELD_FIRST_QUALITY_FAILURE');
+  };
   const abort=()=>{controller.abort();try{stop('COMPONENT_FIELD_ABORTED',true);}catch{ws?.terminate();}};input.signal.addEventListener('abort',abort,{once:true});
   const sampleSocket=()=>{
     const n=(ws as unknown as {_socket?:{bytesRead?:number}})?._socket?.bytesRead;
     if(!Number.isSafeInteger(n)||Number(n)<seenSocketBytes)throw Error('COMPONENT_FIELD_SOCKET_COUNTER');
     seenSocketBytes=Number(n);socketBytes=seenSocketBytes;
-    if(socketBytes>=OVERNIGHT_FIELD_LIMITS.hardSocketBytes){stop('COMPONENT_FIELD_HARD_BYTE_CAP',true);return;}
-    if(socketBytes>=OVERNIGHT_FIELD_LIMITS.socketStopBytes)stop('COMPONENT_FIELD_SOCKET_STOP',true);
+    if(socketBytes>=limits.hardSocketBytes){stop('COMPONENT_FIELD_HARD_BYTE_CAP',true);return;}
+    if(socketBytes>=limits.socketStopBytes)stop('COMPONENT_FIELD_SOCKET_STOP',true);
   };
   const resources=()=>{
     const current=mono(),lag=Math.max(0,current-lastTick-100);lastTick=current;maxLag=Math.max(maxLag,lag);maxRss=Math.max(maxRss,process.memoryUsage().rss);const cpu=process.cpuUsage(cpu0);maxCpu=Math.max(maxCpu,(cpu.user+cpu.system)/1000);
@@ -73,6 +87,7 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
           decision=chooseResearchWork({now:at,readyAt:gate.readyAt,physicalBusy:gate.physicalBusy,nextProtectionAt,otherStartSinceProtection,advanceOutstanding:advanceOutstanding||earlyEvaluations>=5,jobs:peek?[{id:peek.hint.signature,kind:'enrichment',enqueuedAt:peek.hint.receivedAt,eligibleAt:peek.eligibleAt,deadlineAt:peek.deadlineAt,operationBoundMs:bound}]:[]});
           if(decision.kind!=='refuse')break;
           schedulerRefusals++;record('shared-scheduler-refusal',{at,decision,windowUnusable:true});pipeline.refuseHint(decision.job.id,'COMPONENT_ENRICHMENT_DEADLINE_INFEASIBLE',at);
+          if(stopReason)return;
           // Reconsider due protection immediately, not16*100ms later.
         }
         if(decision?.kind==='wait'){schedulerWaits++;return;}
@@ -122,7 +137,7 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
       }
       const hint=pipeline.nextHint(now());if(pipeline.hasQualityLoss&&!input.protection){stop('COMPONENT_FIELD_SELECTED_WINDOW_UNUSABLE',true);return;}if(!hint)return;
       if(input.schedulerPolicy&&(decision?.kind!=='job'||decision.job.id!==hint.signature))throw Error('COMPONENT_ENRICHMENT_DISPATCH_IDENTITY');
-      if(enrichments>=24){pipeline.failHint('COMPONENT_FIELD_ENRICHMENT_CAP',now());enrichmentClosed=true;issue('COMPONENT_FIELD_ENRICHMENT_CAP');return;}
+      if(enrichments>=limits.enrichmentAttempts){pipeline.failHint('COMPONENT_FIELD_ENRICHMENT_CAP',now());enrichmentClosed=true;issue('COMPONENT_FIELD_ENRICHMENT_CAP');return;}
       enrichments++;const requestedAt=now(),before=input.budget.calls;
       if(input.schedulerPolicy){otherStartSinceProtection=true;advanceOutstanding=false;}
       const options=decision?.kind==='job'?{latestStartAt:decision.latestStartAt,timeoutMs:Math.min(1000,Math.max(1,decision.job.operationBoundMs-RESEARCH_DISPATCH.postProcessingReserveMs))}:{};
@@ -151,12 +166,12 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
         const rawSocket=(ws as unknown as {_socket?:{prependListener?:(event:string,listener:()=>void)=>void}})._socket;
         if(!rawSocket?.prependListener)throw Error('COMPONENT_FIELD_PREPARSE_COUNTER_REQUIRED');
         rawSocket.prependListener('data',()=>{try{sampleSocket();}catch{try{stop('COMPONENT_FIELD_SOCKET_COUNTER',true);}catch{ws?.terminate();}}});
-        openedAt=now();openedMono=mono();nextProtectionAt=openedAt;pipeline.open(openedAt);op.completeResponse();record('field-stream-open',{endpoint:PUMPAPI_STREAM,at:openedAt,upgradeObservedBytes,dataOnly:true,subscriptionMessagesSent:0,observationMs,observationFromOpen:Boolean(input.schedulerPolicy),protectionEveryMs:input.protection?.everyMs??null});settle();
+        openedAt=now();openedMono=mono();nextProtectionAt=openedAt;pipeline.open(openedAt);op.completeResponse();record('field-stream-open',{endpoint:PUMPAPI_STREAM,at:openedAt,upgradeObservedBytes,dataOnly:true,subscriptionMessagesSent:0,profile:input.profile??'legacy',observationMs,observationFromOpen:Boolean(input.schedulerPolicy),protectionEveryMs:input.protection?.everyMs??null});settle();
       }catch(e){settle(Error(safe(e)));try{stop(safe(e),true);}catch{ws?.terminate();}}});
       ws.on('message',raw=>{try{
         const receivedAt=now(),b=Array.isArray(raw)?Buffer.concat(raw):typeof raw==='string'?Buffer.from(raw):Buffer.from(raw as ArrayBuffer);frames++;applicationBytes+=b.byteLength;sampleSocket();
         if(b.byteLength>65536){stop('COMPONENT_FIELD_OVERSIZE_PAYLOAD',true);return;}
-        if(applicationBytes>=62*MIB){stop('COMPONENT_FIELD_APPLICATION_STOP',true);return;}
+        if(applicationBytes>=limits.applicationStopBytes){stop('COMPONENT_FIELD_APPLICATION_STOP',true);return;}
         if(observationElapsed()>=observationMs){stop('COMPONENT_FIELD_DURATION_LIMIT');return;}
         if(stopReason)return;
         if(!b.includes(mintBytes)&&!b.includes(poolBytes)){irrelevantFrames++;return;}
@@ -197,5 +212,5 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
   }
   const state=pipeline.snapshot(now());
   const sortedGaps=[...evaluationGapsMs].sort((a,b)=>a-b);
-  return {...state,mode:input.protection?input.schedulerPolicy?'COMBINED_FIELD_AND_2S_TARGET_PROTECTION_RESEARCH':'COMBINED_FIELD_AND_FIXED_2S_PROTECTION_RESEARCH':'FIELD_ONLY_RESEARCH',connectionStartedAt,openedAt,endedAt,observationMs,openMs:openedAt===null||endedAt===null?0:endedAt-openedAt,elapsedMs:mono()-connectionStartedMono,stopReason,frames,applicationBytes,socketBytes,broadSocketBytes:Math.max(0,socketBytes-upgradeObservedBytes),upgradeObservedBytes,parsedFrames,irrelevantFrames,enrichments,enrichmentClosed,selectedMessagesAfterEnrichmentClosed,knownConfirmedSlot,retainedBytes,recordingFailed,sharedScheduler:{policy:input.schedulerPolicy??'legacy',schedulerWaits,schedulerRefusals,earlyEvaluations,earlyEvaluationCap:5,totalProtectionCap:43,phaseChangesAreEquivalent:false,acceptedMaximumCompletedEvaluationGapMs:null,timingContract:{targetPollingMs:2000,quoteAgeAtUseMs:2000,sourceStateAgeMs:30000,enrichmentDelayMs:1000,enrichmentCompletionDeadlineMs:5000,postProcessingReserveMs:200,dispatchQuantumMs:100},completedGapsOverTarget:evaluationGapsMs.filter(n=>n>2000).length,maximumTargetStartMissMs:protectionOutcomes.length?Math.max(0,...protectionOutcomes.map(x=>x.startDelayMs)):null},candidateRpcAdmission:{experimentalStrictStartReservation:input.experimentalStrictStartReservation===true,followingProtectionStartReserveMs:input.experimentalStrictStartReservation===true?1000:null,usesActualAndBaselineStarts:input.experimentalStrictStartReservation===true,hypothesisStatus:'REJECTED_AS_DEFAULT:10ms phase jitter can starve candidates; no live capacity improvement established.',lowPriorityReservationDeferralChecks,deferralCounterMeaning:'Loop admission checks, not dropped trades or distinct rejected candidates.'},resources:{peakRssBytes:maxRss,peakCpuMs:maxCpu,peakEventLoopLagMs:maxLag},physicalSlotUncertain:busy||input.budget.inFlight!==0||Boolean(ws&&!closed),enrichmentTransactions:transactions,enrichmentHints:hints,qualificationEnabled:false,complete60SecondFeatureWindows:0,combinedAcceptance:false,priceAttempts,protection:{everyMs:input.protection?.everyMs??null,attempts:priceAttempts,unavailable:protectionUnavailable,unavailableQuoteFraction:priceAttempts?protectionUnavailable/priceAttempts:null,pricingCacheUnavailableFraction:state.prices.freshCacheFraction===null?null:1-state.prices.freshCacheFraction,missedSchedules:missedProtectionSchedules,maxCompletedEvaluationGapMs:maxEvaluationGapMs,p95CompletedEvaluationGapMs:sortedGaps.length?sortedGaps[Math.ceil(sortedGaps.length*.95)-1]:null,maxUsableEvaluationGapMs,maximumScheduleDelayMs:protectionOutcomes.length?Math.max(...protectionOutcomes.map(r=>r.startDelayMs)):null,gaps:protectionGaps,serviceQuality:input.protection?protectionGaps.length?'UNAVAILABLE_OR_MISSED_DEADLINE':'NO_PROTECTION_GAP_OBSERVED':'NOT_TESTED',outcomes:protectionOutcomes},streamTrafficAccounting:'Full socket bytesRead includes upgrade prefix; upgrade prefix also conservatively charged to RPC-related WS. Broad application/socket traffic is not charged as RPC notifications.',apiDataFeesUsd:'0 documented public/data-only endpoints; infrastructure transfer allocation unverified'};
+  return {...state,profile:input.profile??'legacy',profileLimits:{observationMs,hardSocketBytes:limits.hardSocketBytes,socketStopBytes:limits.socketStopBytes,applicationStopBytes:limits.applicationStopBytes,enrichmentAttempts:limits.enrichmentAttempts,fieldRetainedBytes:limits.retainedBytes,stopOnFirstQualityFailure:forwardProfile},firstQualityFailure:firstQualityFailure as FieldQualityFailure|null,mode:input.protection?input.schedulerPolicy?'COMBINED_FIELD_AND_2S_TARGET_PROTECTION_RESEARCH':'COMBINED_FIELD_AND_FIXED_2S_PROTECTION_RESEARCH':'FIELD_ONLY_RESEARCH',connectionStartedAt,openedAt,endedAt,observationMs,openMs:openedAt===null||endedAt===null?0:endedAt-openedAt,elapsedMs:mono()-connectionStartedMono,stopReason,frames,applicationBytes,socketBytes,broadSocketBytes:Math.max(0,socketBytes-upgradeObservedBytes),upgradeObservedBytes,parsedFrames,irrelevantFrames,enrichments,enrichmentClosed,selectedMessagesAfterEnrichmentClosed,knownConfirmedSlot,retainedBytes,recordingFailed,sharedScheduler:{policy:input.schedulerPolicy??'legacy',schedulerWaits,schedulerRefusals,earlyEvaluations,earlyEvaluationCap:5,totalProtectionCap:43,phaseChangesAreEquivalent:false,acceptedMaximumCompletedEvaluationGapMs:null,timingContract:{targetPollingMs:2000,quoteAgeAtUseMs:2000,sourceStateAgeMs:30000,enrichmentDelayMs:1000,enrichmentCompletionDeadlineMs:5000,postProcessingReserveMs:200,dispatchQuantumMs:100},completedGapsOverTarget:evaluationGapsMs.filter(n=>n>2000).length,maximumTargetStartMissMs:protectionOutcomes.length?Math.max(0,...protectionOutcomes.map(x=>x.startDelayMs)):null},candidateRpcAdmission:{experimentalStrictStartReservation:input.experimentalStrictStartReservation===true,followingProtectionStartReserveMs:input.experimentalStrictStartReservation===true?1000:null,usesActualAndBaselineStarts:input.experimentalStrictStartReservation===true,hypothesisStatus:'REJECTED_AS_DEFAULT:10ms phase jitter can starve candidates; no live capacity improvement established.',lowPriorityReservationDeferralChecks,deferralCounterMeaning:'Loop admission checks, not dropped trades or distinct rejected candidates.'},resources:{peakRssBytes:maxRss,peakCpuMs:maxCpu,peakEventLoopLagMs:maxLag},physicalSlotUncertain:busy||input.budget.inFlight!==0||Boolean(ws&&!closed),enrichmentTransactions:transactions,enrichmentHints:hints,qualificationEnabled:false,complete60SecondFeatureWindows:0,combinedAcceptance:false,priceAttempts,protection:{everyMs:input.protection?.everyMs??null,attempts:priceAttempts,unavailable:protectionUnavailable,unavailableQuoteFraction:priceAttempts?protectionUnavailable/priceAttempts:null,pricingCacheUnavailableFraction:state.prices.freshCacheFraction===null?null:1-state.prices.freshCacheFraction,missedSchedules:missedProtectionSchedules,maxCompletedEvaluationGapMs:maxEvaluationGapMs,p95CompletedEvaluationGapMs:sortedGaps.length?sortedGaps[Math.ceil(sortedGaps.length*.95)-1]:null,maxUsableEvaluationGapMs,maximumScheduleDelayMs:protectionOutcomes.length?Math.max(...protectionOutcomes.map(r=>r.startDelayMs)):null,gaps:protectionGaps,serviceQuality:input.protection?protectionGaps.length?'UNAVAILABLE_OR_MISSED_DEADLINE':'NO_PROTECTION_GAP_OBSERVED':'NOT_TESTED',outcomes:protectionOutcomes},streamTrafficAccounting:'Full socket bytesRead includes upgrade prefix; upgrade prefix also conservatively charged to RPC-related WS. Broad application/socket traffic is not charged as RPC notifications.',apiDataFeesUsd:'0 documented public/data-only endpoints; infrastructure transfer allocation unverified'};
 }
