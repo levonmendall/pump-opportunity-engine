@@ -127,3 +127,127 @@ test('slow validation or recording cannot refresh the original receive time into
     });
   }
 });
+
+function multiFixture(){
+  const runs=['2026-10-26T19-42-16.130Z','2026-10-26T19-57-35.882Z','2026-10-26T23-32-41.255Z'];
+  const retained=runs.map(run=>{
+    const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));
+    const rows=readFileSync(`evidence/integration-${run}.ndjson`,'utf8').trim().split('\n').map(x=>JSON.parse(x));
+    return {proof,state:copy(rows.find(x=>x.kind==='pool-state').data)};
+  });
+  const slot=Math.max(...retained.map(r=>r.state.context.slot)),unix=Math.max(...retained.map(r=>r.proof.quote.marketBlockTime));
+  // SYNTHETIC union/context made from three separate retained pool captures.
+  // This tests batch decoding/scheduling equivalence, NOT a naturally observed
+  // simultaneous three-pool bank or live Clock state. Shared configurations are
+  // taken from the first capture and supplied identically to both decoders.
+  const accounts=new Map<string,PoolWireAccount|null>();
+  for(const r of retained)for(let i=0;i<7;i++)if(!accounts.has(r.state.addresses[i]))accounts.set(r.state.addresses[i],copy(r.state.value[i]));
+  const raw=Buffer.alloc(40);raw.writeBigUInt64LE(BigInt(slot));raw.writeBigInt64LE(BigInt(unix),32);
+  const clock:PoolWireAccount={owner:'Sysvar1111111111111111111111111111111111111',data:[raw.toString('base64'),'base64'],lamports:1169280,executable:false,rentEpoch:0};
+  accounts.set(SYSVAR_CLOCK_PUBKEY.toBase58(),clock);
+  const requests=retained.map(r=>({mint:new PublicKey(r.proof.quote.mint),fullBaseUnits:BigInt(r.proof.quote.buy.outputBaseUnits)*2n+1n,minSlot:r.proof.origin.slot}));
+  const calls:Array<{method:string;params:unknown[]}>=[],records:Array<{kind:string;data:any}>=[];
+  const context={slot};
+  const rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{
+    calls.push({method,params:copy(params)});
+    if(method==='getBlockTime')return unix as T;
+    assert.equal(method,'getMultipleAccounts');const addresses=params[0] as string[];
+    return {context:copy(context),value:addresses.map(a=>copy(accounts.get(a)??null))} as T;
+  }};
+  const rec={record(kind:string,data:unknown){records.push({kind,data:copy(data)});}};
+  return {retained,accounts,clock,requests,calls,records,rpc,rec,context,unix};
+}
+async function withMultiTime<T>(fn:(f:ReturnType<typeof multiFixture>)=>Promise<T>){
+  const f=multiFixture(),realNow=Date.now;Date.now=()=>f.unix*1000+100;
+  try{return await fn(f);}finally{Date.now=realNow;}
+}
+
+test('three holdings share one complete16-account Clock batch with exact established full-size quotes',async()=>withMultiTime(async f=>{
+  const baseline=await quotePositionsSell(f.rpc as ReadOnlyRpc,f.requests,{record(){}});assert.equal(Object.keys(baseline.quotes).length,3);
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);let before=f.calls.length;
+  const first=await p.quoteMany(f.requests);assert.equal(f.calls.length-before,2);
+  before=f.calls.length;const second=await p.quoteMany(f.requests);assert.equal(f.calls.length-before,1);
+  for(const result of [first,second]){
+    assert.deepEqual(result.unavailable,{});assert.equal(result.context?.slot,f.context.slot);
+    for(const r of f.requests){const name=r.mint.toBase58(),quote=result.quotes[name]!;
+      assert.deepEqual(quote.sell,baseline.quotes[name]!.sell);assert.deepEqual(quote.feeBps,baseline.quotes[name]!.feeBps);
+      assert.equal(quote.sell.inputBaseUnits,r.fullBaseUnits.toString());assert.equal(quote.slot,result.context!.slot);assert.equal(quote.clockSlot,quote.slot);
+      assert.equal(quote.receivedAt,result.context!.receivedAt);assert.equal('marketBlockTime' in quote,false);
+    }
+  }
+  const batches=f.records.filter(r=>r.kind==='research-clock-pool-state');assert.equal(batches.length,2);
+  assert.ok(batches.every(r=>r.data.addresses.length===16&&new Set(r.data.addresses).size===16));
+  assert.equal(p.usage().networkCalls,3);assert.equal(p.usage().linkCacheHits,3);
+  assert.equal(Object.keys(p.usage().cachedPoolSlots).length,3);
+}));
+
+test('one missing holding dependency is isolated, while other holdings retain coherent quotes and reusable links',async()=>withMultiTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.quoteMany(f.requests);
+  const name=f.requests[0]!.mint.toBase58(),vault=f.retained[0]!.state.addresses[6],saved=copy(f.accounts.get(vault));f.accounts.set(vault,null);
+  const before=f.calls.length,result=await p.quoteMany(f.requests);assert.equal(f.calls.length-before,1);
+  assert.equal(result.quotes[name],undefined);assert.equal(result.unavailable[name],'MISSING_ACCOUNT');assert.equal(Object.keys(result.quotes).length,2);
+  assert.equal(Object.keys(p.usage().cachedPoolSlots).length,2);assert.ok(!Object.hasOwn(p.usage().cachedPoolSlots,name));
+  assert.ok(Object.values(result.quotes).every(q=>q.slot===result.context!.slot&&q.receivedAt===result.context!.receivedAt));
+  f.accounts.set(vault,saved??null);const again=f.calls.length,recovered=await p.quoteMany(f.requests);assert.equal(f.calls.length-again,2);
+  assert.equal(Object.keys(recovered.quotes).length,3);assert.deepEqual(recovered.unavailable,{});
+}));
+
+test('one changed pool link cannot borrow old vault data or invalidate unaffected holding quotes',async()=>withMultiTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.quoteMany(f.requests);
+  const pool=f.retained[0]!.state.addresses[0],original=copy(f.accounts.get(pool))!;
+  const changed=copy(original),data=Buffer.from(changed.data[0],'base64');data[175]=data[175]!^1;changed.data[0]=data.toString('base64');f.accounts.set(pool,changed);
+  const before=f.calls.length,result=await p.quoteMany(f.requests);assert.equal(f.calls.length-before,1);
+  const name=f.requests[0]!.mint.toBase58();assert.equal(result.unavailable[name],'POOL_LINKS_CHANGED');assert.equal(result.quotes[name],undefined);assert.equal(Object.keys(result.quotes).length,2);
+  assert.equal(Object.keys(p.usage().cachedPoolSlots).length,2);
+  f.accounts.set(pool,original);const next=f.calls.length;await p.quoteMany(f.requests);assert.equal(f.calls.length-next,2);
+}));
+
+test('common Clock or context faults invalidate every cached holding without losing verified slot floors',async()=>{
+  for(const fault of ['clock','context'])await withMultiTime(async f=>{
+    const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.quoteMany(f.requests);const floors=copy(p.usage().highestHoldingSlots),highest=p.usage().highestVerifiedSlot;
+    if(fault==='clock')f.clock.owner=PublicKey.default.toBase58();else f.context.slot--;
+    const before=f.calls.length;await assert.rejects(p.quoteMany(f.requests),/RESEARCH_CLOCK_/);assert.equal(f.calls.length-before,1);
+    assert.deepEqual(p.usage().cachedPoolSlots,{});assert.deepEqual(p.usage().highestHoldingSlots,floors);assert.equal(p.usage().highestVerifiedSlot,highest);
+  });
+});
+
+test('missing discovery pool is isolated before dependency union and no duplicate/capacity request can start',async()=>withMultiTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),pool=f.retained[0]!.state.addresses[0];f.accounts.set(pool,null);
+  const result=await p.quoteMany(f.requests);assert.equal(f.calls.length,2);assert.equal(Object.keys(result.quotes).length,2);
+  assert.equal(result.unavailable[f.requests[0]!.mint.toBase58()],'BAD_POOL_OWNER');
+  assert.equal((f.calls[1]!.params[0] as string[]).length,12);
+  const before=f.calls.length;
+  await assert.rejects(p.quoteMany([]),/POSITION_BATCH_CAPACITY/);
+  await assert.rejects(p.quoteMany([...f.requests,f.requests[0]!] ),/POSITION_BATCH_CAPACITY/);
+  await assert.rejects(p.quoteMany([f.requests[1]!,f.requests[1]!] ),/DUPLICATE_POSITION_MINT/);
+  assert.equal(f.calls.length,before);
+}));
+
+test('an all-unavailable newer bank still prevents recovery from an older favorable snapshot',async()=>withMultiTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.quoteMany(f.requests);
+  const saved=f.retained.map(r=>({address:r.state.addresses[6] as string,wire:copy(f.accounts.get(r.state.addresses[6]))}));
+  f.context.slot++;const b=Buffer.from(f.clock.data[0],'base64');b.writeBigUInt64LE(BigInt(f.context.slot));f.clock.data[0]=b.toString('base64');
+  for(const entry of saved)f.accounts.set(entry.address,null);
+  const unavailable=await p.quoteMany(f.requests);assert.deepEqual(unavailable.quotes,{});assert.equal(Object.keys(unavailable.unavailable).length,3);
+  assert.equal(p.usage().highestVerifiedSlot,f.context.slot);
+  for(const entry of saved)f.accounts.set(entry.address,entry.wire??null);
+  f.context.slot--;await assert.rejects(p.quoteMany(f.requests),/REGRESSING/);
+}));
+
+test('bank source-age is rechecked at return even when the batch itself remains within two seconds',async()=>withTime(async f=>{
+  let now=f.proof.quote.marketBlockTime*1000+29_500;Date.now=()=>now;
+  const rec={record(kind:string,data:unknown){f.rec.record(kind,data);if(kind==='research-clock-position-sell-quote')now+=600;}};
+  const p=new ResearchClockPositionPricer(f.rpc,rec);
+  await assert.rejects(p.quote(f.request),/RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS/);
+  assert.equal(p.usage().cachedPoolSlot,null);
+}));
+
+test('unsupported mint extensions keep the exact refusal and isolate the affected holding',async()=>withMultiTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.quoteMany(f.requests);
+  const mint=f.retained[0]!.state.addresses[3],wire=copy(f.accounts.get(mint))!,raw=Buffer.from(wire.data[0],'base64');
+  // Explicit synthetic TLV type mutation, not an observed token change.
+  raw.writeUInt16LE(1,166);wire.data[0]=raw.toString('base64');f.accounts.set(mint,wire);
+  const result=await p.quoteMany(f.requests),name=f.requests[0]!.mint.toBase58();
+  assert.equal(result.unavailable[name],'UNMODELED_BASE_EXTENSION:TransferFeeConfig');assert.equal(Object.keys(result.quotes).length,2);
+  await assert.rejects(p.quote(f.requests[0]!),/UNMODELED_BASE_EXTENSION:TransferFeeConfig/);
+}));

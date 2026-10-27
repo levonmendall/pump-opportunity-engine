@@ -1,0 +1,145 @@
+{
+  "classification": "OFFLINE_COMPARISON_SUMMARY_NOT_NATURAL_PERFORMANCE",
+  "sourceSha256": "f2232d13c5e261bd845ebb6f7c4e53f68299877c3cf1195722e097b5fe147b50",
+  "syntheticCases": 12,
+  "casePhasePairs": 28,
+  "scheduleComparisons": 168,
+  "loadComparisons": 180,
+  "naturalPriceChanges": 0,
+  "policies": [
+    {
+      "policy": "fixed-2s",
+      "quietPricingRequests120s": 60,
+      "highChurnPricingRequests120s": 60,
+      "quietPricingRequestsPerHour": 1800,
+      "quietUnavailableCacheFraction": 0.1,
+      "quietMaximumFreshEvaluationGapMs": 2000,
+      "allStressMaximumFreshEvaluationGapMs": 20200,
+      "allStressMaximumRecognizedExitDelayMs": 16100,
+      "missedEpisodesWhileStillOpen": 0,
+      "thresholdEpisodesWhileStillOpen": 25,
+      "filled": 26,
+      "unresolved": 2,
+      "staleQuotesUsed": 0,
+      "monitoringCpuMsPer120sMedian": 5.3315,
+      "sameEvidenceDifferencesFrom2s": {
+        "additionalMissedWhileOpen": 0,
+        "lowerFilledProceeds": 0,
+        "lostBaselineFills": 0,
+        "matchedCasePhaseComparisons": 28
+      }
+    },
+    {
+      "policy": "fixed-5s",
+      "quietPricingRequests120s": 24,
+      "highChurnPricingRequests120s": 24,
+      "quietPricingRequestsPerHour": 720,
+      "quietUnavailableCacheFraction": 0.64,
+      "quietMaximumFreshEvaluationGapMs": 5000,
+      "allStressMaximumFreshEvaluationGapMs": 20000,
+      "allStressMaximumRecognizedExitDelayMs": 14900,
+      "missedEpisodesWhileStillOpen": 4,
+      "thresholdEpisodesWhileStillOpen": 27,
+      "filled": 24,
+      "unresolved": 4,
+      "staleQuotesUsed": 0,
+      "monitoringCpuMsPer120sMedian": 2.0685000000000002,
+      "sameEvidenceDifferencesFrom2s": {
+        "additionalMissedWhileOpen": 4,
+        "lowerFilledProceeds": 4,
+        "lostBaselineFills": 2,
+        "matchedCasePhaseComparisons": 28
+      }
+    },
+    {
+      "policy": "fixed-10s",
+      "quietPricingRequests120s": 12,
+      "highChurnPricingRequests120s": 12,
+      "quietPricingRequestsPerHour": 360,
+      "quietUnavailableCacheFraction": 0.82,
+      "quietMaximumFreshEvaluationGapMs": 10000,
+      "allStressMaximumFreshEvaluationGapMs": 30000,
+      "allStressMaximumRecognizedExitDelayMs": 19900,
+      "missedEpisodesWhileStillOpen": 15,
+      "thresholdEpisodesWhileStillOpen": 30,
+      "filled": 16,
+      "unresolved": 12,
+      "staleQuotesUsed": 0,
+      "monitoringCpuMsPer120sMedian": 1.8695,
+      "sameEvidenceDifferencesFrom2s": {
+        "additionalMissedWhileOpen": 15,
+        "lowerFilledProceeds": 11,
+        "lostBaselineFills": 10,
+        "matchedCasePhaseComparisons": 28
+      }
+    },
+    {
+      "policy": "hybrid-5s",
+      "quietPricingRequests120s": 24,
+      "highChurnPricingRequests120s": 60,
+      "quietPricingRequestsPerHour": 720,
+      "quietUnavailableCacheFraction": 0.64,
+      "quietMaximumFreshEvaluationGapMs": 5000,
+      "allStressMaximumFreshEvaluationGapMs": 20600,
+      "allStressMaximumRecognizedExitDelayMs": 15500,
+      "missedEpisodesWhileStillOpen": 2,
+      "thresholdEpisodesWhileStillOpen": 27,
+      "filled": 26,
+      "unresolved": 2,
+      "staleQuotesUsed": 0,
+      "monitoringCpuMsPer120sMedian": 2.123,
+      "sameEvidenceDifferencesFrom2s": {
+        "additionalMissedWhileOpen": 2,
+        "lowerFilledProceeds": 6,
+        "lostBaselineFills": 0,
+        "matchedCasePhaseComparisons": 28
+      }
+    },
+    {
+      "policy": "adaptive",
+      "quietPricingRequests120s": 24,
+      "highChurnPricingRequests120s": 60,
+      "quietPricingRequestsPerHour": 720,
+      "quietUnavailableCacheFraction": 0.64,
+      "quietMaximumFreshEvaluationGapMs": 5000,
+      "allStressMaximumFreshEvaluationGapMs": 20600,
+      "allStressMaximumRecognizedExitDelayMs": 15500,
+      "missedEpisodesWhileStillOpen": 2,
+      "thresholdEpisodesWhileStillOpen": 27,
+      "filled": 26,
+      "unresolved": 2,
+      "staleQuotesUsed": 0,
+      "monitoringCpuMsPer120sMedian": 4.1095,
+      "sameEvidenceDifferencesFrom2s": {
+        "additionalMissedWhileOpen": 2,
+        "lowerFilledProceeds": 6,
+        "lostBaselineFills": 0,
+        "matchedCasePhaseComparisons": 28
+      }
+    },
+    {
+      "policy": "adaptive-quiet",
+      "quietPricingRequests120s": 19,
+      "highChurnPricingRequests120s": 60,
+      "quietPricingRequestsPerHour": 570,
+      "quietUnavailableCacheFraction": 0.715,
+      "quietMaximumFreshEvaluationGapMs": 10000,
+      "allStressMaximumFreshEvaluationGapMs": 20600,
+      "allStressMaximumRecognizedExitDelayMs": 15500,
+      "missedEpisodesWhileStillOpen": 2,
+      "thresholdEpisodesWhileStillOpen": 27,
+      "filled": 26,
+      "unresolved": 2,
+      "staleQuotesUsed": 0,
+      "monitoringCpuMsPer120sMedian": 2.8745,
+      "sameEvidenceDifferencesFrom2s": {
+        "additionalMissedWhileOpen": 2,
+        "lowerFilledProceeds": 6,
+        "lostBaselineFills": 0,
+        "matchedCasePhaseComparisons": 28
+      }
+    }
+  ],
+  "decision": "Reject blanket5splusnotificationreplacement:quiet savings60%,highchurnsavings0%,additionalmissedstopcasesunderhealthysilentnotificationloss. Preferresearchvalidationofcoherentbatchingwithoutslowingcadence.",
+  "scope": "OneSDKdeep-liquidityseed,0.01SOLtestholding; notifications150ms andRPC200ms modeled. CPUmonitoringonly; pairedwallincludeslifecycle. NoaggregatePnL/edgeinferencefromsyntheticcases."
+}

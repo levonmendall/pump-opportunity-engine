@@ -5,15 +5,18 @@ reconciled the original account with0fills/positions and entries disabled.**
 This task was offline and makes no new host/dashboard freshness claim. No
 production restart/deployment, account reset or acceptance-clock start.
 
-Current two-call/every-two-second pricing plus per-transaction enrichment is
-**unsuitable for the unchanged60RPC/minute combined workload**. Offline work
-added actual selection pacing, durable rejection reasons/expiry, and research-only
-one-call Clock-batch pricing with shared decoder/math. A one-candidate/one-held
-pool54+6request proposal is conditional on live Clock/response/burst validation.
-No verified continuous free production configuration yet. See
-[docs/FREE_DATA_EVALUATION.md](docs/FREE_DATA_EVALUATION.md).
+Latest adaptive evaluation rejects a blanket5s/event-triggered replacement:
+synthetic quiet requests fell60%, high-churn savings vanished, and silent
+notification loss produced extra missed stops. Prefer equivalent coherent
+batching and quote-reuse review before slower protection or another screen.
+The development trader already evaluates10s buckets and held exits already omit
+other-trader enrichment; neither gets duplicate savings credit. The flow baseline
+and all production risk/quote rules remain unchanged. Price-only entry economics
+are not assessable from the retained quiet/isolated-sell data. See
+[docs/ADAPTIVE_MONITORING_EVALUATION.md](docs/ADAPTIVE_MONITORING_EVALUATION.md).
 
-No owner-only action, new budget, provider access or live measurement is requested.
+No infrastructure/access action or extra budget is requested. A concrete optional
+next live-research component needs a new explicit grant; none ran automatically.
 The existing429/counters and all prior receipts remain intact. PAPER entries and
 **LIVE TRADING remain DISABLED; edge UNPROVEN.**
 
@@ -54,6 +57,34 @@ C2account/inception, positions/trades0 and reconciledtrue. Accepted new snapshot
 and matching fresh facts prove reporting progress, not an independent DB audit.
 See active-continuation-production-check.json and the earlier service/status receipts in
 the same directory.
+
+## Adaptive monitoring and data-reduction evaluation — 2026-10-27
+
+Offline work only; production account/inception/dashboard were not modified.
+Read docs/ADAPTIVE_MONITORING_EVALUATION.md. The blanket5s+trigger replacement
+fails the frozen protection comparison: quiet pricing60→24requests/120s,
+high-churn60→60, two additional missed lifecycle episodes under silent losses.
+Fixed10s missed15episodes in the synthetic phase grid. No natural price move,
+profitable trade, live capacity or new unattended interval was demonstrated.
+
+Prefer equivalent batching first: quoteMany1–3holdings uses8/12/16coherentaccounts,
+2cold/1steady reads, preserving decoder/math. Three-held2s pricing90→30/minute
+is a conditional67% saving over unbatched reads without slower cadence. New
+post-delay context/quote reuse has offline coordinator/ledger proof only.
+
+No new screening layer was added to the trader. Existing10s candidate buckets
+and zero held-token enrichment receive no duplicate saving credit. Three entry
+approaches were compared as isolated mechanics; the extra price gate delayed
+first signal60→70s and cost55→58calls in the sustained fixture. Price-only
+challenger economics remain unassessable. A lazy-quote control saved calls but
+slot/knowledge handoff remains unintegrated. Flow baseline/risk rules unchanged.
+
+168synthetic schedule comparisons,180load comparisons and sparse16-batch quiet
+replay are distinct from natural performance. All prior counters/refusals remain
+20RPC/272,634bytes, sticky429, PumpApi112MiB/100sreserved; no live grant reopened.
+Prepared only: one90s publicRPC component,70total requestunits/32MiB, onepool,
+noPumpApi capture, no deployment. New explicit live-research approval would be
+needed; no infrastructure/access action is pending.
 
 ## Latest offline design review — 2026-10-27
 

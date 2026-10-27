@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T05:35:41.779218+00:00",
+  "classification": "OFFLINE_ADAPTIVE_AND_ENTRY_INFORMATION_COMPARISON_VALIDATION",
+  "newMarketDataRpcProductionNetworkRequests": 0,
+  "priorBudgetAndReceiptsUnchanged": true,
+  "baselineHashes": {
+    "active-approved-rpc-budget.json": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04",
+    "pumpapi-budget.json": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+    "active-approved-allowance.json": "e642dc2329470b34a8554e684c19afd02ef02bfbd905bcb4b3fcbad8e18f7739",
+    "active-approved-summary.json": "f7196f38b711ce98205411eb46eb99e67490b4cc2d6b44f4e5dfdd1aaa13554d",
+    "active-continuation-allowance.json": "b5cc427b2865e63afd54537655c2ad602c016e0e94cfd6331da28bb952120a48",
+    "active-continuation-summary.json": "d8ca6ee0466ab21aa60d16b788646d69a9eb39c3e794578470e7a8b9e79a687e",
+    "offline-design-review.json": "92208f62dd4fcf7298716fc51027e1767dd05aa0e6a5d8bd7216d6628cdfe01a",
+    "selection-rejections.json": "a0b8c093a5736953f4b660b7c693c075f94ec622fce0737d586b6fc3c7459c77"
+  },
+  "actualRpcState": {
+    "calls": 20,
+    "responseBytes": 272634,
+    "remainingCalls": 220,
+    "remainingResponseBytes": 66836230,
+    "blockedReason": "RPC_HTTP_429"
+  },
+  "pumpApiReservedBytes": 117440512,
+  "pumpApiReservedMs": 100000,
+  "newPumpApiCaptures": 0,
+  "validation": {
+    "build": "PASS",
+    "compile": "PASS",
+    "strictReplayScriptTypecheck": "PASS",
+    "fullSuitePassed": 368,
+    "failed": 0,
+    "durationMs": 35138.084934,
+    "logSha256": "8e29bb167b71434c25c120e5046344a4a8a534483a2305a2ad1f60db22f37c6c",
+    "focusedNewTests": 52,
+    "matrixReplayAfterLedgerCorrections": "PASS 168schedule/180load outcomes unchanged",
+    "compressedRecordsRoundTrip": "PASS",
+    "independentReview": "capacity, source provenance, accounting boundaries, duplicate-work claims and proposal arithmetic reviewed"
+  },
+  "sourceSha256": {
+    "src/adaptive-monitoring.ts": "058967b976305c4d1bea8d8bf4fb86a76459ed9ade3fe620d854e8ce73552e07",
+    "src/research-clock-pricing.ts": "94666b0881f67c23675f8e173a33116275440772da0aaf0360e6c671216db697",
+    "src/candidate-cadence.ts": "112aa69dcb77622048a2adf3fc311572e8c11ed7e96c46aba7c9a9f3152428e6",
+    "src/entry-data-comparison.ts": "ed08198f9822fc93696d5295fe752793a2d4f936f2f1a21827506168fa547bab",
+    "scripts/adaptive-monitoring-evaluation.ts": "1d63eea58298dc1a01be131b55ee4b3c8180e07366369b4e9b4229627b74f16c",
+    "test/monitoring-ledger-parity.test.ts": "c6e53c9473b3fddf02cb643beebf18f3e19a9a55c7fffdba26ca22d886e5bd32"
+  },
+  "unchangedProductionSourcesAndDependencies": {
+    "src/strategy.ts": true,
+    "src/network.ts": true,
+    "src/runtime.ts": true,
+    "src/trader.ts": true,
+    "src/ledger.ts": true,
+    "src/execution.ts": true,
+    "src/dashboard.ts": true,
+    "package.json": true,
+    "package-lock.json": true
+  },
+  "findings": {
+    "blanketFiveSecondHybridProtectionEquivalent": false,
+    "equivalentBatchingOfflineDecoderParity": true,
+    "liveClockBankBehaviorVerified": false,
+    "existingCandidateTenSecondCadenceAlreadyPresent": true,
+    "heldTokenEnrichmentAlreadyZero": true,
+    "screenAddedToRuntime": false,
+    "entryChallengerEconomicEdgeAssessable": false
+  },
+  "observerRestarted": false,
+  "accountResetOrCreated": false,
+  "testResultsPublishedToRender": false,
+  "productionDeployed": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false,
+  "proposedLiveTest": "next-live-proposal.json; not an active grant"
+}

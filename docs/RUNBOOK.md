@@ -1,53 +1,50 @@
 # POE operating runbook
 
-## Current offline data-design review — 2026-10-27
+## Current adaptive/data-reduction research — offline only
 
-Use review branch `poe-free-data-evaluation-20261027`. This review authorizes no
-network test, grant reopening, throttle reset, production restart/deployment,
-financial mutation or entry enablement. No Alchemy/Helius or wallet work.
-
-Do not run either completed `run-approved` CLI. Its grant markers remain closed.
-The additional-RPC counter remains20calls/272,634bytes with stickyRPC_HTTP_429;
-remaining220calls/66,836,230bytes. PumpApi remains112MiB/100s reserved across the
-two original captures. Never delete/reset/refund these files to create capacity.
-
-Offline regression commands:
+Use review branch `poe-free-data-evaluation-20261027`. Read
+ADAPTIVE_MONITORING_EVALUATION.md before interpreting results. No production
+restart, account initialization, entry enablement, new provider or live test.
+The old grant markers and sticky429 remain closed; never reset their counters.
 
 ```sh
 npm run build
 npm run compile
-node --import tsx --test test/research-rpc.test.ts test/research-pacing.test.ts test/research-phase.test.ts test/selection-rejections.test.ts test/active-selection.test.ts test/research-pricing.test.ts test/research-clock-pricing.test.ts test/active-pipeline.test.ts test/active-runner.test.ts test/active-current-evidence.test.ts test/active-continuation-evidence.test.ts
-node --import tsx scripts/active-pumpapi-continuation.ts
+npm test
 ```
 
-No-argument CLI is network-free. Tests inject transports/clocks and temporary
-budgets; they do not use production state or the actual remaining allowance.
+The large matrices are tracked as verified lossless gzip files. Materialize the
+corrected raw result only if absent, then rerun the deterministic comparison:
 
-Selection composition now wraps one shared ResearchRpc in SelectionPacedRpc,
-then applies selection/support suballocations. Pacing waits at least1000ms after
-physical settlement, persists starts/cooldown and cannot bypass an occupied slot
-or sticky halt. SelectionRejections uses the stable support policy
-`pump-swap-sdk2.2.0-supported-sol-v1`, not an attempt ID, to guard pools across
-attempts. The seeded historical refusals are in `selection-rejections.json`.
-A cooldown expiry permits fresh checks only; structural release requires a
-reviewed support-policy change. Do not use a version bump to evade a refusal.
-Storage/counter failures close admissions; global RESEARCH_* errors are not
-structural pool failures. Never attach the selection cooldown to held protection
-without separately designing/testing its deadlines.
+```sh
+python - <<'PYRESTORE'
+import gzip
+from pathlib import Path
+p=Path('evidence/adaptive-monitoring/monitoring-results.json')
+if not p.exists():
+    with p.open('xb') as f:
+        f.write(gzip.decompress(p.with_suffix('.json.gz').read_bytes()))
+PYRESTORE
+node --max-old-space-size=128 --import tsx scripts/adaptive-monitoring-evaluation.ts --verify-existing
+```
 
-ResearchClockPositionPricer is an isolated alternative, not installed and not
-wired into execution/reporting. It validates all pricing dependencies plus Clock
-in one confirmed batch; explicit bank-clock provenance is not exact blocktime.
-Clock/parity/failure fixtures are offline software evidence. The original quote
-helpers retain their blocktime checks and original behavior. Current two-call
-pricing cannot provision active flow at60RPC/minute. The conditional54+6budget
-and distinct quote-age/exit-gap/burst requirements are in FREE_DATA_EVALUATION.md.
+This verifier performs no data-provider requests and preserves recorded matrices,
+correction receipts and budget manifests. It refuses changed prior counters; a
+future approved live experiment must not reset those files to make replay pass.
+Default runner output is exclusive: do not overwrite completed results. Synthetic
+Clock/reserve paths and work tokens are not captured live prices or candidate
+windows. Tests use temporary DISPOSABLE_PAPER ledgers; no authoritative account.
 
-`offline-next-measurement.json` is a proposal, not permission, a reservation or a
-runnable live command. The first useful matched sample need not pass every
-production-readiness gate, but component success is never combined acceptance.
-Do not run it, clear429 or start a second capture from this offline instruction.
-No EC2 test or new operational acceptance interval was performed.
+The newClockquoteMany helper supports1–3hypothetical holdings in one complete
+confirmed union. Its liveClock behavior and simultaneous-exit deadlines still
+need validation. Context/quote reuse is tested only through an isolated callback;
+the installedRpcMarket/trader was not changed. Existingcandidate10sbuckets and
+held-flowenrichment0 already exist; do not count them as new savings. The separate
+price gate/challenger are research hypotheses, not new active strategy residents.
+
+next-live-proposal.json requires explicit new research approval. It is not a
+runnable authorization or permission to clear429. No additionalcapture/retry,
+Alchemy/Helius investigation, paid service or deployment occurred.
 
 ## Prior unmetered development checkpoint — 2026-10-27
 

@@ -1,5 +1,10 @@
 # POE free-data evaluation — offline design decision
 
+**Later focused evaluation:** see [ADAPTIVE_MONITORING_EVALUATION.md](ADAPTIVE_MONITORING_EVALUATION.md).
+Its single bounded public-RPC component proposal supersedes the older proposed
+next-measurement sequence below. Both are proposals, not active grants; counters
+and the completed429 remain unchanged. No duplicated screening layer is deployed.
+
 2026-10-27 UTC · review branch `poe-free-data-evaluation-20261027` · no deployment
 
 1. **Current configuration: unsuitable for the combined workload at 60 RPC starts/minute.** Two pricing calls every two seconds consume all 60 before required transaction enrichment, verification, recovery or headroom. This arithmetic rejects that configuration, not every possible free configuration.

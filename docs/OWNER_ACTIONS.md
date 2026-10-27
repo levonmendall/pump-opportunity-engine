@@ -1,20 +1,21 @@
-# Owner checklist — offline design review complete
+# Owner checklist — adaptive research complete
 
-**No owner-only action or additional budget is requested.** Alchemy/Helius,
-wallet funding, credentials, infrastructure and production changes are outside
-this work. No live measurement was run or automatically scheduled.
+No infrastructure, credential, funding, provider-plan or dashboard action is
+needed. No extra budget is requested. Production and its original account remain
+untouched; PAPER entries/live trading disabled; no acceptance clock.
 
-Selection pacing and persistent rejection handling are implemented and tested
-offline. Current two-call pricing plus per-transaction flow enrichment cannot
-fit 60 RPC/minute. A research-only one-call Clock-batch path has a conditional
-one-candidate/one-held-pool budget; it needs component and combined live validation
-before any production use. See [FREE_DATA_EVALUATION.md](FREE_DATA_EVALUATION.md).
+The completed offline evaluation rejects a blanket five-second/event-triggered
+replacement. It supports reviewing coherent batching first, without a duplicate
+screen. Detailed flow's economic value versus price-only entry remains unknown.
+See [ADAPTIVE_MONITORING_EVALUATION.md](ADAPTIVE_MONITORING_EVALUATION.md).
 
-A specific next measurement is prepared as a proposal only: a 30-second field sample,
-then separate RPC-only changing-price validation. Neither this document nor the
-existing unused allowance authorizes execution or clearing the completed429.
+**Only if continuing live research:** approve the single prepared public-RPC
+component in [next-live-proposal.json](../evidence/adaptive-monitoring/next-live-proposal.json):
+at most90seconds,70total request units,32MiB responses,8MiB evidence, onepool and
+one planned reconnect, actual pacing/shared60per-minute limit. NoPumpApi capture,
+spending, wallet operation, deployment or trading. Stop on429 or any ceiling.
 
-Authoritative counters remain 20/240 requests and 272,634/67,108,864 bytes;
-220 requests/66,836,230 bytes remain. Preserve all grants, reservations and evidence.
-Observer/account/inception, financial history and dashboard remain untouched.
-PAPER entries/live trading disabled; no acceptance clock.
+This is a proposal, not an active grant. Your current instruction forbids reopening
+the completed experiment automatically, so none ran. The original429 and
+20requests/272,634bytes remain intact;220requests/66,836,230bytes remain available
+only subject to explicit authorization. No repeated setup or broad access request.

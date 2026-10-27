@@ -1,0 +1,20 @@
+{
+  "classification": "OFFLINE_SEMANTIC_REPLAY_VERIFICATION_AFTER_LEDGER_BOUNDARY_FIXES",
+  "recordedAt": "2026-10-27T05:21:24.727Z",
+  "resultSha256": "f2232d13c5e261bd845ebb6f7c4e53f68299877c3cf1195722e097b5fe147b50",
+  "sourceSha256": {
+    "src/adaptive-monitoring.ts": "058967b976305c4d1bea8d8bf4fb86a76459ed9ade3fe620d854e8ce73552e07",
+    "src/research-clock-pricing.ts": "94666b0881f67c23675f8e173a33116275440772da0aaf0360e6c671216db697",
+    "src/pool.ts": "353f9e6f67460a9ec84d12be03752a9fe9fc158a1ab94fdff553e4afe75f8870",
+    "src/strategy.ts": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+    "scripts/adaptive-monitoring-evaluation.ts": "a101f11c958981950a8b474a51245a627f2500bc8cb2b0d74e82ec10eab7522a"
+  },
+  "all168MonitoringAnd180LoadOutcomesUnchanged": true,
+  "corrections": [
+    "Expiry is at or after deadline, charges no gas",
+    "Fresh execution quote must have source time at or after modeled executeAt",
+    "Committed baseline manifest replaces temporary selector"
+  ],
+  "networkRequests": 0,
+  "priorCountersUnchanged": true
+}

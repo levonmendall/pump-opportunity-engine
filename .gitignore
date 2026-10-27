@@ -7,3 +7,7 @@ data/
 *.sqlite*
 *.log
 coverage/
+
+# Materialized offline matrices; lossless .json.gz records and hashes are tracked.
+/evidence/adaptive-monitoring/monitoring-results.json
+/evidence/adaptive-monitoring/monitoring-results-initial-wsol-lamports.json
