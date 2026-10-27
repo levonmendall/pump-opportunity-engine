@@ -86,3 +86,13 @@ originalresult andcheckpoint retained, financial/usagecountersunchanged.
 Reportingonly Renderdeploy9617d52/dep-dbggvr0u01pc73fca5cg isLIVE, preserving
 concurrentmain6802407 andoriginalservice. Independentpublisherrestartawaits
 freshpilotstatus. Nextfreeze correctedsourceandresume3deep slots.
+
+21:12UTC: corrected3slotrun4abb86f completed467.017s, max3actualdeep,21new
+auditedwindows,11predictiverejections,8re-promotions,0selectedtradehints and
+0orders/exposure.126newRPCunits.3migrationhints retained; a customquote origin
+wasverified/rejectedwhileallslotsfull. TwoHTTP503s recovered; no429. Every
+financial/transportcounter settled, backup25matches. A residual1msclockcomparison
+causedunnecessarypostpreparationdeferral; fixed narrowlyusingcurrentcomparison
+time (nobudget/freshnesschange). Build+71focusedchecks+independentreviewGO.
+Nextfrozenintervalallows6deepslotswithsamefinancialaccount/max3positionrules;
+quietcapacityonly, activeflow/protection/economicedge remainunproven.
