@@ -12,11 +12,14 @@ import {PUMP_AMM_PROGRAM_ID} from './sdk.js';
 const SWAPS=new Set(['buy','buy_exact_quote_in','buy_v2','buy_exact_quote_in_v2','sell','sell_v2']);
 
 export const SCHEDULER_FORWARD_AUDIT_LIMITS=Object.freeze({historyPages:2,signaturesPerPage:50,independentTransactions:10,finalityRechecks:2,requestUnits:14,elapsedMs:20000});
+/** Explicit bounded standing experiment; the caller still owns the shared
+ * per-run request/response/time budget and physical operation gate. */
+export const STANDING_MEASURED_18_AUDIT_LIMITS=Object.freeze({...SCHEDULER_FORWARD_AUDIT_LIMITS,independentTransactions:20,requestUnits:24,elapsedMs:25000});
 export type ForwardAuditRpc={call<T>(method:string,params:unknown[],signal?:AbortSignal):Promise<T>;readonly budget:{readonly calls:number;readonly inFlight:number};error?:()=>Error|null};
 export type ForwardAuditHint={signature:string;receivedAt:number;expectedTrade?:boolean};
 export type ForwardAuditNormalization={identityKey:string;rpcAvailableAt:number;validationCompletedAt:number;duringObservation:boolean};
 export type ForwardAuditCapture={openedAt:number|null;observationEndedAt?:number|null;endedAt?:number|null;closedAt?:number|null;physicalSlotUncertain?:boolean;selectedMessages?:number;duplicateSignatureHints?:number;pending?:number;qualityGaps?:Array<{at:number;reason:string}>;executedEvidence:MappedTradeEvidence[];enrichmentHints?:Record<string,{receivedAt:number;requestedAt:number;availableAt:number}>;auditSelectedHints?:ForwardAuditHint[];auditNormalizedAvailability?:ForwardAuditNormalization[];featureRows?:any[]};
-export type SchedulerForwardAuditOptions={capture:ForwardAuditCapture;scope:ActiveScope;rpc:ForwardAuditRpc;record:(kind:string,data:unknown)=>void;signal:AbortSignal;target:{startAt:number;endAt:number};now?:()=>number;monotonic?:()=>number};
+export type SchedulerForwardAuditOptions={capture:ForwardAuditCapture;scope:ActiveScope;rpc:ForwardAuditRpc;record:(kind:string,data:unknown)=>void;signal:AbortSignal;target:{startAt:number;endAt:number};profile?:'standing-measured-18';now?:()=>number;monotonic?:()=>number};
 type HistoryRow={signature:string;slot:number;err:unknown;blockTime:number|null};
 function need(v:unknown,m:string):asserts v {if(!v)throw Error('FORWARD_AUDIT_'+m);}
 const integer=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0;
@@ -25,8 +28,10 @@ function signature(s:unknown):asserts s is string {need(typeof s==='string'&&s.l
 
 export async function auditSchedulerForward(options:SchedulerForwardAuditOptions){
   const {capture,scope,rpc,record,target}=options,now=options.now??Date.now,mono=options.monotonic??(()=>performance.now()),began=mono(),startedAt=now(),before=rpc.budget.calls;
-  const limit=SCHEDULER_FORWARD_AUDIT_LIMITS,controller=new AbortController(),signal=AbortSignal.any([options.signal,controller.signal]),timer=setTimeout(()=>controller.abort(),limit.elapsedMs);timer.unref?.();
+  need(options.profile===undefined||options.profile==='standing-measured-18','INVALID_PROFILE');
+  const limit=options.profile==='standing-measured-18'?STANDING_MEASURED_18_AUDIT_LIMITS:SCHEDULER_FORWARD_AUDIT_LIMITS,controller=new AbortController(),signal=AbortSignal.any([options.signal,controller.signal]),timer=setTimeout(()=>controller.abort(),limit.elapsedMs);timer.unref?.();
   const result:any={classification:'BOUNDED_INDEPENDENT_CHAIN_AND_CAPTURED_HINT_AUDIT',complete:false,completeScope:'Exact nominal chain interval plus every explicitly recorded selected signature; not proof of receive-window completeness',applicationAvailabilityTarget:{...target,interval:'[startAt,endAt)',timeBasis:'fully validated application availability; never chain or feed time'},chainAuditTarget:{startAt:target.startAt,endAt:target.endAt,interval:'[startAt,endAt)',boundaryExclusionMs:0,timeBasis:'on-chain blockTime seconds; separate from the application window'},limits:limit,startedAt,history:[],historyPages:[],historyRangeCovered:false,historyBoundary:null,requiredIndependentSignatures:[],independentTransactions:[],unretrievedSignatures:[],denominatorChecks:[],relevantInstructionChecks:[],compiledSwapInstructions:0,verifiedSwapEvents:0,matchedOriginalEvents:0,unmatchedOriginalEvents:[],unsupported:[],unresolvedSelectedHints:[],rechecks:[],calls:0,attemptedOperations:{history:0,independent:0,finality:0},originalResponseReuse:false,reason:null,receiveWindowCompleteness:'NOT_ESTABLISHED_BY_CHAIN_TIME_ALONE',entryEligibility:'UNVERIFIED_SEPARATE_REQUIREMENT',primaryStrategyEnabled:false,paperTradesCreated:0,financialAccountChanged:false};
+  if(options.profile)result.profile=options.profile;
   const hintMap=new Map<string,ForwardAuditHint>(),independentlyRequested=new Set<string>(),independentResponsesReceived=new Set<string>();
   const problem=(reason:string,details:Record<string,unknown>={})=>result.unsupported.push({reason,...details});
   const firstQualityReason=():string|null=>result.unsupported[0]?.reason??result.unmatchedOriginalEvents[0]?.reason??result.unresolvedSelectedHints[0]?.reason??null;
@@ -87,19 +92,19 @@ export async function auditSchedulerForward(options:SchedulerForwardAuditOptions
     for(const event of capture.executedEvidence){const n=normalization.get(event.identityKey);if(!n||n.rpcAvailableAt!==event.availableAt||!integer(n.validationCompletedAt)||n.validationCompletedAt<event.availableAt||n.validationCompletedAt>startedAt)problem('ORIGINAL_VALIDATION_AVAILABILITY_UNVERIFIED',{signature:event.identity.signature,identityKey:event.identityKey});}
     const history=new Map<string,HistoryRow>();let cursor:string|undefined;
     for(let page=0;page<limit.historyPages;page++){
-      const read=await call<unknown>('history','getSignaturesForAddress',[scope.pool,{commitment:'confirmed',limit:50,...(cursor?{before:cursor}:{})}]);
-      need(Array.isArray(read.value)&&read.value.length<=50,'HISTORY_PAGE');const rows=read.value as HistoryRow[];
+      const read=await call<unknown>('history','getSignaturesForAddress',[scope.pool,{commitment:'confirmed',limit:limit.signaturesPerPage,...(cursor?{before:cursor}:{})}]);
+      need(Array.isArray(read.value)&&read.value.length<=limit.signaturesPerPage,'HISTORY_PAGE');const rows=read.value as HistoryRow[];
       for(let i=0;i<rows.length;i++){const row=rows[i]!;signature(row.signature);need(integer(row.slot)&&(row.blockTime===null||integer(row.blockTime))&&Object.hasOwn(row,'err')&&(row.err===null||typeof row.err==='object')&&(i===0||row.slot<=rows[i-1]!.slot),'HISTORY_ROW');const prior=history.get(row.signature);if(prior)need(JSON.stringify(prior)===JSON.stringify(row),'CONFLICTING_HISTORY_DUPLICATE');else history.set(row.signature,{...row});}
-      const entry={page,requestedAt:read.requestedAt,availableAt:read.availableAt,before:cursor??null,limit:50,rows};result.historyPages.push(entry);record('forward-audit-signature-page',entry);
+      const entry={page,requestedAt:read.requestedAt,availableAt:read.availableAt,before:cursor??null,limit:limit.signaturesPerPage,rows};result.historyPages.push(entry);record('forward-audit-signature-page',entry);
       if(rows.some(row=>row.blockTime!==null&&row.blockTime*1000<target.startAt)){result.historyRangeCovered=true;result.historyBoundary='OLDER_THAN_EXACT_TARGET_START_OBSERVED';break;}
-      if(rows.length<50){result.historyBoundary='AVAILABLE_HISTORY_EXHAUSTED_WITHOUT_OLDER_BOUNDARY';break;}
+      if(rows.length<limit.signaturesPerPage){result.historyBoundary='AVAILABLE_HISTORY_EXHAUSTED_WITHOUT_OLDER_BOUNDARY';break;}
       const next=rows.at(-1)!.signature;need(next!==cursor,'HISTORY_CURSOR_STALLED');cursor=next;
     }
     result.history=[...history.values()];if(!result.historyRangeCovered)problem('EXACT_CHAIN_HISTORY_START_BOUNDARY_UNVERIFIED');
     const chainRows=[...history.values()].filter(r=>r.err===null&&(r.blockTime===null||r.blockTime*1000>=target.startAt&&r.blockTime*1000<target.endAt));
     const required=[...new Set([...chainRows.map(r=>r.signature),...hintMap.keys(),...capture.executedEvidence.map(e=>e.identity.signature)])];result.requiredIndependentSignatures=required;
-    if(required.length>10)problem('INDEPENDENT_TRANSACTION_ALLOCATION_INSUFFICIENT',{required:required.length,maximum:10});
-    for(const sig of required.slice(0,10)){
+    if(required.length>limit.independentTransactions)problem('INDEPENDENT_TRANSACTION_ALLOCATION_INSUFFICIENT',{required:required.length,maximum:limit.independentTransactions});
+    for(const sig of required.slice(0,limit.independentTransactions)){
       const read=await call<any>('independent','getTransaction',[sig,{commitment:'confirmed',encoding:'json',maxSupportedTransactionVersion:1}]);
       record('forward-audit-independent-transaction',{signature:sig,requestedAt:read.requestedAt,availableAt:read.availableAt,requestCommitment:'confirmed',transaction:read.value,originalResponseReused:false});
       if(!read.value){problem('INDEPENDENT_TRANSACTION_UNAVAILABLE',{signature:sig});independent.set(sig,null);continue;}
@@ -121,7 +126,7 @@ export async function auditSchedulerForward(options:SchedulerForwardAuditOptions
     }
     if((capture.pending??0)>0)problem('ORIGINAL_SELECTED_WORK_REMAINS_UNRESOLVED',{pending:capture.pending});
     if(result.verifiedSwapEvents===0)problem('ZERO_SUPPORTED_SWAP_DENOMINATOR');
-    const finalityCandidates=[...independent].filter(([,d])=>d&&d.mapped.length>0).slice(0,2);
+    const finalityCandidates=[...independent].filter(([,d])=>d&&d.mapped.length>0).slice(0,limit.finalityRechecks);
     for(const [sig,original]of finalityCandidates){
       const read=await call<any>('finality','getTransaction',[sig,{commitment:'finalized',encoding:'json',maxSupportedTransactionVersion:1}]);let identical:boolean|null=null;
       if(read.value){try{const current=decode(read.value,sig,read.availableAt,'finalized');identical=!!current&&current.slot===original!.slot&&current.blockTime===original!.blockTime&&current.mapped.length===original!.mapped.length&&current.mapped.every(e=>original!.mapped.some(o=>o.identityKey===e.identityKey&&o.fingerprint===e.fingerprint));}catch{identical=false;}}

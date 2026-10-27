@@ -5,8 +5,9 @@ import {mapConfirmedPumpSwapEvidence} from './pumpapi-mapping.js';
 export type ForwardScope={mint:string;pool:string;baseUnits:string;minSlot:number;supportedPoolEvidence:string};
 type Rpc={call<T>(method:string,params:unknown[],signal?:AbortSignal):Promise<T>};
 function need(ok:unknown,code:string):asserts ok {if(!ok)throw Error(code);}
-export async function preflightSchedulerForward(input:{scope:ForwardScope;rpc:Rpc;record:(kind:string,data:unknown)=>void;signal:AbortSignal;now?:()=>number}){
-  const now=input.now??Date.now,startedAt=now(),{scope,rpc,record,signal}=input;
+export async function preflightSchedulerForward(input:{scope:ForwardScope;rpc:Rpc;record:(kind:string,data:unknown)=>void;signal:AbortSignal;now?:()=>number;profile?:'standing-measured-18'}){
+  need(input.profile===undefined||input.profile==='standing-measured-18','FORWARD_PREFLIGHT_UNREVIEWED_PROFILE');
+  const now=input.now??Date.now,startedAt=now(),{scope,rpc,record,signal}=input,maximumEnrichments=input.profile==='standing-measured-18'?18:10;
   const history=await rpc.call<any[]>('getSignaturesForAddress',[scope.pool,{limit:50,commitment:'confirmed'}],signal),historyAvailableAt=now();
   record('forward-preflight-history',{pool:scope.pool,historyAvailableAt,history});
   need(Array.isArray(history)&&history.length>0&&history.length<=50,'FORWARD_PREFLIGHT_NO_USABLE_HISTORY');
@@ -17,7 +18,7 @@ export async function preflightSchedulerForward(input:{scope:ForwardScope;rpc:Rp
   // All pool-address transactions are an explicitly conservative demand bound,
   // not asserted swaps. Only the following confirmed decoder proves swaps.
   const inWindow=history.filter(r=>r.blockTime*1000>=historyAvailableAt-75000);
-  need(inWindow.length<=10,'FORWARD_PREFLIGHT_EXPECTED_ENRICHMENT_EXCEEDS10');
+  need(inWindow.length<=maximumEnrichments,'FORWARD_PREFLIGHT_EXPECTED_ENRICHMENT_EXCEEDS'+maximumEnrichments);
   const candidates=history.filter(r=>r.err===null&&historyAvailableAt-r.blockTime*1000<=30000).slice(0,2);
   need(candidates.length>0,'FORWARD_PREFLIGHT_NO_RECENT_SUCCESS');
   const checked=[];
@@ -32,7 +33,7 @@ export async function preflightSchedulerForward(input:{scope:ForwardScope;rpc:Rp
     const mapped=mapConfirmedPumpSwapEvidence(transaction,{...scope,signature:row.signature,providerReceivedAt:null,availableAt});
     need(mapped.length===compiled&&mapped.every(t=>t.transferChecks.baseTransfer&&t.transferChecks.userQuoteTransfer),'FORWARD_PREFLIGHT_SWAP_EVIDENCE_UNSUPPORTED');
     need(now()-transaction.blockTime*1000<=30000,'FORWARD_PREFLIGHT_SWAP_NO_LONGER_RECENT');
-    const result={startedAt,completedAt:now(),scope:{...scope,minSlot:transaction.slot},verifiedSwap:{signature:row.signature,slot:transaction.slot,blockTime:transaction.blockTime,trades:mapped},history:{historyAvailableAt,oldestAt,spanMs,poolAddressTransactionsLast75s:inWindow.length,expectedEnrichmentUpperBound:inWindow.length,maximumAllowedEnrichments:10,projectionOnly:true,swapsNotInferredFromAddressCounts:true},checked,currentPoolAccounts:'REQUIRES_FRESH_PREWARM',entryEligibility:'PUMP_ORIGIN_AND_ENTRY_AGE_UNVERIFIED; no entry permitted'};
+    const result={startedAt,completedAt:now(),scope:{...scope,minSlot:transaction.slot},verifiedSwap:{signature:row.signature,slot:transaction.slot,blockTime:transaction.blockTime,trades:mapped},history:{historyAvailableAt,oldestAt,spanMs,poolAddressTransactionsLast75s:inWindow.length,expectedEnrichmentUpperBound:inWindow.length,maximumAllowedEnrichments:maximumEnrichments,projectionOnly:true,swapsNotInferredFromAddressCounts:true},checked,currentPoolAccounts:'REQUIRES_FRESH_PREWARM',entryEligibility:'PUMP_ORIGIN_AND_ENTRY_AGE_UNVERIFIED; no entry permitted'};
     need(now()-startedAt<5000,'FORWARD_PREFLIGHT_ELAPSED_CAP');record('forward-preflight-passed',result);need(now()-startedAt<5000,'FORWARD_PREFLIGHT_ELAPSED_CAP');return result;
   }
   throw Error('FORWARD_PREFLIGHT_NO_SUPPORTED_RECENT_SWAP_IN_TWO_CHECKS');

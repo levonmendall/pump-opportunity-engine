@@ -89,13 +89,22 @@ export function chooseProtectedResearchWork(v:ProtectedDispatchView):ProtectedDi
   }
   if(finishPrice>deadline){disposition='suspend';reason='protection-envelope-no-longer-feasible';return result(price(true),false);}
   const due=v.nextProtectionAt!==null&&v.now>=v.nextProtectionAt;
-  if(due)return result(price(false));
+  const normalProtectionTooLate=v.nextProtectionAt!==null&&v.nextProtectionAt+setup+bound>deadline;
+  if(due||normalProtectionTooLate)return result(price(!due));
   const job=jobs.find(j=>j.eligibleAt<=v.now);
   if(job){
     if(job.kind==='enrichment'&&disposition==='suspend')return result({kind:'refuse',job,reason:reason??'candidate-window-suspended'});
     if(start+setup+job.operationBoundMs>job.deadlineAt){disposition='suspend';reason='required-enrichment-completion-envelope-exceeds-deadline';return result({kind:'refuse',job,reason});}
     if(afterJob(job)<=deadline&&start+RESEARCH_DISPATCH.reservationReserveMs<=latestJobStart(job))return result({kind:'job',job,latestStartAt:latestJobStart(job)});
     if(!v.advanceOutstanding&&jobAfterPrice(job)<=job.deadlineAt)return result(price(true));
+    // An exhausted early-refresh reservation is not evidence that a queued
+    // trade is impossible. Keep its bounded opportunity after the NEXT normal
+    // protection check when that full completion envelope still fits. Every
+    // wake rechecks readiness/deadlines; no new queue or exact-start slot exists.
+    if(v.nextProtectionAt!==null&&v.now<v.nextProtectionAt){
+      const normalStart=Math.max(v.nextProtectionAt,v.readyAt),afterNormal=normalStart+Math.max(spacing,setup+bound)+setup+job.operationBoundMs;
+      if(normalStart+setup+bound<=deadline&&afterNormal<=job.deadlineAt)return result({kind:'wait',until:v.nextProtectionAt,reason:'bounded-enrichment-opportunity-after-normal-protection'});
+    }
     disposition='suspend';reason='combined-enrichment-and-protection-envelope-infeasible';return result({kind:'refuse',job,reason});
   }
   const future=jobs.filter(j=>j.eligibleAt>v.now).map(j=>j.eligibleAt);

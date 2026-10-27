@@ -4,7 +4,7 @@ import {EventEmitter} from 'node:events';
 import {readFileSync} from 'node:fs';
 import WebSocket from 'ws';
 import bs58 from 'bs58';
-import {captureOvernightFields,OVERNIGHT_FIELD_LIMITS,SCHEDULER_FORWARD_FIELD_LIMITS} from '../src/overnight-field.js';
+import {captureOvernightFields,OVERNIGHT_FIELD_LIMITS,SCHEDULER_FORWARD_FIELD_LIMITS,STANDING_MEASURED_FIELD_LIMITS} from '../src/overnight-field.js';
 import type {ComponentBudget,ComponentKind,ComponentOperation} from '../src/component-budget.js';
 import type {ComponentTransport} from '../src/component-transport.js';
 
@@ -18,9 +18,9 @@ class Socket extends EventEmitter {
   terminate(){if(this.done)return;this.done=true;queueMicrotask(()=>this.emit('close'));}
   frame(payload:unknown,bytes?:number){const b=Buffer.from(JSON.stringify(payload));this._socket.bytesRead+=bytes??b.byteLength+4;this._socket.emit('data',b);this.emit('message',b);}
 }
-function fixture(options:{events?:Array<{at:number;payload:unknown;bytes?:number}>;transaction?:(signature:string)=>unknown;rpcMs?:number;setupMs?:number}={}){
+function fixture(options:{events?:Array<{at:number;payload:unknown;bytes?:number}>;transaction?:(signature:string)=>unknown;rpcMs?:number;setupMs?:number;spacingMs?:number}={}){
   let clock=Date.parse(raw.fetchedAt),elapsed=0,units=2,active=0;const rows:Array<{kind:string;data:any}>=[],starts:number[]=[],calls:ComponentKind[]=[],events=[...(options.events??[])],socket=new Socket();let opens=0,requests=0,afterSleep:()=>void=()=>{};
-  const budget={get calls(){return units;},get inFlight(){return active;},chargeWs(){},usage(){return {haltedReason:null,baseline:{starts:[]},starts:[...starts]};},dispatchWindow(){return {readyAt:starts.length?Math.max(clock,starts.at(-1)!+1000):clock,waitMs:0,physicalBusy:active!==0,haltedReason:null};},async operate(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<unknown>){calls.push(kind);units++;active++;starts.push(clock);try{return await work({id:units,signal:new AbortController().signal,chargeHttp(){},completeResponse(){}});}finally{active--;}}} as unknown as ComponentBudget;
+  const budget={get calls(){return units;},get inFlight(){return active;},chargeWs(){},usage(){return {haltedReason:null,baseline:{starts:[]},starts:[...starts],limits:{minSpacingMs:options.spacingMs??1000}};},dispatchWindow(){return {readyAt:starts.length?Math.max(clock,starts.at(-1)!+(options.spacingMs??1000)):clock,waitMs:0,physicalBusy:active!==0,haltedReason:null};},async operate(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<unknown>){calls.push(kind);units++;active++;starts.push(clock);try{return await work({id:units,signal:new AbortController().signal,chargeHttp(){},completeResponse(){}});}finally{active--;}}} as unknown as ComponentBudget;
   const rpc={budget,error(){return null;},async call<T>(method:string,params:unknown[]){assert.equal(method,'getTransaction');requests++;return budget.operate({transport:'http',method},async()=>{clock+=options.rpcMs??20;elapsed+=options.rpcMs??20;return (options.transaction?.(String(params[0]))??raw.transaction) as T;});}} as unknown as ComponentTransport;
   const quote=(at=clock)=>({mint:scope.mint,slot:scope.minSlot,commitment:'confirmed',receivedAt:new Date(at).toISOString(),timeEvidence:'confirmed-bank-clock' as const,clockSlot:scope.minSlot,marketClockUnixSeconds:Math.floor(clock/1000),sell:{inputBaseUnits:scope.baseUnits,outputLamports:'1000000'}});
   const protection:{everyMs:2000;quote:()=>Promise<unknown>}={everyMs:2000,quote:async()=>budget.operate({transport:'http',method:'getMultipleAccounts'},async()=>quote())};
@@ -72,4 +72,20 @@ test('an eleventh selected transaction stops without another enrichment and pres
 test('socket stops include all broad incoming bytes and terminate before the140MiB hard ceiling when headroom is available',async()=>{
   const f=fixture({events:[{at:100,payload:{irrelevant:true},bytes:138*1024*1024}]}),r=await captureOvernightFields(f.input,f.dependencies);
   assert.equal(r.stopReason,'COMPONENT_FIELD_SOCKET_STOP');assert.equal(r.socketBytes,138*1024*1024+200);assert.ok(r.socketBytes<140*1024*1024);assert.equal(f.requests,0);assert.equal(f.opens,1);assert.equal(r.parsedFrames,0);assert.equal(r.historicalWindowInvalidated,true);
+});
+
+test('standing18 profile requires the proposed dispatcher and explicit75s cutoff without changing old limits',async()=>{
+  assert.deepEqual(STANDING_MEASURED_FIELD_LIMITS,{...SCHEDULER_FORWARD_FIELD_LIMITS,enrichmentAttempts:18});assert.equal(SCHEDULER_FORWARD_FIELD_LIMITS.enrichmentAttempts,10);assert.equal(OVERNIGHT_FIELD_LIMITS.enrichmentAttempts,24);
+  for(const invalid of [{schedulerPolicy:'bounded-deadline-v1' as const,observationCutoff:{durationMs:75000}},{schedulerPolicy:'protected-deadline-proposed' as const},{schedulerPolicy:'protected-deadline-proposed' as const,observationCutoff:{durationMs:70000}}]){const f=fixture();await assert.rejects(captureOvernightFields({...f.input,profile:'standing-measured-18',...invalid},f.dependencies),/PROFILE_BOUNDS/);assert.equal(f.opens,0);}
+  const f=fixture(),r=await captureOvernightFields({...f.input,profile:'standing-measured-18',schedulerPolicy:'protected-deadline-proposed',observationCutoff:{durationMs:75000}},f.dependencies);assert.equal(r.observationCutoff.enabled,true);assert.equal(r.observationMs,75000);assert.equal(r.profileLimits.enrichmentAttempts,18);assert.equal(r.sharedScheduler.totalProtectionCap,43);assert.equal(r.sharedScheduler.earlyEvaluationCap,5);assert.equal(r.profileLimits.fieldRetainedBytes,5*1024*1024);assert.equal(f.opens,1);assert.equal(r.paperEntriesEnabled,false);
+});
+
+test('nineteenth selected event remains recorded and invalidates the capped standing candidate while held pricing continues',async()=>{
+  const f=fixture({spacingMs:250,transaction:signature=>({...raw.transaction,transaction:{...raw.transaction.transaction,signatures:[signature]}})});let emitted=0;
+  // Isolate the profile ceiling from arbitrary arrival-phase starvation: send
+  // one hint after every other completed price. This is not a load/capacity test.
+  f.afterSleep=()=>{const prices=f.rows.filter(x=>x.kind==='field-protection-evaluation').length,capped=f.rows.some(x=>x.kind==='research-quality-gap'&&x.data.reason==='COMPONENT_FIELD_ENRICHMENT_CAP');if(emitted<19&&prices>=1+2*emitted||emitted===19&&capped){emitted++;f.socket.frame(selected(bs58.encode(Buffer.alloc(64,emitted))));}};
+  const r=await captureOvernightFields({...f.input,profile:'standing-measured-18',schedulerPolicy:'protected-deadline-proposed',observationCutoff:{durationMs:75000}},f.dependencies);
+  assert.equal(r.enrichments,18,JSON.stringify({first:r.firstQualityFailure,gaps:r.qualityGaps,suspensions:r.sharedScheduler.candidateSuspensions,stop:r.stopReason,pricing:r.protection.gaps}));assert.equal(f.requests,18);assert.equal(r.normalizedEvents,18);assert.equal(r.stopReason,'COMPONENT_FIELD_DURATION_LIMIT');assert.equal(r.sharedScheduler.candidateSuspended,true);assert.equal(r.firstQualityFailure?.reason,'COMPONENT_FIELD_ENRICHMENT_CAP');assert.ok(r.qualityGaps.some(g=>g.reason==='COMPONENT_FIELD_ENRICHMENT_CAP'));assert.equal(f.rows.filter(x=>x.kind==='selected-pumpapi-payload').length,20);assert.equal(r.selectedMessagesAfterEnrichmentClosed,1);
+  const capped=f.rows.find(x=>x.kind==='research-quality-gap'&&x.data.reason==='COMPONENT_FIELD_ENRICHMENT_CAP')!.data.at;assert.ok(r.protection.outcomes.some(x=>x.availableAt>capped&&x.usable));assert.equal(r.enrichmentClosed,true);assert.equal(r.combinedAcceptance,false);assert.equal(r.qualificationEnabled,false);assert.equal(f.opens,1);
 });

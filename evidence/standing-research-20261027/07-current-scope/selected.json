@@ -1,0 +1,42 @@
+{
+  "classification": "UNVERIFIED_TRANSPORT_ADDRESS_SEED; not a qualified or currently supported entry candidate",
+  "scope": {
+    "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+    "pool": "DJQn3LTe85fYUBGXiQ9XzNJ3HGxYDmgBQPpVUzhrKwAw",
+    "baseUnits": "1",
+    "minSlot": 0,
+    "supportedPoolEvidence": "UNVERIFIED_ADDRESS_SEED_FROM_RETAINED_HINT; CURRENT_FULL_SUPPORT_REQUIRED"
+  },
+  "source": {
+    "path": "evidence/standing-research-20261027/06-targeted-retry-subject/summary.json",
+    "sha256": "ded23a71309730e0e7b1badacc9bb627d8a109292a5d3a0981f5f31b18dc90b5",
+    "reason": "FORWARD_PREFLIGHT_EXPECTED_ENRICHMENT_EXCEEDS10",
+    "priorHistoricalResearchEnrichmentCap": 10
+  },
+  "newResearchProfile": {
+    "name": "standing-measured-18",
+    "expectedPriorPoolAddressTransactionsPer75s": 13,
+    "poolAddressCountsAreNotSwapCounts": true,
+    "maximumEnrichments": 18,
+    "quoteAgeAtUseMs": 2000,
+    "targetMs": 2000,
+    "maximumGapProposalApproved": false,
+    "requestPlanUpperBound": 91,
+    "requestCap": 100,
+    "startsPerMinute": 60,
+    "startsPer10s": 10,
+    "minimumStartSpacingMs": 250,
+    "physicalInFlight": 1,
+    "maximumPreflightCalls": 3,
+    "aggregateTimeMs": 150000,
+    "shutdownReserveMs": 5000
+  },
+  "oldRejectionEdited": false,
+  "justification": "Different per-experiment research capacity for measured13 address transactions; old refusal retained. No provider cooldown or structural refusal is bypassed. Fresh bounded activity, true swap mapping and full coherent support are mandatory before any stream.",
+  "hypotheticalSizing": "Prewarm uses a currently verified swap quantity; before observation derive0.01SOL hypothetical quantity from the fresh same-state SDK snapshot; first observation requires a new correctly sized coherent read. No financial position is created.",
+  "migrationOriginVerified": false,
+  "migrationAgeVerified": false,
+  "liveTrading": false,
+  "paperEntries": false,
+  "productionChanged": false
+}

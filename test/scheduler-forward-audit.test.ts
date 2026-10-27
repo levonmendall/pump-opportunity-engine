@@ -58,6 +58,42 @@ test('more than ten required independent transactions are named rather than samp
   const r=await auditSchedulerForward(f.options());assert.equal(r.complete,false);assert.equal(r.attemptedOperations.independent,0);assert.equal(r.attemptedOperations.finality,0);assert.equal(r.calls,1);assert.equal(r.unretrievedSignatures.length,11);assert.equal(r.reason,'INDEPENDENT_TRANSACTION_ALLOCATION_INSUFFICIENT');
 });
 
+/** Synthetic transaction identities/slots and clocks on retained actual swap
+ * bytes exercise larger explicit audit bounds, not additional market evidence. */
+function measuredProfileFixture(count:number,twoPages=false){
+  const f=fixture(),rows=Array.from({length:count},(_,i)=>({...f.row,signature:i?sig(i+80):raw.signature,slot:f.row.slot-i}));
+  const transaction=(signature:string)=>{const tx=structuredClone(raw.transaction),row=rows.find(r=>r.signature===signature)!;assert.ok(row);tx.transaction.signatures[0]=signature;tx.slot=row.slot;return tx;};
+  const prior={...f.old,slot:f.row.slot-count-1};
+  const history=[...rows,prior];
+  if(twoPages){const newer=Array.from({length:50},(_,i)=>({signature:sig(i+1),slot:f.row.slot+1000-i,err:null,blockTime:target.endAt/1000+5}));f.pages([newer,history]);}else f.pages([history]);
+  f.answer(transaction);f.capture.selectedMessages=count;f.capture.executedEvidence=[];f.capture.auditSelectedHints=[];f.capture.auditNormalizedAvailability=[];f.capture.enrichmentHints={};
+  for(let i=0;i<rows.length;i++){
+    const row=rows[i]!,receivedAt=target.startAt+3000+i,availableAt=target.startAt+4000+i;
+    const events=mapConfirmedPumpSwapEvidence(transaction(row.signature),{...scope,signature:row.signature,providerReceivedAt:receivedAt,availableAt});
+    f.capture.executedEvidence.push(...events);f.capture.auditSelectedHints.push({signature:row.signature,receivedAt,expectedTrade:true});f.capture.auditNormalizedAvailability.push(...events.map(e=>({identityKey:e.identityKey,rpcAvailableAt:availableAt,validationCompletedAt:availableAt+100,duringObservation:true})));
+  }
+  return f;
+}
+
+test('standing-measured-18 audit explicitly supports all18 retained hints with independent proofs, while default10 still refuses',async()=>{
+  const legacy=measuredProfileFixture(18),refused=await auditSchedulerForward(legacy.options());assert.equal(refused.complete,false);assert.equal(refused.calls,1);assert.equal(refused.attemptedOperations.independent,0);assert.equal(refused.unretrievedSignatures.length,18);assert.equal(refused.limits.independentTransactions,10);assert.equal(refused.limits.requestUnits,14);assert.equal(refused.limits.elapsedMs,20000);assert.equal('profile'in refused,false);
+  const f=measuredProfileFixture(18),result=await auditSchedulerForward({...f.options(),profile:'standing-measured-18'});
+  assert.equal(result.complete,true);assert.equal(result.profile,'standing-measured-18');assert.equal(result.requiredIndependentSignatures.length,18);assert.equal(result.attemptedOperations.independent,18);assert.equal(result.attemptedOperations.finality,2);assert.equal(result.calls,21);assert.equal(result.matchedOriginalEvents,18);assert.deepEqual(result.unretrievedSignatures,[]);assert.equal(result.originalResponseReuse,false);assert.equal(result.laterAuditInformationBackdated,false);assert.equal(result.receiveWindowCompleteness,'NOT_ESTABLISHED_BY_CHAIN_TIME_ALONE');
+});
+
+test('standing audit20-transaction ceiling fits exactly24 calls with two history pages and never samples21required signatures',async()=>{
+  const f=measuredProfileFixture(20,true),result=await auditSchedulerForward({...f.options(),profile:'standing-measured-18'});
+  assert.equal(result.complete,true);assert.equal(result.calls,24);assert.deepEqual(result.attemptedOperations,{history:2,independent:20,finality:2});assert.equal(result.elapsedMs,24000);assert.equal(result.limits.elapsedMs,25000);assert.equal(result.limits.signaturesPerPage,50);
+  const over=measuredProfileFixture(21),refused=await auditSchedulerForward({...over.options(),profile:'standing-measured-18'});assert.equal(refused.complete,false);assert.equal(refused.calls,1);assert.equal(refused.attemptedOperations.independent,0);assert.equal(refused.attemptedOperations.finality,0);assert.equal(refused.requiredIndependentSignatures.length,21);assert.equal(refused.unretrievedSignatures.length,21);assert.equal(refused.unsupported[0].maximum,20);
+});
+
+test('standing audit retains strict first-quality and25s monotonic completion guards; unknown profiles never call RPC',async()=>{
+  const bad=measuredProfileFixture(18),oldAnswer=bad.rpc.call.bind(bad.rpc);bad.rpc.call=async<T>(m:string,p:unknown[],s?:AbortSignal)=>{const tx=await oldAnswer<any>(m,p,s);if(m==='getTransaction'&&(p[1]as any).commitment==='confirmed'){tx.meta.innerInstructions[0].instructions.splice(5,1);}return tx as T;};
+  const invalid=await auditSchedulerForward({...bad.options(),profile:'standing-measured-18'});assert.equal(invalid.complete,false);assert.equal(invalid.calls,2);assert.equal(invalid.attemptedOperations.finality,0);
+  const timed=measuredProfileFixture(20,true);timed.step(1100);const late=await auditSchedulerForward({...timed.options(),profile:'standing-measured-18'});assert.equal(late.complete,false);assert.ok(late.calls<=24);assert.equal(late.reason,'FORWARD_AUDIT_ELAPSED_OR_ABORT_CAP');
+  const unknown=fixture();await assert.rejects(auditSchedulerForward({...unknown.options(),profile:'unreviewed' as any}),/INVALID_PROFILE/);assert.equal(unknown.requests.length,0);
+});
+
 test('unknown chain boundary and unresolved late selected hint prevent a completeness claim',async()=>{
   const f=fixture();f.pages([[{...f.row,blockTime:null}]]);f.capture.auditSelectedHints!.push({signature:sig(199),receivedAt:target.endAt+5001,expectedTrade:true});f.capture.selectedMessages=2;f.answer(signature=>signature===raw.signature?structuredClone(raw.transaction):null);
   const r=await auditSchedulerForward(f.options());assert.equal(r.complete,false);assert.equal(r.historyRangeCovered,false);const late=r.unresolvedSelectedHints.find((x:any)=>x.signature===sig(199));assert.equal(late.receivedAfterTargetClose,true);assert.equal(late.receivedAfterObservationClose,true);assert.equal(late.chainTargetMembership,'UNKNOWN');assert.equal(late.laterAuditDoesNotRepairOriginalWindow,true);
