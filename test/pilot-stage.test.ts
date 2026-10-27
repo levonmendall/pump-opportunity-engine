@@ -1,7 +1,7 @@
 /** Controller policies only: no network, live account, or natural trade. */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotPreparationDeferrable,pilotCandidateWindowReady,pilotInitialAuditReady,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
+import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,pilotAuditFailurePolicy,pilotPreparationDeferrable,pilotCandidateWindowReady,pilotInitialAuditReady,pilotCandidateDeferral,pilotDiscretionaryAdmission,pilotObservationReadyAt,pilotCurrentContextMarks,pilotOpenProtectionGaps,pilotCapacity,pilotEligibilityRunway,choosePilotPreparation,nextPreparedPilotSeed} from '../src/pilot.js';
 import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
 
 test('explicit stage transitions preserve account/inception and append known capacity contracts',()=>{
@@ -171,4 +171,14 @@ test('support phase reserves all five reads before consuming the opening headroo
  assert.equal(pilotObservationReadyAt(five,ready+1250,20,{short:15,minute:20}),ready+1250,'after admission allfive freshreads stillleaveopeningheadroom');
  const discretionary=Array.from({length:16},(_,i)=>10000+i*250);assert.equal(pilotDiscretionaryAdmission(discretionary,15000).admitted,true);assert.equal(pilotDiscretionaryAdmission(discretionary,15000,false,5).admitted,false);
  assert.equal(pilotDiscretionaryAdmission(discretionary,70000,false,5).admitted,true);
+});
+
+
+test('repeated enrichment capacity failures retain awareness while preventing thirty-second retry churn',()=>{
+ const reason='candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY';
+ assert.deepEqual([0,1,2,5].map(n=>pilotCandidateDeferral(reason,n).delayMs),[120000,300000,600000,600000]);
+ assert.equal(pilotCandidateDeferral('required enrichment cannot fit method rate limit and usefulness deadline',0).capacitySpecific,true);
+ assert.equal(pilotCandidateDeferral('valid-window-currently-weak',0).delayMs,60000);
+ assert.deepEqual(pilotCandidateDeferral('temporary feed failure',9),{capacitySpecific:false,delayMs:30000});
+ assert.throws(()=>pilotCandidateDeferral(reason,-1),/CAPACITY_HISTORY/);
 });

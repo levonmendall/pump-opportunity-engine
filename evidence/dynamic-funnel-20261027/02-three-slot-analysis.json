@@ -1,0 +1,615 @@
+{
+  "classification": "OFFLINE_ANALYSIS_OF_SETTLED_THREE_SLOT_FORWARD_INTERVAL",
+  "runId": "pilot-20261027210316237-57a92bce",
+  "source": {
+    "commit": "4abb86fba6f249d3964c5bab43e14e9685cbfcd7",
+    "sha256": "9042a83f5c88568b25f8162ee1eb9b32671ff66d75c965692f85191e9a91aff2"
+  },
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "elapsedMs": 467017,
+  "inputs": {
+    "events": {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/events.ndjson",
+      "bytes": 2444243,
+      "sha256": "883a4a011bc885a597b41cd8c5aeda4ab38d797cecdfb501a1856841a4719ada"
+    },
+    "snapshot": {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/result.json",
+      "bytes": 106789,
+      "sha256": "c9e0f20bf67648f8a47ffd75113094bbb88b4da8a18eaf825b92162909adacd8"
+    },
+    "eventsAreAnAtOpenPrefix": false,
+    "trailingIncompleteBytes": 0,
+    "immutableResultUsed": true
+  },
+  "concurrency": {
+    "configuredMaximumDeep": 3,
+    "actualMaximumSimultaneousDeep": 3,
+    "actualMaximumHeld": 0,
+    "actualMaximumPending": 0,
+    "protectionTimingMeasured": false
+  },
+  "admission": {
+    "promotionsThisRun": 13,
+    "repromotionsThisRun": 8,
+    "uniqueMintsPromoted": 6,
+    "promotionsPerObservedHour": 100.21048484316417,
+    "uniquePromotedPerObservedHour": 46.25099300453731,
+    "demotionsForWeakValidWindow": 11,
+    "note": "Hourly values are arithmetic rates from one quiet467s sample, not sustainable capacity. WATCH known identities remain after demotion; each repromotion rebuilds full fresh flow.",
+    "durablePromotionWaitThisRun": {
+      "totalMs": 4125178,
+      "maximumMs": 696339,
+      "meanMs": 317321.3846153846,
+      "includesLegitimateWaitingAcrossPriorStoppedInterval": true
+    }
+  },
+  "watchCounters": {
+    "priorCorrectedCumulative": {
+      "discovered": 6,
+      "verified": 6,
+      "promoted": 1,
+      "repromoted": 0,
+      "completeWindows": 2,
+      "promotionWaitTotalMs": 10306,
+      "promotionWaitMaximumMs": 10306
+    },
+    "finalCumulative": {
+      "discovered": 9,
+      "duplicates": 6,
+      "verified": 8,
+      "promoted": 14,
+      "repromoted": 8,
+      "demoted": 12,
+      "expired": 0,
+      "capacityExclusions": 0,
+      "structuralExclusions": 1,
+      "completeWindows": 23,
+      "evicted": 0,
+      "activityHints": 13,
+      "promotionWaitTotalMs": 4135484,
+      "promotionWaitMaximumMs": 696339,
+      "known": 9,
+      "maximumIdentities": 150,
+      "watch": 6,
+      "unverified": 1,
+      "eligibleKnown": 6,
+      "deepActive": 2,
+      "maximumDeep": 3,
+      "queued": 0,
+      "waitMs": {
+        "mean": 0,
+        "maximum": 0
+      },
+      "promotionWaitMs": {
+        "mean": 295391.71428571426,
+        "maximum": 696339
+      },
+      "coverage": {
+        "denominator": "currently entry-age-eligible verified identities retained in this bounded registry; at least one audited window during this eligibility horizon",
+        "eligibleKnown": 6,
+        "atLeastOneValidWindow": 6,
+        "percent": 100,
+        "wholeMarketPercent": null
+      },
+      "states": {
+        "DISCOVERED": 0,
+        "VERIFYING": 0,
+        "WATCH": 2,
+        "DEEP_OBSERVATION": 2,
+        "QUALIFIED": 0,
+        "ENTRY_PENDING": 0,
+        "HELD": 0,
+        "DEFERRED": 4,
+        "EXPIRED": 0,
+        "PERMANENTLY_UNSUPPORTED": 1
+      },
+      "strategyRejections": 11,
+      "incompleteDataExclusions": 0,
+      "enrichmentDeadlineFailures": 0
+    },
+    "currentRunDeltas": {
+      "discovered": 3,
+      "verified": 2,
+      "promoted": 13,
+      "repromoted": 8,
+      "demoted": 12,
+      "demotionIncludesStartupRecovery": 1,
+      "completeWindowAuditRecords": 21,
+      "structuralExclusions": 1
+    },
+    "warning": "Final registry counters include prior run. Historical imported-proof wait correction receipt is preserved; no underlying result or consumed usage changed."
+  },
+  "coverage": {
+    "ageEligibleFlowCandidateMs": 886938,
+    "ageEligibleFlowWallMs": 442468,
+    "literalEntryControlEnabledMs": 48,
+    "entryControlIntervals": 8,
+    "runtimeUsableWindowAuditRecords": 21,
+    "rawFeatureWindowsLaterAuditCovered": 22,
+    "lookbackCandidateUnionMs": 770000,
+    "lookbackWallUnionMs": 420000,
+    "windowDifference": {
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "windowEndAt": 1793135420000,
+      "firstFeatureReadyAt": 1793135420435,
+      "laterAuditAvailableAt": 1793135435094,
+      "reason": "503 deferred history audit; next successful audit through5430000 covers both5420000/5430000 recorded feature windows, while runtime increments only current window once. Earlier window was unavailable before later audit and must not be backdated."
+    },
+    "knownRegistryCoverageAtEnd": {
+      "numeratorAtLeastOneWindow": 6,
+      "currentlyEligibleVerifiedDenominator": 6,
+      "wholeMarketDenominator": null,
+      "notActiveFlowCompletenessProof": true
+    }
+  },
+  "decisions": {
+    "total": 103,
+    "byStageAndReason": [
+      {
+        "stage": "missing-data",
+        "reason": "warming",
+        "count": 82
+      },
+      {
+        "stage": "risk-rejection",
+        "reason": "entries-not-authorized-by-ledger",
+        "count": 10
+      },
+      {
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "count": 11
+      }
+    ],
+    "predictiveRejections": [
+      {
+        "recordedAt": 1793135085349,
+        "decisionAt": 1793135085349,
+        "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "asOf": 1793135085348,
+          "windowStartAt": 1793135020000,
+          "windowEndAt": 1793135080000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135085353,
+        "decisionAt": 1793135085353,
+        "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+          "asOf": 1793135085353,
+          "windowStartAt": 1793135020000,
+          "windowEndAt": 1793135080000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135165215,
+        "decisionAt": 1793135165215,
+        "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+          "asOf": 1793135165215,
+          "windowStartAt": 1793135100000,
+          "windowEndAt": 1793135160000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135185117,
+        "decisionAt": 1793135185117,
+        "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "asOf": 1793135185117,
+          "windowStartAt": 1793135120000,
+          "windowEndAt": 1793135180000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135265342,
+        "decisionAt": 1793135265342,
+        "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+          "asOf": 1793135265341,
+          "windowStartAt": 1793135200000,
+          "windowEndAt": 1793135260000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135265347,
+        "decisionAt": 1793135265347,
+        "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+          "asOf": 1793135265346,
+          "windowStartAt": 1793135200000,
+          "windowEndAt": 1793135260000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135285141,
+        "decisionAt": 1793135285141,
+        "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+          "asOf": 1793135285141,
+          "windowStartAt": 1793135220000,
+          "windowEndAt": 1793135280000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135345207,
+        "decisionAt": 1793135345207,
+        "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "asOf": 1793135345207,
+          "windowStartAt": 1793135280000,
+          "windowEndAt": 1793135340000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135427359,
+        "decisionAt": 1793135427359,
+        "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+          "asOf": 1793135427359,
+          "windowStartAt": 1793135360000,
+          "windowEndAt": 1793135420000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135435341,
+        "decisionAt": 1793135435341,
+        "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+          "asOf": 1793135435341,
+          "windowStartAt": 1793135370000,
+          "windowEndAt": 1793135430000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      },
+      {
+        "recordedAt": 1793135435346,
+        "decisionAt": 1793135435346,
+        "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+        "stage": "strategy-rejection",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "features": {
+          "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+          "asOf": 1793135435346,
+          "windowStartAt": 1793135370000,
+          "windowEndAt": 1793135430000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "0",
+          "sellLamports": "0",
+          "netBuyLamports": "0",
+          "tradeCount": 0,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 0,
+          "largestBuyerBps": 0,
+          "positiveNetBuckets": 0,
+          "priceReturnBps": null,
+          "firstPrice": null,
+          "lastPrice": null
+        },
+        "quote": null
+      }
+    ],
+    "allPredictiveRejectionsHaveZeroTradeFeatures": true,
+    "fullyQualified": 0,
+    "qualifiedButUnfilled": 0,
+    "orders": [],
+    "naturalEntries": 0,
+    "naturalExits": 0
+  },
+  "newMigrationProcessing": {
+    "notifications": 3,
+    "customQuoteStructurallyExcluded": 1,
+    "newSOLCanonicalIdentitiesVerified": 2,
+    "verificationWhileAllThreeDeepSlotsFullDemonstrated": true,
+    "newlyVerifiedNotYetEntryAgeAtEnd": 2,
+    "rawSelectedFeedHints": 0,
+    "normalizedTrades": 0,
+    "activeTradeFieldOrCompletenessValidated": false
+  },
+  "requests": {
+    "physicalStarts": 126,
+    "allPhysicalSettled": true,
+    "averageStartsPerMinute": 16.187847551588057,
+    "peakStartsRolling10s": 6,
+    "peakStartsRollingMinute": 24,
+    "minimumStartSpacingMs": 251,
+    "byPurposeAndMethod": [
+      {
+        "purpose": "idle",
+        "method": "upgrade",
+        "count": 3
+      },
+      {
+        "purpose": "idle",
+        "method": "subscribeMigration",
+        "count": 1
+      },
+      {
+        "purpose": "discovery",
+        "method": "getMultipleAccounts",
+        "count": 39
+      },
+      {
+        "purpose": "discovery",
+        "method": "getBlockTime",
+        "count": 18
+      },
+      {
+        "purpose": "discovery",
+        "method": "getMinimumBalanceForRentExemption",
+        "count": 36
+      },
+      {
+        "purpose": "candidate",
+        "method": "getSignaturesForAddress",
+        "count": 22
+      },
+      {
+        "purpose": "discovery",
+        "method": "getTransaction",
+        "count": 6
+      },
+      {
+        "purpose": "discovery",
+        "method": "getSignaturesForAddress",
+        "count": 1
+      }
+    ],
+    "selectedTransactionEnrichmentRequests": 0,
+    "migrationLookupGetTransactionRequests": 6,
+    "latencyMs": {
+      "samples": 122,
+      "p50": 57,
+      "p95": 162,
+      "maximum": 418
+    },
+    "newRelatedResponseBytes": 960268,
+    "cumulativeUnitsAtEnd": 1129,
+    "inheritedUncertainResponseBytesRetained": 23068672
+  },
+  "providerFailures": {
+    "http503": 4,
+    "http429": 0,
+    "physicalSettlementPreserved": true,
+    "recordedCooldownPer503Ms": 2000,
+    "auditUnavailabilityIntervalMs": 9989,
+    "newProtectionFailuresDemonstrated": false,
+    "protectionUntestedBecauseNoPositions": true
+  },
+  "resources": {
+    "pumpApiBytes": 467612211,
+    "discoveryBytes": 864,
+    "feedFrames": 302414,
+    "selectedFrames": 0,
+    "localWatchActivityHints": 13,
+    "matchedWatchPayloadParses": 13,
+    "watchProcessingMs": 1093.1786180037634,
+    "totalCpuMs": 38421.489,
+    "maximumRssBytes": 263835648,
+    "eventLoopDelayP95Ms": 20.971519,
+    "eventEvidenceBytes": 2444243,
+    "feedEvidenceBytes": 846378,
+    "broadStreamArchived": false
+  },
+  "financial": {
+    "snapshotRevision": 3713,
+    "backup": {
+      "path": "/workspace/poe-pilot/backups/poe-financial-00000000000000000025.sqlite",
+      "bytes": 2002944,
+      "sha256": "7d26cd9c10b46836f449da04e0142683ba7660d4c687009f6f9de55bc7458d80",
+      "revision": 3713,
+      "matchesFinalRevision": true
+    },
+    "openPositionsAtSnapshot": 0,
+    "pendingActionsAtSnapshot": 0,
+    "snapshotValues": {
+      "cashLamports": "9920142850",
+      "reservedLamports": "0",
+      "lockedDepositLamports": "0",
+      "equityLamports": "9920142850",
+      "totalPnlLamports": "0",
+      "equityMicroUsd": "1001736025",
+      "totalPnlMicroUsd": "1736025",
+      "solPriceEffectMicroUsd": "1736025",
+      "executionCostsLamports": "0",
+      "operatingCostsMicroUsd": null,
+      "economicPnlMicroUsd": null,
+      "operatingCostClassification": "unavailable"
+    },
+    "valuesNotRepriced": true
+  },
+  "costInterpretation": {
+    "executionCostsLamports": 0,
+    "actualAPIFees": "No paid endpoint used; no provider billing statement available",
+    "infrastructureTransferCost": "unverified; broad stream receipt not free infrastructure proof",
+    "SOLTradingPnlLamports": "0",
+    "USDGainMicroUsd": "1736025",
+    "USDGainEntirelyPassiveSOLPriceEffect": true,
+    "operatingEconomicPnl": null
+  },
+  "decision": "Three-deep quiet-candidate turnover and continuing discovery/verification while full are demonstrated. No held positions and zero selected trade hints mean this interval does not demonstrate active-flow enrichment capacity, actual holding protection, or economic edge."
+}

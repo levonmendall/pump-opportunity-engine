@@ -1,0 +1,409 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_MATCHED_RETAINED_LOG_FEASIBILITY",
+  "decision": "A bounded log-native adapter is feasible to investigate; not a drop-in replacement under the unchanged transaction-enriched evidence contract",
+  "networkRequests": 0,
+  "ledgerWrites": 0,
+  "source": {
+    "reviewedAt": "2026-10-27T21:28:02.055Z",
+    "commit": "1861a32eff81502ef6a6571284bbbec1374e44e0",
+    "mapperSha256": "a6de636396846594ab881e09d3e2983ad3ba58426c2388a1bf444c824e684d68",
+    "scriptSha256": "2b7a88635fddb5c6820d6782aa440b09524dc4044909fd8b5b49fa547f8d4312",
+    "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+    "solanaSdk": "@solana/web3.js@1.98.4",
+    "idlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61"
+  },
+  "input": {
+    "eventsPath": "/workspace/pump-opportunity-engine/evidence/dynamic-funnel-20261027/retained-log-events.ndjson",
+    "eventsSha256": "73a4005cf306470ab5d0fb888b3e56b3e34fd1b22cc9fc87a2d00385bfd421fb",
+    "enrichedTransactions": 6,
+    "matchedTradeEvents": 6,
+    "ignoredNonSwapDecodedEvents": 1
+  },
+  "verifiedScope": {
+    "routedBuyExactQuoteInV2": 1,
+    "routedSellV2": 1,
+    "directSells": 4,
+    "allSameEventBytes": true,
+    "allEconomicFieldsMatch": true,
+    "programTimestampDiffersFromBlockTime": 5
+  },
+  "rows": [
+    {
+      "signature": "LuHGSF7H2wouHfHVGArgt72Fi1jf14P1merSyXZ2Lc84DuECmXCDbE8i9WEfaUgzpbQux3jFKbwntU7qGsccSJA",
+      "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "slot": 462205500,
+      "sdkEventName": "BuyEvent",
+      "side": "buy",
+      "programAtEmission": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "depthAtEmission": 2,
+      "instructionLabel": "BuyExactQuoteInV2",
+      "logArrayIndex": 75,
+      "logRootInvocationOrdinal": 2,
+      "compiledIdentity": {
+        "signature": "LuHGSF7H2wouHfHVGArgt72Fi1jf14P1merSyXZ2Lc84DuECmXCDbE8i9WEfaUgzpbQux3jFKbwntU7qGsccSJA",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 2,
+        "swapInnerInstructionIndex": 4,
+        "eventInnerInstructionIndex": 10,
+        "eventIndex": 0
+      },
+      "exactSdkEventLayout": true,
+      "eventByteLength": 515,
+      "logByteSha256": "3ed734c58b779c1ee008eb4399e617533f5a9b7a7b570174e987f6ab6e444d81",
+      "eventCpiByteSha256": "3ed734c58b779c1ee008eb4399e617533f5a9b7a7b570174e987f6ab6e444d81",
+      "eventBytesEqual": true,
+      "eventIxName": "buy_exact_quote_in_v2",
+      "economicFields": {
+        "tokenUnits": "1708374705996",
+        "curveQuoteLamports": "109385808",
+        "userQuoteLamports": "110753133",
+        "trader": "AkFhThLys9U4BYURvY48VL6UKctJUzM5dSqpya9Fswwk",
+        "fees": {
+          "lp_fee": "21878",
+          "protocol_fee": "1017289",
+          "coin_creator_fee": "328158",
+          "cashback": "0",
+          "buyback_fee": "508644",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        }
+      },
+      "economicFieldsMatchFullMapper": true,
+      "fullMapperTransferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "transferChecksProvenFromLogsAlone": false,
+      "programClockTimestamp": "1793132829",
+      "rpcBlockTime": 1793132829,
+      "programTimestampEqualsRpcBlockTime": true,
+      "fullTransactionSuccess": true,
+      "logTruncationMarkerPresent": false,
+      "fullTransactionAvailableAt": 1793132831547,
+      "liveLogNotificationReceivedAt": null,
+      "availabilityMeaning": "retained getTransaction log content; no live logsSubscribe transport timing was measured"
+    },
+    {
+      "signature": "35vScbDD9ZMEvcUvjoTkRwqvJZ89d99xbq5KbdmdX3i5wRUBekVyBeJnBoCDFoDGNGxy6r9sdcTH2yHNMTxjqKst",
+      "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "slot": 462205501,
+      "sdkEventName": "SellEvent",
+      "side": "sell",
+      "programAtEmission": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "depthAtEmission": 1,
+      "instructionLabel": "Sell",
+      "logArrayIndex": 44,
+      "logRootInvocationOrdinal": 3,
+      "compiledIdentity": {
+        "signature": "35vScbDD9ZMEvcUvjoTkRwqvJZ89d99xbq5KbdmdX3i5wRUBekVyBeJnBoCDFoDGNGxy6r9sdcTH2yHNMTxjqKst",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 6,
+        "eventIndex": 0
+      },
+      "exactSdkEventLayout": true,
+      "eventByteLength": 449,
+      "logByteSha256": "a2711772c0d243e97703604d7df902662a0320b3f4f6c7423de518d1b5a9c8f0",
+      "eventCpiByteSha256": "a2711772c0d243e97703604d7df902662a0320b3f4f6c7423de518d1b5a9c8f0",
+      "eventBytesEqual": true,
+      "eventIxName": null,
+      "economicFields": {
+        "tokenUnits": "10988055060992",
+        "curveQuoteLamports": "691339226",
+        "userQuoteLamports": "682697485",
+        "trader": "E86oNez3VV32pkcisspFn2PFR6pEobnMc6bkMhWZSW8E",
+        "fees": {
+          "lp_fee": "138268",
+          "protocol_fee": "6429455",
+          "coin_creator_fee": "2074018",
+          "cashback": "0",
+          "buyback_fee": "3214727",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        }
+      },
+      "economicFieldsMatchFullMapper": true,
+      "fullMapperTransferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "transferChecksProvenFromLogsAlone": false,
+      "programClockTimestamp": "1793132829",
+      "rpcBlockTime": 1793132830,
+      "programTimestampEqualsRpcBlockTime": false,
+      "fullTransactionSuccess": true,
+      "logTruncationMarkerPresent": false,
+      "fullTransactionAvailableAt": 1793132831970,
+      "liveLogNotificationReceivedAt": null,
+      "availabilityMeaning": "retained getTransaction log content; no live logsSubscribe transport timing was measured"
+    },
+    {
+      "signature": "3jVxgYARAXEoiGoxwxhguEovFh9pBpTRyY1aLf3eFG76aKu575wJRCqcV3pnAxHg2t7YtzvCF7Mb4iHbspPEaSEV",
+      "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "slot": 462205501,
+      "sdkEventName": "SellEvent",
+      "side": "sell",
+      "programAtEmission": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "depthAtEmission": 1,
+      "instructionLabel": "Sell",
+      "logArrayIndex": 48,
+      "logRootInvocationOrdinal": 4,
+      "compiledIdentity": {
+        "signature": "3jVxgYARAXEoiGoxwxhguEovFh9pBpTRyY1aLf3eFG76aKu575wJRCqcV3pnAxHg2t7YtzvCF7Mb4iHbspPEaSEV",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 4,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 6,
+        "eventIndex": 0
+      },
+      "exactSdkEventLayout": true,
+      "eventByteLength": 449,
+      "logByteSha256": "6ddf7a61b348565bb85d2822b78fe01234132f3a6dc9e1347f1ada67c40f78ec",
+      "eventCpiByteSha256": "6ddf7a61b348565bb85d2822b78fe01234132f3a6dc9e1347f1ada67c40f78ec",
+      "eventBytesEqual": true,
+      "eventIxName": null,
+      "economicFields": {
+        "tokenUnits": "350180946905",
+        "curveQuoteLamports": "21565386",
+        "userQuoteLamports": "21295816",
+        "trader": "53f4Q8UcdnorhbwfMteYZYCfHkx79pXpnx4wY5HRpuhB",
+        "fees": {
+          "lp_fee": "4314",
+          "protocol_fee": "200559",
+          "coin_creator_fee": "64697",
+          "cashback": "0",
+          "buyback_fee": "100279",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        }
+      },
+      "economicFieldsMatchFullMapper": true,
+      "fullMapperTransferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "transferChecksProvenFromLogsAlone": false,
+      "programClockTimestamp": "1793132829",
+      "rpcBlockTime": 1793132830,
+      "programTimestampEqualsRpcBlockTime": false,
+      "fullTransactionSuccess": true,
+      "logTruncationMarkerPresent": false,
+      "fullTransactionAvailableAt": 1793132832239,
+      "liveLogNotificationReceivedAt": null,
+      "availabilityMeaning": "retained getTransaction log content; no live logsSubscribe transport timing was measured"
+    },
+    {
+      "signature": "4qDHmAFRiXwQgYVsb6Qh3dXkUiAm3Dsi54JmBgh8XR5oRHP2tzBeXiDzbFdD1wYc4TtAhiARPWdssmM5j8TmCEyH",
+      "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "slot": 462205501,
+      "sdkEventName": "SellEvent",
+      "side": "sell",
+      "programAtEmission": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "depthAtEmission": 1,
+      "instructionLabel": "Sell",
+      "logArrayIndex": 48,
+      "logRootInvocationOrdinal": 4,
+      "compiledIdentity": {
+        "signature": "4qDHmAFRiXwQgYVsb6Qh3dXkUiAm3Dsi54JmBgh8XR5oRHP2tzBeXiDzbFdD1wYc4TtAhiARPWdssmM5j8TmCEyH",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 4,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 6,
+        "eventIndex": 0
+      },
+      "exactSdkEventLayout": true,
+      "eventByteLength": 449,
+      "logByteSha256": "fc47688a2a9c6de522e9c3ce6e15d5ed880d2fffee881a8f851e5093e5793888",
+      "eventCpiByteSha256": "fc47688a2a9c6de522e9c3ce6e15d5ed880d2fffee881a8f851e5093e5793888",
+      "eventBytesEqual": true,
+      "eventIxName": null,
+      "economicFields": {
+        "tokenUnits": "350180946905",
+        "curveQuoteLamports": "21537162",
+        "userQuoteLamports": "21267946",
+        "trader": "EV8mH8fDGdB62CUQDaZkQy1TPSoXv6U3kLgNw2zNH92F",
+        "fees": {
+          "lp_fee": "4308",
+          "protocol_fee": "200296",
+          "coin_creator_fee": "64612",
+          "cashback": "0",
+          "buyback_fee": "100148",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        }
+      },
+      "economicFieldsMatchFullMapper": true,
+      "fullMapperTransferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "transferChecksProvenFromLogsAlone": false,
+      "programClockTimestamp": "1793132829",
+      "rpcBlockTime": 1793132830,
+      "programTimestampEqualsRpcBlockTime": false,
+      "fullTransactionSuccess": true,
+      "logTruncationMarkerPresent": false,
+      "fullTransactionAvailableAt": 1793132832609,
+      "liveLogNotificationReceivedAt": null,
+      "availabilityMeaning": "retained getTransaction log content; no live logsSubscribe transport timing was measured"
+    },
+    {
+      "signature": "pm2nRJYNCH1NKJhxrSn844sEwbd9T9JLjQEAJowxtSKnEm3ks8HeUidGWz6TuN4F6pmDQoQwM3ECqwxrL3nk1Xm",
+      "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "slot": 462205516,
+      "sdkEventName": "SellEvent",
+      "side": "sell",
+      "programAtEmission": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "depthAtEmission": 2,
+      "instructionLabel": "SellV2",
+      "logArrayIndex": 21,
+      "logRootInvocationOrdinal": 1,
+      "compiledIdentity": {
+        "signature": "pm2nRJYNCH1NKJhxrSn844sEwbd9T9JLjQEAJowxtSKnEm3ks8HeUidGWz6TuN4F6pmDQoQwM3ECqwxrL3nk1Xm",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 1,
+        "swapInnerInstructionIndex": 0,
+        "eventInnerInstructionIndex": 4,
+        "eventIndex": 0
+      },
+      "exactSdkEventLayout": true,
+      "eventByteLength": 449,
+      "logByteSha256": "8c30f13913193e518588a3fbb30ca8326af758b7ca7b4351fabeaca9b1d1b485",
+      "eventCpiByteSha256": "8c30f13913193e518588a3fbb30ca8326af758b7ca7b4351fabeaca9b1d1b485",
+      "eventBytesEqual": true,
+      "eventIxName": null,
+      "economicFields": {
+        "tokenUnits": "14050331358621",
+        "curveQuoteLamports": "841476168",
+        "userQuoteLamports": "830957714",
+        "trader": "GrzwhhLgwdYbsXTyU4QZchLMtsMRJD6zvXQ7f36Q4dn7",
+        "fees": {
+          "lp_fee": "168296",
+          "protocol_fee": "7825729",
+          "coin_creator_fee": "2524429",
+          "cashback": "0",
+          "buyback_fee": "3912864",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        }
+      },
+      "economicFieldsMatchFullMapper": true,
+      "fullMapperTransferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "transferChecksProvenFromLogsAlone": false,
+      "programClockTimestamp": "1793132832",
+      "rpcBlockTime": 1793132833,
+      "programTimestampEqualsRpcBlockTime": false,
+      "fullTransactionSuccess": true,
+      "logTruncationMarkerPresent": false,
+      "fullTransactionAvailableAt": 1793132834799,
+      "liveLogNotificationReceivedAt": null,
+      "availabilityMeaning": "retained getTransaction log content; no live logsSubscribe transport timing was measured"
+    },
+    {
+      "signature": "4HQAf5a8TvxV7x4RBsUrp8r2pQoSoMJAWrDfmEzKneMEmMCPFJc2goJ5AotmZAy25uqr6TtJWoYRbUpBHbUy2L2S",
+      "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "slot": 462205526,
+      "sdkEventName": "SellEvent",
+      "side": "sell",
+      "programAtEmission": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "depthAtEmission": 1,
+      "instructionLabel": "Sell",
+      "logArrayIndex": 48,
+      "logRootInvocationOrdinal": 4,
+      "compiledIdentity": {
+        "signature": "4HQAf5a8TvxV7x4RBsUrp8r2pQoSoMJAWrDfmEzKneMEmMCPFJc2goJ5AotmZAy25uqr6TtJWoYRbUpBHbUy2L2S",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 4,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 6,
+        "eventIndex": 0
+      },
+      "exactSdkEventLayout": true,
+      "eventByteLength": 449,
+      "logByteSha256": "f055c5ad3efb2f9e1497473b0ad7417d79d0abeaa9fb260f9ae4535f3b4d4a84",
+      "eventCpiByteSha256": "f055c5ad3efb2f9e1497473b0ad7417d79d0abeaa9fb260f9ae4535f3b4d4a84",
+      "eventBytesEqual": true,
+      "eventIxName": null,
+      "economicFields": {
+        "tokenUnits": "1124763009165",
+        "curveQuoteLamports": "65504851",
+        "userQuoteLamports": "64686039",
+        "trader": "ALdJgL529UEDi3ANvMthHbXof5MJdRpYjUZsoHDzFste",
+        "fees": {
+          "lp_fee": "13101",
+          "protocol_fee": "609196",
+          "coin_creator_fee": "196515",
+          "cashback": "0",
+          "buyback_fee": "304598",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        }
+      },
+      "economicFieldsMatchFullMapper": true,
+      "fullMapperTransferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "transferChecksProvenFromLogsAlone": false,
+      "programClockTimestamp": "1793132834",
+      "rpcBlockTime": 1793132835,
+      "programTimestampEqualsRpcBlockTime": false,
+      "fullTransactionSuccess": true,
+      "logTruncationMarkerPresent": false,
+      "fullTransactionAvailableAt": 1793132837396,
+      "liveLogNotificationReceivedAt": null,
+      "availabilityMeaning": "retained getTransaction log content; no live logsSubscribe transport timing was measured"
+    }
+  ],
+  "notificationFieldsFromPinnedSolanaSdk": [
+    "context.slot",
+    "value.signature",
+    "value.err",
+    "value.logs"
+  ],
+  "requiredContractGaps": [
+    {
+      "field": "compiled outer/inner instruction identity",
+      "gap": "logsNotification lacks compiled instruction arrays/account indices; a real log-array index must use an explicit log-native identity namespace rather than invented compiled indices"
+    },
+    {
+      "field": "executed SPL transfer checks",
+      "gap": "TransferChecked log labels omit transfer amounts and account keys; existing transferChecks cannot honestly be marked true from logs alone"
+    },
+    {
+      "field": "account-role binding and mint programs",
+      "gap": "event has pool/user/token-account keys but no mint/account-role array; bind pool to independently verified mint/account state and retain targeted verification of event semantics"
+    },
+    {
+      "field": "chain block time",
+      "gap": "event Clock timestamp is not RPC blockTime; recorded sample differs in five transactions; retain receipt/availability time and label source timestamps separately"
+    },
+    {
+      "field": "instruction variant completeness",
+      "gap": "BuyEvent ix_name identifies the observed exact-quote variant, SellV2 uses invocation label; boost/unknown layouts/truncated logs/ambiguous contexts require explicit refusal or bounded transaction fallback"
+    },
+    {
+      "field": "complete notification coverage",
+      "gap": "no logsSubscribe transport, reconnect, fork/correction, missing notifications or multi-swap transaction was tested by this offline review"
+    }
+  ],
+  "reuse": [
+    "pinned Borsh event decoder and strict round-trip layout check",
+    "existing verified canonical pool/mint registry and fee/quote validations",
+    "existing chronological normalized trade fields after a separately reviewed log-native evidence contract",
+    "existing bounded independent audit and gap invalidation, without backdating later verification"
+  ],
+  "capacityCaution": "Removing per-trade enrichment does not establish combined12-scope capacity: current10second per-pool history audits imply approximately72 requests/minute for12scopes before held pricing, verification and recovery.",
+  "preservation": "No source edits, provider changes, wallet actions, production actions, or network requests. Historical mapping and pilot results remain unchanged."
+}

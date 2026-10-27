@@ -96,3 +96,16 @@ causedunnecessarypostpreparationdeferral; fixed narrowlyusingcurrentcomparison
 time (nobudget/freshnesschange). Build+71focusedchecks+independentreviewGO.
 Nextfrozenintervalallows6deepslotswithsamefinancialaccount/max3positionrules;
 quietcapacityonly, activeflow/protection/economicedge remainunproven.
+
+21:20UTC:6slotrun1861a32 stopped withzeroexposure andsettledtransports. Actual
+maxdeep5, not6. ActiveCq16poolproduced18/17distincttransactions in2.135/2.283s;
+required17/16hintsqueued, only1/0enriched, bothwindowscorrectlyinvalidated.
+At8getTx/10s bothburstsareunservableevenwithperfectscheduling; do notraise
+limitsorclaimcompleteflow. RoutedBuyamounts/trader/fees/transfers/identity
+validated1571msafterreceipt. Separate stale-loopclock comparison couldprevent
+eligibleenrichment; nowfixedusingactualdispatchclock andexplicitadmissiontrace.
+CapacityfailedmintsreturnWATCH/DEFERRED120s,300s,600s ratherthanrepeatingevery
+30s; currentflowandfinancialrulesunchanged. Sourcev2capacitypolicyisexplicit.
+Build+78focusedchecksPASS; finalfullsuitepending. Original6slotfailureand
+scorecardretained. Rootwillresume6slotsafterreview;12notsupportedbythese
+resultsorcurrenteligiblepopulation. Noowneractionrequired.

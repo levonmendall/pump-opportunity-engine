@@ -1,0 +1,19 @@
+{
+  "classification": "OFFLINE_REPAIR_VERIFICATION",
+  "fullSuite": {
+    "passed": 781,
+    "failed": 0,
+    "durationMs": 48469.547273
+  },
+  "focused": 78,
+  "typecheck": "PASS",
+  "independentReview": "GO corrected6slotrun",
+  "selectionPolicy": "watch-fair-repromotion-v2-capacity-backoff",
+  "corrections": [
+    "actualdispatchclock instead ofoldloopstamp",
+    "capacitycause retained inwatchhistory",
+    "capacitydeferral120/300/600seconds without forgettingtoken"
+  ],
+  "preservedDeficiency": "18/17transaction bursts cannot fit8getTransaction starts per10seconds; no configurationclaimscompleteflow",
+  "noProductionChange": true
+}
