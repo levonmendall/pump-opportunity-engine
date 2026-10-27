@@ -25,7 +25,7 @@ test('combined runner retains selected raw fields and enriches at actual complet
   const result=await capture(candidate,rpc,(kind,data)=>rows.push({kind,data}),new AbortController().signal,()=>{}, {makeSocket:()=>new FakeSocket() as unknown as WebSocket,quote:price});
   assert.equal(calls,1);assert.equal(result.normalizedEvents,1);assert.equal(result.physicalSlotUncertain,false);assert.equal(result.enrichments,1);
   const payload=rows.find(r=>r.kind==='selected-pumpapi-payload')!,enrichment=rows.find(r=>r.kind==='confirmed-enrichment')!,trade=rows.find(r=>r.kind==='research-normalized-trade')!;
-  assert.deepEqual(JSON.parse(payload.data.payloadUtf8),selected);assert.equal(trade.data.curve.trade.receivedAt,enrichment.data.availableAt);assert.ok(enrichment.data.requestedAt>=enrichment.data.hint.receivedAt+1000);assert.equal(result.stopReason,'UNEXPECTED_SOURCE_CLOSE');
+  assert.deepEqual(JSON.parse(payload.data.payloadUtf8),selected);assert.equal(trade.data.curve.trade.receivedAt,trade.data.validationCompletedAt);assert.ok(trade.data.validationCompletedAt>=enrichment.data.availableAt);assert.equal(trade.data.executedEvidence.availableAt,enrichment.data.availableAt);assert.ok(enrichment.data.requestedAt>=enrichment.data.hint.receivedAt+1000);assert.equal(result.stopReason,'UNEXPECTED_SOURCE_CLOSE');
 });
 test('shutdown aborts an in-flight enrichment within the reserve and observes its settlement before returning',{timeout:8000},async()=>{
   let active=0,settled=false,calls=0;

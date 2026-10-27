@@ -1,5 +1,27 @@
 # POE operating runbook
 
+## Latest offline scheduler correction
+
+Read the final shared-scheduling section of ADAPTIVE_MONITORING_EVALUATION.md and
+`evidence/scheduler-correction-20261027/forward-proposal.json`. The corrected
+research runner selects bounded-deadline-v1; legacy/strict cases are comparisons.
+No provider requests ran. Old64MiB capture limits and old reservations still block
+another capture. The proposal is not an active grant or permission to run a CLI.
+
+Offline verification:
+
+```sh
+node --import tsx --test test/research-dispatch.test.ts test/shared-scheduler-trace.test.ts test/active-pipeline-availability.test.ts test/scheduler-proposal.test.ts
+node --import tsx scripts/replay-overnight-correction.ts --verify-existing
+```
+
+Normalized information is usable after validation, not at earlier RPC body
+receipt. Original executed evidence remains unchanged. Early coherent checks
+change monitoring phase and consume requests; never call them identical fixed
+observations or an approved completion-gap tolerance. Actual cancellation must
+settle before another physical request; failures preserve reservations and gaps.
+Do not use test restart/disposable-account controls on the authoritative account.
+
 ## Current review candidate — isolated research, not installed
 
 Branch `poe-free-data-evaluation-20261027`; read

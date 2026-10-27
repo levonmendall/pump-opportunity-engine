@@ -116,7 +116,7 @@ export async function capture(candidate:ActiveCandidate,rpc:ResearchRpc,record:(
         const hint=pipeline.nextHint(Date.now());if(pipeline.hasQualityLoss){stop('SELECTED_ENRICHMENT_QUEUE_UNUSABLE');return;}if(hint){currentJob='enrichment';if(enrichments>=LIMITS.enrichmentAttempts){pipeline.failHint('ENRICHMENT_ALLOCATION_EXHAUSTED',Date.now());stop('ENRICHMENT_ALLOCATION_EXHAUSTED');return;}enrichments++;const before=rpc.calls,requestedAt=Date.now();
           const tx=await rpc.call<any>('getTransaction',[hint.signature,{commitment:'confirmed',encoding:'json',maxSupportedTransactionVersion:1}],AbortSignal.any([outer,captureController.signal]));const availableAt=Date.now();record('confirmed-enrichment',{hint,requestedAt,availableAt,requests:rpc.calls-before,transaction:tx});
           if(!tx){pipeline.failHint('CONFIRMED_TRANSACTION_UNAVAILABLE_NO_RETRY',availableAt);stop('CONFIRMED_TRANSACTION_UNAVAILABLE_NO_RETRY');return;}
-          enrichmentTransactions.set(hint.signature,tx);enrichmentHints.set(hint.signature,hint);pipeline.completeHint(hint,tx,availableAt);if(pipeline.snapshot(availableAt).qualityGaps.length)stop('REQUIRED_SELECTED_EVIDENCE_UNUSABLE');
+          enrichmentTransactions.set(hint.signature,tx);enrichmentHints.set(hint.signature,hint);pipeline.completeHint(hint,tx,availableAt);if(pipeline.snapshot(Date.now()).qualityGaps.length)stop('REQUIRED_SELECTED_EVIDENCE_UNUSABLE');
         }
       }
     }catch(e){try{if(currentJob==='enrichment')pipeline.failHint(safe(e),Date.now());else{pipeline.price(null,Date.now());pipeline.gap(safe(e),Date.now());}}catch{}try{stop(safe(e));}catch{ws.terminate();}}

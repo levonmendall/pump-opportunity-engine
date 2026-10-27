@@ -1,18 +1,24 @@
-# Owner actions — overnight handoff
+# Owner action — one proposed corrected research capture
 
-No infrastructure, credential, wallet, funding, Render, provider-plan or spending
-action is required for the completed overnight work. Do not repeat inventory,
-bootstrap, source changes, legacy publisher shutdown or Turnkey registration.
+The scheduler continuation used no new market-data/RPC requests or production
+changes. No infrastructure, wallet, Turnkey, credential, Render or paid-provider
+action is needed. Do not repeat completed setup.
 
-The original observer/account and dashboard were preserved. PAPER entries and
-live trading remain disabled; no acceptance clock started.
+One future combined capture requires approval of a new140MiB/90s PumpApi
+reservation, keeping every old reservation. Existing committed256MiB/230s becomes
+396MiB/320s. This raises the byte ceiling by140MiB and the previous300s time ceiling
+by20s (the new90s reservation also uses the70s unreserved time). Nothing was
+refunded, reset or opened. No extra public-RPC allowance or spending is requested.
 
-All research captures are closed. PumpApi's256MiB reservation ceiling is fully
-committed; actual receipts were195,936,099bytes. Reservations were not refunded.
-A later matched-flow capture requires an explicit bounded stream allocation;
-it is not started or requested as a routine setup step here. First resolve the
-scheduler's3.224-second evaluation gap and offline starvation counterexample.
+The proposed single test uses3hypothetical holdings/1bounded active pool,75s from
+socket open,5s drain and120s aggregate including preparation/independent audit.
+It plans73of77remaining request units with4headroom. Early refresh can change exit
+observation phase; the maximum accepted completion gap remains unfrozen. This is
+research validation, not deployment/protection acceptance or permission for PAPER
+or live entries. API fees$0; infrastructure transfer/storage allocation unverified.
 
-See [the actual result](OVERNIGHT_HANDOFF.md) and
-[exact counters](../evidence/overnight-20261027/final-summary.json).
-No paid provider, wallet operation or old setup action is the current blocker.
+Review the [single proposal](../evidence/scheduler-correction-20261027/forward-proposal.json)
+and final shared-scheduling section of
+[the evaluation](ADAPTIVE_MONITORING_EVALUATION.md). Current64MiB capture stops and
+fully committed books remain binding until an explicitly approved future profile
+is installed in the isolated harness. No capture has started.

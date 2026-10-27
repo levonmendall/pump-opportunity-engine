@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_MAPPER_REGRESSION_READ_ONLY_VALIDATION",
+  "recordedAt": "2026-10-27T13:54:54.802Z",
+  "networkRequests": 0,
+  "sourceEdits": 0,
+  "productionTouched": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false,
+  "mapper": {
+    "path": "src/pumpapi-mapping.ts",
+    "sha256": "76aa0ae24e0e66fc7ae04c0ca076137a15d81454cf02a954cae014a1a0bf3e96",
+    "testedFixes": [
+      "buy_exact_quote_in_v2",
+      "buy_exact_quote_in"
+    ],
+    "otherBuyVariantsNotInferred": [
+      "buy",
+      "buy_v2"
+    ]
+  },
+  "testRun": {
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "test/pumpapi-exact-buy.test.ts",
+      "test/pumpapi-mapping.test.ts",
+      "test/pumpapi-field-capture.test.ts",
+      "test/overnight-corrected-replay.test.ts"
+    ],
+    "exitCode": 0,
+    "tests": 22,
+    "passed": 22,
+    "failed": 0,
+    "reportedDurationMs": 1249.531767,
+    "resultSource": "Observed completed command output in this task; tests used retained offline records and made no network requests."
+  },
+  "testSources": [
+    {
+      "path": "test/pumpapi-exact-buy.test.ts",
+      "sha256": "e638d07b91b88001ab0836696796a3600c4b7dbc34233809f916dbcb937e41ad"
+    },
+    {
+      "path": "test/pumpapi-mapping.test.ts",
+      "sha256": "ca2953cea17a0033adaeb205aea8b597bcb1e1217c0a9d4a38373908e3663846"
+    },
+    {
+      "path": "test/pumpapi-field-capture.test.ts",
+      "sha256": "4f2e60e90bf1f5db9db82d5c122b9007fe11b6864a4562bf3c537fbcbaa4c4d0"
+    },
+    {
+      "path": "test/overnight-corrected-replay.test.ts",
+      "sha256": "c182be1dcdaa35e3e8ff640d4c3f8b3d535900763751848f93855c42da8051f7"
+    }
+  ],
+  "assertionsVerified": [
+    "Actual integer base units, net curve input and full user debit for separately observed v1/v2 exact-quote Buys",
+    "Event/instruction trader attribution, including actual alternate fee payer",
+    "Exact base/quote executed transfer proof, full event identities and original confirmation availability",
+    "LP/protocol/creator fee arithmetic with buyback retained as a protocol subset",
+    "Unchanged original Sell fingerprints",
+    "Missing or changed executed transfer still refuses normalization"
+  ],
+  "readOnlyReplay": {
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "scripts/replay-overnight-correction.ts",
+      "--verify-existing"
+    ],
+    "exitCode": 0,
+    "semanticReplayMatches": true,
+    "normalizedEvents": 6,
+    "buys": 2,
+    "sells": 4,
+    "rawWarmedClosedWindowEnds": 1,
+    "forwardAcceptance": false,
+    "artifact": {
+      "path": "evidence/overnight-20261027/11-combined/offline-corrected-replay.json",
+      "sha256": "e5850fb2facc4d2279e297d435e3fae4fbdd04f44317a366303ce0236b44a135",
+      "expectedSha256": "e5850fb2facc4d2279e297d435e3fae4fbdd04f44317a366303ce0236b44a135"
+    },
+    "recordedMapperSha256": "0622cf1e2bbb471045df89f0646d5ffadb69256aa5fa7183349a7b42e56b6ce2",
+    "currentMapperSha256": "76aa0ae24e0e66fc7ae04c0ca076137a15d81454cf02a954cae014a1a0bf3e96",
+    "mapperHashMatchesRecorded": false,
+    "meaning": "Current source includes the separately proved v1 fix; it reproduces the historical v2 replay exactly without changing the artifact or passing the original forward experiment."
+  },
+  "originalReceiptHashChecks": [
+    {
+      "path": "evidence/overnight-20261027/11-combined/baseline.json",
+      "sha256": "56f1412402f265e97b575af361b144b1314cc55339298cd7ef460dbfaf935a58",
+      "expectedSha256": "56f1412402f265e97b575af361b144b1314cc55339298cd7ef460dbfaf935a58",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467",
+      "expectedSha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/grant.json",
+      "sha256": "e7fe86b762b626e8d3f051f14a548610ea6668a101a3247703daf54f778dccfb",
+      "expectedSha256": "e7fe86b762b626e8d3f051f14a548610ea6668a101a3247703daf54f778dccfb",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/observations.ndjson",
+      "sha256": "835c7e7d5bf867556c50ca90a30f089a0d62a2f62fa8efb8a4a7813cb8e49ef2",
+      "expectedSha256": "835c7e7d5bf867556c50ca90a30f089a0d62a2f62fa8efb8a4a7813cb8e49ef2",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/offline-mapping-audit.json",
+      "sha256": "77ecfb2d412876af4921c7f8b71de7ba1dc27044fcc1560c5496ef359699d2d9",
+      "expectedSha256": "77ecfb2d412876af4921c7f8b71de7ba1dc27044fcc1560c5496ef359699d2d9",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c",
+      "expectedSha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/summary.json",
+      "sha256": "2af351ef7c628b32bfd1efbbd0b9374278e1bab9d0b505b48694c37e4f31f2ed",
+      "expectedSha256": "2af351ef7c628b32bfd1efbbd0b9374278e1bab9d0b505b48694c37e4f31f2ed",
+      "matches": true
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/supervisor.json",
+      "sha256": "295fefe16ecd49e8b114dadf4e18b73ebc4f32f6638ec7889f530f2474a73b34",
+      "expectedSha256": "295fefe16ecd49e8b114dadf4e18b73ebc4f32f6638ec7889f530f2474a73b34",
+      "matches": true
+    }
+  ],
+  "original14Failure": {
+    "path": "evidence/overnight-20261027/14-retained-buy/summary.json",
+    "sha256": "74bf02f53a4e4b4f6a968d32918232d02cfcfcd3a05ed92833d9580c0c3073d7",
+    "reason": "COMPONENT_RETAINED_BUY_TRANSFERS_UNVERIFIED"
+  },
+  "prior429": {
+    "path": "evidence/free-data-20261027/active-approved-rpc-budget.json",
+    "sha256": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04",
+    "blockedReason": "RPC_HTTP_429"
+  }
+}

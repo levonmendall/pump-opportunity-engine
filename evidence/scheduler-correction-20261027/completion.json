@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "scope": "OFFLINE_SCHEDULING_CORRECTION_NOT_FORWARD_ACCEPTANCE",
+  "completedAt": "2026-10-27T14:36:57.751Z",
+  "baseCommit": "52855aac0f8e97e908361c0e4ed195f3a4d01360",
+  "branch": "poe-free-data-evaluation-20261027",
+  "reviewCommit": "the containing git commit",
+  "uid": 1000,
+  "marketDataRequests": 0,
+  "rpcRequestUnits": 0,
+  "pumpApiConnections": 0,
+  "oldCounterbookSources": [
+    {
+      "path": "evidence/free-data-20261027/active-approved-rpc-budget.json",
+      "sha256": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04"
+    },
+    {
+      "path": "evidence/public-component-20261027/rpc-budget.json",
+      "sha256": "7466fe7f7a96234eed3773198772924fa67fa3eef44a6022813b85cef8680bfb"
+    },
+    {
+      "path": "evidence/overnight-20261027/01-basic/rpc-budget.json",
+      "sha256": "19c73f655035af5a93c385f5e951de3b8f01488a4b711873496a1514097c8fcc"
+    },
+    {
+      "path": "evidence/overnight-20261027/02-multi/rpc-budget.json",
+      "sha256": "f6c4d9843cdf26165f229c97d241167f3e0633bcbbd56298133ab4ab1a78c2a7"
+    },
+    {
+      "path": "evidence/overnight-20261027/03-discovery/rpc-budget.json",
+      "sha256": "f2f139d3a707baa4c371f0b3b486ec58d539a770696b2d6b14a567f6ba4857ee"
+    },
+    {
+      "path": "evidence/overnight-20261027/04-active/rpc-budget.json",
+      "sha256": "e1f30e81dd7c4e66bbdac71bde5c1de4caa97d491e0be1aef278d3fd895779ce"
+    },
+    {
+      "path": "evidence/overnight-20261027/05-sampler/rpc-budget.json",
+      "sha256": "92898abd75cfeb36e2eecf89f98148c59e91aaaedb6c0bd353397bc8ca31c723"
+    },
+    {
+      "path": "evidence/overnight-20261027/06-targeted/rpc-budget.json",
+      "sha256": "4ed23fec3a412747ae7156a1904f8f7c2d0ffa820c02afad38ecd48434ef996a"
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/rpc-budget.json",
+      "sha256": "9ead237456a3cfd0673d01043165a0b3c1d8768c9281d31623e953a619e48a23"
+    },
+    {
+      "path": "evidence/overnight-20261027/08-audit/rpc-budget.json",
+      "sha256": "fc5d622929c20e44fd6024f2273e51f3cb8f213670cbe57dbf092c1e409aa28f"
+    },
+    {
+      "path": "evidence/overnight-20261027/09-notifications/rpc-budget.json",
+      "sha256": "181c6b5725efd14a24ac349b77ff4661092c846c69a0891a34706a4205a02046"
+    },
+    {
+      "path": "evidence/overnight-20261027/10-notifications/rpc-budget.json",
+      "sha256": "88c119fb0a9066d978a56181168de49ba145b5f337afc3fc1ec7e1a39f59cd42"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c"
+    },
+    {
+      "path": "evidence/overnight-20261027/12-combined-audit/rpc-budget.json",
+      "sha256": "11b708d8a101c991cd4d2e6bd975aef2e275f2f33f10b1142f27ccf7f6579915"
+    },
+    {
+      "path": "evidence/overnight-20261027/13-buy-finality/rpc-budget.json",
+      "sha256": "7db41dc703af1d3bb26af90e733d8c03685faf62ab4918234ee828508d3990b5"
+    },
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "sha256": "e59d25d6ae1fafac4bfcfcbaf69de7c2c4c4792ed8c9282fd6b538d1ab681067"
+    }
+  ],
+  "authoritativeResearchUsage": {
+    "cumulativeUnits": 163,
+    "measuredRelatedBytes": 1490756,
+    "retainedUncertainBytes": 2097152,
+    "accountedRelatedBytes": 3587908,
+    "remainingUnits": 77,
+    "remainingAccountedBytes": 63520956,
+    "pumpApiReservedBytes": 268435456,
+    "pumpApiReservedMs": 230000,
+    "old429Preserved": true,
+    "noReservationRefund": true
+  },
+  "validation": {
+    "build": "PASS",
+    "compile": "PASS",
+    "tests": 512,
+    "passed": 512,
+    "failed": 0,
+    "testLogSha256": "5261fb788dd5c18f20f41989af8c38df2c70c17b48f4eac5777b5136b534355c",
+    "independentReview": "Focused trace, counter arithmetic, availability, atomic swap ingestion, physical settlement and final claims reviewed; no unresolved blocking finding.",
+    "buySellRegression": "Both exact-quote Buy fixes and Sell validation preserved; mapper file unchanged from52855aa",
+    "historicalReplay": {
+      "semanticReplayMatches": true,
+      "originalFilesUnchanged": true,
+      "storedArtifactSha256": "e5850fb2facc4d2279e297d435e3fae4fbdd04f44317a366303ce0236b44a135",
+      "sourceVersionDifferencesDisclosed": true
+    }
+  },
+  "artifacts": {
+    "trace": {
+      "path": "evidence/scheduler-correction-20261027/trace-analysis.json",
+      "sha256": "a3a558530b648f1f3a5ad1109d3d2603f63e0b331ab1f2c7cbf13e3e1a02e4e8"
+    },
+    "scheduler": {
+      "path": "evidence/scheduler-correction-20261027/scheduler-evaluation-v4.json",
+      "sha256": "7c95b078e795505e0f0168a09179872bf1221f30a180ce2ebcf505427ae98989",
+      "scenarioCount": 24
+    },
+    "proposal": {
+      "path": "evidence/scheduler-correction-20261027/forward-proposal.json",
+      "sha256": "871c0980614b33ca1824811dd87c770c6bb8a8ce59680b48b8067100f04ed7e2",
+      "activeAuthorization": false
+    }
+  },
+  "evidenceBytesBeforeCompletion": 12272784,
+  "evidenceCeilingBytes": 33554432,
+  "production": {
+    "checkedThisContinuation": false,
+    "changed": false,
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "paperEntryEnablement": false,
+    "liveTrading": false,
+    "acceptanceClock": false
+  },
+  "timingApproval": {
+    "targetPollingMs": 2000,
+    "quoteAgeAtUseMs": 2000,
+    "sourceStateAgeMs": 30000,
+    "validatedEnrichmentDeadlineMs": 5000,
+    "acceptedMaxCompletedGapMs": null,
+    "phaseEquivalent": false
+  },
+  "remainingLimit": "Narrow low-jitter recorded workload only. High jitter/bursts/pending competition can invalidate required evidence; no production capacity or continuous protection claim.",
+  "nextAction": "Review one140MiB/90s stream reservation; cumulative396MiB/320s; no existing reservation changes. No provider, wallet or infrastructure setup."
+}

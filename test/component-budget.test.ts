@@ -124,3 +124,36 @@ test('signing/simulation/trading, concurrent ownership and malformed baseline ar
   }finally{b.close();}
   assert.equal(COMPONENT_LIMITS.totalMs,90000);
 });
+
+test('the dispatcher observes the authoritative pacing gate without taking its slot or charging requests',async t=>{
+  const f=fixture(t),b=new ComponentBudget(f.options);try{
+    assert.equal(b.dispatchWindow().readyAt,100000);await b.operate(HTTP,done);
+    const before=readFileSync(f.options.statePath,'utf8');assert.equal(b.dispatchWindow().readyAt,101000);assert.equal(b.dispatchWindow().physicalBusy,false);assert.equal(b.calls,21);assert.equal(readFileSync(f.options.statePath,'utf8'),before);
+  }finally{b.close();}
+});
+
+test('latest physical-start deadline is checked before pacing and again after durable reservation latency',async t=>{
+  const f=fixture(t);let writes=0,physical=0;const records:unknown[]=[];
+  const b=new ComponentBudget({...f.options,beforePersist(){if(++writes===2)f.now+=101;},record:(kind,data)=>records.push({kind,data})});
+  try{
+    await assert.rejects(b.operate(HTTP,async c=>{physical++;c.completeResponse();},undefined,{latestStartAt:100100}),/DISPATCH_EXPIRED/);
+    assert.equal(physical,0);assert.equal(b.calls,21);assert.equal(b.usage().actualInvocations.length,0);assert.equal(b.usage().uncertainResponseBytes,2*MIB);assert.equal(b.usage().haltedReason,'COMPONENT_DISPATCH_EXPIRED');assert.ok(records.length>=2);
+  }finally{b.close();}
+  const g=fixture(t),other=new ComponentBudget(g.options);try{
+    await other.operate(HTTP,done);const calls=other.calls;await assert.rejects(other.operate(HTTP,done,undefined,{latestStartAt:100500}),/DISPATCH_EXPIRED/);assert.equal(other.calls,calls);assert.equal(other.inFlight,0);
+  }finally{other.close();}
+});
+
+test('slow start diagnostics cannot move the actual stamp ahead of transport or shrink later start spacing',async t=>{
+  const f=fixture(t),actual:number[]=[];let n=0;
+  const b=new ComponentBudget({...f.options,record(kind){if(kind==='component-physical-start'&&++n===1)f.now+=800;}});
+  try{for(let i=0;i<3;i++)await b.operate(HTTP,async c=>{actual.push(f.now);c.completeResponse();});assert.deepEqual(actual,[100000,101000,102000]);assert.deepEqual(b.usage().starts,actual);}finally{b.close();}
+});
+
+test('failed diagnostic after invocation retains the physical slot until actual settlement',async t=>{
+  const f=fixture(t);let release!:()=>void;
+  const b=new ComponentBudget({...f.options,record(kind){if(kind==='component-physical-start')throw Error('offline injected recorder failure');}});
+  try{
+    const op=b.operate(HTTP,async()=>new Promise<void>(r=>{release=r;}),undefined,{timeoutMs:5});await assert.rejects(op,/ABORTED/);assert.equal(b.inFlight,1);assert.throws(()=>b.close(),/PHYSICAL_SLOT/);release();for(let i=0;i<8&&b.inFlight;i++)await new Promise(r=>setImmediate(r));assert.equal(b.inFlight,0);assert.equal(b.usage().uncertainResponseBytes,2*MIB);
+  }finally{b.close();}
+});

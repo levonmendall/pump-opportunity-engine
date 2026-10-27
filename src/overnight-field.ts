@@ -9,11 +9,12 @@ import {ActivePipeline,type ActiveScope} from './active-pipeline.js';
 import {PUMPAPI_STREAM} from './pumpapi-probe.js';
 import type {ComponentBudget} from './component-budget.js';
 import type {ComponentTransport} from './component-transport.js';
+import {chooseResearchWork,RESEARCH_DISPATCH,type DispatchDecision} from './research-dispatch.js';
 
 const MIB=1024*1024;
 export const OVERNIGHT_FIELD_LIMITS=Object.freeze({connectionMs:30000,shutdownMs:5000,enrichmentAttempts:24,payloadBytes:65536,socketStopBytes:63*MIB,applicationStopBytes:62*MIB,hardSocketBytes:64*MIB,retainedBytes:5*MIB,cpuMs:20000,rssBytes:256*MIB,eventLoopLagMs:500});
 type RecordFn=(kind:string,data:unknown)=>void;
-export type OvernightFieldInput={scope:ActiveScope;budget:ComponentBudget;rpc:ComponentTransport;record:RecordFn;signal:AbortSignal;observationMs?:30000|70000|75000;protection?:{everyMs:2000;quote:(signal:AbortSignal,knownConfirmedSlot:number)=>Promise<unknown>};/** Rejected as a default:10ms phase jitter can starve all candidate work. Explicit offline research counterfactual only. */experimentalStrictStartReservation?:true};
+export type OvernightFieldInput={scope:ActiveScope;budget:ComponentBudget;rpc:ComponentTransport;record:RecordFn;signal:AbortSignal;observationMs?:30000|70000|75000;protection?:{everyMs:2000;quote:(signal:AbortSignal,knownConfirmedSlot:number)=>Promise<unknown>};/** Corrected research dispatcher; legacy remains available only for comparison. */schedulerPolicy?:'bounded-deadline-v1';/** Rejected as a default:10ms phase jitter can starve all candidate work. Explicit offline research counterfactual only. */experimentalStrictStartReservation?:true};
 export type OvernightFieldDependencies={makeSocket?:(endpoint:string,options:WebSocket.ClientOptions)=>WebSocket;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number)=>Promise<void>};
 const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,110}$/.test(e.message)?e.message:'COMPONENT_FIELD_FAILURE';
 
@@ -21,7 +22,7 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
   if(input.signal.aborted)throw Error('COMPONENT_FIELD_ABORTED');
   if(input.rpc.budget!==input.budget)throw Error('COMPONENT_FIELD_SHARED_BUDGET_REQUIRED');
   const observationMs=input.observationMs??30000;
-  if(![30000,70000,75000].includes(observationMs)||input.protection&&input.protection.everyMs!==2000)throw Error('COMPONENT_FIELD_MONITORING_BOUNDS');
+  if(![30000,70000,75000].includes(observationMs)||input.protection&&input.protection.everyMs!==2000||input.schedulerPolicy&&input.experimentalStrictStartReservation)throw Error('COMPONENT_FIELD_MONITORING_BOUNDS');
   const now=dependencies.now??Date.now,mono=dependencies.monotonic??(()=>performance.now()),sleep=dependencies.sleep??(ms=>new Promise(r=>setTimeout(r,ms)));
   const cpu0=process.cpuUsage(),connectionStartedAt=now(),connectionStartedMono=mono(),controller=new AbortController(),signal=AbortSignal.any([input.signal,controller.signal]);
   let retainedBytes=0,recordingFailed=false;
@@ -31,6 +32,9 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
   let ws:WebSocket|undefined,openedAt:number|null=null,endedAt:number|null=null,stopReason:string|null=null,closed=false,seenSocketBytes=0,socketBytes=0,upgradeObservedBytes=0,applicationBytes=0,frames=0,parsedFrames=0,irrelevantFrames=0,enrichments=0,busy=false,workPromise:Promise<void>|null=null,maxLag=0,maxRss=0,maxCpu=0,lastTick=mono(),lastFeature=0;
   let knownConfirmedSlot=input.scope.minSlot,nextProtectionAt:number|null=null,lastEvaluationAt:number|null=null,lastUsableEvaluationAt:number|null=null,maxEvaluationGapMs=0,maxUsableEvaluationGapMs=0,priceAttempts=0,protectionUnavailable=0,missedProtectionSchedules=0,enrichmentClosed=false,selectedMessagesAfterEnrichmentClosed=0;
   let lowPriorityReservationDeferralChecks=0;
+  let otherStartSinceProtection=false,advanceOutstanding=false,earlyEvaluations=0,schedulerWaits=0,schedulerRefusals=0;
+  let openedMono:number|null=null,lastTrafficSampleMono=connectionStartedMono,trafficSamples=0;
+  const observationElapsed=()=>mono()-(input.schedulerPolicy&&openedMono!==null?openedMono:connectionStartedMono);
   const protectionOutcomes:Array<{scheduledAt:number;requestedAt:number;availableAt:number;deadlineAt:number;startDelayMs:number;requests:number;quoteAgeAtUseMs:number|null;usable:boolean;late:boolean;reason:string|null}>=[],protectionGaps:Array<{at:number;reason:string;blocksCombinedAcceptance:true}>=[],evaluationGapsMs:number[]=[];
   let resolveClosed!:()=>void;const closedPromise=new Promise<void>(r=>{resolveClosed=r;});
   const stop=(reason:string,gap=false)=>{
@@ -57,15 +61,39 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
     if(busy||stopReason||openedAt===null)return;busy=true;
     let job:'pricing'|'enrichment'='enrichment';
     try{
+      let decision:DispatchDecision|null=null;
+      if(input.schedulerPolicy&&input.protection){
+        // This is a view of the SAME accounting gate, not another limiter or
+        // queue. Inspect a hint without activating it while pacing is blocked.
+        for(let refusals=0;refusals<=16;refusals++){
+          const at=now(),peek=pipeline.peekHint();
+          const gate=input.budget.dispatchWindow();
+          const left=peek?peek.deadlineAt-at:0;
+          const bound=left>RESEARCH_DISPATCH.postProcessingReserveMs+RESEARCH_DISPATCH.quantumMs?Math.min(RESEARCH_DISPATCH.operationBoundMs,left-RESEARCH_DISPATCH.quantumMs):RESEARCH_DISPATCH.operationBoundMs;
+          decision=chooseResearchWork({now:at,readyAt:gate.readyAt,physicalBusy:gate.physicalBusy,nextProtectionAt,otherStartSinceProtection,advanceOutstanding:advanceOutstanding||earlyEvaluations>=5,jobs:peek?[{id:peek.hint.signature,kind:'enrichment',enqueuedAt:peek.hint.receivedAt,eligibleAt:peek.eligibleAt,deadlineAt:peek.deadlineAt,operationBoundMs:bound}]:[]});
+          if(decision.kind!=='refuse')break;
+          schedulerRefusals++;record('shared-scheduler-refusal',{at,decision,windowUnusable:true});pipeline.refuseHint(decision.job.id,'COMPONENT_ENRICHMENT_DEADLINE_INFEASIBLE',at);
+          // Reconsider due protection immediately, not16*100ms later.
+        }
+        if(decision?.kind==='wait'){schedulerWaits++;return;}
+        if(!decision||decision.kind==='refuse')return;
+        record('shared-scheduler-dispatch',{at:now(),decision,otherStartSinceProtection,advanceOutstanding,nextProtectionAt});
+      }
       // Absolute2s scheduling has priority over starting another hint. An
       // existing physical request is never preempted or duplicated.
-      if(input.protection&&nextProtectionAt!==null&&now()>=nextProtectionAt){
+      if(input.protection&&nextProtectionAt!==null&&(decision?.kind==='protection'||!input.schedulerPolicy&&now()>=nextProtectionAt)){
         job='pricing';const requestedAt=now();let skipped=0;
-        while(nextProtectionAt+2000<=requestedAt){nextProtectionAt+=2000;skipped++;}
+        const advance=decision?.kind==='protection'&&decision.advance;
+        if(input.schedulerPolicy&&priceAttempts>=43){stop('COMPONENT_PROTECTION_ATTEMPT_CAP',true);return;}
+        while(!advance&&nextProtectionAt+2000<=requestedAt){nextProtectionAt+=2000;skipped++;}
         if(skipped){missedProtectionSchedules+=skipped;issue('COMPONENT_PROTECTION_MISSED_SCHEDULE','protection');}
         const scheduledAt=nextProtectionAt,deadlineAt=scheduledAt+2000;nextProtectionAt+=2000;priceAttempts++;const before=input.budget.calls;
         let q:unknown=null,error:string|null=null;
         try{q=await input.protection.quote(signal,knownConfirmedSlot);}catch(e){error=safe(e);}
+        if(input.schedulerPolicy){
+          otherStartSinceProtection=false;
+          if(advance){earlyEvaluations++;advanceOutstanding=true;const starts=input.budget.usage().starts,actualStart=starts.at(-1)??requestedAt;nextProtectionAt=Math.min(nextProtectionAt,actualStart+2000);record('shared-scheduler-early-refresh',{at:now(),coalescedTargetAt:scheduledAt,actualStart,nextProtectionAt,earlyEvaluations,phaseChange:true,exitTimingEquivalent:false});}
+        }
         const availableAt=now(),late=availableAt>deadlineAt;
         const raw=q&&typeof q==='object'?q as {receivedAt?:unknown;slot?:unknown}:null,sourceAt=typeof raw?.receivedAt==='string'?Date.parse(raw.receivedAt):NaN;
         const regressedSlot=raw!==null&&(!Number.isSafeInteger(raw.slot)||Number(raw.slot)<knownConfirmedSlot);
@@ -93,14 +121,18 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
         if(earliestPhysicalStart+1000>nextProtectionAt){lowPriorityReservationDeferralChecks++;return;}
       }
       const hint=pipeline.nextHint(now());if(pipeline.hasQualityLoss&&!input.protection){stop('COMPONENT_FIELD_SELECTED_WINDOW_UNUSABLE',true);return;}if(!hint)return;
+      if(input.schedulerPolicy&&(decision?.kind!=='job'||decision.job.id!==hint.signature))throw Error('COMPONENT_ENRICHMENT_DISPATCH_IDENTITY');
       if(enrichments>=24){pipeline.failHint('COMPONENT_FIELD_ENRICHMENT_CAP',now());enrichmentClosed=true;issue('COMPONENT_FIELD_ENRICHMENT_CAP');return;}
       enrichments++;const requestedAt=now(),before=input.budget.calls;
-      const transaction=await input.rpc.call<unknown>('getTransaction',[hint.signature,{commitment:'confirmed',encoding:'json',maxSupportedTransactionVersion:1}],signal),availableAt=now();
+      if(input.schedulerPolicy){otherStartSinceProtection=true;advanceOutstanding=false;}
+      const options=decision?.kind==='job'?{latestStartAt:decision.latestStartAt,timeoutMs:Math.min(1000,Math.max(1,decision.job.operationBoundMs-RESEARCH_DISPATCH.postProcessingReserveMs))}:{};
+      const transaction=await input.rpc.call<unknown>('getTransaction',[hint.signature,{commitment:'confirmed',encoding:'json',maxSupportedTransactionVersion:1}],signal,options),availableAt=now();
       record('confirmed-enrichment',{hint,requestedAt,availableAt,requests:input.budget.calls-before,transaction});
       if(!transaction){pipeline.failHint('COMPONENT_FIELD_CONFIRMED_NULL_NO_RETRY',availableAt);issue('COMPONENT_FIELD_CONFIRMED_NULL_NO_RETRY');return;}
       if(!Number.isSafeInteger((transaction as {slot?:number}).slot)||Number((transaction as {slot?:number}).slot)<input.scope.minSlot){pipeline.failHint('COMPONENT_FIELD_STALE_TRANSACTION_SLOT',availableAt);issue('COMPONENT_FIELD_STALE_TRANSACTION_SLOT');return;}
       transactions[hint.signature]=transaction;hints[hint.signature]={signature:hint.signature,receivedAt:hint.receivedAt,requestedAt,availableAt};
       const mapped=pipeline.completeHint(hint,transaction,availableAt);if(mapped.length)knownConfirmedSlot=Math.max(knownConfirmedSlot,Number((transaction as {slot:number}).slot));
+      const validatedAt=now();record('enrichment-validation-completed',{signature:hint.signature,receivedAt:hint.receivedAt,rpcAvailableAt:availableAt,validatedAt,validationMs:validatedAt-availableAt,deadlineAt:hint.receivedAt+5000});if(validatedAt>hint.receivedAt+5000)issue('COMPONENT_ENRICHMENT_VALIDATION_TOO_LATE');
       if(pipeline.hasQualityLoss&&!input.protection)stop('COMPONENT_FIELD_MAPPING_UNUSABLE',true);
     }catch(e){try{if(job==='enrichment')pipeline.failHint(safe(e),now());const fatal=recordingFailed||input.rpc.error()||input.budget.usage().haltedReason;if(fatal)stop(safe(e),true);else issue(safe(e),job==='pricing'?'protection':'flow');}catch{ws?.terminate();stopReason??=safe(e);}}
     finally{busy=false;}
@@ -119,13 +151,13 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
         const rawSocket=(ws as unknown as {_socket?:{prependListener?:(event:string,listener:()=>void)=>void}})._socket;
         if(!rawSocket?.prependListener)throw Error('COMPONENT_FIELD_PREPARSE_COUNTER_REQUIRED');
         rawSocket.prependListener('data',()=>{try{sampleSocket();}catch{try{stop('COMPONENT_FIELD_SOCKET_COUNTER',true);}catch{ws?.terminate();}}});
-        openedAt=now();nextProtectionAt=openedAt;pipeline.open(openedAt);op.completeResponse();record('field-stream-open',{endpoint:PUMPAPI_STREAM,at:openedAt,upgradeObservedBytes,dataOnly:true,subscriptionMessagesSent:0,observationMs,protectionEveryMs:input.protection?.everyMs??null});settle();
+        openedAt=now();openedMono=mono();nextProtectionAt=openedAt;pipeline.open(openedAt);op.completeResponse();record('field-stream-open',{endpoint:PUMPAPI_STREAM,at:openedAt,upgradeObservedBytes,dataOnly:true,subscriptionMessagesSent:0,observationMs,observationFromOpen:Boolean(input.schedulerPolicy),protectionEveryMs:input.protection?.everyMs??null});settle();
       }catch(e){settle(Error(safe(e)));try{stop(safe(e),true);}catch{ws?.terminate();}}});
       ws.on('message',raw=>{try{
         const receivedAt=now(),b=Array.isArray(raw)?Buffer.concat(raw):typeof raw==='string'?Buffer.from(raw):Buffer.from(raw as ArrayBuffer);frames++;applicationBytes+=b.byteLength;sampleSocket();
         if(b.byteLength>65536){stop('COMPONENT_FIELD_OVERSIZE_PAYLOAD',true);return;}
         if(applicationBytes>=62*MIB){stop('COMPONENT_FIELD_APPLICATION_STOP',true);return;}
-        if(mono()-connectionStartedMono>=observationMs){stop('COMPONENT_FIELD_DURATION_LIMIT');return;}
+        if(observationElapsed()>=observationMs){stop('COMPONENT_FIELD_DURATION_LIMIT');return;}
         if(stopReason)return;
         if(!b.includes(mintBytes)&&!b.includes(poolBytes)){irrelevantFrames++;return;}
         parsedFrames++;const payload=JSON.parse(b.toString('utf8'));
@@ -143,15 +175,18 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
     lastTick=mono();while(!closed&&!signal.aborted){
       resources();sampleSocket();
       if(input.rpc.error()||input.budget.usage().haltedReason){stop(input.budget.usage().haltedReason??'COMPONENT_FIELD_RPC_FAILURE',true);controller.abort();}
-      if(mono()-connectionStartedMono>=observationMs)stop('COMPONENT_FIELD_DURATION_LIMIT');
+      if(input.schedulerPolicy&&mono()-lastTrafficSampleMono>=1000&&trafficSamples<90){record('field-traffic-sample',{at:now(),socketBytes,applicationBytes,frames,selectedMessages:pipeline.snapshot(now()).selectedMessages});lastTrafficSampleMono=mono();trafficSamples++;}
+      if(observationElapsed()>=observationMs)stop('COMPONENT_FIELD_DURATION_LIMIT');
       if(openedAt!==null&&!stopReason&&now()-lastFeature>=1000){pipeline.tick(now());lastFeature=now();}
       if(!busy&&!stopReason)workPromise=work();
-      if(stopReason)break;await sleep(100);
+      if(stopReason)break;
+      let wait=100;if(input.schedulerPolicy){const at=now(),gate=input.budget.dispatchWindow(),peek=pipeline.peekHint();for(const target of [gate.readyAt,nextProtectionAt,peek?.eligibleAt])if(target!==null&&target!==undefined&&target>at)wait=Math.min(wait,target-at);}
+      await sleep(wait);
     }
   }catch(e){try{stop(safe(e),true);}catch{ws?.terminate();stopReason??=safe(e);}}
   finally{
     if(!stopReason)try{stop(signal.aborted?'COMPONENT_FIELD_ABORTED':'COMPONENT_FIELD_SOURCE_ENDED',true);}catch{ws?.terminate();}
-    const shutdownEnd=Math.min(mono()+5000,connectionStartedMono+observationMs+5000);
+    const shutdownEnd=Math.min(mono()+5000,(input.schedulerPolicy?openedMono??connectionStartedMono:connectionStartedMono)+observationMs+5000);
     while(busy&&mono()<shutdownEnd&&!input.signal.aborted){if(mono()>shutdownEnd-1000)controller.abort();await sleep(25);}
     if(busy)controller.abort();
     if(!busy&&workPromise)await workPromise;
@@ -162,5 +197,5 @@ export async function captureOvernightFields(input:OvernightFieldInput,dependenc
   }
   const state=pipeline.snapshot(now());
   const sortedGaps=[...evaluationGapsMs].sort((a,b)=>a-b);
-  return {...state,mode:input.protection?'COMBINED_FIELD_AND_FIXED_2S_PROTECTION_RESEARCH':'FIELD_ONLY_RESEARCH',connectionStartedAt,openedAt,endedAt,observationMs,openMs:openedAt===null||endedAt===null?0:endedAt-openedAt,elapsedMs:mono()-connectionStartedMono,stopReason,frames,applicationBytes,socketBytes,broadSocketBytes:Math.max(0,socketBytes-upgradeObservedBytes),upgradeObservedBytes,parsedFrames,irrelevantFrames,enrichments,enrichmentClosed,selectedMessagesAfterEnrichmentClosed,knownConfirmedSlot,retainedBytes,recordingFailed,candidateRpcAdmission:{experimentalStrictStartReservation:input.experimentalStrictStartReservation===true,followingProtectionStartReserveMs:input.experimentalStrictStartReservation===true?1000:null,usesActualAndBaselineStarts:input.experimentalStrictStartReservation===true,hypothesisStatus:'REJECTED_AS_DEFAULT:10ms phase jitter can starve candidates; no live capacity improvement established.',lowPriorityReservationDeferralChecks,deferralCounterMeaning:'Loop admission checks, not dropped trades or distinct rejected candidates.'},resources:{peakRssBytes:maxRss,peakCpuMs:maxCpu,peakEventLoopLagMs:maxLag},physicalSlotUncertain:busy||input.budget.inFlight!==0||Boolean(ws&&!closed),enrichmentTransactions:transactions,enrichmentHints:hints,qualificationEnabled:false,complete60SecondFeatureWindows:0,combinedAcceptance:false,priceAttempts,protection:{everyMs:input.protection?.everyMs??null,attempts:priceAttempts,unavailable:protectionUnavailable,unavailableQuoteFraction:priceAttempts?protectionUnavailable/priceAttempts:null,pricingCacheUnavailableFraction:state.prices.freshCacheFraction===null?null:1-state.prices.freshCacheFraction,missedSchedules:missedProtectionSchedules,maxCompletedEvaluationGapMs:maxEvaluationGapMs,p95CompletedEvaluationGapMs:sortedGaps.length?sortedGaps[Math.ceil(sortedGaps.length*.95)-1]:null,maxUsableEvaluationGapMs,maximumScheduleDelayMs:protectionOutcomes.length?Math.max(...protectionOutcomes.map(r=>r.startDelayMs)):null,gaps:protectionGaps,serviceQuality:input.protection?protectionGaps.length?'UNAVAILABLE_OR_MISSED_DEADLINE':'NO_PROTECTION_GAP_OBSERVED':'NOT_TESTED',outcomes:protectionOutcomes},streamTrafficAccounting:'Full socket bytesRead includes upgrade prefix; upgrade prefix also conservatively charged to RPC-related WS. Broad application/socket traffic is not charged as RPC notifications.',apiDataFeesUsd:'0 documented public/data-only endpoints; infrastructure transfer allocation unverified'};
+  return {...state,mode:input.protection?input.schedulerPolicy?'COMBINED_FIELD_AND_2S_TARGET_PROTECTION_RESEARCH':'COMBINED_FIELD_AND_FIXED_2S_PROTECTION_RESEARCH':'FIELD_ONLY_RESEARCH',connectionStartedAt,openedAt,endedAt,observationMs,openMs:openedAt===null||endedAt===null?0:endedAt-openedAt,elapsedMs:mono()-connectionStartedMono,stopReason,frames,applicationBytes,socketBytes,broadSocketBytes:Math.max(0,socketBytes-upgradeObservedBytes),upgradeObservedBytes,parsedFrames,irrelevantFrames,enrichments,enrichmentClosed,selectedMessagesAfterEnrichmentClosed,knownConfirmedSlot,retainedBytes,recordingFailed,sharedScheduler:{policy:input.schedulerPolicy??'legacy',schedulerWaits,schedulerRefusals,earlyEvaluations,earlyEvaluationCap:5,totalProtectionCap:43,phaseChangesAreEquivalent:false,acceptedMaximumCompletedEvaluationGapMs:null,timingContract:{targetPollingMs:2000,quoteAgeAtUseMs:2000,sourceStateAgeMs:30000,enrichmentDelayMs:1000,enrichmentCompletionDeadlineMs:5000,postProcessingReserveMs:200,dispatchQuantumMs:100},completedGapsOverTarget:evaluationGapsMs.filter(n=>n>2000).length,maximumTargetStartMissMs:protectionOutcomes.length?Math.max(0,...protectionOutcomes.map(x=>x.startDelayMs)):null},candidateRpcAdmission:{experimentalStrictStartReservation:input.experimentalStrictStartReservation===true,followingProtectionStartReserveMs:input.experimentalStrictStartReservation===true?1000:null,usesActualAndBaselineStarts:input.experimentalStrictStartReservation===true,hypothesisStatus:'REJECTED_AS_DEFAULT:10ms phase jitter can starve candidates; no live capacity improvement established.',lowPriorityReservationDeferralChecks,deferralCounterMeaning:'Loop admission checks, not dropped trades or distinct rejected candidates.'},resources:{peakRssBytes:maxRss,peakCpuMs:maxCpu,peakEventLoopLagMs:maxLag},physicalSlotUncertain:busy||input.budget.inFlight!==0||Boolean(ws&&!closed),enrichmentTransactions:transactions,enrichmentHints:hints,qualificationEnabled:false,complete60SecondFeatureWindows:0,combinedAcceptance:false,priceAttempts,protection:{everyMs:input.protection?.everyMs??null,attempts:priceAttempts,unavailable:protectionUnavailable,unavailableQuoteFraction:priceAttempts?protectionUnavailable/priceAttempts:null,pricingCacheUnavailableFraction:state.prices.freshCacheFraction===null?null:1-state.prices.freshCacheFraction,missedSchedules:missedProtectionSchedules,maxCompletedEvaluationGapMs:maxEvaluationGapMs,p95CompletedEvaluationGapMs:sortedGaps.length?sortedGaps[Math.ceil(sortedGaps.length*.95)-1]:null,maxUsableEvaluationGapMs,maximumScheduleDelayMs:protectionOutcomes.length?Math.max(...protectionOutcomes.map(r=>r.startDelayMs)):null,gaps:protectionGaps,serviceQuality:input.protection?protectionGaps.length?'UNAVAILABLE_OR_MISSED_DEADLINE':'NO_PROTECTION_GAP_OBSERVED':'NOT_TESTED',outcomes:protectionOutcomes},streamTrafficAccounting:'Full socket bytesRead includes upgrade prefix; upgrade prefix also conservatively charged to RPC-related WS. Broad application/socket traffic is not charged as RPC notifications.',apiDataFeesUsd:'0 documented public/data-only endpoints; infrastructure transfer allocation unverified'};
 }

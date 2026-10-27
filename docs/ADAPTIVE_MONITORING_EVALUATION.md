@@ -531,3 +531,182 @@ incoming traffic. The conditional continuous projection is80.99GB/day and2.43TB/
 30days, not a measured free infrastructure allowance. API fees were$0; no EC2
 experiment or production deployment occurred. All stream reservations are now
 committed, so no automatic forward rerun is permitted.
+
+
+## Shared scheduling correction — offline continuation after52855aa
+
+This continuation makes no market-data/RPC requests and changes no production
+service/account/dashboard. The previous actual forward failures, corrected Buy
+replay, HTTP429 and all counterbooks remain intact. Read the new bounded evidence
+under `evidence/scheduler-correction-20261027/`; the final scheduler artifact is
+`scheduler-evaluation-v4.json` (older prototypes remain separately retained).
+
+### Demonstrated cause
+
+The actual longest completed-evaluation gap was07:48:29.025→07:48:32.249UTC.
+The exact partition from retained timestamps is:
+
+| Interval | ms | Evidence meaning |
+| --- | ---: | --- |
+| Previous completion→next nominal pricing eligibility30.903 |1878| Remaining reference interval, not processing delay |
+| Pricing eligible→job selected31.276 |373| Second admitted enrichment overlaps due time; includes36ms unseparated dispatch residual |
+| Pricing selected→physical HTTP start32.174 |898| Shared1s start spacing plus unseparated local preparation |
+| HTTP start→complete response body32.221 |47| Combined network/proxy/provider response interval |
+| Body→account snapshot32.226 |5| Result delivery/bookkeeping/snapshot capture combined |
+| Snapshot→three-holding validation/use32.249 |23| Decode/SDK/parity/recording combined, not isolated CPU |
+| Total |3224| Exact actual gap |
+
+Both hints were eligible30.128. First enrichment selected30.167, physically
+started30.169 and completed30.216. The second selected30.270, entered pacing,
+started31.172 and completed31.240. Pricing became due while that lower-priority
+job already owned the dispatcher; its own next legal start was then32.172.
+No rolling request ceiling bound this interval. Provider saturation is not proved;
+the pricing response was47ms. Exact queue-enqueue timestamps beyond selected-hint
+receipt and individual persistence/parsing costs were not recorded and remain
+unseparated. `trace-analysis.json` reconstructs every available job/gap and verifies
+unchanged original input hashes.
+
+### Implemented correction and information/timing changes
+
+The existing physical gate now exposes a read-only dispatch-ready view. The
+research dispatcher peeks at retained hints without activating them, chooses work
+only at physical readiness, gives due holding checks priority and admits at most
+one enrichment/control start per protection cycle. A finite100ms dispatch window
+replaces equality at one exact start instant. Admission reserves25ms inside that
+window for durable setup; the captured pre-invocation costs were1–7ms. This is
+a conditional overhead assumption, and the unchanged physical deadline still
+fails closed if it is exceeded. The actual start deadline is checked
+again after durable reservation; expiry never silently retries or refunds a unit.
+The same single gate retains one-second spacing, rolling60/minute and30/10s limits.
+
+If a known late-phase hint cannot use that window, at most one early coherent
+holding refresh can create a service opportunity. It coalesces one future target,
+reanchors the next target earlier, and cannot repeat before the granted other
+operation or an ordinary due check. There are at most5early checks and43total
+pricing attempts in the proposed75s component. These are additional measured work,
+not free request savings. Adaptive sleeps wake at the next relevant pacing,
+protection or eligibility boundary rather than a fixed100ms grid.
+
+**Early refresh changes observation phase. It is not an equivalent exit-timing
+optimization.** Synthetic checks4,5,7 can miss a temporary15%stop during5.5–6.5 that
+checks4,6,8 observe; the reverse temporary path favors the earlier phase. No natural
+price path is interpolated and no P&L is constructed. All target misses, actual
+completed gaps and information delays remain visible.
+
+Enrichment receives a whole-job envelope up to1,200ms: at most1,000ms physical
+HTTP plus200ms research processing reserve. Near the5s usefulness deadline its
+HTTP timeout is tightened within that same maximum, with100ms start headroom.
+The processing reserve is an assumption, not a guarantee. Actual normalization
+availability is now sampled after full transaction validation and preparation;
+late validation invalidates the window before ingestion. All constituent swaps
+enter atomically. Original executed-event RPC receipt, identities, quantities,
+trader roles, fingerprints and fee/transfer proofs are unchanged.
+
+New diagnostics distinguish eligibility, dispatch, pacing, physical start/settle,
+RPC receipt and completed validation;1s aggregate byte samples are bounded and do
+not archive broad traffic. Post-invocation telemetry/storage failure keeps the
+physical slot until actual settlement. Refused selected events remain explicit
+required-evidence failures. Pending financial actions stay owned/unresolved,
+never disappear as obsolete candidate work.
+
+### Timing contract
+
+| Requirement | Current contract |
+| --- | --- |
+| Polling target |2000ms, with explicitly reported early phase changes |
+| Maximum accepted completed-evaluation gap | UNFROZEN; no new acceptable delay is approved by this correction |
+| Quote age at actual decision/use |≤2000ms, unchanged |
+| Confirmed source-state age |≤30000ms, unchanged; Clock bank time remains separately labeled |
+| Enrichment | Eligible after1000ms; full validated information required within5000ms of receipt |
+|100ms dispatch/200ms processing envelopes | Research admission assumptions, not protection tolerances |
+| Outage/unknown settlement | Block admission, invalidate affected flow, preserve exposure/actions; no invented price/fill/replay |
+
+The old `scheduledAt+2000ms` job deadline never meant that completed evaluations
+were at most2s apart. Its passing status did not make the actual3.224s gap safe.
+This correction does not retroactively approve it, or approve a2.041s maximum.
+
+### Tested limits and remaining evidence
+
+Final tables and fault outcomes are in `scheduler-evaluation-v4.json`. Rescheduled
+response costs are counterfactual: another request time could have returned other
+market state or taken longer. Actual provider behavior is still the retained
+trace, not the simulated schedule. The fixed-wake prototype is preserved as a
+negative result; use the final adaptive-wake/FIFO model for the implemented policy.
+
+With recorded costs/arrivals,0/10ms wake jitter serves6/6selected transactions;
+the modeled maximum gap is2041ms. It uses43working starts (37pricing+6enrichment),
+versus41working starts in the legacy model; setup is separate. Maximum information
+availability delay grows to3312/3383ms. This improves the demonstrated protective
+scheduling defect at the cost of extra work and later candidate information.
+It does not establish unchanged features, entry timing, prices or outcomes.
+
+At50ms added wake jitter, only5/6enrichments complete; one is refused explicitly.
+At100ms, none complete: five refusals and one end-censored job remain. These
+windows are unusable. Three-event bursts and slow responses also remain failed/
+incomplete workloads. Refusals and deadline-censored work cannot count as complete windows.
+Two simultaneous pending actions and reconnect competition use the same gate;
+the pending actions meet their deadlines while a candidate fails and the modeled
+protection gap reaches4008ms. This combined workload is not adequate for complete
+candidate observation: pending/recovery capacity must be reserved before admitting
+new risk. A single reconnect control operation represents this PumpApi path,
+not a seven-account RPC subscription restoration. Pure scheduler recovery after a simulated settled timeout
+is distinct from the actual component, which halts its measurement on that fault.
+No reliable arbitrary-candidate capacity or production protection equivalence is
+claimed. The feasible tested envelope is one light candidate with the actual
+retained burst pattern and low scheduler jitter, plus one coherent3holding batch;
+higher uncertainty closes admission rather than adding another queue.
+
+Build, compile and512regressions pass, including the24scenario scheduler
+comparison and both exact-quote Buy/Sell validation proofs. The original
+six-event corrected replay remains semantically identical with its original
+information clock and immutable artifact. Build/compile/full-suite validation is
+recorded in the final offline receipt. No source test is forward acceptance.
+
+### One concrete forward proposal — not executed
+
+`forward-proposal.json` requests ONE new140MiB PumpApi reservation for up to90s
+connection time:75s measured from successful open,5s drain and bounded setup/
+shutdown. Existing256MiB/230s reservations are untouched. Requested cumulative
+ceilings become396MiB and320s: **+140MiB and+20s** above the existing limits; the
+90s reservation uses the70s unreserved time plus that20s increase. No extra RPC
+allowance is requested.
+
+The73planned units are3preparation +2coherent prewarm +1upgrade +38regular/5early
+price checks +10enrichments +14independent audit (2history pages,10transaction
+lookups,2finality checks). Four of the existing77units remain headroom. Every
+phase counts inside120s total; the stream phase has its own90s maximum. Response
+cap32MiB fits the63,520,956accounted bytes remaining. New evidence≤6MiB remains
+within the existing32MiB cumulative ceiling.
+
+Measured broad ingress was65,179,210bytes/69.530s. A2×mean sizing scenario for75s
+requires140,613,858bytes, below the proposed138MiB socket stop; application stop
+136MiB/hard ceiling140MiB preserve headroom. Broad rolling peaks were not captured,
+so this is a sizing scenario, not a guaranteed bound. Any byte/resource/deadline/
+audit stop means incomplete, never a fabricated successful window.
+
+The full aligned60s target ends within70s of open, leaving5s for confirmation.
+Three hypothetical holdings and one predeclared active canonical pool are used;
+current support is separate from unverified migration-origin/entry-age eligibility.
+A legitimate rule or eligibility rejection is valid. Auditing must independently
+cover the exact interval and all required constituent swaps. More than10selected
+transactions, an unserviceable burst, a missing field or incomplete denominator
+invalidates that window; no sampling or silent provider/strategy change.
+
+This proposal is **not active authorization**. Current64MiB runtime receipt limits
+and durable reservations remain in force. The future explicitly granted profile
+must apply the proposed stops/caps and phase deadlines before any connection.
+No capture, RPC retry, production restart/deployment, account reset or entry
+permission is created by the proposal. API fees would remain$0; infrastructure
+transfer/storage entitlement is unverified and is not labeled free.
+
+Reproduce offline only:
+
+```sh
+npm run build
+npm run compile
+npm test
+node --import tsx scripts/replay-overnight-correction.ts --verify-existing
+```
+
+The trace and scheduler test modules recompute the retained trace, shared deadline
+policy, stress failures and phase counterexamples without contacting providers.

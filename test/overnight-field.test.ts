@@ -20,6 +20,7 @@ function fixture(options:{closeAt?:number;events?:Array<{at:number;payload:unkno
   const socket=new Socket(),events=[...(options.events??[])];
   const actualStarts:number[]=[],physicalOperations:Array<{kind:ComponentKind;at:number}>=[],waiters:Array<{at:number;resolve:()=>void}>=[];
   const budget={get calls(){return units;},get inFlight(){return active;},chargeWs(n:number){wsBytes+=n;},usage(){return {haltedReason:halted,baseline:{starts:[Date.parse(raw.fetchedAt)-10000]},starts:[...actualStarts]};},async operate(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<unknown>){operations.push(kind);if(options.pacing&&actualStarts.length&&clock<actualStarts.at(-1)!+1000)await new Promise<void>(resolve=>waiters.push({at:actualStarts.at(-1)!+1000,resolve}));clock+=options.physicalStartLatencyMs??0;elapsed+=options.physicalStartLatencyMs??0;units++;active++;actualStarts.push(clock);physicalOperations.push({kind,at:clock});try{return await work({id:units,signal:new AbortController().signal,chargeHttp(){},completeResponse(){}});}catch(e){halted=e instanceof Error?e.message:'COMPONENT_TEST_FAILURE';throw e;}finally{active--;}}} as unknown as ComponentBudget;
+  budget.dispatchWindow=()=>({readyAt:options.pacing&&actualStarts.length?Math.max(clock,actualStarts.at(-1)!+1000):clock,waitMs:0,physicalBusy:active!==0,haltedReason:halted});
   const rpc={budget,error(){return null;},async call<T>(method:string,params:unknown[]){assert.equal(method,'getTransaction');attempts++;requestedAt.push(clock);return budget.operate({transport:'http',method},async()=>{if(options.failure)throw Error(options.failure);clock+=options.rpcDurationMs??20;elapsed+=options.rpcDurationMs??20;return (options.result?.(String(params[0]))??raw.transaction) as T;});}} as unknown as ComponentTransport;
   const input={scope,budget,rpc,record:(kind:string,data:unknown)=>rows.push({kind,data}),signal:new AbortController().signal};
   const dependencies={makeSocket(endpoint:string,config:WebSocket.ClientOptions){assert.equal(endpoint,'wss://stream.pumpapi.io/');assert.equal(config.maxPayload,65536);assert.equal(config.followRedirects,false);queueMicrotask(()=>socket.emit('open'));return socket as unknown as WebSocket;},now:()=>clock,monotonic:()=>elapsed,async sleep(ms:number){clock+=ms;elapsed+=ms;while(events[0]&&events[0].at<=elapsed&&!socket.done){const event=events.shift()!;socket.frame(event.payload,event.bytes);}for(let i=waiters.length-1;i>=0;i--)if(waiters[i]!.at<=clock)waiters.splice(i,1)[0]!.resolve();if(options.closeAt!==undefined&&elapsed>=options.closeAt)socket.terminate();for(let i=0;i<(options.pacing?8:1);i++)await Promise.resolve();}};
@@ -139,4 +140,23 @@ test('default combined behavior keeps the tested2s-attempt policy; the rejected 
   const protection={everyMs:2000 as const,quote:async()=>f.input.budget.operate({transport:'http',method:'getMultipleAccounts'},async()=>clockQuote(f.dependencies.now()))};
   const r=await captureOvernightFields({...f.input,protection},f.dependencies);
   assert.equal(r.candidateRpcAdmission.experimentalStrictStartReservation,false);assert.equal(r.candidateRpcAdmission.lowPriorityReservationDeferralChecks,0);assert.equal(r.enrichments,1);assert.equal(r.normalizedEvents,1);assert.equal(r.pending,0);assert.equal(r.qualityGaps.length,0);assert.equal(r.qualificationEnabled,false);
+});
+
+test('corrected shared dispatcher serves the strict10ms-jitter starvation hint without activating it during pacing',async()=>{
+  const f=fixture({pacing:true,physicalStartLatencyMs:10,events:[{at:500,payload:selected()}]});
+  const protection={everyMs:2000 as const,quote:async()=>f.input.budget.operate({transport:'http',method:'getMultipleAccounts'},async()=>clockQuote(f.dependencies.now()))};
+  const r=await captureOvernightFields({...f.input,protection,schedulerPolicy:'bounded-deadline-v1'},f.dependencies);
+  assert.equal(r.normalizedEvents,1);assert.equal(r.enrichments,1);assert.equal(r.pending,0);assert.equal(r.qualityGaps.length,0);
+  assert.equal(r.sharedScheduler.policy,'bounded-deadline-v1');assert.ok(r.sharedScheduler.schedulerWaits>0);assert.ok(r.sharedScheduler.earlyEvaluations<=5);
+  assert.ok(f.physicalOperations.slice(1).every((x,i)=>x.at-f.physicalOperations[i]!.at>=1000));
+});
+
+test('corrected two-hint burst retains both trades and never dispatches two enrichments between pricing jobs',async()=>{
+  const sig=bs58.encode(Buffer.alloc(64,91));
+  const f=fixture({pacing:true,physicalStartLatencyMs:10,events:[{at:4225,payload:selected()},{at:4225,payload:selected(sig)}],result:signature=>({...raw.transaction,transaction:{...raw.transaction.transaction,signatures:[signature]}})});
+  const protection={everyMs:2000 as const,quote:async()=>f.input.budget.operate({transport:'http',method:'getMultipleAccounts'},async()=>clockQuote(f.dependencies.now()))};
+  const r=await captureOvernightFields({...f.input,protection,schedulerPolicy:'bounded-deadline-v1'},f.dependencies);
+  assert.equal(r.normalizedEvents,2);assert.equal(r.pending,0);assert.equal(r.qualityGaps.length,0);
+  const methods=f.physicalOperations.map(x=>x.kind.method);for(let i=1;i<methods.length;i++)assert.ok(!(methods[i]==='getTransaction'&&methods[i-1]==='getTransaction'));
+  assert.ok(r.enrichmentAvailableAfterHintMs.maximum!<=5000);assert.ok(r.protection.maxCompletedEvaluationGapMs<3000);
 });

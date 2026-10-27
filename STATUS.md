@@ -1,11 +1,21 @@
 # POE status — 2026-10-27 UTC
 
-Real Clock pricing and coherent three-pool batching now work in isolated Cloud
-research. Free PumpApi payloads were matched to actual direct and Jupiter CPI
-swaps. Two exact-quote Buy decoder bugs were proved by transfers and fixed
-on the review branch. The combined forward run still failed flow quality and
-missed its nominal monitoring interval; corrected replay is separate evidence.
-No production release, account change, natural PAPER trade or acceptance clock.
+Offline continuation now corrects actual-ready dispatch, bounded enrichment
+admission and post-validation information availability. It reconstructs the
+actual3.224s gap and tests real-trace rescheduling, strict starvation, bursts,
+pending actions, reconnect work, processing delays and cancellation settlement.
+The new policy is research-only and has explicit phase/timing tradeoffs; no new
+acceptable protection gap or production capacity is claimed.
+
+No market-data/RPC request, production change, account reset or entry enablement
+occurred in this continuation. Current counters remain163units/3,587,908accounted
+response bytes and256MiB/230s PumpApi reservations. The concrete proposed new
+stream allocation is in evidence/scheduler-correction-20261027/forward-proposal.json;
+it is not active authorization. See the final shared-scheduling section of
+[the existing evaluation](docs/ADAPTIVE_MONITORING_EVALUATION.md).
+
+The following production facts are the last overnight checks, not a fresh health
+claim from this offline continuation.
 
 Read [the overnight handoff](docs/OVERNIGHT_HANDOFF.md) for the decision and
 [evidence rollup](evidence/overnight-20261027/final-summary.json) for exact usage.
@@ -61,7 +71,7 @@ PumpApi actual195,936,099bytes; reservations256MiB/230seconds, byte allowance
 fully committed without refund. All captures and test children are closed.
 API/data fees$0; existing infrastructure/network costs were not established.
 
-Next: resolve the shared scheduler's measured deadline gap without starving
-required enrichment, then a corrected forward window plus audit when a bounded
-stream allocation is available. No routine owner infrastructure, wallet or
+Next: review the single corrected forward window/audit proposal and its narrow
+offline scheduler envelope. The demonstrated admission defect is corrected;
+high-jitter/burst capacity and an accepted completion-gap limit remain unproven. No routine owner infrastructure, wallet or
 provider action is required. No deployable autonomous-trader release is claimed.

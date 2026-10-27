@@ -26,7 +26,7 @@ export class ComponentTransport {
     return n;
   }
   sampleSocket(){return this.activeConnection?this.sampleConnection(this.activeConnection):undefined;}
-  async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal):Promise<T>{
+  async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number}={}):Promise<T>{
     validateRpc({method});
     return this.budget.operate({transport:'http',method},async op=>{
       const requestedAt=this.now();let res:Response;
@@ -46,7 +46,7 @@ export class ComponentTransport {
       if(body?.jsonrpc!=='2.0'||body.id!==op.id||!('result'in body)&&!body.error)throw Error('COMPONENT_HTTP_ENVELOPE');
       if(body.error){const code=body.error.code;if(!Number.isSafeInteger(code))throw Error('COMPONENT_RPC_ERROR');throw Error(code===-32005?'COMPONENT_RPC_-32005':'COMPONENT_RPC_ERROR_'+code);}
       return body.result as T;
-    },signal,{timeoutMs:1000});
+    },signal,{timeoutMs:1000,...options});
   }
   private accept(message:any,at:number){
     if(!message||message.jsonrpc!=='2.0'){this.fail('COMPONENT_WS_ENVELOPE');return;}

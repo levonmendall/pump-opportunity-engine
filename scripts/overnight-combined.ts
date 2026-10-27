@@ -1,5 +1,6 @@
 /** Final bounded combined workload: complete selected flow + three hypothetical
- * liquidation marks, fixed2s schedule. Never a production account or trader. */
+ * liquidation marks,2s target with bounded early phase corrections. Never a
+ * production account or trader. */
 import {readFileSync,appendFileSync,writeFileSync,openSync,closeSync,fsyncSync,renameSync} from 'node:fs';
 import {join,resolve,dirname} from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -16,9 +17,9 @@ import {runComponentLauncher} from './component-launcher.js';
 const MIB=1024*1024;
 async function child(){
  const out=process.env.POE_COMPONENT_OUT_DIR!,startedAt=Number(process.env.POE_COMPONENT_STARTED_AT),leg=process.env.POE_OVERNIGHT_LEG!,baseline=JSON.parse(readFileSync(join(out,'baseline.json'),'utf8'));
- const budget=new ComponentBudget({statePath:join(out,'rpc-budget.json'),grantId:'overnight-'+leg,baseline:baseline.baseline,startedAt,totalMs:baseline.maximumTotalMs,notBefore:baseline.providerNotBefore});
  let latest:ComponentSnapshot|null=null,retained=0,last=performance.now(),reason:string|null=null,result:any=null;const controller=new AbortController();
  const record=(kind:string,data:unknown)=>{const line=JSON.stringify({kind,recordedAt:Date.now(),data})+'\n';retained+=Buffer.byteLength(line);if(retained>6*MIB)throw Error('COMPONENT_EVIDENCE_CAP');appendFileSync(join(out,'observations.ndjson'),line,{mode:0o600});if(kind==='research-clock-pool-state')latest=data as ComponentSnapshot;};
+ const budget=new ComponentBudget({statePath:join(out,'rpc-budget.json'),grantId:'overnight-'+leg,baseline:baseline.baseline,startedAt,totalMs:baseline.maximumTotalMs,notBefore:baseline.providerNotBefore,record});
  const rpc=new ComponentTransport(budget,record,()=>{}),pricer=new ResearchClockPositionPricer(rpc,{record});
  const selected=JSON.parse(readFileSync('evidence/overnight-20261027/06-targeted/selected.json','utf8'));
  const holdings=[{mint:selected.mint,units:selected.baseUnits,minSlot:selected.minSlot}];
@@ -44,7 +45,7 @@ async function child(){
   const prewarm=await quote(controller.signal,selected.minSlot);if(!prewarm)throw Error('COMPONENT_COMBINED_HELD_PREFLIGHT_UNAVAILABLE');
   pb=JSON.parse(readFileSync(pbPath,'utf8'));if(pb.reservedBytes+64*MIB>256*MIB||pb.reservedMs+85000>300000)throw Error('COMPONENT_PUMPAPI_AGGREGATE_CAP');pb.reservedBytes+=64*MIB;pb.reservedMs+=85000;pb.attempts.push({leg,reservedAt:Date.now(),reservedBytes:64*MIB,reservedMs:85000,status:'reserved-before-network'});
   save();
-  result=await captureOvernightFields({scope:{mint:selected.mint,pool:selected.pool,baseUnits:selected.baseUnits,minSlot:selected.minSlot,supportedPoolEvidence:selected.supportedPoolEvidence},budget,rpc,record,signal:controller.signal,observationMs:75000,protection:{everyMs:2000,quote}});
+  result=await captureOvernightFields({scope:{mint:selected.mint,pool:selected.pool,baseUnits:selected.baseUnits,minSlot:selected.minSlot,supportedPoolEvidence:selected.supportedPoolEvidence},budget,rpc,record,signal:controller.signal,observationMs:75000,schedulerPolicy:'bounded-deadline-v1',protection:{everyMs:2000,quote}});
   writeFileSync(join(out,'capture.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx',mode:0o600});
  }catch(e){reason=e instanceof Error?e.message:'COMPONENT_COMBINED_UNAVAILABLE';record('combined-stop',{reason});}
  finally{

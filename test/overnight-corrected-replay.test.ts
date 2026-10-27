@@ -21,11 +21,11 @@ test('moving a confirmation before its original request is refused rather than b
   assert.throws(()=>replayOvernightCorrection(changed,capture.scope,proof),/INVALID_ENRICHMENT_TIMING/);
 });
 
-test('current separately extended mapper reproduces the frozen v2 replay without changing its source manifest or artifact',()=>{
+test('current mapper and validation-availability correction reproduce the frozen v2 replay without rewriting historical sources',()=>{
   const path=dir+'/offline-corrected-replay.json',before=readFileSync(path),stored=JSON.parse(before.toString('utf8'));
   const result=verifyExistingOvernightCorrection();assert.equal(result.semanticReplayMatches,true);assert.equal(result.originalFilesUnchanged,true);assert.equal(result.readOnly,true);assert.equal(result.networkRequests,0);assert.equal(result.forwardAcceptance,false);
   assert.equal(result.normalizedEvents,6);assert.equal(result.buys,2);assert.equal(result.sells,4);assert.equal(result.sourceCodeComparison.mapperMatchesRecorded,false);
-  assert.equal(result.sourceCodeComparison.recorded.mapperSha256,stored.sourceCode.mapperSha256);assert.equal(result.sourceCodeComparison.pipelineMatchesRecorded,true);
+  assert.equal(result.sourceCodeComparison.recorded.mapperSha256,stored.sourceCode.mapperSha256);assert.equal(result.sourceCodeComparison.pipelineMatchesRecorded,false);
   assert.deepEqual(readFileSync(path),before);for(const original of stored.originalFilesBefore)assert.equal(createHash('sha256').update(readFileSync(original.path)).digest('hex'),original.sha256);
 });
 

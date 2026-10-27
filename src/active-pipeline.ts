@@ -61,11 +61,21 @@ export class ActivePipeline {
     if(now<hint.receivedAt+ENRICH_DELAY_MS)return null;
     this.active=this.queue.shift()!;this.uniqueAttempts++;this.queueAges.push(now-hint.receivedAt);return {...this.active};
   }
+  /** Inspect admission timing without removing or activating a required trade. */
+  peekHint():{hint:ActiveHint;eligibleAt:number;deadlineAt:number}|null{
+    if(this.closedAt!==null||this.active||!this.queue[0])return null;
+    const hint={...this.queue[0]};return {hint,eligibleAt:hint.receivedAt+ENRICH_DELAY_MS,deadlineAt:hint.receivedAt+ENRICH_DEADLINE_MS};
+  }
+  refuseHint(signature:string,reason:string,at=this.now()){
+    this.clock(at);if(this.active||this.queue[0]?.signature!==signature)throw Error('RESEARCH_REFUSAL_IDENTITY_MISMATCH');
+    const hint=this.queue.shift()!;this.failedTransactions++;this.emit('research-enrichment-refused',{...hint,at,reason,windowUnusable:true});this.gap(reason,at);
+  }
   completeHint(hint:ActiveHint,tx:unknown,availableAt=this.now()):MappedTradeEvidence[]{
     this.clock(availableAt);if(!this.active||this.active.signature!==hint.signature)throw Error('ACTIVE_ENRICHMENT_IDENTITY_MISMATCH');
-    this.tick(availableAt);this.active=null;this.completedTransactions++;this.completionAges.push(availableAt-hint.receivedAt);
-    if(availableAt-hint.receivedAt>ENRICH_DEADLINE_MS){this.failedTransactions++;this.gap('selected-enrichment-completed-too-late',availableAt);return [];}
-    const rows=this.map(hint,tx,availableAt,false);this.tick(availableAt);return rows;
+    this.tick(availableAt);this.completedTransactions++;
+    if(availableAt-hint.receivedAt>ENRICH_DEADLINE_MS){this.active=null;this.completionAges.push(availableAt-hint.receivedAt);this.failedTransactions++;this.gap('selected-enrichment-completed-too-late',availableAt);return [];}
+    const rows=this.map(hint,tx,availableAt,false),completedAt=this.clock(Math.max(availableAt,this.now()));
+    this.active=null;this.completionAges.push(completedAt-hint.receivedAt);this.tick(completedAt);return rows;
   }
   audit(hint:ActiveHint,tx:unknown,availableAt=this.now()):MappedTradeEvidence[]{
     this.clock(availableAt);return this.map(hint,tx,availableAt,true);
@@ -73,25 +83,46 @@ export class ActivePipeline {
   private map(hint:ActiveHint,tx:unknown,at:number,audit:boolean):MappedTradeEvidence[]{
     let rows:MappedTradeEvidence[];
     try{rows=mapConfirmedPumpSwapEvidence(tx,{...this.scope,signature:hint.signature,providerReceivedAt:hint.receivedAt,availableAt:at});}
-    catch(error){this.failedTransactions++;this.gap('confirmed-transaction-mapping-unavailable',at);this.emit('research-mapping-refusal',{at,signature:hint.signature,reason:error instanceof Error?error.message:'UNKNOWN_MAPPING_ERROR',audit});return [];}
-    if(!rows.length){if(hint.expectedTrade){this.failedTransactions++;this.gap('selected-trade-without-verified-event',at);}else this.nonTradeTransactions++;return [];}
+    catch(error){const failedAt=this.clock(Math.max(at,this.now()));this.failedTransactions++;this.gap('confirmed-transaction-mapping-unavailable',failedAt);this.emit('research-mapping-refusal',{at:failedAt,rpcAvailableAt:at,signature:hint.signature,reason:error instanceof Error?error.message:'UNKNOWN_MAPPING_ERROR',audit});return [];}
+    // Decode and validate every new event before exposing any part of this
+    // transaction to feature windows. RPC body receipt is not normalization
+    // availability; executed evidence retains that original receipt unchanged.
+    const staged:Array<{row:MappedTradeEvidence;change:'distinct'|'duplicate'|'correction';normalized:{curve:ReturnType<typeof toResearchNormalizedTrade>;user:ReturnType<typeof toResearchNormalizedTrade>}|null}>=[];
+    try{
+      const validationWindows={curve:new FlowWindow(this.scope.mint,at),user:new FlowWindow(this.scope.mint,at)};
+      for(const row of rows){
+        const prior=this.evidence.get(row.identityKey),change=prior?compareMappedTradeEvidence(prior,row):'distinct';
+        const normalized=!audit&&change==='distinct'?{curve:toResearchNormalizedTrade(row,'curve',this.scope.supportedPoolEvidence),user:toResearchNormalizedTrade(row,'user',this.scope.supportedPoolEvidence)}:null;
+        if(normalized){validationWindows.curve.ingest(normalized.curve.trade);validationWindows.user.ingest(normalized.user.trade);}
+        staged.push({row,change,normalized});
+      }
+    }catch{const failedAt=this.clock(Math.max(at,this.now()));this.failedTransactions++;this.gap('executed-transfer-or-feature-validation-unavailable',failedAt);return [];}
+    const preparedAt=this.clock(Math.max(at,this.now()));
+    this.emit('research-enrichment-validation-prepared',{signature:hint.signature,rpcAvailableAt:at,preparedAt,eventCount:rows.length,audit});
+    // Recording can itself block. Sample again only after all preparation,
+    // immediately before the synchronous in-memory commit.
+    const usableAt=this.clock(Math.max(preparedAt,this.now()));
+    if(!audit&&usableAt-hint.receivedAt>ENRICH_DEADLINE_MS){this.failedTransactions++;this.gap('selected-enrichment-validation-too-late',usableAt);return [];}
+    if(!audit&&this.evidence.size+staged.filter(s=>s.change==='distinct').length>MAX_EVENTS){this.gap('normalized-evidence-capacity',usableAt);return [];}
+    if(!rows.length){if(hint.expectedTrade){this.failedTransactions++;this.gap('selected-trade-without-verified-event',usableAt);}else this.nonTradeTransactions++;return [];}
     if(!audit&&rows.length>1)this.multipleSwapTransactions++;
-    for(const row of rows){
-      const prior=this.evidence.get(row.identityKey),change=prior?compareMappedTradeEvidence(prior,row):'distinct';
+    const emitted:Array<{row:MappedTradeEvidence;curve:ReturnType<typeof toResearchNormalizedTrade>;user:ReturnType<typeof toResearchNormalizedTrade>;during:boolean}>=[],gaps:string[]=[];
+    for(const {row,change,normalized} of staged){
       if(change==='duplicate'){this.duplicateEvents++;continue;}
-      if(change==='correction'){this.corrections++;this.evidence.set(row.identityKey,row);this.gap('confirmed-executed-evidence-correction',at);continue;}
-      if(audit){this.gap('audit-found-previously-unavailable-event',at);this.evidence.set(row.identityKey,row);continue;}
-      if(this.evidence.size>=MAX_EVENTS){this.gap('normalized-evidence-capacity',at);continue;}
-      try{
-        const curve=toResearchNormalizedTrade(row,'curve',this.scope.supportedPoolEvidence),user=toResearchNormalizedTrade(row,'user',this.scope.supportedPoolEvidence);
-        this.evidence.set(row.identityKey,row);
-        const during=this.endedAt===null&&this.closedAt===null;
-        if(during){this.windows!.curve.ingest(curve.trade);this.windows!.user.ingest(user.trade);this.normalizedDuring++;this.firstNormalizedAt??=at;this.lastNormalizedAt=at;}
-        else this.normalizedAfter++;
-        row.side==='buy'?this.normalizedBuys++:this.normalizedSells++;if(row.identity.swapInnerInstructionIndex!==null)this.routedEvents++;
-        this.emit('research-normalized-trade',{at,duringObservation:during,curve,user,executedEvidence:row,primaryStrategyEnabled:false});
-      }catch{this.failedTransactions++;this.gap('executed-transfer-or-feature-validation-unavailable',at);}
+      if(change==='correction'){this.corrections++;this.evidence.set(row.identityKey,row);gaps.push('confirmed-executed-evidence-correction');continue;}
+      if(audit){this.evidence.set(row.identityKey,row);gaps.push('audit-found-previously-unavailable-event');continue;}
+      if(this.evidence.size>=MAX_EVENTS){gaps.push('normalized-evidence-capacity');continue;}
+      const {curve,user}=normalized!;curve.trade={...curve.trade,receivedAt:usableAt};user.trade={...user.trade,receivedAt:usableAt};
+      this.evidence.set(row.identityKey,row);
+      const during=this.endedAt===null&&this.closedAt===null;
+      if(during){this.windows!.curve.ingest(curve.trade);this.windows!.user.ingest(user.trade);this.normalizedDuring++;this.firstNormalizedAt??=usableAt;this.lastNormalizedAt=usableAt;}
+      else this.normalizedAfter++;
+      row.side==='buy'?this.normalizedBuys++:this.normalizedSells++;if(row.identity.swapInnerInstructionIndex!==null)this.routedEvents++;
+      emitted.push({row,curve,user,during});
     }
+    // No recorder callback can observe a half-ingested transaction.
+    for(const reason of gaps)this.gap(reason,Math.max(usableAt,this.now()));
+    for(const {row,curve,user,during} of emitted)this.emit('research-normalized-trade',{at:usableAt,rpcAvailableAt:at,validationCompletedAt:usableAt,duringObservation:during,curve,user,executedEvidence:row,primaryStrategyEnabled:false});
     return rows;
   }
   failHint(reason:string,at=this.now()){

@@ -12,7 +12,7 @@ export const COMPONENT_LIMITS=Object.freeze({units:70,totalMs:90_000,starts60s:6
 export type ComponentBaseline={calls:number;bytes:number;starts:number[];refusal:'RPC_HTTP_429';refusalAt:number;sha256:string};
 export type ComponentKind={transport:'http'|'ws-upgrade'|'ws';method:string};
 export type ComponentOperation={id:number;signal:AbortSignal;chargeHttp:(bytes:number)=>void;completeResponse:()=>void};
-export type ComponentBudgetOptions={statePath:string;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;notBefore?:number;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number,signal?:AbortSignal)=>Promise<void>;/** Offline durability-latency injection; never configured by the live harness. */beforePersist?:()=>void};
+export type ComponentBudgetOptions={statePath:string;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;notBefore?:number;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number,signal?:AbortSignal)=>Promise<void>;record?:(kind:string,data:unknown)=>void;/** Offline durability-latency injection; never configured by the live harness. */beforePersist?:()=>void};
 type Pending={id:number;transport:ComponentKind['transport'];reservedBytes:number};
 type State={schemaVersion:1;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;deadlineAt:number;lastObservedAt:number;starts:number[];actualInvocations:Array<{id:number;at:number}>;byOperation:Record<string,number>;httpBytes:number;wsBytes:number;pending:Pending[];haltedReason:string|null;durationsMs:number[]};
 const integer=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
@@ -38,8 +38,9 @@ export class ComponentBudget {
   private readonly path:string;private readonly lease:number;private readonly now:()=>number;private readonly mono:()=>number;private readonly sleep:(ms:number,signal?:AbortSignal)=>Promise<void>;
   private readonly notBefore:number;private readonly totalMs:number;private readonly beforePersist:(()=>void)|undefined;private state:State;private active=0;private busy=false;private closed=false;private storageFailed=false;private lastStartMono:number|null=null;private readonly resumedMono:number;
   private currentController:AbortController|null=null;
+  private readonly record:NonNullable<ComponentBudgetOptions['record']>;
   constructor(options:ComponentBudgetOptions){
-    this.path=resolve(options.statePath);this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.sleep=options.sleep??pause;this.beforePersist=options.beforePersist;this.resumedMono=this.monotonic();this.notBefore=options.notBefore??0;this.totalMs=options.totalMs??COMPONENT_LIMITS.totalMs;
+    this.path=resolve(options.statePath);this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.sleep=options.sleep??pause;this.beforePersist=options.beforePersist;this.record=options.record??(()=>{});this.resumedMono=this.monotonic();this.notBefore=options.notBefore??0;this.totalMs=options.totalMs??COMPONENT_LIMITS.totalMs;
     need(integer(this.totalMs)&&this.totalMs>=1&&this.totalMs<=600000,'COMPONENT_INVALID_DURATION');
     const b=options.baseline;need(b&&integer(b.calls)&&b.calls<=240&&integer(b.bytes)&&b.bytes<=64*MIB&&Array.isArray(b.starts)&&b.starts.length===b.calls&&b.starts.every((t,i)=>integer(t)&&(i===0||t>=b.starts[i-1]!))&&b.refusal==='RPC_HTTP_429'&&integer(b.refusalAt)&&/^[a-f0-9]{64}$/.test(b.sha256),'COMPONENT_INVALID_BASELINE');
     need(/^[a-z0-9-]{1,100}$/.test(options.grantId)&&integer(options.startedAt)&&integer(this.notBefore)&&b.refusalAt<=options.startedAt&&b.starts.every(t=>t<=options.startedAt),'COMPONENT_INVALID_GRANT');
@@ -73,6 +74,12 @@ export class ComponentBudget {
   private ready(){need(!this.closed,'COMPONENT_CLOSED');need(!this.storageFailed,'COMPONENT_STORAGE_UNAVAILABLE');need(!this.state.haltedReason,'COMPONENT_HALTED');}
   get calls(){return this.state.baseline.calls+this.state.starts.length;}get newUnits(){return this.state.starts.length;}get bytes(){return this.state.baseline.bytes+this.state.httpBytes+this.state.wsBytes;}get inFlight(){return this.active;}
   private effectiveStarts(){const actual=new Map(this.state.actualInvocations.map(r=>[r.id,r.at]));return [...this.state.baseline.starts,...this.state.starts.map((at,i)=>actual.get(this.state.baseline.calls+i+1)??at)];}
+  /** An observation of the SAME gate; does not reserve, queue or charge work. */
+  dispatchWindow(){
+    const now=this.clock(),starts=this.effectiveStarts(),short=starts.filter(t=>t>now-10000),minute=starts.filter(t=>t>now-60000),last=starts.at(-1),mono=this.monotonic(),origin=this.lastStartMono??(this.state.starts.length?this.resumedMono:null);
+    const wait=Math.ceil(Math.max(0,this.notBefore-now,last===undefined?0:last+1000-now,origin===null?0:origin+1000-mono,short.length>=30?short[short.length-30]!+10000-now:0,minute.length>=60?minute[minute.length-60]!+60000-now:0));
+    return {readyAt:now+wait,waitMs:wait,physicalBusy:this.active!==0||this.busy||this.state.pending.length!==0,haltedReason:this.state.haltedReason};
+  }
   usage(){
     const now=this.clock(),starts=this.effectiveStarts(),short=starts.filter(t=>t>now-10000),minute=starts.filter(t=>t>now-60000),reserved=this.state.pending.reduce((n,p)=>n+p.reservedBytes,0);
     return {grantId:this.state.grantId,baseline:structuredClone(this.state.baseline),cumulativeUnits:this.calls,newUnits:this.newUnits,actualInvokedUnits:this.state.actualInvocations.length,cumulativeResponseBytes:this.bytes,httpBytes:this.state.httpBytes,wsBytes:this.state.wsBytes,newResponseBytes:this.state.httpBytes+this.state.wsBytes,remainingGrantUnits:70-this.newUnits,remainingCumulativeUnits:240-this.calls,remainingGrantResponseBytes:Math.max(0,32*MIB-this.state.httpBytes-this.state.wsBytes-reserved),remainingCumulativeResponseBytes:Math.max(0,64*MIB-this.bytes-reserved),pending:structuredClone(this.state.pending),uncertainResponseBytes:reserved,rolling60SecondStarts:minute.length,rolling10SecondStarts:short.length,starts:this.state.actualInvocations.map(r=>r.at),actualInvocations:structuredClone(this.state.actualInvocations),reservationStarts:[...this.state.starts],byOperation:{...this.state.byOperation},durationsMs:[...this.state.durationsMs],inFlight:this.active,waitingOrOperating:this.busy,haltedReason:this.state.haltedReason,startedAt:this.state.startedAt,totalMs:this.totalMs,deadlineAt:this.state.deadlineAt,closed:this.closed,storageFailed:this.storageFailed};
@@ -85,37 +92,45 @@ export class ComponentBudget {
     if(this.state.lastObservedAt>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
     if(this.state.wsBytes>COMPONENT_LIMITS.wsBytes||this.state.httpBytes+this.state.wsBytes>COMPONENT_LIMITS.combinedBytes||this.bytes>COMPONENT_LIMITS.cumulativeBytes){this.halt('COMPONENT_RESPONSE_BYTE_CAP');throw Error('COMPONENT_RESPONSE_BYTE_CAP');}
   }
-  async operate<T>(kind:ComponentKind,work:(context:ComponentOperation)=>Promise<T>,outer?:AbortSignal,options:{timeoutMs?:number}={}):Promise<T>{
+  async operate<T>(kind:ComponentKind,work:(context:ComponentOperation)=>Promise<T>,outer?:AbortSignal,options:{timeoutMs?:number;latestStartAt?:number}={}):Promise<T>{
     validateKind(kind);need(!this.busy,'COMPONENT_DISPATCH_BUSY');if(outer?.aborted)throw Error('COMPONENT_ABORTED');this.ready();need(this.active===0,'COMPONENT_PHYSICAL_SLOT_OCCUPIED');need(this.state.pending.length===0,'COMPONENT_UNCERTAIN_PRIOR_OPERATION');
-    const timeout=options.timeoutMs??5000;need(integer(timeout)&&timeout>0&&timeout<=12000,'COMPONENT_INVALID_TIMEOUT');this.busy=true;
+    const timeout=options.timeoutMs??5000;need(integer(timeout)&&timeout>0&&timeout<=12000,'COMPONENT_INVALID_TIMEOUT');need(options.latestStartAt===undefined||integer(options.latestStartAt),'COMPONENT_INVALID_START_DEADLINE');this.busy=true;
+    const enqueuedAt=this.clock();
     let controller:AbortController|undefined,timer:ReturnType<typeof setTimeout>|undefined,abortListener:(()=>void)|undefined;
     try{
+      this.record('component-job-enqueued',{at:enqueuedAt,kind,latestStartAt:options.latestStartAt??null});
       for(;;){
         if(outer?.aborted)throw Error('COMPONENT_ABORTED');this.ready();const now=this.clock();if(now>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
         const starts=this.effectiveStarts(),short=starts.filter(t=>t>now-10000),minute=starts.filter(t=>t>now-60000),last=starts.at(-1),mono=this.monotonic();
         const monoOrigin=this.lastStartMono??(this.state.starts.length?this.resumedMono:null);
         const wait=Math.ceil(Math.max(0,this.notBefore-now,last===undefined?0:last+1000-now,monoOrigin===null?0:monoOrigin+1000-mono,short.length>=30?short[short.length-30]!+10000-now:0,minute.length>=60?minute[minute.length-60]!+60000-now:0));
-        if(!wait)break;await this.sleep(Math.min(wait,this.state.deadlineAt-now),outer);need(this.monotonic()>mono||outer?.aborted,'COMPONENT_CLOCK_DID_NOT_ADVANCE');
+        if(options.latestStartAt!==undefined&&now+wait>options.latestStartAt)throw Error('COMPONENT_DISPATCH_EXPIRED');
+        if(!wait)break;this.record('component-pacing-wait',{at:now,waitMs:wait,kind});await this.sleep(Math.min(wait,this.state.deadlineAt-now),outer);need(this.monotonic()>mono||outer?.aborted,'COMPONENT_CLOCK_DID_NOT_ADVANCE');
       }
       if(outer?.aborted)throw Error('COMPONENT_ABORTED');this.ready();if(!(this.newUnits<70&&this.calls<240)){this.halt('COMPONENT_UNIT_CAP');throw Error('COMPONENT_UNIT_CAP');}
       const reserve=kind.transport==='http'?2*MIB:64*1024,pendingBytes=this.state.pending.reduce((n,p)=>n+p.reservedBytes,0);
       if(!((kind.transport==='http'?this.state.httpBytes+reserve+2*MIB<=24*MIB:this.state.wsBytes+reserve<=8*MIB)&&this.state.httpBytes+this.state.wsBytes+pendingBytes+reserve+2*MIB<=32*MIB&&this.bytes+pendingBytes+reserve+2*MIB<=64*MIB)){this.halt('COMPONENT_RESPONSE_RESERVE');throw Error('COMPONENT_RESPONSE_RESERVE');}
-      const at=this.clock();if(at>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
+      const at=this.clock();if(options.latestStartAt!==undefined&&at>options.latestStartAt)throw Error('COMPONENT_DISPATCH_EXPIRED');if(at>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
       const id=this.calls+1,pending:Pending={id,transport:kind.transport,reservedBytes:reserve};this.state.starts.push(at);this.state.byOperation[operationKey(kind)]=(this.state.byOperation[operationKey(kind)]??0)+1;this.state.pending.push(pending);this.persist();this.active++;
       const began=this.monotonic();controller=new AbortController();this.currentController=controller;const signal=outer?AbortSignal.any([outer,controller.signal]):controller.signal;let complete=false,responseBytes=0;
       const chargeHttp=(n:number)=>{need(kind.transport==='http'&&integer(n)&&n<=2*MIB,'COMPONENT_INVALID_BYTE_CHARGE');responseBytes+=n;this.state.httpBytes+=n;pending.reservedBytes=Math.max(0,2*MIB-responseBytes);this.clock();this.persist();if(responseBytes>2*MIB||this.state.httpBytes>24*MIB||this.state.httpBytes+this.state.wsBytes>32*MIB||this.bytes>64*MIB){this.halt('COMPONENT_RESPONSE_BYTE_CAP');throw Error('COMPONENT_RESPONSE_BYTE_CAP');}};
-      const operation=Promise.resolve().then(()=>{
-        signal.throwIfAborted();const invokedAt=this.clock();if(invokedAt>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
+      const operation=Promise.resolve().then(async()=>{
+        signal.throwIfAborted();const invokedAt=this.clock();if(options.latestStartAt!==undefined&&invokedAt>options.latestStartAt)throw Error('COMPONENT_DISPATCH_EXPIRED');if(invokedAt>=this.state.deadlineAt){this.halt('COMPONENT_TIME_CAP');throw Error('COMPONENT_TIME_CAP');}
         // Reservation is already durable. Stamp immediately before invoking
         // transport, AFTER variable fsync/rename latency, and persist the actual
         // stamp after invocation. A crash still leaves the conservative pending
         // reservation, which prevents resuming an uncertain operation.
         this.lastStartMono=this.monotonic();this.state.actualInvocations.push({id,at:invokedAt});
-        try{return work({id,signal,chargeHttp,completeResponse(){complete=true;}});}finally{this.persist();}
+        // NOTHING potentially blocking between that stamp and transport.
+        // If later persistence/telemetry fails, still await physical settlement.
+        const running=work({id,signal,chargeHttp,completeResponse(){complete=true;}});
+        let diagnosticFailure=false;
+        try{this.persist();this.record('component-physical-start',{id,at:invokedAt,enqueuedAt,reservedAt:at,kind});}catch{diagnosticFailure=true;controller!.abort();}
+        try{const result=await running;if(diagnosticFailure)throw Error('COMPONENT_DIAGNOSTIC_FAILURE');return result;}finally{this.persist();}
       }).catch(e=>{
         const message=e instanceof Error?e.message:'';const code=message.includes('429')?'COMPONENT_HTTP_429':message.includes('-32005')?'COMPONENT_RPC_OVERLOAD':signal.aborted?(this.state.haltedReason??'COMPONENT_ABORTED'):errorCode(e);
         this.halt(code);throw Error(code);
-      }).finally(()=>{this.active--;if(complete)this.state.pending=this.state.pending.filter(p=>p.id!==id);else pending.reservedBytes=reserve;this.state.durationsMs.push(Math.max(0,this.monotonic()-began));this.clock();this.persist();if(this.currentController===controller)this.currentController=null;});
+      }).finally(()=>{this.active--;if(complete)this.state.pending=this.state.pending.filter(p=>p.id!==id);else pending.reservedBytes=reserve;this.state.durationsMs.push(Math.max(0,this.monotonic()-began));this.clock();this.persist();this.record('component-physical-settled',{id,at:this.now(),responseComplete:complete,kind,uncertainReservedBytes:complete?0:reserve});if(this.currentController===controller)this.currentController=null;});
       try{return await Promise.race([operation,new Promise<never>((_resolve,reject)=>{
         abortListener=()=>{const code=this.state.haltedReason??'COMPONENT_ABORTED';this.halt(code);reject(Error(code));};signal.addEventListener('abort',abortListener,{once:true});
         timer=setTimeout(()=>{this.halt(this.now()>=this.state.deadlineAt?'COMPONENT_TIME_CAP':'COMPONENT_PHYSICAL_TIMEOUT');},Math.max(0,Math.min(timeout,this.state.deadlineAt-this.clock())));if(signal.aborted)abortListener();

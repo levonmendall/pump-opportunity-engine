@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-27T14:04:50.484777+00:00",
+  "classification": "OFFLINE_PROPOSAL_ONLY_REQUIRES_NEW_EXPLICIT_PUMPAPI_GRANT_NO_NETWORK_AUTHORIZATION",
+  "decision": "One proposed corrected combined component plus complete bounded audit can fit73 of77 remaining RPC units. The proposed early-protection policy remains under offline review. No stream or preflight may execute without a new explicit grant; no success is guaranteed within a volume or coverage ceiling.",
+  "sourceEvidence": [
+    {
+      "path": "evidence/overnight-20261027/final-summary.json",
+      "sha256": "b90b2a6cb0764a280a292620d14e6a38f57c439bec55a104ce7302441b582535"
+    },
+    {
+      "path": "evidence/overnight-20261027/pumpapi-budget.json",
+      "sha256": "7e1fffb72cb7c55f13655859a678863b2ffacb75ee2b4fb1583c7a57a3ee7d29"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/observations.ndjson",
+      "sha256": "835c7e7d5bf867556c50ca90a30f089a0d62a2f62fa8efb8a4a7813cb8e49ef2"
+    },
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "sha256": "e59d25d6ae1fafac4bfcfcbaf69de7c2c4c4792ed8c9282fd6b538d1ab681067"
+    }
+  ],
+  "unchangedAuthoritativeCounters": {
+    "rpc": {
+      "cumulativeUnits": 163,
+      "cumulativeCeiling": 240,
+      "remainingUnits": 77,
+      "observedRelatedResponseBytes": 1490756,
+      "retainedUncertainResponseReservationBytes": 2097152,
+      "accountedRelatedBytes": 3587908,
+      "cumulativeResponseByteCeiling": 67108864,
+      "remainingAccountedBytes": 63520956,
+      "originalHttp429Preserved": true
+    },
+    "pumpApi": {
+      "actualCumulativeReceivedBytes": 195936099,
+      "reservedBytes": 268435456,
+      "reservedMs": 230000,
+      "unreservedBytes": 0,
+      "oldTimeCeilingMs": 300000,
+      "unreservedTimeUnderOldCeilingMs": 70000,
+      "noRefundOfPriorReservations": true,
+      "remainingOldTimeIsNotAnActiveCaptureGrant": true
+    }
+  },
+  "measured11": {
+    "selectedScope": {
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "baseUnits": "436723517",
+      "minSlot": 461979360,
+      "supportedPoolEvidence": "90616a0cd41cf585c00b12890205685b6a8b1f9144013a70969c863e47f8a3cf"
+    },
+    "selectionMeaning": "Activity-biased transport/monitoring subject, not an unbiased discovery sample or proof of current entry-age eligibility.",
+    "actualOpenMs": 69530,
+    "observedSocketBytes": 65179210,
+    "observedApplicationBytes": 65013395,
+    "frames": 40556,
+    "upgradeObservedBytes": 213,
+    "meanSocketBytesPerSecond": 937425.7155184812,
+    "meanSocketMiBPerSecond": 0.8939988284287274,
+    "meanApplicationBytesPerSecond": 935040.9175895297,
+    "broadRollingBytePeaks": null,
+    "broadPeakLimitation": "Only final socket/application totals were retained; irrelevant frames and time-resolved socket counters were not archived. Peak1s/10s broad byte rates cannot be reconstructed from selected payloads or RPC timestamps.",
+    "physicalRequestStarts": {
+      "count": 44,
+      "maxRolling1s": 1,
+      "maxRolling2s": 2,
+      "maxRolling10s": 10,
+      "maxRolling60s": 37,
+      "convention": "Intervals are (t-window,t], using actualInvocations, not reservations or helper requestedAt."
+    },
+    "selectedSignatureHints": {
+      "count": 6,
+      "maxRolling1s": 2,
+      "maxRolling10s": 3,
+      "maxRolling60s": 5,
+      "distinctTransactionEnrichments": 6,
+      "twoHintsSharedOneReceiveTime": true
+    },
+    "usefulCompletedEvaluationGapMaximumMs": 3224,
+    "forwardRawComplete60sWindows": 0,
+    "mapperCorrectedOfflineReplayIsForwardAcceptance": false
+  },
+  "preciseNewOwnerGrantProposal": {
+    "purpose": "One new credential-free PumpApi/public-RPC corrected-scheduler combined observation of3 hypothetical holdings and1 continuously observed candidate, followed immediately by a separately bounded independent audit. Aggregate test deadline120s; only the connection phase consumes the new90s PumpApi time reservation.",
+    "newCaptures": 1,
+    "newPumpApiReceiptReservationBytes": 146800640,
+    "newPumpApiReceiptReservationMiB": 140,
+    "newPumpApiReservedMs": 90000,
+    "newPumpApiReservedSeconds": 90,
+    "newCumulativePumpApiReservedBytes": 415236096,
+    "newCumulativePumpApiReservedMiB": 396,
+    "newCumulativePumpApiReservedMs": 320000,
+    "newCumulativePumpApiReservedSeconds": 320,
+    "increaseAbovePrevious300sTimeCeilingMs": 20000,
+    "old256MiBAnd230sReservationsRemainUnchanged": true,
+    "pumpApiSocketStopBytes": 144703488,
+    "pumpApiApplicationStopBytes": 142606336,
+    "pumpApiHardReceiptCapBytes": 146800640,
+    "socketToHardHeadroomBytes": 2097152,
+    "socketSizing": {
+      "basis": "Scenario of2x actual11 mean, not an observed peak bound or a guarantee.",
+      "meanMultiplier": 2,
+      "maximumOpenSeconds": 75,
+      "projectedAtObservedMeanBytes": 70306929,
+      "projectedAtTwiceMeanBytes": 140613858,
+      "socketStopMarginAboveTwiceMeanBytes": 4089630,
+      "hardCapMarginAboveTwiceMeanBytes": 6186782,
+      "projectedApplicationAtTwiceMeanBytes": 140256138,
+      "applicationStopMarginAboveTwiceMeanBytes": 2350198,
+      "higherTrafficOutcome": "Stop at receipt/resource limit and report an incomplete measurement. No automatic extension, second capture, rate claim or reconstructed missing events."
+    },
+    "apiDataFeesUsdDaily": 0,
+    "apiDataFeesUsdTotal": 0,
+    "paidServicesAllowed": false,
+    "networkTransferAndExistingInfrastructureCosts": "Unverified incremental transfer allocation; separate from documented$0 public data/API fees. No provider purchase or infrastructure change is included.",
+    "authorizationState": "NOT_APPROVED_NOT_RESERVED_NOT_EXECUTABLE_UNTIL_OWNER_EXPLICITLY_APPROVES_THIS_NEW_GRANT",
+    "maximumAggregateTestMs": 120000,
+    "pumpApiReservationScope": "One connection/combined phase only, including its bounded setup/open/drain time. The preceding public-RPC preparation and following independent public-RPC audit are separate phases of the120s aggregate test; they are not represented as fitting inside the90s stream reservation.",
+    "requestedCeilingChanges": {
+      "pumpApiReceiptCeilingIncreaseBytes": 146800640,
+      "pumpApiTimeCeilingIncreaseMs": 20000,
+      "newSingleConnectionReservationMs": 90000,
+      "explanation": "Approve one new 140 MiB receipt reservation and one new 90-second connection-phase reservation. Keeping the existing 230 seconds reserved produces 320 seconds cumulatively, so the prior 300-second cumulative ceiling increases by only 20 seconds. These are separate quantities; the old reservations are never refunded or reset."
+    },
+    "connectionTimeBreakdown": {
+      "maximumSetupMs": 10000,
+      "maximumOpenMs": 75000,
+      "maximumExistingOperationDrainMs": 5000,
+      "maximumConnectionPhaseMs": 90000,
+      "independentAuditOutsideThisReservation": true
+    }
+  },
+  "observationTiming": {
+    "preparationBeforeAnyStreamReservation": {
+      "maximumMs": 5000,
+      "maximumRpcUnits": 3,
+      "pumpApiSocketOpened": false,
+      "rule": "Use the fixed named pool as a transport subject. One history page and at most2 transaction checks must prove a recent successful supported swap and a history interval long enough to assess capacity. No alternate-pool search or repeated preflight."
+    },
+    "streamGrantMaximumTotalMs": 90000,
+    "prewarmAndConnectionSetupMaximumMs": 10000,
+    "maximumOpenObservationMs": 75000,
+    "maximumPostCloseExistingOperationDrainMs": 5000,
+    "sumMs": 90000,
+    "timeAnchor": "The75s observation timer must start at successful socket open. A timer started before handshake does not ensure the full aligned window plus grace.",
+    "targetWindow": "S=ceil(openAt/10000)*10000; closed target is[S,S+60000). S+60000 is at most70000ms after open. Retain up to5000ms of confirmation grace through open+75000ms.",
+    "featureAvailability": "Every enriched trade enters FlowWindow only at its actual fully validated availability after transaction decoding, transfer/feature checks and preparation. Original RPC body availability is retained separately in executed evidence. Grace never backdates usable information, fills a missed bin, or makes later confirmations available earlier.",
+    "lateHintsDuringGrace": "Retain and label them. They cannot be inserted into the already closed target window. Any unresolved event affecting the target or audit coverage prevents a completeness claim.",
+    "heldMonitoring": "Keep the2s reference target and actual-size coherent3-pool quotes, maximum2000ms quote age at use. Up to5 additional early protective checks are reserved only if the reviewed scheduler policy requires them; this is not an approved timing change. Record all actual evaluation gaps, scheduling delays and unavailable cache periods.",
+    "maximumAggregateTestMs": 120000,
+    "preflightMaximumMs": 5000,
+    "connectionPhaseMaximumMs": 90000,
+    "independentAuditMaximumMs": 20000,
+    "aggregateShutdownHeadroomMs": 5000,
+    "aggregatePhaseSumMs": 120000,
+    "sumMeaning": "Connection phase only:10000ms prewarm/connection setup +75000ms open +5000ms existing-operation drain. It does not include independent audit."
+  },
+  "existingRpcAllowanceAllocation": {
+    "newRequestUnitsCeiling": 77,
+    "newRequestedRpcUnits": 0,
+    "ceilingAfterAllAllocatedUnits": 240,
+    "phases": [
+      {
+        "phase": "bounded-current-activity-preflight",
+        "maximumUnits": 3,
+        "maximumMs": 5000,
+        "operations": {
+          "getSignaturesForAddress": 1,
+          "getTransaction": 2
+        },
+        "perLegUnitCeiling": 70,
+        "separateExistingLinkedChapter": true
+      },
+      {
+        "phase": "one-corrected-combined-capture",
+        "maximumUnits": 56,
+        "maximumMs": 90000,
+        "operations": {
+          "getMultipleAccountsPrewarm": 2,
+          "wsUpgrade": 1,
+          "getMultipleAccountsPeriodic3HoldingUnion": 38,
+          "getMultipleAccountsPossibleEarlyProtectionReserve": 5,
+          "getTransactionSelectedCandidate": 10
+        },
+        "perLegUnitCeiling": 70,
+        "separateExistingLinkedChapter": true,
+        "possibleEarlyProtectionPolicyStatus": "IMPLEMENTED_AND_OFFLINE_REVIEWED_BOUNDED_DEADLINE_V1; monitoring phase changes; no accepted protection-gap threshold or production authorization"
+      },
+      {
+        "phase": "immediate-independent-audit",
+        "maximumUnits": 14,
+        "maximumMs": 20000,
+        "operations": {
+          "getSignaturesForAddress": 2,
+          "getTransactionIndependentSelectedOrUnmatched": 10,
+          "getTransactionFinalizedRecheck": 2
+        },
+        "perLegUnitCeiling": 70,
+        "separateExistingLinkedChapter": true
+      }
+    ],
+    "plannedMaximumUnits": 73,
+    "unassignedShutdownOrUncertainOperationHeadroomUnits": 4,
+    "noAutomaticRetries": true,
+    "noAutomaticReuseOfUnusedSuballocation": true,
+    "newRelatedResponseByteCeiling": 33554432,
+    "maximumAccountedRelatedBytesAfterProposal": 37142340,
+    "remainingCumulativeByteHeadroomAfterCeiling": 29966524,
+    "responseAccounting": "Count every actual HTTP body and upgrade prefix before parsing; retain any uncertain response reservation. PumpApi broad receipt is charged to its separate140MiB reservation. Wire/header overhead remains explicitly unmeasured. Reserve physical in-flight headroom before starts, never refund it to make another attempt.",
+    "physicalScheduling": {
+      "localStartsPerRolling60s": 60,
+      "localStartsPerRolling10s": 30,
+      "minimumPhysicalStartGapMs": 1000,
+      "maximumPhysicalOperationsInFlight": 1,
+      "actualBudgetRemainsAuthoritative": true,
+      "steadyHoldingRequestsPerMinute": 30,
+      "selectedCandidateMaximumTransactionsPer75s": 10,
+      "projectedCandidateRequestsPerMinuteAtCeiling": 8,
+      "combinedSteadyProjectionRequestsPerMinute": 42,
+      "conservativeFirstMinuteDemandIncludingAllCandidateCallsAndPreparation": 51,
+      "burstDeadlineFeasibility": "Average fit does not establish the5s enrichment deadline. Replay observed same-receipt2-trade bursts and test actual-ready admission/tie arbitration offline before approving a frozen source; report all real missed deadlines.",
+      "possibleEarlyProtectionRequestsPer75s": 5,
+      "projectedPossibleEarlyProtectionRequestsPerMinute": 4,
+      "finite75sQuoteAndCandidateMaximumRequestsPerMinute": 42.4,
+      "conservativeRecentHoldingsCandidateEarlyAndAuditDemandPer60s": 59,
+      "projectionLimitations": "The51/59 demand bounds are conservative operation-count projections. They are not measured future rates or proof that all deadlines fit; the shared actual-start budget and first-overload stop remain binding."
+    },
+    "unitAccounting": "3preflight+2prewarm+1upgrade+38regular pricing+5possible early pricing+10candidate enrichment+14independent audit=73;4additional units remain unassigned within the existing77-unit ceiling. No extra RPC quota or retries are requested."
+  },
+  "candidateAndAuditBounds": {
+    "trackedCandidates": 1,
+    "hypotheticalHoldings": 3,
+    "maximumNewSelectedTransactionEnrichments": 10,
+    "continuousSelectedCollectionRequired": true,
+    "maximumSelectedEnrichmentQueue": 16,
+    "enrichmentMinimumDelayMs": 1000,
+    "enrichmentMaximumAvailabilityDelayMs": 5000,
+    "activityRequirement": "At least1 recent successful supported swap in the bounded on-chain preflight. Pool-address success alone is insufficient. A saturated history page that cannot establish the selected observation interval means capacity unknown: do not connect.",
+    "candidateVolumeMeaning": "10 is a test-allocation ceiling, not permission to sample away any required selected transaction. If expected or observed arrivals cannot be enriched completely within quota/deadlines, mark the affected window unusable and refuse new risk; preserve all selected hints and continue hypothetical holdings protection within remaining hard limits.",
+    "poolChoice": "Predeclare the actual11 pool. If it is inactive, unsupported, too busy or capacity-unknown at preflight, report refusal without a stream. Do not choose a quieter replacement after seeing the result.",
+    "entryAgeEligibility": "Current canonical-pool/account support and migration origin/age are separate checks. The sample token's current entry-age eligibility and Pump-migration origin are not established by the retained11 pricing proof. Verify them independently within the fixed preflight or explicitly refuse entry eligibility/natural qualification. An older or origin-unverified pool may only test transport/protection; it cannot establish natural entry qualification or unbiased opportunity coverage.",
+    "audit": "Start immediately after the connection phase, with a separate20000ms phase deadline inside the120000ms aggregate deadline. Read at most2 history pages of at most50 signatures each. Independently retrieve up to10 relevant selected-or-unmatched transaction signatures, so all10 candidate enrichments can be checked without reusing the same original response as independent evidence. Match actual pool/program/instruction/event identities and count top-level/inner swaps. Then perform at most2 finalized rechecks. If the complete denominator needs more than10 transaction retrievals, history range is not covered, or any required event/variant is missing or unsupported, report coverage incomplete; no scan extension or trade dropping is permitted."
+  },
+  "resourcesAndIntegrity": {
+    "isolatedNonProductionProcess": true,
+    "cpuMs": 20000,
+    "rssBytes": 268435456,
+    "eventLoopLagStopMs": 500,
+    "payloadBytes": 65536,
+    "newRetainedEvidenceBytes": 6291456,
+    "existingCumulativeEvidenceCeilingBytes": 33554432,
+    "broadFramesArchived": false,
+    "selectedEvidenceOnly": true,
+    "boundedSocketCountersBeforeParse": true,
+    "requiredNewCounterTelemetry": "Record aggregate socket/application deltas at bounded1s cadence, retaining at most90 compact rows so a later report can measure actual rolling byte peaks without archiving the broad feed.",
+    "stopOnFirst429OrOverload": true,
+    "endpointRotation": false,
+    "providerPlanChanges": false,
+    "walletOperations": false,
+    "productionRestartOrDeployment": false,
+    "paperEntriesEnabled": false,
+    "liveTradingEnabled": false,
+    "acceptanceClockStarted": false
+  },
+  "offlinePrerequisitesBeforeAskingOwner": [
+    "The corrected actual-ready bounded-deadline-v1 scheduler and early refresh policy are implemented and independently reviewed offline; exact24-scenario evidence is linked above. Strict reservation remains rejected. Early checks change phase and request demand; maximum accepted completed gap remains UNFROZEN, not implicitly relaxed.",
+    "Demonstrate offline2s holdings targeting without low-priority pacer-wait occupation, preserve complete candidate evidence where feasible, and explicitly refuse/mark gaps where the5s enrichment deadline cannot be met.",
+    "Implement75s timing from socket open, the proposed byte stops and aggregate1s byte telemetry, selected enrichment cap10,73planned/77maximum existing RPC units and immediate14-unit audit using existing linked counterbooks. Aggregate deadline120s; connection reservation90s only.",
+    "Verify canonical support separately from migration origin and age; if the latter are not established, record entry-eligibility refusal rather than natural qualification.",
+    "Reserve the new stream grant durably only after owner approval and successful bounded preflight; preserve every old reservation, refusal, account record and evidence hash."
+  ],
+  "resultInterpretation": "Only a successful corrected forward component plus independently complete bounded audit could verify the stated3-holding/1-candidate interval. A stop, volume/burst/deadline breach, insufficient confirmation grace, unsupported variant or coverage cap yields an inconclusive result, never a pass. Current Pump-origin/age eligibility remains separate. No quiet sample, replay, fixture count or process uptime proves continuous free operation, economic edge, autonomous trading or deployment readiness.",
+  "sourceFilesUnchanged": true,
+  "networkRequestsMadeForThisProposal": 0,
+  "financialChanges": 0,
+  "offlineSchedulerReview": {
+    "policy": "bounded-deadline-v1",
+    "evidence": "evidence/scheduler-correction-20261027/scheduler-evaluation-v4.json",
+    "helperSha256": "8d2fc203a7ea71a7e23a8946ecfbd9c07193a50660d1292014eef2ce3846d22e",
+    "implemented": true,
+    "networkValidationPerformed": false,
+    "acceptedMaximumCompletedEvaluationGapMs": null,
+    "phaseEquivalentToOriginalFixedSchedule": false,
+    "reservationSetupReserveMs": 25,
+    "capturedSetupOverheadRangeMs": [
+      1,
+      7
+    ],
+    "researchProcessingReserveMs": 200,
+    "sameTraceEnrichmentCompletedAt0And10MsJitter": "6/6; simulated rescheduling only",
+    "largerJitter": "50ms5/6+1explicit refusal;100ms0/6,5refusals+1censored",
+    "modeledMaximumCompletedGapMsAt0And10Jitter": 2041,
+    "pendingCompetition": "two simultaneous pending actions complete but candidate evidence fails and gap4008ms; not an adequate combined capacity configuration",
+    "runtimeProfileActivation": "Current historical64MiB stops/reservations remain active. Apply proposed140MiB stops/cap10/phase deadlines only after a new explicit grant; no automatic run or refund."
+  }
+}
