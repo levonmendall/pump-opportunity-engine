@@ -50,11 +50,12 @@ test('malformed response does not replace a valid experimental source',async()=>
 
 
 test('dynamic watch capacity stays separate from portfolio and unavailable fields are not zeros',async()=>{
- const s={...snapshot(),watch:{known:120,watch:90,eligibleKnown:100,deepActive:3,maximumDeep:6,queued:7,waitMs:{mean:1250,maximum:5000},promotionWaitMs:{mean:2000,maximum:4000},promoted:18,repromoted:2,demoted:9,completeWindows:12,capacityExclusions:1,incompleteDataExclusions:null,enrichmentDeadlineFailures:null,structuralExclusions:3,expired:4}};
+ const s={...snapshot(),watch:{known:120,watch:90,eligibleKnown:100,deepActive:3,maximumDeep:6,queued:7,waitMs:{mean:1250,maximum:5000},promotionWaitMs:{mean:2000,maximum:4000},promoted:18,repromoted:2,demoted:9,completeWindows:12,predictiveAssessments:12,predictiveFailures:10,strategyRejections:2,capacityExclusions:1,incompleteDataExclusions:null,enrichmentDeadlineFailures:null,structuralExclusions:3,expired:4}};
  const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});
  const cards=b.nodes.get('pilot-watch')!.children;const text=cards.map(c=>c.children.map(v=>v.textContent).join(': ')).join('\n');
  assert.match(text,/Deep slots active \/ maximum: 3 \/ 6/);assert.match(text,/Promotions \/ re-promotions: 18 \/ 2/);
  assert.match(text,/Current queue wait: average \/ maximum \(s\): 1.25 \/ 5/);assert.match(text,/Completed admission wait: average \/ maximum \(s\): 2 \/ 4/);
+ assert.match(text,/Feature-only assessments: 12/);assert.match(text,/Feature-only failures: 10/);assert.match(text,/Primary strategy rejections: 2/);
  assert.match(text,/Incomplete-data exclusions: Not reported/);assert.doesNotMatch(text,/%|cash|equity|P&L/i);
  await b.poll({state:'awaiting-data',snapshot:null});assert.equal(b.nodes.get('pilot-watch')!.children.length,0);
 });

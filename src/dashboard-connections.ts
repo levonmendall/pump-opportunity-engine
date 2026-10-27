@@ -10,7 +10,7 @@ export const CONNECTIONS_HTML=String.raw`
 <p id="pilot-source-detail"></p>
 <div id="pilot-funnel" class="metric-grid"></div>
 <h3>Market watch and deep analysis</h3><div id="pilot-watch" class="metric-grid"></div>
-<p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. Registry promotion and complete-window totals persist across research runs; predictive rejection, incomplete-data and enrichment-deadline counts describe the current run. Queue and completed-admission waits measure elapsed wall time, including stopped intervals—not provider latency or delay caused solely by capacity. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
+<p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. Registry promotion and complete-window totals persist across research runs; feature-only, primary strategy rejection, incomplete-data and enrichment-deadline counts describe the current run. Feature-only assessments inform slot allocation; they do not qualify an entry or grant risk permission. Queue and completed-admission waits measure elapsed wall time, including stopped intervals—not provider latency or delay caused solely by capacity. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
 <div id="pilot-metrics" class="metric-grid pilot-grids"></div>
 <p class="pilot-note">Funnel, swap and accounting counters describe the identified pilot run. Validated swap events are market observations; PAPER fills and exits are simulated portfolio actions. Accounting reconciliations include zero-trade checks. Source age describes the local status file, not complete market coverage or continuous position protection.</p>
 <h3>Recent pilot decisions</h3><div id="pilot-decisions" class="identity-line">No pilot report received.</div>
@@ -67,7 +67,8 @@ function showPilot(p){
   ['Current queue wait: average / maximum (s)',pretty(typeof w.waitMs?.mean==='number'?w.waitMs.mean/1000:null)+' / '+pretty(typeof w.waitMs?.maximum==='number'?w.waitMs.maximum/1000:null)],
   ['Completed admission wait: average / maximum (s)',pretty(typeof w.promotionWaitMs?.mean==='number'?w.promotionWaitMs.mean/1000:null)+' / '+pretty(typeof w.promotionWaitMs?.maximum==='number'?w.promotionWaitMs.maximum/1000:null)],
   ['Promotions / re-promotions',pretty(w.promoted)+' / '+pretty(w.repromoted)],['Demotions',w.demoted],['Complete 60-second windows',w.completeWindows],
-  ['Predictive rejections',w.strategyRejections],['Capacity exclusions',w.capacityExclusions],['Incomplete-data exclusions',w.incompleteDataExclusions],
+  ['Feature-only assessments',w.predictiveAssessments],['Feature-only failures',w.predictiveFailures],['Primary strategy rejections',w.strategyRejections],
+  ['Capacity exclusions',w.capacityExclusions],['Incomplete-data exclusions',w.incompleteDataExclusions],
   ['Enrichment deadline failures',w.enrichmentDeadlineFailures],['Structural exclusions',w.structuralExclusions],['Expired identities',w.expired]
  ]);}else id('pilot-watch').replaceChildren(el('p','Market-watch metrics are not reported by this source.'));
  const metrics={rpcRequests:'Read / control request units',providerEvents:'Broad feed frames received',normalizedTrades:'Validated swap events',eventLoopLagMs:'Event-loop p95 (ms)',maximumCompletedGapMs:'Max holding-evaluation gap (ms)',maximumQuoteAgeMs:'Max quote age at use (ms)',protectionBreaches:'Protection boundary breaches',unavailableChecks:'Unavailable checks',streamBytes:'Received stream bytes'};

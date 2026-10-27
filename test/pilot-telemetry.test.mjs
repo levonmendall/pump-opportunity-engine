@@ -58,3 +58,12 @@ test('completed promotion wait is separate from current queue wait and remains o
   const q=projectPilotStatus(p);q.watch.promotionWaitMs=measured;assert.throws(()=>validatePilotTelemetry(q));
  }
 });
+
+
+test('feature-only diagnostics remain distinct from primary decisions and optional for legacy sources',()=>{
+ const p=raw();p.watch={summary:{known:1,deepActive:1,maximumDeep:3,waitMs:{mean:0,maximum:0},predictiveAssessments:12,predictiveFailures:10,strategyRejections:2}};
+ const projected=projectPilotStatus(p);assert.equal(projected.watch.predictiveAssessments,12);assert.equal(projected.watch.predictiveFailures,10);assert.equal(projected.watch.strategyRejections,2);assert.equal(projected.funnel.qualified,null);
+ delete projected.watch.predictiveAssessments;delete projected.watch.predictiveFailures;assert.doesNotThrow(()=>validatePilotTelemetry(projected));
+ delete p.watch.summary.predictiveAssessments;delete p.watch.summary.predictiveFailures;assert.equal(projectPilotStatus(p).watch.predictiveAssessments,null);assert.equal(projectPilotStatus(p).watch.predictiveFailures,null);
+ for(const value of [-1,1.5,NaN,Infinity]){const q=projectPilotStatus(p);q.watch.predictiveAssessments=value;assert.throws(()=>validatePilotTelemetry(q));}
+});

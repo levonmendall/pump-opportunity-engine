@@ -9,9 +9,10 @@ const metricNames = ['rpcRequests','providerEvents','normalizedTrades','eventLoo
 type Stage = typeof stages[number];
 type Metric = typeof metricNames[number];
 const watchCounts = ['known','watch','eligibleKnown','deepActive','maximumDeep','queued','promoted','repromoted','demoted','expired','capacityExclusions','structuralExclusions','completeWindows','strategyRejections','incompleteDataExclusions','enrichmentDeadlineFailures'] as const;
+const featureCounts = ['predictiveAssessments','predictiveFailures'] as const;
 type WatchCount = typeof watchCounts[number];
 type WatchWait = { mean: number | null; maximum: number | null };
-export type PilotWatchTelemetry = Record<WatchCount, number | null> & { waitMs: WatchWait; promotionWaitMs?: WatchWait | null };
+export type PilotWatchTelemetry = Record<WatchCount, number | null> & Partial<Record<typeof featureCounts[number],number|null>> & { waitMs: WatchWait; promotionWaitMs?: WatchWait | null };
 export type PilotTelemetry = {
   schemaVersion: 1; kind: 'experimental-pilot'; authoritative: false; liveTrading: false;
   accountId: string; inceptionAt: number; runId: string; generatedAt: number;
@@ -31,8 +32,9 @@ function bool(x: unknown): boolean { if (typeof x !== 'boolean') throw new Error
 const safeText = (x: unknown, max=256) => String(x ?? 'unreported').replace(/https?:\/\/\S+/gi,'[endpoint]').replace(/Bearer\s+\S+/gi,'[credential]').replace(/[\u0000-\u001f]/g,' ').slice(0,max) || 'unreported';
 function keys(o: Record<string,any>, allowed: string[]) { if (Object.keys(o).some(k=>!allowed.includes(k))) throw new Error('unexpected telemetry field'); }
 function validateWatch(value:unknown):PilotWatchTelemetry {
-  const w=object(value);keys(w,[...watchCounts,'waitMs','promotionWaitMs']);
+  const w=object(value);keys(w,[...watchCounts,...featureCounts,'waitMs','promotionWaitMs']);
   for(const k of watchCounts){if(!Object.hasOwn(w,k))throw Error('missing watch field');integer(w[k]);}
+  for(const k of featureCounts)integer(w[k]);
   const wait=object(w.waitMs);keys(wait,['mean','maximum']);
   if(!Object.hasOwn(wait,'mean')||!Object.hasOwn(wait,'maximum'))throw Error('missing watch wait');
   number(wait.mean);number(wait.maximum);
@@ -52,7 +54,7 @@ function validateWatch(value:unknown):PilotWatchTelemetry {
 function projectWatch(value:unknown):PilotWatchTelemetry|null {
   if(value===undefined||value===null)return null;
   const w=object(object(value).summary),wait=w.waitMs===undefined?{}:object(w.waitMs),completed=w.promotionWaitMs===undefined||w.promotionWaitMs===null?{}:object(w.promotionWaitMs);
-  return validateWatch({...Object.fromEntries(watchCounts.map(k=>[k,integer(w[k])])),waitMs:{mean:number(wait.mean),maximum:number(wait.maximum)},promotionWaitMs:{mean:number(completed.mean),maximum:number(completed.maximum)}});
+  return validateWatch({...Object.fromEntries([...watchCounts,...featureCounts].map(k=>[k,integer(w[k])])),waitMs:{mean:number(wait.mean),maximum:number(wait.maximum)},promotionWaitMs:{mean:number(completed.mean),maximum:number(completed.maximum)}});
 }
 
 /** Explicit allowlist. No journal, financial balances, credential/config objects or arbitrary logs. */
