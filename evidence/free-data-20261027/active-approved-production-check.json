@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-10-27T02:54:21.631Z",
+  "account": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "sequence": "482",
+  "source": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "times": {
+    "generatedAt": "2026-10-27T02:53:56.558Z",
+    "marketAt": "2026-10-27T02:53:56.558Z",
+    "reconciledAt": "2026-10-27T02:53:56.558Z",
+    "usefulProgressAt": "2026-10-27T02:53:56.558Z"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "disabled",
+    "reconciled": true,
+    "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+  },
+  "freshness": {
+    "state": "observing-with-zero-trades",
+    "receivedAt": "2026-10-27T02:54:06.017Z",
+    "generatedAt": "2026-10-27T02:53:56.558Z",
+    "marketAt": "2026-10-27T02:53:56.558Z",
+    "reconciledAt": "2026-10-27T02:53:56.558Z",
+    "usefulProgressAt": "2026-10-27T02:53:56.558Z",
+    "sourceAgeMs": 25024,
+    "marketAgeMs": 25024,
+    "reconciliationAgeMs": 25024
+  },
+  "positions": 0,
+  "naturalPaperTrades": 0,
+  "readOnly": true,
+  "productionChanged": false
+}

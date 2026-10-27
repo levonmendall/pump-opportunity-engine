@@ -1,0 +1,319 @@
+{
+  "outcome": "PREFLIGHT_REFUSED_NO_STREAM",
+  "reason": "POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN",
+  "selection": {
+    "ok": false,
+    "reason": "POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN",
+    "evidence": {
+      "selectionMethod": "Activity-biased transport test: one latest32-signature PumpSwap-program page; up to8 successful recent transactions systematically spread over that page. First genuinely decoded canonical SOL pool is checked against one bounded pool-history page. No universe or strategy-performance claim.",
+      "readsAttempted": 6,
+      "maximumReads": 24,
+      "programRows": 32,
+      "programTransactionsInspected": 4,
+      "historyRows": 20,
+      "historyWindowMs": 60000,
+      "historyWindowCovered": false,
+      "successfulAddressTransactions": 0,
+      "activitySpanMs": 0,
+      "addressTransactionsPerMinute": null,
+      "projected90sWithHeadroom": null,
+      "enrichmentCapacity": 48,
+      "decodedRecentTransactions": 0,
+      "decodedSwapEvents": 0,
+      "sides": [],
+      "routes": [],
+      "rejections": [
+        {
+          "signature": "NxeBz6FkRTqtsbVLmVEfuQ8MSK46rKeWAdob6eFv84EZSDbpsM27xGuVnnhwPwGQV2RSvyQQj23Av7uigu5Hp9c",
+          "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+        },
+        {
+          "signature": "24y5VPdBjanFrp6BD9picQsqJcSGW9c7wncqd6A4PLxXfbiyck5a5Y8Mqccai2SadSfDb2T3szo8pWgrrB1PaFt1",
+          "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+        },
+        {
+          "signature": "48FzRJmDosHNzbvn31VCxX7VBXMAqkmkzUW1SxPLrw8dzHFhhFZgJXXanpZECEf4xK5gedNdXWKKoe4UvsZqhiY3",
+          "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+        }
+      ],
+      "transactions": [
+        {
+          "signature": "NxeBz6FkRTqtsbVLmVEfuQ8MSK46rKeWAdob6eFv84EZSDbpsM27xGuVnnhwPwGQV2RSvyQQj23Av7uigu5Hp9c",
+          "requestedAt": 1793069031314,
+          "availableAt": 1793069031396,
+          "slot": 461905570,
+          "version": 0,
+          "transactionSha256": "168b248cc1b0dfe850e3c83a5ff2f8b16e7bb5e653a7c5518cbf95fdecd6d88b"
+        },
+        {
+          "signature": "24y5VPdBjanFrp6BD9picQsqJcSGW9c7wncqd6A4PLxXfbiyck5a5Y8Mqccai2SadSfDb2T3szo8pWgrrB1PaFt1",
+          "requestedAt": 1793069031396,
+          "availableAt": 1793069031462,
+          "slot": 461905570,
+          "version": 0,
+          "transactionSha256": "45cf2dcfbcb818188d5225115711b53a66fc7830e8853a2d89116999eb31f1f4"
+        },
+        {
+          "signature": "48FzRJmDosHNzbvn31VCxX7VBXMAqkmkzUW1SxPLrw8dzHFhhFZgJXXanpZECEf4xK5gedNdXWKKoe4UvsZqhiY3",
+          "requestedAt": 1793069031462,
+          "availableAt": 1793069031573,
+          "slot": 461905570,
+          "version": 1,
+          "transactionSha256": "43baffa3d02a50315240f143bcef42a8c497aa6cafec7bedf040fe373ca7e42f"
+        },
+        {
+          "signature": "2LweUYAawyFV6VEVZcAXuUoM4AThkZ2qRdGs4TW39wR2bwcmGGU4LmCh8PSZvH7CV8H2qjJGpiLVEBSBteJXEDh7",
+          "requestedAt": 1793069031573,
+          "availableAt": 1793069031676,
+          "slot": 461905570,
+          "version": 1,
+          "transactionSha256": "0b92c5248cab4041da37201997b18fb01aad0f3603d94c684a896e3e55b44969"
+        }
+      ],
+      "history": [
+        {
+          "signature": "2sFyVVnWjei2K39vtyjLvmUiLgjvYboxVGZAQGayZNmbkV25iV9q1NwWv9pJJQTdPaee5EqMV7TZ8q2UHjTk5ZeM",
+          "slot": 461905572,
+          "err": {
+            "InstructionError": [
+              3,
+              {
+                "Custom": 26
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "rFuRGdK55LRYCvwToDTQbbu99JQcppQoa3UdEXHNbDdacdzV4RYdjnfxyYrWq9XLuVWoQaUb27hT2yrHk5CFjuq",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "4kXgHr1C3mSmwuPN14KDqFQ3neM1NPbCBG8wQbK5q13ARHtQG7CZyenaZA2WkcYNWeLuKk5fMrQMczeA8iCQpnFb",
+          "slot": 461905572,
+          "err": {
+            "InstructionError": [
+              3,
+              {
+                "Custom": 26
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "4qP9NMnLfNtURNiyFKkrpH7KZg4BmqFQFPFsVUqxCvn4aHVJhb2yfiEZwygvPrj4V9QpQx1QQZBWeNqrtio51pHB",
+          "slot": 461905572,
+          "err": {
+            "InstructionError": [
+              3,
+              {
+                "Custom": 26
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "35v6LTzfF49Hy7LZ7N6oBu3ZfcMpJncCMnov4dsXWF3u1VZR1qdZapnzqHxRPKM3zjM8KSNi7JAndFDUBZHsjxjR",
+          "slot": 461905572,
+          "err": {
+            "InstructionError": [
+              3,
+              {
+                "Custom": 26
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "5bMr9X1i2ZNkQPd6BngTkoWiB2wGkNTU4jYYjRTEMMg3GHHGPjmJ5YuF4usER66E7c2PuFWun7LGLTjM5mggwRwe",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "2gE2grhe4fCsCg6tdeSgUQwY5sxBAZvbwBBSWpwSs2qDMBppXVYUJToWKRrSjPJJuk7rLboxiYCYW2XcsUjTq8z6",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "5ceT6H7mhmohCXr4Gs5D4ZC5by8jV6Ao8WTvE3jvLw3BJPpagAeYWYd6uav6U68Z3KEGsFJ857NWFJW7U7HLJgCs",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "gHiNrzFkJAU8We26qaq83H7VrQx85QrjtHhtmohDzetWjmS7w8Y3jfJ2mhWb9ERJbUuQQGqmkhayFSeAqLkB2nJ",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "5refYSp4nE6Ts1QbKPQ2BpgHJ85Lg5RbTcV3hqEqQgPKNBrvGhVpHwF8pdgNWobpFcLo2qFsShn3BDdyJwEubTp9",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "3yTvrAb4rjGh1pMVoKxcdKpRjQVbbcpvNZXLLZ8A1zSZuDgrL2UPz27Z6KECKqFTf9vVCh5AQM2QTYa656mFLyW4",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "63ig8Q4KihpMTiQ5kGECBucUbfa4GyiJpj3n62rSAR4KmkxHJ1MtbwSTjosrYezSZ2ud1HY5ukUwLWBLirhuJBzJ",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "3q9BHrAVWnE3PFKe8QyekPxYyTJmYdhRXMvchi5rXi6P2tXwbwKhw3XVjQRzuctzPtUbH7NYdC3o8ETquuja3ucm",
+          "slot": 461905572,
+          "err": {
+            "InstructionError": [
+              3,
+              {
+                "Custom": 3
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "VN39LA4Lyn8BZDHDmAiayYrQuGj3Dg6MgRJ37tcfzThpzCzXjt3V1e5CRXMfe8Qtk8Rck8bMBZzk8B2L2iDqSbp",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "5ta8WRwAyjHv2eKcZq1jUHH9NdE5x5j8SK6oxKM56hX969SbVzzoeGbWv83axFDrm2pUo9LFDYtgj4zrQdD1FUcP",
+          "slot": 461905572,
+          "err": {
+            "InstructionError": [
+              4,
+              {
+                "Custom": 7
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "5kZJXfmTmoagj6cfyY69h6kxdqn9eTpDNH3eWEop1LvUvkvzJrjaKd3yN4scSfL8DreAa4EvT2E5W96HrgtRihQc",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "2cPUXcgHKMtqr4GVmMMLzBvdKWQwvv8WXFxgkLu4ZSXZgR3Pm3fdRLxdTEKGzs5RwzHPGYtZkMXQtWzWjgUQABhL",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "27K4JFZPNqDtYLFrzkA48KjVkmQYBCSH9Md2og2x6QUE3ovGC7WWFKkyqRfvwHQBLgXjFKDPSBUzCVFAWazX6yhP",
+          "slot": 461905572,
+          "err": {
+            "InstructionError": [
+              3,
+              {
+                "Custom": 1
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "2zMdETKdkkqgFsTFbrcDGqPUAh7yL1ZG9Tv3ddsNdejSK3TazSyfwiufjh4eqURC9ZrDvcj11CFrgp52i8VSJ9uk",
+          "slot": 461905572,
+          "err": null,
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        },
+        {
+          "signature": "3MEok1n8qLrVEucrw1p4bCqJdCYNhQAi7zNv7hHbdp27Rtq7QuRHGknYHE5nd6gKsSBGSdL29tx9bESwzNyjnnB2",
+          "slot": 461905571,
+          "err": {
+            "InstructionError": [
+              3,
+              {
+                "Custom": 1
+              }
+            ]
+          },
+          "blockTime": 1793069031,
+          "confirmationStatus": "finalized"
+        }
+      ],
+      "selectedAt": null
+    }
+  },
+  "streamOpened": false,
+  "rpc": {
+    "budgetId": "active-approved-20261027",
+    "endpoint": "https://api.mainnet.solana.com",
+    "calls": 6,
+    "bytes": 81729,
+    "uncertainResponseBytes": 0,
+    "remainingCalls": 234,
+    "remainingResponseBytes": 67027135,
+    "byMethod": {
+      "getSignaturesForAddress": 2,
+      "getTransaction": 4
+    },
+    "inFlight": 0,
+    "rolling10SecondStarts": 6,
+    "rollingMinuteStarts": 6,
+    "nextStartAfterMs": 0,
+    "durationsMs": [
+      304.78645199999994,
+      79.82907999999998,
+      63.27412699999991,
+      108.85056099999997,
+      101.71139500000004,
+      91.33581299999992
+    ],
+    "blockedReason": null,
+    "storageFailed": false,
+    "closed": false
+  },
+  "recordedAt": "2026-10-27T02:43:51.779Z",
+  "actualWallMs": 793.644996,
+  "resources": {
+    "peakRssBytes": 142168064,
+    "peakEventLoopLagMs": 1.6454840000000104,
+    "cpuMs": 159.138,
+    "kernelMaxRssBytes": 152338432
+  },
+  "retainedRecordBytes": 90138,
+  "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-record.ndjson",
+  "apiDataFeesUsd": "0.00 under public/credential-free documentation",
+  "infrastructureTransferAllocationVerified": false,
+  "productionChanged": false,
+  "entriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

@@ -2,13 +2,95 @@
 
 **2026-10-27 UTC · review branch `poe-free-data-evaluation-20261027` · research only**
 
-1. **Decision: Free configuration PROMISING, WITH SPECIFIC REMAINING EVIDENCE GAPS.** Candidate flow mapping, active-pool completeness and changing-price protection have not passed. Free discovery and bounded hypothetical public-RPC pricing work; no continuous operating scope is verified.
-2. **Measured scope:** earlier two PumpApi captures received102.04MiB in84.526seconds, with no selected activity. Current follow-up adds offline integer/identity mapping and5public-RPC reads/37,006bytes; it found no supported active pool. No new PumpApi stream was opened and no counter was reset.
-3. **Recommendation:** investigate **PumpApi plus public RPC only**. Alchemy tests/Usage screenshots and Helius access are not prerequisites or requests. Preserve production and do not change strategy, deploy or enable entries.
-4. **Verified:** one actual direct on-chain Sell's executed amounts/trader/CPI identity, failure/correction handling and explicit research-only normalization; shared actual-size quote parity. **Missing:** matched selected PumpApi payloads, actual supported Buy/routed/multi-swap examples, complete receive-time windows, enrichment workload and changing-price protection response. Public RPC enrichment is extra work, not a free completeness assumption.
-5. **One owner action:** approve the precise revised test allowance below. Present16MiB unreserved receipt capacity cannot fit a60–70second complete active-pool observation. No billing screenshot, wallet funding or paid provider is requested.
+1. **Decision: Free configuration PROMISING, WITH SPECIFIC REMAINING EVIDENCE GAPS.** The approved experiment stopped at its capacity preflight. No new PumpApi stream opened; no combined-workload or continuous-protection pass is claimed.
+2. **Actual result:**6public-RPC requests/81,729response bytes verified one current v1 CPI-invoked canonical SOL-pool sell_v2. A20-entry pool-history page covered only one chain second, so its sustained activity/enrichment demand could not be bounded. Gate: `POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN`.
+3. **Production capacity:** the proposed3-call pricing cycle every2seconds alone requires90RPCstarts/minute, above production's unchanged60/minute limit. Selected enrichment adds work; it was not measured live. The full tested design is not ready for production.
+4. **Still missing:** supported mint/fee/vault verification for the selected current pool, matched PumpApi Buy/Sell data and precision/commitment contract, complete usable windows, actual enrichment queue/cost and changing-price protection response. This sample establishes no broad coverage or profitability.
+5. **Smallest justified next step:** review the bounded selector's handling of burst-saturated candidates and a moderate-activity cohort before another live attempt. No more budget, Alchemy screenshot, Helius access, paid service or wallet action is requested. Existing unused allowance is preserved; this attempt was not automatically retried.
 
-## Narrow follow-up and proposed allowance — 2026-10-27
+## Approved attempt: actual evidence and stop decision
+
+The owner approved one<=90-second capture,256MiB cumulative PumpApi/5minutes
+cumulative reserved time,128MiB new reservation with127MiB socket stop,
+240additional public-RPC reads/64MiB responses and32MiB retained evidence.
+`active-approved-allowance.json` records that approval and its exact source hashes;
+`active-approved-supervisor.json` records the independently supervised outcome.
+No production restart, account/financial mutation, wallet operation, paid provider
+or second test occurred. Offline validation included the combined runner's
+raw-selected-payload retention, confirmation availability, bounded shutdown and
+finalized-event correction handling.
+
+Selection used **one latest32-signature PumpSwap-program page**, with at most8
+systematically spread recent successful transactions and24total preflight reads.
+This is an activity-biased transport selection, not an unbiased opportunity sample.
+Four transactions were fetched; the fourth contained a genuine canonical SOL-pool
+Sell. Exact mint `91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump`, pool
+`4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW`. Three earlier transactions did not
+invoke an eligible canonical SOL pool. Address membership was not treated as a swap.
+
+The selected pool's latest20history entries all had chain time
+2026-10-27T02:43:51Z and spanned two slots. Twelve were successful address
+transactions and eight failed. This is **not twenty verified swaps**, a sustained
+rate, or a complete60-second baseline. The truncated page could hide much more
+activity; its upper demand and compatibility with the48-enrichment allocation
+were unknown. The preflight refused immediately, before current SDK pool/mint/
+fee/vault pricing support was tested. **Canonical identity is verified; full
+current pool support and entry-age eligibility are not.** No feed opened and no
+new PumpApi reservation was appended. There was no quiet capture falsely labeled
+as successful and no pagination/retry to hide the refusal.
+
+One actual current transaction does improve on-chain decoding evidence:
+
+| Field | Verified current RPC evidence |
+| --- | --- |
+| Transaction | Version1, successful confirmed read; signature `2LweUYAawyFV6VEVZcAXuUoM4AThkZ2qRdGs4TW39wR2bwcmGGU4LmCh8PSZvH7CV8H2qjJGpiLVEBSBteJXEDh7` |
+| Direction/invocation | sell_v2, outer instruction3, actual PumpSwap inner instruction1, event-CPI inner instruction7; one encoded event |
+| Executed base |178680009681integer base units; scoped token transfer agrees |
+| Curve/user SOL |297140024gross lamports;293722911user lamports; scoped WSOL transfer agrees |
+| Fee meaning |LP594281 +protocol148571 +creator2674261 =3417113lamports; gross minus these equals user proceeds. The reported74285buyback field is not another deduction in this event. |
+| Trader |Actual event `user` and swap account roles agree; trader differs from transaction fee payer in this **real** sample |
+| Scope limitation |One CPI-invoked Sell; no current Buy or multiple selected-swap case verified. This is RPC evidence, not a matched PumpApi payload. |
+
+See [active-approved-analysis.json](../evidence/free-data-20261027/active-approved-analysis.json)
+and the bounded raw `active-approved-record.ndjson`. No later confirmations were
+backdated. No feature window or hypothetical current price was produced from this
+preflight; changing-price exits, stream queue age and completeness remain untested.
+Retained-source replay and synthetic exit tests remain separately labeled.
+
+**Usage:**6of240additional requests,81,729of67,108,864response bytes;2signature
+reads and4transaction reads, no retries/throttling. Remaining234requests are
+unused, not a reason to start another attempt. Preflight child RSS peaked at
+142,168,064sampled bytes/kernel max152,338,432bytes; recorded CPU159ms excludes
+module imports. Those are Cloud **preflight** resources, not a combined workload
+or EC2 compatibility proof. Prior PumpApi totals stay102.04MiB actual,
+112MiB/100seconds reserved, with their original receipt hash unchanged.
+
+**Capacity and wider scope:** fixed2-second pricing needs90requests/minute before
+any flow enrichment/history versus the installed60/minute client. Raising a
+research ceiling to150/minute does not show production fits. A burst-selected
+pool cannot establish the rate distribution of12candidates or three holdings;
+failed pool touches and swaps have different denominators. Existing broad-feed
+bandwidth projections remain conditional, not measured continuous operating cost.
+Documented API/data charges are$0; infrastructure/transfer entitlement remains
+unverified and separate. No provider billing account, paid plan, wallet or new infrastructure was used.
+
+The smallest follow-up is an offline bounded selection-policy review that can
+exclude saturated pools and identify a moderate, independently verified activity
+cohort without changing strategy thresholds. A further live attempt must not be
+automatically opened by rerunning this completed grant. No paid provider or
+larger quota is justified by this failed preflight alone.
+
+Production read-check02:54:21UTC: snapshot482, original account/inception/release,
+reconciledtrue, source facts25.02seconds old, entriesdisabled and positions/trades0.
+No production deployment or restart occurred and no acceptance clock started.
+Build/compile and275tests pass; focused independent review verified the refusal
+and currentSell_v2 amounts, attribution and identity. See
+`active-approved-production-check.json`/`active-approved-validation.json`.
+
+The remaining sections retain earlier evidence/plans chronologically. Previously
+pending allowance questions are superseded by the approval and outcome above.
+
+## Earlier narrowed plan and allowance proposal — 2026-10-27 (superseded)
 
 The prior broad captures remain102.04MiB actually received,112MiB reserved of
 128MiB; reserved time100seconds, actual open time84.526seconds. The16MiB
@@ -431,16 +513,16 @@ The later history audit command is
 to exceed6public reads/30seconds/6MB and uses the closed-window receipt. Repeating
 it does not make late historical information available to earlier decisions.
 
-Current next step is only the proposed PumpApi/public-RPC combined active-pool
-leg above, after its explicit allowance approval and offline orchestration tests.
+The approved preflight is complete and refused the stream. Do not rerun the
+completed grant; review the bounded selection-policy limitation first.
 The earlier provider comparisons are retained for audit, not as access requests
 or work prerequisites. Do not migrate production, change the strategy or remove
 its blocker when a trial succeeds. Recheck supported pool identity/activity,
 measure complete workload/freshness and report unobserved variants explicitly.
 
-Final verification: TypeScript build/compile and245tests passed; independent
+Final verification: TypeScript build/compile and275tests passed; independent
 review corrected the unchanged-notification wording. Retained new evidence is
-about0.34MB, well below32MiB. See `validation-final.json`. This review branch
+about0.45MB, well below32MiB. See `validation-final.json`. This review branch
 also preserves previously undeployed RPC-market/observation/recovery work needed
 by the replay; none is installed or accepted as an autonomous trader.
 

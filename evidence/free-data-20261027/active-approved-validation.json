@@ -1,0 +1,29 @@
+{
+  "recordedAt": "2026-10-27T02:55:17.692655+00:00",
+  "outcome": "PREFLIGHT_REFUSED_NO_STREAM",
+  "reason": "POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN",
+  "build": "passed",
+  "compile": "passed",
+  "tests": {
+    "passed": 275,
+    "failed": 0,
+    "durationMs": 34286.474323
+  },
+  "independentReview": "Actualcurrent v1 CPI sell_v2/fee-payerseparation verified; no fullsupport/flow/productioncoverage overclaim.",
+  "newRpcRequests": 6,
+  "newRpcResponseBytes": 81729,
+  "newPumpApiConnections": 0,
+  "priorPumpApiBudgetHashUnchanged": true,
+  "remainingNewRpcRequests": 234,
+  "newEvidenceBytesBeforeReceipt": 452154,
+  "maximumEvidenceBytes": 33554432,
+  "physicalTestRpcInFlightAfterCompletion": 0,
+  "pendingResponseReservations": 0,
+  "apiDataFeesUsd": "0.00 under public read-only documentation",
+  "infrastructureTransferAllocationVerified": false,
+  "productionChanged": false,
+  "naturalPaperTrades": 0,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

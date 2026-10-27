@@ -9,28 +9,31 @@ wallets or activate paid PumpPortal trades. Existing wallet tasks are deferred,
 not prerequisites for this experiment. Read `FREE_DATA_EVALUATION.md` for actual
 results, limits and the exact proposed next steps.
 
-The current next leg uses **PumpApi and public RPC only**. Do not test Alchemy,
-request Usage screenshots, or make Helius access a prerequisite. No new stream
-may open under the current allowance:102.04MiB actual/112MiBreserved of128MiB
-leaves16MiBunreserved, insufficient for a complete active-pool window. Preserve
-`pumpapi-budget.json`; do not reset/refund reservations. OWNER_ACTIONS.md and
-`active-capture-proposal.json` contain the ONE pending allowance request.
+The approved PumpApi/public-RPC attempt completed its preflight and refused
+POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN. No stream opened; do not rerun
+`run-approved` or delete its grant/budget files. `active-approved-allowance.json`
+and supervisor/summary record that completed attempt; prior PumpApi counters are
+unchanged. No Alchemy/Helius access, Usage screenshot or new owner action is needed.
 
-Offline mapping/negative current-transaction fixtures can run without provider
-use. Scripts `active-pool-preflight.ts` and `public-activity-sample.ts` default to
-no-network usage; their completed bounded public reads produced no supported
-active pool. Do not repeat a selection search or open another empty feed sample.
-After an approved combined test allowance and completed offline orchestration,
-preflight must independently verify supported current trading activity and quota
-fit, then use one bounded socket or stop. Keep original byte/time counters,
-32MiB evidence, receive-time integrity and resource limits. No EC2 experiment was
-run; Cloud containment does not establish EC2 compatibility.
+Safe offline reproduction:
+
+```sh
+node --import tsx --test test/research-rpc.test.ts test/active-selection.test.ts test/active-pipeline.test.ts test/active-runner.test.ts test/active-current-evidence.test.ts
+node --import tsx scripts/active-pumpapi-trial.ts
+```
+
+No-argument CLI prints usage without network. Tests use retained public bytes,
+injected transports/clocks and temporary fixture budgets, never production state.
+Actual current CPI Sell and truncated-history refusal are separate regression
+fixtures, not PumpApi coverage or natural trades. Review selection policy before
+any follow-up network attempt; unused allowance is not a retry loop. Preserve
+32MiB evidence and all original counters. No EC2 experiment was run.
 
 ## Prior unmetered development checkpoint — 2026-10-27
 
 The installed C2 observer/account/inception remain unchanged. Development RPC
 market integration, requirement-based observation planning and offline recovery/
-load checks passed before this assignment; final combined build/compile and245root
+load checks passed before this assignment; final combined build/compile and275root
 tests pass. Earlier unsigned-funding checks remain separate and out of scope. They are not installed
 trading evidence. New commands, isolated from production financial state:
 

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "authorization": "Owner explicitly approved one bounded active-pool test in this conversation",
+  "recordedAt": "2026-10-27T02:43:50.106Z",
+  "status": "PREFLIGHT_REFUSED_NO_STREAM",
+  "limits": {
+    "cumulativeSocketBytes": 268435456,
+    "cumulativeReservedMs": 300000,
+    "newSocketReservation": 134217728,
+    "newSocketStop": 133169152,
+    "applicationStop": 132120576,
+    "captureMs": 90000,
+    "shutdownMs": 5000,
+    "retainedBytes": 33554432,
+    "recordBytes": 12582912,
+    "payloadBytes": 65536,
+    "rssBytes": 268435456,
+    "cpuMs": 30000,
+    "eventLoopLagMs": 500,
+    "parentWallMs": 280000,
+    "enrichmentAttempts": 48,
+    "auditCalls": 12,
+    "pricingCycles": 45
+  },
+  "priorPumpApiBudgetSha256": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+  "prior": {
+    "reservedBytes": 117440512,
+    "reservedMs": 100000,
+    "attempts": [
+      {
+        "id": "schema-2026-10-27T01-30-23-258Z",
+        "stage": "schema",
+        "at": "2026-10-27T01:30:23.259Z",
+        "reservedBytes": 8388608,
+        "reservedMs": 15000,
+        "status": "completed-with-receipt",
+        "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.ndjson",
+        "summary": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.json",
+        "supervisorStop": null,
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "observedSocketBytes": 7341091
+      },
+      {
+        "id": "capture-2026-10-27T01-35-40-166Z",
+        "stage": "capture",
+        "at": "2026-10-27T01:35:40.166Z",
+        "reservedBytes": 109051904,
+        "reservedMs": 85000,
+        "status": "completed-with-receipt",
+        "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.ndjson",
+        "summary": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.json",
+        "supervisorStop": null,
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "observedSocketBytes": 99653847
+      }
+    ]
+  },
+  "rpc": {
+    "requests": 240,
+    "responseBytes": 67108864,
+    "startsPerMinute": 150,
+    "startsPer10Seconds": 30,
+    "inFlight": 1
+  },
+  "sources": {
+    "version": {
+      "commit": "b6637dc46d4cbe2515c77cfcda1d822374e26453",
+      "dirty": true
+    },
+    "sha256": {
+      "/workspace/pump-opportunity-engine/scripts/active-pumpapi-trial.ts": "49d3373be45f5561916e0a986f70d06c974f7fbbb631367d4b7221772c22592c",
+      "/workspace/pump-opportunity-engine/src/research-rpc.ts": "9e092ce044cc5879c7602bfebca64baa262def2b8a597c58d2aba322b1e9628b",
+      "/workspace/pump-opportunity-engine/src/active-selection.ts": "ab8130e201c0328c5da553243d430a889138ea3ad47e5300c4fb00cf6f48283b",
+      "/workspace/pump-opportunity-engine/src/active-pipeline.ts": "bab2a70727447f023adc724e32262af0262e90ff2455afe069a4f2ac62883205",
+      "/workspace/pump-opportunity-engine/src/pumpapi-mapping.ts": "eb0c3edf3769c5c20791ed8c62bd167b4aa5b0aaea7934d50478c13829044ef5",
+      "/workspace/pump-opportunity-engine/src/pool.ts": "7ad31c8eff0eb6331bd439889c897e0cd58b536a1ca370d3311f23b4d7a1915c",
+      "/workspace/pump-opportunity-engine/src/strategy.ts": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+      "/workspace/pump-opportunity-engine/package-lock.json": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+    }
+  },
+  "providers": [
+    "PumpApi credential-free stream",
+    "Solana public RPC"
+  ],
+  "productionChanged": false,
+  "completedAt": "2026-10-27T02:43:51.779Z"
+}

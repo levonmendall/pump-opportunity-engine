@@ -5,9 +5,9 @@ authenticated reporting accepted; public dashboard fresh. Natural PAPER trades:0
 Entries remain disabled; this is not an autonomous PAPER trader. The zero
 incremental data cost investigation is complete to available access/samples:
 free discovery/pricing work at bounded scope, but complete candidate flow and
-continuous protection are unproved. Current owner-only action is approval of one revised cumulative PumpApi/public-RPC
-test allowance. Alchemy/Helius are excluded as prerequisites; no Usage screenshot,
-funding or replacement key is requested. No production change or acceptance clock. **Edge UNPROVEN;
+continuous protection are unproved. The approved bounded preflight refused the stream because pool history was
+truncated; no new capture opened. No owner action is requested. Alchemy/Helius
+remain excluded; no Usage screenshot, funding or replacement key is requested. No production change or acceptance clock. **Edge UNPROVEN;
 LIVE TRADING DISABLED.**
 
 | Status | Current evidence |
@@ -18,7 +18,7 @@ LIVE TRADING DISABLED.**
 | PAPER-ENTRY ENABLED | No: raw flow/coverage unverified, rule unfrozen, production trading scheduler/management incomplete |
 | NATURAL PAPER TRADES |0; positions0. Hypothetical pricing and disposable tests never count |
 | ACCOUNTING RECONCILED | Authoritative cash-account source freshly reconciled; private DB independently unreadable to administration runner |
-| DASHBOARD FRESH | Real identity/inception agree; snapshot406 at02:13:11UTC, underlying facts44.87seconds old |
+| DASHBOARD FRESH | Real identity/inception agree; snapshot482 at02:54:21UTC, underlying facts25.02seconds old |
 | OPERATIONALLY ACCEPTED | No. Gates A–D incomplete;24/72-hour clocks unstarted |
 
 ## Installed authority preserved
@@ -42,10 +42,10 @@ coverage guarantee. See evidence/free-data-20261027/production-observer-final.js
 Original public viewer remains
 https://meme-machine-dashboard-staging.onrender.com . Existing servicesrv-daqon53tqb8s73bdceq0,
 Free, auto-deployoff, main sourcePOE, no changes. Dedicated machine ingestion stays
-authenticated; public viewing is owner-authorized. Snapshot406 has the actual
+authenticated; public viewing is owner-authorized. Snapshot482 has the actual
 C2account/inception, positions/trades0 and reconciledtrue. Accepted new snapshots
 and matching fresh facts prove reporting progress, not an independent DB audit.
-See narrow-production-read-check.json and the earlier service/status receipts in
+See active-approved-production-check.json and the earlier service/status receipts in
 the same directory.
 
 ## Completed isolated free-data evaluation
@@ -78,36 +78,35 @@ at-use quote freshness; these were not shortened to fit a free tier. Current
 held exits use price/cost/time, with no flow input. Monitoring cadence/response
 remain unfrozen, so paid held-flow retention is not presumed necessary.
 
-## Narrow PumpApi/public-RPC follow-up
+## Approved bounded active-pool attempt
 
-No additional PumpApi connection was opened. Existing totals remain102.04MiB
-actually received/112MiB reserved of128MiB, leaving16MiB unreserved. A complete
-70-second window needs83.75–96.17MiB at measured rates. Counters/reservations are
-preserved; another empty short sample would not resolve completeness.
+The completed preflight used6publicRPCreads/81,729bytes. Four program
+transactions were inspected; one current v1 CPI-invoked canonical SOL sell_v2
+passed event/transfer decoding. The actual trader differs from the fee payer;
+integer base178680009681/gross297140024/user293722911lamports agree. No current
+Buy or multiple selected-swap case was verified. Full current mint/fee/vault
+support was not checked after the capacity refusal.
 
-Build/compile and245root tests pass, including10new mapping tests.
-Added a small offline confirmed-RPC event mapper and explicitRESEARCH_ONLY
-curve/user amount views. The real retained direct Sell verifies integer units,
-user roles, fees and genuine outer/event-CPI indices; no fee-payer or UI-float
-substitution. Transfer-validation changes invalidate duplicate classification;
-truncated layouts are refused. Primary strategy/conventions remain unchanged.
+GatePOOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN:20pool-address history rows
+all in one chain second,12successful/8failed, no60second baseline/upper rate.
+No PumpApi connection or new reservation, no repeated attempt and no combined
+pricing/feature-window/changed-price-protection pass. Original PumpApi counters
+remain102.04MiB actual/112MiB and100seconds reserved;234additionalRPCreads remain
+unused. Do not treat spare allowance as permission to bypass the failed gate.
 
-Five additional bounded publicRPC reads/37,006bytes checked current selection.
-The higher-liquidity retained canonical pool was inactive; one12-signature
-program page's3transactions yielded one unsupported custom-quote Sell and two
-program mentions without invocation. No supported active-pool or selected-feed
-sample was obtained. This is not a provider failure or unbiased strategy evidence.
-Actual supported Buy/routed/multi-swap flow and changing-price protection remain
-unverified. Minimum enrichment is1getTransaction/distinctselectedsignature plus
-history/quotes; the combined workload has not been measured.
+Build/compile and275tests pass, including actual v1 CPI decoding and the exact
+history-refusal regression. These tests are development evidence, not a live
+flow/position-protection acceptance. API/data fees$0; infrastructure transfer
+allocation remains unverified. Cloud preflight kernel maxRSS152.3MB; no EC2 test.
+At the proposed2-second cadence,3-callquotes alone need90RPCstarts/minute versus
+production's unchanged60/minute ceiling, before enrichment. Actual combined
+rate/cost remains unmeasured. Free configuration remainsPROMISING with namedgaps.
 
-Proposed, **not approved**:256MiB cumulative PumpApi receipt,5-minute cumulative
-subcap including prior100seconds reserved, ONE90-second capture/128MiBnewreserve,
-240additionalpublicRPCreads/64MiBresponses;32MiBevidence cap unchanged. Activity
-and shared pricing/enrichment capacity must pass preflight before connection.
-No automatic retry. Current production60RPCstarts/min remains unchanged;
-three-call2s pricing alone needs90/min before enrichment, an explicit research
-integration constraint. See docs/OWNER_ACTIONS.md and active-capture-proposal.json.
+No owner input is pending. Next justified work is offline bounded selection-policy
+review for moderateactivity; no paid provider/largerbudget is justified by this
+result. See docs/FREE_DATA_EVALUATION.md,docs/OWNER_ACTIONS.md and the
+active-approved-* receipts. Account/inception, dashboard and production runtime
+were not modified. No PAPER entries or live trading, no acceptance clock.
 
 ## Remaining engineering and acceptance
 

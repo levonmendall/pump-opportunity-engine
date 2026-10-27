@@ -124,3 +124,13 @@ node --import tsx --test test/pumpapi-mapping.test.ts
 No test above is a forward PAPER trade or evidence that the free configuration
 meets every essential requirement. Live active-pool measurements need a reviewed
 remaining byte/time/request reservation first.
+
+## Current approved-preflight extension
+
+The retained `active-approved-record.ndjson` now verifies one real current v1
+CPI-invoked sell_v2 (outer3, PumpSwap inner1, event inner7), including precise integer
+units, user/curve SOL, transfer agreement and actual fee-payer/trader separation.
+It is a canonical SOL-pool identity, but current mint/fee/vault support was not
+checked after capacity refusal. No selected PumpApi frame was captured. Current
+Buy/multi-swap feed matching and provider semantics remain unverified. See
+FREE_DATA_EVALUATION.md and test/active-current-evidence.test.ts.
