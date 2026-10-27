@@ -11,6 +11,15 @@ Start: npm run dashboard. Health:/healthz.
 Verified live deploy:dep-dbfuh559el5s73bbf3pg,
 dashboard sourceb3df32ce098d5de0c38c706bf9cf8e6066eccec1.
 
+## Latest read-only observation — 2026-10-27
+
+No Render settings, source, credentials or deploys changed overnight. At08:04:36UTC,
+health200 and accepted snapshot1049 matched the original EC2 account/inception/
+release below; source reconciliation true, entries disabled, zero positions/trades.
+Underlying source facts were39.682seconds old then. This is a read-model check,
+not direct EC2 health or private-database verification. Receipt:
+`evidence/overnight-20261027/reporting-readonly-check.json`.
+
 ## Confirmed visibility and source identity
 
 The owner explicitly authorized PUBLIC read-only viewing, matching concurrent

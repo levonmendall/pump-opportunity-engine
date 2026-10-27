@@ -1,53 +1,78 @@
-# Overnight continuation checkpoint — 2026-10-27 UTC
+# POE continuation checkpoint — 2026-10-27 UTC
 
-Owner explicitly authorized bounded multi-stage overnight research; no production
-changes, trading, wallet operations, spending, Alchemy/Helius or paid feeds.
-Review branch: poe-free-data-evaluation-20261027; remote checkpoint f4105b5.
-Unrelated docs/FUNDING.md and operator/funding/ work must be preserved/excluded.
+One lead review path: `poe-free-data-evaluation-20261027`. Last pushed milestone
+d00d3a4; the final overnight commit contains this checkpoint and the complete
+source/evidence changes (use git HEAD for its identity). Do not merge/deploy.
+Preserve unrelated `docs/FUNDING.md`, `operator/funding/` and empty research locks.
 
-Starting linked usage verified:24units/377,058measured RPC bytes, no pending
-reservation; original20-unit429 book and closed4-unit chapter remain unchanged.
-PumpApi prior112MiB/100s reservations (actual106,994,938bytes); do not refund.
-Ceilings240units/64MiB RPC-related; PumpApi256MiB/300s reserved; evidence32MiB.
+## Exact protected authority
 
-Completed offline work: purpose-specific basic preparation needs0history reads and does not
-require recent swaps; fresh full Clock/state/size/SDK checks mandatory. Separate
-objective labels preserve basic results through later missing activity/failure.
-Purpose-specific tests and433full-suite tests passed before final2reviewfixes;
-focused review fixes also pass. ResearchHeldMarket now batches holdings/reuses
-post-delay state; opt-in lazyquotes preservespredictiveconditions+slotfloors.
-No production import of researchheldadapter; flowquality stillunverified. Next: live quiet-pool
-Clock/pricing first, then multi-holding and active matched flow where possible.
-Live01-basic PASSED:5HTTP/20,097bytes,2freshquotes on Dtc pool;40-byte Clock
-owner/context exact,SDK parity exact,age8/5ms,independent getBlockTime recorded.
-Live02-multi PASSED:5HTTP/29,383bytes,3distinctsupportedpools in16-accountunion,
-2rounds/6quotes same-byteSDKparity,age17/8ms. All were quiet, no protectionclaim.
-Linked cumulative34units/426,538bytes; no pending uncertainty/new429. 03-discovery currently holds the one authorized free migration-only connection (<=10min/5MiB,
-stopafter3validhints), currently ACK only/no hints. Its2controlunits/236bytes are provisional on top of
-the34unit closed total. Do not start another listener; parent session73167 is active.
-After it ends, include its finalbook in all later baselinechains.
-Then bounded activepool/feed work if suitable. Never reopen prior completed chapters.
+EC2 i-00044d4ea1471b957; installed observer release
+bce3d22bb434eb429aafacb788a18f39ec189c1b. Account
+poe-3123e352-4581-455b-85db-acd7e825e99e, inception2026-10-26T22:07:36.212Z.
+No production restart/deploy/account/credential change. No EC2 load experiment.
+At08:04:36UTC, accepted Render snapshot1049 reported reconciled, entries disabled,
+zero positions/trades; facts39.682s old. No host/private DB check this run.
 
-Agents: component_budget prepares linked baseline reader; component_preflight owns
-trader quote-deferral work only; component_parity owns isolated held-market batch
-adapter/integration tests; component_review independent review only. Root owns
-research runner and live network. One writer/dispatcher for research counters.
+## Actual results
 
-Production untouched this run; no fresh health claim. Original account/inception,
-EC2 observer, Render and financial history preserved. PAPER/live entries disabled;
-no acceptance clock. Update this checkpoint after each actual evidence milestone.
+01basic and02multi prove fresh40-byte Clock/owner/context and exact same-state
+SDK pricing:1quiet pool and3distinct supported pools/16-account union. Independent
+getBlockTime is separate evidence; no synthetic block timestamp. Actual changes
+in09/10/11 were observed, one account version matched, seven subscriptions restored;
+no natural stop/TP crossing or changed delivery after reconnect proved.
 
+07field matched3SellV2 (1direct/2JupiterCPI),08audit3/3 in bounded25s interior.
+11combined priced3hypothetical holdings while enriching6transactions:4Sell pass,
+2Buy mapping failures, application-byte stop69.530s, zero forward usable60s windows.
+12audit5underlying swaps/5hints/3original normalizations;13finality agreed.
+Actual transfers proved exact-quote V2 Buy field inversion;14delayed legacy exact-
+quote Buy independently proved same inversion. Both narrow fixes are offline;
+original failed receipts/gaps/counters remain. Sell fingerprints unchanged.
+Corrected chronological replay produces6events/one raw warmed window that still
+fails buying/concentration; no retroactive forward pass/orders/P&L.
 
-Second milestone:07-field obtained3actualSellV2 (1direct+2JupiterCPI),3confirmed
-lookups,0qualitygaps,29.289sopen,23,684,526socketbytes. UIamounts matchintegerbase
-units/grosscurveSOL; netfeesdifferent; RPCneededforcommitment/wholeeventidentity.
-08independentaudit matched3/3compiledswaps in25sinterior,2finalizedrechecksagree;
-zero60scompletewindows andBuy/multiple-selectedswapcasesstillunobserved.
-03freeonlylistenerclosedearlyafter1hint; actualnonSOLquoteprovenoffline. No second
-migrationlistener. 05PumpApisampler16MiB10sreservation actual77,425bytes1.637s,
-then07reserved64MiB35s. LinkedPumpApireservations192MiB145s;64MiB155sremain.
-CurrentRPC51units/551,621measuredrelatedbytes (confirm from08bookbeforeuse).
-Next09-notifications pendingreviewfixes; thenconsideronecombined60s+warm-up test
-withinlastPumpApi64MiB, usingavailablecounter/headroom. No new429. No prodcheck.
-Checkpointcodeincludesimmutableactual01–08receipts; newmutableovernightPumpApi
-bookpreservesoldbaseline andallreservations. Do not touchold112MiB100sbook.
+Combined evaluation gaps: p952.073s/max3.224s, actual-use ages15–41ms; cached data
+stale2.688s/3.866%, tail censored1.425s. Strict future-start reservation starves
+candidate work under10ms jitter and remains OFF. Do not call it a capacity fix.
+No5s replacement, price screen, baseline strategy change or production entries.
+
+## Authoritative accounting and ceilings
+
+Read `evidence/overnight-20261027/final-summary.json`. Cumulative163/240units;
+1,490,756measured related bytes +2,097,152retained unknown =3,587,908/67,108,864.
+Remaining77units/63,520,956accounted bytes. Old20-unit429 and closed4-unit chapter
+unchanged;14new chapters add139units. Preserve09pending reservation after verified
+Cloud child exit; do not refund or count it twice. No new429; new starts min1001ms,
+max42/60s and10/10s. Render administration2GETs recorded separately.
+
+PumpApi actual195,936,099bytes cumulative. Original112MiB/100s unchanged; new
+reservations16MiB/10s +64MiB/35s +64MiB/85s. Total256MiB/230s, unreservedbytes0.
+No more stream opens/refunds. One free migration-only listener closed after one
+custom-quote hint; actual on-chain decoder proves feed mint was quote, outsideSOL.
+All captures/Cloud child processes closed. Evidence remains below32MiB. API fees$0;
+existing infrastructure/transfer costs unverified. No wallet or provider secrets used.
+
+## Reusable code and next work
+
+ResearchHeldMarket +existing coordinator/ledger prove offline2holding marks,
+post-delay size/state reuse, gas-once accounting, retained exposure on stale/gap,
+uncertain-exit same-account restart. Optional predictive quote deferral defaults
+OFF; context/slot floors and fresh later quote retained. Actual SDK decoder shared.
+Migration identity extraction separates actual base/quote roles, not feed symbols.
+Bounded shared physical accounting/supervision and atomic-temp race regression
+prevent duplicate ownership and preserve uncertainty. Production imports unchanged.
+
+Build/compile/full regression result recorded in final completion receipt. Reproduce
+only offline: npm run build; npm run compile; npm test; then
+node --import tsx scripts/replay-overnight-correction.ts --verify-existing.
+Historical live commands/proposals are NOT permission to rerun closed captures.
+
+Highest-value next engineering task: shared priority/deadline policy avoiding both
+observed protection gaps and strict-reservation starvation. After that, corrected
+forward60s window+bounded audit needs a later explicit stream allocation. Do not
+replace this with another pool search, paid provider, wallet or old setup request.
+No deployable autonomous trader release: forward coverage/scheduling, frozen flow
+amount/fee/rule contract, production wiring and actual host backup/capacity/alerts
+remain. Ledger schema1, same original account; RUNBOOK has future reviewed
+account-preserving upgrade/rollback conditions. No24/72-hour acceptance clock.

@@ -1,50 +1,80 @@
 # POE operating runbook
 
-## Current adaptive/data-reduction research — offline only
+## Current review candidate — isolated research, not installed
 
-Use review branch `poe-free-data-evaluation-20261027`. Read
-ADAPTIVE_MONITORING_EVALUATION.md before interpreting results. No production
-restart, account initialization, entry enablement, new provider or live test.
-The old grant markers and sticky429 remain closed; never reset their counters.
+Branch `poe-free-data-evaluation-20261027`; read
+[OVERNIGHT_HANDOFF.md](OVERNIGHT_HANDOFF.md). Current Clock/account/SDK parity,
+three-pool batching, matched trade fields and one notification recovery now have
+live evidence. The combined forward run failed mapping/complete-window quality
+and exceeded its nominal evaluation interval. Offline fixes/replay do not pass
+forward acceptance. No deployable autonomous PAPER trader is claimed.
+
+All captures are closed. Old429 and completed grant/counterbook files remain
+unchanged; new linked counters163units and3,587,908accounted related bytes include
+the retained2MiB uncertainty. PumpApi256MiB reservations are fully committed;
+no automatic network retry, refund or capture. Do not run historical live probe
+commands below merely because they remain documented. Alchemy/Helius, paid
+services, wallet operations and production changes remain excluded.
+
+Reproduce offline checks without credentials or provider traffic:
 
 ```sh
 npm run build
 npm run compile
 npm test
+node --import tsx scripts/replay-overnight-correction.ts --verify-existing
 ```
 
-The large matrices are tracked as verified lossless gzip files. Materialize the
-corrected raw result only if absent, then rerun the deterministic comparison:
+The replay verifier recomputes the corrected counterfactual from original receive,
+request and confirmed-availability times. It verifies stored original hashes and
+exact semantic equality, reports historical/current source differences, and
+never rewrites the original failed run. Focused lifecycle/retained-exposure/
+same-account restart checks are in `test/research-held-market.test.ts`,
+`test/trader.test.ts` and execution/backup regressions. They use temporary
+DISPOSABLE_PAPER ledgers, not the installed authority or forward performance.
 
-```sh
-python - <<'PYRESTORE'
-import gzip
-from pathlib import Path
-p=Path('evidence/adaptive-monitoring/monitoring-results.json')
-if not p.exists():
-    with p.open('xb') as f:
-        f.write(gzip.decompress(p.with_suffix('.json.gz').read_bytes()))
-PYRESTORE
-node --max-old-space-size=128 --import tsx scripts/adaptive-monitoring-evaluation.ts --verify-existing
-```
+The research Clock quoteMany helper validates1–3holdings in one full confirmed
+union. Clock bank time is labeled separately from independent block time. The
+isolated ResearchHeldMarket adapter reuses only exact-size compatible fresh
+post-delay exit state, checks actual pending ownership/inventory/floors, charges
+gas once and refuses gaps/stale state. Separate pending actions still prepare
+separate contexts. No production runtime imports this adapter. Optional candidate
+quote deferral defaults off; it changes quote/refusal timing while preserving the
+existing predictive predicate. No price screen, slower exit policy or primary
+strategy change was installed. Strict future-start reservation also defaults off:
+its offline starvation counterexample is a failed experiment, not a scheduler fix.
 
-This verifier performs no data-provider requests and preserves recorded matrices,
-correction receipts and budget manifests. It refuses changed prior counters; a
-future approved live experiment must not reset those files to make replay pass.
-Default runner output is exclusive: do not overwrite completed results. Synthetic
-Clock/reserve paths and work tokens are not captured live prices or candidate
-windows. Tests use temporary DISPOSABLE_PAPER ledgers; no authoritative account.
+## Account-preserving release and rollback prerequisites — not executed
 
-The newClockquoteMany helper supports1–3hypothetical holdings in one complete
-confirmed union. Its liveClock behavior and simultaneous-exit deadlines still
-need validation. Context/quote reuse is tested only through an isolated callback;
-the installedRpcMarket/trader was not changed. Existingcandidate10sbuckets and
-held-flowenrichment0 already exist; do not count them as new savings. The separate
-price gate/challenger are research hypotheses, not new active strategy residents.
+The review work retains ledger schema1 and the installed snapshot identity
+contract. There is no migration, account initializer or requirement to modify
+Render credentials/account/inception. The installed observer is still release
+bce3d22bb434eb429aafacb788a18f39ec189c1b. Current Cloud checks use Node24.19.0,
+better-sqlite3 13.0.3 with the actually loaded SQLite3.53.4. Installed library/OS
+compatibility must be checked before a separately authorized installation.
 
-next-live-proposal.json requires explicit new research approval. It is not a
-runnable authorization or permission to clear429. No additionalcapture/retry,
-Alchemy/Helius investigation, paid service or deployment occurred.
+Before any future deployment: complete corrected forward field/coverage and
+scheduling tests; freeze the amount/fee/rule contract; connect production entry,
+position and recovery paths; prove actual host capacity, backups and alerts.
+Prepare an exact commit, installation directory and previous release for review.
+Keep entries disabled. With separately authorized service control, make a
+consistent SQLite backup through the existing API; verify restore to a disposable
+path has the exact original account, inception, capital history and reservations.
+Do not copy an active main database without its WAL or replace it with test data.
+
+Only one supervisor/financial writer may own `/var/lib/poe/state/ledger.sqlite`.
+A future code switch at `/opt/poe/current` must reopen that same account; verify
+its before/after identity, positions, pending actions and reconciliation before
+resuming observation. Never run bootstrap/account init on upgrade. Rendering
+keeps its original source identity, public viewer and authenticated ingestion;
+dashboard availability must remain outside ledger/protection work.
+
+Rollback means returning to a reviewed compatible release with the same financial
+history; never restore old balances over newer actions. If a future release opens
+positions, the current observer is **not** a safe rollback target because it lacks
+held-position management. Preserve/quarantine uncertain actions, block new risk
+and use a tested management-capable release. No rollback, stop, root installation,
+release switch or account restore was performed under overnight authorization.
 
 ## Prior unmetered development checkpoint — 2026-10-27
 
@@ -131,7 +161,7 @@ NTP is synchronized. Socket connectivity alone does not prove discovery coverage
 
 ## Financial state and recovery
 
-One PaperLedger writer uses standard Linux flock and short SQLite NORMAL/WAL
+One PaperLedger writer uses standard Linux flock and short SQLite FULL/WAL
 transactions. Never unlink an active ownership lock. OS crash releases it.
 Database symlinks/hardlinks are refused; no network call inside a transaction.
 Loaded fixed dependency: better-sqlite3 13.0.3 / SQLite3.53.4; retain lockfile.
@@ -177,8 +207,9 @@ this position-free probe. Failed/interrupted evidence never becomes a passed gat
 
 The normalized flow/rule, delayed single-attempt execution, connected disposable
 trader, actual-size exits, operating-cost journal and backup scheduler remain
-development code. Fixtures use separate DISPOSABLE_PAPER accounts. Raw managed-feed
-fields remain unverified, rule UNFROZEN, production scheduling/projections incomplete.
+development code. Fixtures use separate DISPOSABLE_PAPER accounts. Managed-feed fields have only the named partial proofs above; complete-window
+coverage and corrected forward decoding remain unverified, rule UNFROZEN and
+production scheduling/projections incomplete.
 See STRATEGY.md, TRADER.md, EXECUTION.md, FEED_MEASUREMENT.md, PRICING.md, COSTS.md.
 No signer, transaction submission or AI calls in the trading loop.
 

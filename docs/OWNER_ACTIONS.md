@@ -1,19 +1,18 @@
-# Owner checklist — approved component completed
+# Owner actions — overnight handoff
 
-No infrastructure, credential, funding, provider-plan, dashboard or spending action
-is requested. The approved component ran once and stopped after four paced setup
-reads because no current supported pool was established. No quote, WebSocket,
-reconnect, retry or production change occurred.
+No infrastructure, credential, wallet, funding, Render, provider-plan or spending
+action is required for the completed overnight work. Do not repeat inventory,
+bootstrap, source changes, legacy publisher shutdown or Turnkey registration.
 
-The old429 and20units/272,634bytes are unchanged. The linked new chapter records
-24cumulative units/377,058bytes. Unused allowance does not authorize another run.
-No grant remains active. PAPER entries/live trading remain disabled; the original
-account/inception and dashboard are preserved; no acceptance clock started.
+The original observer/account and dashboard were preserved. PAPER entries and
+live trading remain disabled; no acceptance clock started.
 
-See [ADAPTIVE_MONITORING_EVALUATION.md](ADAPTIVE_MONITORING_EVALUATION.md) and
-[the actual receipt](../evidence/public-component-20261027/summary.json).
-The smallest remaining gap is current supported-pool selection within the fixed
-setup allocation before live Clock/pricing/notification evidence can be collected.
-Retained transactions were resolved offline: one non-SOL route and one address-only
-transaction. No fresh supported-pool pricing observation was obtained; no new live approval is sought
-by this checklist and completed infrastructure actions must not be repeated.
+All research captures are closed. PumpApi's256MiB reservation ceiling is fully
+committed; actual receipts were195,936,099bytes. Reservations were not refunded.
+A later matched-flow capture requires an explicit bounded stream allocation;
+it is not started or requested as a routine setup step here. First resolve the
+scheduler's3.224-second evaluation gap and offline starvation counterexample.
+
+See [the actual result](OVERNIGHT_HANDOFF.md) and
+[exact counters](../evidence/overnight-20261027/final-summary.json).
+No paid provider, wallet operation or old setup action is the current blocker.

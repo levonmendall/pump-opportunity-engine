@@ -57,8 +57,8 @@ export function pumpApiSignatureHint(payload:unknown,scope:{mint:string;pool:str
 }
 
 /** Called only after a successful confirmed getTransaction response is available.
- * Actual proof currently covers one direct Sell; other shapes must retain their
- * explicitly unverified status until separately matched with real evidence. */
+ * Retained actual fixtures establish the separately tested direct/CPI variants;
+ * decoding alone never establishes unobserved instruction/fee behavior. */
 export function mapConfirmedPumpSwapEvidence(tx:any,input:{signature:string;mint:string;pool:string;providerReceivedAt:number|null;availableAt:number}):MappedTradeEvidence[]{
   need(tx&&tx.meta?.err===null&&(tx.version==='legacy'||tx.version===0||tx.version===1),'UNSUCCESSFUL_OR_UNSUPPORTED_TRANSACTION');
   need(Number.isSafeInteger(tx.slot)&&tx.slot>=0&&Number.isSafeInteger(input.availableAt)&&input.availableAt>=0,'UNVERIFIED_AVAILABILITY');
@@ -101,8 +101,13 @@ export function mapConfirmedPumpSwapEvidence(tx:any,input:{signature:string;mint
       need(role('pool')===input.pool&&role('base_mint')===input.mint&&role('quote_mint')===SOL,'SWAP_SCOPE_MISMATCH');
       need(key(data.user)===role('user')&&key(data.user_base_token_account)===role('user_base_token_account')&&key(data.user_quote_token_account)===role('user_quote_token_account'),'EVENT_TRADER_ROLE_MISMATCH');
       const tokenUnits=integer(data[side==='buy'?'base_amount_out':'base_amount_in']);
-      const curveQuoteLamports=integer(data[side==='buy'?'quote_amount_in':'quote_amount_out']);
-      const userQuoteLamports=integer(data[side==='buy'?'user_quote_amount_in':'user_quote_amount_out']);
+      // Separately retained actual buy_exact_quote_in and buy_exact_quote_in_v2
+      // events use quote_amount_in for the whole user debit and
+      // user_quote_amount_in for net curve input. The names suggest the reverse.
+      // Executed transfers prove both variants; do not generalize to other buys.
+      const exactQuoteBuy=side==='buy'&&['buy_exact_quote_in','buy_exact_quote_in_v2'].includes(swap.name);
+      const curveQuoteLamports=integer(data[side==='buy'?(exactQuoteBuy?'user_quote_amount_in':'quote_amount_in'):'quote_amount_out']);
+      const userQuoteLamports=integer(data[side==='buy'?(exactQuoteBuy?'quote_amount_in':'user_quote_amount_in'):'user_quote_amount_out']);
       need(BigInt(tokenUnits)>0n&&BigInt(curveQuoteLamports)>0n&&BigInt(userQuoteLamports)>0n,'EMPTY_SWAP_AMOUNTS');
       const fees=Object.fromEntries(['lp_fee','protocol_fee','coin_creator_fee','cashback','buyback_fee','holder_rewards','quote_transfer_fee'].map(name=>[name,integer(data[name])]));
       const descendants:any[]=[];

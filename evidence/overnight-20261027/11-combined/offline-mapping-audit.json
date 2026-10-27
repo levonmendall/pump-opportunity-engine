@@ -1,0 +1,464 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_BUG_AUDIT_AND_CORRECTED_REPLAY_NOT_FORWARD_ACCEPTANCE",
+  "generatedAt": "2026-10-27T08:00:27.985Z",
+  "networkRequests": 0,
+  "newRequestUnits": 0,
+  "sourceFiles": [
+    {
+      "path": "evidence/overnight-20261027/11-combined/baseline.json",
+      "sha256": "56f1412402f265e97b575af361b144b1314cc55339298cd7ef460dbfaf935a58"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/grant.json",
+      "sha256": "e7fe86b762b626e8d3f051f14a548610ea6668a101a3247703daf54f778dccfb"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/observations.ndjson",
+      "sha256": "835c7e7d5bf867556c50ca90a30f089a0d62a2f62fa8efb8a4a7813cb8e49ef2"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/summary.json",
+      "sha256": "2af351ef7c628b32bfd1efbbd0b9374278e1bab9d0b505b48694c37e4f31f2ed"
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/supervisor.json",
+      "sha256": "295fefe16ecd49e8b114dadf4e18b73ebc4f32f6638ec7889f530f2474a73b34"
+    }
+  ],
+  "sourceCode": {
+    "mapperBeforeHeadSha256": "eb0c3edf3769c5c20791ed8c62bd167b4aa5b0aaea7934d50478c13829044ef5",
+    "mapperAfterSha256": "0622cf1e2bbb471045df89f0646d5ffadb69256aa5fa7183349a7b42e56b6ce2",
+    "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+    "idlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61",
+    "sdkBuySourceSha256": "8ee48df5ea2685cfe9937e6730adb5cb7395b55d4dbb4cf0beece44bc45b3300",
+    "sdkReference": "src/sdk/buy.ts buyDebit and exactQuoteInFees distinguish netQuoteForSwap from total debit (net plus LP/protocol/creator fees); actual executed transfers independently resolve these BuyEvent field names."
+  },
+  "decision": "PROVEN_NARROW_MAPPING_BUG_FIXED_OFFLINE",
+  "scope": "Only buy_exact_quote_in_v2 BuyEvent field selection changes. Other Buy variants keep their prior mapping and remain independently unproven until their own actual matched records exist.",
+  "originalForwardResult": {
+    "selectedMessages": 6,
+    "confirmedTransactions": 6,
+    "normalizedEvents": 4,
+    "normalizedBuys": 0,
+    "normalizedSells": 4,
+    "qualityGaps": [
+      {
+        "at": 1793087343991,
+        "reason": "executed-transfer-or-feature-validation-unavailable"
+      },
+      {
+        "at": 1793087374029,
+        "reason": "executed-transfer-or-feature-validation-unavailable"
+      },
+      {
+        "at": 1793087374433,
+        "reason": "COMPONENT_FIELD_APPLICATION_STOP"
+      }
+    ],
+    "complete60SecondFeatureWindows": 0,
+    "stopReason": "COMPONENT_FIELD_APPLICATION_STOP",
+    "applicationBytes": 65013395,
+    "socketBytes": 65179210,
+    "observationMs": 75000,
+    "unchanged": true
+  },
+  "correctedOfflineReplay": {
+    "confirmedTransactions": 6,
+    "executedEvents": 6,
+    "sells": 4,
+    "buys": 2,
+    "allActualTransferChecksPass": true,
+    "originalSellFingerprintsUnchanged": true,
+    "completeUsableWindows": "NOT_ASSERTED; original forward gaps/stream stop remain recorded, independent completeness remains separate.",
+    "primaryStrategyEnabled": false,
+    "paperTradesCreated": 0
+  },
+  "transactions": [
+    {
+      "signature": "64k4ieo7dLUx2MGemohy8Jc766kCHtpNdguUcv7NA9azJ1M3Kg5zUxQ9PGdv9NH7aTLYKJJLoqcxYUpzyJqBuNvR",
+      "side": "sell",
+      "originallyNormalized": true,
+      "originalFingerprintUnchanged": true,
+      "transferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      }
+    },
+    {
+      "signature": "ErDSWHsSMG5xuDLxtrJd6hhSoVDNBCVmzm2cSyDzoVkVsXYws8Ln7dEL5r6bh9qVD25myAzzTCxS9vy6XjiFNET",
+      "side": "sell",
+      "originallyNormalized": true,
+      "originalFingerprintUnchanged": true,
+      "transferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      }
+    },
+    {
+      "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+      "side": "sell",
+      "originallyNormalized": true,
+      "originalFingerprintUnchanged": true,
+      "transferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      }
+    },
+    {
+      "signature": "QxYy6Ch4LUkEuiFUPNF9yVkZNjWa17reHzKtcFwHfaTGLY7ukHKNym4sUdw2sFMFzMDR2LenptMAXTaV68Ke1oJ",
+      "side": "buy",
+      "originallyNormalized": false,
+      "originalGapAt": 1793087343991,
+      "originalGapReason": "executed-transfer-or-feature-validation-unavailable",
+      "actualInstruction": "buy_exact_quote_in_v2",
+      "slot": 461991704,
+      "successful": true,
+      "identity": {
+        "signature": "QxYy6Ch4LUkEuiFUPNF9yVkZNjWa17reHzKtcFwHfaTGLY7ukHKNym4sUdw2sFMFzMDR2LenptMAXTaV68Ke1oJ",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": 10,
+        "eventInnerInstructionIndex": 14,
+        "eventIndex": 0
+      },
+      "rawEvent": {
+        "name": "BuyEvent",
+        "exactPackagedLayout": true,
+        "ixName": "buy_exact_quote_in_v2",
+        "quote_amount_in": "19923089",
+        "user_quote_amount_in": "19755168",
+        "quote_amount_in_with_lp_fee": "19794679",
+        "base_amount_out": "858312221",
+        "max_quote_amount_in": "19923089"
+      },
+      "oldMapping": {
+        "curveQuoteLamports": "19923089",
+        "userQuoteLamports": "19755168",
+        "baseTransfer": true,
+        "userQuoteTransfer": false,
+        "cause": "Mapper trusted ambiguous BuyEvent field names and compared net curve input against complete executed user debit."
+      },
+      "correctedOfflineMapping": {
+        "curveQuoteLamports": "19755168",
+        "userQuoteLamports": "19923089",
+        "tokenUnits": "858312221",
+        "fees": {
+          "lp_fee": "39511",
+          "protocol_fee": "9878",
+          "coin_creator_fee": "118532",
+          "cashback": "0",
+          "buyback_fee": "4939",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "lpPlusProtocolPlusCreatorLamports": "167921",
+        "feeAccounting": "buyback_fee is a slice of protocol_fee in these observed swaps. Do not add it again; fee components remain separately recorded.",
+        "transferChecks": {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        },
+        "curveResearchQuoteLamports": "19755168",
+        "userResearchQuoteLamports": "19923089",
+        "fingerprint": "d42d90fb3d49174356dbb9ea316905d80729b6c680dbdc549e7260b2890228b0"
+      },
+      "roles": {
+        "user": "87Udc8eTr1m9EyGfpLDT42hEMXeTnghCYnhD86pfm8AS",
+        "userQuoteAccount": "EYxAJqnV7F9mpfdAfjbBsd6xmNqK5WadCZk3usMrUn3X",
+        "userBaseAccount": "2BtLPDwjpYKi51RaL6cnJTkp5gzSdWRaeyoKRSVQ6nhZ",
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "baseVault": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+        "quoteVault": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+        "baseMint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "baseProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "quoteProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+      },
+      "executedTransfers": [
+        {
+          "innerInstructionIndex": 11,
+          "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "stackHeight": 3,
+          "source": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "destination": "2BtLPDwjpYKi51RaL6cnJTkp5gzSdWRaeyoKRSVQ6nhZ",
+          "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "amount": "858312221"
+        },
+        {
+          "innerInstructionIndex": 12,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "EYxAJqnV7F9mpfdAfjbBsd6xmNqK5WadCZk3usMrUn3X",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+          "authority": "87Udc8eTr1m9EyGfpLDT42hEMXeTnghCYnhD86pfm8AS",
+          "amount": "19918150"
+        },
+        {
+          "innerInstructionIndex": 13,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "EYxAJqnV7F9mpfdAfjbBsd6xmNqK5WadCZk3usMrUn3X",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "HjQjngTDqoHE6aaGhUqfz9aQ7WZcBRjy5xB8PScLSr8i",
+          "authority": "87Udc8eTr1m9EyGfpLDT42hEMXeTnghCYnhD86pfm8AS",
+          "amount": "4939"
+        }
+      ],
+      "userQuoteOutgoingTransfers": [
+        {
+          "innerInstructionIndex": 12,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "EYxAJqnV7F9mpfdAfjbBsd6xmNqK5WadCZk3usMrUn3X",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+          "authority": "87Udc8eTr1m9EyGfpLDT42hEMXeTnghCYnhD86pfm8AS",
+          "amount": "19918150"
+        },
+        {
+          "innerInstructionIndex": 13,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "EYxAJqnV7F9mpfdAfjbBsd6xmNqK5WadCZk3usMrUn3X",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "HjQjngTDqoHE6aaGhUqfz9aQ7WZcBRjy5xB8PScLSr8i",
+          "authority": "87Udc8eTr1m9EyGfpLDT42hEMXeTnghCYnhD86pfm8AS",
+          "amount": "4939"
+        }
+      ],
+      "totalUserQuoteDebitLamports": "19923089",
+      "baseDeliveryVerified": true,
+      "payload": {
+        "action": "buy",
+        "tokenAmount": 858.312221,
+        "quoteAmount": 0.019923089,
+        "txSigner": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
+        "breakdown": [
+          {
+            "action": "buy",
+            "trader": "87Udc8eTr1m9EyGfpLDT42hEMXeTnghCYnhD86pfm8AS",
+            "tokenAmount": 858.312221,
+            "quoteAmount": 0.019923089
+          }
+        ],
+        "providerReceivedAt": 1793087342216,
+        "quoteAmountConvention": "Matches whole user debit for these buy_exact_quote_in_v2 swaps; unlike observed Sell feed values that match gross curve output.",
+        "feePayer": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
+        "feePayerDiffersFromEventUser": true,
+        "txSignerDiffersFromEventUser": true,
+        "breakdownTraderMatchesEventUser": true
+      },
+      "informationAvailability": {
+        "providerReceivedAt": 1793087342216,
+        "confirmedTransactionAvailableAt": 1793087343991,
+        "correctedNormalizationComputedAt": "2026-10-27T08:00:27.977Z",
+        "meaning": "Original transaction availability is preserved for offline replay, but the corrected normalization did not exist in the forward run. No forward qualification or complete-window PASS is retroactively claimed."
+      }
+    },
+    {
+      "signature": "2tMrUCX3bYewNitHQPkWW2z42effkvM8z6CTEHWY4uEzJgktpVCecfjqM1XWfZKXaXEGaTRnKLpNhMifHi5KvAtL",
+      "side": "sell",
+      "originallyNormalized": true,
+      "originalFingerprintUnchanged": true,
+      "transferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      }
+    },
+    {
+      "signature": "3wc5gpKEpTgpTZscLAfUXS9rZUXcqHU8ir6p3sL3dPDmadsGNKTaXM1QMTAxnGGEwvLD2es6iDj6E9eYaSmiq9Rm",
+      "side": "buy",
+      "originallyNormalized": false,
+      "originalGapAt": 1793087374029,
+      "originalGapReason": "executed-transfer-or-feature-validation-unavailable",
+      "actualInstruction": "buy_exact_quote_in_v2",
+      "slot": 461991849,
+      "successful": true,
+      "identity": {
+        "signature": "3wc5gpKEpTgpTZscLAfUXS9rZUXcqHU8ir6p3sL3dPDmadsGNKTaXM1QMTAxnGGEwvLD2es6iDj6E9eYaSmiq9Rm",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 5,
+        "swapInnerInstructionIndex": 9,
+        "eventInnerInstructionIndex": 14,
+        "eventIndex": 0
+      },
+      "rawEvent": {
+        "name": "BuyEvent",
+        "exactPackagedLayout": true,
+        "ixName": "buy_exact_quote_in_v2",
+        "quote_amount_in": "1167763562",
+        "user_quote_amount_in": "1157921230",
+        "quote_amount_in_with_lp_fee": "1160237073",
+        "base_amount_out": "50246366140",
+        "max_quote_amount_in": "1167763562"
+      },
+      "oldMapping": {
+        "curveQuoteLamports": "1167763562",
+        "userQuoteLamports": "1157921230",
+        "baseTransfer": true,
+        "userQuoteTransfer": false,
+        "cause": "Mapper trusted ambiguous BuyEvent field names and compared net curve input against complete executed user debit."
+      },
+      "correctedOfflineMapping": {
+        "curveQuoteLamports": "1157921230",
+        "userQuoteLamports": "1167763562",
+        "tokenUnits": "50246366140",
+        "fees": {
+          "lp_fee": "2315843",
+          "protocol_fee": "578961",
+          "coin_creator_fee": "6947528",
+          "cashback": "0",
+          "buyback_fee": "289480",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "lpPlusProtocolPlusCreatorLamports": "9842332",
+        "feeAccounting": "buyback_fee is a slice of protocol_fee in these observed swaps. Do not add it again; fee components remain separately recorded.",
+        "transferChecks": {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        },
+        "curveResearchQuoteLamports": "1157921230",
+        "userResearchQuoteLamports": "1167763562",
+        "fingerprint": "0fd326bac6ba3e0a7ec7021b08513430322490b2fe8916890c0057250e940885"
+      },
+      "roles": {
+        "user": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+        "userQuoteAccount": "3qY9chzMxm2SkdqLFDmsc1yhhhtwQ7ozecFAZkXejvKH",
+        "userBaseAccount": "Hgj8CDtWuZoP1xNsnCLHJ55Efj1a6FscxP6MRtXqjGRa",
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "baseVault": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+        "quoteVault": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+        "baseMint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "baseProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "quoteProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+      },
+      "executedTransfers": [
+        {
+          "innerInstructionIndex": 11,
+          "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "stackHeight": 3,
+          "source": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+          "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "destination": "Hgj8CDtWuZoP1xNsnCLHJ55Efj1a6FscxP6MRtXqjGRa",
+          "authority": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "amount": "50246366140"
+        },
+        {
+          "innerInstructionIndex": 12,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "3qY9chzMxm2SkdqLFDmsc1yhhhtwQ7ozecFAZkXejvKH",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+          "authority": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+          "amount": "1167474082"
+        },
+        {
+          "innerInstructionIndex": 13,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "3qY9chzMxm2SkdqLFDmsc1yhhhtwQ7ozecFAZkXejvKH",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "CASRL2zkwDnppxEFQ4LgdwgR9pdz5Q8R8nEMKVZ9QoLp",
+          "authority": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+          "amount": "289480"
+        }
+      ],
+      "userQuoteOutgoingTransfers": [
+        {
+          "innerInstructionIndex": 12,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "3qY9chzMxm2SkdqLFDmsc1yhhhtwQ7ozecFAZkXejvKH",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+          "authority": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+          "amount": "1167474082"
+        },
+        {
+          "innerInstructionIndex": 13,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "stackHeight": 3,
+          "source": "3qY9chzMxm2SkdqLFDmsc1yhhhtwQ7ozecFAZkXejvKH",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "CASRL2zkwDnppxEFQ4LgdwgR9pdz5Q8R8nEMKVZ9QoLp",
+          "authority": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+          "amount": "289480"
+        }
+      ],
+      "totalUserQuoteDebitLamports": "1167763562",
+      "baseDeliveryVerified": true,
+      "payload": {
+        "action": "buy",
+        "tokenAmount": 50246.36614,
+        "quoteAmount": 1.167763562,
+        "txSigner": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+        "breakdown": [
+          {
+            "action": "buy",
+            "trader": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+            "tokenAmount": 50246.36614,
+            "quoteAmount": 1.167763562
+          }
+        ],
+        "providerReceivedAt": 1793087372925,
+        "quoteAmountConvention": "Matches whole user debit for these buy_exact_quote_in_v2 swaps; unlike observed Sell feed values that match gross curve output.",
+        "feePayer": "4aCQsXng3VPWNe3JPiZNUDbr2jeVq7XphjFtX3kmtW8k",
+        "feePayerDiffersFromEventUser": false,
+        "txSignerDiffersFromEventUser": false,
+        "breakdownTraderMatchesEventUser": true
+      },
+      "informationAvailability": {
+        "providerReceivedAt": 1793087372925,
+        "confirmedTransactionAvailableAt": 1793087374029,
+        "correctedNormalizationComputedAt": "2026-10-27T08:00:27.982Z",
+        "meaning": "Original transaction availability is preserved for offline replay, but the corrected normalization did not exist in the forward run. No forward qualification or complete-window PASS is retroactively claimed."
+      }
+    }
+  ],
+  "additionalEarlierActualProof": {
+    "source": "evidence/integration-2026-10-26T19-42-16.130Z.ndjson",
+    "sourceSha256": "28197fc79de98666f8636f6b824e04c240c9fb0e16b806c529bdec8238cf4f46",
+    "signature": "2Asd7zD4HYofygQyX4yRecaZ9Q6rz2V1pJP2n7xGbsFb3TwHTxDASNJZqzVp99zP7tQpzKhUFmBg2jY4kfqYwDqR",
+    "instruction": "buy_exact_quote_in_v2",
+    "curveInputLamports": "1975308641",
+    "totalUserDebitLamports": "2000000000",
+    "transferChecks": {
+      "baseTransfer": true,
+      "userQuoteTransfer": true
+    },
+    "meaning": "An earlier actual transaction confirms the same variant semantics on another supported SOL pool. It is a retained observation replay, not a new provider request or new forward success."
+  },
+  "preservedProofRequirements": [
+    "Successful confirmed transaction, exact signature/context",
+    "Exact full event layout and genuine self-CPI authority",
+    "Actual parent swap variant and pool/base/WSOL scope",
+    "Event user and accounts agree with parent instruction roles",
+    "Actual whole-token delivery and exact full user quote debit across descendants",
+    "Unchanged identity, availability, commitment, selected-event queue and window invalidation rules"
+  ],
+  "remainingGaps": [
+    "The actual forward combined experiment remains failed/incomplete with zero complete usable60s windows.",
+    "Corrected offline mapping does not establish another live combined test or permit more PumpApi capture.",
+    "General Buy/buy_v2/legacy exact-quote variant semantics, multiple-target-swap transactions and other token/fee behaviors still require their own matched evidence.",
+    "Raw PumpApi commitment/full event identities remain absent; confirmed transaction enrichment remains required.",
+    "Observed fee-payer separation now proves txSigner is unsafe as a general trader identity; use verified event/instruction user.",
+    "No primary quote-amount convention is silently frozen or strategy changed."
+  ],
+  "productionChanged": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

@@ -1,0 +1,1868 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T07:49:34.465Z",
+  "startedAt": 1793087301575,
+  "deadlineAt": 1793087386575,
+  "supervisor": {
+    "wallMs": 72890.73165599999,
+    "peakRssBytes": 163741696,
+    "peakCpuMs": 4940,
+    "peakParentLoopLagMs": 2.5201580000000376,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "stopReason": null,
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "resourceCheckErrors": [],
+    "activeEvidenceAccounting": {
+      "atomicTempHeadroomBytes": 131072,
+      "vanishedAtomicFiles": 0
+    }
+  },
+  "outcome": "COMBINED_RESEARCH_SAMPLE_CAPTURED",
+  "summary": {
+    "outcome": "COMBINED_RESEARCH_SAMPLE_CAPTURED",
+    "reason": null,
+    "result": {
+      "mode": "COMBINED_FIELD_AND_FIXED_2S_PROTECTION_RESEARCH",
+      "scope": {
+        "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+        "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+        "baseUnits": "436723517",
+        "minSlot": 461979360,
+        "supportedPoolEvidence": "90616a0cd41cf585c00b12890205685b6a8b1f9144013a70969c863e47f8a3cf"
+      },
+      "openedAt": 1793087304903,
+      "observationEndedAt": 1793087374433,
+      "closedAt": 1793087374435,
+      "observationMs": 75000,
+      "selectedMessages": 6,
+      "uniqueEnrichmentAttempts": 6,
+      "duplicateSignatureHints": 0,
+      "completedTransactions": 6,
+      "failedTransactions": 2,
+      "nonTradeTransactions": 0,
+      "pending": 0,
+      "queueHighWater": 2,
+      "queueAgeMs": {
+        "samples": 6,
+        "p50": 1039,
+        "p95": 1142,
+        "maximum": 1142
+      },
+      "enrichmentAvailableAfterHintMs": {
+        "samples": 6,
+        "p50": 1104,
+        "p95": 2112,
+        "maximum": 2112
+      },
+      "normalizedEvents": 4,
+      "normalizedDuringObservation": 4,
+      "normalizedAfterObservation": 0,
+      "normalizedBuys": 0,
+      "normalizedSells": 4,
+      "routedEvents": 3,
+      "variantCountsIncludeLateEnrichment": true,
+      "multipleSwapTransactions": 0,
+      "duplicateExecutedEvents": 0,
+      "corrections": 0,
+      "firstNormalizedAt": 1793087308006,
+      "lastNormalizedAt": 1793087346104,
+      "qualityGaps": [
+        {
+          "at": 1793087343991,
+          "reason": "executed-transfer-or-feature-validation-unavailable"
+        },
+        {
+          "at": 1793087374029,
+          "reason": "executed-transfer-or-feature-validation-unavailable"
+        },
+        {
+          "at": 1793087374433,
+          "reason": "COMPONENT_FIELD_APPLICATION_STOP"
+        }
+      ],
+      "historicalWindowInvalidated": true,
+      "enrichedFeatureWarmSeconds": 0,
+      "noPendingFeatureWarmSeconds": 0,
+      "verifiedUsableFeatureWindowSeconds": 0,
+      "coverage": "Requires later bounded independent signature/instruction audit; raw warmth is not completeness",
+      "prices": {
+        "accepted": 35,
+        "rejected": 0,
+        "changes": 4,
+        "firstHypotheticalCost": {
+          "at": 1793087305475,
+          "cost": "10007010"
+        },
+        "modeledGasLamports": "7000",
+        "freshCacheMs": 66842,
+        "staleCacheMs": 2688,
+        "freshCacheFraction": 0.9613404285919747,
+        "triggerEvents": [],
+        "rows": [
+          {
+            "availableAt": 1793087305475,
+            "sourceReceivedAt": 1793087305453,
+            "quoteAgeMs": 22,
+            "slot": 461991531,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991531,
+              "marketClockUnixSeconds": 1793087305
+            },
+            "grossSellLamports": "10014010",
+            "modeledGasLamports": "7000",
+            "netLamports": "10007010",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087307050,
+            "sourceReceivedAt": 1793087307021,
+            "quoteAgeMs": 29,
+            "slot": 461991537,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991537,
+              "marketClockUnixSeconds": 1793087306
+            },
+            "grossSellLamports": "10013968",
+            "modeledGasLamports": "7000",
+            "netLamports": "10006968",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087309025,
+            "sourceReceivedAt": 1793087309006,
+            "quoteAgeMs": 19,
+            "slot": 461991547,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991547,
+              "marketClockUnixSeconds": 1793087308
+            },
+            "grossSellLamports": "10013968",
+            "modeledGasLamports": "7000",
+            "netLamports": "10006968",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087312249,
+            "sourceReceivedAt": 1793087312226,
+            "quoteAgeMs": 23,
+            "slot": 461991562,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991562,
+              "marketClockUnixSeconds": 1793087311
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087313243,
+            "sourceReceivedAt": 1793087313225,
+            "quoteAgeMs": 18,
+            "slot": 461991565,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991565,
+              "marketClockUnixSeconds": 1793087312
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087315083,
+            "sourceReceivedAt": 1793087315062,
+            "quoteAgeMs": 21,
+            "slot": 461991576,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991576,
+              "marketClockUnixSeconds": 1793087314
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087317028,
+            "sourceReceivedAt": 1793087316987,
+            "quoteAgeMs": 41,
+            "slot": 461991585,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991585,
+              "marketClockUnixSeconds": 1793087316
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087319064,
+            "sourceReceivedAt": 1793087319044,
+            "quoteAgeMs": 20,
+            "slot": 461991595,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991595,
+              "marketClockUnixSeconds": 1793087318
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087321124,
+            "sourceReceivedAt": 1793087321106,
+            "quoteAgeMs": 18,
+            "slot": 461991603,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991603,
+              "marketClockUnixSeconds": 1793087320
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087323080,
+            "sourceReceivedAt": 1793087323061,
+            "quoteAgeMs": 19,
+            "slot": 461991612,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991612,
+              "marketClockUnixSeconds": 1793087322
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087325067,
+            "sourceReceivedAt": 1793087325043,
+            "quoteAgeMs": 24,
+            "slot": 461991620,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991620,
+              "marketClockUnixSeconds": 1793087324
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087326979,
+            "sourceReceivedAt": 1793087326958,
+            "quoteAgeMs": 21,
+            "slot": 461991630,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991630,
+              "marketClockUnixSeconds": 1793087326
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087329041,
+            "sourceReceivedAt": 1793087329021,
+            "quoteAgeMs": 20,
+            "slot": 461991639,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991639,
+              "marketClockUnixSeconds": 1793087328
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087331028,
+            "sourceReceivedAt": 1793087331007,
+            "quoteAgeMs": 21,
+            "slot": 461991648,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991648,
+              "marketClockUnixSeconds": 1793087330
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087333072,
+            "sourceReceivedAt": 1793087333055,
+            "quoteAgeMs": 17,
+            "slot": 461991660,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991660,
+              "marketClockUnixSeconds": 1793087332
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087335048,
+            "sourceReceivedAt": 1793087335031,
+            "quoteAgeMs": 17,
+            "slot": 461991669,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991669,
+              "marketClockUnixSeconds": 1793087334
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087337077,
+            "sourceReceivedAt": 1793087337058,
+            "quoteAgeMs": 19,
+            "slot": 461991679,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991679,
+              "marketClockUnixSeconds": 1793087336
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087339001,
+            "sourceReceivedAt": 1793087338983,
+            "quoteAgeMs": 18,
+            "slot": 461991686,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991686,
+              "marketClockUnixSeconds": 1793087338
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087340999,
+            "sourceReceivedAt": 1793087340980,
+            "quoteAgeMs": 19,
+            "slot": 461991696,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991696,
+              "marketClockUnixSeconds": 1793087340
+            },
+            "grossSellLamports": "9965992",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958992",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087342997,
+            "sourceReceivedAt": 1793087342979,
+            "quoteAgeMs": 18,
+            "slot": 461991706,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991706,
+              "marketClockUnixSeconds": 1793087342
+            },
+            "grossSellLamports": "9966421",
+            "modeledGasLamports": "7000",
+            "netLamports": "9959421",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087345051,
+            "sourceReceivedAt": 1793087345029,
+            "quoteAgeMs": 22,
+            "slot": 461991716,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991716,
+              "marketClockUnixSeconds": 1793087344
+            },
+            "grossSellLamports": "9966421",
+            "modeledGasLamports": "7000",
+            "netLamports": "9959421",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087347124,
+            "sourceReceivedAt": 1793087347105,
+            "quoteAgeMs": 19,
+            "slot": 461991726,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991726,
+              "marketClockUnixSeconds": 1793087346
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087349036,
+            "sourceReceivedAt": 1793087349021,
+            "quoteAgeMs": 15,
+            "slot": 461991735,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991735,
+              "marketClockUnixSeconds": 1793087348
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087351048,
+            "sourceReceivedAt": 1793087351032,
+            "quoteAgeMs": 16,
+            "slot": 461991745,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991745,
+              "marketClockUnixSeconds": 1793087350
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087353055,
+            "sourceReceivedAt": 1793087353040,
+            "quoteAgeMs": 15,
+            "slot": 461991754,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991754,
+              "marketClockUnixSeconds": 1793087352
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087354974,
+            "sourceReceivedAt": 1793087354954,
+            "quoteAgeMs": 20,
+            "slot": 461991763,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991763,
+              "marketClockUnixSeconds": 1793087354
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087357020,
+            "sourceReceivedAt": 1793087357005,
+            "quoteAgeMs": 15,
+            "slot": 461991772,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991772,
+              "marketClockUnixSeconds": 1793087356
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087359000,
+            "sourceReceivedAt": 1793087358983,
+            "quoteAgeMs": 17,
+            "slot": 461991782,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991782,
+              "marketClockUnixSeconds": 1793087358
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087361031,
+            "sourceReceivedAt": 1793087361014,
+            "quoteAgeMs": 17,
+            "slot": 461991792,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991792,
+              "marketClockUnixSeconds": 1793087360
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087363033,
+            "sourceReceivedAt": 1793087363018,
+            "quoteAgeMs": 15,
+            "slot": 461991802,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991802,
+              "marketClockUnixSeconds": 1793087362
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087365032,
+            "sourceReceivedAt": 1793087365017,
+            "quoteAgeMs": 15,
+            "slot": 461991810,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991810,
+              "marketClockUnixSeconds": 1793087364
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087367049,
+            "sourceReceivedAt": 1793087367034,
+            "quoteAgeMs": 15,
+            "slot": 461991820,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991820,
+              "marketClockUnixSeconds": 1793087366
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087369068,
+            "sourceReceivedAt": 1793087369053,
+            "quoteAgeMs": 15,
+            "slot": 461991830,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991830,
+              "marketClockUnixSeconds": 1793087368
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087370989,
+            "sourceReceivedAt": 1793087370966,
+            "quoteAgeMs": 23,
+            "slot": 461991837,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991837,
+              "marketClockUnixSeconds": 1793087370
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          },
+          {
+            "availableAt": 1793087373008,
+            "sourceReceivedAt": 1793087372990,
+            "quoteAgeMs": 18,
+            "slot": 461991848,
+            "sourceTimeEvidence": {
+              "kind": "confirmed-bank-clock",
+              "clockSlot": 461991848,
+              "marketClockUnixSeconds": 1793087372
+            },
+            "grossSellLamports": "9965993",
+            "modeledGasLamports": "7000",
+            "netLamports": "9958993",
+            "hypotheticalBaseline": {
+              "at": 1793087305475,
+              "cost": "10007010"
+            },
+            "decision": {
+              "action": "hold",
+              "reason": "no-provisional-exit-trigger"
+            },
+            "mode": "RESEARCH_ONLY; no entry or fill"
+          }
+        ]
+      },
+      "paperEntriesEnabled": false,
+      "naturalPaperTrades": 0,
+      "connectionStartedAt": 1793087303455,
+      "endedAt": 1793087374433,
+      "openMs": 69530,
+      "elapsedMs": 70979.837774,
+      "stopReason": "COMPONENT_FIELD_APPLICATION_STOP",
+      "frames": 40556,
+      "applicationBytes": 65013395,
+      "socketBytes": 65179210,
+      "broadSocketBytes": 65178997,
+      "upgradeObservedBytes": 213,
+      "parsedFrames": 6,
+      "irrelevantFrames": 40549,
+      "enrichments": 6,
+      "enrichmentClosed": false,
+      "selectedMessagesAfterEnrichmentClosed": 0,
+      "knownConfirmedSlot": 461991849,
+      "retainedBytes": 244862,
+      "recordingFailed": false,
+      "resources": {
+        "peakRssBytes": 163127296,
+        "peakCpuMs": 3685.331,
+        "peakEventLoopLagMs": 29.317847000000256
+      },
+      "physicalSlotUncertain": false,
+      "qualificationEnabled": false,
+      "complete60SecondFeatureWindows": 0,
+      "combinedAcceptance": false,
+      "priceAttempts": 35,
+      "protection": {
+        "everyMs": 2000,
+        "attempts": 35,
+        "unavailable": 0,
+        "unavailableQuoteFraction": 0,
+        "pricingCacheUnavailableFraction": 0.03865957140802534,
+        "missedSchedules": 0,
+        "maxCompletedEvaluationGapMs": 3224,
+        "p95CompletedEvaluationGapMs": 2073,
+        "maxUsableEvaluationGapMs": 3224,
+        "maximumScheduleDelayMs": 373,
+        "gaps": [],
+        "serviceQuality": "NO_PROTECTION_GAP_OBSERVED",
+        "outcomes": [
+          {
+            "scheduledAt": 1793087304903,
+            "requestedAt": 1793087304906,
+            "availableAt": 1793087305475,
+            "deadlineAt": 1793087306903,
+            "startDelayMs": 3,
+            "requests": 1,
+            "quoteAgeAtUseMs": 22,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087306903,
+            "requestedAt": 1793087306921,
+            "availableAt": 1793087307050,
+            "deadlineAt": 1793087308903,
+            "startDelayMs": 18,
+            "requests": 1,
+            "quoteAgeAtUseMs": 29,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087308903,
+            "requestedAt": 1793087308958,
+            "availableAt": 1793087309025,
+            "deadlineAt": 1793087310903,
+            "startDelayMs": 55,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087310903,
+            "requestedAt": 1793087311276,
+            "availableAt": 1793087312249,
+            "deadlineAt": 1793087312903,
+            "startDelayMs": 373,
+            "requests": 1,
+            "quoteAgeAtUseMs": 23,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087312903,
+            "requestedAt": 1793087312985,
+            "availableAt": 1793087313243,
+            "deadlineAt": 1793087314903,
+            "startDelayMs": 82,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087314903,
+            "requestedAt": 1793087314999,
+            "availableAt": 1793087315083,
+            "deadlineAt": 1793087316903,
+            "startDelayMs": 96,
+            "requests": 1,
+            "quoteAgeAtUseMs": 21,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087316903,
+            "requestedAt": 1793087316910,
+            "availableAt": 1793087317028,
+            "deadlineAt": 1793087318903,
+            "startDelayMs": 7,
+            "requests": 1,
+            "quoteAgeAtUseMs": 41,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087318903,
+            "requestedAt": 1793087318941,
+            "availableAt": 1793087319064,
+            "deadlineAt": 1793087320903,
+            "startDelayMs": 38,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087320903,
+            "requestedAt": 1793087320971,
+            "availableAt": 1793087321124,
+            "deadlineAt": 1793087322903,
+            "startDelayMs": 68,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087322903,
+            "requestedAt": 1793087322982,
+            "availableAt": 1793087323080,
+            "deadlineAt": 1793087324903,
+            "startDelayMs": 79,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087324903,
+            "requestedAt": 1793087324995,
+            "availableAt": 1793087325067,
+            "deadlineAt": 1793087326903,
+            "startDelayMs": 92,
+            "requests": 1,
+            "quoteAgeAtUseMs": 24,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087326903,
+            "requestedAt": 1793087326908,
+            "availableAt": 1793087326979,
+            "deadlineAt": 1793087328903,
+            "startDelayMs": 5,
+            "requests": 1,
+            "quoteAgeAtUseMs": 21,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087328903,
+            "requestedAt": 1793087328926,
+            "availableAt": 1793087329041,
+            "deadlineAt": 1793087330903,
+            "startDelayMs": 23,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087330903,
+            "requestedAt": 1793087330952,
+            "availableAt": 1793087331028,
+            "deadlineAt": 1793087332903,
+            "startDelayMs": 49,
+            "requests": 1,
+            "quoteAgeAtUseMs": 21,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087332903,
+            "requestedAt": 1793087332963,
+            "availableAt": 1793087333072,
+            "deadlineAt": 1793087334903,
+            "startDelayMs": 60,
+            "requests": 1,
+            "quoteAgeAtUseMs": 17,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087334903,
+            "requestedAt": 1793087334980,
+            "availableAt": 1793087335048,
+            "deadlineAt": 1793087336903,
+            "startDelayMs": 77,
+            "requests": 1,
+            "quoteAgeAtUseMs": 17,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087336903,
+            "requestedAt": 1793087336997,
+            "availableAt": 1793087337077,
+            "deadlineAt": 1793087338903,
+            "startDelayMs": 94,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087338903,
+            "requestedAt": 1793087338911,
+            "availableAt": 1793087339001,
+            "deadlineAt": 1793087340903,
+            "startDelayMs": 8,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087340903,
+            "requestedAt": 1793087340919,
+            "availableAt": 1793087340999,
+            "deadlineAt": 1793087342903,
+            "startDelayMs": 16,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087342903,
+            "requestedAt": 1793087342931,
+            "availableAt": 1793087342997,
+            "deadlineAt": 1793087344903,
+            "startDelayMs": 28,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087344903,
+            "requestedAt": 1793087344944,
+            "availableAt": 1793087345051,
+            "deadlineAt": 1793087346903,
+            "startDelayMs": 41,
+            "requests": 1,
+            "quoteAgeAtUseMs": 22,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087346903,
+            "requestedAt": 1793087346963,
+            "availableAt": 1793087347124,
+            "deadlineAt": 1793087348903,
+            "startDelayMs": 60,
+            "requests": 1,
+            "quoteAgeAtUseMs": 19,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087348903,
+            "requestedAt": 1793087348975,
+            "availableAt": 1793087349036,
+            "deadlineAt": 1793087350903,
+            "startDelayMs": 72,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087350903,
+            "requestedAt": 1793087350990,
+            "availableAt": 1793087351048,
+            "deadlineAt": 1793087352903,
+            "startDelayMs": 87,
+            "requests": 1,
+            "quoteAgeAtUseMs": 16,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087352903,
+            "requestedAt": 1793087352996,
+            "availableAt": 1793087353055,
+            "deadlineAt": 1793087354903,
+            "startDelayMs": 93,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087354903,
+            "requestedAt": 1793087354910,
+            "availableAt": 1793087354974,
+            "deadlineAt": 1793087356903,
+            "startDelayMs": 7,
+            "requests": 1,
+            "quoteAgeAtUseMs": 20,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087356903,
+            "requestedAt": 1793087356923,
+            "availableAt": 1793087357020,
+            "deadlineAt": 1793087358903,
+            "startDelayMs": 20,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087358903,
+            "requestedAt": 1793087358935,
+            "availableAt": 1793087359000,
+            "deadlineAt": 1793087360903,
+            "startDelayMs": 32,
+            "requests": 1,
+            "quoteAgeAtUseMs": 17,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087360903,
+            "requestedAt": 1793087360951,
+            "availableAt": 1793087361031,
+            "deadlineAt": 1793087362903,
+            "startDelayMs": 48,
+            "requests": 1,
+            "quoteAgeAtUseMs": 17,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087362903,
+            "requestedAt": 1793087362963,
+            "availableAt": 1793087363033,
+            "deadlineAt": 1793087364903,
+            "startDelayMs": 60,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087364903,
+            "requestedAt": 1793087364974,
+            "availableAt": 1793087365032,
+            "deadlineAt": 1793087366903,
+            "startDelayMs": 71,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087366903,
+            "requestedAt": 1793087366987,
+            "availableAt": 1793087367049,
+            "deadlineAt": 1793087368903,
+            "startDelayMs": 84,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087368903,
+            "requestedAt": 1793087368995,
+            "availableAt": 1793087369068,
+            "deadlineAt": 1793087370903,
+            "startDelayMs": 92,
+            "requests": 1,
+            "quoteAgeAtUseMs": 15,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087370903,
+            "requestedAt": 1793087370906,
+            "availableAt": 1793087370989,
+            "deadlineAt": 1793087372903,
+            "startDelayMs": 3,
+            "requests": 1,
+            "quoteAgeAtUseMs": 23,
+            "usable": true,
+            "late": false,
+            "reason": null
+          },
+          {
+            "scheduledAt": 1793087372903,
+            "requestedAt": 1793087372920,
+            "availableAt": 1793087373008,
+            "deadlineAt": 1793087374903,
+            "startDelayMs": 17,
+            "requests": 1,
+            "quoteAgeAtUseMs": 18,
+            "usable": true,
+            "late": false,
+            "reason": null
+          }
+        ]
+      },
+      "streamTrafficAccounting": "Full socket bytesRead includes upgrade prefix; upgrade prefix also conservatively charged to RPC-related WS. Broad application/socket traffic is not charged as RPC notifications.",
+      "apiDataFeesUsd": "0 documented public/data-only endpoints; infrastructure transfer allocation unverified"
+    },
+    "heldEvaluations": 36,
+    "holdingCount": 3,
+    "usage": {
+      "grantId": "overnight-11-combined",
+      "baseline": {
+        "calls": 111,
+        "bytes": 2883940,
+        "starts": [
+          1793069031002,
+          1793069031314,
+          1793069031396,
+          1793069031462,
+          1793069031573,
+          1793069031683,
+          1793070868114,
+          1793070868438,
+          1793070868560,
+          1793070868620,
+          1793070868784,
+          1793070868860,
+          1793070868907,
+          1793070868987,
+          1793070869076,
+          1793070869128,
+          1793070869216,
+          1793070869294,
+          1793070869347,
+          1793070869405,
+          1793081386306,
+          1793081387309,
+          1793081388313,
+          1793081389315,
+          1793083252240,
+          1793083253245,
+          1793083254248,
+          1793083255251,
+          1793083256255,
+          1793083419722,
+          1793083420725,
+          1793083421729,
+          1793083422732,
+          1793083423735,
+          1793083780796,
+          1793083781799,
+          1793084322691,
+          1793084323694,
+          1793084666467,
+          1793084713873,
+          1793084714877,
+          1793084715881,
+          1793084716884,
+          1793084911356,
+          1793084921822,
+          1793084922823,
+          1793084937183,
+          1793085437929,
+          1793085438942,
+          1793085439945,
+          1793085440949,
+          1793085771700,
+          1793085772703,
+          1793085773707,
+          1793085774709,
+          1793085775711,
+          1793085776716,
+          1793085777718,
+          1793085778721,
+          1793085779723,
+          1793085780726,
+          1793085781729,
+          1793085782732,
+          1793085783781,
+          1793085785780,
+          1793085787779,
+          1793085789779,
+          1793085790782,
+          1793085791784,
+          1793086393178,
+          1793086394181,
+          1793086395184,
+          1793086396187,
+          1793086397190,
+          1793086398193,
+          1793086399199,
+          1793086400202,
+          1793086401205,
+          1793086402208,
+          1793086403210,
+          1793086404213,
+          1793086405256,
+          1793086407255,
+          1793086409255,
+          1793086411256,
+          1793086412260,
+          1793086413263,
+          1793086414266,
+          1793086415269,
+          1793086416271,
+          1793086417275,
+          1793086418278,
+          1793086419281,
+          1793086420284,
+          1793086421288,
+          1793086422291,
+          1793086423294,
+          1793086424297,
+          1793086425300,
+          1793086426302,
+          1793086427305,
+          1793086428308,
+          1793086429314,
+          1793086431255,
+          1793086433254,
+          1793086434258,
+          1793086435262,
+          1793086436265,
+          1793086437268,
+          1793086438271,
+          1793086439275
+        ],
+        "refusal": "RPC_HTTP_429",
+        "refusalAt": 1793070869405,
+        "sha256": "88c119fb0a9066d978a56181168de49ba145b5f337afc3fc1ec7e1a39f59cd42"
+      },
+      "cumulativeUnits": 155,
+      "newUnits": 44,
+      "actualInvokedUnits": 44,
+      "cumulativeResponseBytes": 3485074,
+      "httpBytes": 600921,
+      "wsBytes": 213,
+      "newResponseBytes": 601134,
+      "remainingGrantUnits": 26,
+      "remainingCumulativeUnits": 85,
+      "remainingGrantResponseBytes": 32953298,
+      "remainingCumulativeResponseBytes": 63623790,
+      "pending": [],
+      "uncertainResponseBytes": 0,
+      "rolling60SecondStarts": 33,
+      "rolling10SecondStarts": 6,
+      "starts": [
+        1793087302346,
+        1793087303348,
+        1793087304352,
+        1793087305356,
+        1793087306926,
+        1793087307929,
+        1793087308962,
+        1793087310169,
+        1793087311172,
+        1793087312174,
+        1793087313177,
+        1793087315004,
+        1793087316916,
+        1793087318949,
+        1793087320975,
+        1793087322989,
+        1793087325000,
+        1793087326912,
+        1793087328936,
+        1793087330958,
+        1793087332967,
+        1793087334988,
+        1793087337000,
+        1793087338915,
+        1793087340922,
+        1793087342934,
+        1793087343937,
+        1793087344949,
+        1793087346059,
+        1793087347062,
+        1793087348979,
+        1793087350993,
+        1793087353000,
+        1793087354914,
+        1793087356926,
+        1793087358940,
+        1793087360954,
+        1793087362966,
+        1793087364977,
+        1793087366991,
+        1793087368998,
+        1793087370909,
+        1793087372923,
+        1793087373932
+      ],
+      "actualInvocations": [
+        {
+          "id": 112,
+          "at": 1793087302346
+        },
+        {
+          "id": 113,
+          "at": 1793087303348
+        },
+        {
+          "id": 114,
+          "at": 1793087304352
+        },
+        {
+          "id": 115,
+          "at": 1793087305356
+        },
+        {
+          "id": 116,
+          "at": 1793087306926
+        },
+        {
+          "id": 117,
+          "at": 1793087307929
+        },
+        {
+          "id": 118,
+          "at": 1793087308962
+        },
+        {
+          "id": 119,
+          "at": 1793087310169
+        },
+        {
+          "id": 120,
+          "at": 1793087311172
+        },
+        {
+          "id": 121,
+          "at": 1793087312174
+        },
+        {
+          "id": 122,
+          "at": 1793087313177
+        },
+        {
+          "id": 123,
+          "at": 1793087315004
+        },
+        {
+          "id": 124,
+          "at": 1793087316916
+        },
+        {
+          "id": 125,
+          "at": 1793087318949
+        },
+        {
+          "id": 126,
+          "at": 1793087320975
+        },
+        {
+          "id": 127,
+          "at": 1793087322989
+        },
+        {
+          "id": 128,
+          "at": 1793087325000
+        },
+        {
+          "id": 129,
+          "at": 1793087326912
+        },
+        {
+          "id": 130,
+          "at": 1793087328936
+        },
+        {
+          "id": 131,
+          "at": 1793087330958
+        },
+        {
+          "id": 132,
+          "at": 1793087332967
+        },
+        {
+          "id": 133,
+          "at": 1793087334988
+        },
+        {
+          "id": 134,
+          "at": 1793087337000
+        },
+        {
+          "id": 135,
+          "at": 1793087338915
+        },
+        {
+          "id": 136,
+          "at": 1793087340922
+        },
+        {
+          "id": 137,
+          "at": 1793087342934
+        },
+        {
+          "id": 138,
+          "at": 1793087343937
+        },
+        {
+          "id": 139,
+          "at": 1793087344949
+        },
+        {
+          "id": 140,
+          "at": 1793087346059
+        },
+        {
+          "id": 141,
+          "at": 1793087347062
+        },
+        {
+          "id": 142,
+          "at": 1793087348979
+        },
+        {
+          "id": 143,
+          "at": 1793087350993
+        },
+        {
+          "id": 144,
+          "at": 1793087353000
+        },
+        {
+          "id": 145,
+          "at": 1793087354914
+        },
+        {
+          "id": 146,
+          "at": 1793087356926
+        },
+        {
+          "id": 147,
+          "at": 1793087358940
+        },
+        {
+          "id": 148,
+          "at": 1793087360954
+        },
+        {
+          "id": 149,
+          "at": 1793087362966
+        },
+        {
+          "id": 150,
+          "at": 1793087364977
+        },
+        {
+          "id": 151,
+          "at": 1793087366991
+        },
+        {
+          "id": 152,
+          "at": 1793087368998
+        },
+        {
+          "id": 153,
+          "at": 1793087370909
+        },
+        {
+          "id": 154,
+          "at": 1793087372923
+        },
+        {
+          "id": 155,
+          "at": 1793087373932
+        }
+      ],
+      "reservationStarts": [
+        1793087302344,
+        1793087303346,
+        1793087304350,
+        1793087305354,
+        1793087306923,
+        1793087307927,
+        1793087308960,
+        1793087310167,
+        1793087311170,
+        1793087312172,
+        1793087313175,
+        1793087315003,
+        1793087316915,
+        1793087318943,
+        1793087320973,
+        1793087322985,
+        1793087324998,
+        1793087326910,
+        1793087328931,
+        1793087330954,
+        1793087332964,
+        1793087334981,
+        1793087336999,
+        1793087338913,
+        1793087340921,
+        1793087342933,
+        1793087343935,
+        1793087344946,
+        1793087346057,
+        1793087347061,
+        1793087348977,
+        1793087350991,
+        1793087352998,
+        1793087354912,
+        1793087356925,
+        1793087358938,
+        1793087360953,
+        1793087362964,
+        1793087364975,
+        1793087366989,
+        1793087368997,
+        1793087370907,
+        1793087372921,
+        1793087373930
+      ],
+      "byOperation": {
+        "http:getMultipleAccounts": 37,
+        "ws-upgrade:upgrade": 1,
+        "http:getTransaction": 6
+      },
+      "durationsMs": [
+        211.265852,
+        70.229063,
+        552.3861810000003,
+        95.54248099999995,
+        94.20265699999982,
+        76.0850959999998,
+        43.2388719999999,
+        45.162084999999934,
+        67.14297500000066,
+        47.09795900000063,
+        47.49400699999933,
+        56.65482399999928,
+        69.99124699999993,
+        94.3761110000014,
+        129.73924700000134,
+        71.19428600000174,
+        42.50713200000246,
+        45.47086899999704,
+        69.26600500000131,
+        48.150604999998905,
+        87.80916799999977,
+        42.32144300000073,
+        56.23146099999576,
+        67.68925899999886,
+        57.114682999999786,
+        44.063358999999764,
+        52.829788000002736,
+        79.04172600000311,
+        44.17541199999687,
+        42.226934999998775,
+        41.83460400000331,
+        38.012080000000424,
+        39.22939700000279,
+        38.99027099999512,
+        77.88947200000257,
+        42.629564000002574,
+        58.445633000003,
+        50.79508799999894,
+        39.08606999999756,
+        42.306211000002804,
+        53.275929000010365,
+        54.81687199999578,
+        65.57914199998777,
+        95.98936700000195
+      ],
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "haltedReason": null,
+      "startedAt": 1793087301575,
+      "totalMs": 85000,
+      "deadlineAt": 1793087386575,
+      "closed": false,
+      "storageFailed": false
+    },
+    "hypotheticalOnly": true,
+    "productionTouched": false,
+    "paperEntries": false,
+    "liveTrading": false,
+    "acceptanceClock": false
+  },
+  "uncertainAttempt": false,
+  "priorEvidenceUnchanged": true,
+  "priorMismatches": [],
+  "sourceUnchanged": true,
+  "sourceMismatches": [],
+  "newEvidenceBytesBeforeReceipt": 1665951,
+  "noRetry": true,
+  "productionChanged": false,
+  "entriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

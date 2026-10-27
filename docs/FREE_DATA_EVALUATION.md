@@ -1,4 +1,30 @@
-# POE free-data evaluation — offline design decision
+# POE free-data evaluation — current decision and historical research
+
+
+## Current overnight result — 2026-10-27
+
+**$0 additional API fees are verified for the tested components, not continuous
+PAPER operation.** Fresh coherent Clock pricing on three pools and matched direct/
+CPI Sell fields are verified. Exact-quote V2 and legacy Buy semantics were proved
+and corrected offline. Full event identity/commitment still require one confirmed
+transaction read per selected signature; the feed is not a complete trade record.
+
+The combined forward sample had two mapper failures, zero usable60-second windows
+and a3.224-second completed-evaluation gap. Corrected chronological replay cannot
+retroactively pass it. Basic pricing is VERIFIED FOR THE TESTED SCOPE; the combined
+trading configuration is NOT YET VERIFIED, with named decoder-forward, coverage,
+scheduling, response and sustained-cost gaps. It is not declared unsuitable merely
+because a prior active-pool preflight failed.
+
+Prefer coherent batching at the unchanged two-second reference and compatible
+post-delay state reuse. No new screen or slower monitoring policy was adopted.
+No Alchemy/Helius, paid service, production change or entry enablement occurred.
+All captures are closed; fully committed stream reservations prevent an automatic
+rerun. See [OVERNIGHT_HANDOFF.md](OVERNIGHT_HANDOFF.md) for measured scope/cost and
+[the final counter rollup](../evidence/overnight-20261027/final-summary.json).
+There is no infrastructure, funding or credential action to repeat.
+
+## Historical offline decision (superseded where noted above)
 
 **Later focused evaluation:** see [ADAPTIVE_MONITORING_EVALUATION.md](ADAPTIVE_MONITORING_EVALUATION.md).
 The owner approved its exact public-RPC component at4bbb213. It ran once and

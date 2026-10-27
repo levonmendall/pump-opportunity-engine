@@ -59,6 +59,17 @@ test('actual-size pricing uses original coherent-batch age, counts modeled gas o
   s=core.snapshot(base+2600);assert.equal(s.prices.changes,1);assert.equal(s.prices.triggerEvents.length,1);assert.equal(s.prices.triggerEvents[0]!.recognitionAfterBatchReceiveMs,100);assert.equal(s.prices.triggerEvents[0]!.chainCrossingTime,'UNKNOWN_BETWEEN_SAMPLED_STATES');assert.equal(s.naturalPaperTrades,0);
 });
 
+test('explicit same-context bank Clock remains distinct from block time; unknown timing, stale Clock and mismatched slots are refused',()=>{
+  const {core}=fixture(),regular=quote(base+100),{marketBlockTime,...common}=regular;
+  const clock={...common,timeEvidence:'confirmed-bank-clock' as const,clockSlot:regular.slot,marketClockUnixSeconds:Math.floor((base+100)/1000)};
+  const accepted=core.price(clock,base+200)!;assert.ok(accepted);assert.equal(accepted.sourceTimeEvidence!.kind,'confirmed-bank-clock');assert.equal('marketBlockTime'in accepted.sourceTimeEvidence!,false);
+  assert.equal(core.price({...clock,clockSlot:clock.slot+1},base+300),null);
+  assert.equal(core.price({...clock,marketClockUnixSeconds:Math.floor(base/1000)-31},base+400),null);
+  assert.equal(core.price({...regular,timeEvidence:'unknown'} as any,base+500),null);
+  assert.equal(core.price({...common,marketClockUnixSeconds:clock.marketClockUnixSeconds} as any,base+600),null);
+  const independent=core.price(quote(base+700),base+800)!;assert.equal(independent.sourceTimeEvidence!.kind,'independently-retrieved-block-time');assert.equal(core.snapshot(base+900).prices.rejected,4);
+});
+
 test('audit duplicates are harmless but transfer quality corrections invalidate the historical experiment window',()=>{
   const {core}=fixture();core.observe(payload(),base+100);const hint=core.nextHint(base+1100)!;core.completeHint(hint,raw.transaction,base+1500);core.endObservation(base+60_000);
   core.audit(hint,raw.transaction,base+60_100);assert.equal(core.snapshot(base+60_101).duplicateExecutedEvents,1);

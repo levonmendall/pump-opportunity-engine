@@ -4,8 +4,8 @@
     "reservedBytes": 117440512,
     "reservedMs": 100000
   },
-  "reservedBytes": 201326592,
-  "reservedMs": 145000,
+  "reservedBytes": 268435456,
+  "reservedMs": 230000,
   "attempts": [
     {
       "leg": "05-sampler",
@@ -26,6 +26,15 @@
       "observedSocketBytes": 23684526,
       "reason": null,
       "fieldStopReason": "COMPONENT_FIELD_DURATION_LIMIT"
+    },
+    {
+      "leg": "11-combined",
+      "reservedAt": 1793087303452,
+      "reservedBytes": 67108864,
+      "reservedMs": 85000,
+      "status": "completed-with-receipt",
+      "observedSocketBytes": 65179210,
+      "stopReason": "COMPONENT_FIELD_APPLICATION_STOP"
     }
   ]
 }

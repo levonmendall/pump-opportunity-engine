@@ -5,7 +5,8 @@ import {pumpApiSignatureHint,mapConfirmedPumpSwapEvidence,toResearchNormalizedTr
 export type ActiveScope={mint:string;pool:string;baseUnits:string|bigint;minSlot:number;supportedPoolEvidence:string};
 export type ActiveHint={signature:string;receivedAt:number;expectedTrade:boolean};
 type PipelineOptions={scope:ActiveScope;now?:()=>number;record?:(kind:string,data:unknown)=>void};
-type SizedQuote={mint:string;slot:number;commitment:string;receivedAt:string;marketBlockTime:number;sell:{inputBaseUnits:string;outputLamports:string}};
+type QuoteFields={mint:string;slot:number;commitment:string;receivedAt:string;sell:{inputBaseUnits:string;outputLamports:string}};
+type SizedQuote=QuoteFields&({marketBlockTime:number;timeEvidence?:never}|{timeEvidence:'confirmed-bank-clock';clockSlot:number;marketClockUnixSeconds:number});
 const MAX_HINTS=16,MAX_SIGNATURES=64,MAX_EVENTS=128,MAX_ROWS=100,ENRICH_DELAY_MS=1000,ENRICH_DEADLINE_MS=5000,GAS=7000n;
 const integer=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const unsigned=(v:unknown):v is string=>typeof v==='string'&&/^(0|[1-9][0-9]{0,38})$/.test(v);
@@ -116,17 +117,20 @@ export class ActivePipeline {
   price(quote:SizedQuote|null,availableAt=this.now()){
     this.clock(availableAt);this.integrateMarks(availableAt);let reason:string|null=null;
     const sourceAt=quote?Date.parse(quote.receivedAt):NaN;
-    if(!quote||quote.mint!==this.scope.mint||quote.sell?.inputBaseUnits!==this.scope.baseUnits||quote.commitment!=='confirmed'||!integer(quote.slot)||quote.slot<this.scope.minSlot||!integer(sourceAt)||sourceAt>availableAt||availableAt-sourceAt>PROVISIONAL_RULE.maximumQuoteAgeMs||!integer(quote.marketBlockTime)||Math.abs(availableAt-quote.marketBlockTime*1000)>30_000||!unsigned(quote.sell.outputLamports))reason='actual-size-fresh-quote-unavailable';
-    if(reason){this.rejectedQuotes++;this.emit('research-price-unavailable',{at:availableAt,reason});return null;}
+    const clockQuote=quote?.timeEvidence==='confirmed-bank-clock';
+    const sourceTimeEvidence=clockQuote?{kind:'confirmed-bank-clock' as const,clockSlot:quote.clockSlot,marketClockUnixSeconds:quote.marketClockUnixSeconds}:quote&&quote.timeEvidence===undefined&&'marketBlockTime'in quote?{kind:'independently-retrieved-block-time' as const,marketBlockTime:quote.marketBlockTime}:null;
+    const validSource=sourceTimeEvidence?.kind==='confirmed-bank-clock'?integer(sourceTimeEvidence.clockSlot)&&sourceTimeEvidence.clockSlot===quote?.slot&&integer(sourceTimeEvidence.marketClockUnixSeconds)&&sourceTimeEvidence.marketClockUnixSeconds*1000<=availableAt&&availableAt-sourceTimeEvidence.marketClockUnixSeconds*1000<=30_000:sourceTimeEvidence?.kind==='independently-retrieved-block-time'&&integer(sourceTimeEvidence.marketBlockTime)&&Math.abs(availableAt-sourceTimeEvidence.marketBlockTime*1000)<=30_000;
+    if(!quote||quote.mint!==this.scope.mint||quote.sell?.inputBaseUnits!==this.scope.baseUnits||quote.commitment!=='confirmed'||!integer(quote.slot)||quote.slot<this.scope.minSlot||!integer(sourceAt)||sourceAt>availableAt||availableAt-sourceAt>PROVISIONAL_RULE.maximumQuoteAgeMs||!validSource||!unsigned(quote.sell.outputLamports))reason='actual-size-fresh-quote-unavailable';
+    if(reason){this.rejectedQuotes++;this.emit('research-price-unavailable',{at:availableAt,reason,sourceTimeEvidence});return null;}
     const q=quote!,net=(BigInt(q.sell.outputLamports)>GAS?BigInt(q.sell.outputLamports)-GAS:0n).toString(),during=this.endedAt===null&&this.closedAt===null;
     if(!during){this.emit('research-price-after-observation',{at:availableAt,sourceAt,netLamports:net});return null;}
     this.acceptedQuotes++;if(this.lastNet!==null&&this.lastNet!==net)this.priceChanges++;this.lastNet=net;
-    this.latestMark={at:sourceAt,availableAt,netLamports:net,pricedBaseUnits:this.scope.baseUnits,evidence:'RESEARCH confirmed SDK full-size quote; modeled gas7000 counted once'};
+    this.latestMark={at:sourceAt,availableAt,netLamports:net,pricedBaseUnits:this.scope.baseUnits,evidence:'RESEARCH confirmed SDK full-size quote; '+sourceTimeEvidence!.kind+'; modeled gas7000 counted once'};
     if(!this.firstQuoteSeen){this.firstQuoteSeen=true;if(BigInt(net)>0n)this.baseline={at:availableAt,cost:net};}
     const decision=this.baseline?evaluateExit({now:availableAt,enteredAt:this.baseline.at,entryCostLamports:this.baseline.cost,heldBaseUnits:this.scope.baseUnits,mark:this.latestMark}):{action:'quote-required',reason:'initial-positive-hypothetical-cost-unavailable'};
     if(decision.action==='request-exit'&&this.lastExitAction!=='request-exit'&&this.acceptedQuotes>1&&this.triggerEvents.length<MAX_ROWS)this.triggerEvents.push({recognizedAt:availableAt,sourceReceivedAt:sourceAt,recognitionAfterBatchReceiveMs:availableAt-sourceAt,chainCrossingTime:'UNKNOWN_BETWEEN_SAMPLED_STATES',netLamports:net,reason:decision.reason});
     this.lastExitAction=decision.action;
-    const row={availableAt,sourceReceivedAt:sourceAt,quoteAgeMs:availableAt-sourceAt,slot:q.slot,grossSellLamports:q.sell.outputLamports,modeledGasLamports:GAS.toString(),netLamports:net,hypotheticalBaseline:this.baseline,decision,mode:'RESEARCH_ONLY; no entry or fill'};
+    const row={availableAt,sourceReceivedAt:sourceAt,quoteAgeMs:availableAt-sourceAt,slot:q.slot,sourceTimeEvidence,grossSellLamports:q.sell.outputLamports,modeledGasLamports:GAS.toString(),netLamports:net,hypotheticalBaseline:this.baseline,decision,mode:'RESEARCH_ONLY; no entry or fill'};
     if(this.quoteRows.length<MAX_ROWS)this.quoteRows.push(row);this.emit('research-position-price',row);return row;
   }
   endObservation(at=this.now(),reason='bounded-source-end'){

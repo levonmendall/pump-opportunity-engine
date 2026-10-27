@@ -12,10 +12,11 @@ support/liquidity screen.** Those checks already exist; a new price gate changes
 selection and needs separate economic evidence.
 
 The observer, original account/inception, financial history, public Render viewer
-and authenticated publishing were untouched. No provider/production network
-request, deployment, entry enablement or acceptance-clock start occurred. The
-last production read remains the earlier snapshot522, not a new health claim.
-All results below are offline. Natural PAPER trades created by this work: zero.
+and authenticated publishing were untouched. The initial comparisons below are
+offline; the separately labeled overnight section adds authorized live component
+measurements. No deployment, entry enablement or acceptance clock. Natural PAPER
+trades created by this work: zero. Latest reporting read: snapshot1049 at08:04UTC;
+this is not a direct host health or private-database audit.
 
 ## What was tested and what was not
 
@@ -479,3 +480,54 @@ The two-second reference remains the recommendation. The observer, account and
 inception, financial history, public Render viewer and machine authentication
 were untouched. No production health/freshness check was performed this session.
 PAPER entries/live trading remain disabled; acceptance clocks remain unstarted.
+
+
+## Overnight live component and integration evidence — 2026-10-27
+
+This section adds real observations; it does not relabel the earlier synthetic
+policy comparisons as forward trading. Full receipts, code provenance and exact
+usage: [OVERNIGHT_HANDOFF.md](OVERNIGHT_HANDOFF.md) and
+[final-summary.json](../evidence/overnight-20261027/final-summary.json).
+
+| Question | Measured answer |
+| --- | --- |
+| Fresh Clock/account/SDK validity | Quiet supported pool passed full validation; two three-pool16-account unions produced six exact same-byte quotes |
+| Two-second three-holding pricing |35periodic union evaluations during69.530s of combined feed observation; all used quotes15–41ms old |
+| Completed evaluation delays | p952.073s, maximum3.224s;1.425s censored tail. Fresh-cache gap2.688s/3.866%. No sampled stop/TP crossing |
+| Subscription/recovery | Seven desired accounts acknowledged/restored after one planned reconnect; fresh state851ms after upgrade, before all ACKs. One changed version matched in the earlier interrupted run; changed delivery after reconnect unverified |
+| Actual trade fields | Captured seven sells (two direct/five CPI), two V2 exact-quote buys corrected offline; separate delayed legacy exact-quote Buy proof. Complete event identity/commitment still needs per-signature getTransaction |
+| Combined flow quality | Four sells normalized; two Buy failures; audit5underlying swaps/5hints/3original normalizations. Zero usable forward60s windows |
+| Corrected replay | One raw warmed closed window using original information times, still fails buying/concentration rule; no entries or P&L, no forward acceptance |
+
+Measured steady union pricing demand was30.20starts/minute for three holdings;
+enrichment was5.18/minute for one light candidate. Relative to three independent
+Clock checks at the same cadence, one batch projects90→30pricing starts/minute.
+The test establishes actual batching/math, not a continuous60/minute capacity
+pass: one-second start pacing, delayed hints and quote completion interact. With
+an illustrative12/minute integrity/recovery/headroom reserve, only about18/minute
+remain for aggregate enrichment, admissions and any costs exceeding that reserve.
+Short bursts and recovery may fail even when the average fits. No endpoint
+entitlement, EC2 capacity, profitable exit or arbitrary shortlist size is proved.
+
+A strict reservation of every future two-second start was tested offline and
+**rejected as the default**:10ms pacing jitter can indefinitely starve candidate
+enrichment. Its opt-in negative experiment remains off in every runner. The
+observed3.224s gap is unresolved; no slower policy, raised limit or stale quote was
+used to obtain a pass. The next engineering task is a bounded shared deadline
+policy that exposes infeasible demand rather than dropping required evidence.
+
+Equivalent improvements remain first: coherent dependency union and compatible
+fresh post-delay quote reuse. Clock bank time changes timestamp provenance and
+is explicitly separate from independently retrieved block time. Optional lazy
+quotes preserve the existing predictive predicate and slot floors, but defer
+quote/refusal knowledge and can change asynchronous decision timing; default off.
+Candidate10-second buckets and zero held-token enrichment already existed and
+are not counted again. No preliminary price screen was added. Economic comparison
+of full-flow versus a price-only challenger remains unassessable on this sample.
+
+The peak Cloud RSS was155.57MiB and CPU3.685seconds for the combined component;
+broad traffic was65,179,210bytes/69.530s. Local filtering does not reduce that
+incoming traffic. The conditional continuous projection is80.99GB/day and2.43TB/
+30days, not a measured free infrastructure allowance. API fees were$0; no EC2
+experiment or production deployment occurred. All stream reservations are now
+committed, so no automatic forward rerun is permitted.

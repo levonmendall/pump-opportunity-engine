@@ -1,0 +1,1251 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T07:33:59.333Z",
+  "startedAt": 1793086392311,
+  "deadlineAt": 1793086482311,
+  "supervisor": {
+    "wallMs": 47021.957609,
+    "peakRssBytes": 155049984,
+    "peakCpuMs": 2860,
+    "peakParentLoopLagMs": 4.145274000002246,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "stopReason": null,
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "resourceCheckErrors": [],
+    "activeEvidenceAccounting": {
+      "atomicTempHeadroomBytes": 131072,
+      "vanishedAtomicFiles": 0
+    }
+  },
+  "outcome": "NOTIFICATION_COMPONENT_COMPLETED",
+  "summary": {
+    "outcome": "NOTIFICATION_COMPONENT_COMPLETED",
+    "reason": null,
+    "startedAt": 1793086392311,
+    "finishedAt": 1793086439303,
+    "elapsedMs": 46992,
+    "commonStartedAt": 1793086403252,
+    "commonObservationMs": 30000,
+    "subject": {
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "fullBaseUnits": "436723517",
+      "hypotheticalEntryCostLamports": "10007000",
+      "costReferenceRef": "evidence/overnight-20261027/06-targeted/selected.json",
+      "realPosition": false
+    },
+    "objectives": {
+      "basicCurrentState": {
+        "status": "VERIFIED_FOR_CAPTURED_SIZE_AND_STATE",
+        "evidence": {
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987265,
+          "availableAt": 1793086394251,
+          "fullBaseUnits": "436723517",
+          "quoteAgeAtUseMs": 15,
+          "sameBytesSdkParity": true,
+          "bankClockValidated": true
+        },
+        "requiresRecentSwap": false,
+        "entryAgeEligibility": "UNVERIFIED_SEPARATE_FROM_HYPOTHETICAL_HOLDING"
+      },
+      "independentBlockTimestamp": {
+        "status": "OBSERVED",
+        "references": [
+          {
+            "slot": 461987265,
+            "requestedAt": 1793086394252,
+            "availableAt": 1793086395239,
+            "blockTime": 1793086393,
+            "provenance": "independently-retrieved-getBlockTime",
+            "backdated": false
+          },
+          {
+            "slot": 461987419,
+            "requestedAt": 1793086428305,
+            "availableAt": 1793086428395,
+            "blockTime": 1793086426,
+            "provenance": "independently-retrieved-getBlockTime",
+            "backdated": false
+          }
+        ],
+        "provenance": "independent-getBlockTime-not-bank-clock"
+      },
+      "subscriptionAcknowledgements": {
+        "status": "ACKNOWLEDGED",
+        "uniqueAddresses": 7,
+        "changeDeliveryClaim": false
+      },
+      "reconnectAcknowledgements": {
+        "status": "RESTORED",
+        "uniqueAddresses": 7,
+        "requested": true,
+        "closedAt": 1793086411411,
+        "upgradedAt": 1793086412495,
+        "allAcknowledgedAt": 1793086426332,
+        "firstCoherentQuoteAt": 1793086413346
+      },
+      "freshStateAfterReconnect": {
+        "status": "OBSERVED",
+        "availableAt": 1793086413346,
+        "notificationDeliveryClaim": false
+      },
+      "changedAccountDelivery": {
+        "status": "UNVERIFIED",
+        "changedNotifications": 0,
+        "matched": [],
+        "limitation": "Intermediate unmatched versions are not proof of loss; no complete-delivery denominator.",
+        "matchedVersionsTotal": 0,
+        "matchDetailLimit": 32,
+        "remainingEvidence": "All received selected notices and validated account snapshots remain in observations.ndjson."
+      },
+      "actualSizePriceChanges": {
+        "status": "OBSERVED",
+        "changes": [
+          {
+            "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+            "priorSlot": 461987380,
+            "slot": 461987391,
+            "priorAvailableAt": 1793086419364,
+            "availableAt": 1793086421366,
+            "priorOutputLamports": "10386226",
+            "outputLamports": "10385568"
+          }
+        ],
+        "clockSlotAdvanceIsPriceChange": false
+      },
+      "sampledExitRecognition": {
+        "status": "UNVERIFIED",
+        "transitions": [],
+        "exactThresholdCrossingDelay": "UNVERIFIED",
+        "continuousProtection": "UNVERIFIED"
+      },
+      "laterStopReason": null,
+      "basicEvidenceSurvivesLaterFailure": false
+    },
+    "pricing": {
+      "periodic": 15,
+      "triggers": 0,
+      "validatedBatches": 16,
+      "actionableAtUse": 16,
+      "nonActionableDueNewerKnownState": 0,
+      "nonActionableDueSameSlotBytes": 0,
+      "quoteAgeAtUseMs": {
+        "samples": 16,
+        "p50": 8,
+        "p95": 10,
+        "maximum": 15
+      },
+      "sourceAgeAtUseMs": {
+        "samples": 16,
+        "p50": 1351,
+        "p95": 1396,
+        "maximum": 1409
+      },
+      "completedEvaluationGapsMs": {
+        "samples": 15,
+        "p50": 2005,
+        "p95": 2058,
+        "maximum": 10101
+      },
+      "referenceLatenessMs": {
+        "samples": 15,
+        "p50": 23,
+        "p95": 62,
+        "maximum": 961
+      },
+      "evaluations": [
+        {
+          "kind": "preflight",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987265,
+          "requestedFloor": 461979360,
+          "highestKnownNoticeAtUse": 0,
+          "requestedAt": 1793086394181,
+          "expectedAt": null,
+          "initialAvailableAt": 1793086394246,
+          "availableAt": 1793086394251,
+          "usedAt": 1793086394251,
+          "startLatenessMs": null,
+          "quoteAgeAtUseMs": 15,
+          "sourceAgeAtUseMs": 1251,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987311,
+          "requestedFloor": 461987290,
+          "highestKnownNoticeAtUse": 461987290,
+          "requestedAt": 1793086404213,
+          "expectedAt": 1793086403252,
+          "initialAvailableAt": 1793086404347,
+          "availableAt": 1793086404352,
+          "usedAt": 1793086404352,
+          "startLatenessMs": 961,
+          "quoteAgeAtUseMs": 10,
+          "sourceAgeAtUseMs": 1352,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987317,
+          "requestedFloor": 461987290,
+          "highestKnownNoticeAtUse": 461987290,
+          "requestedAt": 1793086405256,
+          "expectedAt": 1793086405252,
+          "initialAvailableAt": 1793086405333,
+          "availableAt": 1793086405337,
+          "usedAt": 1793086405337,
+          "startLatenessMs": 4,
+          "quoteAgeAtUseMs": 8,
+          "sourceAgeAtUseMs": 1337,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987325,
+          "requestedFloor": 461987323,
+          "highestKnownNoticeAtUse": 461987323,
+          "requestedAt": 1793086407255,
+          "expectedAt": 1793086407252,
+          "initialAvailableAt": 1793086407334,
+          "availableAt": 1793086407338,
+          "usedAt": 1793086407338,
+          "startLatenessMs": 3,
+          "quoteAgeAtUseMs": 9,
+          "sourceAgeAtUseMs": 1338,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987334,
+          "requestedFloor": 461987323,
+          "highestKnownNoticeAtUse": 461987323,
+          "requestedAt": 1793086409255,
+          "expectedAt": 1793086409252,
+          "initialAvailableAt": 1793086409346,
+          "availableAt": 1793086409351,
+          "usedAt": 1793086409351,
+          "startLatenessMs": 3,
+          "quoteAgeAtUseMs": 9,
+          "sourceAgeAtUseMs": 1351,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987344,
+          "requestedFloor": 461987323,
+          "highestKnownNoticeAtUse": 461987323,
+          "requestedAt": 1793086411256,
+          "expectedAt": 1793086411252,
+          "initialAvailableAt": 1793086411404,
+          "availableAt": 1793086411409,
+          "usedAt": 1793086411409,
+          "startLatenessMs": 4,
+          "quoteAgeAtUseMs": 9,
+          "sourceAgeAtUseMs": 1409,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987354,
+          "requestedFloor": 461987323,
+          "highestKnownNoticeAtUse": 461987323,
+          "requestedAt": 1793086413263,
+          "expectedAt": 1793086413252,
+          "initialAvailableAt": 1793086413340,
+          "availableAt": 1793086413346,
+          "usedAt": 1793086413346,
+          "startLatenessMs": 11,
+          "quoteAgeAtUseMs": 10,
+          "sourceAgeAtUseMs": 346,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987363,
+          "requestedFloor": 461987323,
+          "highestKnownNoticeAtUse": 461987323,
+          "requestedAt": 1793086415269,
+          "expectedAt": 1793086415252,
+          "initialAvailableAt": 1793086415349,
+          "availableAt": 1793086415352,
+          "usedAt": 1793086415352,
+          "startLatenessMs": 17,
+          "quoteAgeAtUseMs": 6,
+          "sourceAgeAtUseMs": 1352,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987371,
+          "requestedFloor": 461987323,
+          "highestKnownNoticeAtUse": 461987323,
+          "requestedAt": 1793086417275,
+          "expectedAt": 1793086417252,
+          "initialAvailableAt": 1793086417391,
+          "availableAt": 1793086417396,
+          "usedAt": 1793086417396,
+          "startLatenessMs": 23,
+          "quoteAgeAtUseMs": 9,
+          "sourceAgeAtUseMs": 1396,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987380,
+          "requestedFloor": 461987323,
+          "highestKnownNoticeAtUse": 461987323,
+          "requestedAt": 1793086419281,
+          "expectedAt": 1793086419252,
+          "initialAvailableAt": 1793086419360,
+          "availableAt": 1793086419364,
+          "usedAt": 1793086419364,
+          "startLatenessMs": 29,
+          "quoteAgeAtUseMs": 9,
+          "sourceAgeAtUseMs": 1364,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10386226",
+            "grossCurveOutputLamports": "10475267",
+            "embeddedPoolFeeLamports": "89041"
+          },
+          "netAfterSimulatedExitGasLamports": "10379226",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987391,
+          "requestedFloor": 461987384,
+          "highestKnownNoticeAtUse": 461987384,
+          "requestedAt": 1793086421288,
+          "expectedAt": 1793086421252,
+          "initialAvailableAt": 1793086421362,
+          "availableAt": 1793086421366,
+          "usedAt": 1793086421366,
+          "startLatenessMs": 36,
+          "quoteAgeAtUseMs": 8,
+          "sourceAgeAtUseMs": 1366,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10385568",
+            "grossCurveOutputLamports": "10474604",
+            "embeddedPoolFeeLamports": "89036"
+          },
+          "netAfterSimulatedExitGasLamports": "10378568",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987401,
+          "requestedFloor": 461987384,
+          "highestKnownNoticeAtUse": 461987384,
+          "requestedAt": 1793086423294,
+          "expectedAt": 1793086423252,
+          "initialAvailableAt": 1793086423375,
+          "availableAt": 1793086423379,
+          "usedAt": 1793086423379,
+          "startLatenessMs": 42,
+          "quoteAgeAtUseMs": 8,
+          "sourceAgeAtUseMs": 379,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10385568",
+            "grossCurveOutputLamports": "10474604",
+            "embeddedPoolFeeLamports": "89036"
+          },
+          "netAfterSimulatedExitGasLamports": "10378568",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987410,
+          "requestedFloor": 461987384,
+          "highestKnownNoticeAtUse": 461987384,
+          "requestedAt": 1793086425300,
+          "expectedAt": 1793086425252,
+          "initialAvailableAt": 1793086425363,
+          "availableAt": 1793086425367,
+          "usedAt": 1793086425367,
+          "startLatenessMs": 48,
+          "quoteAgeAtUseMs": 8,
+          "sourceAgeAtUseMs": 1367,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10385568",
+            "grossCurveOutputLamports": "10474604",
+            "embeddedPoolFeeLamports": "89036"
+          },
+          "netAfterSimulatedExitGasLamports": "10378568",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987419,
+          "requestedFloor": 461987384,
+          "highestKnownNoticeAtUse": 461987384,
+          "requestedAt": 1793086427305,
+          "expectedAt": 1793086427252,
+          "initialAvailableAt": 1793086427373,
+          "availableAt": 1793086427376,
+          "usedAt": 1793086427376,
+          "startLatenessMs": 53,
+          "quoteAgeAtUseMs": 7,
+          "sourceAgeAtUseMs": 1376,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10385568",
+            "grossCurveOutputLamports": "10474604",
+            "embeddedPoolFeeLamports": "89036"
+          },
+          "netAfterSimulatedExitGasLamports": "10378568",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987429,
+          "requestedFloor": 461987384,
+          "highestKnownNoticeAtUse": 461987384,
+          "requestedAt": 1793086429314,
+          "expectedAt": 1793086429252,
+          "initialAvailableAt": 1793086429376,
+          "availableAt": 1793086429381,
+          "usedAt": 1793086429381,
+          "startLatenessMs": 62,
+          "quoteAgeAtUseMs": 8,
+          "sourceAgeAtUseMs": 381,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10385568",
+            "grossCurveOutputLamports": "10474604",
+            "embeddedPoolFeeLamports": "89036"
+          },
+          "netAfterSimulatedExitGasLamports": "10378568",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        },
+        {
+          "kind": "periodic",
+          "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "slot": 461987438,
+          "requestedFloor": 461987435,
+          "highestKnownNoticeAtUse": 461987435,
+          "requestedAt": 1793086431255,
+          "expectedAt": 1793086431252,
+          "initialAvailableAt": 1793086431302,
+          "availableAt": 1793086431306,
+          "usedAt": 1793086431306,
+          "startLatenessMs": 3,
+          "quoteAgeAtUseMs": 7,
+          "sourceAgeAtUseMs": 1306,
+          "actionableAtUse": true,
+          "nonActionableReason": null,
+          "sameSlotIncompatibleAccounts": [],
+          "sell": {
+            "inputBaseUnits": "436723517",
+            "outputLamports": "10385568",
+            "grossCurveOutputLamports": "10474604",
+            "embeddedPoolFeeLamports": "89036"
+          },
+          "netAfterSimulatedExitGasLamports": "10378568",
+          "hypotheticalExitCondition": null,
+          "dirtyVersionAtStart": 0,
+          "dirtyVersionAtCompletion": 0
+        }
+      ],
+      "sameBytesSdkParityChecks": 16,
+      "firstClockEvidence": {
+        "kind": "preflight",
+        "slot": 461987265,
+        "matches": true,
+        "clock": {
+          "timeEvidence": "confirmed-bank-clock",
+          "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+          "clockSlot": 461987265,
+          "marketClockUnixSeconds": 1793086393,
+          "maxMarketAgeMs": 30000,
+          "owner": "Sysvar1111111111111111111111111111111111111",
+          "executable": false,
+          "rawBytes": 40,
+          "slot": "461987265",
+          "epochStartTimestamp": "1793048300",
+          "epoch": "1069",
+          "leaderScheduleEpoch": "1070",
+          "unixTimestamp": "1793086393",
+          "sourceAgeAtReceiptMs": 1236,
+          "provenance": "bank-clock-account-not-independent-block-timestamp"
+        }
+      }
+    },
+    "subscriptions": {
+      "connections": 2,
+      "notifications": 9,
+      "changedNotifications": 0,
+      "wsSocketBytes": 14698,
+      "wsApplicationBytes": 12922,
+      "reconnect": {
+        "requested": true,
+        "closedAt": 1793086411411,
+        "upgradedAt": 1793086412495,
+        "allAcknowledgedAt": 1793086426332,
+        "firstCoherentQuoteAt": 1793086413346
+      },
+      "acknowledgements": [
+        {
+          "connection": 1,
+          "id": 74,
+          "method": "accountSubscribe",
+          "address": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "at": 1793086397235
+        },
+        {
+          "connection": 1,
+          "id": 75,
+          "method": "accountSubscribe",
+          "address": "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw",
+          "at": 1793086398229
+        },
+        {
+          "connection": 1,
+          "id": 76,
+          "method": "accountSubscribe",
+          "address": "5PHirr8joyTMp9JMm6nW7hNDVyEYdkzDqazxPD7RaTjx",
+          "at": 1793086399254
+        },
+        {
+          "connection": 1,
+          "id": 77,
+          "method": "accountSubscribe",
+          "address": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "at": 1793086400232
+        },
+        {
+          "connection": 1,
+          "id": 78,
+          "method": "accountSubscribe",
+          "address": "So11111111111111111111111111111111111111112",
+          "at": 1793086401240
+        },
+        {
+          "connection": 1,
+          "id": 79,
+          "method": "accountSubscribe",
+          "address": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+          "at": 1793086402244
+        },
+        {
+          "connection": 1,
+          "id": 80,
+          "method": "accountSubscribe",
+          "address": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+          "at": 1793086403250
+        },
+        {
+          "connection": 2,
+          "id": 88,
+          "method": "accountSubscribe",
+          "address": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+          "at": 1793086414327
+        },
+        {
+          "connection": 2,
+          "id": 90,
+          "method": "accountSubscribe",
+          "address": "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw",
+          "at": 1793086416305
+        },
+        {
+          "connection": 2,
+          "id": 92,
+          "method": "accountSubscribe",
+          "address": "5PHirr8joyTMp9JMm6nW7hNDVyEYdkzDqazxPD7RaTjx",
+          "at": 1793086418328
+        },
+        {
+          "connection": 2,
+          "id": 94,
+          "method": "accountSubscribe",
+          "address": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+          "at": 1793086420318
+        },
+        {
+          "connection": 2,
+          "id": 96,
+          "method": "accountSubscribe",
+          "address": "So11111111111111111111111111111111111111112",
+          "at": 1793086422316
+        },
+        {
+          "connection": 2,
+          "id": 98,
+          "method": "accountSubscribe",
+          "address": "FhPnTvitQFA8HwcD8eQwAYwTBVov642Bp2vJxXJftmks",
+          "at": 1793086424322
+        },
+        {
+          "connection": 2,
+          "id": 100,
+          "method": "accountSubscribe",
+          "address": "GGf2tpFKavF5jwZQj4jsAMmExtnLCAS1BZR5wa6mQhje",
+          "at": 1793086426331
+        },
+        {
+          "connection": 2,
+          "id": 105,
+          "method": "accountUnsubscribe",
+          "address": null,
+          "at": 1793086433313
+        },
+        {
+          "connection": 2,
+          "id": 106,
+          "method": "accountUnsubscribe",
+          "address": null,
+          "at": 1793086434284
+        },
+        {
+          "connection": 2,
+          "id": 107,
+          "method": "accountUnsubscribe",
+          "address": null,
+          "at": 1793086435291
+        },
+        {
+          "connection": 2,
+          "id": 108,
+          "method": "accountUnsubscribe",
+          "address": null,
+          "at": 1793086436299
+        },
+        {
+          "connection": 2,
+          "id": 109,
+          "method": "accountUnsubscribe",
+          "address": null,
+          "at": 1793086437297
+        },
+        {
+          "connection": 2,
+          "id": 110,
+          "method": "accountUnsubscribe",
+          "address": null,
+          "at": 1793086438296
+        },
+        {
+          "connection": 2,
+          "id": 111,
+          "method": "accountUnsubscribe",
+          "address": null,
+          "at": 1793086439299
+        }
+      ]
+    },
+    "rpcLatencyMs": {
+      "samples": 19,
+      "p50": 72,
+      "p95": 143,
+      "maximum": 227
+    },
+    "usage": {
+      "grantId": "overnight-10-notifications",
+      "baseline": {
+        "calls": 69,
+        "bytes": 2713445,
+        "starts": [
+          1793069031002,
+          1793069031314,
+          1793069031396,
+          1793069031462,
+          1793069031573,
+          1793069031683,
+          1793070868114,
+          1793070868438,
+          1793070868560,
+          1793070868620,
+          1793070868784,
+          1793070868860,
+          1793070868907,
+          1793070868987,
+          1793070869076,
+          1793070869128,
+          1793070869216,
+          1793070869294,
+          1793070869347,
+          1793070869405,
+          1793081386306,
+          1793081387309,
+          1793081388313,
+          1793081389315,
+          1793083252240,
+          1793083253245,
+          1793083254248,
+          1793083255251,
+          1793083256255,
+          1793083419722,
+          1793083420725,
+          1793083421729,
+          1793083422732,
+          1793083423735,
+          1793083780796,
+          1793083781799,
+          1793084322691,
+          1793084323694,
+          1793084666467,
+          1793084713873,
+          1793084714877,
+          1793084715881,
+          1793084716884,
+          1793084911356,
+          1793084921822,
+          1793084922823,
+          1793084937183,
+          1793085437929,
+          1793085438942,
+          1793085439945,
+          1793085440949,
+          1793085771700,
+          1793085772703,
+          1793085773707,
+          1793085774709,
+          1793085775711,
+          1793085776716,
+          1793085777718,
+          1793085778721,
+          1793085779723,
+          1793085780726,
+          1793085781729,
+          1793085782732,
+          1793085783781,
+          1793085785780,
+          1793085787779,
+          1793085789779,
+          1793085790782,
+          1793085791784
+        ],
+        "refusal": "RPC_HTTP_429",
+        "refusalAt": 1793070869405,
+        "sha256": "181c6b5725efd14a24ac349b77ff4661092c846c69a0891a34706a4205a02046"
+      },
+      "cumulativeUnits": 111,
+      "newUnits": 42,
+      "actualInvokedUnits": 42,
+      "cumulativeResponseBytes": 2883940,
+      "httpBytes": 155797,
+      "wsBytes": 14698,
+      "newResponseBytes": 170495,
+      "remainingGrantUnits": 28,
+      "remainingCumulativeUnits": 129,
+      "remainingGrantResponseBytes": 33383937,
+      "remainingCumulativeResponseBytes": 64224924,
+      "pending": [],
+      "uncertainResponseBytes": 0,
+      "rolling60SecondStarts": 42,
+      "rolling10SecondStarts": 9,
+      "starts": [
+        1793086393178,
+        1793086394181,
+        1793086395184,
+        1793086396187,
+        1793086397190,
+        1793086398193,
+        1793086399199,
+        1793086400202,
+        1793086401205,
+        1793086402208,
+        1793086403210,
+        1793086404213,
+        1793086405256,
+        1793086407255,
+        1793086409255,
+        1793086411256,
+        1793086412260,
+        1793086413263,
+        1793086414266,
+        1793086415269,
+        1793086416271,
+        1793086417275,
+        1793086418278,
+        1793086419281,
+        1793086420284,
+        1793086421288,
+        1793086422291,
+        1793086423294,
+        1793086424297,
+        1793086425300,
+        1793086426302,
+        1793086427305,
+        1793086428308,
+        1793086429314,
+        1793086431255,
+        1793086433254,
+        1793086434258,
+        1793086435262,
+        1793086436265,
+        1793086437268,
+        1793086438271,
+        1793086439275
+      ],
+      "actualInvocations": [
+        {
+          "id": 70,
+          "at": 1793086393178
+        },
+        {
+          "id": 71,
+          "at": 1793086394181
+        },
+        {
+          "id": 72,
+          "at": 1793086395184
+        },
+        {
+          "id": 73,
+          "at": 1793086396187
+        },
+        {
+          "id": 74,
+          "at": 1793086397190
+        },
+        {
+          "id": 75,
+          "at": 1793086398193
+        },
+        {
+          "id": 76,
+          "at": 1793086399199
+        },
+        {
+          "id": 77,
+          "at": 1793086400202
+        },
+        {
+          "id": 78,
+          "at": 1793086401205
+        },
+        {
+          "id": 79,
+          "at": 1793086402208
+        },
+        {
+          "id": 80,
+          "at": 1793086403210
+        },
+        {
+          "id": 81,
+          "at": 1793086404213
+        },
+        {
+          "id": 82,
+          "at": 1793086405256
+        },
+        {
+          "id": 83,
+          "at": 1793086407255
+        },
+        {
+          "id": 84,
+          "at": 1793086409255
+        },
+        {
+          "id": 85,
+          "at": 1793086411256
+        },
+        {
+          "id": 86,
+          "at": 1793086412260
+        },
+        {
+          "id": 87,
+          "at": 1793086413263
+        },
+        {
+          "id": 88,
+          "at": 1793086414266
+        },
+        {
+          "id": 89,
+          "at": 1793086415269
+        },
+        {
+          "id": 90,
+          "at": 1793086416271
+        },
+        {
+          "id": 91,
+          "at": 1793086417275
+        },
+        {
+          "id": 92,
+          "at": 1793086418278
+        },
+        {
+          "id": 93,
+          "at": 1793086419281
+        },
+        {
+          "id": 94,
+          "at": 1793086420284
+        },
+        {
+          "id": 95,
+          "at": 1793086421288
+        },
+        {
+          "id": 96,
+          "at": 1793086422291
+        },
+        {
+          "id": 97,
+          "at": 1793086423294
+        },
+        {
+          "id": 98,
+          "at": 1793086424297
+        },
+        {
+          "id": 99,
+          "at": 1793086425300
+        },
+        {
+          "id": 100,
+          "at": 1793086426302
+        },
+        {
+          "id": 101,
+          "at": 1793086427305
+        },
+        {
+          "id": 102,
+          "at": 1793086428308
+        },
+        {
+          "id": 103,
+          "at": 1793086429314
+        },
+        {
+          "id": 104,
+          "at": 1793086431255
+        },
+        {
+          "id": 105,
+          "at": 1793086433254
+        },
+        {
+          "id": 106,
+          "at": 1793086434258
+        },
+        {
+          "id": 107,
+          "at": 1793086435262
+        },
+        {
+          "id": 108,
+          "at": 1793086436265
+        },
+        {
+          "id": 109,
+          "at": 1793086437268
+        },
+        {
+          "id": 110,
+          "at": 1793086438271
+        },
+        {
+          "id": 111,
+          "at": 1793086439275
+        }
+      ],
+      "reservationStarts": [
+        1793086393175,
+        1793086394178,
+        1793086395181,
+        1793086396185,
+        1793086397188,
+        1793086398191,
+        1793086399194,
+        1793086400200,
+        1793086401203,
+        1793086402206,
+        1793086403209,
+        1793086404211,
+        1793086405254,
+        1793086407253,
+        1793086409253,
+        1793086411254,
+        1793086412257,
+        1793086413261,
+        1793086414264,
+        1793086415267,
+        1793086416270,
+        1793086417272,
+        1793086418275,
+        1793086419278,
+        1793086420282,
+        1793086421285,
+        1793086422289,
+        1793086423292,
+        1793086424295,
+        1793086425297,
+        1793086426300,
+        1793086427303,
+        1793086428306,
+        1793086429309,
+        1793086431254,
+        1793086433252,
+        1793086434255,
+        1793086435259,
+        1793086436263,
+        1793086437266,
+        1793086438269,
+        1793086439272
+      ],
+      "byOperation": {
+        "http:getMultipleAccounts": 17,
+        "http:getBlockTime": 2,
+        "ws-upgrade:upgrade": 2,
+        "ws:accountSubscribe": 14,
+        "ws:accountUnsubscribe": 7
+      },
+      "durationsMs": [
+        228.17809599999998,
+        54.52424599999995,
+        53.679319999999734,
+        317.9871369999996,
+        45.629611999999725,
+        37.137078000000656,
+        55.749831999999515,
+        30.872325999999703,
+        35.543760999998995,
+        36.36931800000093,
+        40.23573600000054,
+        128.0288840000012,
+        72.16965300000084,
+        72.66144700000041,
+        85.52652499999749,
+        142.56356400000004,
+        234.1605329999984,
+        72.16873400000259,
+        61.237576999999874,
+        76.22010299999965,
+        33.98096400000213,
+        111.46359099999972,
+        51.237851999998384,
+        72.91678500000125,
+        33.627801999999065,
+        69.08819999999832,
+        25.105748999998468,
+        75.99643099999957,
+        24.82263800000146,
+        58.13871800000197,
+        29.48098900000332,
+        62.61107400000037,
+        86.70618699999613,
+        58.51549700000032,
+        42.390505999996094,
+        59.70756400000391,
+        25.66040900000371,
+        29.898102999999537,
+        33.6459990000003,
+        28.740225000001374,
+        25.690653999998176,
+        25.02742500000022
+      ],
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "haltedReason": null,
+      "startedAt": 1793086392311,
+      "totalMs": 90000,
+      "deadlineAt": 1793086482311,
+      "closed": false,
+      "storageFailed": false
+    },
+    "resources": {
+      "location": "Cloud-only; EC2 compatibility untested",
+      "maxRss": 154136576,
+      "maxLag": 3.0379249999969034,
+      "cpu": {
+        "user": 1558666,
+        "system": 217739
+      }
+    },
+    "limitations": [
+      "A validated account snapshot and an actionable quote at use are reported separately. A newer confirmed notice during retrieval makes that evaluation nonactionable.",
+      "Notifications are triggers, never liquidation prices. ACK and reconnect ACK evidence do not establish complete notification delivery.",
+      "Sampled hypothetical threshold conditions have unknown crossing times and are not trades, fills or continuous protection evidence.",
+      "This one-pool component does not establish combined candidate/protection capacity, strategy outcomes, three-pool notifications or acceptance.",
+      "API fees are documented as zero for public RPC; proxy/wire transfer and existing infrastructure charges are unverified and separate.",
+      "No PumpApi capture, wallet operation, financial account write or production restart/deployment."
+    ],
+    "productionTouched": false,
+    "naturalPaperTrades": 0,
+    "paperEntries": false,
+    "liveTrading": false,
+    "acceptanceClock": false
+  },
+  "uncertainAttempt": false,
+  "priorEvidenceUnchanged": true,
+  "priorMismatches": [],
+  "sourceUnchanged": true,
+  "sourceMismatches": [],
+  "newEvidenceBytesBeforeReceipt": 306787,
+  "noRetry": true,
+  "productionChanged": false,
+  "entriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

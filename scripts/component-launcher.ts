@@ -12,6 +12,7 @@ const MIB=1024*1024,PIN='4bbb21380dd0af2546297179cf5795a28a5d202c';
 const PROPOSAL='evidence/adaptive-monitoring/next-live-proposal.json';
 const OLD_BOOK='evidence/free-data-20261027/active-approved-rpc-budget.json';
 const MAX_NEW_EVIDENCE=8*MIB,MAX_ALL_EVIDENCE=32*MIB,RECEIPT_RESERVE=256*1024;
+export const COMPONENT_ATOMIC_TEMP_HEADROOM=128*1024;
 const hash=(value:Buffer|string)=>createHash('sha256').update(value).digest('hex');
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 function boundedJson(path:string,value:unknown){
@@ -27,6 +28,38 @@ function files(path:string):string[]{
     need(rows.length<=1024,'COMPONENT_EVIDENCE_FILE_COUNT');
   }
   return rows.sort();
+}
+/** One active-directory pass. Only this child's exact atomic counterbook temp
+ * may disappear after readdir. Stable files and every symlink remain fail-closed.
+ * The complete128KiB transient slot is counted even when no temp is observed.
+ */
+export function scanActiveComponentEvidence(path:string,options:{writerPid:number;/** Offline race injection only; not configured by the live supervisor. */beforeStat?:(path:string)=>void}){
+  need(Number.isSafeInteger(options.writerPid)&&options.writerPid>0,'COMPONENT_CHILD_PID_UNAVAILABLE');
+  const root=resolve(path),atomicName='rpc-budget.json.pending-'+options.writerPid;
+  let stableBytes=0,observedAtomicBytes=0,vanishedAtomicFiles=0,fileCount=0;
+  const visit=(directory:string)=>{
+    const dir=lstatSync(directory);need(dir.isDirectory()&&!dir.isSymbolicLink(),'COMPONENT_EVIDENCE_SYMLINK');
+    for(const name of readdirSync(directory)){
+      const file=resolve(directory,name),atomic=directory===root&&name===atomicName;
+      options.beforeStat?.(file);
+      let stat:ReturnType<typeof lstatSync>;
+      try{stat=lstatSync(file);}catch(error){if(atomic&&(error as NodeJS.ErrnoException).code==='ENOENT'){vanishedAtomicFiles++;continue;}throw error;}
+      need(!stat.isSymbolicLink(),'COMPONENT_EVIDENCE_SYMLINK');
+      if(stat.isDirectory()){need(!atomic,'COMPONENT_ATOMIC_TEMP_FILE_TYPE');visit(file);continue;}
+      need(stat.isFile(),'COMPONENT_EVIDENCE_FILE_TYPE');fileCount++;need(fileCount<=1024,'COMPONENT_EVIDENCE_FILE_COUNT');
+      if(atomic){need(stat.size<=COMPONENT_ATOMIC_TEMP_HEADROOM,'COMPONENT_ATOMIC_TEMP_SIZE');observedAtomicBytes+=stat.size;}else stableBytes+=stat.size;
+    }
+  };
+  visit(root);
+  return {stableBytes,observedAtomicBytes,measuredBytes:stableBytes+observedAtomicBytes,countedBytes:stableBytes+COMPONENT_ATOMIC_TEMP_HEADROOM,atomicTempHeadroomBytes:COMPONENT_ATOMIC_TEMP_HEADROOM,vanishedAtomicFiles,fileCount};
+}
+export type ComponentWatchStage='active-evidence-scan'|'child-proc-status'|'child-proc-stat'|'prior-counterbook-hash';
+/** Receipt fields contain fixed categories and sanitized errno/code only, never
+ * a native error message, path, provider body or credential-bearing stack. */
+export function componentWatchFailure(stage:ComponentWatchStage,error:unknown){
+  const raw=(error as NodeJS.ErrnoException|null)?.code,errno=typeof raw==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(raw)?raw:null;
+  const message=error instanceof Error?error.message:'',failureCode=/^COMPONENT_[A-Z0-9_]{1,100}$/.test(message)?message:null;
+  return {stage,errno,failureCode,disposition:errno==='ENOENT'&&(stage==='child-proc-status'||stage==='child-proc-stat')?'await-child-exit' as const:'stop' as const};
 }
 function bytes(paths:string[]){return paths.reduce((n,p)=>n+lstatSync(p).size,0);}
 function hashes(paths:string[],repo:string){return Object.fromEntries(paths.map(p=>[p.slice(repo.length+1),hash(readFileSync(p))]));}
@@ -70,7 +103,7 @@ export async function runComponentLauncher(childScript:string,overnight?:{leg:st
   if(overnight)sourcePaths.push(resolve(repo,'src/research-baseline.ts'));
   if(script.endsWith('/overnight-notifications.ts'))sourcePaths.push(resolve(repo,'src/component-results.ts'));
   if(script.endsWith('/overnight-active.ts'))for(const path of ['scripts/active-pumpapi-trial.ts','src/active-pipeline.ts','src/research-rpc.ts'])sourcePaths.push(resolve(repo,path));
-  if(script.endsWith('/overnight-feed.ts'))for(const path of ['src/overnight-field.ts','src/active-pipeline.ts','src/pumpapi-probe.ts'])sourcePaths.push(resolve(repo,path));
+  if(script.endsWith('/overnight-feed.ts')||script.endsWith('/overnight-combined.ts'))for(const path of ['src/overnight-field.ts','src/active-pipeline.ts','src/pumpapi-probe.ts'])sourcePaths.push(resolve(repo,path));
   const sourceHashes=hashes(sourcePaths,repo);
   const lockPath='/tmp/poe-public-component-20261027.lock',lease=openSync(lockPath,constants.O_RDWR|constants.O_CREAT|constants.O_NOFOLLOW,0o600);
   let leaseOpen=true;
@@ -79,7 +112,7 @@ export async function runComponentLauncher(childScript:string,overnight?:{leg:st
     const owned=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',lease],timeout:5000});need(!owned.error&&owned.status===0,'COMPONENT_SUPERVISOR_ALREADY_OWNED');
     const outDir=overnight?resolve(overnightRoot,overnight.leg):resolve(repo,'evidence/public-component-20261027');
     try{mkdirSync(outDir,{mode:0o700});}catch(error){if((error as NodeJS.ErrnoException).code==='EEXIST')throw Error('COMPONENT_GRANT_ALREADY_RECORDED_NO_RETRY');throw error;}
-    const maximumTotalMs=overnight?.leg.endsWith('-discovery')?600000:overnight?.leg.endsWith('-sampler')?10000:overnight?.leg.endsWith('-field')?35000:90000;
+    const maximumTotalMs=overnight?.leg.endsWith('-discovery')?600000:overnight?.leg.endsWith('-sampler')?10000:overnight?.leg.endsWith('-field')?35000:overnight?.leg.endsWith('-combined')?85000:90000;
     const deadlineAt=startedAt+maximumTotalMs;
     if(overnight){
       const grantPath=resolve(overnightRoot,'grant.json');
@@ -91,7 +124,9 @@ export async function runComponentLauncher(childScript:string,overnight?:{leg:st
     const clockTicks=spawnSync('/usr/bin/getconf',['CLK_TCK'],{encoding:'utf8',timeout:5000});const hz=Number(clockTicks.stdout.trim());need(clockTicks.status===0&&Number.isSafeInteger(hz)&&hz>0,'COMPONENT_CPU_CLOCK_UNAVAILABLE');
     const child=spawn('/usr/bin/prlimit',['--cpu=20:21','--fsize=16777216:16777216','--nofile=64:64','--',process.execPath,'--max-old-space-size=128','--use-env-proxy','--import','tsx',script,overnight?'--overnight-child':'--component-child'],{cwd:repo,env:{...process.env,POE_COMPONENT_STARTED_AT:String(startedAt),POE_COMPONENT_OUT_DIR:outDir,...(overnight?{POE_OVERNIGHT_LEG:overnight.leg}:{})},stdio:['ignore','pipe','pipe','ipc']});
     let stopReason:string|null=null,finalSummary:any=null,stdoutBytes=0,stderrBytes=0,peakRssBytes=0,peakCpuMs=0,peakParentLoopLagMs=0,lastHeartbeat=performance.now(),ready=false,lastTick=lastHeartbeat,lastOldCheck=lastHeartbeat;
-    let grace:NodeJS.Timeout|undefined;
+    let grace:NodeJS.Timeout|undefined,procExitGrace:NodeJS.Timeout|undefined,childExited=false,vanishedAtomicFiles=0;
+    const resourceCheckErrors:Array<{at:number;stage:ComponentWatchStage;errno:string|null;failureCode:string|null;disposition:'await-child-exit'|'stop'}>=[];
+    child.once('exit',()=>{childExited=true;clearTimeout(procExitGrace);});child.once('error',()=>{childExited=true;clearTimeout(procExitGrace);});
     const stop=(reason:string,hard=false)=>{stopReason??=reason;if(hard){child.kill('SIGKILL');return;}if(grace)return;child.kill('SIGTERM');grace=setTimeout(()=>child.kill('SIGKILL'),Math.min(1000,Math.max(0,deadlineAt-Date.now())));grace.unref();};
     const abort=()=>stop('COMPONENT_SUPERVISOR_INTERRUPTED');process.once('SIGTERM',abort);process.once('SIGINT',abort);
     child.stdout!.on('data',(b:Buffer)=>{stdoutBytes+=b.length;if(stdoutBytes>32768)stop('COMPONENT_STDOUT_CAP');});
@@ -114,23 +149,35 @@ export async function runComponentLauncher(childScript:string,overnight?:{leg:st
       if(Date.now()>=deadlineAt){stop('COMPONENT_WALL_HARD_LIMIT',true);return;}
       if(peakParentLoopLagMs>500)stop('COMPONENT_SUPERVISOR_EVENT_LOOP_CAP');
       if(tick-lastHeartbeat>(ready?3000:8000))stop('COMPONENT_HEARTBEAT_CAP');
+      let checkStage:ComponentWatchStage='active-evidence-scan';
       try{
-        if(bytes(files(outDir))>MAX_NEW_EVIDENCE-RECEIPT_RESERVE)stop('COMPONENT_RETAINED_EVIDENCE_CAP');
-        if(child.pid){
+        const evidence=scanActiveComponentEvidence(outDir,{writerPid:child.pid!});vanishedAtomicFiles+=evidence.vanishedAtomicFiles;
+        if(evidence.countedBytes>MAX_NEW_EVIDENCE-RECEIPT_RESERVE)stop('COMPONENT_RETAINED_EVIDENCE_CAP');
+        if(child.pid&&!childExited){
+          checkStage='child-proc-status';
           const status=readFileSync('/proc/'+child.pid+'/status','utf8'),rss=Number(status.match(/^VmRSS:\s+(\d+)\s+kB/m)?.[1])*1024;
           if(Number.isSafeInteger(rss)){peakRssBytes=Math.max(peakRssBytes,rss);if(rss>256*MIB)stop('COMPONENT_SUPERVISOR_RSS_CAP');}
+          checkStage='child-proc-stat';
           const stat=readFileSync('/proc/'+child.pid+'/stat','utf8'),fields=stat.slice(stat.lastIndexOf(')')+2).split(' '),cpu=(Number(fields[11])+Number(fields[12]))*1000/hz;
           if(Number.isFinite(cpu)){peakCpuMs=Math.max(peakCpuMs,cpu);if(cpu>20000)stop('COMPONENT_SUPERVISOR_CPU_CAP');}
         }
+        checkStage='prior-counterbook-hash';
         if(tick-lastOldCheck>=1000){lastOldCheck=tick;if(hash(readFileSync(resolve(repo,OLD_BOOK)))!==hash(oldBytes))stop('COMPONENT_PRIOR_COUNTERBOOK_MUTATED');}
-      }catch{if(child.exitCode===null)stop('COMPONENT_RESOURCE_OR_EVIDENCE_CHECK_UNAVAILABLE');}
+      }catch(error){
+        const detail={at:Date.now(),...componentWatchFailure(checkStage,error)};if(resourceCheckErrors.length<16)resourceCheckErrors.push(detail);
+        if(detail.disposition==='await-child-exit'){
+          // /proc may disappear after waitpid but before Node delivers exit.
+          // Give that event one bounded turn; unexplained absence fails closed.
+          if(!childExited&&!procExitGrace){procExitGrace=setTimeout(()=>{if(!childExited)stop('COMPONENT_PROC_EXIT_UNCONFIRMED');},250);procExitGrace.unref();}
+        }else if(!childExited)stop('COMPONENT_RESOURCE_OR_EVIDENCE_CHECK_UNAVAILABLE');
+      }
     },100);
     const exit=await new Promise<{code:number|null;signal:NodeJS.Signals|null}>(r=>{child.once('error',()=>r({code:2,signal:null}));child.once('exit',(code,signal)=>r({code,signal}));});
-    clearInterval(watch);clearTimeout(hard);if(grace)clearTimeout(grace);process.removeListener('SIGTERM',abort);process.removeListener('SIGINT',abort);
+    clearInterval(watch);clearTimeout(hard);clearTimeout(procExitGrace);if(grace)clearTimeout(grace);process.removeListener('SIGTERM',abort);process.removeListener('SIGINT',abort);
     const priorMismatches=verify(priorEvidence,repo),sourceMismatches=verify(sourceHashes,repo);
     if(priorMismatches.length)stopReason??='COMPONENT_PRIOR_EVIDENCE_MUTATED';if(sourceMismatches.length)stopReason??='COMPONENT_TEST_SOURCE_CHANGED';
     const receipt=resolve(outDir,'supervisor.json'),outcome=typeof finalSummary?.outcome==='string'?finalSummary.outcome:'UNCERTAIN_COMPONENT_STOP';
-    boundedJson(receipt,{schemaVersion:1,recordedAt:new Date().toISOString(),startedAt,deadlineAt,supervisor:{wallMs:performance.now()-began,peakRssBytes,peakCpuMs,peakParentLoopLagMs,stdoutBytes,stderrBytes,stopReason,exit},outcome,summary:finalSummary,uncertainAttempt:finalSummary===null,priorEvidenceUnchanged:priorMismatches.length===0,priorMismatches,sourceUnchanged:sourceMismatches.length===0,sourceMismatches,newEvidenceBytesBeforeReceipt:bytes(files(outDir)),noRetry:true,productionChanged:false,entriesEnabled:false,liveTrading:false,acceptanceClockStarted:false});
+    boundedJson(receipt,{schemaVersion:1,recordedAt:new Date().toISOString(),startedAt,deadlineAt,supervisor:{wallMs:performance.now()-began,peakRssBytes,peakCpuMs,peakParentLoopLagMs,stdoutBytes,stderrBytes,stopReason,exit,resourceCheckErrors,activeEvidenceAccounting:{atomicTempHeadroomBytes:COMPONENT_ATOMIC_TEMP_HEADROOM,vanishedAtomicFiles}},outcome,summary:finalSummary,uncertainAttempt:finalSummary===null,priorEvidenceUnchanged:priorMismatches.length===0,priorMismatches,sourceUnchanged:sourceMismatches.length===0,sourceMismatches,newEvidenceBytesBeforeReceipt:bytes(files(outDir)),noRetry:true,productionChanged:false,entriesEnabled:false,liveTrading:false,acceptanceClockStarted:false});
     const exitCode=exit.code===0&&finalSummary!==null&&stopReason===null?0:2;
     console.log(JSON.stringify({receipt,outcome,stopReason,exit,priorEvidenceUnchanged:priorMismatches.length===0}));
     closeSync(lease);leaseOpen=false;return {receipt,outcome,exitCode};
