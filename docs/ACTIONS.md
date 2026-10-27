@@ -31,7 +31,10 @@ records imported.
   recovered. EC2 retained same startup/account.41deployed checks pass23:00UTC.
 - Further concurrent UI6036cbd deployed through another owner path23:07:24UTC,
   dep-dbftpvd9el5s73b96vi0. Fetched/fast-forwarded source, preserved policy and
-  protected ingestion. Separate current UI check follows earlier receipt.
+  protected ingestion. Current UI passed20core checks; visible runtime/strategy metadata regressed.
+  Minimal dashboard-only fix b3df32c deployed23:57:11UTC, dep-dbfuh559el5s73bbf3pg.
+  Final22/22 checks pass23:57:48UTC; same actual account, source facts34.7–35.7s old,
+  mobile/source arithmetic/history agree; no metadata regressions.
 - Existing Turnkey API registration now works. Paginated account scan and bounded
   public standalone-key metadata resolved owner-confirmed source. Public RPC
   balance insufficient for0.06SOL plus fee; real treasury details private.
@@ -42,8 +45,9 @@ records imported.
 - Development: normalized bounded rule/flow, measurement core, delayed execution,
   disposable connected trader, full-size sell pricing, same-writer operating costs
   and asynchronous backups. Independent review exposed/fixed timing, gap, priority
-  and backup races.183/183 full tests passed before new UI merge; final validation
-  follows merged UI and last startup-race fix. Not deployed trading evidence.
+  and backup races.Merged code plus final startup-race fix pass185/185 root tests,11 operator
+  tests, typecheck and compile. New core remains uninstalled on EC2; only the
+  dashboard application was deployed. Not deployed trading evidence.
 - Fresh23:34 free migration→Mayhem Token-2022 pool→buy/sell probe verified signed
   negative virtual reserves/current fees. Modified development source explicitly
   dirty/QUOTE_ONLY; not a natural lifecycle or frozen release.

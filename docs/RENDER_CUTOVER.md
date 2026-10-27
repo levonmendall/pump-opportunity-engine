@@ -8,8 +8,8 @@ https://meme-machine-dashboard-staging.onrender.com .
 Source: levonmendall/pump-opportunity-engine, main, Node, empty root.
 Build: npm ci --include=dev && npm run compile.
 Start: npm run dashboard. Health:/healthz.
-Verified live deploy:dep-dbftpvd9el5s73b96vi0,
-dashboard source6036cbd9294ce5848fe575a306144e6ad7446000.
+Verified live deploy:dep-dbfuh559el5s73bbf3pg,
+dashboard sourceb3df32ce098d5de0c38c706bf9cf8e6066eccec1.
 
 ## Confirmed visibility and source identity
 
@@ -34,9 +34,14 @@ was reseeded and no legacy record/fixture was imported.
 
 ## Deployed verification and recovery
 
-Current UI changed through another owner path at23:07:24UTC; it was fetched and
-preserved. The41-check receipt below belongs to earlier ae93ab4 and remains
-historical evidence. Current UI/source freshness is checked separately.
+UI6036 changed through another owner path at23:07:24UTC; it was fetched and
+preserved. GET-only current verification passed20checks but found missing visible
+runtime/strategy metadata. The minimal b3df32c text-display fix is live at23:57:11UTC.
+Final22/22 checks at23:57:48UTC verify both versions visible, actual source identity/
+arithmetic/history,12cards, mobile390px, no controls/overflow/script errors or
+external requests. Snapshot159 facts aged34.7–35.7seconds; one waiting503 resolved
+by natural full republication without restarting EC2. See render-current-live.json
+in evidence. Prior41-check protocol receipt below remains historical evidence.
 
 evidence/render-public-live-e2e.json records41 passing checks at23:00:23UTC.
 Two real EC2 snapshots advanced52→53 over at least36seconds; source/market/

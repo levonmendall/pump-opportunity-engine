@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-26T23:59:47.683Z",
+  "httpStatus": 200,
+  "sequence": "163",
+  "identityMatchesInstalledAuthority": true,
+  "sourceAgeMs": 26303,
+  "reconciliationAgeMs": 26303,
+  "state": "observing-with-zero-trades",
+  "entries": "disabled",
+  "liveTrading": false,
+  "trades": 0,
+  "positions": 0,
+  "providerQueries": 0,
+  "financialControlsInvoked": false
+}

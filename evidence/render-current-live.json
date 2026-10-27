@@ -1,0 +1,192 @@
+{
+  "checkedAt": "2026-10-26T23:57:48.114Z",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "deployedDashboardRelease": "b3df32ce098d5de0c38c706bf9cf8e6066eccec1",
+  "verifiedDeploy": "dep-dbfuh559el5s73bbf3pg",
+  "sourceIdentity": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "samples": [
+    {
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+      "sequence": "159",
+      "generatedAt": "2026-10-26T23:57:11.382Z",
+      "marketAt": "2026-10-26T23:57:11.382Z",
+      "reconciledAt": "2026-10-26T23:57:11.382Z",
+      "receivedAt": "2026-10-26T23:57:38.861Z",
+      "sourceAgeMs": 34657,
+      "marketAgeMs": 34657,
+      "reconciliationAgeMs": 34657,
+      "state": "observing-with-zero-trades",
+      "positionCount": 0,
+      "tradeCount": 0,
+      "historyPointCount": 11,
+      "historyGapCount": 1
+    },
+    {
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+      "sequence": "159",
+      "generatedAt": "2026-10-26T23:57:11.382Z",
+      "marketAt": "2026-10-26T23:57:11.382Z",
+      "reconciledAt": "2026-10-26T23:57:11.382Z",
+      "receivedAt": "2026-10-26T23:57:38.861Z",
+      "sourceAgeMs": 35688,
+      "marketAgeMs": 35688,
+      "reconciliationAgeMs": 35688,
+      "state": "observing-with-zero-trades",
+      "positionCount": 0,
+      "tradeCount": 0,
+      "historyPointCount": 11,
+      "historyGapCount": 1
+    }
+  ],
+  "viewingPolicy": "owner-authorized-public-read-only",
+  "scope": "GET-only current UI supplement; prior41-check reporting-ingestion evidence is retained separately.",
+  "checks": [
+    {
+      "label": "current public process health",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "natural source republication after redeploy",
+      "pass": true,
+      "waitMs": 10376,
+      "waitingResponses": 1
+    },
+    {
+      "label": "current actual snapshot GET",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "current actual account/inception/source",
+      "pass": true
+    },
+    {
+      "label": "current PAPER entries disabled",
+      "pass": true
+    },
+    {
+      "label": "current fresh observer reporting",
+      "pass": true
+    },
+    {
+      "label": "current flat state matches",
+      "pass": true
+    },
+    {
+      "label": "current actual arithmetic",
+      "pass": true
+    },
+    {
+      "label": "current actual inception/gap history",
+      "pass": true
+    },
+    {
+      "label": "browser actual snapshot GET",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "browser actual account/inception/source",
+      "pass": true
+    },
+    {
+      "label": "browser PAPER entries disabled",
+      "pass": true
+    },
+    {
+      "label": "browser fresh observer reporting",
+      "pass": true
+    },
+    {
+      "label": "browser flat state matches",
+      "pass": true
+    },
+    {
+      "label": "browser actual arithmetic",
+      "pass": true
+    },
+    {
+      "label": "browser actual inception/gap history",
+      "pass": true
+    },
+    {
+      "label": "anonymous current mobile route",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "label": "current UI binding and numbers",
+      "pass": true
+    },
+    {
+      "label": "actual runtime release and strategy visible",
+      "pass": true
+    },
+    {
+      "label": "current UI PAPER/fresh/read-only labels",
+      "pass": true
+    },
+    {
+      "label": "current UI history plot matches actual snapshot",
+      "pass": true
+    },
+    {
+      "label": "current mobile geometry and execution",
+      "pass": true
+    }
+  ],
+  "coreChecksPassed": true,
+  "mobile": {
+    "titleIsPoe": true,
+    "paperVisible": true,
+    "liveDisabledVisible": true,
+    "publicReadOnlyLabelVisible": true,
+    "actualAccountVisible": true,
+    "actualSequenceVisible": true,
+    "runtimeReleaseVisible": true,
+    "strategyVersionVisible": true,
+    "fullInceptionTimestampVisible": true,
+    "freshStateVisible": true,
+    "cardCount": 12,
+    "allCardsMatchActualPageSnapshot": true,
+    "chartPointCount": 10,
+    "actualNonNullHistoryCount": 10,
+    "chartStrokeSegments": 2,
+    "actualHistorySegments": 2,
+    "zeroReferencePresent": true,
+    "timezoneVisible": true,
+    "chartBelowPortfolioBeforeActivity": true,
+    "controlsCount": 0,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "viewportWidth": 390,
+    "externalLinkCount": 0,
+    "scriptErrors": 0,
+    "dialogs": 0,
+    "externalRequests": 0,
+    "screenshotStoredPrivately": true,
+    "screenshotMode": "0600"
+  },
+  "visibleMetadataRegressions": [],
+  "priorEvidencePreserved": "render-public-live-e2e.json",
+  "postRequests": 0,
+  "syntheticSnapshotsSubmitted": 0,
+  "financialValuesPublishedInEvidence": false,
+  "credentialValuesRead": false,
+  "renderEnvironmentOrDeploymentMutated": false,
+  "runtimeOrFinancialControlsInvoked": false,
+  "providerQueries": 0,
+  "independentDatabaseBalanceAudit": false
+}

@@ -149,8 +149,10 @@ chart gaps. With zero trades, current movement is SOL price effect, not edge.
 
 Four source fields must match installed account/inception/runtime/strategy in
 RENDER_CUTOVER.md. Never import demo/legacy records. Dashboard source advances
-independently of EC2: latest connector sees6036cbd9294ce5848fe575a306144e6ad7446000,
-deploy dep-dbftpvd9el5s73b96vi0 at23:07:24UTC; EC2 remains C2.
+independently of EC2: latest verified web code b3df32ce098d5de0c38c706bf9cf8e6066eccec1,
+deploy dep-dbfuh559el5s73bbf3pg at23:57:11UTC; EC2 remains C2.
+Final22/22 deployed checks verify source facts, natural cache recovery and mobile
+visibility of actual release/strategy; see evidence/render-current-live.json.
 Preserve public policy and protected ingress. Rollback only web code, never source
 financial identity. Env updates can trigger builds despite auto-deploy off;
 inspect state before triggering another. No second service/paid upgrade or
