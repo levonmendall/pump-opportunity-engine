@@ -4,6 +4,13 @@ on:
     paths:
       - 'src/dashboard.ts'
       - 'src/dashboard-connectivity.ts'
+      - 'src/dashboard-connections.ts'
+      - 'src/pilot-telemetry.ts'
+      - 'scripts/publish-pilot-status.mjs'
+      - 'test/pilot-telemetry.test.mjs'
+      - 'test/pilot-publisher.test.mjs'
+      - 'test/dashboard-pilot-ui.test.ts'
+      - 'test/dashboard-pilot-integration.test.ts'
       - 'src/reporting.ts'
       - 'test/reporting.test.ts'
       - 'package*.json'
@@ -29,3 +36,6 @@ jobs:
         run: |
           umask 077
           npm test
+
+      - name: Pilot reporting regressions
+        run: npm run test:pilot-reporting

@@ -1,7 +1,7 @@
 import type { SnapshotCache } from './reporting.js';
 
 /** Reporting projections only. Never reads a ledger, provider credential, or pilot workspace. */
-export function connectionReport(cache: SnapshotCache, now = Date.now()) {
+export function connectionReport(cache: SnapshotCache, now = Date.now(), pilot?: {state:string; snapshot:unknown; lastContactAt?:number|null; sourceAgeMs?:number|null; publisherConnected?:boolean}) {
   const current = cache.read();
   const snapshot = current?.snapshot;
   const freshness = cache.status(now);
@@ -29,11 +29,13 @@ export function connectionReport(cache: SnapshotCache, now = Date.now()) {
       candidatePipeline: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
       decisionTrace: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
       selectedTokenRpc: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
-      experimentalPilot: 'not-connected',
+      experimentalPilot: pilot?.snapshot?'separate-diagnostics-channel':pilot?.state==='awaiting-data'?'awaiting-separate-report':'not-connected',
     },
     experimentalPilot: {
-      connected: false,
-      reason: 'This dashboard accepts one authoritative source. The isolated pilot reports locally and is not merged into this account.',
+      connected:pilot?.publisherConnected===true,
+      state:pilot?.state??'not-configured',
+      lastContactAt:pilot?.lastContactAt??null,sourceAgeMs:pilot?.sourceAgeMs??null,
+      reason:'Original portfolio and experimental pilot diagnostics use separate authenticated channels. Pilot balances and performance are never merged into this account.',
     },
     freshness,
   };
@@ -70,7 +72,7 @@ function paintConnection(){
  set('connectionBadge',sourceProblem?'READ FAILED':!source?'AWAITING SOURCE':stale?'STALE SNAPSHOT':isObserver?'OBSERVER ONLY':'SOURCE REPORTING');
  set('sourceConnection',sourceProblem?'Browser read failed; last snapshot retained':!source?'No accepted snapshot':stale?'No fresh snapshot — last report retained':'Authenticated snapshot received');
  set('pipelineConnection',!source?'No source evidence':isObserver?'Not implemented in published runtime':source.entries==='enabled'?'Runtime reports entries enabled':'Entries '+source.entries+'; see reported counters');
- set('pilotConnection','Not connected — isolated local reporting');
+ const pilot=d.experimentalPilot;set('pilotConnection',!pilot||pilot.state==='not-configured'?'Separate diagnostics not configured':pilot.connected?'Separate diagnostics connected · '+pilot.state:'Separate diagnostics '+pilot.state+' · publisher disconnected');
  set('snapshotConnection',source?'#'+source.sequence+' · source '+age(sourceAge)+' old':'Not received');
  set('sourceExplanation',isObserver?'This dashboard is receiving the EC2 discovery observer, not the experimental PAPER pilot. Discovery can advance while evaluation, execution and decisions remain inactive. Inactive stages below are not measured zero-result evaluations.':!source?'Waiting for an authenticated account snapshot. No balances, counters, or activity will be invented.':'Panels show only the configured source account. The experimental pilot is a separate account and is not combined with these metrics.');
  if(source)set('sourceIdentity','Account '+source.accountId+' · runtime '+source.release+' · strategy '+source.strategy+' · dashboard '+d.dashboardRelease);

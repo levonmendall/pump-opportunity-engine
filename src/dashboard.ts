@@ -1,5 +1,7 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual, createHash } from 'node:crypto';
+import { createPilotTelemetryChannel } from './pilot-telemetry.js';
+import { CONNECTIONS_HTML, CONNECTIONS_SCRIPT } from './dashboard-connections.js';
 import { fileURLToPath } from 'node:url';
 import { connectionReport, withConnectionDiagnostics } from './dashboard-connectivity.js';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
@@ -43,10 +45,13 @@ export function createDashboard(config: DashboardConfig) {
   } : null);
   const viewer = publicViewer ? null : 'Basic ' + Buffer.from(`${config.viewerUser}:${config.viewerPassword}`).toString('base64');
   const publisher = `Bearer ${config.ingestionSecret}`;
+  if (process.env.POE_PILOT_INGEST_SECRET && equal(process.env.POE_PILOT_INGEST_SECRET, config.ingestionSecret)) throw new Error('pilot and original publishing credentials must differ');
+  const pilotTelemetry = createPilotTelemetryChannel({secret:process.env.POE_PILOT_INGEST_SECRET??'',accountId:process.env.POE_PILOT_ACCOUNT_ID??'',inceptionAt:Number(process.env.POE_PILOT_INCEPTION_AT??'0'),publicViewer,viewerUser:config.viewerUser,viewerPassword:config.viewerPassword});
   const server = createServer({ maxHeaderSize: 8192, requestTimeout: 5000, headersTimeout: 5000 }, async (req, res) => {
     res.setHeader('x-content-type-options', 'nosniff'); res.setHeader('referrer-policy', 'no-referrer');
     res.setHeader('x-frame-options', 'DENY');
     const path = req.url?.split('?')[0];
+    if (await pilotTelemetry.handle(req,res,path)) return;
     if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard', dashboardRelease: process.env.RENDER_GIT_COMMIT ?? 'local-build', connectivityDiagnostics: 1 }); return; }
     if (path === '/api/snapshot' && req.method === 'POST') {
       if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res, 401, { error: 'unauthorized' }); return; }
@@ -66,22 +71,22 @@ export function createDashboard(config: DashboardConfig) {
     }
     if (req.method !== 'GET') { req.resume(); send(res, 405, { error: 'read-only viewer' }); return; }
     if (path === '/status') { send(res, 200, cache.status()); return; }
-    if (path === '/api/connections') { send(res, 200, connectionReport(cache)); return; }
+    if (path === '/api/connections') { send(res, 200, connectionReport(cache,Date.now(),pilotTelemetry.read())); return; }
     if (path === '/api/snapshot' || path === '/api/export') {
       const current = cache.read();
       if (!current) { send(res, 503, { state: 'waiting', message: 'Awaiting POE data' }); return; }
       if (path === '/api/export') res.setHeader('content-disposition', 'attachment; filename="poe-bounded-snapshot.json"');
-      send(res, 200, { ...current, freshness: cache.status(), connections: connectionReport(cache) }); return;
+      send(res, 200, { ...current, freshness: cache.status(), connections: connectionReport(cache,Date.now(),pilotTelemetry.read()) }); return;
     }
     if (path !== '/') { send(res, 404, { error: 'not found' }); return; }
     res.writeHead(200, {
       'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
       'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     });
-    res.end(withConnectionDiagnostics(HTML));
+    res.end(withConnectionDiagnostics(HTML).replace('</main>',CONNECTIONS_HTML+'</main>').replace('</body>',CONNECTIONS_SCRIPT+'</body>'));
   });
   server.keepAliveTimeout = 5000; server.maxRequestsPerSocket = 100;
-  return { server, cache };
+  return { server, cache, pilotTelemetry };
 }
 
 const HTML = String.raw`<!doctype html>

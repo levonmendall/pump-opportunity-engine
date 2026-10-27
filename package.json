@@ -14,7 +14,8 @@
     "test": "node --import tsx --test test/*.test.ts",
     "integration": "node --use-env-proxy --import tsx src/integration.ts",
     "account": "node --import tsx src/account.ts",
-    "runtime": "node --use-env-proxy --import tsx src/runtime.ts"
+    "runtime": "node --use-env-proxy --import tsx src/runtime.ts",
+    "test:pilot-reporting": "npm run compile && node --test test/pilot-telemetry.test.mjs test/pilot-publisher.test.mjs"
   },
   "dependencies": {
     "@pump-fun/pump-swap-sdk": "2.2.0",
