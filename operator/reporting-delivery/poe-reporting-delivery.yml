@@ -1,0 +1,133 @@
+name: POE dedicated reporting-file delivery
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        type: choice
+        options: [prepare, install]
+        required: true
+      nonce:
+        description: Reviewed one-time 32 lowercase hex nonce
+        type: string
+        required: true
+      source_context_sha256:
+        description: Reviewed SHA256 of public source-context.json bytes (not a credential hash)
+        type: string
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  reporting-delivery:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 4
+    steps:
+      - name: Verify existing host, nonroot owner, capacity and original observer read-only
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+          POE_TRANSFER_NONCE: ${{ inputs.nonce }}
+          POE_SOURCE_CONTEXT_SHA256: ${{ inputs.source_context_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" = 994
+          python3 -I - <<'PY'
+          import json,os,pathlib,pwd,re,shutil,stat,subprocess,time,urllib.request
+          assert os.getuid()==994 and pwd.getpwuid(994).pw_name=='mm-ec2-runner'
+          assert re.fullmatch('[a-f0-9]{32}',os.environ['POE_TRANSFER_NONCE'])
+          assert re.fullmatch('[a-f0-9]{64}',os.environ['POE_SOURCE_CONTEXT_SHA256'])
+          http=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+          token=http.open(urllib.request.Request('http://169.254.169.254/latest/api/token',method='PUT',headers={'X-aws-ec2-metadata-token-ttl-seconds':'60'}),timeout=3).read(4096).decode()
+          identity=json.load(http.open(urllib.request.Request('http://169.254.169.254/latest/dynamic/instance-identity/document',headers={'X-aws-ec2-metadata-token':token}),timeout=3))
+          assert (identity.get('accountId'),identity.get('region'),identity.get('instanceId'))==('133857166104','us-west-2','i-00044d4ea1471b957')
+          temp=pathlib.Path(os.environ['RUNNER_TEMP']).resolve();directory=temp/('poe-reporting-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);directory.mkdir(mode=0o700)
+          memory=dict(line.split(':',1) for line in pathlib.Path('/proc/meminfo').read_text().splitlines());available=int(memory['MemAvailable'].split()[0])*1024
+          disk=os.statvfs(directory);assert available>=256*1024**2 and disk.f_bavail*disk.f_frsize>=32*1024**2,'INSUFFICIENT_REPORTING_HEADROOM'
+          show=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property=MainPID,NRestarts,ActiveState,SubState,User'],capture_output=True,text=True,timeout=5,check=True)
+          service=dict(line.split('=',1) for line in show.stdout.splitlines() if '=' in line)
+          public=pathlib.Path('/var/lib/poe-public/status.json');s=public.lstat();assert stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode) and s.st_size<=4096
+          raw=json.loads(public.read_text());status={k:raw[k] for k in ['accountId','inceptionAt','release','generatedAt','entriesDisabled','liveTrading']}
+          assert status['accountId']=='poe-3123e352-4581-455b-85db-acd7e825e99e' and status['inceptionAt']=='2026-10-26T22:07:36.212Z' and status['entriesDisabled'] is True and status['liveTrading'] is False
+          candidates=[shutil.which('node')]+[str(temp.parent.parent/'externals'/v/'bin/node') for v in ['node24','node20']];node=None
+          for value in candidates:
+              if not value:continue
+              try:
+                  p=pathlib.Path(value).resolve(strict=True);s=p.lstat()
+                  if stat.S_ISREG(s.st_mode) and s.st_uid in [0,994] and not s.st_mode&0o022 and os.access(p,os.X_OK):node=str(p);break
+              except OSError:pass
+          assert node is not None,'EXISTING_RUNNER_NODE_UNAVAILABLE_NO_INSTALL_ATTEMPTED'
+          version=subprocess.run([node,'--version'],capture_output=True,text=True,timeout=3,check=True).stdout.strip();assert version.startswith(('v20.','v24.'))
+          for name in ['timeout','nice','prlimit']:assert shutil.which(name),name+'_UNAVAILABLE'
+          before={'at':int(time.time()*1000),'instanceId':identity['instanceId'],'region':identity['region'],'awsAccountId':identity['accountId'],'uid':994,'node':node,'nodeVersion':version,'originalService':service,'originalPublicStatus':status}
+          (directory/'before.json').write_text(json.dumps(before)+'\n');os.chmod(directory/'before.json',0o600)
+          with open(os.environ['GITHUB_ENV'],'a') as out:out.write('POE_REPORTING_CHECK_DIRECTORY='+str(directory)+'\nPOE_REPORTING_NODE='+node+'\n')
+          print(json.dumps({'verifiedHost':{k:before[k] for k in ['instanceId','region','awsAccountId','uid','nodeVersion']},'originalPublicStatus':status,'financialFilesRead':False,'walletOrProviderSecretsRead':False,'providerCalls':0,'permissionChanges':False}))
+          PY
+      - name: Read exact administration commit and public delivery context only
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            scripts/poe/reporting-token-transfer.mjs
+            scripts/poe/reporting-source-context.json
+            scripts/poe/reporting-token.cipher
+      - name: Validate public source provenance before key or token access
+        env:
+          POE_SOURCE_CONTEXT_SHA256: ${{ inputs.source_context_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -I - <<'PY'
+          import hashlib,json,os,pathlib,stat
+          p=pathlib.Path('scripts/poe/reporting-source-context.json');s=p.lstat()
+          assert stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode) and s.st_uid==994 and not s.st_mode&0o022 and s.st_size<=4096
+          raw=p.read_bytes();assert hashlib.sha256(raw).hexdigest()==os.environ['POE_SOURCE_CONTEXT_SHA256'],'REVIEWED_PUBLIC_CONTEXT_HASH_MISMATCH'
+          value=json.loads(raw);assert set(value)=={'accountId','inceptionAt','sourceStatusSha256'}
+          assert value['accountId']=='poe-pilot-8468add6-f916-48cf-a585-6cd008a81360' and value['inceptionAt']==1793123773252
+          assert isinstance(value['sourceStatusSha256'],str) and len(value['sourceStatusSha256'])==64 and all(c in 'abcdef0123456789' for c in value['sourceStatusSha256'])
+          print(json.dumps({'sourceContext':value,'sourceContextSha256':os.environ['POE_SOURCE_CONTEXT_SHA256'],'administrationCommit':os.environ['GITHUB_SHA'],'financialStateImported':False,'credentialAccess':'none in provenance validation'}))
+          PY
+      - name: Prepare one-time receiver public key or install dedicated reporting file
+        env:
+          POE_TRANSFER_PHASE: ${{ inputs.phase }}
+          POE_TRANSFER_NONCE: ${{ inputs.nonce }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          poe_script="$GITHUB_WORKSPACE/scripts/poe/reporting-token-transfer.mjs"
+          poe_context="$GITHUB_WORKSPACE/scripts/poe/reporting-source-context.json"
+          if test "$POE_TRANSFER_PHASE" = prepare; then
+            env -i PATH=/usr/bin:/bin /usr/bin/timeout --signal=TERM --kill-after=2s 30s \
+              /usr/bin/nice -n 10 /usr/bin/prlimit --core=0:0 --cpu=15:20 --nofile=64:64 --fsize=16384:16384 -- \
+              "$POE_REPORTING_NODE" --no-addons --max-old-space-size=64 "$poe_script" host-prepare "$POE_TRANSFER_NONCE" "$poe_context"
+          elif test "$POE_TRANSFER_PHASE" = install; then
+            env -i PATH=/usr/bin:/bin /usr/bin/timeout --signal=TERM --kill-after=2s 15s \
+              /usr/bin/nice -n 10 /usr/bin/prlimit --core=0:0 --cpu=5:10 --nofile=64:64 --fsize=16384:16384 -- \
+              "$POE_REPORTING_NODE" --no-addons --max-old-space-size=64 "$poe_script" host-install "$POE_TRANSFER_NONCE" "$poe_context" "$GITHUB_WORKSPACE/scripts/poe/reporting-token.cipher"
+          else
+            exit 1
+          fi
+      - name: Verify original observer identity and restart counters unchanged
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -I - <<'PY'
+          import json,os,pathlib,stat,subprocess,time
+          value=os.environ.get('POE_REPORTING_CHECK_DIRECTORY')
+          if not value:print(json.dumps({'after':'host preflight did not complete','observerControlAttempted':False}));raise SystemExit(0)
+          before=json.loads((pathlib.Path(value)/'before.json').read_text())
+          show=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property=MainPID,NRestarts,ActiveState,SubState,User'],capture_output=True,text=True,timeout=5,check=True)
+          service=dict(line.split('=',1) for line in show.stdout.splitlines() if '=' in line)
+          p=pathlib.Path('/var/lib/poe-public/status.json');s=p.lstat();assert stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode) and s.st_size<=4096
+          raw=json.loads(p.read_text());status={k:raw[k] for k in before['originalPublicStatus']}
+          unchanged=all(service[k]==before['originalService'][k] for k in ['MainPID','NRestarts','ActiveState','SubState','User']) and all(status[k]==before['originalPublicStatus'][k] for k in ['accountId','inceptionAt','release','entriesDisabled','liveTrading'])
+          print(json.dumps({'checkedAt':int(time.time()*1000),'originalObserverUnchanged':unchanged,'originalService':service,'originalPublicStatus':status,'observerControlAttempted':False,'financialFilesRead':False,'walletOrProviderSecretsRead':False}))
+          assert unchanged,'ORIGINAL_OBSERVER_CHANGED_NO_CAUSE_ASSUMED'
+          PY
