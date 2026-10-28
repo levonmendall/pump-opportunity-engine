@@ -89,3 +89,7 @@ test('context quiet audit still rejects unobserved interior activity and ambiguo
 test('empty independent history does not prove quietness when it never reaches the known lower context',async()=>{
  const f=fixture({notes:[],pages:[[]]}),r=await auditNativeFlowWindow({...f.options,contextFences:{lower:{slot:100,availableAt:99900},upper:{slot:200,availableAt:160500,bankClockAt:160000}}});assert.equal(r.status,'unavailable');assert.equal(r.historyRangeCovered,false);assert.equal(r.requestAttempts,1);
 });
+
+test('a genuine newer pre-window notification narrows context history without hiding target activity',async()=>{
+ const f=fixture({notes:[note(2,200,99900),note(3,250,110000)],pages:[[row(3,250),row(2,200),row(5,150),row(1,100)]]}),r=await auditNativeFlowWindow({...f.options,contextFences:{lower:{slot:100,availableAt:90000},upper:{slot:400,availableAt:160500,bankClockAt:160000}}});assert.equal(r.status,'verified');assert.equal(r.strictInteriorSlots?.lower,200);assert.equal(r.lowerFence?.signature,signature(2));assert.equal(r.contextFences?.lower.slot,100,'original context provenance is retained');assert.equal(r.interiorRows,1);assert.deepEqual(r.comparedSignatures,[signature(3)]);assert.equal(r.missingNotifications.length,0);
+});

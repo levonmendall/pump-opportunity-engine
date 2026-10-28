@@ -66,6 +66,8 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    need(int(lo.slot)&&int(hi.slot)&&lo.slot<hi.slot&&int(lo.availableAt)&&lo.availableAt<=target.startAt&&int(hi.availableAt)&&hi.availableAt>=target.endAt&&hi.availableAt<=startedAt&&int(hi.bankClockAt)&&hi.bankClockAt>=target.endAt&&hi.bankClockAt<=hi.availableAt&&startedAt-hi.bankClockAt<=30000,'CONTEXT_FENCE_INVALID_OR_STALE');
    need(lo.bankClockAt===undefined||int(lo.bankClockAt)&&lo.bankClockAt<=lo.availableAt&&lo.availableAt-lo.bankClockAt<=30000,'LOWER_CONTEXT_CLOCK_INVALID');
    result.contextFences=contexts;result.anchorKind='confirmed-bank-context';lowerSlot=lo.slot;upperSlot=hi.slot;
+   const observedLower=[...captured.values()].filter(n=>n.receivedAt<target.startAt&&n.availableAt<target.startAt&&n.slot>lowerSlot&&n.slot<minimumRequired&&n.slot<upperSlot&&!n.correction&&n.classification!=='unusable').sort((a,b)=>b.slot-a.slot||b.availableAt-a.availableAt)[0];
+   if(observedLower){lowerSlot=observedLower.slot;result.lowerFence={signature:observedLower.signature,slot:observedLower.slot,receivedAt:observedLower.receivedAt,availableAt:observedLower.availableAt};}
    const anchor=[...captured.values()].filter(n=>n.receivedAt>=target.endAt&&n.slot>=upperSlot&&!n.correction&&n.classification!=='unusable').sort((a,b)=>b.receivedAt-a.receivedAt)[0];
    if(anchor){result.anchor={signature:anchor.signature,slot:anchor.slot,receivedAt:anchor.receivedAt,availableAt:anchor.availableAt};before=anchor.signature;previousSlot=anchor.slot;}else previousSlot=Infinity;
   }else{
