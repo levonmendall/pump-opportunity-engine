@@ -7,6 +7,9 @@ import {resolve} from 'node:path';
 import type {ComponentBaseline} from './component-budget.js';
 
 const MIB=1024*1024;
+/** Explicit finite history runway: at most256 x128KiB (32MiB) of input.
+ * Callers still default to32 paths; no directory scan, rewrite or refund. */
+export const RESEARCH_MAXIMUM_PATHS=256;
 type Book=Record<string,unknown>;
 export type ResearchBaselineSource={path:string;sha256:string;incrementUnits:number;incrementObservedBytes:number;pendingReservedBytes:number};
 export type ResearchBaselineOptions={paths:readonly string[];now:number;physicalSettled?:boolean;/** Standing research explicitly removes only the historical lifetime caps. */allowCumulativeBeyondLegacy?:boolean;/** Bounded explicit chapter list; never searches the filesystem. */maximumPaths?:number};
@@ -40,7 +43,7 @@ function pendingBytes(value:unknown,firstId:number,lastId:number,legacy:boolean)
  * it is never counted again as a new chapter's observed traffic. */
 export function readResearchBaseline(options:ResearchBaselineOptions){
   const maximumPaths=options.maximumPaths??32;
-  need(int(maximumPaths)&&maximumPaths>=1&&maximumPaths<=128&&(options.allowCumulativeBeyondLegacy===undefined||typeof options.allowCumulativeBeyondLegacy==='boolean')&&int(options.now)&&Array.isArray(options.paths)&&options.paths.length>0&&options.paths.length<=maximumPaths,'INVALID_OPTIONS');
+  need(int(maximumPaths)&&maximumPaths>=1&&maximumPaths<=RESEARCH_MAXIMUM_PATHS&&(options.allowCumulativeBeyondLegacy===undefined||typeof options.allowCumulativeBeyondLegacy==='boolean')&&int(options.now)&&Array.isArray(options.paths)&&options.paths.length>0&&options.paths.length<=maximumPaths,'INVALID_OPTIONS');
   const paths=options.paths.map(p=>{need(typeof p==='string'&&p.length>0,'INVALID_PATH');return resolve(p);});
   need(new Set(paths).size===paths.length,'DUPLICATE_PATH');
   const sources:ResearchBaselineSource[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0;

@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {PilotRpc,PilotRpcUnavailable,type PilotRpcOptions} from '../src/pilot-rpc.js';
+import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from '../src/research-baseline.js';
 const MIB=1024*1024,turn=()=>new Promise<void>(r=>setImmediate(r));
 function fixture(options:Partial<PilotRpcOptions>={},recent=false,tickingClock=false){
   const directory=mkdtempSync(join(tmpdir(),'poe-pilot-rpc-')),old=join(directory,'old.json');let now=200000,mono=200000;
@@ -160,4 +161,23 @@ test('public read-only log subscriptions use the existing gate without authorizi
   assert.equal(f.client.usage().newUnits,2);assert.equal(f.client.usage().chapterUsage!.wsBytes,200);assert.equal(f.invocations.length,0);
   for(const method of ['sendTransaction','simulateTransaction','signTransaction','subscribeTokenTrade'])await assert.rejects(f.client.operateData({transport:'ws',method},async()=>true),/DATA_METHOD_DENIED/);assert.equal(f.client.usage().newUnits,2);
  }finally{f.close();}
+});
+
+
+test('long settled baseline leaves bounded chapter runway without discarding paths, counters or uncertainty',()=>{
+ const directory=mkdtempSync(join(tmpdir(),'poe-pilot-long-chain-')),old=join(directory,'old.json');let client:PilotRpc|undefined;
+ try{
+  writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:2,bytes:100,lastObservedAt:1000,starts:[900,1000],pending:[{id:2,unobservedBytes:2000}]}),{mode:0o600});
+  const paths=[old];let baseline=readResearchBaseline({paths,now:200000,physicalSettled:true}).baseline;
+  for(let i=1;i<=224;i++){const path=join(directory,'prior-'+i+'.json'),at=1000+i;writeFileSync(path,JSON.stringify({schemaVersion:1,grantId:'prior-'+i,baseline,startedAt:at,lastObservedAt:at,starts:[],httpBytes:1,wsBytes:0,pending:[]}),{mode:0o600});paths.push(path);baseline={...baseline,bytes:baseline.bytes+1,sha256:createHash('sha256').update(readFileSync(path)).digest('hex')};}
+  const before=paths.map(path=>createHash('sha256').update(readFileSync(path)).digest('hex'));let physical=0;
+  const options={runId:'long-chain-test',priorPhysicalSettled:true as const,now:()=>200000,monotonic:()=>200000,fetcher:(async()=>{physical++;throw Error('UNEXPECTED_NETWORK');}) as typeof fetch};
+  client=new PilotRpc({...options,directory:join(directory,'run-104'),baselinePaths:paths.slice(0,104)});
+  const expected=readResearchBaseline({paths:paths.slice(0,104),now:200000,physicalSettled:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});
+  assert.equal(client.usage().cumulativeUnits,expected.baseline.calls);assert.equal(client.usage().newUnits,0);assert.equal(client.usage().accountedCumulativeResponseBytes,expected.baseline.bytes);assert.equal(client.usage().uncertainResponseBytes,2000);client.close();client=undefined;
+  client=new PilotRpc({...options,directory:join(directory,'run-boundary'),baselinePaths:paths.slice(0,224)});assert.equal(client.usage().newUnits,0);client.close();client=undefined;
+  assert.throws(()=>new PilotRpc({...options,directory:join(directory,'too-many'),baselinePaths:paths}),/BASELINE_CHAPTER_CAP/);
+  assert.throws(()=>new PilotRpc({...options,directory:join(directory,'duplicate'),baselinePaths:[...paths.slice(0,103),paths[0]!]}),/DUPLICATE_PATH/);
+  assert.equal(physical,0);assert.deepEqual(paths.map(path=>createHash('sha256').update(readFileSync(path)).digest('hex')),before);
+ }finally{client?.close();rmSync(directory,{recursive:true,force:true});}
 });

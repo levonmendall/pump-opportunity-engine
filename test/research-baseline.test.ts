@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {mkdtempSync,readFileSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
-import {readResearchBaseline} from '../src/research-baseline.js';
+import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from '../src/research-baseline.js';
 
 const historicalPaths=['evidence/free-data-20261027/active-approved-rpc-budget.json','evidence/public-component-20261027/rpc-budget.json'].map(p=>resolve(p));
 const hash=(path:string)=>createHash('sha256').update(readFileSync(path)).digest('hex');
@@ -60,5 +60,23 @@ test('an explicitly larger bounded chapter list preserves default32-path behavio
     base=readResearchBaseline({paths,now:2000,maximumPaths:128}).baseline;
   }
   assert.equal(paths.length,33);assert.throws(()=>readResearchBaseline({paths,now:2000}),/INVALID_OPTIONS/);assert.equal(readResearchBaseline({paths,now:2000,maximumPaths:128}).baseline.calls,2);
-  for(const maximumPaths of [0,129,1.5])assert.throws(()=>readResearchBaseline({paths,now:2000,maximumPaths}),/INVALID_OPTIONS/);
+  for(const maximumPaths of [0,RESEARCH_MAXIMUM_PATHS+1,1.5])assert.throws(()=>readResearchBaseline({paths,now:2000,maximumPaths}),/INVALID_OPTIONS/);
+});
+
+
+test('explicit256-path history retains every hash, counter and uncertain debit while default32 remains bounded',t=>{
+ const f=fixture(t),paths=[f.write('old.json',{...old(),pending:[{id:2,unobservedBytes:2000}]})];
+ let base=readResearchBaseline({paths,now:2000,physicalSettled:true}).baseline;
+ for(let i=1;i<RESEARCH_MAXIMUM_PATHS;i++){
+  const at=1100+i;const bytes={schemaVersion:1,grantId:'retained-'+i,baseline:base,startedAt:at,lastObservedAt:at,starts:[],httpBytes:1,wsBytes:2,pending:[]};
+  const path=f.write('retained-'+i+'.json',bytes);paths.push(path);base={...base,bytes:base.bytes+3,sha256:hash(path)};
+ }
+ const before=paths.map(hash);
+ assert.throws(()=>readResearchBaseline({paths,now:2000,physicalSettled:true}),/INVALID_OPTIONS/);
+ const all=readResearchBaseline({paths,now:2000,physicalSettled:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});
+ assert.equal(all.sources.length,256);assert.deepEqual(all.sources.map(s=>s.path),paths);assert.deepEqual(all.sources.map(s=>s.sha256),before);assert.deepEqual(all.baseline,base);
+ assert.equal(all.observedBytes,100+255*3);assert.equal(all.uncertainResponseBytes,2000);assert.equal(all.pendingOperations,1);
+ assert.throws(()=>readResearchBaseline({paths:[...paths,paths[0]!],now:2000,physicalSettled:true,maximumPaths:RESEARCH_MAXIMUM_PATHS}),/INVALID_OPTIONS/);
+ assert.throws(()=>readResearchBaseline({paths:[...paths.slice(0,-1),paths[0]!],now:2000,physicalSettled:true,maximumPaths:RESEARCH_MAXIMUM_PATHS}),/DUPLICATE_PATH/);
+ assert.throws(()=>readResearchBaseline({paths,now:2000,maximumPaths:RESEARCH_MAXIMUM_PATHS}),/PHYSICAL_UNCERTAINTY/);assert.deepEqual(paths.map(hash),before);
 });

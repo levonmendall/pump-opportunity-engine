@@ -5,7 +5,7 @@ import {dirname,join,resolve} from 'node:path';
 import {performance} from 'node:perf_hooks';
 import {ComponentBudget,type ComponentBaseline,type ComponentBudgetOptions,type ComponentKind,type ComponentOperation} from './component-budget.js';
 import {ComponentTransport} from './component-transport.js';
-import {readResearchBaseline} from './research-baseline.js';
+import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';
 import {validateRpc} from './network.js';
 
 const MIB=1024*1024;
@@ -36,8 +36,8 @@ export class PilotRpc{
     if(!int(this.startedAt)||!Number.isFinite(this.startedMono)||this.startedMono<0||!int(this.duration)||this.duration<1||this.duration>1800000||!int(this.units)||this.units<1||this.units>1500||!int(this.responseBytes)||this.responseBytes<4*MIB||this.responseBytes>32*MIB||!int(this.chapterMs)||this.chapterMs<1||this.chapterMs>300000||!int(this.chapterUnits)||this.chapterUnits<1||this.chapterUnits>200||!int(this.maximumChapters)||this.maximumChapters<1||this.maximumChapters>32||!int(this.startsPer10s)||this.startsPer10s<1||this.startsPer10s>20||options.priorPhysicalSettled!==true||!/^[a-z0-9-]{1,60}$/.test(options.runId))throw new PilotRpcUnavailable('INVALID_OPTIONS');
     if(this.transactionStartsPer10s!==undefined&&(!int(this.transactionStartsPer10s)||this.transactionStartsPer10s<2||this.transactionStartsPer10s>8))throw new PilotRpcUnavailable('INVALID_OPTIONS');
     this.dir=resolve(options.directory);const parent=lstatSync(dirname(this.dir));if(!parent.isDirectory()||parent.isSymbolicLink()||parent.uid!==process.getuid?.()||(parent.mode&0o077)!==0||realpathSync(dirname(this.dir))!==dirname(this.dir))throw new PilotRpcUnavailable('UNSAFE_DIRECTORY');
-    this.paths=options.baselinePaths.map(p=>resolve(p));if(this.paths.length+this.maximumChapters>128)throw new PilotRpcUnavailable('BASELINE_CHAPTER_CAP');
-    const linked=readResearchBaseline({paths:this.paths,now:this.startedAt,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:128});this.initial=structuredClone(linked.baseline);this.baseline=linked.baseline;this.inheritedUncertainty=linked.uncertainResponseBytes;
+    this.paths=options.baselinePaths.map(p=>resolve(p));if(this.paths.length+this.maximumChapters>RESEARCH_MAXIMUM_PATHS)throw new PilotRpcUnavailable('BASELINE_CHAPTER_CAP');
+    const linked=readResearchBaseline({paths:this.paths,now:this.startedAt,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});this.initial=structuredClone(linked.baseline);this.baseline=linked.baseline;this.inheritedUncertainty=linked.uncertainResponseBytes;
     // Historical books do not carry a complete per-method index. Treat EVERY
     // recent baseline start as getTransaction rather than refund unknown work.
     this.methodStarts=linked.baseline.starts.filter(at=>at>this.startedAt-10000).map(at=>({at,origin:'inherited-unknown' as const}));if(this.methodStarts.length>600)throw new PilotRpcUnavailable('METHOD_HISTORY_BOUND');
@@ -86,7 +86,7 @@ export class PilotRpc{
     if(!this.budget)return;const u=this.budget.usage();if(u.inFlight||u.waitingOrOperating)throw new PilotRpcUnavailable('PHYSICAL_SLOT_OCCUPIED');
     this.budget.close();this.save('chapter-'+String(this.chapter).padStart(3,'0')+'-summary.json',{usage:u,closedAt:this.now(),physicalSettled:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,unknownResponseReservationsRetained:u.uncertainResponseBytes});
     this.paths.push(join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'));
-    const linked=readResearchBaseline({paths:this.paths,now:this.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:128});this.baseline=linked.baseline;this.inheritedUncertainty=linked.uncertainResponseBytes;this.budget=undefined;this.transport=undefined;
+    const linked=readResearchBaseline({paths:this.paths,now:this.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});this.baseline=linked.baseline;this.inheritedUncertainty=linked.uncertainResponseBytes;this.budget=undefined;this.transport=undefined;
   }
   private openChapter(){
     this.check();const u=this.current();
