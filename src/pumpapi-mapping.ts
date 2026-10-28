@@ -23,18 +23,19 @@ function need(condition:unknown,reason:string):asserts condition {if(!condition)
 const integer=(value:any):string=>{need(BN.isBN(value),'UNVERIFIED_INTEGER');const s=value.toString(10);need(/^(0|[1-9][0-9]*)$/.test(s),'UNVERIFIED_INTEGER');return s;};
 const key=(value:any):string=>{need(value&&typeof value.toBase58==='function','UNVERIFIED_EVENT_KEY');return value.toBase58();};
 const bytes=(ix:any)=>{need(typeof ix?.data==='string'&&ix.data.length<=4096,'UNVERIFIED_INSTRUCTION_BYTES');return Buffer.from(bs58.decode(ix.data));};
-export type DecodedPumpSwapInstruction={name:string;data:Record<string,unknown>;layout:'pinned-sdk'|'observed-exact-quote-two-u64';exactLayout:true;trackVolumeAvailable:boolean};
-/** Current observed buy_exact_quote_in can omit the packaged IDL's trailing
- * track_volume field. Decode only its two actual u64s; never pad or invent the
- * missing option. This says nothing about event, trader or transfer validity.
+export type DecodedPumpSwapInstruction={name:string;data:Record<string,unknown>;layout:'pinned-sdk'|'observed-exact-quote-two-u64'|'observed-buy-two-u64';exactLayout:true;trackVolumeAvailable:boolean};
+/** Retained successful buy and buy_exact_quote_in forms can omit the packaged
+ * IDL's trailing track_volume field. Decode only the two actual u64s; never pad
+ * or invent the missing option. Event, role and transfer checks remain required.
  * Other layouts must round-trip through the pinned SDK exactly. */
 export function decodePumpSwapInstruction(encoded:Buffer):DecodedPumpSwapInstruction{
   need(Buffer.isBuffer(encoded)&&encoded.length>=8&&encoded.length<=4096,'UNVERIFIED_INSTRUCTION_BYTES');
   const definition=idl.instructions.find(i=>Buffer.from(i.discriminator).equals(encoded.subarray(0,8)));
   need(definition,'UNKNOWN_SWAP_INSTRUCTION');
-  if(definition.name==='buy_exact_quote_in'&&encoded.length===24){
-    need(definition.args.length===3&&definition.args[0]!.name==='spendable_quote_in'&&definition.args[0]!.type==='u64'&&definition.args[1]!.name==='min_base_amount_out'&&definition.args[1]!.type==='u64'&&definition.args[2]!.name==='track_volume'&&JSON.stringify(definition.args[2]!.type)===JSON.stringify({defined:{name:'OptionBool'}}),'PINNED_SWAP_INTERFACE_MISMATCH');
-    return {name:definition.name,data:{spendable_quote_in:new BN(encoded.subarray(8,16),'le'),min_base_amount_out:new BN(encoded.subarray(16,24),'le')},layout:'observed-exact-quote-two-u64',exactLayout:true,trackVolumeAvailable:false};
+  if(['buy','buy_exact_quote_in'].includes(definition.name)&&encoded.length===24){
+    const names=definition.name==='buy'?['base_amount_out','max_quote_amount_in']:['spendable_quote_in','min_base_amount_out'];
+    need(definition.args.length===3&&definition.args[0]!.name===names[0]&&definition.args[0]!.type==='u64'&&definition.args[1]!.name===names[1]&&definition.args[1]!.type==='u64'&&definition.args[2]!.name==='track_volume'&&JSON.stringify(definition.args[2]!.type)===JSON.stringify({defined:{name:'OptionBool'}}),'PINNED_SWAP_INTERFACE_MISMATCH');
+    return {name:definition.name,data:{[names[0]!]:new BN(encoded.subarray(8,16),'le'),[names[1]!]:new BN(encoded.subarray(16,24),'le')},layout:definition.name==='buy'?'observed-buy-two-u64':'observed-exact-quote-two-u64',exactLayout:true,trackVolumeAvailable:false};
   }
   try{
     const decoded=coder.instruction.decode(encoded);

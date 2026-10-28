@@ -50,3 +50,35 @@ test('protocol labels cannot be interpreted as an ordinary buyer even when a Buy
 test('payload and canonical scope bounds fail closed before parsing large or unrelated input',()=>{
  const r=records[0],input=inputFor(r);assert.throws(()=>parseLogNativeEvidence({...input,logs:Array(4097).fill('x')},[scopeFor(r)]),/ENVELOPE/);assert.throws(()=>parseLogNativeEvidence(input,[{...scopeFor(r),pool:scopeFor(r).mint}]),/SCOPE_BINDING/);assert.throws(()=>parseLogNativeEvidence(input,[]),/SCOPES/);
 });
+
+// These two successful historical transaction payloads were preserved before the
+// decoder repair. They establish narrowly observed compatibility, not new flow.
+const baselineAudit=JSON.parse(readFileSync('evidence/high-activity-20261028/log-native-offline-audit.json','utf8'));
+const legacyBuys=baselineAudit.refusedTransactionFixtures.filter((r:any)=>r.fullMapperRefusalAtAuditVersion==='RELEVANT_AMM_INSTRUCTION_UNSUPPORTED'&&baselineAudit.rows.find((row:any)=>row.signature===r.signature).unsupportedInstructions.some((i:any)=>i.idlDiscriminatorName==='buy'&&i.actualByteLength===24));
+
+test('retained exact24-byte ordinary Buy compatibility preserves actual amounts, roles, fees and absent-volume truth',async()=>{
+ const {decodePumpSwapInstruction,inspectScopedPumpSwapInstructions}=await import('../src/pumpapi-mapping.js');
+ assert.equal(legacyBuys.length,2);
+ for(const r of legacyBuys){
+  const checks=inspectScopedPumpSwapInstructions(r.transaction,r);assert.equal(checks.supportedSwapInstructions,1);
+  const check=checks.checks.find(c=>c.instructionName==='buy')!;assert.equal(check.instructionLayout,'observed-buy-two-u64');assert.equal(check.trackVolumeAvailable,false);
+  const ix=check.innerInstructionIndex===null?r.transaction.transaction.message.instructions[check.outerInstructionIndex]:r.transaction.meta.innerInstructions.find((g:any)=>g.index===check.outerInstructionIndex).instructions[check.innerInstructionIndex];
+  const raw=Buffer.from(bs58.decode(ix.data)),decoded=decodePumpSwapInstruction(raw);assert.equal(raw.length,24);assert.equal(Object.hasOwn(decoded.data,'track_volume'),false);assert.equal((decoded.data.base_amount_out as any).toString(10),raw.readBigUInt64LE(8).toString());assert.equal((decoded.data.max_quote_amount_in as any).toString(10),raw.readBigUInt64LE(16).toString());
+  const mapped=mapConfirmedPumpSwapEvidence(r.transaction,{...r,providerReceivedAt:null,availableAt:r.rpcAvailableAt});assert.equal(mapped.length,1);const m=mapped[0]!;assert.equal(m.side,'buy');assert.deepEqual(m.transferChecks,{baseTransfer:true,userQuoteTransfer:true});
+  const log=parseLogNativeEvidence({signature:r.signature,slot:r.transaction.slot,err:null,logs:r.transaction.meta.logMessages,commitment:'confirmed',availableAt:r.rpcAvailableAt},[{mint:r.mint,pool:r.pool,supportedPoolEvidence:'retained historical validated source'}])[0]!;
+  assert.equal(compareLogToFull(log,m),true);assert.equal(m.normalizedForStrategy,false);assert.equal(m.availableAt,r.rpcAvailableAt);assert.ok(Object.values(m.fees).every(f=>/^(0|[1-9][0-9]*)$/.test(f)));
+ }
+});
+
+test('legacy24-byte Buy role/event/transfer corruption and unverified26-byte tails retain strict refusals',async()=>{
+ const {decodePumpSwapInstruction,toResearchNormalizedTrade,inspectScopedPumpSwapInstructions}=await import('../src/pumpapi-mapping.js');
+ for(const fixture of legacyBuys){const r=structuredClone(fixture),tx=r.transaction,input={...r,providerReceivedAt:null,availableAt:r.rpcAvailableAt},check=inspectScopedPumpSwapInstructions(tx,r).checks.find(c=>c.instructionName==='buy')!;
+  const group=tx.meta.innerInstructions.find((g:any)=>g.index===check.outerInstructionIndex),ix=check.innerInstructionIndex===null?tx.transaction.message.instructions[check.outerInstructionIndex]:group.instructions[check.innerInstructionIndex],bytes=Buffer.from(bs58.decode(ix.data));
+  assert.throws(()=>decodePumpSwapInstruction(bytes.subarray(0,23)));assert.throws(()=>decodePumpSwapInstruction(Buffer.concat([bytes,Buffer.from([1,1])])),/LAYOUT/);assert.throws(()=>decodePumpSwapInstruction(Buffer.concat([bytes,Buffer.from([0,0,0])])),/LAYOUT/);
+  const roles=structuredClone(tx),badIx=check.innerInstructionIndex===null?roles.transaction.message.instructions[check.outerInstructionIndex]:roles.meta.innerInstructions.find((g:any)=>g.index===check.outerInstructionIndex).instructions[check.innerInstructionIndex];badIx.accounts[1]=badIx.accounts[2];assert.throws(()=>mapConfirmedPumpSwapEvidence(roles,input),/TRADER_ROLE/);
+  const original=mapConfirmedPumpSwapEvidence(tx,input)[0]!,event=group.instructions[original.identity.eventInnerInstructionIndex],encoded=Buffer.from(bs58.decode(event.data));event.data=bs58.encode(encoded.subarray(0,-8));assert.throws(()=>mapConfirmedPumpSwapEvidence(tx,input),/EVENT_LAYOUT/);
+  const transferTx=structuredClone(fixture.transaction),keys=[...transferTx.transaction.message.accountKeys,...(transferTx.meta.loadedAddresses?.writable??[]),...(transferTx.meta.loadedAddresses?.readonly??[])],transfers=transferTx.meta.innerInstructions.find((g:any)=>g.index===check.outerInstructionIndex).instructions;
+  const transfer=transfers.find((x:any)=>{const b=Buffer.from(bs58.decode(x.data));return b.length===10&&b[0]===12&&keys[x.accounts[1]]===r.mint;});assert.ok(transfer);const b=Buffer.from(bs58.decode(transfer.data));b.writeBigUInt64LE(b.readBigUInt64LE(1)+1n,1);transfer.data=bs58.encode(b);const changed=mapConfirmedPumpSwapEvidence(transferTx,input)[0]!;assert.equal(changed.transferChecks.baseTransfer,false);assert.throws(()=>toResearchNormalizedTrade(changed,'curve','retained scope'),/UNVERIFIED_EXECUTED_TRANSFERS/);
+ }
+ const unverified26=baselineAudit.refusedTransactionFixtures.filter((r:any)=>baselineAudit.rows.find((row:any)=>row.signature===r.signature).unsupportedInstructions.some((i:any)=>i.actualByteLength===26));assert.equal(unverified26.length,3);for(const r of unverified26)assert.throws(()=>mapConfirmedPumpSwapEvidence(r.transaction,{...r,providerReceivedAt:null,availableAt:r.rpcAvailableAt}),/RELEVANT_AMM_INSTRUCTION_UNSUPPORTED/);
+});
