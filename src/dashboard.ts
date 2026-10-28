@@ -1,8 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual, createHash } from 'node:crypto';
 import { createPilotTelemetryChannel } from './pilot-telemetry.js';
-import { CONNECTIONS_HTML, CONNECTIONS_SCRIPT } from './dashboard-connections.js';
-import { PILOT_PORTFOLIO_HTML, PILOT_PORTFOLIO_SCRIPT } from './pilot-portfolio-ui.js';
 import { fileURLToPath } from 'node:url';
 import { connectionReport, withConnectionDiagnostics } from './dashboard-connectivity.js';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
@@ -84,7 +82,7 @@ export function createDashboard(config: DashboardConfig) {
       'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
       'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     });
-    res.end(withConnectionDiagnostics(HTML).replace('<div class="section-heading reporting-zone-heading"',CONNECTIONS_HTML+PILOT_PORTFOLIO_HTML+'<div class="section-heading reporting-zone-heading"').replace('</body>',PILOT_PORTFOLIO_SCRIPT+CONNECTIONS_SCRIPT+'</body>'));
+    res.end(withConnectionDiagnostics(HTML));
   });
   server.keepAliveTimeout = 5000; server.maxRequestsPerSocket = 100;
   return { server, cache, pilotTelemetry };
@@ -149,33 +147,20 @@ body.poe-compact-view .compact-disclosure-body{padding-top:9px}
 body.poe-compact-view .compact-toggle{display:block;width:100%;text-align:left;cursor:pointer;margin:9px 0 0;padding:11px 13px;background:rgba(68,90,140,.12);color:#addccf;border:1px solid rgba(136,185,226,.25);border-radius:8px;font:600 11px var(--mono)}
 body.poe-compact-view .compact-toggle:hover{border-color:rgba(138,255,234,.48)}
 body.poe-compact-view #portfolio:not(.compact-expanded) #cards>.stat:nth-child(n+7){display:none!important}
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric{display:none!important}
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(2),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(3),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(4),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(5),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(6),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(9),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(16){display:block!important}
-body.poe-compact-view #experimental-portfolio .metric-grid{margin-top:9px}
-body.poe-compact-view #experimental-portfolio .metric{padding:11px!important}
-body.poe-compact-view #experimental-portfolio h3{margin:13px 0 6px!important}
 body.poe-compact-view .section-heading{margin-top:20px!important;margin-bottom:10px!important}
 body.poe-compact-view .section-heading .section-note{font-size:9px}
 body.poe-compact-view .compact-folded{min-height:0}
-body.poe-compact-view #pilot-telemetry-panel .pilot-note{font-size:11px}
 @media(max-width:640px){
  body.poe-compact-view .topbar{height:64px!important}
  body.poe-compact-view .panel{padding:15px!important}
  body.poe-compact-view .compact-quick-links{gap:5px;margin:7px 0 12px}
  body.poe-compact-view .compact-quick-links a{flex:1 1 auto;justify-content:center;font-size:9px;padding:6px 8px;min-height:35px}
  body.poe-compact-view .stat{padding:13px!important}
- body.poe-compact-view #experimental-portfolio .metric{padding:10px!important}
 }
 @media print{
  body.poe-compact-view .hero-visual{display:none!important}
  body.poe-compact-view .compact-quick-links,body.poe-compact-view .compact-toggle{display:none!important}
- body.poe-compact-view #portfolio #cards>.stat,body.poe-compact-view #experimental-portfolio #experimental-portfolio-cards>.metric{display:block!important}
+ body.poe-compact-view #portfolio #cards>.stat{display:block!important}
  body.poe-compact-view .compact-disclosure-body{display:block!important}
 }
 
@@ -230,23 +215,8 @@ const money=n=>n===null?'Unavailable':new Intl.NumberFormat('en-US',{style:'curr
 const put=(id,value)=>{byId(id).textContent=String(value)};
 const add=(p,t,value,cls)=>{const n=document.createElement(t);if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;p.append(n);return n};
 const makeSvg=(tag,attrs,txt)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,String(v));if(txt!==undefined)e.textContent=txt;return e};
-let latest=null,pilotIntelligence=null;
-function candidateIntelligenceUsesPilot(){return !!pilotIntelligence}
-function candidateTime(at){return Number.isSafeInteger(at)&&at>0?new Date(at).toISOString():'Unavailable'}
+let latest=null;
 function renderCandidateIntelligence(){
- if(pilotIntelligence){
-  const p=pilotIntelligence.snapshot;
-  renderFunnel(p.funnel);
-  const state=String(pilotIntelligence.state||'reporting').toUpperCase();
-  put('funnelSource','PILOT · '+state+' · CURRENT RUN');
-  const decisions=Array.isArray(p.decisions)?p.decisions.slice(-30).reverse():[];
-  const refusals=Array.isArray(p.refusals)?p.refusals.slice(0,30):[];
-  const rows=decisions.map(d=>[candidateTime(d.at),d.mint,d.stage,d.reason]);
-  refusals.forEach(x=>rows.push(['RUN TOTAL','—','REFUSAL COUNT',x.reason+' · '+x.count]));
-  put('decisionsCount','PILOT · '+decisions.length+' DECISIONS · '+refusals.length+' REFUSAL TYPES');
-  renderTable('decisions',['UTC','Mint','Stage','Reason'],rows,'NO PILOT DECISIONS','The current pilot run has not reported a decision or refusal.');
-  return;
- }
  if(!latest){
   put('funnelSource','AWAITING SOURCE');put('decisionsCount','—');return;
  }
@@ -255,11 +225,6 @@ function renderCandidateIntelligence(){
  put('decisionsCount',latest.decisions.length+' REPORTED');
  renderTable('decisions',['UTC','Mint','Stage','Reason'],latest.decisions.map(d=>[d.at,d.mint,d.stage,d.reason]),'NO DECISIONS','No decisions in the current published window.');
 }
-function setPilotIntelligence(snapshot,state,sourceAgeMs,publisherConnected){
- if(!snapshot||snapshot.kind!=='experimental-pilot'||snapshot.authoritative!==false||snapshot.liveTrading!==false)return false;
- pilotIntelligence={snapshot,state,sourceAgeMs,publisherConnected};renderCandidateIntelligence();return true;
-}
-function clearPilotIntelligence(){pilotIntelligence=null;renderCandidateIntelligence();}
 function signal(title,message,label,mode,time){put('stateTitle',title);put('state',message);put('sourceLabel',label);put('lastSync',time||'RECEIVER · AWAITING DATA');document.body.dataset.link=mode}
 function clock(){put('utcClock',new Date().toISOString().slice(11,19)+' UTC')}
 function renderCards(s){
@@ -396,11 +361,9 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
  };
  const status=one('section.status-strip'),hero=one('section.hero');
  if(status&&hero){const artworkCaption=hero.nextElementSibling;if(artworkCaption?.classList.contains('holo-index'))artworkCaption.after(status);else hero.after(status);}
- const portfolio=document.getElementById('portfolio'),experimental=document.getElementById('experimental-portfolio');
- if(portfolio&&experimental)portfolio.after(experimental);
  if(status){
   const nav=document.createElement('nav');nav.className='compact-quick-links';nav.setAttribute('aria-label','Jump to dashboard sections');
-  for(const [href,label] of [['#portfolio','Original portfolio'],['#experimental-portfolio','PAPER account'],['#system','Candidates'],['#reporting-status','System health']]){
+  for(const [href,label] of [['#portfolio','Portfolio'],['#performance','P&L trajectory'],['#system','Candidates'],['#reportingConnections','System health']]){
    if(!document.querySelector(href))continue;
    const link=document.createElement('a');link.href=href;link.textContent=label;nav.append(link);
   }
@@ -408,32 +371,10 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
  }
  // Key figures stay visible; refreshes rebuild only their contents, not these controls.
  metricToggle('portfolio','cards','original portfolio metrics');
- metricToggle('experimental-portfolio','experimental-portfolio-cards','experimental PAPER accounting metrics');
- if(experimental){
-  const source=document.getElementById('experimental-portfolio-source');
-  if(source){
-   const details=document.createElement('details');details.className='compact-disclosure';
-   const summary=document.createElement('summary');summary.textContent='Account identity, freshness and source notes';
-   const body=document.createElement('div');body.className='compact-disclosure-body';
-   source.replaceWith(details);body.append(source);details.append(summary,body);
-   const heading=experimental.querySelector('.panel-heading');if(heading)heading.after(details);
-  }
-  const tradesHeading=Array.from(experimental.querySelectorAll('h3')).find(h=>h.textContent.includes('Experimental trades'));
-  if(tradesHeading){
-   const details=document.createElement('details');details.className='compact-disclosure';details.id='experimental-trade-history-details';
-   const summary=document.createElement('summary');summary.textContent='Trade attempts, execution history and P&L chart';
-   const body=document.createElement('div');body.className='compact-disclosure-body';
-   let current=tradesHeading;
-   while(current){const next=current.nextSibling;body.append(current);current=next;}
-   details.append(summary,body);experimental.append(details);
-  }
- }
  // Both candidate totals and source/staleness badges remain visible in their panel headings.
- panelFold('#pilot-telemetry-panel','Full pilot funnel, market watch and failure diagnostics');
  panelFold('#reportingConnections','Connection details, source identity and refresh controls');
  panelFold('section[aria-labelledby="metricsTitle"]','Runtime metrics and provider usage');
  panelFold('section[aria-labelledby="decisionsTitle"]','Full evaluation decisions and refusal reasons');
- panelFold('#performance','Portfolio P&L chart and historical timestamps');
  document.body.classList.add('poe-compact-view');
  // Side-rail navigation opens the requested disclosure without hiding its destination.
  document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',()=>{
