@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-10-28T21:59:57.242521+00:00",
+  "verifiedAt": "2026-10-28T22:00:29.997332+00:00",
   "classification": "OFFLINE helper and readback verification; no live resource-capacity claim",
   "sourceBase": "03953491cecb2e9ae07dbfadd34185fc6712adf6",
   "supervisorTests": {
@@ -25,8 +25,8 @@
     },
     {
       "path": "operator/native-paper-ec2/readback-results.py",
-      "bytes": 44316,
-      "sha256": "9fbb6904bfc183f4cb3afab31c23535a0f8b485015460d549e426d8b3c3bc63e"
+      "bytes": 44324,
+      "sha256": "6b24e7bc9a95b39c7fb94bffec0f64771fa8e4ad6b86d1fe9b02e231e39b2696"
     },
     {
       "path": "operator/native-paper-ec2/test-run-bounded.py",
@@ -35,8 +35,9 @@
     },
     {
       "path": "operator/native-paper-ec2/test-readback-results.py",
-      "bytes": 31698,
-      "sha256": "bd191e5d74c0f6031e7b43f820325330850a770a9c0f277d1d5901f8d165ef4a"
+      "bytes": 31706,
+      "sha256": "1229d9341e8da5434b91b4202d10b2515a5e8b0b0723f58ca2c8b056ae045daa"
     }
-  ]
+  ],
+  "httpTimingHookSemantics": "Undici sendHeaders pre-write hook, not successful bytes transmission; final key names retained"
 }
