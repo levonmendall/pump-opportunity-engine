@@ -19,13 +19,25 @@ export const NATIVE_TWO_HOUR_RESEARCH_PROFILE=Object.freeze({
  classification:'PROVISIONAL FINITE RESEARCH CEILINGS; NOT TWO-HOUR CAPACITY OR PROVIDER ENTITLEMENT' as const,
  infrastructureCost:'Existing compute and transfer allowance/cost unverified; zero API purchase is not zero total cost.' as const,
 });
-export type NativeResearchProfile=typeof NATIVE_TWO_HOUR_RESEARCH_PROFILE;
+/** Explicit local scheduling experiment, not a provider plan or entitlement.
+ * 11,500 finite units retain headroom above 90/minute x120min; this does
+ * not authorize starts outside the rolling gate or run/shutdown deadlines. Other resource/validity caps stay
+ * identical; a rate allowance cannot guarantee response latency or coverage. */
+export const NATIVE_TWO_HOUR_90_RESEARCH_PROFILE=Object.freeze({
+ ...NATIVE_TWO_HOUR_RESEARCH_PROFILE,
+ version:'candidate-native-two-hour-90-research-v1' as const,
+ maximumUnits:11500,
+ physical:Object.freeze({...NATIVE_TWO_HOUR_RESEARCH_PROFILE.physical,startsPerMinute:90}),
+ classification:'PROVISIONAL 90/MINUTE LOCAL RESEARCH CEILING; NOT TWO-HOUR CAPACITY OR PROVIDER ENTITLEMENT' as const,
+});
+export type NativeResearchProfile=typeof NATIVE_TWO_HOUR_RESEARCH_PROFILE|typeof NATIVE_TWO_HOUR_90_RESEARCH_PROFILE;
 /** Undefined means existing defaults. No string, duration or slot count silently
  * selects a larger resource envelope. */
 export function resolveNativeResearchProfile(value:unknown):NativeResearchProfile|null {
  if(value===undefined)return null;
- if(value!==NATIVE_TWO_HOUR_RESEARCH_PROFILE.version)throw Error('NATIVE_RESEARCH_UNKNOWN_PROFILE');
- return NATIVE_TWO_HOUR_RESEARCH_PROFILE;
+ if(value===NATIVE_TWO_HOUR_RESEARCH_PROFILE.version)return NATIVE_TWO_HOUR_RESEARCH_PROFILE;
+ if(value===NATIVE_TWO_HOUR_90_RESEARCH_PROFILE.version)return NATIVE_TWO_HOUR_90_RESEARCH_PROFILE;
+ throw Error('NATIVE_RESEARCH_UNKNOWN_PROFILE');
 }
 /** Retained observations justify a finite experiment, not an operating promise.
  * Linear six-pool figures intentionally remain projections. The broad-stream

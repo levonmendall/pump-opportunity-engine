@@ -7,10 +7,10 @@ import {ComponentBudget,type ComponentBaseline,type ComponentBudgetOptions,type 
 import {ComponentTransport} from './component-transport.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';
 import {validateRpc} from './network.js';
-import {NATIVE_TWO_HOUR_RESEARCH_PROFILE,resolveNativeResearchProfile} from './native-research-profile.js';
+import {NATIVE_TWO_HOUR_RESEARCH_PROFILE,NATIVE_TWO_HOUR_90_RESEARCH_PROFILE,resolveNativeResearchProfile,type NativeResearchProfile} from './native-research-profile.js';
 
 const MIB=1024*1024;
-export type PilotRpcProfile='candidate-native-research-v1'|typeof NATIVE_TWO_HOUR_RESEARCH_PROFILE.version;
+export type PilotRpcProfile='candidate-native-research-v1'|NativeResearchProfile['version'];
 /** Explicit first-stage native-flow envelope, not a provider entitlement.
  * Time/request/chapter and physical scheduling limits remain the legacy ones.
  * A two-hour profile needs separately validated cumulative-book capacity. */
@@ -36,15 +36,16 @@ function retryAfter(value:unknown,at:number){
 
 export class PilotRpc{
   private readonly dir:string;private readonly paths:string[];private readonly now:()=>number;private readonly mono:()=>number;
-  private readonly metadataBytes:number;private readonly componentProfile:typeof NATIVE_TWO_HOUR_RESEARCH_PROFILE.version|undefined;private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;private readonly startsPerMinute:number;private readonly startsPer10s:number;private readonly transactionStartsPer10s:number|undefined;
+  private readonly metadataBytes:number;private readonly componentProfile:NativeResearchProfile['version']|undefined;private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;private readonly startsPerMinute:number;private readonly startsPer10s:number;private readonly transactionStartsPer10s:number|undefined;
   private readonly initial:ComponentBaseline;private baseline:ComponentBaseline;private budget:ComponentBudget|undefined;private transport:ComponentTransport|undefined;
   private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;private controlCooldownMono=0;
   private methodStarts:Array<{at:number;origin:'inherited-unknown'|'getTransaction'}>=[];private methodRefusals=0;
   constructor(private readonly options:PilotRpcOptions){
     this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.startedAt=this.now();this.startedMono=this.mono();
     const profile=options.profile;
-    if(profile!==undefined&&profile!==CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version&&profile!==NATIVE_TWO_HOUR_RESEARCH_PROFILE.version)throw new PilotRpcUnavailable('INVALID_OPTIONS');
-    const extended=profile===NATIVE_TWO_HOUR_RESEARCH_PROFILE.version?resolveNativeResearchProfile(profile):null;
+    if(profile!==undefined&&profile!==CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version&&profile!==NATIVE_TWO_HOUR_RESEARCH_PROFILE.version&&profile!==NATIVE_TWO_HOUR_90_RESEARCH_PROFILE.version)throw new PilotRpcUnavailable('INVALID_OPTIONS');
+    const extended=profile!==undefined&&profile!==CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version?resolveNativeResearchProfile(profile):null;
+    if(extended&&(extended.physical.startsPerMinute===90?options.maxStartsPerMinute!==90:options.maxStartsPerMinute!==undefined&&options.maxStartsPerMinute!==60))throw new PilotRpcUnavailable('PROFILE_MINUTE_LIMIT_CONFLICT');
     this.componentProfile=extended?.version;this.metadataBytes=extended?.maximumRpcMetadataBytes??256*1024;
     const maximumResponseBytes=extended?.relatedResponseBytes??(profile===CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version?CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.maximumResponseBytes:32*MIB);
     const maximumDuration=extended?.maximumDurationMs??1800000,maximumUnits=extended?.maximumUnits??1500,maximumChapters=extended?.maximumChapters??32;
