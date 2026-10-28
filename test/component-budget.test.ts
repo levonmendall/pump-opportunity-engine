@@ -222,3 +222,11 @@ test('admission closure during durable reservation never invokes transport and c
 test('malformed or unbounded run-limit settings are refused before creating a counterbook',t=>{
   const f=fixture(t);for(const limits of [{maxNewUnits:0},{maxNewUnits:1001},{minSpacingMs:0},{maxStartsPerMinute:601},{maxStartsPer10s:61},{maxCombinedBytes:0},{maxHttpBytes:257*MIB},{maxCumulativeUnits:undefined},{unknown:1}])assert.throws(()=>new ComponentBudget({...f.options,limits}),/INVALID_LIMITS/);
 });
+
+
+test('read-only targeted logs management shares physical units and rejects financial methods',async t=>{
+ const f=fixture(t),b=new ComponentBudget(f.options);try{
+  await b.operate({transport:'ws',method:'logsSubscribe'},done);await b.operate({transport:'ws',method:'logsUnsubscribe'},done);assert.equal(b.newUnits,2);assert.equal(b.usage().byOperation['ws:logsSubscribe'],1);assert.equal(b.usage().byOperation['ws:logsUnsubscribe'],1);
+  for(const method of ['sendTransaction','signTransaction','simulateTransaction','trade','subscribeTokenTrade'])await assert.rejects(b.operate({transport:'ws',method},done),/OPERATION_DENIED/);assert.equal(b.newUnits,2);
+ }finally{b.close();}
+});

@@ -152,3 +152,12 @@ test('single admission timestamp avoids one-millisecond method refusals without 
   assert.equal(f.invocations.length,8);const refusal=f.records.find(r=>r.kind==='pilot-method-capacity-refusal');assert.equal(refusal?.data.knownOrConservativelyInheritedStarts,8);assert.equal(refusal?.data.physicalRequestStarted,false);
  }finally{f.close();}
 });
+
+
+test('public read-only log subscriptions use the existing gate without authorizing financial WS methods',async()=>{
+ const f=fixture();try{
+  for(const method of ['logsSubscribe','logsUnsubscribe'])await f.client.operateData({transport:'ws',method},async op=>{f.client.accountControlBytes(100);op.completeResponse();});
+  assert.equal(f.client.usage().newUnits,2);assert.equal(f.client.usage().chapterUsage!.wsBytes,200);assert.equal(f.invocations.length,0);
+  for(const method of ['sendTransaction','simulateTransaction','signTransaction','subscribeTokenTrade'])await assert.rejects(f.client.operateData({transport:'ws',method},async()=>true),/DATA_METHOD_DENIED/);assert.equal(f.client.usage().newUnits,2);
+ }finally{f.close();}
+});
