@@ -1,0 +1,403 @@
+{
+  "purpose": "Independent bounded SI historical on-chain audit",
+  "runId": "pilot-si-history-20261027232852598",
+  "startedAt": 1793143732599,
+  "finishedAt": 1793143743737,
+  "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+  "anchor": "42LsRDR3p8bhEaz6gs8Y8qZuffa6Y6QM1bXiwSeZ79hUv81kGUpAU9gG6m3BMQDtyizQsZzAcnm22f15sJ44Paac",
+  "cursorMeaning": "Verified retained SI Sell transaction",
+  "until": "iEcoiH3MNTd6hPcN2z5x3pLNLNnxuSKKpGe1QCt4o14yqhXyxyKAGLnAFGeuXWvRxYgmBRPqbgwgsjgsic267dK",
+  "targetStart": 1793132720,
+  "mode": "historical-window-enrichment",
+  "limits": {
+    "requestUnits": 42,
+    "responseBytes": 16777216,
+    "durationMs": 180000,
+    "retainedBytes": 12582912,
+    "pages": 0
+  },
+  "mapping": {
+    "transactions": 11,
+    "errors": 2,
+    "trades": 6
+  },
+  "calls": [
+    {
+      "method": "getTransaction",
+      "params": [
+        "MPTpj2cbu7bpMrCxEGtSVzSvEnzyBWeAXdkpdpjQCb5kxQMnrgYMvge49f1XSW6iue1XCcgefrLUsraLNRo2qoF",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143732639,
+      "availableAt": 1793143733057,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-00-20261027232852598.json",
+        "bytes": 7573,
+        "sha256": "211a16598afb18c56b972f101c35c090cb9e4ae360e674fc1ebe0e491b0262c8"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143733061,
+      "availableAt": 1793143733230,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-01-20261027232852598.json",
+        "bytes": 25574,
+        "sha256": "8b798d4cfc2ea13230dd71c80cdd1699315f01389dd48efbc51f7c70f2a0aa66"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "eNrHK8WmKNhZKsHcmDzyWjjBMrLq2B4ZbR6puxdsprkJFDjNsR5SYb3TKU3c8AFWFA6r11hngAbw2TjAv2F3Zku",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143733238,
+      "availableAt": 1793143733403,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-02-20261027232852598.json",
+        "bytes": 13292,
+        "sha256": "684885e5afe4d0292b287127d9d56f4b910a1b7c20660275949a3a09c0aa9d31"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "5YUFvJ81FGwuRVZXogfSEdkrWrxbTvcqJKZnuSLC6L1E6G7ugKH6Xpq81cYzpiVNbRT8LvogVna6TFxAHVkUaDjR",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143733409,
+      "availableAt": 1793143733706,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-03-20261027232852598.json",
+        "bytes": 12417,
+        "sha256": "1ad65687d554270cd5820daf2d896ca1e992c70c9ae85c0af41ce3deca777519"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "5eNFzX4BhSue6eoPd9qtarTJXKA7XLhsF692W8WdReoxFZdQcMhaZnYvn9xc2PiJQNSf9NZ9SCBCjQyBVnxgLQyH",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143733710,
+      "availableAt": 1793143733922,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-04-20261027232852598.json",
+        "bytes": 7693,
+        "sha256": "e73962ff55a056f8099e408131b3a93941b7c93bafb3298801edafe1ef8abcee"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "4WCDRZXR9QSYKMu61wg544DoDDDmGsEymiu7NquUjRTYnsFsinQWEWDRiorpS7bkWmUHg7y3rMzGVzSpRXhrQiPb",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143733925,
+      "availableAt": 1793143734163,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-05-20261027232852598.json",
+        "bytes": 7559,
+        "sha256": "67efbcf948e32f45b9a91d697dc6a1e8c18270dceeaac261b485ea7c2fe04137"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "AZ6qvXabyjDAiURkWH7sJdGto2TUxLJvYdxdettr9WiLYCfDJNWpwevJ26sPtCn1nNkP8JrFSbDwa5EfDakShPs",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143734165,
+      "availableAt": 1793143734401,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-06-20261027232852598.json",
+        "bytes": 9890,
+        "sha256": "1a25368651eaab7888f983a5e8e5f5babdf133d62d0c63e3bc15d63ce8e30fdc"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "5b6U71KcavrYxzEu1YrSjvz9mW2h4xdeyYiNEaBhhkK5ndxWrc3oHt5oRVXk1mDceMSDcpaJHDbqZ6twh32TyFCL",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143734408,
+      "availableAt": 1793143734670,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-07-20261027232852598.json",
+        "bytes": 7692,
+        "sha256": "c0a05e47b0995be11ff140ea8823985afbad741b295cdc463e66c5c73d71426a"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "2Xh6F4f5nm9rujbF5F1jnXwr1SKkjWRYTm5KzGXeYzSgB81gekssaHeYM6AgA8Suru84WwLs5CuxL4ReGzyAzJQz",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143742655,
+      "availableAt": 1793143742862,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-08-20261027232852598.json",
+        "bytes": 12403,
+        "sha256": "ac465b63f885488a8dc154cbafbc04bf27c5c3d307ab775cbb1b34a54f26a935"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "FCy6xKgwM8tVSuy5KBtPHQHyCSCr8Xj5hWYzQu9sFPRgmSz7PAvESUYgK1CAEUvQ9hBArWjXhAooio5Jy8XJTqL",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143743065,
+      "availableAt": 1793143743202,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-09-20261027232852598.json",
+        "bytes": 7565,
+        "sha256": "2debdbf20ca8f500952240f53d7ea58c983b0185dcfe9b724223a577f1c3c96b"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "2VZRXxxg4vhsuH1LT5cuRvVpE8f6sH3roK3BxzdN5Q4wNH7DfPWcG1ae8dk2FZuaWsE2CjZNfzmHqnFgqvwvaaTE",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793143743319,
+      "availableAt": 1793143743379,
+      "artifact": {
+        "file": "evidence/opportunity-coverage-20261027/si-window-tx-10-20261027232852598.json",
+        "bytes": 12841,
+        "sha256": "c1e390cb55ff3dac61eccee125a6314d53f229f02a8e0e8ba39b9dad3180e7fa"
+      },
+      "informationAvailability": "retrieved now for historical audit; not backdated into POE decisions"
+    }
+  ],
+  "pages": [],
+  "failure": "PILOT_RPC_COMPONENT_HTTP_429",
+  "rawBytes": 124499,
+  "physicalSettled": true,
+  "usage": {
+    "runId": "pilot-si-history-20261027232852598",
+    "startedAt": 1793143732600,
+    "deadlineAt": 1793143912600,
+    "remainingMs": 168862.761663,
+    "chapter": 1,
+    "chapterPaths": [
+      "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/04-active/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/05-sampler/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/06-targeted/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/07-field/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/08-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/09-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/10-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/12-combined-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/13-buy-finality/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/01-paced-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/02-failed-buy-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/03-corrected-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/04-current-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/06-targeted-retry-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/08-current-combined/rpc-budget.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-009.json",
+      "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-005.json",
+      "/workspace/poe-pilot/research/pilot-migration-diagnostic-1793138401524/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232426805/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232707767/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232852598/rpc/chapter-001.json"
+    ],
+    "activeChapterPath": null,
+    "cumulativeUnits": 2777,
+    "newUnits": 12,
+    "accountedCumulativeResponseBytes": 88825326,
+    "newAccountedResponseBytes": 2222058,
+    "maximumNewUnits": 42,
+    "maximumNewResponseBytes": 16777216,
+    "requestLimits": {
+      "maxStartsPer10s": 20,
+      "maxGetTransactionStartsPer10s": 8,
+      "maxStartsPerMinute": 60,
+      "minSpacingMs": 250,
+      "physicalInFlight": 1
+    },
+    "methodPacing": {
+      "getTransactionStartsLast10s": [
+        {
+          "at": 1793143733826,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793143734080,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793143734333,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793143734587,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793143742659,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793143743068,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793143743324,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793143743577,
+          "origin": "getTransaction"
+        }
+      ],
+      "capacityRefusals": 0,
+      "baselineUnknownMethodsCountConservatively": true
+    },
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "uncertainResponseBytes": 35651584,
+    "currentChapterUncertainResponseBytes": 0,
+    "inheritedUncertaintyIsRetainedInBaseline": true,
+    "cooldownUntil": 1793143758699,
+    "controlCooldownUntil": 0,
+    "lastFailureWasDataControl": false,
+    "closed": true,
+    "fatal": null,
+    "chapterUsage": null,
+    "dispatchWindow": null,
+    "automaticRequestRetries": 0
+  },
+  "financialWriterOpened": false,
+  "financialExecution": false,
+  "productionChanged": false
+}

@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+  "sourceSha256": "41f279529295148685009e7ccd85ad6c87b5d47f78339bf9728f564c92863999",
+  "build": "npm run build passed",
+  "compile": "npm run compile passed",
+  "tests": {
+    "command": "npm test",
+    "pass": 792,
+    "fail": 0,
+    "durationMs": 49139.800789,
+    "logSha256": "67352554bf1e3126e0728792a8f80fcc577c6a22f094d2f8439ed75a18ad2933"
+  },
+  "independentReview": "GO: shared support and fresh-method eligibility; fresh seed retention, physical guards and strategy/financial validity unchanged",
+  "focusedRegressionCases": 20,
+  "productionTraderDeployed": false,
+  "recordedAt": "2026-10-27T22:46:50.170932+00:00"
+}

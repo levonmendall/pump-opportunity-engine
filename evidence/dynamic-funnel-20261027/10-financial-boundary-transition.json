@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-27T22:50:14.898078+00:00",
+  "runId": "pilot-20261027223839107-205d2bb9",
+  "source": {
+    "commit": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+    "sha256": "41f279529295148685009e7ccd85ad6c87b5d47f78339bf9728f564c92863999"
+  },
+  "configurationContractSha256": "ebec988c7b87a5be0cdc2e9ddcc0d9ff42a35363418dd528dc3eb9e26d7474dd",
+  "snapshotAt": 1793141411815,
+  "elapsedMs": 692708,
+  "maximumDeep": 6,
+  "orders": 0,
+  "natural": {
+    "entries": 0,
+    "exits": 0
+  },
+  "entryEnabledAt": null,
+  "positions": 0,
+  "pending": 0,
+  "reason": "Latest owner directive excludes simulated financial execution. Frozen source has no candidate-only mode and can automatically ledger.resume when readiness returns. Preserve source/evidence; graceful boundary closure prevents unauthorized execution. Not a candidate strategy or provider failure."
+}

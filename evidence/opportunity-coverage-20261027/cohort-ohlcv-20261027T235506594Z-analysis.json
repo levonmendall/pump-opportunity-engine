@@ -1,0 +1,3269 @@
+{
+  "schemaVersion": 1,
+  "classification": "SAMPLED_INDEPENDENT_INDEXED_PRICE_RANKING_NOT_EXECUTABLE_WINNER_RECALL",
+  "generatedAt": "2026-10-27T23:56:33.615Z",
+  "networkRequests": 0,
+  "networkReceipt": {
+    "path": "cohort-ohlcv-20261027T235506594Z-receipt.json",
+    "sha256": "08c273ee77853f1d9477604315bea6f9e2c11ee6b58b736a8391ec8dc0e56df5",
+    "newActualRequests": 8,
+    "newMeasuredBodyBytes": 92486,
+    "stopReason": "all bounded selected leads completed"
+  },
+  "referencePopulation": {
+    "currentIndexedSourceRows": 160,
+    "currentIndexedMainAgeOverlapLeads": 9,
+    "ownerSpecifiedAdditionalSI": 1,
+    "attemptedNewLeadOHLC": 8,
+    "sampledUniverse": true,
+    "exhaustiveCensus": false,
+    "trueMarketTop10": "UNAVAILABLE",
+    "trueMarketTop20": "UNAVAILABLE",
+    "defensibleExecutableOpportunityRecallDenominator": false
+  },
+  "rankingByStrongestExact1Or5Or15MinuteClosePairWhollyWithinOneActualRun": [
+    {
+      "rank": 1,
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "name": "FRONGUS / SOL",
+      "fromBarAt": "2026-10-27T22:13:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+      "toBarAt": "2026-10-27T22:28:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+      "durationSeconds": 900,
+      "fromCloseUsd": 0.000048085879620887276,
+      "toCloseUsd": 0.0009943544169728794,
+      "indicativeChangePct": 1967.871950793965,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 477560.73393232893,
+      "runId": "pilot-20261027220800928-089eac29",
+      "poeClassification": "SELECTED_BUT_NO_COMPLETE_AUDITED_PREDICTIVE_WINDOW"
+    },
+    {
+      "rank": 2,
+      "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+      "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "name": "INGUS / SOL",
+      "fromBarAt": "2026-10-27T22:11:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+      "toBarAt": "2026-10-27T22:26:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T22:27:00.000Z",
+      "durationSeconds": 900,
+      "fromCloseUsd": 0.00006333999437487003,
+      "toCloseUsd": 0.00019326978665596748,
+      "indicativeChangePct": 205.13072911267378,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 478527.5732986095,
+      "runId": "pilot-20261027220800928-089eac29",
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE"
+    },
+    {
+      "rank": 3,
+      "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+      "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+      "name": "WANSULEK / SOL",
+      "fromBarAt": "2026-10-27T21:49:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+      "toBarAt": "2026-10-27T21:50:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:51:00.000Z",
+      "durationSeconds": 60,
+      "fromCloseUsd": 0.00002307523291750772,
+      "toCloseUsd": 0.00005133224968257347,
+      "indicativeChangePct": 122.45604135863992,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 28658.74952091319,
+      "runId": "pilot-20261027214222149-d39aee9a",
+      "poeClassification": "MIXED_EARLY_INCOMPLETE_AND_LATER_VALID_PREDICTIVE_REJECTIONS"
+    },
+    {
+      "rank": 4,
+      "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+      "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "name": "Something / SOL",
+      "fromBarAt": "2026-10-27T21:44:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+      "toBarAt": "2026-10-27T21:49:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+      "durationSeconds": 300,
+      "fromCloseUsd": 0.0004927359259341635,
+      "toCloseUsd": 0.0007714424853295329,
+      "indicativeChangePct": 56.56306851727479,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 130109.31343507953,
+      "runId": "pilot-20261027214222149-d39aee9a",
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE"
+    },
+    {
+      "rank": 5,
+      "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+      "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "name": "DOCK / SOL",
+      "fromBarAt": "2026-10-27T21:08:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:09:00.000Z",
+      "toBarAt": "2026-10-27T21:09:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+      "durationSeconds": 60,
+      "fromCloseUsd": 0.00015876277253818862,
+      "toCloseUsd": 0.0002195571903738187,
+      "indicativeChangePct": 38.29261536800552,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 27389.310213667803,
+      "runId": "pilot-20261027210316237-57a92bce",
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE"
+    },
+    {
+      "rank": 6,
+      "mint": "EZDzKuPm5cfK2K1SVytUaGjXRFp5rcDFP1LtWGVapump",
+      "pool": "G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+      "name": "Kekius / SOL",
+      "fromBarAt": "2026-10-27T21:31:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:32:00.000Z",
+      "toBarAt": "2026-10-27T21:32:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:33:00.000Z",
+      "durationSeconds": 60,
+      "fromCloseUsd": 0.0006274320703821243,
+      "toCloseUsd": 0.0008515333896197451,
+      "indicativeChangePct": 35.71722419307266,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 44266.444779074,
+      "runId": "pilot-20261027212808269-733416a8",
+      "poeClassification": "DISCOVERED_BUT_NEVER_VERIFIED_OR_DEEPLY_OBSERVED"
+    },
+    {
+      "rank": 7,
+      "mint": "2TXL3ytE3DoobtLsNK1LEFz4ggg6oE8gn7oJLVEtpump",
+      "pool": "Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+      "name": "COWNTDOWN / SOL",
+      "fromBarAt": "2026-10-27T20:07:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T20:08:00.000Z",
+      "toBarAt": "2026-10-27T20:08:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T20:09:00.000Z",
+      "durationSeconds": 60,
+      "fromCloseUsd": 0.000166981180847432,
+      "toCloseUsd": 0.00022647741630222142,
+      "indicativeChangePct": 35.630503481197785,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 14057.443074757613,
+      "runId": "pilot-20261027200603791-46c145af",
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE"
+    },
+    {
+      "rank": 8,
+      "mint": "2bQ29ZFP9fWUeEZ12vR84RvzaBd2N7viE3iUuwFTpump",
+      "pool": "BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+      "name": "Duongus / SOL",
+      "fromBarAt": "2026-10-27T21:09:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+      "toBarAt": "2026-10-27T21:10:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:11:00.000Z",
+      "durationSeconds": 60,
+      "fromCloseUsd": 0.00019159650652528332,
+      "toCloseUsd": 0.00022582241432393462,
+      "indicativeChangePct": 17.863534371977096,
+      "observedEndpointBars": 2,
+      "allIntermediateMinuteBarsPresent": true,
+      "indexedIntervalVolumeUsd": 19899.54432719009,
+      "runId": "pilot-20261027210316237-57a92bce",
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE"
+    }
+  ],
+  "rows": [
+    {
+      "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+      "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "name": "INGUS / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T22:10:09.000Z",
+        "endAt": "2026-10-28T00:05:09.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump.json",
+        "sha256": "58fe70ae1ad50047d7896f1a8196f74dcb8667afa0d8f05ccdf8949aa9851fab",
+        "bytes": 9173,
+        "bars": 73,
+        "firstBarAt": "2026-10-27T22:05:00.000Z",
+        "lastBarAt": "2026-10-27T23:17:00.000Z",
+        "eligibleWhollyContainedBars": 67,
+        "eligibleInActualRunWhollyContainedBars": 44,
+        "gapCount": 0,
+        "gaps": [],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 66,
+          "best": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:12:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:13:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00006333999437487003,
+            "toCloseUsd": 0.00009785753259387853,
+            "indicativeChangePct": 54.495644591820856,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 23338.463916187167,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:40:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:41:00.000Z",
+            "toBarAt": "2026-10-27T22:41:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:42:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0004061786565546777,
+            "toCloseUsd": 0.000326197002261885,
+            "indicativeChangePct": -19.691249897574558,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 38491.97847688417,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 62,
+          "best": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:16:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:17:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00006333999437487003,
+            "toCloseUsd": 0.0001366944084591562,
+            "indicativeChangePct": 115.8105787792576,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 170063.5416155058,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T23:06:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T23:07:00.000Z",
+            "toBarAt": "2026-10-27T23:11:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T23:12:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0006055583520895406,
+            "toCloseUsd": 0.00046180361017921233,
+            "indicativeChangePct": -23.73920554712654,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 81895.6978008491,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 52,
+          "best": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:26:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:27:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00006333999437487003,
+            "toCloseUsd": 0.00019326978665596748,
+            "indicativeChangePct": 205.13072911267378,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 478527.5732986095,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:56:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:57:00.000Z",
+            "toBarAt": "2026-10-27T23:11:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T23:12:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000488862504480451,
+            "toCloseUsd": 0.00046180361017921233,
+            "indicativeChangePct": -5.5350725517384625,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 389954.4766463633,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 40,
+          "best": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:12:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:13:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00006333999437487003,
+            "toCloseUsd": 0.00009785753259387853,
+            "indicativeChangePct": 54.495644591820856,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 23338.463916187167,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:40:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:41:00.000Z",
+            "toBarAt": "2026-10-27T22:41:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:42:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0004061786565546777,
+            "toCloseUsd": 0.000326197002261885,
+            "indicativeChangePct": -19.691249897574558,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 38491.97847688417,
+            "runId": "pilot-20261027223839107-205d2bb9"
+          }
+        },
+        "300": {
+          "endpointPairs": 28,
+          "best": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:16:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:17:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00006333999437487003,
+            "toCloseUsd": 0.0001366944084591562,
+            "indicativeChangePct": 115.8105787792576,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 170063.5416155058,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T23:06:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T23:07:00.000Z",
+            "toBarAt": "2026-10-27T23:11:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T23:12:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0006055583520895406,
+            "toCloseUsd": 0.00046180361017921233,
+            "indicativeChangePct": -23.73920554712654,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 81895.6978008491,
+            "runId": "pilot-20261027230222347-7a5dc2cf"
+          }
+        },
+        "900": {
+          "endpointPairs": 3,
+          "best": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:26:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:27:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00006333999437487003,
+            "toCloseUsd": 0.00019326978665596748,
+            "indicativeChangePct": 205.13072911267378,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 478527.5732986095,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:12:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:13:00.000Z",
+            "toBarAt": "2026-10-27T22:27:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:28:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00009785753259387853,
+            "toCloseUsd": 0.0001621868175333353,
+            "indicativeChangePct": 65.73769359833716,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 479699.3437042611,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T22:11:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+        "toBarAt": "2026-10-27T22:26:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T22:27:00.000Z",
+        "durationSeconds": 900,
+        "fromCloseUsd": 0.00006333999437487003,
+        "toCloseUsd": 0.00019326978665596748,
+        "indicativeChangePct": 205.13072911267378,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 478527.5732986095,
+        "runId": "pilot-20261027220800928-089eac29"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T23:16:00.000Z",
+        "peakHighUsd": 0.0007979212587801462,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T23:17:00.000Z",
+          "closeUsd": 0.0007171068917476701,
+          "changeFromEarlierHighPct": -10.128113036620224
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+        "requestedOutcomeCategories": [],
+        "counts": {
+          "rawProcessedMigrationHints": 0,
+          "retainedFinalizedOriginProofRows": 0,
+          "explicitWatchDiscoveredRows": 0,
+          "explicitWatchVerifiedRows": 0,
+          "cachedIdentityImports": 0,
+          "deepAllocations": 0,
+          "runsWithDeepAllocation": 0,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {},
+          "selectedPayloadRows": 0,
+          "distinctSelectedSignatures": 0,
+          "normalizationRows": 0,
+          "distinctNormalizedEventIdentities": 0,
+          "normalizationSideCounts": {},
+          "dataGapRows": 0,
+          "dataGapReasons": {},
+          "preparationDeferrals": 0,
+          "preparationDeferralReasons": {}
+        },
+        "timing": {
+          "indexedCreationAt": 1793138709000,
+          "indexedCreationIso": "2026-10-27T22:05:09.000Z",
+          "indexAgeEligibilityStartAt": 1793139009000,
+          "indexAgeEligibilityEndAt": 1793145909000,
+          "creationDuringActualCompletedRunIds": [],
+          "creationDuringResearchInterruption": {
+            "startAt": 1793138288797,
+            "endAt": 1793138880928,
+            "startIso": "2026-10-27T21:58:08.797Z",
+            "endIso": "2026-10-27T22:08:00.928Z",
+            "elapsedMs": 592131,
+            "previousRun": "pilot-20261027215124336-ed67d639",
+            "nextRun": "pilot-20261027220800928-089eac29"
+          },
+          "actualOnChainMigrationAtFromRetainedProof": null,
+          "actualOnChainMigrationIso": null,
+          "firstMigrationHintReceivedAt": null,
+          "firstFinalizedOriginProofAvailableAt": null,
+          "firstDeepAt": null,
+          "firstDeepIso": null,
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": null,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": null,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+      "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "name": "DOCK / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T20:42:44.000Z",
+        "endAt": "2026-10-27T22:37:44.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump.json",
+        "sha256": "4d9d13766613a3a4f567b6c00781b7280b00525718426055c4399139d4b3235b",
+        "bytes": 19828,
+        "bars": 161,
+        "firstBarAt": "2026-10-27T20:37:00.000Z",
+        "lastBarAt": "2026-10-27T23:17:00.000Z",
+        "eligibleWhollyContainedBars": 114,
+        "eligibleInActualRunWhollyContainedBars": 52,
+        "gapCount": 0,
+        "gaps": [],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 113,
+          "best": {
+            "fromBarAt": "2026-10-27T20:45:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:46:00.000Z",
+            "toBarAt": "2026-10-27T20:46:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:47:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00012790959595699133,
+            "toCloseUsd": 0.0001850592780909597,
+            "indicativeChangePct": 44.67974564878192,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 89938.81834479645,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:58:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:59:00.000Z",
+            "toBarAt": "2026-10-27T20:59:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:00:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00023263878885063463,
+            "toCloseUsd": 0.00015969385810899305,
+            "indicativeChangePct": -31.355446399128116,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 46835.19608306862,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 109,
+          "best": {
+            "fromBarAt": "2026-10-27T20:45:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:46:00.000Z",
+            "toBarAt": "2026-10-27T20:50:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:51:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00012790959595699133,
+            "toCloseUsd": 0.0002682411115152289,
+            "indicativeChangePct": 109.71148373060538,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 262990.32897849317,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:16:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:17:00.000Z",
+            "toBarAt": "2026-10-27T21:21:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:22:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0001956509772190156,
+            "toCloseUsd": 0.00009038810394189429,
+            "indicativeChangePct": -53.80135319195873,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 120209.46238160072,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 99,
+          "best": {
+            "fromBarAt": "2026-10-27T20:43:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:44:00.000Z",
+            "toBarAt": "2026-10-27T20:58:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:59:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00014353807836013153,
+            "toCloseUsd": 0.00023263878885063463,
+            "indicativeChangePct": 62.07461567581589,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 551719.189488611,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:00:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:01:00.000Z",
+            "toBarAt": "2026-10-27T22:15:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:16:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00009962845790540132,
+            "toCloseUsd": 0.000035071067738201845,
+            "indicativeChangePct": -64.79814254326577,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 46519.86927188383,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 44,
+          "best": {
+            "fromBarAt": "2026-10-27T21:08:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:09:00.000Z",
+            "toBarAt": "2026-10-27T21:09:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00015876277253818862,
+            "toCloseUsd": 0.0002195571903738187,
+            "indicativeChangePct": 38.29261536800552,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 27389.310213667803,
+            "runId": "pilot-20261027210316237-57a92bce"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:07:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:08:00.000Z",
+            "toBarAt": "2026-10-27T21:08:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:09:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0001928121526126004,
+            "toCloseUsd": 0.00015876277253818862,
+            "indicativeChangePct": -17.659353735251347,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 17819.445683339258,
+            "runId": "pilot-20261027210316237-57a92bce"
+          }
+        },
+        "300": {
+          "endpointPairs": 21,
+          "best": {
+            "fromBarAt": "2026-10-27T21:45:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:46:00.000Z",
+            "toBarAt": "2026-10-27T21:50:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:51:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00008068962088260585,
+            "toCloseUsd": 0.0000940664694150893,
+            "indicativeChangePct": 16.578152662218137,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 10478.232144734819,
+            "runId": "pilot-20261027214222149-d39aee9a"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:16:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:17:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000054878891894184963,
+            "toCloseUsd": 0.00003274391731022519,
+            "indicativeChangePct": -40.33422290420777,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 18664.334742012164,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        },
+        "900": {
+          "endpointPairs": 5,
+          "best": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000047823849309455425,
+            "toCloseUsd": 0.000034521163965038375,
+            "indicativeChangePct": -27.816007152286936,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 27496.318297759455,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:11:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+            "toBarAt": "2026-10-27T22:26:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:27:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000054878891894184963,
+            "toCloseUsd": 0.000027605666867921934,
+            "indicativeChangePct": -49.697113197638984,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 31559.231463598964,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T21:08:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T21:09:00.000Z",
+        "toBarAt": "2026-10-27T21:09:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+        "durationSeconds": 60,
+        "fromCloseUsd": 0.00015876277253818862,
+        "toCloseUsd": 0.0002195571903738187,
+        "indicativeChangePct": 38.29261536800552,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 27389.310213667803,
+        "runId": "pilot-20261027210316237-57a92bce"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T20:51:00.000Z",
+        "peakHighUsd": 0.00037696068567879415,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T20:59:00.000Z",
+          "closeUsd": 0.00015969385810899305,
+          "changeFromEarlierHighPct": -57.636468688655995
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+        "requestedOutcomeCategories": [],
+        "counts": {
+          "rawProcessedMigrationHints": 0,
+          "retainedFinalizedOriginProofRows": 0,
+          "explicitWatchDiscoveredRows": 0,
+          "explicitWatchVerifiedRows": 0,
+          "cachedIdentityImports": 0,
+          "deepAllocations": 0,
+          "runsWithDeepAllocation": 0,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {},
+          "selectedPayloadRows": 0,
+          "distinctSelectedSignatures": 0,
+          "normalizationRows": 0,
+          "distinctNormalizedEventIdentities": 0,
+          "normalizationSideCounts": {},
+          "dataGapRows": 0,
+          "dataGapReasons": {},
+          "preparationDeferrals": 0,
+          "preparationDeferralReasons": {}
+        },
+        "timing": {
+          "indexedCreationAt": 1793133464000,
+          "indexedCreationIso": "2026-10-27T20:37:44.000Z",
+          "indexAgeEligibilityStartAt": 1793133764000,
+          "indexAgeEligibilityEndAt": 1793140664000,
+          "creationDuringActualCompletedRunIds": [],
+          "creationDuringResearchInterruption": {
+            "startAt": 1793132838326,
+            "endAt": 1793134499767,
+            "startIso": "2026-10-27T20:27:18.326Z",
+            "endIso": "2026-10-27T20:54:59.767Z",
+            "elapsedMs": 1661441,
+            "previousRun": "pilot-20261027201954438-c75c4513",
+            "nextRun": "pilot-20261027205459767-1840d6f4"
+          },
+          "actualOnChainMigrationAtFromRetainedProof": null,
+          "actualOnChainMigrationIso": null,
+          "firstMigrationHintReceivedAt": null,
+          "firstFinalizedOriginProofAvailableAt": null,
+          "firstDeepAt": null,
+          "firstDeepIso": null,
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": null,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": null,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "name": "FRONGUS / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T21:18:41.000Z",
+        "endAt": "2026-10-27T23:13:41.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "reference-raw/frongus-minute-ohlcv.json",
+        "sha256": "7b2c1b964b0368ebbcd898c67aea0871271e6c88dfa02c72787e1b9cddddd49d",
+        "bytes": 15319,
+        "bars": 124,
+        "firstBarAt": "2026-10-27T21:13:00.000Z",
+        "lastBarAt": "2026-10-27T23:17:00.000Z",
+        "eligibleWhollyContainedBars": 113,
+        "eligibleInActualRunWhollyContainedBars": 60,
+        "gapCount": 1,
+        "gaps": [
+          {
+            "afterBarAt": "2026-10-27T22:01:00.000Z",
+            "nextBarAt": "2026-10-27T22:03:00.000Z",
+            "missingMinuteSlots": 1
+          }
+        ],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 111,
+          "best": {
+            "fromBarAt": "2026-10-27T21:39:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:40:00.000Z",
+            "toBarAt": "2026-10-27T21:40:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:41:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00006815238644153591,
+            "toCloseUsd": 0.00037670144452003483,
+            "indicativeChangePct": 452.734048195342,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 19291.081625630723,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:52:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:53:00.000Z",
+            "toBarAt": "2026-10-27T21:53:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:54:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0002626213796854307,
+            "toCloseUsd": 0.000146748162390606,
+            "indicativeChangePct": -44.121776160653134,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 6260.825148979869,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 107,
+          "best": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:18:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:19:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000048085879620887276,
+            "toCloseUsd": 0.00028230856289462386,
+            "indicativeChangePct": 487.092437780833,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 101437.63525791865,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:52:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:53:00.000Z",
+            "toBarAt": "2026-10-27T21:57:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:58:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0002626213796854307,
+            "toCloseUsd": 0.0000750658455857972,
+            "indicativeChangePct": -71.41670427757577,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 13494.610609637391,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 97,
+          "best": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000048085879620887276,
+            "toCloseUsd": 0.0009943544169728794,
+            "indicativeChangePct": 1967.871950793965,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 477560.73393232893,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:48:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:49:00.000Z",
+            "toBarAt": "2026-10-27T22:03:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:04:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0004946277605911674,
+            "toCloseUsd": 0.00005905041550496804,
+            "indicativeChangePct": -88.06164550198469,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 53,
+          "best": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:14:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:15:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.000048085879620887276,
+            "toCloseUsd": 0.0001670946116351574,
+            "indicativeChangePct": 247.49205578133123,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 13401.778843805429,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:52:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:53:00.000Z",
+            "toBarAt": "2026-10-27T21:53:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:54:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0002626213796854307,
+            "toCloseUsd": 0.000146748162390606,
+            "indicativeChangePct": -44.121776160653134,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 6260.825148979869,
+            "runId": "pilot-20261027215124336-ed67d639"
+          }
+        },
+        "300": {
+          "endpointPairs": 30,
+          "best": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:18:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:19:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000048085879620887276,
+            "toCloseUsd": 0.00028230856289462386,
+            "indicativeChangePct": 487.092437780833,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 101437.63525791865,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:52:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:53:00.000Z",
+            "toBarAt": "2026-10-27T21:57:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:58:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0002626213796854307,
+            "toCloseUsd": 0.0000750658455857972,
+            "indicativeChangePct": -71.41670427757577,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 13494.610609637391,
+            "runId": "pilot-20261027215124336-ed67d639"
+          }
+        },
+        "900": {
+          "endpointPairs": 5,
+          "best": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000048085879620887276,
+            "toCloseUsd": 0.0009943544169728794,
+            "indicativeChangePct": 1967.871950793965,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 477560.73393232893,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:09:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:10:00.000Z",
+            "toBarAt": "2026-10-27T22:24:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:25:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00007838737105927443,
+            "toCloseUsd": 0.0007661678471302284,
+            "indicativeChangePct": 877.4123519857208,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 312833.6565620379,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T22:13:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+        "toBarAt": "2026-10-27T22:28:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+        "durationSeconds": 900,
+        "fromCloseUsd": 0.000048085879620887276,
+        "toCloseUsd": 0.0009943544169728794,
+        "indicativeChangePct": 1967.871950793965,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 477560.73393232893,
+        "runId": "pilot-20261027220800928-089eac29"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T22:28:00.000Z",
+        "peakHighUsd": 0.001069720924229121,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T22:43:00.000Z",
+          "closeUsd": 0.0005852225570722253,
+          "changeFromEarlierHighPct": -45.29203422902497
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "SELECTED_BUT_NO_COMPLETE_AUDITED_PREDICTIVE_WINDOW",
+        "requestedOutcomeCategories": [
+          "C",
+          "F_OPERATIONAL_DATA_LOSS_DEMONSTRATED_QUALIFICATION_UNKNOWN"
+        ],
+        "counts": {
+          "rawProcessedMigrationHints": 1,
+          "retainedFinalizedOriginProofRows": 1,
+          "explicitWatchDiscoveredRows": 130,
+          "explicitWatchVerifiedRows": 1,
+          "cachedIdentityImports": 7,
+          "deepAllocations": 9,
+          "runsWithDeepAllocation": 6,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {
+            "missing-data:warming": 15
+          },
+          "selectedPayloadRows": 125,
+          "distinctSelectedSignatures": 125,
+          "normalizationRows": 52,
+          "distinctNormalizedEventIdentities": 52,
+          "normalizationSideCounts": {
+            "buy": 41,
+            "sell": 11
+          },
+          "dataGapRows": 12,
+          "dataGapReasons": {
+            "PILOT_PILOT_CONFIRMED_ENRICHMENT_UNAVAILABLE": 1,
+            "candidate information lost; fresh candidate required: PILOT_PILOT_CONFIRMED_ENRICHMENT_UNAVAILABLE": 1,
+            "required enrichment cannot fit method rate limit and usefulness deadline": 4,
+            "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+            "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+            "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 2,
+            "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 2
+          },
+          "preparationDeferrals": 113,
+          "preparationDeferralReasons": {
+            "support phase plus opening capacity reserved before any support reads": 113
+          }
+        },
+        "timing": {
+          "indexedCreationAt": 1793135621000,
+          "indexedCreationIso": "2026-10-27T21:13:41.000Z",
+          "indexAgeEligibilityStartAt": 1793135921000,
+          "indexAgeEligibilityEndAt": 1793142821000,
+          "creationDuringActualCompletedRunIds": [
+            "pilot-20261027211320693-9bb70ba1"
+          ],
+          "creationDuringResearchInterruption": null,
+          "actualOnChainMigrationAtFromRetainedProof": 1793135621000,
+          "actualOnChainMigrationIso": "2026-10-27T21:13:41.000Z",
+          "firstMigrationHintReceivedAt": 1793135621809,
+          "firstFinalizedOriginProofAvailableAt": 1793135657832,
+          "firstDeepAt": 1793136501303,
+          "firstDeepIso": "2026-10-27T21:28:21.303Z",
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": 880303,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": 580303,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+      "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+      "name": "WANSULEK / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T21:48:47.000Z",
+        "endAt": "2026-10-27T23:43:47.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump.json",
+        "sha256": "908768a14a5499710484462a19990deddecce60235c209c85b583e82b67862d9",
+        "bytes": 9041,
+        "bars": 72,
+        "firstBarAt": "2026-10-27T21:43:00.000Z",
+        "lastBarAt": "2026-10-27T23:11:00.000Z",
+        "eligibleWhollyContainedBars": 66,
+        "eligibleInActualRunWhollyContainedBars": 40,
+        "gapCount": 9,
+        "gaps": [
+          {
+            "afterBarAt": "2026-10-27T21:55:00.000Z",
+            "nextBarAt": "2026-10-27T21:57:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T21:59:00.000Z",
+            "nextBarAt": "2026-10-27T22:01:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T22:37:00.000Z",
+            "nextBarAt": "2026-10-27T22:39:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T22:45:00.000Z",
+            "nextBarAt": "2026-10-27T22:47:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T22:47:00.000Z",
+            "nextBarAt": "2026-10-27T22:50:00.000Z",
+            "missingMinuteSlots": 2
+          },
+          {
+            "afterBarAt": "2026-10-27T22:54:00.000Z",
+            "nextBarAt": "2026-10-27T22:56:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T22:57:00.000Z",
+            "nextBarAt": "2026-10-27T23:05:00.000Z",
+            "missingMinuteSlots": 7
+          },
+          {
+            "afterBarAt": "2026-10-27T23:05:00.000Z",
+            "nextBarAt": "2026-10-27T23:07:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T23:07:00.000Z",
+            "nextBarAt": "2026-10-27T23:10:00.000Z",
+            "missingMinuteSlots": 2
+          }
+        ],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 56,
+          "best": {
+            "fromBarAt": "2026-10-27T21:49:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+            "toBarAt": "2026-10-27T21:50:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:51:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00002307523291750772,
+            "toCloseUsd": 0.00005133224968257347,
+            "indicativeChangePct": 122.45604135863992,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 28658.74952091319,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:29:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:30:00.000Z",
+            "toBarAt": "2026-10-27T22:30:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:31:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0005923305381058575,
+            "toCloseUsd": 0.000003827254478668645,
+            "indicativeChangePct": -99.35386507491116,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 15933.319718621622,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 52,
+          "best": {
+            "fromBarAt": "2026-10-27T21:59:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:00:00.000Z",
+            "toBarAt": "2026-10-27T22:04:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:05:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000002116461321139153,
+            "toCloseUsd": 0.0005241199388794062,
+            "indicativeChangePct": 24663.97435873322,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:28:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "toBarAt": "2026-10-27T22:33:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:34:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0006848141455981772,
+            "toCloseUsd": 0.000002275018820253499,
+            "indicativeChangePct": -99.66779032897075,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 48783.66564401513,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 49,
+          "best": {
+            "fromBarAt": "2026-10-27T21:59:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:00:00.000Z",
+            "toBarAt": "2026-10-27T22:14:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:15:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000002116461321139153,
+            "toCloseUsd": 0.0007744216341631486,
+            "indicativeChangePct": 36490.39862567997,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:27:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:28:00.000Z",
+            "toBarAt": "2026-10-27T22:42:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:43:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0006615337418612802,
+            "toCloseUsd": 0.0000022933726356350014,
+            "indicativeChangePct": -99.65332491897051,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 30,
+          "best": {
+            "fromBarAt": "2026-10-27T21:49:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+            "toBarAt": "2026-10-27T21:50:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:51:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00002307523291750772,
+            "toCloseUsd": 0.00005133224968257347,
+            "indicativeChangePct": 122.45604135863992,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 28658.74952091319,
+            "runId": "pilot-20261027214222149-d39aee9a"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:40:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:41:00.000Z",
+            "toBarAt": "2026-10-27T22:41:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:42:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00000443849895524113,
+            "toCloseUsd": 0.0000023231044072189706,
+            "indicativeChangePct": -47.660133963177564,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 854.7526632448071,
+            "runId": "pilot-20261027223839107-205d2bb9"
+          }
+        },
+        "300": {
+          "endpointPairs": 20,
+          "best": {
+            "fromBarAt": "2026-10-27T22:42:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:43:00.000Z",
+            "toBarAt": "2026-10-27T22:47:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:48:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0000022933726356350014,
+            "toCloseUsd": 0.00000432924418820959,
+            "indicativeChangePct": 88.77194752133619,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": "pilot-20261027223839107-205d2bb9"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:21:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:22:00.000Z",
+            "toBarAt": "2026-10-27T22:26:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:27:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0007929563491160133,
+            "toCloseUsd": 0.0005944279705885027,
+            "indicativeChangePct": -25.036482619608226,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 245689.2799379723,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        },
+        "900": {
+          "endpointPairs": 5,
+          "best": {
+            "fromBarAt": "2026-10-27T22:10:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:11:00.000Z",
+            "toBarAt": "2026-10-27T22:25:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:26:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0006092715036811302,
+            "toCloseUsd": 0.0008118671292252104,
+            "indicativeChangePct": 33.25210916972592,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 698682.2395910405,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0007455568010306474,
+            "toCloseUsd": 0.0006848141455981772,
+            "indicativeChangePct": -8.147287416398097,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 713121.6831955521,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T21:49:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+        "toBarAt": "2026-10-27T21:50:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T21:51:00.000Z",
+        "durationSeconds": 60,
+        "fromCloseUsd": 0.00002307523291750772,
+        "toCloseUsd": 0.00005133224968257347,
+        "indicativeChangePct": 122.45604135863992,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 28658.74952091319,
+        "runId": "pilot-20261027214222149-d39aee9a"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T22:21:00.000Z",
+        "peakHighUsd": 0.0008914800287510603,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T22:32:00.000Z",
+          "closeUsd": 0.0000022744533330714955,
+          "changeFromEarlierHighPct": -99.74486771888115
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "MIXED_EARLY_INCOMPLETE_AND_LATER_VALID_PREDICTIVE_REJECTIONS",
+        "requestedOutcomeCategories": [
+          "A_FOR_RECORDED_VALID_WINDOWS",
+          "C_FOR_EXPLICIT_INCOMPLETE_SCOPES",
+          "D_FOR_RECORDED_FAILED_PREDICATES"
+        ],
+        "counts": {
+          "rawProcessedMigrationHints": 1,
+          "retainedFinalizedOriginProofRows": 1,
+          "explicitWatchDiscoveredRows": 1,
+          "explicitWatchVerifiedRows": 1,
+          "cachedIdentityImports": 5,
+          "deepAllocations": 6,
+          "runsWithDeepAllocation": 5,
+          "acceptedBoundedAuditRows": 3,
+          "runtimeCompleteWindowRows": 3,
+          "distinctAuditedWindowEndpoints": 3,
+          "predictiveAssessments": 3,
+          "predictiveStatusCounts": {
+            "failed": 3
+          },
+          "primaryDecisionCounts": {
+            "missing-data:warming": 25,
+            "risk-rejection:entries-not-authorized-by-ledger": 2,
+            "candidate-observation:financial-execution-intentionally-disabled": 1
+          },
+          "selectedPayloadRows": 29,
+          "distinctSelectedSignatures": 29,
+          "normalizationRows": 13,
+          "distinctNormalizedEventIdentities": 13,
+          "normalizationSideCounts": {
+            "buy": 7,
+            "sell": 6
+          },
+          "dataGapRows": 8,
+          "dataGapReasons": {
+            "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 2,
+            "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 2,
+            "required enrichment cannot fit method rate limit and usefulness deadline": 1,
+            "valid-window-predictive-assessment-failed": 3
+          },
+          "preparationDeferrals": 98,
+          "preparationDeferralReasons": {
+            "support phase plus opening capacity reserved before any support reads": 97,
+            "PILOT_RPC_COMPONENT_ADMISSION_CLOSED": 1
+          }
+        },
+        "timing": {
+          "indexedCreationAt": 1793137427000,
+          "indexedCreationIso": "2026-10-27T21:43:47.000Z",
+          "indexAgeEligibilityStartAt": 1793137727000,
+          "indexAgeEligibilityEndAt": 1793144627000,
+          "creationDuringActualCompletedRunIds": [
+            "pilot-20261027214222149-d39aee9a"
+          ],
+          "creationDuringResearchInterruption": null,
+          "actualOnChainMigrationAtFromRetainedProof": 1793137427000,
+          "actualOnChainMigrationIso": "2026-10-27T21:43:47.000Z",
+          "firstMigrationHintReceivedAt": 1793137427290,
+          "firstFinalizedOriginProofAvailableAt": 1793137462674,
+          "firstDeepAt": 1793137768168,
+          "firstDeepIso": "2026-10-27T21:49:28.168Z",
+          "firstUsefulAuditedPredictiveAt": 1793138245108,
+          "firstUsefulAuditedPredictiveIso": "2026-10-27T21:57:25.108Z",
+          "chainOccurrenceToFirstDeepMs": 341168,
+          "chainOccurrenceToFirstUsefulPredictiveMs": 818108,
+          "indexedAgeEligibleToFirstDeepMs": 41168,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": 518108,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "2bQ29ZFP9fWUeEZ12vR84RvzaBd2N7viE3iUuwFTpump",
+      "pool": "BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+      "name": "Duongus / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T20:41:08.000Z",
+        "endAt": "2026-10-27T22:36:08.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/2bQ29ZFP9fWUeEZ12vR84RvzaBd2N7viE3iUuwFTpump.json",
+        "sha256": "3d8910c7464f38344b90edc50af207e06e212e328730d2e1360c7255716e08bc",
+        "bytes": 10055,
+        "bars": 79,
+        "firstBarAt": "2026-10-27T20:36:00.000Z",
+        "lastBarAt": "2026-10-27T22:50:00.000Z",
+        "eligibleWhollyContainedBars": 70,
+        "eligibleInActualRunWhollyContainedBars": 26,
+        "gapCount": 9,
+        "gaps": [
+          {
+            "afterBarAt": "2026-10-27T21:37:00.000Z",
+            "nextBarAt": "2026-10-27T21:39:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T21:42:00.000Z",
+            "nextBarAt": "2026-10-27T21:44:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T21:49:00.000Z",
+            "nextBarAt": "2026-10-27T22:13:00.000Z",
+            "missingMinuteSlots": 23
+          },
+          {
+            "afterBarAt": "2026-10-27T22:13:00.000Z",
+            "nextBarAt": "2026-10-27T22:16:00.000Z",
+            "missingMinuteSlots": 2
+          },
+          {
+            "afterBarAt": "2026-10-27T22:16:00.000Z",
+            "nextBarAt": "2026-10-27T22:28:00.000Z",
+            "missingMinuteSlots": 11
+          },
+          {
+            "afterBarAt": "2026-10-27T22:28:00.000Z",
+            "nextBarAt": "2026-10-27T22:31:00.000Z",
+            "missingMinuteSlots": 2
+          },
+          {
+            "afterBarAt": "2026-10-27T22:31:00.000Z",
+            "nextBarAt": "2026-10-27T22:36:00.000Z",
+            "missingMinuteSlots": 4
+          },
+          {
+            "afterBarAt": "2026-10-27T22:36:00.000Z",
+            "nextBarAt": "2026-10-27T22:38:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T22:38:00.000Z",
+            "nextBarAt": "2026-10-27T22:50:00.000Z",
+            "missingMinuteSlots": 11
+          }
+        ],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 63,
+          "best": {
+            "fromBarAt": "2026-10-27T21:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:14:00.000Z",
+            "toBarAt": "2026-10-27T21:14:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:15:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0001414452006866468,
+            "toCloseUsd": 0.00020027861173921134,
+            "indicativeChangePct": 41.59449084660159,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 19495.175384779344,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:32:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:33:00.000Z",
+            "toBarAt": "2026-10-27T21:33:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:34:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00012858418438335708,
+            "toCloseUsd": 0.0000029413250177135568,
+            "indicativeChangePct": -97.71252970820706,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 20661.01381863138,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 60,
+          "best": {
+            "fromBarAt": "2026-10-27T21:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:14:00.000Z",
+            "toBarAt": "2026-10-27T21:18:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:19:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0001414452006866468,
+            "toCloseUsd": 0.0002288235540620988,
+            "indicativeChangePct": 61.77541051323983,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 90666.29737215913,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:29:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:30:00.000Z",
+            "toBarAt": "2026-10-27T21:34:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:35:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0001529626739890044,
+            "toCloseUsd": 0.0000025385607595551913,
+            "indicativeChangePct": -98.34040508487864,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 94491.89474371725,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 53,
+          "best": {
+            "fromBarAt": "2026-10-27T20:49:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:50:00.000Z",
+            "toBarAt": "2026-10-27T21:04:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:05:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00014275536012011165,
+            "toCloseUsd": 0.0002678257395045409,
+            "indicativeChangePct": 87.61168707024198,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 483283.8260002154,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:20:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:21:00.000Z",
+            "toBarAt": "2026-10-27T21:35:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:36:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00031411448685044385,
+            "toCloseUsd": 0.0000025838419005657482,
+            "indicativeChangePct": -99.1774203327986,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 290609.54195529333,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 18,
+          "best": {
+            "fromBarAt": "2026-10-27T21:09:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+            "toBarAt": "2026-10-27T21:10:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:11:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00019159650652528332,
+            "toCloseUsd": 0.00022582241432393462,
+            "indicativeChangePct": 17.863534371977096,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 19899.54432719009,
+            "runId": "pilot-20261027210316237-57a92bce"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:08:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:09:00.000Z",
+            "toBarAt": "2026-10-27T21:09:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00023336812572934677,
+            "toCloseUsd": 0.00019159650652528332,
+            "indicativeChangePct": -17.899453523703958,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 16103.479496630505,
+            "runId": "pilot-20261027210316237-57a92bce"
+          }
+        },
+        "300": {
+          "endpointPairs": 3,
+          "best": {
+            "fromBarAt": "2026-10-27T21:44:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+            "toBarAt": "2026-10-27T21:49:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000002413750554880028,
+            "toCloseUsd": 0.000002358476559426779,
+            "indicativeChangePct": -2.289963034560394,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 9.291924388980085,
+            "runId": "pilot-20261027214222149-d39aee9a"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:04:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:05:00.000Z",
+            "toBarAt": "2026-10-27T21:09:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0002678257395045409,
+            "toCloseUsd": 0.00019159650652528332,
+            "indicativeChangePct": -28.462250536590094,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 100410.18345071413,
+            "runId": "pilot-20261027210316237-57a92bce"
+          }
+        },
+        "900": {
+          "endpointPairs": 1,
+          "best": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000002347575421018537,
+            "toCloseUsd": 0.0000023457778938508203,
+            "indicativeChangePct": -0.07656951728252093,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+            "toBarAt": "2026-10-27T22:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000002347575421018537,
+            "toCloseUsd": 0.0000023457778938508203,
+            "indicativeChangePct": -0.07656951728252093,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T21:09:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+        "toBarAt": "2026-10-27T21:10:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T21:11:00.000Z",
+        "durationSeconds": 60,
+        "fromCloseUsd": 0.00019159650652528332,
+        "toCloseUsd": 0.00022582241432393462,
+        "indicativeChangePct": 17.863534371977096,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 19899.54432719009,
+        "runId": "pilot-20261027210316237-57a92bce"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T21:20:00.000Z",
+        "peakHighUsd": 0.0003353106509734609,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T21:34:00.000Z",
+          "closeUsd": 0.0000025385607595551913,
+          "changeFromEarlierHighPct": -99.24292271892189
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+        "requestedOutcomeCategories": [],
+        "counts": {
+          "rawProcessedMigrationHints": 0,
+          "retainedFinalizedOriginProofRows": 0,
+          "explicitWatchDiscoveredRows": 0,
+          "explicitWatchVerifiedRows": 0,
+          "cachedIdentityImports": 0,
+          "deepAllocations": 0,
+          "runsWithDeepAllocation": 0,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {},
+          "selectedPayloadRows": 0,
+          "distinctSelectedSignatures": 0,
+          "normalizationRows": 0,
+          "distinctNormalizedEventIdentities": 0,
+          "normalizationSideCounts": {},
+          "dataGapRows": 0,
+          "dataGapReasons": {},
+          "preparationDeferrals": 0,
+          "preparationDeferralReasons": {}
+        },
+        "timing": {
+          "indexedCreationAt": 1793133368000,
+          "indexedCreationIso": "2026-10-27T20:36:08.000Z",
+          "indexAgeEligibilityStartAt": 1793133668000,
+          "indexAgeEligibilityEndAt": 1793140568000,
+          "creationDuringActualCompletedRunIds": [],
+          "creationDuringResearchInterruption": {
+            "startAt": 1793132838326,
+            "endAt": 1793134499767,
+            "startIso": "2026-10-27T20:27:18.326Z",
+            "endIso": "2026-10-27T20:54:59.767Z",
+            "elapsedMs": 1661441,
+            "previousRun": "pilot-20261027201954438-c75c4513",
+            "nextRun": "pilot-20261027205459767-1840d6f4"
+          },
+          "actualOnChainMigrationAtFromRetainedProof": null,
+          "actualOnChainMigrationIso": null,
+          "firstMigrationHintReceivedAt": null,
+          "firstFinalizedOriginProofAvailableAt": null,
+          "firstDeepAt": null,
+          "firstDeepIso": null,
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": null,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": null,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "EZDzKuPm5cfK2K1SVytUaGjXRFp5rcDFP1LtWGVapump",
+      "pool": "G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+      "name": "Kekius / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T20:14:19.000Z",
+        "endAt": "2026-10-27T22:09:19.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/EZDzKuPm5cfK2K1SVytUaGjXRFp5rcDFP1LtWGVapump.json",
+        "sha256": "1007b246498f6742a90a253ff23a7a93583978d5a422e286e7c2efe1f19b1958",
+        "bytes": 13960,
+        "bars": 112,
+        "firstBarAt": "2026-10-27T20:09:00.000Z",
+        "lastBarAt": "2026-10-27T23:09:00.000Z",
+        "eligibleWhollyContainedBars": 98,
+        "eligibleInActualRunWhollyContainedBars": 32,
+        "gapCount": 11,
+        "gaps": [
+          {
+            "afterBarAt": "2026-10-27T21:49:00.000Z",
+            "nextBarAt": "2026-10-27T21:53:00.000Z",
+            "missingMinuteSlots": 3
+          },
+          {
+            "afterBarAt": "2026-10-27T21:53:00.000Z",
+            "nextBarAt": "2026-10-27T21:59:00.000Z",
+            "missingMinuteSlots": 5
+          },
+          {
+            "afterBarAt": "2026-10-27T21:59:00.000Z",
+            "nextBarAt": "2026-10-27T22:01:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T22:01:00.000Z",
+            "nextBarAt": "2026-10-27T22:16:00.000Z",
+            "missingMinuteSlots": 14
+          },
+          {
+            "afterBarAt": "2026-10-27T22:16:00.000Z",
+            "nextBarAt": "2026-10-27T22:18:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T22:18:00.000Z",
+            "nextBarAt": "2026-10-27T22:21:00.000Z",
+            "missingMinuteSlots": 2
+          },
+          {
+            "afterBarAt": "2026-10-27T22:21:00.000Z",
+            "nextBarAt": "2026-10-27T22:30:00.000Z",
+            "missingMinuteSlots": 8
+          },
+          {
+            "afterBarAt": "2026-10-27T22:30:00.000Z",
+            "nextBarAt": "2026-10-27T22:37:00.000Z",
+            "missingMinuteSlots": 6
+          },
+          {
+            "afterBarAt": "2026-10-27T22:37:00.000Z",
+            "nextBarAt": "2026-10-27T22:55:00.000Z",
+            "missingMinuteSlots": 17
+          },
+          {
+            "afterBarAt": "2026-10-27T22:55:00.000Z",
+            "nextBarAt": "2026-10-27T23:00:00.000Z",
+            "missingMinuteSlots": 4
+          },
+          {
+            "afterBarAt": "2026-10-27T23:00:00.000Z",
+            "nextBarAt": "2026-10-27T23:09:00.000Z",
+            "missingMinuteSlots": 8
+          }
+        ],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 94,
+          "best": {
+            "fromBarAt": "2026-10-27T21:24:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:25:00.000Z",
+            "toBarAt": "2026-10-27T21:25:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:26:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00008267742428945114,
+            "toCloseUsd": 0.0001648020311437792,
+            "indicativeChangePct": 99.33135624401206,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 21029.856771743034,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:42:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:43:00.000Z",
+            "toBarAt": "2026-10-27T21:43:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:44:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.000046320047491873495,
+            "toCloseUsd": 0.000002973670907898187,
+            "indicativeChangePct": -93.58016438040161,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 11072.131679933065,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 91,
+          "best": {
+            "fromBarAt": "2026-10-27T21:24:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:25:00.000Z",
+            "toBarAt": "2026-10-27T21:29:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:30:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00008267742428945114,
+            "toCloseUsd": 0.000641469633666903,
+            "indicativeChangePct": 675.8703650722564,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 121516.64362842249,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:39:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:40:00.000Z",
+            "toBarAt": "2026-10-27T21:44:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0000745485241441206,
+            "toCloseUsd": 0.0000022281110714500226,
+            "indicativeChangePct": -97.0111935856134,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 28214.193253904825,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 83,
+          "best": {
+            "fromBarAt": "2026-10-27T21:13:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:14:00.000Z",
+            "toBarAt": "2026-10-27T21:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:29:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00024327902815136335,
+            "toCloseUsd": 0.0006815996518209423,
+            "indicativeChangePct": 180.17197248784825,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 112743.66454092204,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:32:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:33:00.000Z",
+            "toBarAt": "2026-10-27T21:47:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:48:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0008515333896197451,
+            "toCloseUsd": 0.0000020467293133731262,
+            "indicativeChangePct": -99.75964191911639,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 255648.95183314374,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 25,
+          "best": {
+            "fromBarAt": "2026-10-27T21:31:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:32:00.000Z",
+            "toBarAt": "2026-10-27T21:32:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:33:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0006274320703821243,
+            "toCloseUsd": 0.0008515333896197451,
+            "indicativeChangePct": 35.71722419307266,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 44266.444779074,
+            "runId": "pilot-20261027212808269-733416a8"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:09:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+            "toBarAt": "2026-10-27T21:10:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:11:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0003421027474252704,
+            "toCloseUsd": 0.0002454013672947063,
+            "indicativeChangePct": -28.266765133678952,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 6100.300511484446,
+            "runId": "pilot-20261027210316237-57a92bce"
+          }
+        },
+        "300": {
+          "endpointPairs": 6,
+          "best": {
+            "fromBarAt": "2026-10-27T21:04:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:05:00.000Z",
+            "toBarAt": "2026-10-27T21:09:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000269512774184632,
+            "toCloseUsd": 0.0003421027474252704,
+            "indicativeChangePct": 26.933778356238513,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 13981.48832692089,
+            "runId": "pilot-20261027210316237-57a92bce"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:43:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:44:00.000Z",
+            "toBarAt": "2026-10-27T21:48:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:49:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000002973670907898187,
+            "toCloseUsd": 0.0000020306317902756703,
+            "indicativeChangePct": -31.712961751005054,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 457.16568354540266,
+            "runId": "pilot-20261027214222149-d39aee9a"
+          }
+        },
+        "900": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T21:31:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T21:32:00.000Z",
+        "toBarAt": "2026-10-27T21:32:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T21:33:00.000Z",
+        "durationSeconds": 60,
+        "fromCloseUsd": 0.0006274320703821243,
+        "toCloseUsd": 0.0008515333896197451,
+        "indicativeChangePct": 35.71722419307266,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 44266.444779074,
+        "runId": "pilot-20261027212808269-733416a8"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T21:33:00.000Z",
+        "peakHighUsd": 0.0010695901551496438,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T21:45:00.000Z",
+          "closeUsd": 0.0000020074048217329288,
+          "changeFromEarlierHighPct": -99.81232018525338
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "DISCOVERED_BUT_NEVER_VERIFIED_OR_DEEPLY_OBSERVED",
+        "requestedOutcomeCategories": [
+          "B"
+        ],
+        "counts": {
+          "rawProcessedMigrationHints": 1,
+          "retainedFinalizedOriginProofRows": 0,
+          "explicitWatchDiscoveredRows": 0,
+          "explicitWatchVerifiedRows": 0,
+          "cachedIdentityImports": 0,
+          "deepAllocations": 0,
+          "runsWithDeepAllocation": 0,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {},
+          "selectedPayloadRows": 0,
+          "distinctSelectedSignatures": 0,
+          "normalizationRows": 0,
+          "distinctNormalizedEventIdentities": 0,
+          "normalizationSideCounts": {},
+          "dataGapRows": 0,
+          "dataGapReasons": {},
+          "preparationDeferrals": 0,
+          "preparationDeferralReasons": {}
+        },
+        "timing": {
+          "indexedCreationAt": 1793131759000,
+          "indexedCreationIso": "2026-10-27T20:09:19.000Z",
+          "indexAgeEligibilityStartAt": 1793132059000,
+          "indexAgeEligibilityEndAt": 1793138959000,
+          "creationDuringActualCompletedRunIds": [
+            "pilot-20261027200603791-46c145af"
+          ],
+          "creationDuringResearchInterruption": null,
+          "actualOnChainMigrationAtFromRetainedProof": null,
+          "actualOnChainMigrationIso": null,
+          "firstMigrationHintReceivedAt": 1793131759748,
+          "firstFinalizedOriginProofAvailableAt": null,
+          "firstDeepAt": null,
+          "firstDeepIso": null,
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": null,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": null,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+      "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "name": "Something / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T21:28:36.000Z",
+        "endAt": "2026-10-27T23:23:36.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump.json",
+        "sha256": "da40cba95ea6f2e79fc02d9e25bffb3fd3fe8aec03890c3cf95b9cec8a5dc657",
+        "bytes": 14077,
+        "bars": 115,
+        "firstBarAt": "2026-10-27T21:23:00.000Z",
+        "lastBarAt": "2026-10-27T23:17:00.000Z",
+        "eligibleWhollyContainedBars": 109,
+        "eligibleInActualRunWhollyContainedBars": 64,
+        "gapCount": 0,
+        "gaps": [],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 108,
+          "best": {
+            "fromBarAt": "2026-10-27T21:45:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:46:00.000Z",
+            "toBarAt": "2026-10-27T21:46:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:47:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0005029118827203087,
+            "toCloseUsd": 0.0006093636221497417,
+            "indicativeChangePct": 21.16707580135573,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 47084.55633253616,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:39:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:40:00.000Z",
+            "toBarAt": "2026-10-27T21:40:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:41:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0005363192711569565,
+            "toCloseUsd": 0.00045435695383156,
+            "indicativeChangePct": -15.282374088215423,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 45176.22417875242,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 104,
+          "best": {
+            "fromBarAt": "2026-10-27T21:44:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+            "toBarAt": "2026-10-27T21:49:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0004927359259341635,
+            "toCloseUsd": 0.0007714424853295329,
+            "indicativeChangePct": 56.56306851727479,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 130109.31343507953,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T23:08:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T23:09:00.000Z",
+            "toBarAt": "2026-10-27T23:13:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T23:14:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0013593503331877873,
+            "toCloseUsd": 0.0011978003546877362,
+            "indicativeChangePct": -11.88435199932627,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 7113.484820852327,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 94,
+          "best": {
+            "fromBarAt": "2026-10-27T21:40:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:41:00.000Z",
+            "toBarAt": "2026-10-27T21:55:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:56:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00045435695383156,
+            "toCloseUsd": 0.0009651197238785236,
+            "indicativeChangePct": 112.41442785011593,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 500264.37723102694,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:28:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+            "toBarAt": "2026-10-27T22:43:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:44:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0013124760722618147,
+            "toCloseUsd": 0.0011577811455073456,
+            "indicativeChangePct": -11.786495009229414,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 22588.467072374184,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 57,
+          "best": {
+            "fromBarAt": "2026-10-27T21:45:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:46:00.000Z",
+            "toBarAt": "2026-10-27T21:46:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:47:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0005029118827203087,
+            "toCloseUsd": 0.0006093636221497417,
+            "indicativeChangePct": 21.16707580135573,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 47084.55633253616,
+            "runId": "pilot-20261027214222149-d39aee9a"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T21:43:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:44:00.000Z",
+            "toBarAt": "2026-10-27T21:44:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0005362873563294488,
+            "toCloseUsd": 0.0004927359259341635,
+            "indicativeChangePct": -8.12091314129938,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 85310.66540930301,
+            "runId": "pilot-20261027214222149-d39aee9a"
+          }
+        },
+        "300": {
+          "endpointPairs": 34,
+          "best": {
+            "fromBarAt": "2026-10-27T21:44:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+            "toBarAt": "2026-10-27T21:49:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0004927359259341635,
+            "toCloseUsd": 0.0007714424853295329,
+            "indicativeChangePct": 56.56306851727479,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 130109.31343507953,
+            "runId": "pilot-20261027214222149-d39aee9a"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T23:08:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T23:09:00.000Z",
+            "toBarAt": "2026-10-27T23:13:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T23:14:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0013593503331877873,
+            "toCloseUsd": 0.0011978003546877362,
+            "indicativeChangePct": -11.88435199932627,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 7113.484820852327,
+            "runId": "pilot-20261027230222347-7a5dc2cf"
+          }
+        },
+        "900": {
+          "endpointPairs": 5,
+          "best": {
+            "fromBarAt": "2026-10-27T22:12:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:13:00.000Z",
+            "toBarAt": "2026-10-27T22:27:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:28:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.001026384836692482,
+            "toCloseUsd": 0.0013331966387148157,
+            "indicativeChangePct": 29.8924722047758,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 31475.219144936895,
+            "runId": "pilot-20261027220800928-089eac29"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T22:09:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T22:10:00.000Z",
+            "toBarAt": "2026-10-27T22:24:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T22:25:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0010957571567355145,
+            "toCloseUsd": 0.001168492250433027,
+            "indicativeChangePct": 6.6378844299959106,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 29423.793379620358,
+            "runId": "pilot-20261027220800928-089eac29"
+          }
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T21:44:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+        "toBarAt": "2026-10-27T21:49:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+        "durationSeconds": 300,
+        "fromCloseUsd": 0.0004927359259341635,
+        "toCloseUsd": 0.0007714424853295329,
+        "indicativeChangePct": 56.56306851727479,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 130109.31343507953,
+        "runId": "pilot-20261027214222149-d39aee9a"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T23:02:00.000Z",
+        "peakHighUsd": 0.001376351370633907,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T23:13:00.000Z",
+          "closeUsd": 0.0011978003546877362,
+          "changeFromEarlierHighPct": -12.972778590973865
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+        "requestedOutcomeCategories": [],
+        "counts": {
+          "rawProcessedMigrationHints": 0,
+          "retainedFinalizedOriginProofRows": 0,
+          "explicitWatchDiscoveredRows": 0,
+          "explicitWatchVerifiedRows": 0,
+          "cachedIdentityImports": 0,
+          "deepAllocations": 0,
+          "runsWithDeepAllocation": 0,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {},
+          "selectedPayloadRows": 0,
+          "distinctSelectedSignatures": 0,
+          "normalizationRows": 0,
+          "distinctNormalizedEventIdentities": 0,
+          "normalizationSideCounts": {},
+          "dataGapRows": 0,
+          "dataGapReasons": {},
+          "preparationDeferrals": 0,
+          "preparationDeferralReasons": {}
+        },
+        "timing": {
+          "indexedCreationAt": 1793136216000,
+          "indexedCreationIso": "2026-10-27T21:23:36.000Z",
+          "indexAgeEligibilityStartAt": 1793136516000,
+          "indexAgeEligibilityEndAt": 1793143416000,
+          "creationDuringActualCompletedRunIds": [],
+          "creationDuringResearchInterruption": {
+            "startAt": 1793135973867,
+            "endAt": 1793136488269,
+            "startIso": "2026-10-27T21:19:33.867Z",
+            "endIso": "2026-10-27T21:28:08.269Z",
+            "elapsedMs": 514402,
+            "previousRun": "pilot-20261027211320693-9bb70ba1",
+            "nextRun": "pilot-20261027212808269-733416a8"
+          },
+          "actualOnChainMigrationAtFromRetainedProof": null,
+          "actualOnChainMigrationIso": null,
+          "firstMigrationHintReceivedAt": null,
+          "firstFinalizedOriginProofAvailableAt": null,
+          "firstDeepAt": null,
+          "firstDeepIso": null,
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": null,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": null,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "FEGXkJzswJ2XyESpUbiW6bc2CDDGYbV8xr6Qh12Wpump",
+      "pool": "EuS2hU1ZKdqNaUg3dJUrHkbBvyU9SHqd6kgiMaQQ3zvb",
+      "name": "TONCOIN / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T19:35:17.000Z",
+        "endAt": "2026-10-27T21:30:17.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/FEGXkJzswJ2XyESpUbiW6bc2CDDGYbV8xr6Qh12Wpump.json",
+        "sha256": "2a05accb2a997d91518479fd7254f420d2bfa36639c5a8e2cbea2734ebd84b33",
+        "bytes": 6238,
+        "bars": 48,
+        "firstBarAt": "2026-10-27T19:30:00.000Z",
+        "lastBarAt": "2026-10-27T21:30:00.000Z",
+        "eligibleWhollyContainedBars": 41,
+        "eligibleInActualRunWhollyContainedBars": 1,
+        "gapCount": 7,
+        "gaps": [
+          {
+            "afterBarAt": "2026-10-27T20:05:00.000Z",
+            "nextBarAt": "2026-10-27T20:08:00.000Z",
+            "missingMinuteSlots": 2
+          },
+          {
+            "afterBarAt": "2026-10-27T20:08:00.000Z",
+            "nextBarAt": "2026-10-27T20:10:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T20:10:00.000Z",
+            "nextBarAt": "2026-10-27T20:14:00.000Z",
+            "missingMinuteSlots": 3
+          },
+          {
+            "afterBarAt": "2026-10-27T20:18:00.000Z",
+            "nextBarAt": "2026-10-27T20:46:00.000Z",
+            "missingMinuteSlots": 27
+          },
+          {
+            "afterBarAt": "2026-10-27T20:46:00.000Z",
+            "nextBarAt": "2026-10-27T21:02:00.000Z",
+            "missingMinuteSlots": 15
+          },
+          {
+            "afterBarAt": "2026-10-27T21:02:00.000Z",
+            "nextBarAt": "2026-10-27T21:25:00.000Z",
+            "missingMinuteSlots": 22
+          },
+          {
+            "afterBarAt": "2026-10-27T21:26:00.000Z",
+            "nextBarAt": "2026-10-27T21:30:00.000Z",
+            "missingMinuteSlots": 3
+          }
+        ],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 34,
+          "best": {
+            "fromBarAt": "2026-10-27T19:40:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T19:41:00.000Z",
+            "toBarAt": "2026-10-27T19:41:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T19:42:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00012503507997477267,
+            "toCloseUsd": 0.0001593823543164297,
+            "indicativeChangePct": 27.470110267124248,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 40262.09860872035,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T19:52:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T19:53:00.000Z",
+            "toBarAt": "2026-10-27T19:53:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T19:54:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0002519394326555606,
+            "toCloseUsd": 0.0000025426638235219773,
+            "indicativeChangePct": -98.99076385275576,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 39592.41467137722,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 28,
+          "best": {
+            "fromBarAt": "2026-10-27T19:40:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T19:41:00.000Z",
+            "toBarAt": "2026-10-27T19:45:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T19:46:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00012503507997477267,
+            "toCloseUsd": 0.00021144979735780159,
+            "indicativeChangePct": 69.11237822254692,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 241430.12005315197,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T19:49:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T19:50:00.000Z",
+            "toBarAt": "2026-10-27T19:54:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T19:55:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0002645400037955632,
+            "toCloseUsd": 0.0000023706497112766954,
+            "indicativeChangePct": -99.10385965174903,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 162148.4976275438,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 22,
+          "best": {
+            "fromBarAt": "2026-10-27T19:36:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T19:37:00.000Z",
+            "toBarAt": "2026-10-27T19:51:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T19:52:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00012103141951740146,
+            "toCloseUsd": 0.00024308274387424572,
+            "indicativeChangePct": 100.84267774724078,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 723966.8409848369,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T19:49:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T19:50:00.000Z",
+            "toBarAt": "2026-10-27T20:04:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:05:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0002645400037955632,
+            "toCloseUsd": 0.000002532228334623581,
+            "indicativeChangePct": -99.04278056313159,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 162292.56716200558,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        },
+        "300": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        },
+        "900": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        }
+      },
+      "strongestInRunEndpointPair": null,
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T19:52:00.000Z",
+        "peakHighUsd": 0.00027992845278872083,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T19:56:00.000Z",
+          "closeUsd": 0.0000023290826174811073,
+          "changeFromEarlierHighPct": -99.16797217493321
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+        "requestedOutcomeCategories": [],
+        "counts": {
+          "rawProcessedMigrationHints": 0,
+          "retainedFinalizedOriginProofRows": 0,
+          "explicitWatchDiscoveredRows": 0,
+          "explicitWatchVerifiedRows": 0,
+          "cachedIdentityImports": 0,
+          "deepAllocations": 0,
+          "runsWithDeepAllocation": 0,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {},
+          "selectedPayloadRows": 0,
+          "distinctSelectedSignatures": 0,
+          "normalizationRows": 0,
+          "distinctNormalizedEventIdentities": 0,
+          "normalizationSideCounts": {},
+          "dataGapRows": 0,
+          "dataGapReasons": {},
+          "preparationDeferrals": 0,
+          "preparationDeferralReasons": {}
+        },
+        "timing": {
+          "indexedCreationAt": 1793129417000,
+          "indexedCreationIso": "2026-10-27T19:30:17.000Z",
+          "indexAgeEligibilityStartAt": 1793129717000,
+          "indexAgeEligibilityEndAt": 1793136617000,
+          "creationDuringActualCompletedRunIds": [],
+          "creationDuringResearchInterruption": {
+            "startAt": 1793126593922,
+            "endAt": 1793131563791,
+            "startIso": "2026-10-27T18:43:13.922Z",
+            "endIso": "2026-10-27T20:06:03.791Z",
+            "elapsedMs": 4969869,
+            "previousRun": "pilot-20261027182846019-d6171b19",
+            "nextRun": "pilot-20261027200603791-46c145af"
+          },
+          "actualOnChainMigrationAtFromRetainedProof": null,
+          "actualOnChainMigrationIso": null,
+          "firstMigrationHintReceivedAt": null,
+          "firstFinalizedOriginProofAvailableAt": null,
+          "firstDeepAt": null,
+          "firstDeepIso": null,
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": null,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": null,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "2TXL3ytE3DoobtLsNK1LEFz4ggg6oE8gn7oJLVEtpump",
+      "pool": "Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+      "name": "COWNTDOWN / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "independent current-indexed cohort; historical survivor/current-volume bias",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T19:52:26.000Z",
+        "endAt": "2026-10-27T21:47:26.000Z",
+        "historicalOriginProof": "indexed creation plus mathematical canonical address; independent historical onchain support not established"
+      },
+      "data": {
+        "path": "cohort-ohlcv-20261027T235506594Z-raw/2TXL3ytE3DoobtLsNK1LEFz4ggg6oE8gn7oJLVEtpump.json",
+        "sha256": "34e15d1874939d9ffe7c32b498df396ba8bff4c0e817ec7cfd00f77ddb4e8db4",
+        "bytes": 10114,
+        "bars": 80,
+        "firstBarAt": "2026-10-27T19:47:00.000Z",
+        "lastBarAt": "2026-10-27T22:50:00.000Z",
+        "eligibleWhollyContainedBars": 71,
+        "eligibleInActualRunWhollyContainedBars": 14,
+        "gapCount": 9,
+        "gaps": [
+          {
+            "afterBarAt": "2026-10-27T20:57:00.000Z",
+            "nextBarAt": "2026-10-27T21:01:00.000Z",
+            "missingMinuteSlots": 3
+          },
+          {
+            "afterBarAt": "2026-10-27T21:01:00.000Z",
+            "nextBarAt": "2026-10-27T21:09:00.000Z",
+            "missingMinuteSlots": 7
+          },
+          {
+            "afterBarAt": "2026-10-27T21:09:00.000Z",
+            "nextBarAt": "2026-10-27T21:12:00.000Z",
+            "missingMinuteSlots": 2
+          },
+          {
+            "afterBarAt": "2026-10-27T21:12:00.000Z",
+            "nextBarAt": "2026-10-27T21:18:00.000Z",
+            "missingMinuteSlots": 5
+          },
+          {
+            "afterBarAt": "2026-10-27T21:18:00.000Z",
+            "nextBarAt": "2026-10-27T21:35:00.000Z",
+            "missingMinuteSlots": 16
+          },
+          {
+            "afterBarAt": "2026-10-27T21:35:00.000Z",
+            "nextBarAt": "2026-10-27T21:45:00.000Z",
+            "missingMinuteSlots": 9
+          },
+          {
+            "afterBarAt": "2026-10-27T21:45:00.000Z",
+            "nextBarAt": "2026-10-27T22:18:00.000Z",
+            "missingMinuteSlots": 32
+          },
+          {
+            "afterBarAt": "2026-10-27T22:18:00.000Z",
+            "nextBarAt": "2026-10-27T22:36:00.000Z",
+            "missingMinuteSlots": 17
+          },
+          {
+            "afterBarAt": "2026-10-27T22:36:00.000Z",
+            "nextBarAt": "2026-10-27T22:50:00.000Z",
+            "missingMinuteSlots": 13
+          }
+        ],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 64,
+          "best": {
+            "fromBarAt": "2026-10-27T20:07:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:08:00.000Z",
+            "toBarAt": "2026-10-27T20:08:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:09:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.000166981180847432,
+            "toCloseUsd": 0.00022647741630222142,
+            "indicativeChangePct": 35.630503481197785,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 14057.443074757613,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:52:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:53:00.000Z",
+            "toBarAt": "2026-10-27T20:53:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:54:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0003942063434327795,
+            "toCloseUsd": 0.000024634451944274822,
+            "indicativeChangePct": -93.75087378611006,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 28755.434199531388,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 61,
+          "best": {
+            "fromBarAt": "2026-10-27T20:06:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:07:00.000Z",
+            "toBarAt": "2026-10-27T20:11:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:12:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00012948738028173743,
+            "toCloseUsd": 0.00023616586297748395,
+            "indicativeChangePct": 82.38523511992943,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 77049.83162263145,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:50:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:51:00.000Z",
+            "toBarAt": "2026-10-27T20:55:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:56:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000403346949268851,
+            "toCloseUsd": 0.000001989521553074292,
+            "indicativeChangePct": -99.50674684494808,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 58163.50837370032,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 53,
+          "best": {
+            "fromBarAt": "2026-10-27T20:06:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:07:00.000Z",
+            "toBarAt": "2026-10-27T20:21:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:22:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.00012948738028173743,
+            "toCloseUsd": 0.0002596364664911148,
+            "indicativeChangePct": 100.51101962693214,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 248595.88376519262,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:46:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:47:00.000Z",
+            "toBarAt": "2026-10-27T21:01:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T21:02:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0004474486905107788,
+            "toCloseUsd": 0.00000200038800216346,
+            "indicativeChangePct": -99.5529346616525,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 8,
+          "best": {
+            "fromBarAt": "2026-10-27T20:07:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:08:00.000Z",
+            "toBarAt": "2026-10-27T20:08:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:09:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.000166981180847432,
+            "toCloseUsd": 0.00022647741630222142,
+            "indicativeChangePct": 35.630503481197785,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 14057.443074757613,
+            "runId": "pilot-20261027200603791-46c145af"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:25:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:26:00.000Z",
+            "toBarAt": "2026-10-27T20:26:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:27:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.0003435413765511837,
+            "toCloseUsd": 0.00030567562451799997,
+            "indicativeChangePct": -11.022180912622082,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 17001.493602042035,
+            "runId": "pilot-20261027201954438-c75c4513"
+          }
+        },
+        "300": {
+          "endpointPairs": 2,
+          "best": {
+            "fromBarAt": "2026-10-27T20:20:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:21:00.000Z",
+            "toBarAt": "2026-10-27T20:25:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:26:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00027920417908147097,
+            "toCloseUsd": 0.0003435413765511837,
+            "indicativeChangePct": 23.043063925966266,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 84655.0180403332,
+            "runId": "pilot-20261027201954438-c75c4513"
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:21:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:22:00.000Z",
+            "toBarAt": "2026-10-27T20:26:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:27:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.0002596364664911148,
+            "toCloseUsd": 0.00030567562451799997,
+            "indicativeChangePct": 17.732161683251334,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 83851.5879611272,
+            "runId": "pilot-20261027201954438-c75c4513"
+          }
+        },
+        "900": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        }
+      },
+      "strongestInRunEndpointPair": {
+        "fromBarAt": "2026-10-27T20:07:00.000Z",
+        "fromCloseEndpointAt": "2026-10-27T20:08:00.000Z",
+        "toBarAt": "2026-10-27T20:08:00.000Z",
+        "toCloseEndpointAt": "2026-10-27T20:09:00.000Z",
+        "durationSeconds": 60,
+        "fromCloseUsd": 0.000166981180847432,
+        "toCloseUsd": 0.00022647741630222142,
+        "indicativeChangePct": 35.630503481197785,
+        "observedEndpointBars": 2,
+        "allIntermediateMinuteBarsPresent": true,
+        "indexedIntervalVolumeUsd": 14057.443074757613,
+        "runId": "pilot-20261027200603791-46c145af"
+      },
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T20:46:00.000Z",
+        "peakHighUsd": 0.0004474676840366506,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T20:57:00.000Z",
+          "closeUsd": 0.0000019799795320676165,
+          "changeFromEarlierHighPct": -99.55751451943836
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+        "requestedOutcomeCategories": [],
+        "counts": {
+          "rawProcessedMigrationHints": 0,
+          "retainedFinalizedOriginProofRows": 0,
+          "explicitWatchDiscoveredRows": 0,
+          "explicitWatchVerifiedRows": 0,
+          "cachedIdentityImports": 0,
+          "deepAllocations": 0,
+          "runsWithDeepAllocation": 0,
+          "acceptedBoundedAuditRows": 0,
+          "runtimeCompleteWindowRows": 0,
+          "distinctAuditedWindowEndpoints": 0,
+          "predictiveAssessments": 0,
+          "predictiveStatusCounts": {},
+          "primaryDecisionCounts": {},
+          "selectedPayloadRows": 0,
+          "distinctSelectedSignatures": 0,
+          "normalizationRows": 0,
+          "distinctNormalizedEventIdentities": 0,
+          "normalizationSideCounts": {},
+          "dataGapRows": 0,
+          "dataGapReasons": {},
+          "preparationDeferrals": 0,
+          "preparationDeferralReasons": {}
+        },
+        "timing": {
+          "indexedCreationAt": 1793130446000,
+          "indexedCreationIso": "2026-10-27T19:47:26.000Z",
+          "indexAgeEligibilityStartAt": 1793130746000,
+          "indexAgeEligibilityEndAt": 1793137646000,
+          "creationDuringActualCompletedRunIds": [],
+          "creationDuringResearchInterruption": {
+            "startAt": 1793126593922,
+            "endAt": 1793131563791,
+            "startIso": "2026-10-27T18:43:13.922Z",
+            "endIso": "2026-10-27T20:06:03.791Z",
+            "elapsedMs": 4969869,
+            "previousRun": "pilot-20261027182846019-d6171b19",
+            "nextRun": "pilot-20261027200603791-46c145af"
+          },
+          "actualOnChainMigrationAtFromRetainedProof": null,
+          "actualOnChainMigrationIso": null,
+          "firstMigrationHintReceivedAt": null,
+          "firstFinalizedOriginProofAvailableAt": null,
+          "firstDeepAt": null,
+          "firstDeepIso": null,
+          "firstUsefulAuditedPredictiveAt": null,
+          "firstUsefulAuditedPredictiveIso": null,
+          "chainOccurrenceToFirstDeepMs": null,
+          "chainOccurrenceToFirstUsefulPredictiveMs": null,
+          "indexedAgeEligibleToFirstDeepMs": null,
+          "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+          "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+        }
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    },
+    {
+      "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+      "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+      "name": "Super Intelligence / SOL",
+      "status": "INDEXED_PRICE_ACTIVITY_ONLY",
+      "selection": "owner-specified independent case, separate from current indexed cohort",
+      "indexedEligibility": {
+        "startAt": "2026-10-27T20:26:11.000Z",
+        "endAt": "2026-10-27T22:21:11.000Z",
+        "historicalOriginProof": "local finalized migration concordant"
+      },
+      "data": {
+        "path": "reference-raw/si-minute-ohlcv.json",
+        "sha256": "3fac7d672af8f80a29efec93845db3478c8a97eb722d971ae3f2c94a8a9d900f",
+        "bytes": 5521,
+        "bars": 42,
+        "firstBarAt": "2026-10-27T20:21:00.000Z",
+        "lastBarAt": "2026-10-27T22:57:00.000Z",
+        "eligibleWhollyContainedBars": 32,
+        "eligibleInActualRunWhollyContainedBars": 4,
+        "gapCount": 15,
+        "gaps": [
+          {
+            "afterBarAt": "2026-10-27T20:46:00.000Z",
+            "nextBarAt": "2026-10-27T20:48:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T20:48:00.000Z",
+            "nextBarAt": "2026-10-27T20:52:00.000Z",
+            "missingMinuteSlots": 3
+          },
+          {
+            "afterBarAt": "2026-10-27T20:52:00.000Z",
+            "nextBarAt": "2026-10-27T20:54:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T20:54:00.000Z",
+            "nextBarAt": "2026-10-27T21:06:00.000Z",
+            "missingMinuteSlots": 11
+          },
+          {
+            "afterBarAt": "2026-10-27T21:06:00.000Z",
+            "nextBarAt": "2026-10-27T21:09:00.000Z",
+            "missingMinuteSlots": 2
+          },
+          {
+            "afterBarAt": "2026-10-27T21:09:00.000Z",
+            "nextBarAt": "2026-10-27T21:11:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T21:11:00.000Z",
+            "nextBarAt": "2026-10-27T21:19:00.000Z",
+            "missingMinuteSlots": 7
+          },
+          {
+            "afterBarAt": "2026-10-27T21:19:00.000Z",
+            "nextBarAt": "2026-10-27T21:21:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T21:21:00.000Z",
+            "nextBarAt": "2026-10-27T21:36:00.000Z",
+            "missingMinuteSlots": 14
+          },
+          {
+            "afterBarAt": "2026-10-27T21:36:00.000Z",
+            "nextBarAt": "2026-10-27T21:38:00.000Z",
+            "missingMinuteSlots": 1
+          },
+          {
+            "afterBarAt": "2026-10-27T21:38:00.000Z",
+            "nextBarAt": "2026-10-27T21:46:00.000Z",
+            "missingMinuteSlots": 7
+          },
+          {
+            "afterBarAt": "2026-10-27T21:46:00.000Z",
+            "nextBarAt": "2026-10-27T21:54:00.000Z",
+            "missingMinuteSlots": 7
+          },
+          {
+            "afterBarAt": "2026-10-27T21:54:00.000Z",
+            "nextBarAt": "2026-10-27T22:23:00.000Z",
+            "missingMinuteSlots": 28
+          },
+          {
+            "afterBarAt": "2026-10-27T22:23:00.000Z",
+            "nextBarAt": "2026-10-27T22:40:00.000Z",
+            "missingMinuteSlots": 16
+          },
+          {
+            "afterBarAt": "2026-10-27T22:40:00.000Z",
+            "nextBarAt": "2026-10-27T22:56:00.000Z",
+            "missingMinuteSlots": 15
+          }
+        ],
+        "missingIntervalsNeverFilled": true
+      },
+      "eligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 19,
+          "best": {
+            "fromBarAt": "2026-10-27T20:27:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:28:00.000Z",
+            "toBarAt": "2026-10-27T20:28:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:29:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.000035039497509227427,
+            "toCloseUsd": 0.00014693399507240644,
+            "indicativeChangePct": 319.3381912332285,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 34930.232351588675,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:43:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:44:00.000Z",
+            "toBarAt": "2026-10-27T20:44:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:45:00.000Z",
+            "durationSeconds": 60,
+            "fromCloseUsd": 0.00015214181431682893,
+            "toCloseUsd": 0.0000021967387353643,
+            "indicativeChangePct": -98.55612426785598,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 17200.52015847402,
+            "runId": null
+          }
+        },
+        "300": {
+          "endpointPairs": 17,
+          "best": {
+            "fromBarAt": "2026-10-27T20:27:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:28:00.000Z",
+            "toBarAt": "2026-10-27T20:32:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:33:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.000035039497509227427,
+            "toCloseUsd": 0.0002568108254724523,
+            "indicativeChangePct": 632.9181173469248,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 229120.76287588666,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:39:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:40:00.000Z",
+            "toBarAt": "2026-10-27T20:44:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:45:00.000Z",
+            "durationSeconds": 300,
+            "fromCloseUsd": 0.00023353482129902556,
+            "toCloseUsd": 0.0000021967387353643,
+            "indicativeChangePct": -99.05935280951034,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 111405.36186469902,
+            "runId": null
+          }
+        },
+        "900": {
+          "endpointPairs": 11,
+          "best": {
+            "fromBarAt": "2026-10-27T20:27:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:28:00.000Z",
+            "toBarAt": "2026-10-27T20:42:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:43:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.000035039497509227427,
+            "toCloseUsd": 0.00018435970519629647,
+            "indicativeChangePct": 426.1482564004993,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": true,
+            "indexedIntervalVolumeUsd": 589226.3300678575,
+            "runId": null
+          },
+          "worst": {
+            "fromBarAt": "2026-10-27T20:33:00.000Z",
+            "fromCloseEndpointAt": "2026-10-27T20:34:00.000Z",
+            "toBarAt": "2026-10-27T20:48:00.000Z",
+            "toCloseEndpointAt": "2026-10-27T20:49:00.000Z",
+            "durationSeconds": 900,
+            "fromCloseUsd": 0.0003009281175476405,
+            "toCloseUsd": 0.0000021540893943721292,
+            "indicativeChangePct": -99.28418473756241,
+            "observedEndpointBars": 2,
+            "allIntermediateMinuteBarsPresent": false,
+            "indexedIntervalVolumeUsd": null,
+            "runId": null
+          }
+        }
+      },
+      "inRunEligibleIndexedPriceChanges": {
+        "60": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        },
+        "300": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        },
+        "900": {
+          "endpointPairs": 0,
+          "best": null,
+          "worst": null
+        }
+      },
+      "strongestInRunEndpointPair": null,
+      "eligiblePeakAndSubsequentObservedCollapse": {
+        "peakBarAt": "2026-10-27T20:36:00.000Z",
+        "peakHighUsd": 0.0003359435861199627,
+        "laterLowestObservedCloseWithin15Minutes": {
+          "barAt": "2026-10-27T20:48:00.000Z",
+          "closeUsd": 0.0000021540893943721292,
+          "changeFromEarlierHighPct": -99.35879430851735
+        },
+        "intraminuteOrderingAndExecutablePath": "unavailable"
+      },
+      "poeTrace": {
+        "classification": "owner-specified SI audit in si-local-lifecycle.json"
+      },
+      "historicalLiquidityAndActual50UsdEntryExit": "UNVERIFIED in these minute bars; sparse separately captured SDK states do not make indexed endpoints executable",
+      "predictiveFlowFeatures": "UNAVAILABLE from OHLC; no buyer count, net-buying or six ten-second bins invented"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump.json",
+      "bytes": 9173,
+      "sha256": "58fe70ae1ad50047d7896f1a8196f74dcb8667afa0d8f05ccdf8949aa9851fab"
+    },
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump.json",
+      "bytes": 19828,
+      "sha256": "4d9d13766613a3a4f567b6c00781b7280b00525718426055c4399139d4b3235b"
+    },
+    {
+      "path": "reference-raw/frongus-minute-ohlcv.json",
+      "bytes": 15319,
+      "sha256": "7b2c1b964b0368ebbcd898c67aea0871271e6c88dfa02c72787e1b9cddddd49d"
+    },
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump.json",
+      "bytes": 9041,
+      "sha256": "908768a14a5499710484462a19990deddecce60235c209c85b583e82b67862d9"
+    },
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/2bQ29ZFP9fWUeEZ12vR84RvzaBd2N7viE3iUuwFTpump.json",
+      "bytes": 10055,
+      "sha256": "3d8910c7464f38344b90edc50af207e06e212e328730d2e1360c7255716e08bc"
+    },
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/EZDzKuPm5cfK2K1SVytUaGjXRFp5rcDFP1LtWGVapump.json",
+      "bytes": 13960,
+      "sha256": "1007b246498f6742a90a253ff23a7a93583978d5a422e286e7c2efe1f19b1958"
+    },
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump.json",
+      "bytes": 14077,
+      "sha256": "da40cba95ea6f2e79fc02d9e25bffb3fd3fe8aec03890c3cf95b9cec8a5dc657"
+    },
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/FEGXkJzswJ2XyESpUbiW6bc2CDDGYbV8xr6Qh12Wpump.json",
+      "bytes": 6238,
+      "sha256": "2a05accb2a997d91518479fd7254f420d2bfa36639c5a8e2cbea2734ebd84b33"
+    },
+    {
+      "path": "cohort-ohlcv-20261027T235506594Z-raw/2TXL3ytE3DoobtLsNK1LEFz4ggg6oE8gn7oJLVEtpump.json",
+      "bytes": 10114,
+      "sha256": "34e15d1874939d9ffe7c32b498df396ba8bff4c0e817ec7cfd00f77ddb4e8db4"
+    },
+    {
+      "path": "reference-raw/si-minute-ohlcv.json",
+      "bytes": 5521,
+      "sha256": "3fac7d672af8f80a29efec93845db3478c8a97eb722d971ae3f2c94a8a9d900f"
+    }
+  ],
+  "limitations": [
+    "All appreciation is retrospective indicative USD price, not modeled executable net return; no $50 liquidity/fee/path claim follows from OHLC volume.",
+    "Rankings use the same exact recorded run periods and wholly contained eligible minute bars. Boundary minutes and research interruptions are excluded from in-run ranking.",
+    "Missing minute bars are left missing; exact endpoint pairs may still have missing interior bars and are labeled. No crossing time or continuous price path is invented.",
+    "Indexed creation is provisional for leads without original onchain proof. Canonical address matching alone cannot prove historical supported mint/vault/fee state.",
+    "Current-indexed discovery is incomplete, survivor/current-volume biased and not ordered reliably by historical economic strength; owner-nominated SI is a separate case.",
+    "No flow qualification, independent human count, executable exit or profitability can be reconstructed from these prices alone.",
+    "Top performers that subsequently collapse remain included; decline from a recorded high is an indicative comparison, not an assumed short or exit fill.",
+    "Later retrieved independent data is never backdated into original POE decisions."
+  ]
+}

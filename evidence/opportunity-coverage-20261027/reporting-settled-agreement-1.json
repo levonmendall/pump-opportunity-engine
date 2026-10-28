@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-28T00:04:15.749Z",
+  "localRun": "pilot-20261027235124302-99e43f99",
+  "localSourceAt": 1793145679600,
+  "remoteRun": "pilot-20261027235124302-99e43f99",
+  "remoteSourceAt": 1793145679600,
+  "localRunning": false,
+  "remoteRunning": false,
+  "exactProjectionAgreement": false,
+  "sourceAgeMs": 176110,
+  "receiverState": "stopped",
+  "publisherConnected": true
+}

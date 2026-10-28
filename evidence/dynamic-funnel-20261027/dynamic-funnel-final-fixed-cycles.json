@@ -1,0 +1,114 @@
+{
+  "checks": [
+    {
+      "checkedAt": "2026-10-27T22:39:25.414Z",
+      "httpStatus": 200,
+      "state": "reporting",
+      "publisherConnected": true,
+      "sourceAt": 1793140760347,
+      "runId": "pilot-20261027223839107-205d2bb9",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "sourceRelease": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+      "matchedLocalProjection": true,
+      "watch": {
+        "known": 49,
+        "watch": 33,
+        "eligibleKnown": 34,
+        "deepActive": 3,
+        "maximumDeep": 6,
+        "queued": 31,
+        "promoted": 112,
+        "repromoted": 82,
+        "demoted": 109,
+        "expired": 6,
+        "capacityExclusions": 0,
+        "structuralExclusions": 7,
+        "completeWindows": 178,
+        "strategyRejections": 0,
+        "incompleteDataExclusions": 0,
+        "enrichmentDeadlineFailures": 0,
+        "predictiveAssessments": 0,
+        "predictiveFailures": 0,
+        "waitMs": {
+          "mean": 883629.7096774194,
+          "maximum": 1575143
+        },
+        "promotionWaitMs": {
+          "mean": 568039.0982142857,
+          "maximum": 1624167
+        }
+      }
+    },
+    {
+      "checkedAt": "2026-10-27T22:39:42.671Z",
+      "httpStatus": 200,
+      "state": "reporting",
+      "publisherConnected": true,
+      "sourceAt": 1793140771389,
+      "runId": "pilot-20261027223839107-205d2bb9",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "sourceRelease": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+      "matchedLocalProjection": true,
+      "watch": {
+        "known": 49,
+        "watch": 32,
+        "eligibleKnown": 34,
+        "deepActive": 4,
+        "maximumDeep": 6,
+        "queued": 30,
+        "promoted": 113,
+        "repromoted": 83,
+        "demoted": 109,
+        "expired": 6,
+        "capacityExclusions": 0,
+        "structuralExclusions": 7,
+        "completeWindows": 178,
+        "strategyRejections": 0,
+        "incompleteDataExclusions": 0,
+        "enrichmentDeadlineFailures": 0,
+        "predictiveAssessments": 0,
+        "predictiveFailures": 0,
+        "waitMs": {
+          "mean": 871621.2666666667,
+          "maximum": 1556259
+        },
+        "promotionWaitMs": {
+          "mean": 577049.1327433628,
+          "maximum": 1624167
+        }
+      }
+    }
+  ],
+  "unauthorizedPilotPost": 401,
+  "original": {
+    "httpStatus": 200,
+    "keys": [
+      "project",
+      "mode",
+      "liveTrading",
+      "schemaVersion",
+      "account",
+      "sequence",
+      "source",
+      "times",
+      "status",
+      "balances",
+      "costLabels",
+      "positions",
+      "trades",
+      "decisions",
+      "pnl",
+      "history",
+      "funnel",
+      "metrics"
+    ],
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "source": {
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+    }
+  },
+  "noPilotFinancialsPublished": true,
+  "checkedAt": "2026-10-27T22:39:47.505Z"
+}

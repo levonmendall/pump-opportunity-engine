@@ -1,0 +1,56 @@
+{
+  "source": {
+    "path": "/tmp/poe-final-closed-financial.sqlite",
+    "bytes": 2936832,
+    "sha256": "7bdcf20ed51428092824bc11dc94991f1716b7134c530bbdc81c6a1ac1b54c51",
+    "laterRevision": 5485,
+    "laterLastAt": 1793138288556
+  },
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "runs": [
+    {
+      "runId": "pilot-20261027214222149-d39aee9a",
+      "startedAt": 1793137342149,
+      "cutoffAt": 1793137878889,
+      "recordedEarlierFinancialRevision": 5044,
+      "selectedJournalLastRevision": 5044,
+      "selectedJournalLastAt": 1793137878679,
+      "controls": {
+        "intervals": [
+          {
+            "startAt": 1793137485096,
+            "endAt": 1793137485101
+          },
+          {
+            "startAt": 1793137495140,
+            "endAt": 1793137495146
+          },
+          {
+            "startAt": 1793137855238,
+            "endAt": 1793137855244
+          }
+        ],
+        "milliseconds": 17,
+        "unknownIntervals": [],
+        "unknownMilliseconds": 0
+      },
+      "note": "Read-only historical journal/action reduction clipped at run cutoff from later standalone consistent backup. Later financial state is not substituted for earlier run state."
+    },
+    {
+      "runId": "pilot-20261027215124336-ed67d639",
+      "startedAt": 1793137884336,
+      "cutoffAt": 1793138288797,
+      "recordedEarlierFinancialRevision": 5485,
+      "selectedJournalLastRevision": 5485,
+      "selectedJournalLastAt": 1793138288556,
+      "controls": {
+        "intervals": [],
+        "milliseconds": 0,
+        "unknownIntervals": [],
+        "unknownMilliseconds": 0
+      },
+      "note": "Read-only historical journal/action reduction clipped at run cutoff from later standalone consistent backup. Later financial state is not substituted for earlier run state."
+    }
+  ]
+}

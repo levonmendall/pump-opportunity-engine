@@ -1,0 +1,632 @@
+{
+  "retrievedAt": 1793143743737,
+  "reconstructedAt": 1793143959138,
+  "retrospectiveOnly": true,
+  "rows": [
+    {
+      "signature": "MPTpj2cbu7bpMrCxEGtSVzSvEnzyBWeAXdkpdpjQCb5kxQMnrgYMvge49f1XSW6iue1XCcgefrLUsraLNRo2qoF",
+      "chainTime": 1793132721,
+      "ins": {
+        "checks": [],
+        "supportedSwapInstructions": 0,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [],
+      "normalized": []
+    },
+    {
+      "signature": "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW",
+      "chainTime": 1793132723,
+      "ins": {
+        "checks": [
+          {
+            "outerInstructionIndex": 1,
+            "innerInstructionIndex": 1,
+            "discriminatorHex": "33e685a4017f83ad",
+            "instructionName": "sell",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 1,
+            "eventInnerInstructionIndex": 8,
+            "eventIndex": 0
+          },
+          "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "trader": "ARu4n5mFdZogZAravu7CcizaojWnS6oqka37gdLT5SZn",
+          "side": "sell",
+          "tokenUnits": "63665639570",
+          "curveQuoteLamports": "20738367",
+          "userQuoteLamports": "20479136",
+          "fees": {
+            "lp_fee": "4148",
+            "protocol_fee": "192867",
+            "coin_creator_fee": "62216",
+            "cashback": "0",
+            "buyback_fee": "96433",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462205007,
+          "identityKey": "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:1:1:8:0",
+          "chainBlockTime": 1793132723,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793143959111,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "286f29483810d380b7cec6b3a1120c46a89cbc75d9c4029ccf7bac675174d01f",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "mode": "RESEARCH_ONLY",
+          "amountConvention": "curve",
+          "supportedPoolEvidence": "retained finalized canonical SI creation proof",
+          "fullIdentity": {
+            "signature": "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 1,
+            "eventInnerInstructionIndex": 8,
+            "eventIndex": 0
+          },
+          "trade": {
+            "identity": {
+              "signature": "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW",
+              "instructionIndex": 1,
+              "eventIndex": 8
+            },
+            "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+            "wallet": "ARu4n5mFdZogZAravu7CcizaojWnS6oqka37gdLT5SZn",
+            "side": "sell",
+            "quoteLamports": "20738367",
+            "tokenUnits": "63665639570",
+            "receivedAt": 1793143959111,
+            "commitment": "confirmed",
+            "slot": 462205007
+          }
+        }
+      ]
+    },
+    {
+      "signature": "eNrHK8WmKNhZKsHcmDzyWjjBMrLq2B4ZbR6puxdsprkJFDjNsR5SYb3TKU3c8AFWFA6r11hngAbw2TjAv2F3Zku",
+      "chainTime": 1793132726,
+      "ins": {
+        "checks": [
+          {
+            "outerInstructionIndex": 6,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "c62e1552b4d9e870",
+            "instructionName": "buy_exact_quote_in",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": true,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "eNrHK8WmKNhZKsHcmDzyWjjBMrLq2B4ZbR6puxdsprkJFDjNsR5SYb3TKU3c8AFWFA6r11hngAbw2TjAv2F3Zku",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 6,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "trader": "8o5H5gA4ALouvsJ7vBXvnwGxvxVp81FeHwQ2wLDQCHPh",
+          "side": "buy",
+          "tokenUnits": "1060599955684",
+          "curveQuoteLamports": "346956731",
+          "userQuoteLamports": "351293692",
+          "fees": {
+            "lp_fee": "69392",
+            "protocol_fee": "3226698",
+            "coin_creator_fee": "1040871",
+            "cashback": "0",
+            "buyback_fee": "1613349",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462205023,
+          "identityKey": "eNrHK8WmKNhZKsHcmDzyWjjBMrLq2B4ZbR6puxdsprkJFDjNsR5SYb3TKU3c8AFWFA6r11hngAbw2TjAv2F3Zku:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:6:outer:6:0",
+          "chainBlockTime": 1793132726,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793143959117,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "f613b9e43a64fdc6efea6750c27b313962bc4ad4228ed0d0e72e3f73b37a3ac0",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "mode": "RESEARCH_ONLY",
+          "amountConvention": "curve",
+          "supportedPoolEvidence": "retained finalized canonical SI creation proof",
+          "fullIdentity": {
+            "signature": "eNrHK8WmKNhZKsHcmDzyWjjBMrLq2B4ZbR6puxdsprkJFDjNsR5SYb3TKU3c8AFWFA6r11hngAbw2TjAv2F3Zku",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 6,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "trade": {
+            "identity": {
+              "signature": "eNrHK8WmKNhZKsHcmDzyWjjBMrLq2B4ZbR6puxdsprkJFDjNsR5SYb3TKU3c8AFWFA6r11hngAbw2TjAv2F3Zku",
+              "instructionIndex": 6,
+              "eventIndex": 6
+            },
+            "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+            "wallet": "8o5H5gA4ALouvsJ7vBXvnwGxvxVp81FeHwQ2wLDQCHPh",
+            "side": "buy",
+            "quoteLamports": "346956731",
+            "tokenUnits": "1060599955684",
+            "receivedAt": 1793143959117,
+            "commitment": "confirmed",
+            "slot": 462205023
+          }
+        }
+      ]
+    },
+    {
+      "signature": "5YUFvJ81FGwuRVZXogfSEdkrWrxbTvcqJKZnuSLC6L1E6G7ugKH6Xpq81cYzpiVNbRT8LvogVna6TFxAHVkUaDjR",
+      "chainTime": 1793132729,
+      "ins": {
+        "checks": [
+          {
+            "outerInstructionIndex": 3,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "33e685a4017f83ad",
+            "instructionName": "sell",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "5YUFvJ81FGwuRVZXogfSEdkrWrxbTvcqJKZnuSLC6L1E6G7ugKH6Xpq81cYzpiVNbRT8LvogVna6TFxAHVkUaDjR",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "trader": "77wS9zZHJ57AXR2QvkX8Fu8iqUPBbYvUnJ2irb36QyTG",
+          "side": "sell",
+          "tokenUnits": "712291934865",
+          "curveQuoteLamports": "233361326",
+          "userQuoteLamports": "230444308",
+          "fees": {
+            "lp_fee": "46673",
+            "protocol_fee": "2170261",
+            "coin_creator_fee": "700084",
+            "cashback": "0",
+            "buyback_fee": "1085130",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462205034,
+          "identityKey": "5YUFvJ81FGwuRVZXogfSEdkrWrxbTvcqJKZnuSLC6L1E6G7ugKH6Xpq81cYzpiVNbRT8LvogVna6TFxAHVkUaDjR:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:6:0",
+          "chainBlockTime": 1793132729,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793143959122,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "dd0798daa9a41ed88c89dd6cfe068a3536fd222bfbd87240d83b36905c5f6670",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "mode": "RESEARCH_ONLY",
+          "amountConvention": "curve",
+          "supportedPoolEvidence": "retained finalized canonical SI creation proof",
+          "fullIdentity": {
+            "signature": "5YUFvJ81FGwuRVZXogfSEdkrWrxbTvcqJKZnuSLC6L1E6G7ugKH6Xpq81cYzpiVNbRT8LvogVna6TFxAHVkUaDjR",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "trade": {
+            "identity": {
+              "signature": "5YUFvJ81FGwuRVZXogfSEdkrWrxbTvcqJKZnuSLC6L1E6G7ugKH6Xpq81cYzpiVNbRT8LvogVna6TFxAHVkUaDjR",
+              "instructionIndex": 3,
+              "eventIndex": 6
+            },
+            "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+            "wallet": "77wS9zZHJ57AXR2QvkX8Fu8iqUPBbYvUnJ2irb36QyTG",
+            "side": "sell",
+            "quoteLamports": "233361326",
+            "tokenUnits": "712291934865",
+            "receivedAt": 1793143959122,
+            "commitment": "confirmed",
+            "slot": 462205034
+          }
+        }
+      ]
+    },
+    {
+      "signature": "5eNFzX4BhSue6eoPd9qtarTJXKA7XLhsF692W8WdReoxFZdQcMhaZnYvn9xc2PiJQNSf9NZ9SCBCjQyBVnxgLQyH",
+      "chainTime": 1793132730,
+      "error": "UNSUPPORTED_BOOST_BUY_AND_BURN_FLOW"
+    },
+    {
+      "signature": "4WCDRZXR9QSYKMu61wg544DoDDDmGsEymiu7NquUjRTYnsFsinQWEWDRiorpS7bkWmUHg7y3rMzGVzSpRXhrQiPb",
+      "chainTime": 1793132732,
+      "ins": {
+        "checks": [],
+        "supportedSwapInstructions": 0,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [],
+      "normalized": []
+    },
+    {
+      "signature": "AZ6qvXabyjDAiURkWH7sJdGto2TUxLJvYdxdettr9WiLYCfDJNWpwevJ26sPtCn1nNkP8JrFSbDwa5EfDakShPs",
+      "chainTime": 1793132736,
+      "ins": {
+        "checks": [
+          {
+            "outerInstructionIndex": 1,
+            "innerInstructionIndex": 4,
+            "discriminatorHex": "5df6823ce7e940b2",
+            "instructionName": "sell_v2",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "AZ6qvXabyjDAiURkWH7sJdGto2TUxLJvYdxdettr9WiLYCfDJNWpwevJ26sPtCn1nNkP8JrFSbDwa5EfDakShPs",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 4,
+            "eventInnerInstructionIndex": 8,
+            "eventIndex": 0
+          },
+          "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "trader": "32GRCuFvGrRQiK8tmy1vfGSw2dCDk9RzR3HeLn16ZwPA",
+          "side": "sell",
+          "tokenUnits": "1015031110039",
+          "curveQuoteLamports": "337273210",
+          "userQuoteLamports": "333057294",
+          "fees": {
+            "lp_fee": "67455",
+            "protocol_fee": "3136641",
+            "coin_creator_fee": "1011820",
+            "cashback": "0",
+            "buyback_fee": "1568320",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462205065,
+          "identityKey": "AZ6qvXabyjDAiURkWH7sJdGto2TUxLJvYdxdettr9WiLYCfDJNWpwevJ26sPtCn1nNkP8JrFSbDwa5EfDakShPs:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:1:4:8:0",
+          "chainBlockTime": 1793132736,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793143959128,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "bd1d78c8e1c838929bbf72f0f04772ef81fbfa83373d6cbc311b3b8450bbd2b6",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "mode": "RESEARCH_ONLY",
+          "amountConvention": "curve",
+          "supportedPoolEvidence": "retained finalized canonical SI creation proof",
+          "fullIdentity": {
+            "signature": "AZ6qvXabyjDAiURkWH7sJdGto2TUxLJvYdxdettr9WiLYCfDJNWpwevJ26sPtCn1nNkP8JrFSbDwa5EfDakShPs",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 4,
+            "eventInnerInstructionIndex": 8,
+            "eventIndex": 0
+          },
+          "trade": {
+            "identity": {
+              "signature": "AZ6qvXabyjDAiURkWH7sJdGto2TUxLJvYdxdettr9WiLYCfDJNWpwevJ26sPtCn1nNkP8JrFSbDwa5EfDakShPs",
+              "instructionIndex": 1,
+              "eventIndex": 8
+            },
+            "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+            "wallet": "32GRCuFvGrRQiK8tmy1vfGSw2dCDk9RzR3HeLn16ZwPA",
+            "side": "sell",
+            "quoteLamports": "337273210",
+            "tokenUnits": "1015031110039",
+            "receivedAt": 1793143959128,
+            "commitment": "confirmed",
+            "slot": 462205065
+          }
+        }
+      ]
+    },
+    {
+      "signature": "5b6U71KcavrYxzEu1YrSjvz9mW2h4xdeyYiNEaBhhkK5ndxWrc3oHt5oRVXk1mDceMSDcpaJHDbqZ6twh32TyFCL",
+      "chainTime": 1793132742,
+      "error": "UNSUPPORTED_BOOST_BUY_AND_BURN_FLOW"
+    },
+    {
+      "signature": "2Xh6F4f5nm9rujbF5F1jnXwr1SKkjWRYTm5KzGXeYzSgB81gekssaHeYM6AgA8Suru84WwLs5CuxL4ReGzyAzJQz",
+      "chainTime": 1793132742,
+      "ins": {
+        "checks": [
+          {
+            "outerInstructionIndex": 3,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "33e685a4017f83ad",
+            "instructionName": "sell",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "2Xh6F4f5nm9rujbF5F1jnXwr1SKkjWRYTm5KzGXeYzSgB81gekssaHeYM6AgA8Suru84WwLs5CuxL4ReGzyAzJQz",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "trader": "A7xvXEVMoH6eJrc6ZmNxgwdmDHwCsKu2NSmyFBqkq6cT",
+          "side": "sell",
+          "tokenUnits": "41924430815",
+          "curveQuoteLamports": "14066176",
+          "userQuoteLamports": "13890347",
+          "fees": {
+            "lp_fee": "2814",
+            "protocol_fee": "130816",
+            "coin_creator_fee": "42199",
+            "cashback": "0",
+            "buyback_fee": "65408",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462205098,
+          "identityKey": "2Xh6F4f5nm9rujbF5F1jnXwr1SKkjWRYTm5KzGXeYzSgB81gekssaHeYM6AgA8Suru84WwLs5CuxL4ReGzyAzJQz:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:6:0",
+          "chainBlockTime": 1793132742,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793143959132,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "d9c1e7521c4b1a3f36e330f3a15eb4d4542ddd18812c9efb88ed89da71994b1a",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "mode": "RESEARCH_ONLY",
+          "amountConvention": "curve",
+          "supportedPoolEvidence": "retained finalized canonical SI creation proof",
+          "fullIdentity": {
+            "signature": "2Xh6F4f5nm9rujbF5F1jnXwr1SKkjWRYTm5KzGXeYzSgB81gekssaHeYM6AgA8Suru84WwLs5CuxL4ReGzyAzJQz",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "trade": {
+            "identity": {
+              "signature": "2Xh6F4f5nm9rujbF5F1jnXwr1SKkjWRYTm5KzGXeYzSgB81gekssaHeYM6AgA8Suru84WwLs5CuxL4ReGzyAzJQz",
+              "instructionIndex": 3,
+              "eventIndex": 6
+            },
+            "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+            "wallet": "A7xvXEVMoH6eJrc6ZmNxgwdmDHwCsKu2NSmyFBqkq6cT",
+            "side": "sell",
+            "quoteLamports": "14066176",
+            "tokenUnits": "41924430815",
+            "receivedAt": 1793143959132,
+            "commitment": "confirmed",
+            "slot": 462205098
+          }
+        }
+      ]
+    },
+    {
+      "signature": "FCy6xKgwM8tVSuy5KBtPHQHyCSCr8Xj5hWYzQu9sFPRgmSz7PAvESUYgK1CAEUvQ9hBArWjXhAooio5Jy8XJTqL",
+      "chainTime": 1793132743,
+      "ins": {
+        "checks": [],
+        "supportedSwapInstructions": 0,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [],
+      "normalized": []
+    },
+    {
+      "signature": "2VZRXxxg4vhsuH1LT5cuRvVpE8f6sH3roK3BxzdN5Q4wNH7DfPWcG1ae8dk2FZuaWsE2CjZNfzmHqnFgqvwvaaTE",
+      "chainTime": 1793132744,
+      "ins": {
+        "checks": [
+          {
+            "outerInstructionIndex": 6,
+            "innerInstructionIndex": 0,
+            "discriminatorHex": "c2ab1c46684d5b2f",
+            "instructionName": "buy_exact_quote_in_v2",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "2VZRXxxg4vhsuH1LT5cuRvVpE8f6sH3roK3BxzdN5Q4wNH7DfPWcG1ae8dk2FZuaWsE2CjZNfzmHqnFgqvwvaaTE",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 6,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 4,
+            "eventIndex": 0
+          },
+          "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "trader": "9N5Y8pvQhfkB8UKeEfDrAXFd6ZeGp4JvARauaBPX3AHz",
+          "side": "buy",
+          "tokenUnits": "29438757908",
+          "curveQuoteLamports": "9876542",
+          "userQuoteLamports": "10000000",
+          "fees": {
+            "lp_fee": "1976",
+            "protocol_fee": "91852",
+            "coin_creator_fee": "29630",
+            "cashback": "0",
+            "buyback_fee": "45926",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462205107,
+          "identityKey": "2VZRXxxg4vhsuH1LT5cuRvVpE8f6sH3roK3BxzdN5Q4wNH7DfPWcG1ae8dk2FZuaWsE2CjZNfzmHqnFgqvwvaaTE:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:6:0:4:0",
+          "chainBlockTime": 1793132744,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793143959136,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "9dcdd6231afa23e3bcc55fbada24dce469650dab9765c76c9132834c8daac55b",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "mode": "RESEARCH_ONLY",
+          "amountConvention": "curve",
+          "supportedPoolEvidence": "retained finalized canonical SI creation proof",
+          "fullIdentity": {
+            "signature": "2VZRXxxg4vhsuH1LT5cuRvVpE8f6sH3roK3BxzdN5Q4wNH7DfPWcG1ae8dk2FZuaWsE2CjZNfzmHqnFgqvwvaaTE",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 6,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 4,
+            "eventIndex": 0
+          },
+          "trade": {
+            "identity": {
+              "signature": "2VZRXxxg4vhsuH1LT5cuRvVpE8f6sH3roK3BxzdN5Q4wNH7DfPWcG1ae8dk2FZuaWsE2CjZNfzmHqnFgqvwvaaTE",
+              "instructionIndex": 6,
+              "eventIndex": 4
+            },
+            "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+            "wallet": "9N5Y8pvQhfkB8UKeEfDrAXFd6ZeGp4JvARauaBPX3AHz",
+            "side": "buy",
+            "quoteLamports": "9876542",
+            "tokenUnits": "29438757908",
+            "receivedAt": 1793143959136,
+            "commitment": "confirmed",
+            "slot": 462205107
+          }
+        }
+      ]
+    }
+  ]
+}

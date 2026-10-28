@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_HISTORICAL_DIAGNOSTICS_NOT_FORWARD_ACCEPTANCE",
+  "generatedAt": "2026-10-27T23:51:02.270Z",
+  "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+  "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+  "networkRequests": 0,
+  "financialWriterOpened": false,
+  "productionTouched": false,
+  "baselineRule": {
+    "version": "persistent-buying-v0-unfrozen",
+    "windowMs": 60000,
+    "bucketMs": 10000,
+    "minimumAgeMs": 300000,
+    "maximumAgeMs": 7200000,
+    "minimumNetBuyLamports": "1000000000",
+    "minimumPositiveBuckets": 4,
+    "minimumBuyers": 5,
+    "maximumLargestBuyerBps": 3500,
+    "maximumSizeToLiquidityBps": 500,
+    "maximumInitialCostMicroUsd": "50000000",
+    "maximumHoldingMs": 900000,
+    "stopLossBps": 1500,
+    "takeProfitBps": 3000,
+    "modeledDelayMs": 1000,
+    "orderExpiryMs": 5000,
+    "maximumQuoteAgeMs": 2000
+  },
+  "shadowsFrozenBeforeCalculation": [
+    {
+      "version": "si-age-shadow-4m-v1",
+      "minimumAgeMs": 240000,
+      "minimumNetBuyLamports": "1000000000",
+      "minimumPositiveBuckets": 4,
+      "minimumBuyers": 5,
+      "maximumLargestBuyerBps": 3500
+    },
+    {
+      "version": "si-moderate-flow-shadow-v1",
+      "minimumAgeMs": 300000,
+      "minimumNetBuyLamports": "500000000",
+      "minimumPositiveBuckets": 3,
+      "minimumBuyers": 3,
+      "maximumLargestBuyerBps": 5000
+    }
+  ],
+  "sourceHistory": {
+    "file": "si-history-page-1-20261027232707767.json",
+    "sha256": "6cfce65af1936d770747cbf917e21577f7725ff79d13bcceb5f6ca7eb3962a52"
+  },
+  "windows": [
+    {
+      "windowStartIso": "2026-10-27T20:25:20.000Z",
+      "windowEndExclusiveIso": "2026-10-27T20:26:20.000Z",
+      "sourceMappingFile": "si-historical-window-mapping-20261027233451534.json",
+      "sourceMappingSha256": "c6ac3d299a58d2e1255c570f58dcbe594defe5595ce713a23079b6f8e07c1bc8",
+      "historicalDenominator": {
+        "scope": "pool-address transaction history from one independently bounded page, filtered by chain blockTime; not all-market census",
+        "addressTransactions": 38,
+        "successfulTransactions": 37,
+        "failedTransactionsExcluded": 1,
+        "allSuccessfulTransactionResponsesRetained": true,
+        "ordinarySwapTransactions": 23,
+        "protocolBuyAndBurnTransactions": 5,
+        "successfulTransactionsWithoutScopedSupportedSwapOrBoost": 9,
+        "nonSwapCompleteness": "No scoped supported-swap/Boost detected by existing inspector; not general transaction semantic proof"
+      },
+      "informationTime": {
+        "interpretation": "Retrospective chain-time diagnostics, NOT replay of forward availability",
+        "partitionTime": "RPC blockTime seconds, not original provider receipt",
+        "originalAuditRpcAvailableAtMinimum": 1793143733057,
+        "originalAuditRpcAvailableAtMaximum": 1793144141762,
+        "recordedMappingAvailableAtMinimum": 1793144091574,
+        "recordedMappingAvailableAtMaximum": 1793144141762,
+        "mappingTimeCaveat": "Resume remaps retained responses; mapping availability is not their original audit-RPC response time",
+        "actualHistoricalForwardReceiptForTheseTransactions": "UNAVAILABLE; none was backdated",
+        "sourceReceiptFile": "si-history-receipt-20261027233451534.json",
+        "sourceReceiptSha256": "1ed196747c0bb2492cce82512688ab1b6c25420e73680247ede4583b2d2409a3"
+      },
+      "ordinarySubset": {
+        "amountConvention": "curve",
+        "tradeCount": 23,
+        "buys": 3,
+        "sells": 20,
+        "buyLamports": "564240679",
+        "sellLamports": "1388853590",
+        "netBuyLamports": "-824612911",
+        "distinctBuyerWallets": 3,
+        "largestBuyerBps": 6150,
+        "positiveNetBuckets": 1,
+        "netByChainTenSecondBucketLamports": [
+          "92857038",
+          "-337273210",
+          "-4189634",
+          "-56342428",
+          "-231107747",
+          "-288556930"
+        ],
+        "priceReturnBps": 664,
+        "firstIdentity": {
+          "signature": "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW",
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "outerInstructionIndex": 1,
+          "swapInnerInstructionIndex": 1,
+          "eventInnerInstructionIndex": 8,
+          "eventIndex": 0
+        },
+        "lastIdentity": {
+          "signature": "38p9ThU5CDATryEh6wPntguv5vuY15piB1gxHwQNr9geano3ww6oMTbqmrifH2DGqSkrTx89gZ3rk3SGjU4heh7f",
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "outerInstructionIndex": 1,
+          "swapInnerInstructionIndex": 0,
+          "eventInnerInstructionIndex": 4,
+          "eventIndex": 0
+        },
+        "buyerAddressAmounts": {
+          "8o5H5gA4ALouvsJ7vBXvnwGxvxVp81FeHwQ2wLDQCHPh": "346956731",
+          "9N5Y8pvQhfkB8UKeEfDrAXFd6ZeGp4JvARauaBPX3AHz": "9876542",
+          "J6YEG5cmN3jbDy2BhMmvE59h9Ar8t84A9uYa5R5icKix": "207407406"
+        }
+      },
+      "protocolEvidence": [
+        {
+          "signature": "5eNFzX4BhSue6eoPd9qtarTJXKA7XLhsF692W8WdReoxFZdQcMhaZnYvn9xc2PiJQNSf9NZ9SCBCjQyBVnxgLQyH",
+          "slot": 462205039,
+          "chainBlockTime": 1793132730,
+          "rawFile": "si-window-tx-04-20261027232852598.json",
+          "rawSha256": "e73962ff55a056f8099e408131b3a93941b7c93bafb3298801edafe1ef8abcee",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "827003290",
+          "burnedBaseUnits": "2504851762115",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "5eNFzX4BhSue6eoPd9qtarTJXKA7XLhsF692W8WdReoxFZdQcMhaZnYvn9xc2PiJQNSf9NZ9SCBCjQyBVnxgLQyH",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "5eNFzX4BhSue6eoPd9qtarTJXKA7XLhsF692W8WdReoxFZdQcMhaZnYvn9xc2PiJQNSf9NZ9SCBCjQyBVnxgLQyH:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793143733710,
+          "originalHistoricalAuditRpcAvailableAt": 1793143733922,
+          "subsequentMappingAvailableAt": 1793144091640,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "5b6U71KcavrYxzEu1YrSjvz9mW2h4xdeyYiNEaBhhkK5ndxWrc3oHt5oRVXk1mDceMSDcpaJHDbqZ6twh32TyFCL",
+          "slot": 462205094,
+          "chainBlockTime": 1793132742,
+          "rawFile": "si-window-tx-07-20261027232852598.json",
+          "rawSha256": "c0a05e47b0995be11ff140ea8823985afbad741b295cdc463e66c5c73d71426a",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "549224548",
+          "burnedBaseUnits": "1648374121733",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "5b6U71KcavrYxzEu1YrSjvz9mW2h4xdeyYiNEaBhhkK5ndxWrc3oHt5oRVXk1mDceMSDcpaJHDbqZ6twh32TyFCL",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "5b6U71KcavrYxzEu1YrSjvz9mW2h4xdeyYiNEaBhhkK5ndxWrc3oHt5oRVXk1mDceMSDcpaJHDbqZ6twh32TyFCL:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793143734408,
+          "originalHistoricalAuditRpcAvailableAt": 1793143734670,
+          "subsequentMappingAvailableAt": 1793144091650,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "3nbJFvfKxNGkHTT1G3YxXfwPzF2Pwp1tgegnac43jBdZLXLHvtkJnF3LpAdyzoVjkKWDb4dmxeUMGxE3DE9HW8rb",
+          "slot": 462205149,
+          "chainBlockTime": 1793132753,
+          "rawFile": "si-window-tx-11-20261027233451534.json",
+          "rawSha256": "66f8d0485e74c7dd1963523db35d7764c106180ec51413b9cf71d3e212ee6752",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "810661929",
+          "burnedBaseUnits": "2390959700119",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "3nbJFvfKxNGkHTT1G3YxXfwPzF2Pwp1tgegnac43jBdZLXLHvtkJnF3LpAdyzoVjkKWDb4dmxeUMGxE3DE9HW8rb",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "3nbJFvfKxNGkHTT1G3YxXfwPzF2Pwp1tgegnac43jBdZLXLHvtkJnF3LpAdyzoVjkKWDb4dmxeUMGxE3DE9HW8rb:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144091658,
+          "originalHistoricalAuditRpcAvailableAt": 1793144091911,
+          "subsequentMappingAvailableAt": 1793144091912,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "zcbcfXwsEuHHCLfrHiUHpmSgE4NDwHNeabXgJscmC7CZzVDwSGov3Csy1Qcj5m4otadDbu4W9vj3qPcYg5qZSWo",
+          "slot": 462205201,
+          "chainBlockTime": 1793132765,
+          "rawFile": "si-window-tx-19-20261027233451534.json",
+          "rawSha256": "beb9a83bc0f226c5e51e1d7e058c5a9d835457035886f1f312613b83863ccd60",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "545199969",
+          "burnedBaseUnits": "1591957919556",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "zcbcfXwsEuHHCLfrHiUHpmSgE4NDwHNeabXgJscmC7CZzVDwSGov3Csy1Qcj5m4otadDbu4W9vj3qPcYg5qZSWo",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "zcbcfXwsEuHHCLfrHiUHpmSgE4NDwHNeabXgJscmC7CZzVDwSGov3Csy1Qcj5m4otadDbu4W9vj3qPcYg5qZSWo:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144107674,
+          "originalHistoricalAuditRpcAvailableAt": 1793144107817,
+          "subsequentMappingAvailableAt": 1793144107818,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "3xf2WSe1P21ZjD61An1RE6S9MxDux1nE2pgycpyie47wWS53B8Nj4Vwx8r1BcJJnrgWiKfxNR3wdGhum3dvfFVFz",
+          "slot": 462205256,
+          "chainBlockTime": 1793132777,
+          "rawFile": "si-window-tx-34-20261027233451534.json",
+          "rawSha256": "2e8cc935c3b88a2ff06bcf60b729a3e80d5bf3bf0d1b0b2fe3cc481f16aa8e7d",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "560034736",
+          "burnedBaseUnits": "1622062400987",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "3xf2WSe1P21ZjD61An1RE6S9MxDux1nE2pgycpyie47wWS53B8Nj4Vwx8r1BcJJnrgWiKfxNR3wdGhum3dvfFVFz",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "3xf2WSe1P21ZjD61An1RE6S9MxDux1nE2pgycpyie47wWS53B8Nj4Vwx8r1BcJJnrgWiKfxNR3wdGhum3dvfFVFz:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144137701,
+          "originalHistoricalAuditRpcAvailableAt": 1793144137788,
+          "subsequentMappingAvailableAt": 1793144137788,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        }
+      ],
+      "protocolEffects": {
+        "knownProtocolQuoteAddedLamports": "3292124472",
+        "ordinarySubsetNetPlusProtocolQuoteLamports": "2467511561",
+        "allObservedProtocolAuthorityPdas": [
+          "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg"
+        ],
+        "protocolActorIsOrdinaryBuyer": false,
+        "buyerAddressUpperBoundIfOneProtocolAuthorityWereCounted": 4,
+        "upperBoundIsNotAnApprovedFeatureDefinition": true
+      },
+      "baseline": {
+        "status": "UNAVAILABLE",
+        "reason": "Mixed protocol Buy-and-burn activity is refused by frozen baseline; baseline flow/window completeness cannot be claimed",
+        "ordinarySubsetOnlyPredicateDiagnostics": {
+          "entryAgeEligible": true,
+          "netBuying": false,
+          "persistence": false,
+          "buyerAddresses": false,
+          "concentration": false,
+          "priceStructure": true
+        },
+        "failedOrdinarySubsetPredicates": [
+          "netBuying",
+          "persistence",
+          "buyerAddresses",
+          "concentration"
+        ],
+        "notAnActualPredictiveDecision": true
+      },
+      "offlineShadows": [
+        {
+          "rule": {
+            "version": "si-age-shadow-4m-v1",
+            "minimumAgeMs": 240000,
+            "minimumNetBuyLamports": "1000000000",
+            "minimumPositiveBuckets": 4,
+            "minimumBuyers": 5,
+            "maximumLargestBuyerBps": 3500
+          },
+          "status": "UNAVAILABLE",
+          "reason": "Unchanged data-validity requirement: mixed protocol activity not integrated; no historical actual-size entry/exit quote or forward information availability",
+          "ordinarySubsetOnlyPredicateDiagnostics": {
+            "entryAgeEligible": true,
+            "netBuying": false,
+            "persistence": false,
+            "buyerAddresses": false,
+            "concentration": false,
+            "priceStructure": true
+          },
+          "ageEffectInThisWindow": "Both selected window ends already exceed five-minute baseline age; earlier-age shadow has no eligibility effect here"
+        },
+        {
+          "rule": {
+            "version": "si-moderate-flow-shadow-v1",
+            "minimumAgeMs": 300000,
+            "minimumNetBuyLamports": "500000000",
+            "minimumPositiveBuckets": 3,
+            "minimumBuyers": 3,
+            "maximumLargestBuyerBps": 5000
+          },
+          "status": "UNAVAILABLE",
+          "reason": "Unchanged data-validity requirement: mixed protocol activity not integrated; no historical actual-size entry/exit quote or forward information availability",
+          "ordinarySubsetOnlyPredicateDiagnostics": {
+            "entryAgeEligible": true,
+            "netBuying": false,
+            "persistence": false,
+            "buyerAddresses": true,
+            "concentration": false,
+            "priceStructure": true
+          },
+          "ageEffectInThisWindow": "Both selected window ends already exceed five-minute baseline age; earlier-age shadow has no eligibility effect here"
+        }
+      ],
+      "executionFeasibility": "UNPROVEN; no retained fresh pre-rally pool/mint/vault/fee state and actual-size entry/exit quote pair at these timestamps"
+    },
+    {
+      "windowStartIso": "2026-10-27T20:26:00.000Z",
+      "windowEndExclusiveIso": "2026-10-27T20:27:00.000Z",
+      "sourceMappingFile": "si-historical-window-mapping-20261027234449066.json",
+      "sourceMappingSha256": "090d6ebf231c903f45fa5c13e192f2eb1b73ff5c1c58e5d2c1ad33d464ecaed2",
+      "historicalDenominator": {
+        "scope": "pool-address transaction history from one independently bounded page, filtered by chain blockTime; not all-market census",
+        "addressTransactions": 43,
+        "successfulTransactions": 43,
+        "failedTransactionsExcluded": 0,
+        "allSuccessfulTransactionResponsesRetained": true,
+        "ordinarySwapTransactions": 29,
+        "protocolBuyAndBurnTransactions": 5,
+        "successfulTransactionsWithoutScopedSupportedSwapOrBoost": 9,
+        "nonSwapCompleteness": "No scoped supported-swap/Boost detected by existing inspector; not general transaction semantic proof"
+      },
+      "informationTime": {
+        "interpretation": "Retrospective chain-time diagnostics, NOT replay of forward availability",
+        "partitionTime": "RPC blockTime seconds, not original provider receipt",
+        "originalAuditRpcAvailableAtMinimum": 1793144097750,
+        "originalAuditRpcAvailableAtMaximum": 1793144693328,
+        "recordedMappingAvailableAtMinimum": 1793144689111,
+        "recordedMappingAvailableAtMaximum": 1793144693328,
+        "mappingTimeCaveat": "Resume remaps retained responses; mapping availability is not their original audit-RPC response time",
+        "actualHistoricalForwardReceiptForTheseTransactions": "UNAVAILABLE; none was backdated",
+        "sourceReceiptFile": "si-history-receipt-20261027234449066.json",
+        "sourceReceiptSha256": "6e54fde2e012178f2ca7e8b2a74ad2ec28ba6e0bb30690212ffcb0233579b736"
+      },
+      "ordinarySubset": {
+        "amountConvention": "curve",
+        "tradeCount": 29,
+        "buys": 7,
+        "sells": 22,
+        "buyLamports": "799911072",
+        "sellLamports": "2207782097",
+        "netBuyLamports": "-1407871025",
+        "distinctBuyerWallets": 7,
+        "largestBuyerBps": 3705,
+        "positiveNetBuckets": 2,
+        "netByChainTenSecondBucketLamports": [
+          "-231107747",
+          "-288556930",
+          "-360171187",
+          "118653781",
+          "-704795026",
+          "58106084"
+        ],
+        "priceReturnBps": 535,
+        "firstIdentity": {
+          "signature": "4aFmqGiL257GbhTJ6tByJAJiehawacCcjiSxdL3w17Mn3pK3W4sPhtWuF3RAJEMK9c1nHfEPdUABW74HpzYSwcuz",
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "outerInstructionIndex": 2,
+          "swapInnerInstructionIndex": 0,
+          "eventInnerInstructionIndex": 7,
+          "eventIndex": 0
+        },
+        "lastIdentity": {
+          "signature": "geAYhepE4Q5CLECAJpEzh2Hk8BCUVw8vwYiGoC7NAUUnvouVAXLnG13s1iNWqmFcDJ9vnC5evqiXSEh2hkJoPdm",
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "outerInstructionIndex": 3,
+          "swapInnerInstructionIndex": null,
+          "eventInnerInstructionIndex": 6,
+          "eventIndex": 0
+        },
+        "buyerAddressAmounts": {
+          "J6YEG5cmN3jbDy2BhMmvE59h9Ar8t84A9uYa5R5icKix": "207407406",
+          "BZoJp596zygHhZ1Hi1hiKGmFxB1KaHn8Yy39fmDAoBCL": "97777776",
+          "2FC2k5JRM4wY7w2kdWoK9EXiGZfBKNisbr8EaayLAErq": "20876005",
+          "GTMsZ15oKmA6jheem8wbCkynviWtqH4rZFcd9DJuPE5n": "296296296",
+          "3r7B3FCqAG7d9DzxoH7mFuTD8PybokvGPD1zaggXXdWT": "60973013",
+          "GYm4rZpX8cEePeYFqGBqy4ek2gsqYcjkXgeWmgCuT8N": "56360318",
+          "4opeQ1PbEbeJeejupBDi4cHzuDnYsHnyWJiw7JErfXGd": "60220258"
+        }
+      },
+      "protocolEvidence": [
+        {
+          "signature": "zcbcfXwsEuHHCLfrHiUHpmSgE4NDwHNeabXgJscmC7CZzVDwSGov3Csy1Qcj5m4otadDbu4W9vj3qPcYg5qZSWo",
+          "slot": 462205201,
+          "chainBlockTime": 1793132765,
+          "rawFile": "si-window-tx-19-20261027233451534.json",
+          "rawSha256": "beb9a83bc0f226c5e51e1d7e058c5a9d835457035886f1f312613b83863ccd60",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "545199969",
+          "burnedBaseUnits": "1591957919556",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "zcbcfXwsEuHHCLfrHiUHpmSgE4NDwHNeabXgJscmC7CZzVDwSGov3Csy1Qcj5m4otadDbu4W9vj3qPcYg5qZSWo",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "zcbcfXwsEuHHCLfrHiUHpmSgE4NDwHNeabXgJscmC7CZzVDwSGov3Csy1Qcj5m4otadDbu4W9vj3qPcYg5qZSWo:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144107674,
+          "originalHistoricalAuditRpcAvailableAt": 1793144107817,
+          "subsequentMappingAvailableAt": 1793144689130,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "3xf2WSe1P21ZjD61An1RE6S9MxDux1nE2pgycpyie47wWS53B8Nj4Vwx8r1BcJJnrgWiKfxNR3wdGhum3dvfFVFz",
+          "slot": 462205256,
+          "chainBlockTime": 1793132777,
+          "rawFile": "si-window-tx-34-20261027233451534.json",
+          "rawSha256": "2e8cc935c3b88a2ff06bcf60b729a3e80d5bf3bf0d1b0b2fe3cc481f16aa8e7d",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "560034736",
+          "burnedBaseUnits": "1622062400987",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "3xf2WSe1P21ZjD61An1RE6S9MxDux1nE2pgycpyie47wWS53B8Nj4Vwx8r1BcJJnrgWiKfxNR3wdGhum3dvfFVFz",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "3xf2WSe1P21ZjD61An1RE6S9MxDux1nE2pgycpyie47wWS53B8Nj4Vwx8r1BcJJnrgWiKfxNR3wdGhum3dvfFVFz:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144137701,
+          "originalHistoricalAuditRpcAvailableAt": 1793144137788,
+          "subsequentMappingAvailableAt": 1793144689171,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "42YAcHWegFV7CUog24K6qK8xEKN4JvQsT47iQRbcZ3YDj1m9iwmft7TxXbbzWf3hZ2fy3Z74Er5613QwbpzfXMpf",
+          "slot": 462205310,
+          "chainBlockTime": 1793132788,
+          "rawFile": "si-window-tx-30-20261027234046662.json",
+          "rawSha256": "9bf1dc42d412cd14aa2db1a65d15aed38ae3cc54eac4944ff1002dc803eada04",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "909319366",
+          "burnedBaseUnits": "2610067370795",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "42YAcHWegFV7CUog24K6qK8xEKN4JvQsT47iQRbcZ3YDj1m9iwmft7TxXbbzWf3hZ2fy3Z74Er5613QwbpzfXMpf",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "42YAcHWegFV7CUog24K6qK8xEKN4JvQsT47iQRbcZ3YDj1m9iwmft7TxXbbzWf3hZ2fy3Z74Er5613QwbpzfXMpf:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144460780,
+          "originalHistoricalAuditRpcAvailableAt": 1793144460893,
+          "subsequentMappingAvailableAt": 1793144689185,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "5mBCMzhQuVifaaA4v6KniD5tWDJx8MPwmEVQib2yteL9VscPGLntmjxtmqcu33RVQyCvcGyvsWn4AfgTK1WTXC16",
+          "slot": 462205365,
+          "chainBlockTime": 1793132801,
+          "rawFile": "si-window-tx-34-20261027234046662.json",
+          "rawSha256": "43064cfef91dd9b466b4f3fa46d626606bc4d884920b62a4f0154de2fb23926c",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "777029304",
+          "burnedBaseUnits": "2178778066974",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "5mBCMzhQuVifaaA4v6KniD5tWDJx8MPwmEVQib2yteL9VscPGLntmjxtmqcu33RVQyCvcGyvsWn4AfgTK1WTXC16",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "5mBCMzhQuVifaaA4v6KniD5tWDJx8MPwmEVQib2yteL9VscPGLntmjxtmqcu33RVQyCvcGyvsWn4AfgTK1WTXC16:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144468785,
+          "originalHistoricalAuditRpcAvailableAt": 1793144468880,
+          "subsequentMappingAvailableAt": 1793144689192,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        },
+        {
+          "signature": "5omeuGPBhaZtrgisDTrm6CNcdnNRtRfH6jbjha5KJLGprnkR8RTmVNfM3R8VyCpUFBQh7Zd3Z8iTJqnZkbMihNkD",
+          "slot": 462205422,
+          "chainBlockTime": 1793132813,
+          "rawFile": "si-window-tx-36-20261027234046662.json",
+          "rawSha256": "0d61fbfc57f98c5be5941945ba4a7fbe5313016fb516988b038f1664c95b2d5c",
+          "classification": "protocol-buy-and-burn",
+          "ordinaryBuyer": false,
+          "actor": {
+            "kind": "protocol-boost-vault-authority",
+            "authorityPda": "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg",
+            "invokingAuthority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "ordinaryBuyer": false
+          },
+          "usedQuoteLamports": "372977655",
+          "burnedBaseUnits": "1049214230191",
+          "fees": {
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "identity": {
+            "signature": "5omeuGPBhaZtrgisDTrm6CNcdnNRtRfH6jbjha5KJLGprnkR8RTmVNfM3R8VyCpUFBQh7Zd3Z8iTJqnZkbMihNkD",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "protocolInnerInstructionIndex": null,
+            "buyEventInnerInstructionIndex": 2,
+            "boostEventInnerInstructionIndex": 3
+          },
+          "identityKey": "5omeuGPBhaZtrgisDTrm6CNcdnNRtRfH6jbjha5KJLGprnkR8RTmVNfM3R8VyCpUFBQh7Zd3Z8iTJqnZkbMihNkD:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:2:protocol-boost:2:3",
+          "originalHistoricalAuditRpcRequestedAt": 1793144472789,
+          "originalHistoricalAuditRpcAvailableAt": 1793144472853,
+          "subsequentMappingAvailableAt": 1793144689196,
+          "decodeComponentVersion": "pump-boost-offline-v1-unadopted",
+          "fundingProvenance": "NOT_TRACED; boost vault debit verified, fee-only source not established",
+          "normalizedForStrategy": false
+        }
+      ],
+      "protocolEffects": {
+        "knownProtocolQuoteAddedLamports": "3164561030",
+        "ordinarySubsetNetPlusProtocolQuoteLamports": "1756690005",
+        "allObservedProtocolAuthorityPdas": [
+          "GGa3ttTga7MVKYVKvWFxJn4m37nQop9dFSffwDQxU6rg"
+        ],
+        "protocolActorIsOrdinaryBuyer": false,
+        "buyerAddressUpperBoundIfOneProtocolAuthorityWereCounted": 8,
+        "upperBoundIsNotAnApprovedFeatureDefinition": true
+      },
+      "baseline": {
+        "status": "UNAVAILABLE",
+        "reason": "Mixed protocol Buy-and-burn activity is refused by frozen baseline; baseline flow/window completeness cannot be claimed",
+        "ordinarySubsetOnlyPredicateDiagnostics": {
+          "entryAgeEligible": true,
+          "netBuying": false,
+          "persistence": false,
+          "buyerAddresses": true,
+          "concentration": false,
+          "priceStructure": true
+        },
+        "failedOrdinarySubsetPredicates": [
+          "netBuying",
+          "persistence",
+          "concentration"
+        ],
+        "notAnActualPredictiveDecision": true
+      },
+      "offlineShadows": [
+        {
+          "rule": {
+            "version": "si-age-shadow-4m-v1",
+            "minimumAgeMs": 240000,
+            "minimumNetBuyLamports": "1000000000",
+            "minimumPositiveBuckets": 4,
+            "minimumBuyers": 5,
+            "maximumLargestBuyerBps": 3500
+          },
+          "status": "UNAVAILABLE",
+          "reason": "Unchanged data-validity requirement: mixed protocol activity not integrated; no historical actual-size entry/exit quote or forward information availability",
+          "ordinarySubsetOnlyPredicateDiagnostics": {
+            "entryAgeEligible": true,
+            "netBuying": false,
+            "persistence": false,
+            "buyerAddresses": true,
+            "concentration": false,
+            "priceStructure": true
+          },
+          "ageEffectInThisWindow": "Both selected window ends already exceed five-minute baseline age; earlier-age shadow has no eligibility effect here"
+        },
+        {
+          "rule": {
+            "version": "si-moderate-flow-shadow-v1",
+            "minimumAgeMs": 300000,
+            "minimumNetBuyLamports": "500000000",
+            "minimumPositiveBuckets": 3,
+            "minimumBuyers": 3,
+            "maximumLargestBuyerBps": 5000
+          },
+          "status": "UNAVAILABLE",
+          "reason": "Unchanged data-validity requirement: mixed protocol activity not integrated; no historical actual-size entry/exit quote or forward information availability",
+          "ordinarySubsetOnlyPredicateDiagnostics": {
+            "entryAgeEligible": true,
+            "netBuying": false,
+            "persistence": false,
+            "buyerAddresses": true,
+            "concentration": true,
+            "priceStructure": true
+          },
+          "ageEffectInThisWindow": "Both selected window ends already exceed five-minute baseline age; earlier-age shadow has no eligibility effect here"
+        }
+      ],
+      "executionFeasibility": "UNPROVEN; no retained fresh pre-rally pool/mint/vault/fee state and actual-size entry/exit quote pair at these timestamps"
+    }
+  ],
+  "conclusion": "The two retained pre-rally chain-time windows contain net ordinary selling, not qualifying ordinary persistent buying. Five protocol Buy-and-burn instructions occur in each window. Frozen v1 cannot evaluate their mixed activity as a complete window; this is not proof of a valid rejection or a missed executable profitable trade.",
+  "limitations": [
+    "Two predeclared overlapping SI windows are not independent opportunities or a complete pre-rally strategy search.",
+    "Historical blockTime/slot/transactionIndex ordering does not recreate original confirmation availability or feed receipt.",
+    "Ordinary subset features are diagnostic only; required protocol amount/actor/price semantics remain unadopted.",
+    "A changed actor convention cannot be silently adopted to count protocol authority as an ordinary buyer.",
+    "Earlier-age thresholds cannot be economically assessed from these two already-age-eligible endpoints.",
+    "Price return from observed executed curve ratios is indicative structure, not actual-size liquidation pricing.",
+    "No executable P&L, drawdown, fee-complete fill or winner-recall denominator is inferred."
+  ]
+}

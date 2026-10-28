@@ -1,0 +1,44 @@
+{
+  "classification": "NEW_SINGLE_QUESTION_LEG_AFTER_ACTUAL_COOLDOWN_NO_OLD_RETRY",
+  "question": "Actual historical minute price/activity of independently identified canonical Frongus pool versus its candidate-capacity failure",
+  "baseline": {
+    "priorBook": "reference-network-receipts.json",
+    "requestStarts": 18,
+    "measuredBodyBytes": 500249,
+    "uncertainBodyBytes": 272,
+    "preserved429FinishedAt": "2026-10-27T23:21:27.115Z"
+  },
+  "limits": {
+    "requestStarts": 1,
+    "timeoutMs": 10000,
+    "bodyBytes": 1048576,
+    "applicationStop": 524288,
+    "minimumStartSpacingMs": 15000,
+    "cooldownMs": 120000,
+    "noAutomaticRetries": true
+  },
+  "request": {
+    "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT/ohlcv/minute?aggregate=1&before_timestamp=1793143020&limit=1000&currency=usd&token=2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump&include_empty_intervals=false",
+    "startedAt": "2026-10-27T23:25:21.292Z",
+    "startedUnixMs": 1793143521292,
+    "credentials": "none",
+    "method": "GET"
+  },
+  "cooldownElapsedMs": 234177,
+  "automaticRetry": false,
+  "status": 200,
+  "responseHeaders": {
+    "date": "Tue, 27 Oct 2026 23:25:21 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": null,
+    "retry-after": null
+  },
+  "retainedFile": "reference-raw/frongus-minute-ohlcv.json",
+  "sha256": "7b2c1b964b0368ebbcd898c67aea0871271e6c88dfa02c72787e1b9cddddd49d",
+  "bodyBytes": 15319,
+  "finishedAt": "2026-10-27T23:25:21.749Z",
+  "elapsedMs": 457,
+  "cumulativeActualRequestStarts": 19,
+  "cumulativeMeasuredBodyBytes": 515568,
+  "nextNetworkAction": "None authorized under this single-question leg; no automatic continuation."
+}

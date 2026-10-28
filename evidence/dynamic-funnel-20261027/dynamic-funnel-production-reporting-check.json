@@ -1,0 +1,79 @@
+{
+  "checkedAt": "2026-10-27T22:41:50.832Z",
+  "health": {
+    "httpStatus": 200,
+    "body": {
+      "ok": true,
+      "service": "poe-dashboard",
+      "dashboardRelease": "3409b767ffdc72a45eb836c440186ed2d030e1a4",
+      "connectivityDiagnostics": 1
+    }
+  },
+  "pilot": {
+    "httpStatus": 200,
+    "state": "reporting",
+    "publisherConnected": true,
+    "sourceAt": 1793140897259,
+    "runId": "pilot-20261027223839107-205d2bb9",
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": 1793123773252,
+    "source": {
+      "release": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+      "strategy": "persistent-buying-pilot-concurrent-stage-3-v1",
+      "sha256": "41f279529295148685009e7ccd85ad6c87b5d47f78339bf9728f564c92863999"
+    },
+    "watch": {
+      "known": 52,
+      "watch": 36,
+      "eligibleKnown": 34,
+      "deepActive": 2,
+      "maximumDeep": 6,
+      "queued": 28,
+      "promoted": 118,
+      "repromoted": 88,
+      "demoted": 116,
+      "expired": 6,
+      "capacityExclusions": 0,
+      "structuralExclusions": 7,
+      "completeWindows": 185,
+      "strategyRejections": 0,
+      "incompleteDataExclusions": 0,
+      "enrichmentDeadlineFailures": 0,
+      "predictiveAssessments": 7,
+      "predictiveFailures": 7,
+      "waitMs": {
+        "mean": 782348.3928571428,
+        "maximum": 1568160
+      },
+      "promotionWaitMs": {
+        "mean": 619840.406779661,
+        "maximum": 1624167
+      }
+    }
+  },
+  "original": {
+    "httpStatus": 200,
+    "account": {
+      "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "initialUsd": 1000
+    },
+    "source": {
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+    },
+    "times": {
+      "generatedAt": "2026-10-27T22:41:07.775Z",
+      "marketAt": "2026-10-27T22:41:07.775Z",
+      "reconciledAt": "2026-10-27T22:41:07.775Z",
+      "usefulProgressAt": "2026-10-27T22:41:07.775Z"
+    },
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "disabled",
+      "reconciled": true,
+      "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+    }
+  }
+}

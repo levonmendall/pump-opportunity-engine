@@ -1,0 +1,519 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.coingecko.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Top Pools by DEX
+
+> To query all the top pools based on the provided network and decentralized exchange (DEX)
+
+#### Notes
+
+* Returns up to 20 pools per page. Pagination beyond 10 pages requires [Analyst plan or above](https://www.coingecko.com/en/api/pricing).
+* Unverified token market cap returns `null` — the displayed value on GeckoTerminal may match FDV and might not be accurate.
+* Use `include` to return related attributes under the top-level `included` key.
+
+**Cache / Update Frequency:**<ul><li>(Paid API)</li><li>(Demo / Keyless API)</li></ul>
+
+#### SDK Examples
+
+```typescript TypeScript theme={null}
+const response = await client.onchain.networks.dexes.getPools('sushiswap', {
+  network: 'eth',
+});
+
+console.log(JSON.stringify(response, null, 2));
+```
+
+```python Python theme={null}
+response = client.onchain.networks.dexes.get_pools(
+  "sushiswap",
+  network="eth",
+)
+
+print(response.model_dump_json(indent=2))
+```
+
+
+## OpenAPI
+
+````yaml openapi-specs/demo-api.json get /onchain/networks/{network}/dexes/{dex}/pools
+openapi: 3.0.0
+info:
+  title: CoinGecko Demo API
+  version: 3.0.0
+servers:
+  - url: https://api.coingecko.com/api/v3
+security:
+  - headerAuth: []
+  - queryAuth: []
+paths:
+  /onchain/networks/{network}/dexes/{dex}/pools:
+    get:
+      summary: Top Pools by DEX
+      description: >-
+        To query all the top pools based on the provided network and
+        decentralized exchange (DEX)
+      operationId: top-pools-dex
+      parameters:
+        - name: network
+          in: path
+          required: true
+          description: |-
+            Network ID. 
+            *refers to [`/onchain/networks`](/reference/networks-list).
+          schema:
+            type: string
+            default: eth
+        - name: dex
+          in: path
+          required: true
+          description: >-
+            DEX ID. 
+
+            *refers to
+            [`/onchain/networks/{network}/dexes`](/reference/dexes-list).
+          schema:
+            type: string
+            default: sushiswap
+        - name: include
+          in: query
+          required: false
+          description: |-
+            Attributes to include, comma-separated if more than one. 
+            Available values: `base_token`, `quote_token`, `dex`
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: |-
+            Page through results. 
+            Default value: 1
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: false
+          description: |-
+            Sort the pools by field. 
+            Default: `h24_tx_count_desc`
+          schema:
+            type: string
+            enum:
+              - h24_tx_count_desc
+              - h24_volume_usd_desc
+        - name: include_gt_community_data
+          in: query
+          required: false
+          description: >-
+            Include GeckoTerminal community data (sentiment votes, suspicious
+            reports). 
+
+            Default: `false`
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Top pools on a network's DEX
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pool'
+              example:
+                data:
+                  - id: eth_0x6469b34a2a4723163c4902dbbdea728d20693c12
+                    type: pool
+                    attributes:
+                      base_token_price_usd: '2.53037158380141'
+                      base_token_price_native_currency: '0.00122586914090918'
+                      quote_token_price_usd: '2062.57293793663'
+                      quote_token_price_native_currency: '1.0'
+                      base_token_price_quote_token: '0.001225869141'
+                      quote_token_price_base_token: '815.74775531'
+                      address: '0x6469b34a2a4723163c4902dbbdea728d20693c12'
+                      name: NEAR / WETH
+                      pool_created_at: '2021-10-11T01:52:05Z'
+                      fdv_usd: '8774304.71122981'
+                      market_cap_usd: '8774304.71122981'
+                      price_change_percentage:
+                        m5: '0'
+                        m15: '0'
+                        m30: '0.049'
+                        h1: '0.428'
+                        h6: '-0.885'
+                        h24: '-12.097'
+                      transactions:
+                        m5:
+                          buys: 0
+                          sells: 0
+                          buyers: 0
+                          sellers: 0
+                        m15:
+                          buys: 0
+                          sells: 0
+                          buyers: 0
+                          sellers: 0
+                        m30:
+                          buys: 1
+                          sells: 2
+                          buyers: 1
+                          sellers: 2
+                        h1:
+                          buys: 6
+                          sells: 4
+                          buyers: 2
+                          sellers: 3
+                        h6:
+                          buys: 39
+                          sells: 37
+                          buyers: 24
+                          sellers: 16
+                        h24:
+                          buys: 172
+                          sells: 180
+                          buyers: 62
+                          sellers: 55
+                      volume_usd:
+                        m5: '0.0'
+                        m15: '0.0'
+                        m30: '215.04729883'
+                        h1: '572.0025141642'
+                        h6: '7298.4165779336'
+                        h24: '38207.6214949268'
+                      reserve_in_usd: '54784.7204'
+                      sentiment_vote_positive_percentage: 0
+                      sentiment_vote_negative_percentage: 0
+                      community_sus_report: 0
+                    relationships:
+                      base_token:
+                        data:
+                          id: eth_0x85f17cf997934a597031b2e18a9ab6ebd4b9f6a4
+                          type: token
+                      quote_token:
+                        data:
+                          id: eth_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+                          type: token
+                      dex:
+                        data:
+                          id: sushiswap
+                          type: dex
+                included:
+                  - id: eth_0x85f17cf997934a597031b2e18a9ab6ebd4b9f6a4
+                    type: token
+                    attributes:
+                      address: '0x85f17cf997934a597031b2e18a9ab6ebd4b9f6a4'
+                      name: NEAR
+                      symbol: NEAR
+                      decimals: 24
+                      image_url: >-
+                        https://coin-images.coingecko.com/coins/images/71681/large/near.png?1768905174
+                      coingecko_coin_id: rainbow-bridged-near-ethereum
+                  - id: eth_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+                    type: token
+                    attributes:
+                      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+                      name: Wrapped Ether
+                      symbol: WETH
+                      decimals: 18
+                      image_url: >-
+                        https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332
+                      coingecko_coin_id: weth
+                  - id: sushiswap
+                    type: dex
+                    attributes:
+                      name: SushiSwap
+components:
+  schemas:
+    Pool:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+              - type
+              - attributes
+              - relationships
+            properties:
+              id:
+                type: string
+                description: Pool identifier
+              type:
+                type: string
+                description: Resource type
+              attributes:
+                type: object
+                required:
+                  - base_token_price_usd
+                  - base_token_price_native_currency
+                  - quote_token_price_usd
+                  - quote_token_price_native_currency
+                  - base_token_price_quote_token
+                  - quote_token_price_base_token
+                  - address
+                  - name
+                  - pool_created_at
+                  - fdv_usd
+                  - market_cap_usd
+                  - price_change_percentage
+                  - transactions
+                  - volume_usd
+                  - reserve_in_usd
+                properties:
+                  base_token_price_usd:
+                    type: string
+                    description: Base token price in USD
+                  base_token_price_native_currency:
+                    type: string
+                    nullable: true
+                    description: Base token price in native currency
+                  quote_token_price_usd:
+                    type: string
+                    description: Quote token price in USD
+                  quote_token_price_native_currency:
+                    type: string
+                    nullable: true
+                    description: Quote token price in native currency
+                  base_token_price_quote_token:
+                    type: string
+                    nullable: true
+                    description: Base token price in quote token
+                  quote_token_price_base_token:
+                    type: string
+                    nullable: true
+                    description: Quote token price in base token
+                  address:
+                    type: string
+                    description: Pool contract address
+                  name:
+                    type: string
+                    description: Pool name
+                  pool_created_at:
+                    type: string
+                    description: Pool creation timestamp
+                  fdv_usd:
+                    type: string
+                    nullable: true
+                    description: Fully diluted valuation in USD
+                  market_cap_usd:
+                    type: string
+                    nullable: true
+                    description: Market cap in USD
+                  price_change_percentage:
+                    type: object
+                    description: Price change percentage over various timeframes
+                    properties:
+                      m5:
+                        type: string
+                      m15:
+                        type: string
+                      m30:
+                        type: string
+                      h1:
+                        type: string
+                      h6:
+                        type: string
+                      h24:
+                        type: string
+                  transactions:
+                    type: object
+                    description: Transaction counts over various timeframes
+                    properties:
+                      m5:
+                        type: object
+                        properties:
+                          buys:
+                            type: integer
+                          sells:
+                            type: integer
+                          buyers:
+                            type: integer
+                          sellers:
+                            type: integer
+                      m15:
+                        type: object
+                        properties:
+                          buys:
+                            type: integer
+                          sells:
+                            type: integer
+                          buyers:
+                            type: integer
+                          sellers:
+                            type: integer
+                      m30:
+                        type: object
+                        properties:
+                          buys:
+                            type: integer
+                          sells:
+                            type: integer
+                          buyers:
+                            type: integer
+                          sellers:
+                            type: integer
+                      h1:
+                        type: object
+                        properties:
+                          buys:
+                            type: integer
+                          sells:
+                            type: integer
+                          buyers:
+                            type: integer
+                          sellers:
+                            type: integer
+                      h6:
+                        type: object
+                        properties:
+                          buys:
+                            type: integer
+                          sells:
+                            type: integer
+                          buyers:
+                            type: integer
+                          sellers:
+                            type: integer
+                      h24:
+                        type: object
+                        properties:
+                          buys:
+                            type: integer
+                          sells:
+                            type: integer
+                          buyers:
+                            type: integer
+                          sellers:
+                            type: integer
+                  volume_usd:
+                    type: object
+                    description: Volume in USD over various timeframes
+                    properties:
+                      m5:
+                        type: string
+                      m15:
+                        type: string
+                      m30:
+                        type: string
+                      h1:
+                        type: string
+                      h6:
+                        type: string
+                      h24:
+                        type: string
+                  reserve_in_usd:
+                    type: string
+                    nullable: true
+                    description: Total reserve in USD
+                  token_price_usd:
+                    type: string
+                    description: >-
+                      Price of the queried token in USD, present when querying
+                      pools by token address
+                  sentiment_vote_positive_percentage:
+                    type: number
+                    description: GeckoTerminal community positive sentiment vote percentage
+                  sentiment_vote_negative_percentage:
+                    type: number
+                    description: GeckoTerminal community negative sentiment vote percentage
+                  community_sus_report:
+                    type: integer
+                    description: GeckoTerminal community suspicious reports count
+              relationships:
+                type: object
+                description: Related resources
+                properties:
+                  base_token:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          type:
+                            type: string
+                  quote_token:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          type:
+                            type: string
+                  network:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          type:
+                            type: string
+                  dex:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          type:
+                            type: string
+        included:
+          type: array
+          description: >-
+            Included related resources, present when include parameter is
+            specified
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              attributes:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  name:
+                    type: string
+                  symbol:
+                    type: string
+                  decimals:
+                    type: integer
+                  image_url:
+                    type: string
+                    nullable: true
+                  coingecko_coin_id:
+                    type: string
+                    nullable: true
+                  coingecko_asset_platform_id:
+                    type: string
+  securitySchemes:
+    headerAuth:
+      type: apiKey
+      in: header
+      name: x-cg-demo-api-key
+      description: >-
+        Learn how to [set up your API
+        key](https://docs.coingecko.com/docs/setting-up-your-api-key)
+    queryAuth:
+      type: apiKey
+      in: query
+      name: x_cg_demo_api_key
+      description: >-
+        Learn how to [set up your API
+        key](https://docs.coingecko.com/docs/setting-up-your-api-key)
+
+````
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
