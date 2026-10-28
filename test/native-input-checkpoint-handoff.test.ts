@@ -40,3 +40,14 @@ test('only the fixed zero-request local timeout refusal accepts an append-only s
  assert.throws(()=>verify({...options,readCommitFile:()=>Buffer.from('wrong actual source bytes')}),/SOURCE_FILE_HASH/);
  assert.throws(()=>verify({...options,readBounded:()=>Buffer.from('wrong actual retained script')}),/SCRIPT_HASH/);
 });
+
+
+test('both retained preparation vocabularies require explicit disabled financial declarations and a separate runtime receipt',async()=>{
+ // @ts-expect-error Existing offline ES-module operator helper has no TS declaration.
+ const {verifyPreparedNativeBoundaries:verify}=await import('../evidence/resumed-forward-20261028/prepare-public-input.mjs');
+ const base={schemaVersion:1,priorPhysicalSettled:true,administrationRun:123};
+ const old={...base,financialWriterOpened:false,entriesEnabled:false,liveTrading:false};
+ const current={...base,financialLedgerOpened:false,financialExecutionAuthorized:false,originalAuthoritativeAccountTouched:false};
+ assert.equal(verify(old,123).runtimeReceiptStillRequired,true);assert.equal(verify(current,123).runtimeReceiptStillRequired,true);
+ for(const v of [{...base},{...old,financialExecutionAuthorized:true},{...current,entriesEnabled:true},{...current,liveTrading:null},{...current,financialLedgerOpened:undefined},{...old,priorPhysicalSettled:false},{...current,administrationRun:124}])assert.throws(()=>verify(v,123),/PREPARED_NATIVE_BOUNDARIES_MISMATCH/);
+});

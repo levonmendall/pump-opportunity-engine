@@ -72,6 +72,19 @@ export function verifyZeroRequestHistoricalSourceCorrection({run,receiptRaw,prov
  return {path:run+'/source-identity-correction.json',sha256:sha(correctionRaw),originalReceiptSha256:c.originalReceiptSha256,originalProvenanceSha256:c.originalProvenanceSha256,originalSourceCommit:r.sourceCommit,sourceCommit:c.sourceCommit,zeroNetworkUsageVerified:true,originalReceiptRewritten:false,marketHistoryRewritten:false};
 }
 
+/** Preparation records have two historical metadata vocabularies. They are
+ * declarations, not runtime proof: the unchanged archived receipt below must
+ * still prove no writer/entries/live execution and physical settlement. */
+export function verifyPreparedNativeBoundaries(prepared,administrationRun){
+ need(prepared?.schemaVersion===1&&prepared.priorPhysicalSettled===true&&prepared.administrationRun===administrationRun,'PREPARED_NATIVE_BOUNDARIES_MISMATCH');
+ const legacy=['financialWriterOpened','entriesEnabled','liveTrading'];
+ const current=['financialLedgerOpened','financialExecutionAuthorized','originalAuthoritativeAccountTouched'];
+ const allFalse=names=>names.every(name=>prepared[name]===false);
+ const absentOrFalse=names=>names.every(name=>!Object.hasOwn(prepared,name)||prepared[name]===false);
+ need(allFalse(legacy)&&absentOrFalse(current)||allFalse(current)&&absentOrFalse(legacy),'PREPARED_NATIVE_BOUNDARIES_MISMATCH');
+ return {preparationVocabulary:allFalse(current)?'ledger-and-financial-authorization':'writer-and-entry-flags',runtimeReceiptStillRequired:true};
+}
+
 export function prepareNativePublicInput(argv=process.argv.slice(2)){
 const now=Date.now(),uid=process.getuid();
 const allowed=new Set(['--bundle-directory','--output','--provenance','--lease-pid','--handoff-directory','--settlement-receipt']);
@@ -127,7 +140,7 @@ if(!latestHandoff){
  for(const folder of [study,path.dirname(directory),directory]){const stat=fs.lstatSync(folder);need(stat.isDirectory()&&!stat.isSymbolicLink()&&fs.realpathSync(folder)===folder&&stat.uid===uid&&(stat.mode&0o077)===0,'PRIVATE_NATIVE_HANDOFF_REQUIRED');}
  const settlement=JSON.parse(read(settlementPath,128*1024)),prepared=JSON.parse(read(study+'/prepared.json',2*MIB)),readback=JSON.parse(read(study+'/readback-receipt.json',256*1024));
  need(settlement.schemaVersion===1&&settlement.applicationAndProcessGroupsSettled===true&&settlement.wholeArchiveHashVerified===true&&settlement.priorBooksRetainedUnchanged===true&&settlement.financialLedgerOpened===false,'SETTLED_NATIVE_HANDOFF_REQUIRED');
- need(prepared.schemaVersion===1&&prepared.priorPhysicalSettled===true&&prepared.financialWriterOpened===false&&prepared.entriesEnabled===false&&prepared.liveTrading===false&&prepared.administrationRun===settlement.administrationRun,'PREPARED_NATIVE_BOUNDARIES_MISMATCH');
+ const preparationBoundary=verifyPreparedNativeBoundaries(prepared,settlement.administrationRun);
  need(readback.schemaVersion===1&&readback.sourceRun===settlement.administrationRun&&readback.wholeArchiveHashVerified===true&&readback.allSelectedSegmentsRetained===true&&readback.financialFilesRead===false&&readback.rawHostEvidenceDeletionPerformed===false,'VERIFIED_PUBLIC_READBACK_REQUIRED');
  need(Array.isArray(prepared.priorBookPaths)&&Array.isArray(settlement.newPaths)&&settlement.newPaths.length>0&&settlement.newPaths.length<=65&&settlement.newPaths.every(row=>typeof row?.path==='string'&&/^[a-f0-9]{64}$/.test(row.sha256)),'EXPLICIT_SETTLED_PATHS_REQUIRED');
  const nativeSettledPaths=[...prepared.priorBookPaths,...settlement.newPaths.map(row=>row.path)];

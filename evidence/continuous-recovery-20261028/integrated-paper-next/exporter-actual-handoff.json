@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline-native-input-preparation-vocabulary-compatibility",
+  "sourceExecutable": {
+    "commit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+    "sha256": "b2a897ba02dabdc7c1f65a10618fdb8936384390df6b758f2dd88fd59c204014"
+  },
+  "exporterSha256": "2c3b4f6db049835481e15196709bc489223b8d383a283ff47b99c66e12dcd5f5",
+  "runtimeCodeChanged": false,
+  "historicalReceiptsChanged": false,
+  "guard": "Both historical preparation metadata vocabularies require explicit false financial declarations; actual archived final receipt still independently proves disabled writer/entries/live mode and physical settlement",
+  "inputBytes": 6232680,
+  "inputSha256": "d202a01f2cb42c63a8880b42cdd0f9cfa9f709c222692b7a0fed604663e4cc88",
+  "provenanceBytes": 268035,
+  "provenanceSha256": "1c4d86b3c8032fbf9bd40e360d1d765e26166764fdeb21ab71bcd6f6596a325a",
+  "raw314BookSealVerified": true,
+  "networkRequests": 0
+}

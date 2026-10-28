@@ -1,0 +1,31 @@
+{
+  "at": 1793217235562,
+  "requests": [
+    {
+      "path": "/api/snapshot",
+      "method": "GET",
+      "status": 200,
+      "bytes": 24296,
+      "sha256": "1a14b0199f977e229b459ef901dc0d8abb894e67a8247a94caf004af62903aff",
+      "identity": {
+        "accountId": null,
+        "inceptionAt": null,
+        "keys": [
+          "snapshot",
+          "fingerprint",
+          "receivedAt",
+          "freshness",
+          "connections"
+        ]
+      }
+    },
+    {
+      "path": "/api/pilot",
+      "method": "POST",
+      "status": 401,
+      "bytes": 24,
+      "sha256": "782eeaa7f1915f6783146f8180751785584f0f24bd4e503165c7fc4a597da600",
+      "identity": null
+    }
+  ]
+}

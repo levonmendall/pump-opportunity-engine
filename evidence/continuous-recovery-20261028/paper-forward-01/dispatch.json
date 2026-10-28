@@ -1,0 +1,23 @@
+{
+  "source": {
+    "commit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+    "sha256": "9baf5500b40eb26bc1ae898c8dbdb8801b9798e8c03de0280bb3896556cb6553"
+  },
+  "metadataSha256": "79711b74e6d1b6f12fc7d11b568f7e3eef2b5b14ca19cf9ae17aaa97ab7f644e",
+  "normalConfigurationSha256": "8d3bfa5d58dfae316250b290113badaf9969c785c9f1d76c566b272d41a321f9",
+  "managementConfigurationSha256": "793b7df2d91c2cf91058a4853b46f583589776e74214304c1bb0579f22fb4344",
+  "administrationCommit": "255a4ab073e98316bf99eff72d273bac0a8c223a",
+  "administrationRun": 40758225777,
+  "actualRunId": "native-paper-20261028195247298",
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "financialAuthority": "isolated PAPER only",
+  "originalObserverModified": false,
+  "acceptanceClockStarted": false,
+  "maximumPositions": 1,
+  "deepSlots": 3,
+  "maximumNormalSeconds": 1800,
+  "managementOnlyRecoverySeconds": 1800,
+  "strategy": "persistent-buying-pilot-v1",
+  "sourceFrozen": true
+}

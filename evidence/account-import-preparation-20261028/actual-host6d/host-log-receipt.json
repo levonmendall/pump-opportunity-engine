@@ -1,0 +1,40 @@
+{
+  "administrationRun": 40757848269,
+  "bytes": 32949,
+  "sha256": "2f7e2654628dcae09054f7c3a5cabbae3ea8fa303c62f55c13b5cd7adf7e7bd2",
+  "rawPrivatePath": "/tmp/poe-native-paper-import6d.log",
+  "parsedResults": [
+    {
+      "schemaVersion": 1,
+      "kind": "POE_FIXED_EXISTING_PAPER_ACCOUNT_IMPORTED",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "sourceRevision": 8934,
+      "envelopeSha256": "77c277f1d1ddf322bbba4c408f96b4d8d0b15aeb065f86129c64da53888fa75a",
+      "archiveSha256": "ebfe6c6c5d0f393dc682a6b6ed2c32d70dcb947551553e75bdc1342f6980a5be",
+      "codeReleaseSha256": "9baf5500b40eb26bc1ae898c8dbdb8801b9798e8c03de0280bb3896556cb6553",
+      "sourceFinancialBodyUnchanged": true,
+      "readonlyQuickCheck": "ok",
+      "newAccountDirectoryPublished": true,
+      "unchangedExistingImportVerified": false,
+      "rebasedInputSha256": "0dbd2af50ca2a2a50a28532fab592a4a2ca663a93fc28b07ec4e068f657c4b26",
+      "importReceiptSha256": "8622bc8dc3fa6d9fbc5033899893cc36c69216c78e8f7d51a201c82d7a9d7436",
+      "resources": {
+        "elapsedMs": 50,
+        "maximumCombinedRssBytes": 81936384,
+        "physicalProcessSettled": true,
+        "node": "v24.21.0",
+        "maximumObservedCombinedRssBytes": 80916480,
+        "reason": null
+      },
+      "elapsedMs": 484,
+      "originalCloudFilesChanged": false,
+      "financialWriterStarted": false,
+      "paperTradingStarted": false,
+      "providerRequests": 0,
+      "serviceChanges": false,
+      "sourceSingleWriterFenceMustBeEstablishedBeforeActivation": true,
+      "pendingPrivateTransportEvidencePreserved": true
+    }
+  ]
+}
