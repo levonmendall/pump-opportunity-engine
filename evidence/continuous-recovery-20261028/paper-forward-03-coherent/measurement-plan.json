@@ -39,7 +39,9 @@
     "candidateDecisionDeadlineMs": 9999,
     "holdingQuoteAgeAtUseMaximumMs": 2000,
     "sourceStateAgeMaximumMs": 30000,
-    "retainedEvidenceAndCpuRssStops": "unchanged existing finite supervisor and source limits"
+    "retainedEvidenceAndCpuRssStops": "unchanged existing finite supervisor and source limits",
+    "existingResearchCompletedEvaluationBoundaryMs": 4000,
+    "researchCompletedEvaluationMeaning": "Existing source policy, not a production protection tolerance; target remains2000ms. No actual holding in this interval yet."
   },
   "measurements": [
     "per-target eligibility, physical dispatch/response/settlement, validation and predictive admission",
@@ -65,5 +67,13 @@
     "timeoutMs": 5000,
     "beginsBeforeDispatch": true
   },
-  "configurationSha256": "68f64a68bfa756ef799a330b9b980f1d81195c93973a455ff0d524d3c762d74a"
+  "configurationSha256": "68f64a68bfa756ef799a330b9b980f1d81195c93973a455ff0d524d3c762d74a",
+  "resourceAnalysisPolicy": {
+    "chosenBeforeArtifactAvailable": true,
+    "startupPhaseMs": 300000,
+    "steadyPhaseStartsAtMs": 300000,
+    "minimumPhaseSamples": 3,
+    "minimumPhaseSpanMs": 30000,
+    "cpuMembershipChanges": "UNKNOWN rather than invented utilization"
+  }
 }
