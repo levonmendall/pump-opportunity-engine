@@ -103,3 +103,12 @@ reporting, and account-preserving supervision. Protected service privilege and
 unattended hosting are separate gates. No24h/72h acceptance clock has started.
 Real signing, wallet operations, paid commitments and live trading remain disabled.
 Preserve unrelated FUNDING/operator/funding and all financial/market evidence.
+
+## Frozen resumed segment, before dispatch
+
+Startup source `63f4ac439c6b22c7d532c284890cf47e78ad5d62` has exactly the verified5362 runtime trees.
+Executable SHA256 `130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0`; configuration
+`29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf`.
+Profile candidate-native-two-hour-90-research-v1, sixscopes, selected24h observation,
+v3-shadow only. No live result yet. Exact metadata/inputprovenance/package
+manifest and frozen source evidence are in evidence/resumed-forward-20261028/.

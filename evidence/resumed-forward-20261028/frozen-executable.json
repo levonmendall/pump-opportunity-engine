@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-10-28T14:19:38.019870+00:00",
+  "source": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+  "verifiedRuntimeParent": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "beforeAfterHeadAndSourceTreesIdentical": true,
+  "executableSha256": "130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0",
+  "executableBytes": 4473636,
+  "metadataSha256": "b9b1f4c51950ad6746219cbd5f800b915d894b8e469455364ace0449bd8f65e9",
+  "inputSha256": "90c58718cd928ee5d3674f559b77a62ed0f1afac7d3553b550603a882166981a",
+  "packageManifestSha256": "1b94b7ed68bca15e981059ff86ca73ee1d9e7d8929310c1567a31e02719773b2",
+  "configurationSha256": "29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf",
+  "runtimeGitQueriesDuringPublication": false,
+  "noFinancialWriter": true,
+  "newMarketRequestsBeforeDispatch": 0
+}
