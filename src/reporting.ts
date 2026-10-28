@@ -135,7 +135,7 @@ function canonical(value: unknown): string {
 }
 const hash = (s: Snapshot) => createHash('sha256').update(canonical(s)).digest('hex');
 export const snapshotFingerprint=hash;
-export type SnapshotAcknowledgement={published:true;result:'accepted'|'duplicate';accountId:string;inceptionAt:string;release:string;sequence:string;sourceAtMs:number;fingerprint:string;acknowledgedAtMs:number};
+export type SnapshotAcknowledgement={published:true;result:'accepted'|'duplicate';accountId:string;inceptionAt:string;release:string;sequence:string;sourceAtMs:number;fingerprint:string;acknowledgedAtMs:number;rawSourceSha256?:string};
 
 export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
@@ -172,7 +172,7 @@ export class SnapshotCache {
 
 /** Latest-slot publisher. It receives projections only; it has no financial or market access. */
 export class SnapshotPublisher {
-  private latest: { snapshot: Snapshot; body: string; fingerprint: string } | null = null;
+  private latest: { snapshot: Snapshot; body: string; fingerprint: string; rawSourceSha256?:string } | null = null;
   private highest: { sequence: bigint; fingerprint: string } | null = null;
   private timer: ReturnType<typeof setTimeout> | undefined;
   private active: AbortController | undefined;
@@ -189,11 +189,12 @@ export class SnapshotPublisher {
     validateIdentity(options.identity);
     for (const n of [options.intervalMs ?? 30_000, options.timeoutMs ?? 3000, options.maxBackoffMs ?? 300_000]) if (!Number.isSafeInteger(n) || n < 10 || n > 300_000) throw new Error('bounded publisher timing required');
   }
-  offer(value: Snapshot) {
+  offer(value: Snapshot, rawSourceSha256?:string) {
+    if(rawSourceSha256!==undefined&&!/^[a-f0-9]{64}$/.test(rawSourceSha256))throw Error('publisher source hash');
     const snapshot = validateSnapshot(value, this.options.identity); const fingerprint = hash(snapshot); const sequence = BigInt(snapshot.sequence);
     if (this.highest && (sequence < this.highest.sequence || sequence === this.highest.sequence && fingerprint !== this.highest.fingerprint)) throw new Error('publisher sequence regression/conflict');
     this.highest = { sequence, fingerprint };
-    this.latest = { snapshot: structuredClone(snapshot), body: JSON.stringify(snapshot), fingerprint };
+    this.latest = { snapshot: structuredClone(snapshot), body: JSON.stringify(snapshot), fingerprint, ...(rawSourceSha256===undefined?{}:{rawSourceSha256}) };
   }
   queuedSequence() { return this.latest?.snapshot.sequence ?? null; }
   start() { if (!this.running) { this.running = true; this.schedule(0); } }
@@ -217,7 +218,7 @@ export class SnapshotPublisher {
         try{for(;;){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>2048){await reader.cancel();throw Error('invalid_acknowledgement');}chunks.push(part.value);}}finally{reader.releaseLock();}
         const ack=JSON.parse(Buffer.concat(chunks).toString('utf8')) as {result?:unknown};
         if(!ack||typeof ack!=='object'||Array.isArray(ack)||Object.keys(ack).join('|')!=='result'||!['accepted','duplicate'].includes(ack.result as string))throw Error('invalid_acknowledgement');
-        this.options.onAcknowledgement({published:true,result:ack.result as 'accepted'|'duplicate',accountId:current.snapshot.account.id,inceptionAt:current.snapshot.account.inceptionAt,release:current.snapshot.source.release,sequence:current.snapshot.sequence,sourceAtMs:Date.parse(current.snapshot.times.generatedAt),fingerprint:current.fingerprint,acknowledgedAtMs:Date.now()});
+        this.options.onAcknowledgement({published:true,result:ack.result as 'accepted'|'duplicate',accountId:current.snapshot.account.id,inceptionAt:current.snapshot.account.inceptionAt,release:current.snapshot.source.release,sequence:current.snapshot.sequence,sourceAtMs:Date.parse(current.snapshot.times.generatedAt),fingerprint:current.fingerprint,acknowledgedAtMs:Date.now(),...(current.rawSourceSha256===undefined?{}:{rawSourceSha256:current.rawSourceSha256})});
       }else await response.body?.cancel();
       this.metrics.successes++; this.metrics.consecutiveFailures = 0; this.metrics.lastSuccessAt = new Date().toISOString(); this.metrics.lastError = null;
       if (this.latest?.fingerprint === current.fingerprint) this.latest = null;

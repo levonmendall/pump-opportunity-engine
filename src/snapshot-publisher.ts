@@ -4,6 +4,7 @@ import {constants,openSync,closeSync,fstatSync,readFileSync} from 'node:fs';
 import {basename,dirname,isAbsolute,resolve,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {performance} from 'node:perf_hooks';
+import {createHash} from 'node:crypto';
 import {SnapshotPublisher,validateSnapshot,type ReportingIdentity,type SnapshotAcknowledgement} from './reporting.js';
 import {ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION} from './operating-intelligence.js';
 export const ORIGINAL_SNAPSHOT_URL='https://meme-machine-dashboard-staging.onrender.com/api/snapshot';
@@ -24,7 +25,8 @@ export function publisherCredentialPath(env:NodeJS.ProcessEnv){
  if(!path||!isAbsolute(path)||resolve(path)!==path||path!=='/etc/poe/secrets/ingest-secret'&&!(directory&&isAbsolute(directory)&&resolve(directory)===directory&&dirname(path)===directory&&basename(path)==='poe-ingest-secret'))throw Error('ORIGINAL_PUBLISHER_CREDENTIAL_BINDING_REQUIRED');return path;
 }
 export function readPublisherCredential(env:NodeJS.ProcessEnv){const raw=privateRead(publisherCredentialPath(env),4096,true),secret=raw.toString('utf8').trim();if(!/^[A-Za-z0-9._~+/=-]{24,512}$/.test(secret))throw Error('ORIGINAL_PUBLISHER_CREDENTIAL_FORMAT');return secret;}
-export function readSnapshotFile(file:string,identity:ReportingIdentity){return validateSnapshot(JSON.parse(privateRead(file,128*1024).toString('utf8')),identity);}
+export function readSnapshotFileWithProvenance(file:string,identity:ReportingIdentity){const raw=privateRead(file,128*1024);return {snapshot:validateSnapshot(JSON.parse(raw.toString('utf8')),identity),rawSourceSha256:createHash('sha256').update(raw).digest('hex')};}
+export function readSnapshotFile(file:string,identity:ReportingIdentity){return readSnapshotFileWithProvenance(file,identity).snapshot;}
 export class SnapshotFilePublisher{
  private timer:ReturnType<typeof setTimeout>|undefined;private running=false;private lastOfferAt=-Infinity;private sourceAvailability:boolean|null=null;
  private readonly publisher:SnapshotPublisher;
@@ -32,7 +34,7 @@ export class SnapshotFilePublisher{
   this.publisher=new SnapshotPublisher({url:ORIGINAL_SNAPSHOT_URL,secret:options.secret,identity:options.identity,intervalMs:options.publishIntervalMs??15000,timeoutMs:5000,maxBackoffMs:60000,fetch:options.fetch,onAcknowledgement:options.onAcknowledgement??(()=>{})});
   if(!Number.isSafeInteger(options.pollMs??1000)||(options.pollMs??1000)<10||!Number.isSafeInteger(options.offerMs??15000)||(options.offerMs??15000)<10)throw Error('PUBLISHER_CADENCE');
  }
- private inspect(){if(!this.running)return;const at=(this.options.now??Date.now)(),mono=(this.options.monotonic??(()=>performance.now()))();try{const snapshot=readSnapshotFile(this.options.file,this.options.identity);if(mono-this.lastOfferAt>=(this.options.offerMs??15000)){this.publisher.offer(snapshot);this.lastOfferAt=mono;}if(this.sourceAvailability!==true){this.sourceAvailability=true;this.options.onSourceState?.({sourceAvailable:true,at,reason:null});}}catch{if(this.sourceAvailability!==false){this.sourceAvailability=false;this.options.onSourceState?.({sourceAvailable:false,at,reason:'verified_snapshot_unavailable'});}}finally{if(this.running){this.timer=setTimeout(()=>this.inspect(),this.options.pollMs??1000);this.timer.unref();}}}
+ private inspect(){if(!this.running)return;const at=(this.options.now??Date.now)(),mono=(this.options.monotonic??(()=>performance.now()))();try{const {snapshot,rawSourceSha256}=readSnapshotFileWithProvenance(this.options.file,this.options.identity);if(mono-this.lastOfferAt>=(this.options.offerMs??15000)){this.publisher.offer(snapshot,rawSourceSha256);this.lastOfferAt=mono;}if(this.sourceAvailability!==true){this.sourceAvailability=true;this.options.onSourceState?.({sourceAvailable:true,at,reason:null});}}catch{if(this.sourceAvailability!==false){this.sourceAvailability=false;this.options.onSourceState?.({sourceAvailable:false,at,reason:'verified_snapshot_unavailable'});}}finally{if(this.running){this.timer=setTimeout(()=>this.inspect(),this.options.pollMs??1000);this.timer.unref();}}}
  start(){if(this.running)return;this.running=true;this.inspect();this.publisher.start();}
  async stop(){this.running=false;clearTimeout(this.timer);await this.publisher.stop();}
  metrics(){return {...this.publisher.metrics,sourceAvailable:this.sourceAvailability};}
