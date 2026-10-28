@@ -1,0 +1,33 @@
+{
+  "kind": "poe-existing-watch-filter-attribution-v1",
+  "source": "6d894c1262b93d22f288e214016bfb314799e0ae",
+  "runId": "native-paper-20261028195247298",
+  "sourceStatusSha256": "be7d8b2094fd9f7ef5f5625fde8af20c37fa81994286ed88f5b93e05ec763f69",
+  "elapsedMs": 1301225,
+  "actual": {
+    "broadSocketBytes": 1071650829,
+    "watchFramesExamined": 692245,
+    "matchedFullJsonParseAttempts": 597,
+    "unverifiedWatchHints": 590,
+    "watchCallbackFailures": 0,
+    "watchCallbackElapsedMs": 1209.3903479938658,
+    "totalSourceCpuMs": 180252.709,
+    "legacyDeepParsedFrames": 0,
+    "legacyNormalizedTrades": 0
+  },
+  "derived": {
+    "fullJsonParseFraction": 0.0008624114294794473,
+    "framesAvoidingFullJson": 691648,
+    "watchCallbackElapsedToTotalCpuRatio": 0.006709415657069907,
+    "meanWatchCallbackElapsedMicrosecondsPerFrame": 1.7470553748945328,
+    "broadBytesPerUnverifiedHint": 1816357.3372881357
+  },
+  "limits": [
+    "Callback elapsed time is not a complete CPU attribution; WebSocket framing/UTF8 validation/TLS, initial Buffer conversion, socket-counter handling, garbage collection and other runtime work are not isolated by watchProcessingMs.",
+    "No full broad-feed archive exists by design; selected retained packets are not a representative broad-feed CPU sample.",
+    "Local filtering cannot reduce traffic already delivered. Hints are not complete executed flow or predictive evidence."
+  ],
+  "decision": "Do not replace an existing selective parser with O(1) identity lookup with another parser to address the180-second total CPU stop without a whole-runtime profile. No runtime change made.",
+  "networkCalls": 0,
+  "financialWrites": 0
+}

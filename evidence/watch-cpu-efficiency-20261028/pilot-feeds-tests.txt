@@ -1,0 +1,35 @@
+✔ one free discovery connection restores only migration subscription and emits unverified public hints (6.149199ms)
+✔ selected flow uses one delayed confirmed retrieval, complete validation time, and no broad-feed persistence (11.193696ms)
+✔ a required hint exceeding five seconds suspends only that candidate and requires explicit fresh observation after backoff (6.106305ms)
+✔ a feed disconnect invalidates current flow without automatically reusing the old window or stopping discovery (4.480881ms)
+✔ preparse byte limits and malformed selected evidence stop admissions without fake trades or broad data queues (8.968794ms)
+✔ global duration and canceled physical handshakes close and settle without a retry or production action (2.043584ms)
+✔ a connection closing during subscription pacing rejects without leaving an unresolvable physical ACK waiter (0.542586ms)
+✔ upgrade-refusal accounting failure stays inside the handler, while feed429 retains only its own reconnect deadline (7.164996ms)
+✔ current feature projection advances without adding duplicate quiet feature history (19.421311ms)
+✔ background duration shutdown reports an unsettled transport without an unhandled promise rejection (0.743874ms)
+✔ explicit three-scope mode uses one socket, while default capacity and legacy replacement remain unchanged (6.030142ms)
+✔ malformed selected data or removal of one scope preserves the other scopes and shared socket (2.966954ms)
+✔ earliest scope deadline dispatches first and concurrent callers cannot start a second physical enrichment (7.98885ms)
+✔ currently eligible identical signatures share one confirmed read without inventing a second-pool trade (8.225231ms)
+✔ shared disconnect invalidates every affected window once and requires explicit fresh warming (4.424598ms)
+✔ aggregate required-hint backlog stays bounded at sixteen across three scopes (5.388779ms)
+✔ owner gap callback can retire that same scope without recursion or disturbing another scope (2.136732ms)
+✔ validated candidate cap cannot be raised by mutating caller-owned options (2.127889ms)
+✔ validated amount convention cannot change after observation begins (3.914441ms)
+✔ held-priority retirement does not await a delayed stream close or reuse its draining transport (2.751524ms)
+✔ two long-lived scopes keep bounded feature evidence while frequent status reads remain read-only (102.179119ms)
+✔ lean feed readiness matches full diagnostics through warming, pending work and a disconnect (44.882212ms)
+✔ explicit WATCH-only broad stream reconnects without registering or enriching a deep candidate (2.253124ms)
+✔ WATCH-only quiet timeout uses bounded reconnect and keeps new hints separate from validated flow (1.460918ms)
+✔ removing legacy scopes preserves an explicitly requested WATCH stream and its byte stop remains final (1.595118ms)
+✔ WATCH-only recovery honors its actual upgrade429 cooldown and performs no transaction enrichment (1.184428ms)
+✔ WATCH reconnect defers physical starts while selected native controls are due, then resumes through the same gate (3.584672ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1401.944075
