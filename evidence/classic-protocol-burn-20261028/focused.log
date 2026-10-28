@@ -1,0 +1,43 @@
+✔ three actual successful protocol boosts are supported SDK instructions but not ordinary buyer observations (22.81976ms)
+✔ an unrelated pool protocol action does not invalidate this scope or invent an ordinary buy (11.145733ms)
+✔ unknown relevant top-level and inner AMM instructions cannot disappear as zero trades (4.388051ms)
+✔ known ordinary swaps retain their compiled denominator when event bytes are missing; exact deposit is explicitly nontrade (10.402031ms)
+✔ a recognized AMM route wrapper requires a supported scoped child instead of being labeled nontrade (6.151484ms)
+✔ v2 maps program authority with fresh scope and actual log identity, never transfer assertions (6.905411ms)
+✔ unknown and missing-event AMM frames invalidate the whole transaction even before valid swaps (4.501639ms)
+✔ unknown AMM frame appended after a valid event cannot return a partial successful trade (2.372976ms)
+✔ v2 refuses stale/future scope, slot floors, deadline/cutoff and stale program clock without inventing blockTime (2.350563ms)
+✔ synthetic multi-root swap frame keeps each actual log position without merging trades (3.163087ms)
+✔ native parsing cannot restart the five-second receipt usefulness deadline (2.177526ms)
+✔ actual classic protocol burn needs the fresh supported mint owner and remains a separate nonfinancial effect (19.936246ms)
+✔ explicit wrong or unsupported base-program bindings reject the actual classic shape (4.041026ms)
+✔ the existing Token2022 shape remains byte-for-byte compatible and rejects an explicit classic binding (15.534215ms)
+✔ classic support does not relax paired fees, executed amounts, reserves, actor, timing or frame grammar (19.230761ms)
+✔ classic effect admission still rejects stale support, stale receipt, future source and quote-floor regression (4.404325ms)
+✔ strictv2 keeps its original Boost refusal while explicit shadow classifies the actual paired pool effect (14.939114ms)
+✔ shadow mode is explicit and ordinary Buy/Sell paths retain exact strictv2 parity (4.629388ms)
+✔ protocol protocol fee mismatch never becomes an ordinary buy or inert nontrade (5.081939ms)
+✔ protocol fee rate mismatch never becomes an ordinary buy or inert nontrade (4.339209ms)
+✔ protocol executed quote mismatch never becomes an ordinary buy or inert nontrade (4.683089ms)
+✔ protocol burn amount mismatch never becomes an ordinary buy or inert nontrade (6.537299ms)
+✔ protocol post reserves mismatch never becomes an ordinary buy or inert nontrade (3.842974ms)
+✔ protocol user role mismatch never becomes an ordinary buy or inert nontrade (3.949552ms)
+✔ protocol user base receiver mismatch never becomes an ordinary buy or inert nontrade (3.377303ms)
+✔ protocol quote vault mismatch never becomes an ordinary buy or inert nontrade (5.946369ms)
+✔ protocol pool mismatch never becomes an ordinary buy or inert nontrade (2.971362ms)
+✔ protocol base mint mismatch never becomes an ordinary buy or inert nontrade (2.110497ms)
+✔ protocol event clock mismatch never becomes an ordinary buy or inert nontrade (2.618359ms)
+✔ protocol buy variant mismatch never becomes an ordinary buy or inert nontrade (2.426034ms)
+✔ protocol virtual reserves mismatch never becomes an ordinary buy or inert nontrade (2.512142ms)
+✔ unknown labels, extra/missing protocol events, routed and alternate burn frames fail without partial output (7.682382ms)
+✔ protocol admission preserves receipt/source/context/cutoff validity and cannot return a NormalizedTrade (3.235594ms)
+✔ real effect identity separates duplicates, corrections and distinct actual log events (10.298057ms)
+✔ mixed ordinary and protocol frames retain each real event once with no protocol buyer in ordinary flow (6.396988ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1900.593909

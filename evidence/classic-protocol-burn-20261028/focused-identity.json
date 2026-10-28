@@ -1,0 +1,18 @@
+{
+  "sourceBase": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "sourceFiles": {
+    "src/program-log-mapping.ts": "27a5c53359ce9cc412bfa07af7581a232de640384e461122a981c9695db1e6f0",
+    "test/protocol-classic-burn.test.ts": "73890ea82582206b837c0eb1bb46d3eb024d404e9bfcc4833b7b1b07ddb557dd"
+  },
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/protocol-classic-burn.test.ts",
+    "test/protocol-pool-effect.test.ts",
+    "test/program-log-mapping.test.ts",
+    "test/pilot-mapper-forward.test.ts"
+  ],
+  "startedAt": "2026-10-28T14:45:37.481166+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "/root/protocol_burn_refusal_review/classic_binding_review",
+  "decision": "GO_PARSER_ONLY_WITH_FRESH_SUPPORT_INTEGRATION_CONDITION",
+  "reviewedAt": "2026-10-28T14:47:49.506975+00:00",
+  "findings": [
+    "Classic branch requires explicit verified classic owner and exact unlabeled classic CPI; missing/wrong bindings fail closed.",
+    "Original Token2022 outputs and strict-v2 refusal remain unchanged.",
+    "Canonical identity, PDA roles, amounts, zero fees, reserves, timing, event identity and nonfinancial semantics remain intact.",
+    "Tests exercise actual retained refusal and meaningful negative cases.",
+    "Runtime must supply baseTokenProgram from fresh summary.tokenProgram, never from log or feed inference.",
+    "Only one raw representative shape is verified; four other same-code refusals remain unknown."
+  ],
+  "sourceChangesByReviewer": false,
+  "newNetworkRequests": 0,
+  "financialLedgerOpened": false
+}

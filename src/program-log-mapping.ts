@@ -24,7 +24,7 @@ function need(v:unknown,reason:string):asserts v {if(!v)throw Error('LOG_NATIVE_
 const integer=(x:unknown):x is number=>Number.isSafeInteger(x)&&Number(x)>=0;
 const decimal=(x:unknown)=>{need(BN.isBN(x),'INTEGER_MISSING');const s=x.toString(10);need(/^(0|[1-9][0-9]*)$/.test(s),'INTEGER_RANGE');return s;};
 const key=(x:any)=>{need(x&&typeof x.toBase58==='function','EVENT_KEY');return x.toBase58() as string;};
-export type ProgramLogScope={mint:string;pool:string;supportedPoolEvidence:string};
+export type ProgramLogScope={mint:string;pool:string;supportedPoolEvidence:string;/** Actual base-mint owner from the current supported account batch. Never inferred from a feed hint or CPI position. */baseTokenProgram?:string};
 export type FreshProgramLogScope=ProgramLogScope&{verifiedAt:number;minimumSlot:number};
 export type ProgramLogInput={signature:string;slot:number;err:unknown;logs:unknown;commitment:'confirmed'|'finalized';availableAt:number;receivedAt?:number};
 export type ProgramLogEvidence={
@@ -53,20 +53,26 @@ export type ProgramLogActivity={dataContract:typeof CONFIRMED_PROGRAM_ACTIVITY_V
 type FrameEvent={name:string;data:any;encoded:string;logIndex:number};
 type ProtocolChild={program:string;labels:string[];selfEventFrame:boolean;eventCount:number;childCalls:number};
 
-/** This first explicit protocol shape is direct, Token2022 burn + classic
- * WSOL transfer, zero-fee, and exactly the paired official events. Broader
- * variants remain unavailable; event-only evidence never asserts SPL checks. */
+/** Direct protocol shapes retain the exact paired official events, zero fees,
+ * and classic WSOL transfer. The newly observed unlabeled classic-token burn
+ * additionally requires the actual base-mint owner from current support.
+ * Existing Token2022/Burn fixtures remain compatible without that optional
+ * binding; any explicit owner must match. Neither shape asserts SPL checks. */
 function protocolEffect(frame:Frame,input:ProgramLogInput,scopes:ReadonlyMap<string,ProgramLogScope>,path:string[],rawHash:string):ProtocolPoolEffect|null{
  need(path.length===1,'PROTOCOL_ROUTED_FRAME_UNSUPPORTED');
  need(frame.eventCount===2&&frame.protocolEvents.length===2&&frame.protocolEvents[0]!.name==='BuyEvent'&&frame.protocolEvents[1]!.name==='BoostBuyAndBurnEvent','PROTOCOL_EVENT_PAIR');
  need(frame.childCalls===4&&frame.protocolChildren.length===4&&frame.eventCredits===0,'PROTOCOL_CHILD_SHAPE');
- const children=frame.protocolChildren;
- need(children[0]!.program===TOKEN_PROGRAM_ID.toBase58()&&children[0]!.labels.length===0&&!children[0]!.selfEventFrame&&children[0]!.eventCount===0&&children[0]!.childCalls===0,'PROTOCOL_QUOTE_TRANSFER_FRAME');
- need(children[1]!.program===TOKEN_2022_PROGRAM_ID.toBase58()&&JSON.stringify(children[1]!.labels)==='["Burn"]'&&!children[1]!.selfEventFrame&&children[1]!.eventCount===0&&children[1]!.childCalls===0,'PROTOCOL_BASE_BURN_FRAME');
- need(children.slice(2).every(c=>c.program===PROGRAM&&c.selfEventFrame&&c.labels.length===0&&c.eventCount===0&&c.childCalls===0),'PROTOCOL_EVENT_CPI_FRAME');
  const buy=frame.protocolEvents[0]!,boost=frame.protocolEvents[1]!,e=buy.data,b=boost.data,pool=key(b.pool),mint=key(b.mint),scope=scopes.get(pool);
  need(canonicalPumpPoolPda(new PublicKey(mint)).toBase58()===pool&&key(e.pool)===pool,'PROTOCOL_CANONICAL_POOL');
  if(scope)need(scope.mint===mint,'PROTOCOL_SCOPE_MINT');
+ const children=frame.protocolChildren;
+ need(children[0]!.program===TOKEN_PROGRAM_ID.toBase58()&&children[0]!.labels.length===0&&!children[0]!.selfEventFrame&&children[0]!.eventCount===0&&children[0]!.childCalls===0,'PROTOCOL_QUOTE_TRANSFER_FRAME');
+ const burn=children[1]!;
+ if(scope?.baseTokenProgram!==undefined)need(burn.program===scope.baseTokenProgram,'PROTOCOL_BASE_TOKEN_PROGRAM_MISMATCH');
+ const token2022Burn=burn.program===TOKEN_2022_PROGRAM_ID.toBase58()&&JSON.stringify(burn.labels)==='["Burn"]';
+ const supportedClassicBurn=scope?.baseTokenProgram===TOKEN_PROGRAM_ID.toBase58()&&burn.program===TOKEN_PROGRAM_ID.toBase58()&&burn.labels.length===0;
+ need((token2022Burn||supportedClassicBurn)&&!burn.selfEventFrame&&burn.eventCount===0&&burn.childCalls===0,'PROTOCOL_BASE_BURN_FRAME');
+ need(children.slice(2).every(c=>c.program===PROGRAM&&c.selfEventFrame&&c.labels.length===0&&c.eventCount===0&&c.childCalls===0),'PROTOCOL_EVENT_CPI_FRAME');
  const actor=PublicKey.findProgramAddressSync([Buffer.from('boost_vault'),new PublicKey(pool).toBuffer()],PUMP_AMM_PROGRAM_ID)[0];
  const vault=getAssociatedTokenAddressSync(NATIVE_MINT,actor,true,TOKEN_PROGRAM_ID).toBase58();
  need(key(e.user)===actor.toBase58()&&key(e.user_quote_token_account)===vault&&key(e.user_base_token_account)===PublicKey.default.toBase58()&&decimal(e.user_base_token_reserves)==='0','PROTOCOL_ACTOR_ROLE');
@@ -102,7 +108,7 @@ function parseProgramActivity(input:ProgramLogInput,scopes:readonly ProgramLogSc
  need(input.receivedAt===undefined||integer(input.receivedAt)&&input.receivedAt<=input.availableAt,'RECEIPT_AVAILABILITY');
  need(typeof input.signature==='string'&&bs58.decode(input.signature).length===64,'SIGNATURE');
  need(Array.isArray(input.logs)&&input.logs.length<=4096&&input.logs.every(s=>typeof s==='string'&&Buffer.byteLength(s)<=32768)&&Buffer.byteLength(JSON.stringify(input.logs))<=512*1024,'LOG_ENVELOPE');
- need(scopes.length>0&&scopes.length<=20,'SCOPES');const scopeMap=new Map<string,ProgramLogScope>();for(const scope of scopes){need(canonicalPumpPoolPda(new PublicKey(scope.mint)).toBase58()===scope.pool&&typeof scope.supportedPoolEvidence==='string'&&scope.supportedPoolEvidence.length>0&&scope.supportedPoolEvidence.length<=512&&!scopeMap.has(scope.pool),'VERIFIED_SCOPE_BINDING');scopeMap.set(scope.pool,scope);}
+ need(scopes.length>0&&scopes.length<=20,'SCOPES');const scopeMap=new Map<string,ProgramLogScope>();for(const scope of scopes){need(canonicalPumpPoolPda(new PublicKey(scope.mint)).toBase58()===scope.pool&&typeof scope.supportedPoolEvidence==='string'&&scope.supportedPoolEvidence.length>0&&scope.supportedPoolEvidence.length<=512&&!scopeMap.has(scope.pool),'VERIFIED_SCOPE_BINDING');need(scope.baseTokenProgram===undefined||[TOKEN_PROGRAM_ID.toBase58(),TOKEN_2022_PROGRAM_ID.toBase58()].includes(scope.baseTokenProgram),'VERIFIED_SCOPE_BASE_TOKEN_PROGRAM');scopeMap.set(scope.pool,scope);}
  const stack:Frame[]=[],result:ProgramLogEvidence[]=[],protocolEffects:ProtocolPoolEffect[]=[];let rootOrdinal=-1,frameOrdinal=-1,protocolFramesObserved=0;const rawNotificationSha256=digest(JSON.stringify({signature:input.signature,slot:input.slot,err:input.err,logs:input.logs}));
  for(let logArrayIndex=0;logArrayIndex<input.logs.length;logArrayIndex++){
   const line=input.logs[logArrayIndex] as string;need(!/log.*truncat|truncat.*log/i.test(line),'TRUNCATED');
