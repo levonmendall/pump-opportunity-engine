@@ -33,7 +33,7 @@ export type TraderOptions={
   timeoutMs?:number;
 };
 export type TraderTickOptions={evaluateCandidates?:boolean;candidateMint?:string;reuseFreshContext?:boolean;maximumDueActions?:1|2|3};
-type Candidate=CandidateEvidence&{window:FlowWindow;active:boolean;everActivated:boolean;interrupted:boolean;evaluatedBucket:number;predictiveAssessedBucket:number;knownSlot:number|null;informationPending:boolean};
+type Candidate=CandidateEvidence&{window:FlowWindow;active:boolean;everActivated:boolean;interrupted:boolean;evaluatedBucket:number;evidenceDeferredBucket:number;predictiveAssessedBucket:number;knownSlot:number|null;informationPending:boolean};
 type Decision={mint:string;at:number;stage:string;reason:string;ruleVersion:string;features?:RuleDecision['features'];quote?:SizeQuote|null;permissionContext?:{mode:'candidate-evaluation';primaryKind:string;primaryReason:string;performanceFailure:false}};
 const validText=(s:unknown,max=512):s is string=>typeof s==='string'&&s.length>0&&s.length<=max&&!/[\u0000-\u001f]/.test(s);
 const unsigned=(s:string)=>{if(typeof s!=='string'||!/^(0|[1-9][0-9]{0,38})$/.test(s))throw new Error('bounded integer amount required');return BigInt(s);};
@@ -126,7 +126,7 @@ export class PaperTrader{
     const deepCount=[...this.candidates.keys()].filter(mint=>!owned.positions[mint]).length,capacity=deepCount>=this.maximumCandidates||this.candidates.size>=this.maximumCandidates+3;
     this.record('trader-input',{kind:'candidate',at:now,candidate:{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence}});
     if(input.migrationVerified!==true||input.supportedPool!==true||capacity){this.decision({mint:input.mint,at:now,stage:'market-exclusion',reason:capacity?'candidate-capacity':'unsupported-or-unverified-pool',ruleVersion:PROVISIONAL_RULE.version});return false;}
-    this.candidates.set(input.mint,{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence,window:new FlowWindow(input.mint,now),active:false,everActivated:false,interrupted:false,evaluatedBucket:-1,predictiveAssessedBucket:-1,knownSlot:null,informationPending:false});this.funnel.supported++;return true;
+    this.candidates.set(input.mint,{mint:input.mint,migrationAt:input.migrationAt,migrationVerified:input.migrationVerified,supportedPool:input.supportedPool,evidence:input.evidence,window:new FlowWindow(input.mint,now),active:false,everActivated:false,interrupted:false,evaluatedBucket:-1,evidenceDeferredBucket:-1,predictiveAssessedBucket:-1,knownSlot:null,informationPending:false});this.funnel.supported++;return true;
   }
   activateFlow(mint:string,evidence:string){const c=this.candidates.get(mint);if(!c||!validText(evidence))throw new Error('admitted pool and actual subscription evidence required');const at=this.clock();c.window.features(at);if(c.everActivated||c.interrupted)c.window.invalidate(at,'feed-gap');else c.window=new FlowWindow(mint,at);c.everActivated=true;c.active=true;c.informationPending=false;c.evaluatedBucket=-1;this.record('trader-input',{kind:'flow-start',at,mint,evidence});}
   setCandidateInformationPending(mint:string,pending:boolean){const c=this.candidates.get(mint);if(!c||typeof pending!=='boolean')throw Error('admitted candidate and explicit information state required');c.informationPending=pending;this.record('trader-input',{kind:'candidate-information-pending',at:this.clock(),mint,pending});}
@@ -206,6 +206,18 @@ export class PaperTrader{
     if(this.options.candidateReadiness!==undefined){try{if(this.options.candidateReadiness(c.mint,at)!==true)return false;checkedAt=this.clock();if(Math.floor(checkedAt/PROVISIONAL_RULE.bucketMs)!==Math.floor(at/PROVISIONAL_RULE.bucketMs))return false;}catch{return false;}}
     const state=this.options.ledger.state(),pending=Object.values(state.pending);
     return !!(this.context.price&&(!Object.keys(state.positions).length||this.sourceCurrent(checkedAt))&&(!this.pilot||this.pilotDepositFor(c.mint)!==null)&&Object.keys(state.positions).length+pending.filter(o=>o.side==='buy').length<(this.pilotConfig?.maxPositions??3)&&!pending.some(o=>o.mint===c.mint)&&!this.evidenceUnavailable&&!this.financialUnavailable&&!this.uncertainOrders.size&&this.candidates.get(c.mint)===c&&c.active&&!c.informationPending&&this.options.ledger.projection(checkedAt,this.context.price,this.context.marks).entriesEnabled&&!(state.mode==='PAPER'&&!this.pilot&&PROVISIONAL_RULE.version.endsWith('unfrozen')));
+  }
+  /** An unavailable audit is not a completed candidate evaluation. A later
+   * valid audit may arrive within this same decision bucket. This synchronous
+   * evidence check performs no quote/provider work and grants no entry right;
+   * financial readiness, current slot floors and quote validity are rechecked
+   * by the existing reservation path. Completed decisions remain once/bucket.
+   */
+  private candidateEvidenceReady(c:Candidate,at:number){
+    const ready=this.options.predictiveReadiness??this.options.candidateReadiness;
+    if(ready===undefined)return true;
+    let available=false;try{available=ready(c.mint,at)===true;}catch{}
+    const checkedAt=this.clock();return available&&this.candidates.get(c.mint)===c&&c.active&&!c.informationPending&&Math.floor(checkedAt/PROVISIONAL_RULE.bucketMs)===Math.floor(at/PROVISIONAL_RULE.bucketMs);
   }
   private reserveExit(mint:string,q:SizeQuote,reason:string){
     const now=this.clock(),min=unsigned(q.outputUnits)*BigInt(10_000-this.options.costs.slippageBps)/10_000n;
@@ -292,7 +304,13 @@ export class PaperTrader{
     for(const c of this.candidates.values()){
       if(options.candidateMint!==undefined&&c.mint!==options.candidateMint)continue;
       execution.push(...await this.dueActions());
-      const at=this.clock(),bucket=Math.floor(at/PROVISIONAL_RULE.bucketMs);if(c.evaluatedBucket===bucket)continue;c.evaluatedBucket=bucket;
+      const eligibilityAt=this.clock(),bucket=Math.floor(eligibilityAt/PROVISIONAL_RULE.bucketMs);if(c.evaluatedBucket===bucket)continue;
+      if(!this.candidateEvidenceReady(c,eligibilityAt)){
+        if(c.evidenceDeferredBucket!==bucket){c.evidenceDeferredBucket=bucket;this.record('trader-candidate-evidence-deferred',{mint:c.mint,at:this.clock(),windowEndAt:bucket*PROVISIONAL_RULE.bucketMs,reason:'current complete audited evidence unavailable; decision bucket remains available',financialPermissionGranted:false});}
+        continue;
+      }
+      const at=this.clock();if(Math.floor(at/PROVISIONAL_RULE.bucketMs)!==bucket)continue;
+      c.evaluatedBucket=bucket;
       const entryDeposit=this.pilot?this.pilotDepositFor(c.mint)?.lamports??this.options.costs.depositLamports:this.options.costs.depositLamports;
       const features=c.window.features(at),state=this.options.ledger.state(),fields=this.options.flowVerification;
       const risk=this.entriesAllowed(c,at);

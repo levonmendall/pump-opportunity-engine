@@ -1,0 +1,57 @@
+[
+  {
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "test/native-paper-interop.test.ts",
+      "test/pilot-trader.test.ts",
+      "test/pilot-market.test.ts",
+      "test/native-flow-audit.test.ts",
+      "test/program-log-mapping.test.ts",
+      "test/program-log-identity.test.ts",
+      "test/paper-mode-readiness.test.ts"
+    ],
+    "endedAt": "2026-10-28T14:22:36.881517+00:00",
+    "elapsedSeconds": 2.970476822999899,
+    "exitCode": 0,
+    "logSha256": "08f6c3582cadeb140da946e06e5187e298fa043ed2db2a2d709efc671c0f4b31",
+    "logBytes": 8446
+  },
+  {
+    "command": [
+      "npm",
+      "test"
+    ],
+    "endedAt": "2026-10-28T14:23:45.108181+00:00",
+    "elapsedSeconds": 68.2263087140002,
+    "exitCode": 0,
+    "logSha256": "8fa8ceaea8261bc050891d0120f982222fdb6ed8635f30302b616f4737bac3f0",
+    "logBytes": 132838
+  },
+  {
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "endedAt": "2026-10-28T14:23:51.938719+00:00",
+    "elapsedSeconds": 6.829551562999995,
+    "exitCode": 0,
+    "logSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "logBytes": 55
+  },
+  {
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "endedAt": "2026-10-28T14:24:00.027887+00:00",
+    "elapsedSeconds": 8.088795505000007,
+    "exitCode": 0,
+    "logSha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a",
+    "logBytes": 77
+  }
+]

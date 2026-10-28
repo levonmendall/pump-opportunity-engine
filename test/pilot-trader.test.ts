@@ -193,6 +193,30 @@ test('candidate readiness rechecks the actual current bucket after a cold quote 
   }
 });
 
+test('late same-bucket audited evidence receives one evaluation without pre-audit quotes or duplicate reservations',async t=>{
+  for(const separatePredictiveReadiness of [false,true]){
+    const f=fixture(t);let audited=false;
+    const engine=new PaperTrader({...f.options,candidateReadiness:()=>audited,...(separatePredictiveReadiness?{predictiveReadiness:()=>audited}:{})});
+    engine.start();engine.setPilotEntryDeposit('2000000','ISOLATED required rent');f.admit(engine);f.warm(engine);f.ready();
+    for(let i=0;i<4;i++){await engine.tick();f.at+=25;}
+    assert.equal(engine.funnel.evaluated,0,'unavailable evidence did not complete this bucket');
+    assert.equal(f.decisionCalls.length,0);assert.equal(Object.keys(f.ledger.state().pending).length,0);
+    assert.equal(f.rows.filter(r=>r.kind==='trader-candidate-evidence-deferred').length,1,'repeated unavailable ticks coalesce their diagnostic');
+    audited=true;await engine.tick();assert.equal(engine.funnel.evaluated,1);assert.equal(engine.funnel.reserved,1);
+    const before=f.decisionCalls.length,order=Object.values(f.ledger.state().pending)[0]!;
+    await engine.tick();await engine.tick();assert.equal(engine.funnel.evaluated,1);assert.equal(engine.funnel.reserved,1);assert.equal(f.decisionCalls.length,before);
+    assert.deepEqual(Object.values(f.ledger.state().pending),[order]);assert.equal(order.executeAt,order.decidedAt+1000);
+  }
+});
+
+test('evidence readiness does not reopen an already completed financial risk rejection in the same bucket',async t=>{
+  const f=fixture(t),engine=new PaperTrader({...f.options,candidateReadiness:()=>true,predictiveReadiness:()=>true});
+  engine.start();engine.setPilotEntryDeposit('2000000','ISOLATED required rent');f.admit(engine);f.warm(engine);
+  await engine.tick();assert.equal(engine.funnel.evaluated,1);assert.equal(engine.funnel.reserved,0);assert.equal(f.decisionCalls.length,0);
+  assert.ok(engine.decisions().some(r=>r.reason==='entries-not-authorized-by-ledger'));
+  f.ready();await engine.tick();assert.equal(engine.funnel.evaluated,1);assert.equal(engine.funnel.reserved,0);assert.equal(f.decisionCalls.length,0);
+});
+
 test('bounded financial ticks yield new candidate quotes after reserving a future held exit while the default remains unchanged',async t=>{
   for(const bounded of [false,true]){
     const f=fixture(t),spec=CONCURRENT_PILOTS[2];f.ready();f.ledger.order({id:'priority-held',side:'buy',mint:'fixture-priority-held',decidedAt:f.at,executeAt:f.at+1000,expiresAt:f.at+5000,gas:'7000',deposit:'0',maxSpend:'10000000',minReceive:'1000',decisionEvidence:'ISOLATED priority setup'},{microUsdPerSol:'100000000',at:f.at,source:'ISOLATED USD'},{});f.at+=1000;f.ledger.attempt('priority-fill','priority-held',f.at,{at:f.at,spendLamports:'10000000',receiveUnits:'1000',evidence:'ISOLATED fixture'},{microUsdPerSol:'100000000',at:f.at,source:'ISOLATED USD'});

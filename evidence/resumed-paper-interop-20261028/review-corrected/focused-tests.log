@@ -1,0 +1,97 @@
+✔ strict interior signature audit verifies a complete target using actual pre/post window fences (8.723715ms)
+✔ failed and nontrade captured signatures participate without becoming executed trades (1.108893ms)
+✔ an unobserved successful or failed interior pool transaction makes the window unusable without inventing a swap (1.917501ms)
+✔ a target signature absent from independent history is unavailable, not a silent complete pass (0.811532ms)
+✔ same-slot target boundaries and missing before/after fences cannot establish coverage (1.712197ms)
+✔ three bounded history pages follow actual last-row cursors and cover all required unique signatures (41.352551ms)
+✔ saturated four-page history retains an explicit incomplete denominator and performs no fifth read (27.885073ms)
+✔ duplicate capture preserves the earliest availability; corrections and confirmed status disagreement are not accepted (1.494263ms)
+✔ malformed and duplicate independent history rows fail closed without extra requests (1.55215ms)
+✔ provider refusal, elapsed time, abort and closed admission retain honest availability and never retry (1.861738ms)
+✔ recording delay is included in audit availability and immutable source-window timestamps are never backdated (0.347835ms)
+✔ quiet interval can verify bounded signature absence only with genuine temporal fences and independent history coverage (2.939215ms)
+✔ invalid target, candidate identity and excessive input bounds perform no provider request (0.767807ms)
+✔ fresh coherent bank Clock ceiling independently audits quiet history without an invented notification anchor (0.419812ms)
+✔ old, future or time-unbound context ceilings are unavailable before any history request (0.504197ms)
+✔ context quiet audit still rejects unobserved interior activity and ambiguous target boundary slots (0.431058ms)
+✔ empty independent history does not prove quietness when it never reaches the known lower context (0.159185ms)
+✔ a genuine newer pre-window notification narrows context history without hiding target activity (0.549044ms)
+✔ SYNTHETIC busy1000-row page verifies every strict-interior signature in one bounded callback (98.648432ms)
+✔ saturated1000 history that cannot reach its lower fence is explicit capacity-unknown, never a partial pass (79.518915ms)
+✔ 1000-row response has an explicit1MiB processing bound and preserves known rejected payload bytes (27.969338ms)
+✔ 1000-page mode preserves exact row validation, provider failure and accepted option values (1.476483ms)
+✔ a node behind the upper slot floor cannot verify quiet history in either fence mode (0.541262ms)
+✔ Clock-fenced pagination retains the original served-node floor as history cursors move backward (15.566988ms)
+✖ DISPOSABLE native fields→audited window→real SDK PAPER entry→retained pending-exit restart→fresh exit reconcile (74.912521ms)
+✔ DISPOSABLE shadow source cannot bypass financial readiness, and a later bucket cannot reuse an older audit (28.582235ms)
+✔ DISPOSABLE reserve-changing protocol slot raises SDK quote floor without inventing a buyer trade (28.930953ms)
+✔ candidate-only remains the default and financial PAPER mode is an explicit versioned selection (1.182031ms)
+✔ selecting PAPER mode preserves the existing account, inception and financial state without enabling permission (27.373124ms)
+✔ candidate mode refuses exposure while PAPER mode admits it for recovery without mutating it (6.837746ms)
+✔ a mode flag cannot authorize another account or real/disposable financial mode (6.539799ms)
+✔ an invalid run mode fails before directory access, leases, network or financial initialization (4.032845ms)
+✔ fresh supported account lengths and current rent define deposits; every entry repeats rent checks (99.836848ms)
+✔ real decoder quotes complete a disposable delayed buy and full-size exit with rent retained once (62.382227ms)
+✔ changed rent, unknown account plan, cancellation and invalidation refuse entry without changing account (27.783978ms)
+✔ post-delay buy source carries its actual slot and refuses changed rent or delayed evidence (58.403752ms)
+✔ a newer known flow slot arriving during entry pricing prevents an older result from being used (22.86167ms)
+✔ candidate-only support uses unchanged current state validation without rent or an entry plan (14.253538ms)
+✔ candidate-only support retains mint, pool, vault and fee-owner checks (19.578742ms)
+✔ candidate-only support refuses stale records, invalidation, newer slot floors and cancellation (30.49507ms)
+✔ pilot contract is frozen, isolated by account/mode/hash and leaves other PAPER entry paths closed (53.634782ms)
+✔ only explicit confirmed curve flow may warm a pilot window; violations close risk (23.949337ms)
+✔ pilot refuses incompatible flow-verification configuration before any adapter or financial action (6.34825ms)
+✔ frozen pilot admits one delayed position with exact prepared rent and manages its exit while entries are paused (20.208364ms)
+✔ unprepared/mismatched decision rent and stale or lower-slot execution never become pilot fills (52.005985ms)
+✔ pilot quote age and pending ownership are rechecked after execution evidence recording (33.920971ms)
+✔ explicit staged contracts preserve v1 and bind stage, version and hash without changing entry or financial rules (5.192372ms)
+✔ staged two/three-position admission stops at its explicit cap and records the stage on every decision (58.990722ms)
+✔ candidate pending information and a gap during decision recording cannot reserve an obsolete entry or stop another candidate (22.64497ms)
+✔ scoped candidate gap cancels only its unattempted buy, preserving other entries, exits and held management (13.476877ms)
+✔ candidate-specific loss preserves an uncertain financial entry instead of erasing its reservation (10.119473ms)
+✔ concurrent entry sizing binds each mint rent and preserves a pending order while another mint is prepared (13.815097ms)
+✔ protection-only and one-mint ticks keep due actions first without chaining other candidate quotes (16.578682ms)
+✔ explicit fresh context reuse keeps original timestamps and refreshes stale or incomplete facts (59.839776ms)
+✔ a maximum due-action budget applies to the whole tick across repeated financial and holding loops (34.809722ms)
+✔ held context reuse honors inclusive source expiry and rechecks it after recorder delay (21.587693ms)
+✔ candidate readiness rechecks the actual current bucket after a cold quote or decision recorder crosses its audit boundary (39.435134ms)
+✔ bounded financial ticks yield new candidate quotes after reserving a future held exit while the default remains unchanged (25.709019ms)
+✔ protection timing records actual exit evaluation after processing and retains pending exit observation (22.253379ms)
+✔ new program-log identity has an explicit namespace while legacy keys stay unchanged (3.41486ms)
+✔ identical chronological trade fields produce identical baseline features for legacy and log identities (4.996533ms)
+✔ log duplicates, confirmations, corrections and reversals preserve legacy invalidation behavior (0.995495ms)
+✔ malformed or mixed program-log identities cannot invent positions or accept incomplete keys (1.591218ms)
+✔ trader ingestion and reversal record the actual log identity without fabricated compiled indices (28.944403ms)
+✔ v2 maps program authority with fresh scope and actual log identity, never transfer assertions (5.441241ms)
+✔ unknown and missing-event AMM frames invalidate the whole transaction even before valid swaps (3.351926ms)
+✔ unknown AMM frame appended after a valid event cannot return a partial successful trade (3.62425ms)
+✔ v2 refuses stale/future scope, slot floors, deadline/cutoff and stale program clock without inventing blockTime (2.080382ms)
+✔ synthetic multi-root swap frame keeps each actual log position without merging trades (2.381118ms)
+✔ native parsing cannot restart the five-second receipt usefulness deadline (1.41076ms)
+ℹ tests 70
+ℹ suites 0
+ℹ pass 69
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2355.943049
+
+✖ failing tests:
+
+test at test/native-paper-interop.test.ts:1:8928
+✖ DISPOSABLE native fields→audited window→real SDK PAPER entry→retained pending-exit restart→fresh exit reconcile (74.912521ms)
+  AssertionError [ERR_ASSERTION]: [{"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","at":1793043790000,"stage":"risk-rejection","reason":"entries-not-authorized-by-ledger","ruleVersion":"persistent-buying-pilot-v1","features":{"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","asOf":1793043790000,"windowStartAt":1793043730000,"windowEndAt":1793043790000,"sufficientlyObserved":true,"qualityReason":null,"buyLamports":"1500000000","sellLamports":"0","netBuyLamports":"1500000000","tradeCount":6,"provisionalTradeCount":0,"distinctBuyerWallets":6,"largestBuyerBps":1667,"positiveNetBuckets":6,"priceReturnBps":0,"firstPrice":{"quoteLamports":"250000000","tokenUnits":"1000000000000"},"lastPrice":{"quoteLamports":"250000000","tokenUnits":"1000000000000"}},"quote":null}]
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/workspace/poe-native-paper-interop/test/native-paper-interop.test.ts:37:99)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
