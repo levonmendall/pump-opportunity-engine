@@ -177,3 +177,13 @@ test('two long-lived scopes keep bounded feature evidence while frequent status 
  const before=f.feeds.usage().recordedBytes;for(let i=0;i<1000;i++)f.feeds.snapshots();assert.equal(f.feeds.usage().recordedBytes,before);
  assert.ok(f.feeds.snapshot(scope.mint)!.latestFeature!.at>=f.now-1000);assert.equal(f.feeds.snapshot(scope.mint)!.warm,true);await f.feeds.stop();
 });
+
+// No production source wiring: the lean API is a separately reviewable equivalent.
+test('lean feed readiness matches full diagnostics through warming, pending work and a disconnect',async()=>{
+ const f=setup();assert.equal(f.feeds.readiness(),null);await f.feeds.selectCandidate(scope);
+ const compare=()=>{const lean=f.feeds.readiness(scope.mint)!,full=f.feeds.snapshot(scope.mint)!;for(const k of ['latestFeature','pending','fullyEnriched','warm','windowEndAt','hasQualityLoss','failedCandidate'] as const)assert.deepEqual(lean[k],full[k]);return lean;};
+ compare();f.sockets[0]!.frame(selected());assert.equal(compare().pending,1);await f.advance(1000);await f.feeds.enrichNext(f.rpc);assert.equal(compare().fullyEnriched,true);
+ for(let i=0;i<75;i++){await f.advance(1000);f.sockets[0]!.frame('irrelevant heartbeat');compare();}assert.equal(compare().warm,true);
+ const pipeline=(f.feeds as any).candidates.get(scope.mint).pipeline,original=pipeline.snapshot;pipeline.snapshot=()=>{throw Error('FULL_DIAGNOSTIC_PATH_MUST_NOT_RUN');};assert.equal(f.feeds.readiness(scope.mint)!.warm,true);pipeline.snapshot=original;
+ f.sockets[0]!.drop();assert.equal(compare().failedCandidate,true);assert.equal(compare().hasQualityLoss,true);await f.feeds.stop();
+});
