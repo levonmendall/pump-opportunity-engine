@@ -235,3 +235,90 @@ The independent index work used 27 HTTPS starts, 608,054 measured response-body 
 The highest-value next decision is to obtain reproducible pre-move **complete validated flow plus coherent delayed $50 entry/exit states for independently selected eligible leads**, while continuing the narrow local admission/recovery corrections. Prioritize FRONGUS-like in-run data loss and the explicit protocol-flow contract gap before threshold changes or another provider comparison. A later forward interval should preserve a simultaneous independent reference cohort, include weak controls, and retain audit rows so selected and unselected histories can be compared. This does not require enabling financial execution.
 
 **Final assessment: NOT YET PROVEN — SPECIFIC EVIDENCE MISSING.** POE is not proved adequate at finding the strongest tradable opportunities. It has documented avoidable evaluation losses, including a substantial independently indexed in-period lead. The independent historical universe, before-move complete feature evidence and realistic paired execution evidence are still insufficient to label those losses missed profitable trades or assign full-market recall.
+
+## Prospective two-hour independent reference sampler
+
+`scripts/capture-independent-two-hour-reference.ts` adapts the already used public
+keyless GeckoTerminal listing/OHLC evidence tools. It is independent of POE's
+selected tokens and reads no pilot ledger, wallet, provider key or private status.
+It does not establish current provider availability until an actual request is
+made. The last retained successful age-reference listing was 02:01 UTC on
+October28; the earlier missing-proxy failure and historical429 remain preserved.
+No new network request was made while preparing this sampler.
+
+One run uses these fixed bounds:28physical HTTP requests,16MiB measured body
+allowance with15MiB application stop,16MiB retained evidence,2hours including
+shutdown, at least12seconds between starts, one operation in flight,8second
+request timeout,256MiB observed RSS and30CPU seconds. Listing responses are
+bounded at256KiB and OHLC responses at512KiB. There are no automatic retries or
+redirects; provider refusal, malformed data, resource limits or interruption stop
+the affected run. A separate prior index receipt supplies cumulative actual and
+uncertain use; historical reservations are never silently reset or refunded.
+Wire/header overhead and infrastructure transfer costs remain unverified.
+
+At start and+60minutes, each enrollment pass reads the existing PumpSwap volume
+pages1–5 and Solana new-pools page1. It retains every returned row, including
+structurally excluded, unknown and duplicate positions. From canonical-address,
+SOL-quoted, PumpSwap-labelled leads with provisional indexed age0–24h and known
+reported activity, it freezes up to4 highest-activity leads and4 relatively
+low-activity controls per pass. Prior selections are not replaced. Controls are
+chosen **before outcomes**, not selected because they subsequently lost money;
+a quiet control that rallies remains a control. Indexed creation time remains
+`UNVERIFIED` until a strict original migration proof is joined. No POE selected
+population or future price result enters enrollment.
+
+At+110minutes, at most16 frozen pool histories are requested, bringing the maximum
+to12listing+16OHLC=28requests. Raw bodies, request/receipt/validation times, exact
+cohort-freeze files, hashes, failures and checkpoints are retained. Only whole
+minute bars after that pool's freeze and before the declared comparison cutoff
+contribute indicative close/volume diagnostics. Missing bars are not filled.
+OHLC information becomes available at retrieval; it cannot prove an earlier
+signal, buyer-flow predicate, actual-size $50 entry/exit, or profitable fill.
+These finite pages and cohorts are a biased sampled denominator, not a market
+census, top-winner denominator or whole-market recall percentage.
+
+The parent operator must align the sampler with the actual native run before
+starting it; no parallel capture starts automatically. Fill the nonsecret
+`POE_NATIVE_*` values from that run and select the latest settled index receipt:
+
+```sh
+prlimit --core=0:0 --cpu=45:45 -- \
+  timeout --signal=TERM --kill-after=10s 7190s \
+  node --use-env-proxy --max-old-space-size=128 --import tsx \
+  scripts/capture-independent-two-hour-reference.ts --capture \
+  --directory "$POE_REFERENCE_DIRECTORY" \
+  --run-id "$POE_NATIVE_RUN" --source-commit "$POE_NATIVE_COMMIT" \
+  --source-start "$POE_NATIVE_START" --source-planned-end "$POE_NATIVE_END" \
+  --prior-receipt "$POE_INDEX_PRIOR" \
+  --actual-source-end-file "$POE_SOURCE_END_FILE"
+```
+
+The outer timeout bounds even an uncooperative transport to two hours; a forced
+kill is not a graceful receipt or proof of physical settlement. Keep any pending
+request uncertainty and the last checkpoint in that case. The heap flag is not
+a claim of a hard RSS cgroup.
+
+Use a new directory for each versioned run; a prepared directory cannot be
+reopened as a new capture. SIGTERM/SIGINT stops new requests and checkpoints
+settled usage. The optional end file contains only
+`{schemaVersion:1,runId,startedAt,endedAt,sourceCommit,provenance}` from the actual
+source/supervisor receipt. Identity and times must match. Sampling-process end,
+planned runtime end and actual source end are separate. Detection of an early
+source end stops new work. Without an actual end receipt, runtime intersection
+remains unverified; a later offline join must preserve the original sampler
+receipt and exclude bars outside the actual source interval. No late outcome is
+credited as runtime performance, even when a valid end receipt is supplied.
+
+The output can support an independent sampled opportunity cross-check after
+origin/support/flow and actual execution evidence are joined. It cannot rank
+migration-age strategies economically from price appreciation alone. The exact
+remaining evidence is unchanged: a causally available complete predictive
+window and a realistic size-specific entry-to-exit path, including costs and
+unavailable protection periods, plus genuinely independent controls.
+
+Offline preparation validation: build and compile passed;15 focused injected-
+transport tests passed. Cases cover retained payload schemas, prospective active/
+quiet cohorts, unchanged inputs, missing bars, finite arithmetic, both enrollment
+passes, all28 requests, pacing, usage linking,429, response/resource stops,
+source-end separation, graceful cancellation and failed-checkpoint ownership.
+These are software fixtures, not a current provider-access or market result.
