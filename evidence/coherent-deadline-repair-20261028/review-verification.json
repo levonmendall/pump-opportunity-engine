@@ -1,0 +1,35 @@
+{
+  "reviewedAt": "2026-10-28T21:55:30.247352+00:00",
+  "verdict": "GO_FOR_COMBINED_REPOSITORY_REGRESSION_AND_LIVE_VALIDATION",
+  "independentTests": 89,
+  "jointTests": 101,
+  "build": "PASS",
+  "fullSuiteBeforeLastTwoRegressions": {
+    "source": "f59743f304ddd42ed3be6f6ac77a2190641f41d4",
+    "passed": 1518,
+    "failed": 0,
+    "sourceInputsUnchanged": true
+  },
+  "currentSourceRequiresCombinedFullSuite": true,
+  "liveValidated": false,
+  "networkRequests": 0,
+  "financialAccountWrites": 0,
+  "files": {
+    "src/native-candidate-runner.ts": "28cd1deae1452423c0c6de66a1446011603c3a7348c6c26415cacd167986b6d8",
+    "src/pilot-native-flow.ts": "b78b33c725d48ba7d084364747f72e25e339c43ed775e16d88cd6308bc67ff68",
+    "src/run-native-paper.ts": "13326a7aed334e1e568c8c731afe7f609c17693b1e619b8173b5c21d35b75708",
+    "src/backup.ts": "8c8c2ddefa841bd28044e56aa8f1868a6ace5c1eeb03bdd0e67201ca71c6660f",
+    "test/native-candidate-runner.test.ts": "b14d76fc21060afe7a51d6e3a61659daec29e8cff9fdc7aa914547421f85312b",
+    "test/native-flow-service-policy.test.ts": "6c6f5a29f00764f1bbe1086ffe0d8a8c22d79191f629c4319aa67717445e2ef8",
+    "test/native-paper-launcher.test.ts": "39098706552f25797190c51064b002b33a32a3093e8808a5532bfe8f780db762",
+    "test/backup.test.ts": "f5404beaa324aa04cc6f41d4e4b454912e625a26178226cedf1f37af43c28195"
+  },
+  "independentRawSha256": "4e343f226bca03b0d346cd4e042b0837b8d8f14c12e9510de4ad0ea95761f5a5",
+  "closedReviewBlockers": [
+    "Invalid5250ms local backup admission to3000ms physical bound",
+    "Unauditable target retaining a past eligibility boundary",
+    "Always-on instrumentation duplicating heavy feature/notification snapshots",
+    "Expired minimum native deadline hiding a live PONG obligation",
+    "Post-asynchronous-backup-lease preparation missing joined readmission/measurement"
+  ]
+}

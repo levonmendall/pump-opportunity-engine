@@ -351,3 +351,8 @@ test('COHERENT deadline admission reads bounded readiness scalars without repeat
  for(let n=0;n<100;n++){f.runner.deadlineView();f.runner.discretionaryAdmission(250);}
  assert.equal(snapshots,0);assert.equal(ledgers,0,'report/request guards do not clone an8192-row ledger or regenerate its predictive features');await f.runner.stop();
 });
+
+test('COHERENT an expired heartbeat cannot hide a live PONG deadline from local or physical admission',()=>{
+ const at=100000,flow={usage:()=>({nextServiceAt:at,nextServiceAction:'heartbeat',nextRequiredServiceAt:at,nextRequiredServiceDeadlineAt:at-1,nextRequiredServiceAction:'heartbeat',nativeServiceDeadlines:[{action:'heartbeat',deadlineAt:at-1},{action:'peer-pong',deadlineAt:at+100}]})};
+ const runner=new NativeCandidateRunner({flow:flow as any,rpc:{}as any,now:()=>at,record:()=>{}});const view=runner.deadlineView();assert.equal(view.requiredNativeAction,'peer-pong');assert.equal(runner.discretionaryAdmission(250).admitted,false);assert.equal(runner.discretionaryAdmission(1200).admitted,false);
+});

@@ -12,6 +12,8 @@ export type BackupIdentity={accountId:string;mode:LedgerMode;inceptionAt:number}
 export type FinancialBackup=BackupIdentity&{path:string;generation:string;revision:number;lastAt:number;snapshotSequence:string|null};
 export type BackupSelection={backup:FinancialBackup|null;rejected:{file:string;reason:'invalid-backup'|'unrecognized-path'}[];pending:boolean};
 type Source=Pick<PaperLedger,'state'|'backup'>;
+export class BackupPreparationDeferred extends Error{constructor(){super('BACKUP_RUNTIME_PREPARATION_DEFERRED');}}
+export type BackupRuntimePreparation={admission:()=>boolean;measure:<T>(work:()=>T)=>T};
 type Options={directory:string;sourcePath:string;identity:BackupIdentity;maxBytes?:number};
 export type BackupArtifactTask={task:'prepare';minimumRevision:number}|{task:'finish'|'abort'|'recover'};
 const PREFIX='poe-financial-',PENDING='poe-financial-pending.sqlite';
@@ -213,16 +215,17 @@ export class FinancialBackupStore{
     if(completed.length===2){this.inspect(completed[0]!.path,completed[0]!.generation);unlinkSync(completed[0]!.path);this.syncDirectory();}
     renameSync(valid.path,target);this.syncDirectory();return {...valid,path:target,generation:next};
   }
-  async create(source:Source):Promise<FinancialBackup>{
+  async create(source:Source,runtime?:BackupRuntimePreparation):Promise<FinancialBackup>{
     const operation=await this.acquireOperationAsync();
     let worker:ArtifactWorker|undefined;
     try{
-      const before=source.state();if(before.accountId!==this.identity.accountId||before.mode!==this.identity.mode||before.inceptionAt!==this.identity.inceptionAt)throw new Error('backup source identity mismatch');
-      worker=this.artifactWorker();await worker.request({task:'prepare',minimumRevision:before.revision});
+      if(runtime&&!runtime.admission())throw new BackupPreparationDeferred();
+      const prepare=()=>{const before=source.state();if(before.accountId!==this.identity.accountId||before.mode!==this.identity.mode||before.inceptionAt!==this.identity.inceptionAt)throw new Error('backup source identity mismatch');worker=this.artifactWorker();return before;};
+      const before=runtime?runtime.measure(prepare):prepare();await worker!.request({task:'prepare',minimumRevision:before.revision});
       // The existing sole financial connection performs the SQLite backup API.
       // The worker never opens the source database or receives financial state.
       await source.backup(join(this.directory,PENDING));
-      const result=await worker.request({task:'finish'});if(!result)throw new Error('backup completion missing');return result;
+      const result=await worker!.request({task:'finish'});if(!result)throw new Error('backup completion missing');return result;
     }catch(error){
       try{await worker?.request({task:'abort'});}catch{/* A dead/timed-out worker leaves pending evidence for recovery. */}
       throw error;

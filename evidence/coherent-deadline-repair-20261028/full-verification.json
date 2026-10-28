@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "f59743f304ddd42ed3be6f6ac77a2190641f41d4",
+  "verifiedAt": "2026-10-28T21:52:50.123601+00:00",
+  "sourceInputsUnchanged": true,
+  "results": {
+    "full-suite": {
+      "exitCode": 0,
+      "elapsedSeconds": 198.55642449399966
+    },
+    "build": {
+      "exitCode": 0,
+      "elapsedSeconds": 7.065482111000165
+    },
+    "compile": {
+      "exitCode": 0,
+      "elapsedSeconds": 8.380889451000257
+    }
+  },
+  "financialAccountWrites": 0,
+  "networkRequests": 0
+}

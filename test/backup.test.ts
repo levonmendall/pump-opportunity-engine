@@ -255,3 +255,9 @@ test('COHERENT runtime backup lease startup yields before reading financial stat
  const f=setup(t);let stateReads=0;const before=f.ledger.state(),pending=f.store.create({state:()=>{stateReads++;return f.ledger.state();},backup:path=>f.ledger.backup(path)});
  await Promise.resolve();assert.equal(stateReads,0,'bounded local flock child is asynchronous; its five-second timeout cannot synchronously occupy the trading event loop');const result=await pending;assert.equal(stateReads,1);assert.equal(result.accountId,before.accountId);assert.equal(result.inceptionAt,before.inceptionAt);assert.equal(result.revision,before.revision);assert.deepEqual(readState(result.path),f.ledger.state());
 });
+
+test('COHERENT backup continuation rechecks shared deadlines after asynchronous lease acquisition without financial failure',async t=>{
+ const f=setup(t);let stateReads=0,measured=0;const source={state:()=>{stateReads++;return f.ledger.state();},backup:(path:string)=>f.ledger.backup(path)};const before=f.ledger.state();
+ await assert.rejects(f.store.create(source,{admission:()=>false,measure:run=>{measured++;return run();}}),/BACKUP_RUNTIME_PREPARATION_DEFERRED/);assert.equal(stateReads,0);assert.equal(measured,0);assert.deepEqual(f.ledger.state(),before);
+ const result=await f.store.create(source,{admission:()=>true,measure:run=>{measured++;return run();}});assert.equal(stateReads,1);assert.equal(measured,1);assert.equal(result.revision,before.revision,'ordinary deferral releases the lease for a later admissible consistent backup');assert.deepEqual(readState(result.path),before);
+});

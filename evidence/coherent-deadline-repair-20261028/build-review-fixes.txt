@@ -1,0 +1,6 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+src/backup.ts(228,26): error TS18048: 'worker' is possibly 'undefined'.
+test/backup.test.ts(260,118): error TS7006: Parameter 'path' implicitly has an 'any' type.
