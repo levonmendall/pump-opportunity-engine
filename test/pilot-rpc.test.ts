@@ -237,3 +237,13 @@ test('a local refusal cannot roll a chapter or release a physical operation that
   settle();await turn();await turn();assert.equal(f.client.usage().inFlight,0);assert.equal(f.client.available(),true);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().newUnits,2);assert.equal(f.client.usage().uncertainResponseBytes,2*MIB);assert.equal(f.invocations.length,1);
  }finally{f.close();}
 });
+
+test('repeated rolling-minute pacing refusals reuse the unhalted chapter beyond32 attempts and consume no additional units',async()=>{
+ const f=fixture({maxStartsPer10s:20});try{
+  for(let i=0;i<60;i++)assert.equal(await f.client.call('getSlot'),123);
+  const before=f.client.usage(),chapter=before.activeChapterPath!,book=readFileSync(chapter),at=f.now();assert.equal(before.chapter,1);assert.equal(before.newUnits,60);assert.equal(f.invocations.length,60);assert.equal(before.chapterUsage!.rolling60SecondStarts,60);
+  for(let i=0;i<40;i++)await assert.rejects(f.client.call('getSlot',[],undefined,{latestStartAt:at+1000}),/DISPATCH_EXPIRED/);
+  const refused=f.client.usage();assert.equal(f.now(),at,'an expired pacing opportunity never performs a hidden wait or retry');assert.equal(refused.chapter,1);assert.equal(refused.newUnits,60);assert.equal(f.invocations.length,60);assert.equal(refused.fatal,null);assert.equal(refused.cooldownUntil,0);assert.equal(refused.controlCooldownUntil,0);assert.equal(refused.chapterUsage!.haltedReason,null);assert.equal(refused.uncertainResponseBytes,before.uncertainResponseBytes);assert.equal(refused.newAccountedResponseBytes,before.newAccountedResponseBytes);assert.deepEqual(readFileSync(chapter),book);assert.deepEqual(readFileSync(f.old),f.before);assert.equal(f.records.filter(r=>r.kind==='pilot-job-admission-refused').length,40);assert.equal(f.records.some(r=>r.kind==='pilot-rpc-unavailable'),false);
+  f.advance(f.invocations[0]!.at+60000-f.now());assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,1,'the healthy chapter retains all32 chapter slots despite40 refused jobs');assert.equal(f.client.usage().newUnits,61);assert.equal(f.invocations.length,61);assert.equal(f.client.usage().automaticRequestRetries,0);assert.deepEqual(readFileSync(f.old),f.before);
+ }finally{f.close();}
+});
