@@ -1,0 +1,337 @@
+{
+  "classification": "RETAINED_BOOKKEEPING_REPLAY_NOT_FORWARD_TRADING",
+  "source": {
+    "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+    "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+  },
+  "runId": "native-candidates-20261028172713245",
+  "sourceRows": 133231,
+  "segments": [
+    {
+      "path": "events/events-001.ndjson",
+      "bytes": 8155370,
+      "sha256": "43c8ead2288941a55da66662e59d64305f063906f49f82b87dcda3b85438ccb1",
+      "lines": 583
+    },
+    {
+      "path": "events/events-002.ndjson",
+      "bytes": 7942150,
+      "sha256": "5d2ec329254b70fc8f0fc9cdf829e22583becb26d3e544ded4ae4c346918b499",
+      "lines": 4564
+    },
+    {
+      "path": "events/events-003.ndjson",
+      "bytes": 7529160,
+      "sha256": "eb000c07ea7fee805c457a0c4aae01213b0aeb90a63640bea8a8c73b850bccd7",
+      "lines": 8837
+    },
+    {
+      "path": "events/events-004.ndjson",
+      "bytes": 7659634,
+      "sha256": "d23719e5c10ec38a13e4cc79fd28bb69705734cb503ad62347a1970e55c532f3",
+      "lines": 7479
+    },
+    {
+      "path": "events/events-005.ndjson",
+      "bytes": 7599346,
+      "sha256": "c627e72c1aba996a0b0572e7adb429481b66985bf865354045eaa92995ea259d",
+      "lines": 8106
+    },
+    {
+      "path": "events/events-006.ndjson",
+      "bytes": 7575990,
+      "sha256": "33dd696e5f13a8ad9f310a16608dcc87a2f3e92dc899fce26dcc1d9492a498e6",
+      "lines": 8348
+    },
+    {
+      "path": "events/events-007.ndjson",
+      "bytes": 7715293,
+      "sha256": "c3635cda33ea794972937363222a3087e28595c0b05af0a1934c9dced648526c",
+      "lines": 6919
+    },
+    {
+      "path": "events/events-008.ndjson",
+      "bytes": 7565156,
+      "sha256": "089f925ab3b7d58990855c20a010e239920230348e6c06f2a616de163e5c7799",
+      "lines": 8464
+    },
+    {
+      "path": "events/events-009.ndjson",
+      "bytes": 7599340,
+      "sha256": "90cfb7f5983f5e10b3cf23626080a323c636febee08c4c5efa02018cb15cae13",
+      "lines": 8115
+    },
+    {
+      "path": "events/events-010.ndjson",
+      "bytes": 7604138,
+      "sha256": "da6263cc5e127c6f826476e3bae0e51244e7f43a7d0c5824d0e27d1e86bf300a",
+      "lines": 8062
+    },
+    {
+      "path": "events/events-011.ndjson",
+      "bytes": 7699339,
+      "sha256": "1e8acb92dec91eea8d28a82230f4863b08b5e0a0156a2fe923305d6ab675ee48",
+      "lines": 6954
+    },
+    {
+      "path": "events/events-012.ndjson",
+      "bytes": 7552566,
+      "sha256": "22f4dc81846f7327a70602c8622080d911926d900f12b78dfe690f79c058b17c",
+      "lines": 8595
+    },
+    {
+      "path": "events/events-013.ndjson",
+      "bytes": 7643098,
+      "sha256": "11a1133da9dbda5f2133a80fc07bdd3fd616a4b307207b1796a6093011e38ba0",
+      "lines": 7665
+    },
+    {
+      "path": "events/events-014.ndjson",
+      "bytes": 7561258,
+      "sha256": "e57b4a433072f17d1cb18b052fb46d7ddb3f2d22b766295844bccb81aafaa706",
+      "lines": 8503
+    },
+    {
+      "path": "events/events-015.ndjson",
+      "bytes": 7626656,
+      "sha256": "0388836a8319a5eacddcccb467b77907aff053d9aa7d6c0d6e180b606d0beea1",
+      "lines": 7831
+    },
+    {
+      "path": "events/events-016.ndjson",
+      "bytes": 7572808,
+      "sha256": "c684e02efda609f5559cd426508fc60668c89a12bfb6c95160d2b52dabdc594e",
+      "lines": 8382
+    },
+    {
+      "path": "events/events-017.ndjson",
+      "bytes": 7517548,
+      "sha256": "40ce5bab3a69de648df1b0a157e85714e256bea78c98d80d754fd1ef65bb0555",
+      "lines": 8958
+    },
+    {
+      "path": "events/events-018.ndjson",
+      "bytes": 6988113,
+      "sha256": "4e42cf14e0de381f48a6cb3f63511085baf0abe7e5750c628a747e267c9e332d",
+      "lines": 6864
+    },
+    {
+      "path": "events/events-019.ndjson",
+      "bytes": 1594926,
+      "sha256": "fbc29fdaa05114ac2648e55896e93728691e30dfeecb4a1c4c24ea3cec63fa44",
+      "lines": 2
+    }
+  ],
+  "validatedPackets": 47067,
+  "duplicatePackets": 2,
+  "originalCacheRefusals": 5,
+  "repairedAdmissionProbes": [
+    {
+      "at": 1793208835359,
+      "mint": "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs",
+      "signature": "51tsNnpqMprMpE4B85YAtF7m926nuvNQLjf3ghrZSVsZvnRZZMrBDDTxvMdaVUeYT7hSX3DZ65vSbager1xpzNwf",
+      "slot": 462562462,
+      "rawHash": "26df2332b535dc3afe121c6579f0c5d6859b87ad5109ac11480dcf1ec37fb709",
+      "originalRefusal": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+      "repairedBookkeepingProbe": "ADMISSION_AVAILABLE",
+      "usage": {
+        "version": "native-active-ownership-compact-corrections-v2",
+        "records": 16384,
+        "activeRecords": 426,
+        "compactRecords": 15958,
+        "maximumActiveRecords": 16384,
+        "maximumFingerprints": 32768,
+        "compactPayloadBytes": 829816,
+        "allocatedCompactArenaBytes": 1703936,
+        "maximumCompactPayloadBytes": 1703936,
+        "compactPayloadMeaning": "One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately",
+        "correctionScopeIdentities": 5,
+        "maximumCorrectionScopeIdentities": 6,
+        "peakCorrectionScopeIdentities": 6,
+        "peakRecords": 16384,
+        "peakActiveRecords": 8398,
+        "compactionOperations": 21166,
+        "expiredRecords": 5208,
+        "activeCapacityRefusals": 0,
+        "fingerprintCapacityRefusals": 0,
+        "correctionRetentionMs": 180000,
+        "firstAvailabilityPreserved": true,
+        "reparseRequiredAfterCompaction": true
+      },
+      "reference": "events/events-009.ndjson:7246",
+      "meaning": "Admission-only probe on original refused metadata; no absent transaction content parsed, accepted or backdated"
+    },
+    {
+      "at": 1793208835360,
+      "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+      "signature": "6kFqiNzqTxQ5uN9FTcPMxXiqWy5tBuRgQFUce7QRecQGqdsKUt1WGbpCW9urqc61JyWhYA466RuHPSWPo2tZNtx",
+      "slot": 462562463,
+      "rawHash": "e7068df085a744c3dc3ed9e13bfd4ab964de8c97afecc429417593b24882d608",
+      "originalRefusal": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+      "repairedBookkeepingProbe": "ADMISSION_AVAILABLE",
+      "usage": {
+        "version": "native-active-ownership-compact-corrections-v2",
+        "records": 16384,
+        "activeRecords": 223,
+        "compactRecords": 16161,
+        "maximumActiveRecords": 16384,
+        "maximumFingerprints": 32768,
+        "compactPayloadBytes": 840372,
+        "allocatedCompactArenaBytes": 1703936,
+        "maximumCompactPayloadBytes": 1703936,
+        "compactPayloadMeaning": "One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately",
+        "correctionScopeIdentities": 4,
+        "maximumCorrectionScopeIdentities": 6,
+        "peakCorrectionScopeIdentities": 6,
+        "peakRecords": 16384,
+        "peakActiveRecords": 8398,
+        "compactionOperations": 21369,
+        "expiredRecords": 5208,
+        "activeCapacityRefusals": 0,
+        "fingerprintCapacityRefusals": 0,
+        "correctionRetentionMs": 180000,
+        "firstAvailabilityPreserved": true,
+        "reparseRequiredAfterCompaction": true
+      },
+      "reference": "events/events-009.ndjson:7251",
+      "meaning": "Admission-only probe on original refused metadata; no absent transaction content parsed, accepted or backdated"
+    },
+    {
+      "at": 1793208835369,
+      "mint": "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump",
+      "signature": "6kFqiNzqTxQ5uN9FTcPMxXiqWy5tBuRgQFUce7QRecQGqdsKUt1WGbpCW9urqc61JyWhYA466RuHPSWPo2tZNtx",
+      "slot": 462562463,
+      "rawHash": "e7068df085a744c3dc3ed9e13bfd4ab964de8c97afecc429417593b24882d608",
+      "originalRefusal": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+      "repairedBookkeepingProbe": "ADMISSION_AVAILABLE",
+      "usage": {
+        "version": "native-active-ownership-compact-corrections-v2",
+        "records": 16384,
+        "activeRecords": 42,
+        "compactRecords": 16342,
+        "maximumActiveRecords": 16384,
+        "maximumFingerprints": 32768,
+        "compactPayloadBytes": 849784,
+        "allocatedCompactArenaBytes": 1703936,
+        "maximumCompactPayloadBytes": 1703936,
+        "compactPayloadMeaning": "One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately",
+        "correctionScopeIdentities": 3,
+        "maximumCorrectionScopeIdentities": 6,
+        "peakCorrectionScopeIdentities": 6,
+        "peakRecords": 16384,
+        "peakActiveRecords": 8398,
+        "compactionOperations": 21550,
+        "expiredRecords": 5208,
+        "activeCapacityRefusals": 0,
+        "fingerprintCapacityRefusals": 0,
+        "correctionRetentionMs": 180000,
+        "firstAvailabilityPreserved": true,
+        "reparseRequiredAfterCompaction": true
+      },
+      "reference": "events/events-009.ndjson:7255",
+      "meaning": "Admission-only probe on original refused metadata; no absent transaction content parsed, accepted or backdated"
+    },
+    {
+      "at": 1793208835369,
+      "mint": "bLQsRP5bLaJPkW1MZ1tYLk5xE84bKUGSctZ5S1Ppump",
+      "signature": "4vtu6LAcTDNV3g4md8iCZByajM6LrdS7EXmcxvHB6GmU8dt3f8ahGxCwus85U7v5rGhbTuLyBSC9W37vTKrrFG7m",
+      "slot": 462562463,
+      "rawHash": "e9365a9aadcd8427866c1c75398833931bdda8674939d50bab62c31cbe11d5bd",
+      "originalRefusal": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+      "repairedBookkeepingProbe": "ADMISSION_AVAILABLE",
+      "usage": {
+        "version": "native-active-ownership-compact-corrections-v2",
+        "records": 16384,
+        "activeRecords": 0,
+        "compactRecords": 16384,
+        "maximumActiveRecords": 16384,
+        "maximumFingerprints": 32768,
+        "compactPayloadBytes": 851968,
+        "allocatedCompactArenaBytes": 1703936,
+        "maximumCompactPayloadBytes": 1703936,
+        "compactPayloadMeaning": "One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately",
+        "correctionScopeIdentities": 2,
+        "maximumCorrectionScopeIdentities": 6,
+        "peakCorrectionScopeIdentities": 6,
+        "peakRecords": 16384,
+        "peakActiveRecords": 8398,
+        "compactionOperations": 21592,
+        "expiredRecords": 5208,
+        "activeCapacityRefusals": 0,
+        "fingerprintCapacityRefusals": 0,
+        "correctionRetentionMs": 180000,
+        "firstAvailabilityPreserved": true,
+        "reparseRequiredAfterCompaction": true
+      },
+      "reference": "events/events-009.ndjson:7259",
+      "meaning": "Admission-only probe on original refused metadata; no absent transaction content parsed, accepted or backdated"
+    },
+    {
+      "at": 1793208839338,
+      "mint": "7nJWoemyVzQy92ow3p5tF3fQtaVXrMBAe8kwqHKspump",
+      "signature": "3kV1Gxh8dkD9wmwwjJyafiR8LYJrm7kNAL5vQLvmavc9bVymrFAniAn4pgjhNtUxM7QR5Y1qz3biXQa47yjKS5UC",
+      "slot": 462562480,
+      "rawHash": "8650d8980e3c30cc2e09c9e0762fd1b6b82c304960774d2a38b42cf8d1af44d6",
+      "originalRefusal": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+      "repairedBookkeepingProbe": "ADMISSION_AVAILABLE",
+      "usage": {
+        "version": "native-active-ownership-compact-corrections-v2",
+        "records": 16384,
+        "activeRecords": 1,
+        "compactRecords": 16383,
+        "maximumActiveRecords": 16384,
+        "maximumFingerprints": 32768,
+        "compactPayloadBytes": 851916,
+        "allocatedCompactArenaBytes": 1703936,
+        "maximumCompactPayloadBytes": 1703936,
+        "compactPayloadMeaning": "One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately",
+        "correctionScopeIdentities": 5,
+        "maximumCorrectionScopeIdentities": 6,
+        "peakCorrectionScopeIdentities": 6,
+        "peakRecords": 16384,
+        "peakActiveRecords": 8398,
+        "compactionOperations": 21617,
+        "expiredRecords": 5234,
+        "activeCapacityRefusals": 0,
+        "fingerprintCapacityRefusals": 0,
+        "correctionRetentionMs": 180000,
+        "firstAvailabilityPreserved": true,
+        "reparseRequiredAfterCompaction": true
+      },
+      "reference": "events/events-009.ndjson:7417",
+      "meaning": "Admission-only probe on original refused metadata; no absent transaction content parsed, accepted or backdated"
+    }
+  ],
+  "maximumActiveRecords": 8398,
+  "maximumTotalRecords": 16384,
+  "finalUsage": {
+    "version": "native-active-ownership-compact-corrections-v2",
+    "records": 13633,
+    "activeRecords": 0,
+    "compactRecords": 13633,
+    "maximumActiveRecords": 16384,
+    "maximumFingerprints": 32768,
+    "compactPayloadBytes": 708916,
+    "allocatedCompactArenaBytes": 1703936,
+    "maximumCompactPayloadBytes": 1703936,
+    "compactPayloadMeaning": "One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately",
+    "correctionScopeIdentities": 0,
+    "maximumCorrectionScopeIdentities": 6,
+    "peakCorrectionScopeIdentities": 6,
+    "peakRecords": 16384,
+    "peakActiveRecords": 8398,
+    "compactionOperations": 47067,
+    "expiredRecords": 33434,
+    "activeCapacityRefusals": 0,
+    "fingerprintCapacityRefusals": 0,
+    "correctionRetentionMs": 180000,
+    "firstAvailabilityPreserved": true,
+    "reparseRequiredAfterCompaction": true
+  },
+  "limitations": [
+    "Retained successful parser outputs are reused only for ownership bookkeeping.",
+    "Original cache-refused packets are admission probes only; their actual event content and future corrected windows are not manufactured.",
+    "Original candidate retirements, data gaps and all failed forward results remain unchanged.",
+    "Historical response/notification delivery would not necessarily be identical with a revised runtime."
+  ]
+}
