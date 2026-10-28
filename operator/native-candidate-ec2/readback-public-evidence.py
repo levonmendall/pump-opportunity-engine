@@ -22,6 +22,8 @@ MIB = 1024 * 1024
 BASE = pathlib.Path("/home/mm-ec2-runner/.local/share/poe-native-research")
 EXPECTED_UID = 994
 PROFILE = "candidate-native-two-hour-research-v1"
+PROFILE_90 = "candidate-native-two-hour-90-research-v1"
+PROFILES = frozenset([PROFILE, PROFILE_90])
 ACCOUNT_ID = "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360"
 INCEPTION_AT = 1793123773252
 ARCHIVE = "selected-evidence.tar.gz"
@@ -120,7 +122,7 @@ def decode_manifest(raw, run_id, attempt):
     fields = {"schemaVersion", "classification", "complete", "format", "researchProfile", "githubRunId", "githubRunAttempt", "accountId", "inceptionAt", "archive", "credentialsIncluded", "financialFilesIncluded"}
     public_extras = {"source", "runtimeOutcome", "uncompressedSelectedBytes", "selectedEvidenceBytes", "indexSha256", "rawSelectedEvidenceRetained", "compressionLevel", "costMeaning", "elapsedMs", "cpuMs", "resourceBounds"}
     require(isinstance(value, dict) and fields <= set(value) and set(value) <= fields | public_extras, "READBACK_MANIFEST_FIELDS_INVALID")
-    require(type(value["schemaVersion"]) is int and value["schemaVersion"] == 1 and value["classification"] == "candidate-only-public-evidence" and value["complete"] is True and value["format"] == "tar+gzip" and value["researchProfile"] == PROFILE, "READBACK_PUBLIC_CANDIDATE_ARCHIVE_REQUIRED")
+    require(type(value["schemaVersion"]) is int and value["schemaVersion"] == 1 and value["classification"] == "candidate-only-public-evidence" and value["complete"] is True and value["format"] == "tar+gzip" and isinstance(value["researchProfile"], str) and value["researchProfile"] in PROFILES, "READBACK_PUBLIC_CANDIDATE_ARCHIVE_REQUIRED")
     require(value["githubRunId"] == run_id and value["githubRunAttempt"] == attempt and value["accountId"] == ACCOUNT_ID and type(value["inceptionAt"]) is int and value["inceptionAt"] == INCEPTION_AT, "READBACK_SOURCE_BINDING_MISMATCH")
     require(value["credentialsIncluded"] is False and value["financialFilesIncluded"] is False, "READBACK_PRIVATE_OR_FINANCIAL_ARCHIVE_DENIED")
     archive = value["archive"]
@@ -194,7 +196,7 @@ def stream_from_base_fd(base_fd, uid, run_id, attempt, offset, length, output):
         require(stat_identity(archive_before) == archive["stat"], "READBACK_ARCHIVE_STAT_MISMATCH")
         require(start <= archive["bytes"], "READBACK_OFFSET_AFTER_EOF")
         actual_length = min(requested, archive["bytes"] - start)
-        emit(output, {"schemaVersion": 1, "kind": "header", "classification": "candidate-only-public-evidence-readback", "githubRunId": run_id, "githubRunAttempt": attempt, "researchProfile": PROFILE, "accountId": ACCOUNT_ID, "inceptionAt": INCEPTION_AT, "manifestSha256": hashlib.sha256(raw_manifest).hexdigest(), "archive": {"file": ARCHIVE, "bytes": archive["bytes"], "sha256": archive["sha256"]}, "chunk": {"offset": start, "requestedLength": requested, "actualLength": actual_length, "sourceBlockMaximumBytes": SOURCE_BLOCK_BYTES}, "integrityMeaning": "Manifest creation SHA256 is supplied; this call hashes only its bounded chunk. Verify the entire archive SHA256 after reassembly. Complete archive/readback does not establish source runtime or market-window success."})
+        emit(output, {"schemaVersion": 1, "kind": "header", "classification": "candidate-only-public-evidence-readback", "githubRunId": run_id, "githubRunAttempt": attempt, "researchProfile": manifest["researchProfile"], "accountId": ACCOUNT_ID, "inceptionAt": INCEPTION_AT, "manifestSha256": hashlib.sha256(raw_manifest).hexdigest(), "archive": {"file": ARCHIVE, "bytes": archive["bytes"], "sha256": archive["sha256"]}, "chunk": {"offset": start, "requestedLength": requested, "actualLength": actual_length, "sourceBlockMaximumBytes": SOURCE_BLOCK_BYTES}, "integrityMeaning": "Manifest creation SHA256 is supplied; this call hashes only its bounded chunk. Verify the entire archive SHA256 after reassembly. Complete archive/readback does not establish source runtime or market-window success."})
         hasher = hashlib.sha256()
         sent = 0
         index = 0

@@ -155,7 +155,7 @@ class FixedAccessBoundary(unittest.TestCase):
 
 class ManifestAndIntegrity(unittest.TestCase):
     def test_manifest_public_profile_binding_flags_and_exact_filename_are_mandatory(self):
-        patches = [("complete", False), ("classification", "other"), ("format", "raw"), ("researchProfile", "legacy"), ("githubRunId", "1"), ("githubRunAttempt", 1), ("accountId", "other"), ("inceptionAt", 1), ("credentialsIncluded", True), ("financialFilesIncluded", True)]
+        patches = [("complete", False), ("classification", "other"), ("format", "raw"), ("researchProfile", "legacy"), ("researchProfile", "candidate-native-two-hour-90-research-v2"), ("researchProfile", [module.PROFILE_90]), ("githubRunId", "1"), ("githubRunAttempt", 1), ("accountId", "other"), ("inceptionAt", 1), ("credentialsIncluded", True), ("financialFilesIncluded", True)]
         for key, value in patches:
             with self.subTest(key=key), fixture() as f:
                 f["manifest"][key] = value
@@ -237,6 +237,12 @@ class ManifestAndIntegrity(unittest.TestCase):
 
 class ActualProducerConsumerComposition(unittest.TestCase):
     def test_actual_current_archiver_output_is_decoded_and_read_by_actual_reader(self):
+        self._verify_actual_creator_reader(module.PROFILE)
+
+    def test_actual90_archiver_output_keeps_the_same_profile_through_actual_reader(self):
+        self._verify_actual_creator_reader(module.PROFILE_90)
+
+    def _verify_actual_creator_reader(self, selected_profile):
         creator_path = PATH.with_name("run-bounded.py")
         creator_spec = importlib.util.spec_from_file_location("public_archive_creator_fixture", creator_path)
         creator = importlib.util.module_from_spec(creator_spec)
@@ -251,7 +257,7 @@ class ActualProducerConsumerComposition(unittest.TestCase):
             evidence = root / "run/events/events-001.ndjson"
             evidence.write_bytes(original_bytes)
             evidence.chmod(0o600)
-            limits = creator.host_profile(creator.TWO_HOUR_PROFILE)
+            limits = creator.host_profile(selected_profile)
             creator.export_artifact(root, "a" * 64, limits)
             original_regular = creator.regular
             # Only the fixture UID differs from the real host's fixed UID994.
@@ -260,10 +266,11 @@ class ActualProducerConsumerComposition(unittest.TestCase):
             creator.regular = fixture_regular
             try:
                 outcome = {"accountId": module.ACCOUNT_ID, "inceptionAt": module.INCEPTION_AT, "source": {"commit": "f" * 40, "sha256": "e" * 64}, "runtimeOutcome": {"classification": "fatal-source-stop", "mechanicallyCompleted": False, "failureReason": "SYNTHETIC_OFFLINE_FAILURE_RETAINED"}}
-                created = creator.archive_public_evidence(root, limits, time.monotonic() + 10, creator.TWO_HOUR_PROFILE, outcome, RUN, ATTEMPT)
+                created = creator.archive_public_evidence(root, limits, time.monotonic() + 10, selected_profile, outcome, RUN, ATTEMPT)
             finally:
                 creator.regular = original_regular
             self.assertTrue(created["complete"])
+            self.assertEqual(created["researchProfile"], selected_profile)
             self.assertEqual(created["resourceBounds"]["cpuSeconds"], 120)
             self.assertEqual(created["resourceBounds"]["maximumRssMiB"], 256)
             self.assertTrue(created["resourceBounds"]["remainingOuterDeadlineIsBinding"])
@@ -279,6 +286,7 @@ class ActualProducerConsumerComposition(unittest.TestCase):
             finally:
                 os.close(base_fd)
             rows = [json.loads(line) for line in output.getvalue().splitlines()]
+            self.assertEqual(rows[0]["researchProfile"], selected_profile)
             returned = b"".join(base64.b64decode(row["base64"], validate=True) for row in rows if row["kind"] == "data")
             self.assertEqual(returned, source)
             self.assertEqual(rows[-1]["chunkSha256"], hashlib.sha256(source).hexdigest())

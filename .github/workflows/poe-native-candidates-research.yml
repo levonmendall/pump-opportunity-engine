@@ -46,7 +46,7 @@ jobs:
             --package "$GITHUB_WORKSPACE/scripts/poe/native-candidates" \
             --manifest-sha256 "$POE_PACKAGE_SHA256"
       - name: Export bounded public research receipts and selected evidence
-        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE != 'candidate-native-two-hour-research-v1' && env.POE_NATIVE_EVIDENCE_EXPORT_READY == 'true'
+        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE == 'default-900s' && env.POE_NATIVE_EVIDENCE_EXPORT_READY == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: poe-native-candidates-${{ github.run_id }}-${{ github.run_attempt }}
@@ -73,7 +73,7 @@ jobs:
           retention-days: 1
           compression-level: 6
       - name: Preserve bounded failure summaries when full evidence export was not verified
-        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE != 'candidate-native-two-hour-research-v1' && env.POE_NATIVE_EVIDENCE_EXPORT_READY != 'true'
+        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE == 'default-900s' && env.POE_NATIVE_EVIDENCE_EXPORT_READY != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: poe-native-candidates-INCOMPLETE-EVIDENCE-${{ github.run_id }}-${{ github.run_attempt }}
@@ -92,7 +92,7 @@ jobs:
           retention-days: 1
           compression-level: 6
       - name: Record bounded durable archive receipt without uploading an artifact
-        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE == 'candidate-native-two-hour-research-v1'
+        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && (env.POE_NATIVE_RESEARCH_PROFILE == 'candidate-native-two-hour-research-v1' || env.POE_NATIVE_RESEARCH_PROFILE == 'candidate-native-two-hour-90-research-v1')
         shell: bash
         run: |
           set -euo pipefail

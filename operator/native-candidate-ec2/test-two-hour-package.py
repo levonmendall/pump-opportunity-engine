@@ -39,6 +39,23 @@ class Profiles(unittest.TestCase):
         extended["runnerCpuSeconds"] = 1
         self.assertEqual(module.host_profile(module.TWO_HOUR_PROFILE)["runnerCpuSeconds"], 1920)
 
+    def test90_profile_changes_only_unit_ceiling_and_both_long_choices_remain_durable(self):
+        old = module.host_profile(module.TWO_HOUR_PROFILE)
+        selected = module.host_profile(module.TWO_HOUR_90_PROFILE)
+        self.assertEqual(selected["maximumUnits"], 11500)
+        self.assertEqual(old["maximumUnits"], 7500)
+        self.assertEqual({**selected, "maximumUnits": old["maximumUnits"]}, old)
+        self.assertEqual(module.LONG_PROFILES, frozenset([module.TWO_HOUR_PROFILE, module.TWO_HOUR_90_PROFILE]))
+        self.assertNotIn(None, module.LONG_PROFILES)
+        source = PATH.read_text()
+        self.assertIn("if profile in LONG_PROFILES:", source)
+        self.assertNotIn("if profile == TWO_HOUR_PROFILE:", source)
+        selected["maximumUnits"] = 1
+        self.assertEqual(module.host_profile(module.TWO_HOUR_90_PROFILE)["maximumUnits"], 11500)
+        for invalid in ["candidate-native-two-hour-90-research-v2", "candidate-native-two-hour-120-research-v1", 90, []]:
+            with self.assertRaisesRegex(RuntimeError, "UNKNOWN_HOST_RESEARCH_PROFILE"):
+                module.host_profile(invalid)
+
     def test_two_hour_runtime_completion_is_not_a_candidate_window_pass(self):
         source = {"running": False, "startedAt": 1000000, "generatedAt": 8190010, "elapsedMs": 7190010, "stopRequestedAt": 8190000, "logicalObservationCutoffAt": 8190000, "stopReason": "logical observation cutoff reached; shutdown reserve begins", "engine": {"rpc": {"fatal": None}, "counters": {"auditedWindows": 0, "predictiveAssessments": 0}}}
         good = module.runtime_outcome(source, 7200000)

@@ -27,10 +27,13 @@ OUTER_SECONDS = 1020
 OBSERVATION_SECONDS = 900
 FINAL_REPORT_SECONDS = 45
 TWO_HOUR_PROFILE = "candidate-native-two-hour-research-v1"
+TWO_HOUR_90_PROFILE = "candidate-native-two-hour-90-research-v1"
+LONG_PROFILES = frozenset([TWO_HOUR_PROFILE, TWO_HOUR_90_PROFILE])
 DEFAULT_OBSERVATION_POLICY = "observation-age-v1"
 STUDY_OBSERVATION_POLICY = "observation-age-selected-24h-study-v1"
 DEFAULT_HOST_LIMITS = {"durationSeconds": 900, "outerSeconds": 1020, "finalPublisherDrainSeconds": 45, "runnerTimeoutSeconds": 915, "workflowTimeoutMinutes": 20, "candidateSlots": 6, "heapMiB": 256, "runnerRssMiB": 384, "runnerCpuSeconds": 240, "publisherCpuSeconds": 15, "archiveCpuSeconds": 30, "archiveRssMiB": 256, "temporaryMiB": 256, "artifactMiB": 192, "compressedArchiveMiB": 32, "evidenceMiB": 128, "evidenceSegmentMiB": 8, "minimumAvailableRamMiB": 1024, "minimumAvailableDiskMiB": 1024, "minimumOngoingDiskMiB": 256, "maximumBaselinePaths": 224, "maximumComponentBookBytes": 512 * 1024, "maximumBaselineBytes": 32 * MIB, "maximumRpcMetadataBytes": 256 * 1024, "maximumChapters": 32, "maximumPackageMiB": 48, "maximumUnits": 1500}
 TWO_HOUR_HOST_LIMITS = {**DEFAULT_HOST_LIMITS, "durationSeconds": 7200, "outerSeconds": 7320, "runnerTimeoutSeconds": 7215, "workflowTimeoutMinutes": 125, "runnerCpuSeconds": 1920, "publisherCpuSeconds": 120, "archiveCpuSeconds": 120, "temporaryMiB": 1536, "artifactMiB": 1280, "compressedArchiveMiB": 256, "evidenceMiB": 1024, "minimumAvailableDiskMiB": 2048, "maximumBaselinePaths": 192, "maximumRpcMetadataBytes": 2 * MIB, "maximumChapters": 64, "maximumUnits": 7500}
+TWO_HOUR_90_HOST_LIMITS = {**TWO_HOUR_HOST_LIMITS, "maximumUnits": 11500}
 INSTANCE = ("133857166104", "us-west-2", "i-00044d4ea1471b957")
 SECRET = pathlib.Path("/home/mm-ec2-runner/.local/share/poe-reporting/pilot-ingest.secret")
 PUBLIC = pathlib.Path("/var/lib/poe-public/status.json")
@@ -48,8 +51,8 @@ def require(condition, reason):
 
 
 def host_profile(name=None):
-    require(name in [None, TWO_HOUR_PROFILE], "UNKNOWN_HOST_RESEARCH_PROFILE")
-    return dict(TWO_HOUR_HOST_LIMITS if name == TWO_HOUR_PROFILE else DEFAULT_HOST_LIMITS)
+    require(name in [None, TWO_HOUR_PROFILE, TWO_HOUR_90_PROFILE], "UNKNOWN_HOST_RESEARCH_PROFILE")
+    return dict(TWO_HOUR_90_HOST_LIMITS if name == TWO_HOUR_90_PROFILE else TWO_HOUR_HOST_LIMITS if name == TWO_HOUR_PROFILE else DEFAULT_HOST_LIMITS)
 
 
 def observation_policy(version=None):
@@ -514,7 +517,7 @@ def main():
     temp = pathlib.Path(os.environ["RUNNER_TEMP"]).resolve(strict=True)
     require(os.environ["GITHUB_RUN_ID"].isdigit() and os.environ["GITHUB_RUN_ATTEMPT"].isdigit(), "RESEARCH_RUN_ID")
     evidence_parent = temp
-    if profile == TWO_HOUR_PROFILE:
+    if profile in LONG_PROFILES:
         evidence_parent = pathlib.Path("/home/mm-ec2-runner/.local/share/poe-native-research")
         evidence_parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         s = evidence_parent.lstat()
