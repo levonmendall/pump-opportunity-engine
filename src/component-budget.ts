@@ -37,7 +37,7 @@ function validateKind(kind:ComponentKind){
   need(kind&&['http','ws','ws-upgrade'].includes(kind.transport),'COMPONENT_OPERATION_DENIED');
   if(kind.transport==='http')validateRpc({method:kind.method});
   else if(kind.transport==='ws'&&kind.method==='subscribeMigration')dataMessage('subscribeMigration');
-  else need(kind.transport==='ws-upgrade'?kind.method==='upgrade':['accountSubscribe','accountUnsubscribe','logsSubscribe','logsUnsubscribe'].includes(kind.method),'COMPONENT_OPERATION_DENIED');
+  else need(kind.transport==='ws-upgrade'?kind.method==='upgrade':['accountSubscribe','accountUnsubscribe','logsSubscribe','logsUnsubscribe','ping'].includes(kind.method),'COMPONENT_OPERATION_DENIED');
 }
 const errorCode=(e:unknown)=>{const m=e instanceof Error?e.message:'';return /^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(m)?m:'COMPONENT_OPERATION_FAILED';};
 

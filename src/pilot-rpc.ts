@@ -133,7 +133,7 @@ export class PilotRpc{
     return this.perform(o=>this.transport!.call<T>(method,params,signal,o),signal,options,'rpc');
   }
   async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,options:PilotRpcCallOptions={}):Promise<T>{
-    if(!(kind.transport==='ws-upgrade'&&kind.method==='upgrade'||kind.transport==='ws'&&['subscribeMigration','logsSubscribe','logsUnsubscribe'].includes(kind.method)))throw new PilotRpcUnavailable('DATA_METHOD_DENIED');
+    if(!(kind.transport==='ws-upgrade'&&kind.method==='upgrade'||kind.transport==='ws'&&['subscribeMigration','logsSubscribe','logsUnsubscribe','ping'].includes(kind.method)))throw new PilotRpcUnavailable('DATA_METHOD_DENIED');
     return this.perform(o=>this.budget!.operate(kind,work,signal,o),signal,options,'control');
   }
   /** Control/Portal receipt only. Broad PumpApi traffic has its own feed cap.
