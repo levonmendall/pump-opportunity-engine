@@ -37,6 +37,11 @@ type State = LedgerState;
 export type RuntimeReadiness = { version: string; evidence: string; marketAt: number; recoveryComplete: boolean; candidateWindowsReady: boolean; budgetAvailable: boolean };
 export type ReportingPoint = { at: number; tradingMicroUsd: string | null; economicMicroUsd: string | null };
 export type ReportingHistory = { points: ReportingPoint[]; windowLimited: boolean; downsampled: boolean };
+/** Optional reporting metadata only. Legacy reporting_history is never migrated
+ * or interpreted as a historical token-trading series. */
+export const REPORTING_OPERATING_HISTORY_KEY='reporting_history_operating_v2' as const;
+export const OPERATING_REPORTING_BASIS='net-token-trading-sol-current-usd-v2' as const;
+export type OperatingReportingHistory=ReportingHistory&{schemaVersion:2;basis:typeof OPERATING_REPORTING_BASIS;cutoverAt:number|null;firstObservedAt:number|null};
 export type ExecutionQuote = {
   /** Caller must supply the first available supported state at/after modeled delay. */
   at: number; spendLamports: string; receiveUnits: string; evidence: string;
@@ -65,6 +70,28 @@ function priceAt(price: UsdPrice, now: number) {
 }
 const usd = (lamports: bigint, price: bigint) => lamports * price / L;
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+
+/** Shared with backup/recovery validation. No database or financial mutation. */
+export function validateOperatingReportingHistory(value:unknown,inceptionAt:number):OperatingReportingHistory {
+  const h=value as OperatingReportingHistory,integer=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
+  if(!integer(inceptionAt)||!h||typeof h!=='object'||Array.isArray(h)||Object.keys(h).sort().join(',')!=='basis,cutoverAt,downsampled,firstObservedAt,points,schemaVersion,windowLimited'||h.schemaVersion!==2||h.basis!==OPERATING_REPORTING_BASIS||typeof h.windowLimited!=='boolean'||typeof h.downsampled!=='boolean'||!Array.isArray(h.points)||h.points.length<1||h.points.length>720)throw Error('invalid operating reporting history metadata');
+  if(h.cutoverAt!==null&&(!integer(h.cutoverAt)||h.cutoverAt<=inceptionAt)||h.firstObservedAt!==null&&(!integer(h.firstObservedAt)||h.cutoverAt===null||h.firstObservedAt<h.cutoverAt))throw Error('operating reporting cutover mismatch');
+  let previous=-Infinity;
+  for(const p of h.points){
+    if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).sort().join(',')!=='at,economicMicroUsd,tradingMicroUsd'||!integer(p.at)||p.at<inceptionAt||p.at<=previous)throw Error('operating reporting chronology');
+    for(const v of [p.tradingMicroUsd,p.economicMicroUsd])if(v!==null){if(typeof v!=='string'||!/^(-?(0|[1-9][0-9]*))$/.test(v))throw Error('integer operating reporting value required');amount(v.startsWith('-')?v.slice(1):v);}
+    if(p.at>inceptionAt&&(p.tradingMicroUsd!==null||p.economicMicroUsd!==null)&&(h.cutoverAt===null||p.at<h.cutoverAt))throw Error('operating reporting value before cutover');
+    if(p.at>inceptionAt&&p.tradingMicroUsd!==null&&(h.firstObservedAt===null||p.at<h.firstObservedAt))throw Error('operating reporting first observation mismatch');
+    previous=p.at;
+  }
+  const first=h.points[0]!;
+  if(first.at!==inceptionAt||first.tradingMicroUsd!=='0'||first.economicMicroUsd!==null)throw Error('operating reporting inception mismatch');
+  if(h.cutoverAt===null&&(h.points.length!==1||h.firstObservedAt!==null||h.windowLimited||h.downsampled))throw Error('operating reporting cutover absent');
+  if(h.cutoverAt!==null&&h.points.length<2)throw Error('operating reporting observations absent');
+  if(h.firstObservedAt!==null&&!h.windowLimited&&!h.downsampled&&!h.points.some(p=>p.at===h.firstObservedAt&&p.tradingMicroUsd!==null))throw Error('operating reporting first observation absent');
+  if(h.cutoverAt!==null&&h.cutoverAt>inceptionAt+1){const gap=h.points[1];if(!gap||gap.at!==inceptionAt+1||gap.tradingMicroUsd!==null||gap.economicMicroUsd!==null)throw Error('operating reporting inception gap absent');}
+  return structuredClone(h);
+}
 
 /** Parent aliases share one lease; final DB aliases cannot split ownership or WAL identity. */
 function canonicalDatabase(path: string): string {
@@ -577,6 +604,38 @@ export class PaperLedger {
       }
       this.db.prepare("INSERT INTO metadata VALUES('reporting_history',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(history));
       return history;
+    }).immediate();
+  }
+  getOperatingReportingHistory():OperatingReportingHistory {
+    const inceptionAt=this.state().inceptionAt,size=this.db.prepare('SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key=?').get(REPORTING_OPERATING_HISTORY_KEY) as {size:number}|undefined;
+    if(!size)return {schemaVersion:2,basis:OPERATING_REPORTING_BASIS,cutoverAt:null,firstObservedAt:null,points:[{at:inceptionAt,tradingMicroUsd:'0',economicMicroUsd:null}],windowLimited:false,downsampled:false};
+    if(size.size>262144)throw Error('operating reporting history metadata limit');
+    const row=this.db.prepare('SELECT value FROM metadata WHERE key=?').get(REPORTING_OPERATING_HISTORY_KEY) as {value:string};
+    return validateOperatingReportingHistory(JSON.parse(row.value),inceptionAt);
+  }
+  /** Only reporting metadata is written. observedAt is the actual source
+   * observation time; historical null markers denote absence, not old prices. */
+  recordOperatingReportingPoint(point:ReportingPoint,observedAt:number):OperatingReportingHistory {
+    const inceptionAt=this.state().inceptionAt;this.validateReportingPoint(point,inceptionAt);
+    if(!Number.isSafeInteger(observedAt)||observedAt<point.at)throw Error('operating reporting observation time');
+    const inceptionPoint=point.at===inceptionAt&&point.tradingMicroUsd==='0'&&point.economicMicroUsd===null;
+    if(!inceptionPoint&&point.at<observedAt&&(point.tradingMicroUsd!==null||point.economicMicroUsd!==null))throw Error('operating reporting data cannot be backdated');
+    return this.db.transaction(()=>{
+      const h=this.getOperatingReportingHistory(),last=h.points.at(-1)!;
+      if(point.at<last.at)throw Error('operating reporting point regression');
+      if(point.at===last.at){if(point.tradingMicroUsd!==last.tradingMicroUsd||point.economicMicroUsd!==last.economicMicroUsd)throw Error('operating reporting point conflict');return h;}
+      if(h.cutoverAt===null)h.cutoverAt=observedAt;
+      if(h.points.length===1&&point.at>inceptionAt+1)h.points.push({at:inceptionAt+1,tradingMicroUsd:null,economicMicroUsd:null});
+      h.points.push({...point});
+      if(point.tradingMicroUsd!==null&&h.firstObservedAt===null)h.firstObservedAt=point.at;
+      while(h.points.length>720){
+        const mask=(p:ReportingPoint)=>`${p.tradingMicroUsd===null}:${p.economicMicroUsd===null}`;let remove=-1,smallest=Infinity;
+        for(let i=1;i<h.points.length-1;i++){const a=h.points[i-1]!,b=h.points[i]!,c=h.points[i+1]!,span=c.at-a.at;if(mask(a)===mask(b)&&mask(b)===mask(c)&&span<smallest){remove=i;smallest=span;}}
+        if(remove>=0){h.points.splice(remove,1);h.downsampled=true;}
+        else{const gap=h.points[1]?.at===inceptionAt+1&&h.points[1].tradingMicroUsd===null&&h.points[1].economicMicroUsd===null;h.points.splice(gap?2:1,1);h.windowLimited=true;if(!gap&&h.points[1]!.at>inceptionAt+1)h.points.splice(1,0,{at:inceptionAt+1,tradingMicroUsd:null,economicMicroUsd:null});}
+      }
+      const validated=validateOperatingReportingHistory(h,inceptionAt),body=JSON.stringify(validated);if(Buffer.byteLength(body)>262144)throw Error('operating reporting history metadata limit');
+      this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(REPORTING_OPERATING_HISTORY_KEY,body);return validated;
     }).immediate();
   }
   projection(now: number, price?: UsdPrice, marks: Record<string, Mark> = {}) {
