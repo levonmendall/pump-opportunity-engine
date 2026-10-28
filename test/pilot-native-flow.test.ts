@@ -117,6 +117,13 @@ test('peer pongs and liveness pings require explicit service and use the same ph
   const f=setup(),socket=await f.open();let before=f.operations.length;socket.emit('ping',Buffer.from('provider-ping'));assert.equal(f.operations.length,before,'event handlers do not dispatch provider operations');await f.drive();assert.equal(f.operations.at(-1)!.method,'pong');assert.equal(socket.controls.at(-1),'pong');before=f.operations.length;await f.advance(10001);assert.equal(f.operations.length,before,'clock advancement does not launch background RPC');await f.drive();assert.equal(f.operations.at(-1)!.method,'ping');assert.equal(f.active,0);assert.equal(f.opens.length,1);await f.flow.stop();
 });
 
+test('a late old-connection protocol attempt cannot consume a new connection managed operation',async()=>{
+ const f=setup(),old=await f.open();old.drop();await settle();await f.advance(2100);await f.drive(8);const next=f.sockets.at(-1)!;assert.notEqual(next,old);const ping=next.ping.bind(next),before=f.flow.usage().protocolFrames;
+ next.ping=(payload,mask,callback)=>{old._sender.sendFrame([Buffer.from([0x89])],()=>{});ping(payload,mask,callback);};
+ await f.advance(10001);assert.equal((await f.flow.service()).kind,'ping');assert.equal(f.flow.usage().protocolFrames,before+1);assert.equal(f.flow.usage().unmanagedControlUnits,0);assert.equal(f.flow.snapshot(scope.mint)!.connected,true);assert.equal(f.flow.usage().fatal,null);
+ const suppressed=f.records.find(row=>row.kind==='native-flow-suppressed-library-control');assert.ok(suppressed);assert.equal(suppressed.data.connection,1);assert.equal(suppressed.data.opcode,9);assert.equal(suppressed.data.physicalFrameSent,false);const current=f.records.filter(row=>row.kind==='native-flow-outbound-control').at(-1)!;assert.equal(current.data.connection,2);assert.equal(current.data.opcode,9);assert.equal(typeof current.data.operationId,'number');await f.flow.stop();
+});
+
 test('stop during an unfinished upgrade settles its physical operation before another service can run',async()=>{
   const f=setup({hangOpen:true});await f.flow.addCandidate(scope);await f.drive();const connecting=f.flow.service();await settle();assert.equal(f.active,1);assert.equal(f.operations.length,1);await f.flow.service();assert.equal(f.operations.length,1,'busy service cannot launch competing controls');await f.flow.stop('OFFLINE_STOP_DURING_UPGRADE');await connecting;assert.equal(f.active,0);assert.equal(f.sockets[0]!.readyState,WebSocket.CLOSED);assert.equal(f.flow.usage().physicalTransportsSettled,true);
 });
@@ -177,6 +184,20 @@ test('retired tombstones are connection-scoped and cannot turn an arbitrary new-
 
 test('a subscription ID cannot be reassigned inside its retirement grace while old frames would be ambiguous',async()=>{
  const f=setup({maximumCandidates:2}),socket=await f.open(),mint=new PublicKey(Buffer.alloc(32,21)),second={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};await f.open(second);const oldSubscription=f.flow.snapshot(second.mint)!.subscription!;f.flow.removeCandidate(second.mint,'OFFLINE_RETIRE');await f.drive();(socket as unknown as {subscription:number}).subscription=oldSubscription-1;f.flow.addCandidate(second);await f.drive(5);assert.ok(f.gaps.some(g=>g.reason==='NATIVE_FLOW_SUBSCRIPTION_ID_REUSED'));assert.equal(f.opens.length,2,'ambiguous reused ID never opens a new usable window');assert.equal(f.flow.usage().fatal,null);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.flow.snapshot(second.mint)?.warm,false);await f.flow.stop();
+ const refusal=f.records.find(row=>row.kind==='native-flow-control-refused'&&row.data.reason==='NATIVE_FLOW_SUBSCRIPTION_ID_REUSED');assert.ok(refusal);assert.equal(refusal.data.method,'logsSubscribe');assert.equal(refusal.data.mint,second.mint);assert.equal(refusal.data.acknowledgement.subscriptionId,oldSubscription);assert.equal(refusal.data.acknowledgement.retiredSubscriptionMatch,true);assert.equal(refusal.data.physicalSettlementClaimed,false);
+});
+
+test('malformed subscription results retain bounded refusal diagnostics without accepting the ID or raw payload',async()=>{
+ const f=setup({maximumCandidates:2}),socket=await f.open(),secondMint=new PublicKey(Buffer.alloc(32,83)),second={mint:secondMint.toBase58(),pool:canonicalPumpPoolPda(secondMint).toBase58()};
+ socket.send=(data,callback)=>{const request=JSON.parse(data);callback?.();queueMicrotask(()=>socket.frame({jsonrpc:'2.0',id:request.id,result:{untrusted:'RAW_PROVIDER_VALUE_MUST_NOT_BE_RECORDED'}}));};
+ f.flow.addCandidate(second);await f.drive(3);
+ const refusal=f.records.find(row=>row.kind==='native-flow-control-refused');assert.ok(refusal);assert.equal(refusal.data.reason,'NATIVE_FLOW_SUBSCRIPTION_ACK');assert.equal(refusal.data.method,'logsSubscribe');assert.equal(refusal.data.mint,second.mint);assert.equal(refusal.data.acknowledgement.resultType,'object');assert.equal(refusal.data.acknowledgement.safeNonnegativeInteger,false);assert.equal(refusal.data.acknowledgement.subscriptionId,null);assert.equal(JSON.stringify(refusal).includes('RAW_PROVIDER_VALUE_MUST_NOT_BE_RECORDED'),false);assert.equal(f.flow.snapshot(second.mint)!.warm,false);await f.flow.stop();
+});
+
+test('subscription RPC errors retain only the numeric error code before generic budget normalization',async()=>{
+ const f=setup({maximumCandidates:2}),socket=await f.open(),secondMint=new PublicKey(Buffer.alloc(32,84)),second={mint:secondMint.toBase58(),pool:canonicalPumpPoolPda(secondMint).toBase58()};
+ socket.send=(data,callback)=>{const request=JSON.parse(data);callback?.();queueMicrotask(()=>socket.frame({jsonrpc:'2.0',id:request.id,error:{code:-32602,message:'UNTRUSTED_PROVIDER_MESSAGE'}}));};
+ f.flow.addCandidate(second);await f.drive(3);const refusal=f.records.find(row=>row.kind==='native-flow-control-refused');assert.ok(refusal);assert.equal(refusal.data.rpcErrorCode,-32602);assert.equal(refusal.data.reason,'COMPONENT_WS_RPC_ERROR');assert.equal(refusal.data.acknowledgement,null);assert.equal(JSON.stringify(refusal).includes('UNTRUSTED_PROVIDER_MESSAGE'),false);assert.equal(f.flow.snapshot(second.mint)!.warm,false);await f.flow.stop();
 });
 
 test('malformed known-retired payloads still fail closed instead of receiving an arbitrary-ID exemption',async()=>{

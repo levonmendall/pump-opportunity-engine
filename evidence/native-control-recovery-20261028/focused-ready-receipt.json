@@ -1,0 +1,20 @@
+{
+  "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "sourceSha256": "90eabfb00525e2705c2bcce0c7159cb8d96185ea8142c68cf740b965bfdb483c",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/native-control-recovery.test.ts",
+    "test/pilot-native-flow.test.ts",
+    "test/native-candidate-runner.test.ts",
+    "test/pilot-rpc.test.ts",
+    "test/component-budget.test.ts"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 4.229194260999975,
+  "endedAt": "2026-10-28T14:41:25.265270+00:00",
+  "logSha256": "9d5f38d7da325f2f2c585154ea42c4efd726171c8d5023b3e91ebfa7f36051f1",
+  "classification": "OFFLINE_CONTROL_REPRODUCTION_AND_SHARED_GATE_REGRESSIONS"
+}
