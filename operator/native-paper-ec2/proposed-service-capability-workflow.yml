@@ -22,7 +22,7 @@ jobs:
       - name: Verify and inspect fixed nonroot startup metadata only
         env:
           ACTUAL_RUNNER: ${{ runner.name }}
-          EXPECTED_CAPABILITY_SHA256: fbe6a1ac6cad39a8e162f8249b8f233543981ca28d65879914a36d9b245e2eaf
+          EXPECTED_CAPABILITY_SHA256: b6552433ba318d335032a95b3fd01549ba8ea98804f2a8d8e0491c46fd16fb8e
         shell: bash
         run: |
           set -euo pipefail
