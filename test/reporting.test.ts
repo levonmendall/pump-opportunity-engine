@@ -385,3 +385,37 @@ test('candidate progression sorts counts descending, updates dynamically, and pr
   assert.equal(rows().find(row => row.dataset.funnelStage === 'discovered')!.classes.has('inactive-stage'),false);
   assert.ok(rows().filter(row => row.dataset.funnelStage !== 'discovered').every(row => row.classes.has('inactive-stage')));
 });
+
+
+test('compact command view keeps critical summary visible and all secondary details accessible', async t => {
+  const app = await serve(t, { ...config, publicViewer: true, viewerUser: '', viewerPassword: '' });
+  const html = await app.get('/').then(r=>r.text());
+  // No financial or market source is replaced by the layout; the same endpoints remain.
+  const sampleReport=sample();
+  assert.equal((await app.post(sampleReport)).status,200);
+  const snapshot=await app.get('/api/snapshot').then(r=>r.json());
+  assert.deepEqual(snapshot.snapshot,sampleReport);
+  for(const id of ['portfolio','cards','experimental-portfolio','experimental-portfolio-state','experimental-portfolio-cards','experimental-portfolio-positions','experimental-portfolio-trades','experimental-portfolio-chart','performance','chart','positions','trades','funnel','reportingConnections','pilot-telemetry-panel','pilot-funnel','pilot-watch','pilot-decisions','pilot-refusals','sourceConnection','pilotConnection','refreshNow','metrics','decisions','sourceLabel','stateTitle']){
+    assert.equal((html.match(new RegExp('id="'+id+'"','g'))??[]).length,1,'source node is retained: '+id);
+  }
+  assert.match(html,/function compactCommandView\(\)/);
+  assert.match(html,/panelFold\('#pilot-telemetry-panel'/);
+  assert.match(html,/panelFold\('#reportingConnections'/);
+  assert.match(html,/panelFold\('#performance'/);
+  assert.match(html,/panelFold\('section\[aria-labelledby="decisionsTitle"\]'/);
+  assert.match(html,/document\.createElement\('details'\)/);
+  assert.match(html,/document\.createElement\('summary'\)/);
+  assert.match(html,/aria-expanded/);
+  assert.match(html,/body\.poe-compact-view #portfolio:not\(\.compact-expanded\) #cards>\.stat:nth-child\(n\+7\)/);
+  assert.match(html,/body\.poe-compact-view #experimental-portfolio:not\(\.compact-expanded\)/);
+  assert.match(html,/if\(portfolio&&experimental\)portfolio\.after\(experimental\)/);
+  assert.match(html,/if\(status&&hero\)hero\.after\(status\)/);
+  assert.match(html,/Account identity, freshness and source notes/);
+  assert.match(html,/Trade attempts, execution history and P&L chart/);
+  assert.match(html,/Full pilot funnel, market watch and failure diagnostics/);
+  assert.match(html,/LIVE EXECUTION DISABLED/);
+  assert.match(html,/financial source|FINANCIAL SOURCE OF TRUTH/i);
+  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  assert.equal(scripts.length,4);
+  for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
+});
