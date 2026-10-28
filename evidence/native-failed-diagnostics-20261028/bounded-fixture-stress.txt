@@ -1,0 +1,11 @@
+{"classification":"SYNTHETIC_FAILED_PACKET_CAPACITY_NOT_FORWARD_AUDIT_OR_PROFIT","failed":7193,"successful":1318,"elapsedSyntheticMs":70001,"wallMs":2156.283622,"cpuMicros":2656257,"rssBefore":140865536,"peakRss":224145408,"retainedRequiredRows":1131,"retainedFailedFenceRows":7,"fullTransactionMetadata":1318,"compactFingerprints":7193,"warm":true,"independentAuditPassed":false,"recordSink":"All source record calls/bytes counted; fixture discards its synthetic record callback rather than archiving them in unbounded test memory"}
+{"classification":"SYNTHETIC_FAILED_PACKET_CAPACITY_NOT_FORWARD_AUDIT_OR_PROFIT","failed":17000,"successful":1318,"elapsedSyntheticMs":70001,"wallMs":2373.8781819999995,"cpuMicros":2695540,"rssBefore":218058752,"peakRss":302215168,"retainedRequiredRows":1131,"retainedFailedFenceRows":7,"fullTransactionMetadata":1318,"compactFingerprints":17000,"warm":true,"independentAuditPassed":false,"recordSink":"All source record calls/bytes counted; fixture discards its synthetic record callback rather than archiving them in unbounded test memory"}
+✔ executed-flow diagnostics handle7193 or17000 failed packets plus1318 successful events without artificial ledger overflow (4565.513325ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5558.019432
