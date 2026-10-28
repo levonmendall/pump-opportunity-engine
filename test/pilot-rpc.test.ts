@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,writeFileSync,readFileSync,rmSync,existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
@@ -203,5 +203,37 @@ test('native profile does not silently authorize longer runs, more starts, large
   assert.throws(()=>construct({maxResponseBytes:32*MIB+1}),/INVALID_OPTIONS/);
   for(const extra of [{maxResponseBytes:256*MIB+1},{durationMs:1800001},{maxUnits:1501},{maxChapters:33},{chapterUnits:201},{maxStartsPer10s:21}])assert.throws(()=>construct({profile:'candidate-native-research-v1',...extra}),/INVALID_OPTIONS/);
   assert.throws(()=>construct({profile:'unbounded' as PilotRpcOptions['profile']}),/INVALID_OPTIONS/);assert.equal(f.client.usage().newUnits,0);
+ }finally{f.close();}
+});
+
+
+test('local admission and deadline refusals before a reservation preserve the healthy shared gate without provider cooldown',async()=>{
+ for(const options of [{latestStartAt:199999},{admissionOpen:()=>false}]){const f=fixture();try{
+  await assert.rejects(f.client.call('getSlot',[],undefined,options),/DISPATCH_EXPIRED|ADMISSION_CLOSED/);const u=f.client.usage();assert.equal(f.invocations.length,0);assert.equal(u.newUnits,0);assert.equal(u.fatal,null);assert.equal(u.cooldownUntil,0);assert.equal(u.controlCooldownUntil,0);assert.equal(u.chapterUsage!.haltedReason,null);assert.equal(f.client.available(),true);
+  assert.ok(f.records.some(r=>r.kind==='pilot-job-admission-refused'&&r.data.automaticRetry===false&&r.data.providerCooldownUnchanged===true));assert.equal(f.records.some(r=>r.kind==='pilot-rpc-unavailable'),false);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,1);assert.equal(f.client.usage().newUnits,1);
+ }finally{f.close();}}
+});
+
+for(const reason of ['COMPONENT_DISPATCH_EXPIRED','COMPONENT_ADMISSION_CLOSED'])test(`durably reserved ${reason} before physical invocation stays charged and rolls over only after settlement`,async()=>{
+ const directory=mkdtempSync(join(tmpdir(),'poe-local-reserved-refusal-')),old=join(directory,'old.json'),chapter=join(directory,'run/chapter-001.json');let at=200000,armed=false,expired=false,fetches=0;const records:Array<{kind:string;data:any}>=[];let client:PilotRpc|undefined;
+ writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:2,bytes:123,lastObservedAt:1000,starts:[900,1000],pending:[{id:2,unobservedBytes:2*MIB}]}),{mode:0o600});const original=readFileSync(old);
+ const clock=()=>{if(armed&&existsSync(chapter)){const book=JSON.parse(readFileSync(chapter,'utf8'));if(book.starts.length===1&&book.pending.length===1&&book.actualInvocations.length===0){armed=false;expired=true;at+=101;}}return at;};
+ try{
+  client=new PilotRpc({directory:join(directory,'run'),runId:'local-refusal-only',baselinePaths:[old],priorPhysicalSettled:true,maxUnits:3,now:clock,monotonic:()=>at,sleep:async ms=>{at+=ms;},record:(kind,data)=>records.push({kind,data}),fetcher:(async(_url,init)=>{fetches++;const request=JSON.parse(String(init?.body));return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:123}));}) as typeof fetch});
+  armed=true;await assert.rejects(client.call('getSlot',[],undefined,reason==='COMPONENT_DISPATCH_EXPIRED'?{latestStartAt:200100}:{admissionOpen:()=>!expired}),new RegExp(reason));await turn();
+  const u=client.usage(),failed=readFileSync(chapter),book=JSON.parse(failed.toString());assert.equal(fetches,0);assert.equal(u.newUnits,1);assert.equal(book.actualInvocations.length,0);assert.equal(book.haltedReason,reason);assert.equal(book.pending.length,1);assert.equal(book.pending[0].reservedBytes,2*MIB);assert.equal(u.currentChapterUncertainResponseBytes,2*MIB);assert.equal(u.uncertainResponseBytes,4*MIB);assert.equal(u.inFlight,0);assert.equal(u.waitingOrOperating,false);assert.equal(u.fatal,null);assert.equal(u.cooldownUntil,0);assert.equal(u.controlCooldownUntil,0);assert.equal(u.chapter,1);assert.equal(client.available(),true);assert.equal(records.some(r=>r.kind==='pilot-rpc-unavailable'),false);assert.ok(records.some(r=>r.kind==='pilot-job-admission-refused'&&r.data.code===reason&&r.data.reservationsRetained===2*MIB));
+  assert.equal(await client.call('getSlot'),123);assert.equal(fetches,1);const after=client.usage();assert.equal(after.chapter,2);assert.equal(after.newUnits,2);assert.equal(after.cumulativeUnits,4);assert.equal(after.uncertainResponseBytes,4*MIB);assert.equal(after.fatal,null);assert.equal(after.cooldownUntil,0);assert.deepEqual(readFileSync(chapter),failed,'settled rejected chapter is immutable after safe rollover');assert.deepEqual(readFileSync(old),original,'historical refusal and uncertainty remain untouched');
+ }finally{client?.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('a local refusal cannot roll a chapter or release a physical operation that has not actually settled',async()=>{
+ const f=fixture();let settle!:()=>void;
+ try{
+  const first=f.client.operateData({transport:'ws',method:'logsSubscribe'},async op=>new Promise<void>(resolve=>{settle=()=>{op.completeResponse();resolve();};}));await turn();assert.equal(f.client.usage().inFlight,1);
+  // Explicit offline fault injection into the existing budget. The adapter's
+  // caller-facing refusal must not invent transport settlement or a free slot.
+  (f.client as unknown as {budget:{halt:(code:string)=>void}}).budget.halt('COMPONENT_DISPATCH_EXPIRED');await assert.rejects(first,/DISPATCH_EXPIRED/);
+  assert.equal(f.client.usage().fatal,null);assert.equal(f.client.cooldownUntil(),0);assert.equal(f.client.usage().inFlight,1);assert.equal(f.client.available(),false);await assert.rejects(f.client.call('getSlot'),/PHYSICAL_SLOT_OCCUPIED/);assert.throws(()=>f.client.close(),/PHYSICAL_SLOT_OCCUPIED/);assert.equal(f.client.usage().chapter,1);assert.equal(f.client.usage().newUnits,1);assert.equal(f.invocations.length,0);
+  settle();await turn();await turn();assert.equal(f.client.usage().inFlight,0);assert.equal(f.client.available(),true);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().newUnits,2);assert.equal(f.client.usage().uncertainResponseBytes,2*MIB);assert.equal(f.invocations.length,1);
  }finally{f.close();}
 });

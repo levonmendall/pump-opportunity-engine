@@ -21,6 +21,10 @@ export class PilotRpcUnavailable extends Error{
 }
 const int=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const safe=(e:unknown)=>e instanceof Error&&/^(COMPONENT_[A-Z0-9_:-]{1,100}|PAPER_RPC_METHOD_DENIED)$/.test(e.message)?e.message:'COMPONENT_OPERATION_FAILED';
+// A job can lose its admission/deadline while a durable reservation is being
+// written. It remains charged, but this is neither a provider refusal nor a
+// permanent failure of the shared gate. Existing settlement guards still apply.
+const localAdmissionRefusal=(code:string)=>['COMPONENT_DISPATCH_EXPIRED','COMPONENT_ADMISSION_CLOSED'].includes(code);
 const recoverable=(code:string)=>['COMPONENT_HTTP_429','COMPONENT_RPC_OVERLOAD','COMPONENT_PHYSICAL_TIMEOUT','COMPONENT_HTTP_TRANSPORT','COMPONENT_WS_TRANSPORT','COMPONENT_ABORTED','COMPONENT_HTTP_STATUS_502','COMPONENT_HTTP_STATUS_503','COMPONENT_HTTP_STATUS_504'].includes(code);
 function retryAfter(value:unknown,at:number){
   if(typeof value!=='string'||value.length>128)return at+65000;
@@ -88,7 +92,7 @@ export class PilotRpc{
     if(calls-this.initial.calls>=this.units)throw new PilotRpcUnavailable('RUN_UNIT_CAP');if(bytes-this.initial.bytes+4*MIB>this.responseBytes)throw new PilotRpcUnavailable('RUN_RESPONSE_RESERVE');
     if(this.active||u&&(u.inFlight!==0||u.waitingOrOperating))throw new PilotRpcUnavailable('PHYSICAL_SLOT_OCCUPIED');
     if(this.now()<this.cooldown||this.mono()<this.cooldownMono)throw new PilotRpcUnavailable('COOLDOWN',this.cooldown);
-    if(u?.haltedReason&&!this.controlFailure&&!recoverable(u.haltedReason)&&!['COMPONENT_UNIT_CAP','COMPONENT_TIME_CAP'].includes(u.haltedReason))throw new PilotRpcUnavailable('FATAL_'+u.haltedReason);
+    if(u?.haltedReason&&!this.controlFailure&&!recoverable(u.haltedReason)&&!localAdmissionRefusal(u.haltedReason)&&!['COMPONENT_UNIT_CAP','COMPONENT_TIME_CAP'].includes(u.haltedReason))throw new PilotRpcUnavailable('FATAL_'+u.haltedReason);
   }
   private finishChapter(){
     if(!this.budget)return;const u=this.budget.usage();if(u.inFlight||u.waitingOrOperating)throw new PilotRpcUnavailable('PHYSICAL_SLOT_OCCUPIED');
@@ -121,7 +125,10 @@ export class PilotRpc{
       if(domain==='rpc')this.failures=0;return result;
     }catch(error){
       const code=safe(error),u=this.current();
-      if(u?.haltedReason){
+      const refusalReason=u?.haltedReason??code;
+      if(localAdmissionRefusal(refusalReason)){
+        this.emit('pilot-job-admission-refused',{at:this.now(),code:refusalReason,domain,providerCooldownUnchanged:true,cooldownUntil:this.cooldown,physicalSettled:u?.inFlight===0,reservationsRetained:u?.uncertainResponseBytes??0,chapterHalted:u?.haltedReason!=null,nextAttemptRequiresExistingSettlementGuards:true,automaticRetry:false});
+      }else if(u?.haltedReason){
         const globalFailure=/^COMPONENT_(STORAGE|DIAGNOSTIC|CLOCK|MONOTONIC|RESPONSE_|INVALID_)/.test(u.haltedReason);
         if(domain==='control'&&!globalFailure){
           this.controlFailure=true;this.emit('pilot-data-control-unavailable',{at:this.now(),code:u.haltedReason,controlCooldownUntil:this.controlCooldown,publicRpcCooldownUnchanged:true,physicalSettled:u.inFlight===0,reservationsRetained:u.uncertainResponseBytes});
