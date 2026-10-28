@@ -44,6 +44,7 @@ def analyze(root):
         assert actual == {'bytes': row['bytes'], 'sha256': row['sha256']}
         files[str(name)] = actual
     assert len(files) == len(index['files']), 'duplicate indexed file'
+    assert 'final-status.json' in files, 'source status must be hash-indexed'
     status = json.loads((root / 'final-status.json').read_bytes())
     source, source_run = status['source'], status['runId']
     events = []
@@ -61,12 +62,15 @@ def analyze(root):
     events.sort(key=lambda e: (e['sourceFile'], e['sourceLine']))
     assert len({(e['sourceFile'], e['sourceLine']) for e in events}) == len(events)
     rows = lambda kind: [e for e in events if e['kind'] == kind]
-    unique = lambda kind: {e['data']['id']: e for e in rows(kind)}
+    def unique(kind):
+        selected = rows(kind)
+        result = {e['data']['id']: e for e in selected}
+        assert len(result) == len(selected), 'duplicate physical ID: ' + kind
+        return result
     starts = unique('component-physical-start')
     settled = unique('component-physical-settled')
     http = unique('http-lifecycle-timing')
     timeouts = unique('component-physical-timeout')
-    assert len(starts) == len(rows('component-physical-start'))
     targets, operation_target, unmatched_admissions = {}, {}, []
 
     def target(mint, end):
@@ -84,6 +88,18 @@ def analyze(root):
     admission = None
     for event in events:
         kind, d = event['kind'], event['data']
+        if admission is not None:
+            old = admission['data']
+            terminal_end = (d.get('result') or {}).get('target', {}).get('endAt') if kind == 'native-candidate-window-audit' else d.get('targetEndAt', d.get('windowEndAt'))
+            terminal = (kind in ('native-audit-dispatch-summary', 'native-candidate-window-audit',
+                                'native-candidate-window-audit-unavailable', 'native-predictive-window-expired')
+                        and (d.get('mint'), terminal_end) == (old['mint'], old['windowEndAt']))
+            new_generation = kind in ('native-candidate-retired', 'native-candidate-observation-open', 'native-flow-subscription-ack') and d.get('mint') == old['mint']
+            selected_peer = kind == 'native-audit-dispatch-state' and d.get('reason') == 'audit-selected' and d.get('context', {}).get('selectedMint') not in (None, old['mint'])
+            other_physical = kind == 'component-physical-start' and d['kind'] != {'transport': 'http', 'method': 'getSignaturesForAddress'}
+            if terminal or new_generation or selected_peer or other_physical:
+                unmatched_admissions.append(ref(admission))
+                admission = None
         if kind == 'native-audit-dispatch-state':
             t = target(d['mint'], d['windowEndAt'])
             t['states'].append(event)

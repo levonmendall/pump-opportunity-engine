@@ -31,9 +31,10 @@ Coalesced transitions or missing admission events remain explicit unknowns.
 
 ## Offline verification and historical control
 
-Five deterministic tests pass: interleaved multipage peers, Recorder sequence
+Seven deterministic tests pass: interleaved multipage peers, Recorder sequence
 reset, expiration as a subset of unavailable targets, missing page admission, and
-indexed file modification. These test analysis mechanics, not trading capacity.
+indexed file modification, terminal clearing of uninvoked admissions, and indexed
+source status/duplicate physical IDs. These test analysis mechanics, not trading capacity.
 
 The existing verified c189 metadata reproduces 60 unique target windows:
 38 predictive failures,20 unavailable audits,2 unusable audits;14 expirations are

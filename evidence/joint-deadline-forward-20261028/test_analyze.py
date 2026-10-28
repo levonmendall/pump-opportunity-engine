@@ -85,6 +85,28 @@ class Join(unittest.TestCase):
         with self.assertRaises(AssertionError):
             m.analyze(root)
 
+    def test_terminal_target_clears_uninvoked_admission_before_unidentified_peer(self):
+        definitions = [self.page('A', 1, 1002)[0]]
+        definitions += [('native-audit-dispatch-summary', dict(mint='A', windowEndAt=1000,
+                            firstReadyAt=1001, reasonCounts={}, final=True), 'events-001.ndjson')]
+        definitions += self.page('B', 2, 1020)[1:] + self.outcome('A', 1, 'unavailable') + self.outcome('B', 1)
+        result = m.analyze(self.fixture(definitions))
+        self.assertEqual(result['directlyLinkedHistoryPages'], 0)
+        self.assertEqual(result['unlinkedHistoryPhysicalStarts'], [2])
+        self.assertEqual(len(result['unlinkedAdmissionEvidence']), 1)
+
+    def test_source_status_requires_its_indexed_hash_and_duplicate_http_ids_fail(self):
+        root = self.fixture(self.page('A', 1, 1002))
+        index = json.loads((root / 'index.json').read_text())
+        index['files'] = [v for v in index['files'] if v['file'] != 'final-status.json']
+        (root / 'index.json').write_text(json.dumps(index))
+        with self.assertRaisesRegex(AssertionError, 'hash-indexed'):
+            m.analyze(root)
+        rows = self.page('A', 1, 1002)
+        root = self.fixture(rows + [rows[2]])
+        with self.assertRaisesRegex(AssertionError, 'duplicate physical ID'):
+            m.analyze(root)
+
 
 if __name__ == '__main__':
     unittest.main()
