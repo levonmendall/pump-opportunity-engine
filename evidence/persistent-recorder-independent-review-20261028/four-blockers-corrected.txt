@@ -1,0 +1,3 @@
+{"case":"hardlink-state-pending","accepted":true,"outsideBytes":22,"outsideValue":"IRREPLACEABLE_ORIGINAL"}
+{"case":"concurrent-writer","code":"Error: ROTATING_EVIDENCE_WRITER_EXISTS","firstStillWrites":true}
+{"case":"maintenance-starts-before-pin","removedWhilePinPending":[],"pinComplete":true}

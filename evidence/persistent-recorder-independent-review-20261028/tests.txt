@@ -1,0 +1,31 @@
+✔ finite research Recorder still has its original capacity and append shape (3.195287ms)
+✔ young diagnostic pressure is explicit while durable financial proof continues (13.272065ms)
+✔ old closed diagnostics rotate with hash-linked receipts; new and historical files survive (23.016391ms)
+✔ wall-clock jumps cannot expire five-minute monotonic retention (5.223484ms)
+✔ full raw qualification and quote proof survives diagnostic eviction with no hardlinks (12.662722ms)
+✔ pending async pin owns its source files before maintenance can retire them (15.909215ms)
+✔ an absent historical range and identity-conflicting proof never become complete (7.170019ms)
+✔ restart recovers both diagnostic and essential append state and conservatively retains old files (219.519119ms)
+✔ foreign directories and symlink proof targets are refused without touching external files (4.169261ms)
+✔ tampered segment bytes cannot be promoted into a qualification proof (7.539427ms)
+✔ a torn diagnostic tail is retained opaque and cannot certify an old window (240.221093ms)
+✔ torn essential proof closes new-risk admission while financial recording and verified recovery continue (190.382103ms)
+✔ durably receipted deletion interrupted before checkpoint resumes without losing financial proof (22.233541ms)
+✔ missing diagnostics without a valid eviction receipt fail closed (28.459169ms)
+✔ the actual filesystem reserve blocks records honestly rather than consuming financial recovery space (3.48082ms)
+✔ a completed protected proof remains idempotently verifiable after its diagnostic source is retired (11.060112ms)
+✔ overlapping pins retain shared source files until both copies have settled (17.053897ms)
+✔ a foreign hardlinked legacy pending file is never opened for truncation (4.934275ms)
+✔ only one recorder writer can own a namespace and a settled writer permits restart (10.218319ms)
+✔ a pin arriving during asynchronous retirement verification prevents source deletion (9.377146ms)
+✔ every refused timestamp invalidates a requested proof range despite coalesced receipts (9.109029ms)
+✔ loss of an entire committed essential prefix blocks new risk even with a zero-byte surviving file (238.496828ms)
+✔ loss of an entire committed diagnostic prefix cannot certify its historical window (216.913621ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1592.500495
