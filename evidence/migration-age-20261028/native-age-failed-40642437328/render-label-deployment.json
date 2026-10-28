@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-28 06:51:13 UTC",
+  "deploy": {
+    "commit": {
+      "createdAt": "2026-10-28T06:24:26Z",
+      "id": "4c6752d5a7be89c4f95e89728a546deecdb72ae0",
+      "message": "Clarify retained origin identities in source knowledge count"
+    },
+    "createdAt": "2026-10-28T06:26:22.095837Z",
+    "finishedAt": "2026-10-28T06:27:06.824365Z",
+    "id": "dep-dbgpb3k9v7es73b2m5lg",
+    "startedAt": "2026-10-28T06:26:22.068182Z",
+    "status": "live",
+    "trigger": "api",
+    "updatedAt": "2026-10-28T06:27:40.289381Z"
+  },
+  "service": {
+    "id": "srv-daqon53tqb8s73bdceq0",
+    "ownerId": "tea-daqk6h8jo6nc73eojtp0",
+    "repo": "https://github.com/levonmendall/pump-opportunity-engine",
+    "branch": "main",
+    "rootDir": "",
+    "autoDeploy": "no",
+    "autoDeployTrigger": "off",
+    "serviceDetails": {
+      "env": "node",
+      "plan": "free",
+      "runtime": "node",
+      "url": "https://meme-machine-dashboard-staging.onrender.com",
+      "healthCheckPath": "/healthz",
+      "commands": {
+        "buildCommand": "npm ci --include=dev && npm run compile",
+        "startCommand": "npm run dashboard"
+      }
+    }
+  },
+  "mutations": "Reporting source deployment only; no credentials, plan, source binding, service name or original account changes."
+}

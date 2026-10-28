@@ -1,0 +1,15 @@
+{
+  "name": "compile",
+  "command": [
+    "npm",
+    "run",
+    "compile"
+  ],
+  "sourceCommit": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "startedAt": "2026-10-28T14:15:01.919712+00:00",
+  "endedAt": "2026-10-28T14:15:09.583202+00:00",
+  "elapsedSeconds": 7.663574000000153,
+  "exitCode": 0,
+  "logBytes": 77,
+  "logSha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+}

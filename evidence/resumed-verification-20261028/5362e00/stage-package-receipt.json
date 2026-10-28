@@ -1,0 +1,15 @@
+{
+  "name": "stage-package",
+  "command": [
+    "node",
+    "--test",
+    "operator/native-candidate-ec2/test-stage-package.mjs"
+  ],
+  "sourceCommit": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "startedAt": "2026-10-28T14:15:11.903998+00:00",
+  "endedAt": "2026-10-28T14:15:14.990551+00:00",
+  "elapsedSeconds": 3.0865843849999237,
+  "exitCode": 0,
+  "logBytes": 767,
+  "logSha256": "64975e80c12436556db6045f734ad792d5549d535d24de73b7f600db0eb38f9a"
+}

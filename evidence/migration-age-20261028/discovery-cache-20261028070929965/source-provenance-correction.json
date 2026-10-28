@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "runId": "discovery-cache-20261028070929965",
+  "startedAt": 1793171369965,
+  "stoppedStatusGeneratedAt": 1793171862037,
+  "actualRuntimeStartupCommit": "beb40f53bc515d0fabc650038913edb6adc0e97e",
+  "reportedPublicationTimeCommit": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "correction": "Temporary helper computed status.source.commit from publication-time git HEAD. Modules were imported at startup and were not reloaded. Use the startup commit/module hashes for source attribution; preserve the original receipt unchanged. No performance, feature or financial result was produced.",
+  "moduleHashes": [
+    {
+      "path": "src/pilot-feeds.ts",
+      "startupGitBlobSha256": "82b8ad34741cfaade53b12a46d4273000f6278242b0074bade97fe1628fdde69"
+    },
+    {
+      "path": "src/pilot-watch.ts",
+      "startupGitBlobSha256": "04b4372ce852889047c64b735c98cf41c58f80425ca38faf6a72d8c06ca4ad58"
+    },
+    {
+      "path": "src/pilot-rpc.ts",
+      "startupGitBlobSha256": "b0a13106b12de46be9b42a7c726840114f2038be03ec47a9c69a4954d927a5a4"
+    },
+    {
+      "path": "src/component-budget.ts",
+      "startupGitBlobSha256": "9c5c9674a3c87b655e925c1ddf2c95caafddea650b34f409e209d06c18b68ec5"
+    },
+    {
+      "path": "src/component-transport.ts",
+      "startupGitBlobSha256": "8871c9721bcc05690ddac7a3c024b8b0a4c74337e80be8edf279665a3800e5ec"
+    },
+    {
+      "path": "src/network.ts",
+      "startupGitBlobSha256": "a2af962c1fecff741e7be9d69780f2d2f6e3f00edaa4c4207f8fab1c62ee2c38"
+    },
+    {
+      "path": "src/observation-age.ts",
+      "startupGitBlobSha256": "cdd24fa02227592d2870e1cf52fa2b0401a12bc121cb9348b3a24a2861c5a98e"
+    },
+    {
+      "path": "package-lock.json",
+      "startupGitBlobSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+    }
+  ],
+  "scriptSha256": "099710c245dbb47a829eae5115dd5c0f7da19758469b4940bdda876f4e469c5f",
+  "financialWriterOpened": false,
+  "networkOnlyFreeMigrationHints": true,
+  "noPumpApiConnection": true,
+  "newControlUnits": 2,
+  "cumulativeUnits": 4825,
+  "physicalSettlementConfirmed": true
+}

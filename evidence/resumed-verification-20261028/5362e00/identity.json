@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "branch": "poe-free-data-evaluation-20261027",
+  "startedAt": "2026-10-28T14:13:31.009195+00:00",
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "trackedWorkingTreeStatus": "M docs/FUNDING.md",
+  "stagedChanges": "",
+  "sourceTree": "47e4f310694fe9164394dd91e991ce375d881bfe",
+  "scriptsTree": "3b5ed9aeb8fcc9a7a7e592f94abe9ddd2c2ebcd5",
+  "testTree": "78bc4df59e16c793c890dbc500e0254b1924b987",
+  "packageLockSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a",
+  "command": [
+    "npm",
+    "test"
+  ],
+  "scope": "offline; no production or financial-state modification"
+}

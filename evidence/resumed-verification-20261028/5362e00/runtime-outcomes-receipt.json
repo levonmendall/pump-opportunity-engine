@@ -1,0 +1,15 @@
+{
+  "name": "runtime-outcomes",
+  "command": [
+    "python3",
+    "-B",
+    "operator/native-candidate-ec2/test-runtime-outcomes.py"
+  ],
+  "sourceCommit": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "startedAt": "2026-10-28T14:15:09.583740+00:00",
+  "endedAt": "2026-10-28T14:15:09.701180+00:00",
+  "elapsedSeconds": 0.11745522199998959,
+  "exitCode": 0,
+  "logBytes": 109,
+  "logSha256": "38eeff1237d74275801617a271eced659e08b1cad8069897d18e659ae40641d8"
+}
