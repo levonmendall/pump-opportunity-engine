@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "sourceRun": 40758225777,
+  "readbackRun": 40764092128,
+  "archiveBytes": 944279,
+  "archiveSha256": "e785aabbf956159a260e37b7b8c726896d48d4eb021b765c7ad817901a044b46",
+  "wholeArchiveVerified": true,
+  "indexEntriesVerified": 15,
+  "allSelectedFileHashesVerified": true,
+  "rawFinancialFilesIncluded": false,
+  "credentialsIncluded": false,
+  "completeMarketEvidenceIncluded": false,
+  "source": {
+    "commit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+    "sha256": "9baf5500b40eb26bc1ae898c8dbdb8801b9798e8c03de0280bb3896556cb6553"
+  },
+  "logBytes": 1289567,
+  "logSha256": "1a894c76641a08f790a3170757d1f159ab0ea09c23c43a8c904b549c39749bcb"
+}

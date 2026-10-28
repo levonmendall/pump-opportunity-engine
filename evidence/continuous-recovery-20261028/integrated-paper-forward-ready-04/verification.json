@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-28T21:01:03.521010+00:00",
+  "sourceCommit": "0ecab10b2bd6b8d4fdedf2272bc8dfb55e6454c8",
+  "sourceInputsUnchanged": true,
+  "sourceInputCount": 299,
+  "fullSerialSuite": {
+    "passed": 1501,
+    "failed": 0
+  },
+  "build": "PASS",
+  "compile": "PASS",
+  "financialAccountWrites": 0,
+  "marketRequests": 0,
+  "files": [
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-forward-ready-04/source-identity.json",
+      "bytes": 43264,
+      "sha256": "4b077a852f0d2b949aa8445073ea0e84d47d1173b8e9a120379309a4e512dbf2"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-forward-ready-04/full-suite.txt",
+      "bytes": 177498,
+      "sha256": "0f565af87c39910489f9bcd8ac09b4eedc3554de24f98d88daa01ababa3440b6"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-forward-ready-04/full-suite-result.json",
+      "bytes": 67,
+      "sha256": "14686cb9d10554a6c165923052723e873d39ab729622a88ec584fafe2afc8a79"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-forward-ready-04/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-forward-ready-04/compile.txt",
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    }
+  ]
+}
