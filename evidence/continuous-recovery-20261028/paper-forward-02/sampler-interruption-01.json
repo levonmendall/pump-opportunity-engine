@@ -1,0 +1,12 @@
+{
+  "recordedAt": "2026-10-28T21:09:04.903676+00:00",
+  "pid": 146979,
+  "state": "defunct without stop receipt",
+  "lastReceivedAt": 1793221685673,
+  "calls": 3,
+  "responseBytes": 7128,
+  "rawBytes": 7449,
+  "rawSha256": "bf4c2ba88c6e60a03029ec71579514471a246e5d33c311e0d58e5798a13dac0d",
+  "cause": "UNKNOWN; no Render failure demonstrated",
+  "runtimePublisherAffected": false
+}

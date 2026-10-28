@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "kind": "POE_NATIVE_PAPER_CODE_ONLY_PACKAGE_CHECK",
+  "source": {
+    "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+    "sha256": "02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c"
+  },
+  "packageManifestSha256": "00c7bc88a51adb1b58b77f7c1c1b95b408024c57c3c99deae91ba670818bb01c",
+  "nodeSelectorSha256": "23a6a1573bca181041ea9db55164f05197ad929e5a53ace89613f64011b7dd6b",
+  "immutableReleaseCreated": true,
+  "immutableExistingReleaseVerified": false,
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 4895977,
+      "sha256": "02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 67889,
+      "sha256": "41ca5f1d72ea620f8079150a8508c22696ba08876c96cf7a6531f8dbd5c149f5"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "verify-native-paper-package.mjs",
+      "bytes": 122820,
+      "sha256": "e344dd7bae727894bd80e14c24fda7c04b0ab1fedf1d529b7e223d01406cd7cd"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 152300,
+      "sha256": "eff3158aff0f77bf538e08ffc570774ee0baa245b081208bc7e98988cff41519"
+    }
+  ],
+  "runtime": {
+    "node": "v24.21.0",
+    "nodeAbi": "137",
+    "platform": "linux",
+    "architecture": "x64",
+    "sqlite": {
+      "version": "3.53.4",
+      "source": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+    }
+  },
+  "disposable": {
+    "idempotency": true,
+    "backupWorker": true,
+    "reopen": true,
+    "closureVerified": true
+  },
+  "resources": {
+    "elapsedMs": 391,
+    "maximumCombinedRssBytes": 156921856,
+    "stdoutBytes": 861,
+    "stderrBytes": 0,
+    "physicalProcessSettled": true
+  },
+  "elapsedMs": 507,
+  "existingFinancialAccountRead": false,
+  "accountImported": false,
+  "liveMarketPaperTrading": false,
+  "providerRequests": 0,
+  "observerChanged": false,
+  "serviceChanges": false,
+  "newSoftwareInstalled": false
+}
