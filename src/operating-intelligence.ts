@@ -29,6 +29,7 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  if(s.accountId!==ORIGINAL_POE_ACCOUNT||s.inceptionAt!==Date.parse(ORIGINAL_POE_INCEPTION)||at===null||start===null||start<Date.parse(ORIGINAL_POE_INCEPTION)||at<start)throw Error('ORIGINAL_OPERATING_SOURCE_BINDING_REQUIRED');
  const time=(v:unknown)=>{const n=count(v);return n!==null&&n>0&&n<=at&&n<=8640000000000000?new Date(n).toISOString():null;};
  const futureTime=(v:unknown)=>{const n=count(v);return n!==null&&n>0&&n<=8640000000000000?new Date(n).toISOString():null;};
+ if(!Object.hasOwn(s,'positions')||!Object.hasOwn(s,'pending')||!s.positions||!s.pending||Array.isArray(s.positions)||Array.isArray(s.pending)||typeof s.positions!=='object'||typeof s.pending!=='object')throw Error('OPERATING_OWNERSHIP_REQUIRED');
  const w=rec(s.watch),p=rec(s.independentPredictive),f=rec(s.funnel),u=rec(s.usage),rpc=rec(u.rpc),native=rec(u.native),feeds=rec(u.feeds),timing=rec(s.timing),times=rec(s.sourceTimes),resource=rec(first(s.resources,s.resourceControl)),refusals=rec(s.refusals);
  const runId=bounded(s.runId,128),configurationSha256=bounded(s.configurationSha256,64),strategyVersion=bounded(s.strategyVersion,128);
  if(!runId||!configurationSha256||!/^[a-f0-9]{64}$/.test(configurationSha256)||!strategyVersion)throw Error('OPERATING_RUN_PROVENANCE_REQUIRED');
