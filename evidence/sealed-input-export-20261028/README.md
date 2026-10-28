@@ -82,3 +82,28 @@ npm run build
 The actual-book benchmark deliberately refuses any manifest other than the
 unchanged settled raw312 source03 chain. Do not rerun it after real adoption
 or remove that guard to produce a comparable-looking result.
+
+## One zero-request source-identity correction
+
+The first local historical field-check admission at
+`historical-adjudication-20261028192000` retained an abbreviated `90f68c7` source
+identity. It failed locally with `PILOT_RPC_INVALID_TIMEOUT`, completed no result,
+and consumed zero new request units/bytes. Its original receipt, provenance and
+zero-unit chapter remain unchanged. The subsequent corrected diagnostic has a
+full40-character identity and follows the existing strict suffix path unchanged.
+
+The exporter accepts a separate `source-identity-correction.json` ONLY for that
+fixed run, exact short/full commit pair and local refusal shape. The sibling
+binds the original receipt/provenance hashes, original identity, full identity,
+actual four committed source-file hashes and retained script hash. Every original
+counter, account, physical settlement and complete source-chain check still runs.
+It refuses any result, completed target, new request/response/uncertain byte,
+physical batch invocation, other failure, changed hash, changed source blob or
+changed script. It cannot turn a failed attempt into market evidence.
+
+The original files were independently read-only checked against the actual
+sibling after implementation; their hashes stayed unchanged. The actual
+verification receipt is retained. No network, financial database or mutation
+was needed for that check.17 focused boundary/checkpoint tests and the build
+passed after this narrow addition. Its append-only identity record does not
+reset usage or grant another provider/runtime authority.

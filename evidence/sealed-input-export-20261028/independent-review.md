@@ -66,3 +66,26 @@ list from its console summary; the complete immutable provenance output still
 retains it. The runtime input, verification order and start-history guard are
 unchanged. Final exporter SHA256 is
 `8b4e7031578af57b34312ac191c7bd70c57a2fbda2501560122685e021d996f5`.
+
+## Narrow zero-request identity correction
+
+GO for the subsequent correction helper reviewed against9793c09. It applies
+only to the single fixed historical-adjudication run with the retained
+`90f68c7` abbreviation, the exact known full commit, zero new units/bytes/physical
+HTTP starts/logical queries, empty results and the specific local
+`PILOT_RPC_INVALID_TIMEOUT` refusal. It verifies original receipt/provenance
+hashes, all four actual commit blobs and the retained script hash. The correction
+is an append-only sibling record; the original receipt and accounting are not
+rewritten or reclassified. All original suffix, chain/counter and physical
+settlement checks still execute afterward. Other shortened commits do not gain
+a general exemption.
+
+The reviewer reran all9 exporter tests:9/9 PASS, including the generated
+zero-request fixture and its nonzero-request/byte, altered-source, altered-script,
+wrong-run and hash counterexamples. No actual receipt, manifest or financial
+file was modified, and no network or provider operation was performed.
+
+Reviewed hashes for this delta:
+
+- Exporter: `02d2344f239349c31243e9f23b9c51f3b2a20e5f3ebb5436a8f6b032cbc9d22a`.
+- Tests: `d5d83559027fdba9b1f43b39d706b88124a16ceefaf55bcb41b3854ef861eeb9`.

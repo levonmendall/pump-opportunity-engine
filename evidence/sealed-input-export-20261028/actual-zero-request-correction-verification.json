@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "at": 1793216038337,
+  "kind": "actual-zero-request-correction-read-only-verification",
+  "result": {
+    "path": "/workspace/poe-pilot/runs/historical-adjudication-20261028192000/source-identity-correction.json",
+    "sha256": "fb15359cb6702e3e4b311d74f3c19aee27317f20d89d7f117ee3bc2099e9174e",
+    "originalReceiptSha256": "d169b00ce781be1af315029916624beede5290e6ffbda43db470530d683f2b40",
+    "originalProvenanceSha256": "6a29817c01ee595607bb00150e816621274ab91816f75f06d5c35c8f73c7b9a4",
+    "originalSourceCommit": "90f68c7",
+    "sourceCommit": "90f68c707b54ff422e504d591124b664caa4c6d2",
+    "zeroNetworkUsageVerified": true,
+    "originalReceiptRewritten": false,
+    "marketHistoryRewritten": false
+  },
+  "originalFilesUnchanged": true,
+  "financialDatabaseRead": false,
+  "networkCalls": 0,
+  "files": [
+    {
+      "path": "/workspace/poe-pilot/runs/historical-adjudication-20261028192000/receipt.json",
+      "sha256": "d169b00ce781be1af315029916624beede5290e6ffbda43db470530d683f2b40"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/historical-adjudication-20261028192000/provenance.json",
+      "sha256": "6a29817c01ee595607bb00150e816621274ab91816f75f06d5c35c8f73c7b9a4"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/historical-adjudication-20261028192000/source-identity-correction.json",
+      "sha256": "fb15359cb6702e3e4b311d74f3c19aee27317f20d89d7f117ee3bc2099e9174e"
+    }
+  ]
+}

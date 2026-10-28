@@ -1,0 +1,25 @@
+✔ legacy exporter input keeps its exact explicit source list and does not inspect an anchor (1.525956ms)
+✔ first sealed input provides only untrusted raw candidates until original source guards and exact handoff verification run (4.340553ms)
+✔ multiple anchors, absent source list and unsafe anchor names refuse before file access (0.420584ms)
+✔ a changed anchor cannot be adopted merely because its sources are plausible (0.806858ms)
+✔ recursive seals and duplicate/self-referential source lists are explicitly unsupported for this first handoff (1.492035ms)
+✔ updating the local anchor pin cannot hide a changed counter or archived source (1.154564ms)
+✔ importing exporter has no CLI side effects and invalid explicit arguments refuse before accessing an account (1.118531ms)
+✔ repinning an anchor cannot erase or backdate unknown physical demand during adoption (2.275127ms)
+✔ only the fixed zero-request local timeout refusal accepts an append-only source identity correction (3.919528ms)
+✔ quiescent append-only checkpoint preserves all cumulative counters, old429 and uncertain debits while bounding rolling starts (5.627905ms)
+✔ unknown physical stamps retain their latest possible time rather than refund recent provider demand (7.481697ms)
+✔ repeated24h rollovers retain raw history, stable operationIDs and cumulative unknown bytes with a small live chain (57.729495ms)
+✔ in-flight or unsettled transport refuses checkpoint before writing; corruption and anchor mismatch fail closed (2.794939ms)
+✔ checkpointed normal chapters preserve strict hash/starts linkage, default path limits and throttle receipt requirement (3.674194ms)
+✔ unpersisted physical invocation cannot escape rolling control merely because its last durable observation is old (1.251838ms)
+✔ settled-handoff adoption must match every exact source path/hash and counter; archived mutation is detectable without unbounded startup replay (2.033679ms)
+✔ PilotRpc resumes the explicit pinned anchor, links ordinary physical chapters and retains the pin across another restart (38.044664ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1407.211641

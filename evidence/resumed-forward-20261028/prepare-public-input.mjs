@@ -54,6 +54,24 @@ export function verifyNativeInputCheckpointAccounting({checkpointPath,checkpoint
  return {...verified,firstSealStartHistoryVerified:true,unknownPhysicalStartsConservativelyAtSeal:unknown,retainedStarts:retained.length};
 }
 
+/** One append-only correction for an abbreviated identity on a measured
+ * zero-request LOCAL admission refusal. It grants no network/data authority and
+ * cannot rewrite the original receipt or relax any suffix/accounting guard. */
+export function verifyZeroRequestHistoricalSourceCorrection({run,receiptRaw,provenanceRaw,correctionRaw,readBounded,readCommitFile,now}){
+ const r=JSON.parse(receiptRaw),p=JSON.parse(provenanceRaw),c=JSON.parse(correctionRaw),u=r.usage;
+ need(run===PILOT+'/runs/historical-adjudication-20261028192000'&&r.runId==='historical-adjudication-20261028192000'&&r.sourceCommit==='90f68c7'&&r.failure==='PILOT_RPC_INVALID_TIMEOUT'&&r.completed===0&&r.requestedTargets===2&&Array.isArray(r.results)&&r.results.length===0,'ZERO_REQUEST_CORRECTION_SCOPE');
+ need(r.schemaVersion===1&&r.historicalDiagnosisOnly===true&&r.earlierWindowsUnchanged===true&&r.financialFilesRead===false&&r.credentialsRead===false&&r.physicalSettlementConfirmed===true&&r.unresolvedResearchRetained===false&&u?.newUnits===0&&u.newAccountedResponseBytes===0&&u.currentChapterUncertainResponseBytes===0&&u.inFlight===0&&u.waitingOrOperating===false&&u.closed===true&&u.fatal===null&&u.signatureHistoryBatch?.physicalHttpStarts===0&&u.signatureHistoryBatch.logicalQueriesInvoked===0,'ZERO_REQUEST_CORRECTION_NETWORK_OR_DATA');
+ const fields=['schemaVersion','kind','runId','recordedAt','originalReceiptSha256','originalProvenanceSha256','originalSourceCommit','sourceCommit','sourceFiles','scriptPath','scriptSha256','originalReceiptRewritten','networkUsageReclassified'];
+ need(c&&typeof c==='object'&&Object.keys(c).length===fields.length&&fields.every(k=>Object.hasOwn(c,k))&&c.schemaVersion===1&&c.kind==='poe-zero-request-historical-source-identity-correction-v1'&&c.runId===r.runId&&c.originalSourceCommit===r.sourceCommit&&c.sourceCommit==='90f68c707b54ff422e504d591124b664caa4c6d2'&&c.sourceCommit.startsWith(r.sourceCommit)&&c.originalReceiptRewritten===false&&c.networkUsageReclassified===false,'ZERO_REQUEST_CORRECTION_IDENTITY');
+ need(c.originalReceiptSha256===sha(receiptRaw)&&c.originalProvenanceSha256===sha(provenanceRaw),'ZERO_REQUEST_CORRECTION_ORIGINAL_HASH');
+ need(p.schemaVersion===1&&p.source?.commit===c.sourceCommit&&p.historicalDiagnosisOnly===true&&p.financialFilesRead===false&&p.credentialsRead===false&&p.earlierWindowsUnchanged===true&&p.sourceCommitInReceiptMayBeAbbreviated===true&&Number.isSafeInteger(c.recordedAt)&&c.recordedAt>=r.stoppedAt&&Number.isFinite(Date.parse(p.recordedAt))&&c.recordedAt>=Date.parse(p.recordedAt)&&c.recordedAt<=now,'ZERO_REQUEST_CORRECTION_PROVENANCE');
+ const expected=['src/pilot-rpc.ts','src/component-budget.ts','src/component-transport.ts','src/research-baseline.ts'];
+ need(Array.isArray(p.sourceFiles)&&p.sourceFiles.length===expected.length&&JSON.stringify(c.sourceFiles)===JSON.stringify(p.sourceFiles),'ZERO_REQUEST_CORRECTION_SOURCE_FILES');
+ for(let i=0;i<expected.length;i++){const row=p.sourceFiles[i];need(row&&row.path===expected[i]&&/^[a-f0-9]{64}$/.test(row.sha256)&&sha(readCommitFile(c.sourceCommit,row.path))===row.sha256,'ZERO_REQUEST_CORRECTION_SOURCE_FILE_HASH');}
+ need(p.scriptPath===PILOT+'/migration-20261028/shape-field-check.mjs'&&c.scriptPath===p.scriptPath&&/^[a-f0-9]{64}$/.test(p.scriptSha256)&&c.scriptSha256===p.scriptSha256&&sha(readBounded(p.scriptPath,128*1024))===p.scriptSha256,'ZERO_REQUEST_CORRECTION_SCRIPT_HASH');
+ return {path:run+'/source-identity-correction.json',sha256:sha(correctionRaw),originalReceiptSha256:c.originalReceiptSha256,originalProvenanceSha256:c.originalProvenanceSha256,originalSourceCommit:r.sourceCommit,sourceCommit:c.sourceCommit,zeroNetworkUsageVerified:true,originalReceiptRewritten:false,marketHistoryRewritten:false};
+}
+
 export function prepareNativePublicInput(argv=process.argv.slice(2)){
 const now=Date.now(),uid=process.getuid();
 const allowed=new Set(['--bundle-directory','--output','--provenance','--lease-pid','--handoff-directory','--settlement-receipt']);
@@ -142,13 +160,15 @@ while(expectedAccounting.sourceCount<accountingPaths.length){
  need(new RegExp('^'+PILOT+'/runs/historical-adjudication-[0-9]{14}/rpc/chapter-[0-9]{3}\\.json$').test(first),'UNREVIEWED_ACCOUNTING_SUFFIX');
  const run=path.dirname(path.dirname(first)),receiptPath=run+'/receipt.json',beforePath=run+'/manifest-before.json';
  const raw=read(receiptPath,2*MIB),r=JSON.parse(raw),before=JSON.parse(read(beforePath,2*MIB)),u=r.usage;
- need(r.schemaVersion===1&&r.historicalDiagnosisOnly===true&&r.earlierWindowsUnchanged===true&&r.financialFilesRead===false&&r.credentialsRead===false&&r.physicalSettlementConfirmed===true&&r.unresolvedResearchRetained===false&&/^[a-f0-9]{40}$/.test(r.sourceCommit),'SETTLED_HISTORICAL_RECEIPT_REQUIRED');
+ let sourceIdentityCorrection=null;
+ if(!/^[a-f0-9]{40}$/.test(r.sourceCommit))sourceIdentityCorrection=verifyZeroRequestHistoricalSourceCorrection({run,receiptRaw:raw,provenanceRaw:read(run+'/provenance.json',128*1024),correctionRaw:read(run+'/source-identity-correction.json',128*1024),readBounded:read,readCommitFile:(commit,name)=>{const result=spawnSync('git',['show',commit+':'+name],{cwd:REPOSITORY,timeout:5000,maxBuffer:2*MIB});need(result.status===0,'ZERO_REQUEST_CORRECTION_COMMIT_FILE_UNAVAILABLE');return result.stdout;},now});
+ need(r.schemaVersion===1&&r.historicalDiagnosisOnly===true&&r.earlierWindowsUnchanged===true&&r.financialFilesRead===false&&r.credentialsRead===false&&r.physicalSettlementConfirmed===true&&r.unresolvedResearchRetained===false&&/^[a-f0-9]{40}$/.test(sourceIdentityCorrection?.sourceCommit??r.sourceCommit),'SETTLED_HISTORICAL_RECEIPT_REQUIRED');
  need(before.accountId===manifest.accountId&&before.inceptionAt===manifest.inceptionAt&&!before.unresolvedResearch&&JSON.stringify(before.baselinePaths)===JSON.stringify(accountingPaths.slice(0,count)),'HISTORICAL_PREFIX_CHANGED');
  need(u&&u.closed===true&&u.inFlight===0&&u.waitingOrOperating===false&&Number.isSafeInteger(u.newUnits)&&u.newUnits>=0&&u.newUnits<=6&&Array.isArray(u.chapterPaths)&&u.chapterPaths.length>count&&u.chapterPaths.length<=count+6&&JSON.stringify(u.chapterPaths)===JSON.stringify(accountingPaths.slice(0,u.chapterPaths.length)),'HISTORICAL_SETTLEMENT_COUNTS');
  for(const next of u.chapterPaths.slice(count))need(path.dirname(next)===run+'/rpc'&&/^chapter-[0-9]{3}\.json$/.test(path.basename(next)),'HISTORICAL_COUNTER_SCOPE');
  need(u.cumulativeUnits===expectedAccounting.calls+u.newUnits&&u.accountedCumulativeResponseBytes===expectedAccounting.bytes+u.newAccountedResponseBytes&&Number.isSafeInteger(u.uncertainResponseBytes)&&u.uncertainResponseBytes>=expectedAccounting.uncertain,'HISTORICAL_COUNTER_TOTAL_MISMATCH');
  expectedAccounting={sourceCount:u.chapterPaths.length,calls:u.cumulativeUnits,bytes:u.accountedCumulativeResponseBytes,uncertain:u.uncertainResponseBytes,observed:u.accountedCumulativeResponseBytes-u.uncertainResponseBytes};
- supplementalHistorical.push({receipt:receiptPath,sha256:sha(raw),newUnits:u.newUnits,completed:r.completed,failure:r.failure,physicalSettlementConfirmed:true,marketHistoryRewritten:false});
+ supplementalHistorical.push({receipt:receiptPath,sha256:sha(raw),newUnits:u.newUnits,completed:r.completed,failure:r.failure,...(sourceIdentityCorrection?{sourceIdentityCorrection}:{}),physicalSettlementConfirmed:true,marketHistoryRewritten:false});
 }
 if(supplementalHistorical.length)handoff={...handoff,supplementalHistorical};
 need(watch?.schemaVersion===1&&watch.observationAgePolicyVersion==='observation-age-selected-24h-study-v1'&&Array.isArray(watch.rows)&&watch.rows.length<=174,'BOUNDED_WATCH_EXPORT_REQUIRED');
