@@ -1,3 +1,30 @@
+# Current interruption checkpoint — 2026-10-28
+
+**Execution environment unavailable; no market research runtime is active.**
+The sections below are historical and must not be read as an active experiment.
+
+Read [CLOUD_INTERRUPTION_HANDOFF.md](../evidence/resumed-forward-20261028/CLOUD_INTERRUPTION_HANDOFF.md)
+before continuing. It records the exact failed forward interval, local-only repairs,
+verification boundaries, current accounting, evidence paths, and recovery action.
+
+- Actual run40704936322/source63f4 ended14:27:42.292 after433.623s on unmanaged
+  automatic WebSocket close accounting. Source and process groups settled.
+- Six scopes were reached;5audited tokens,4shadowfail/1shadow non-rejection.
+  No financial writer/orders/positions/exits/P&L. No multipage live audit pass.
+- Archive and35filehashes verified; raw host evidence retained.
+- Latest local-only lead640143a; final combined verification interrupted/unknown.
+  Earlier combined472f707:1218tests/build/compile/39packaging checks passed.
+  Do NOT infer the final verification outcome or assume local repairs were pushed.
+- Manifest settled138books/5033units/209285767accountedB/53477376uncertainB.
+  Next inputs:119latestproofs/144WATCHrows, not the old discovery-only checkpoint.
+- Render sourceSTOPPED/stale/disconnected verified15:01:22UTC; two exact running
+  source snapshots matched. Original portfolio identity/release unchanged.
+- Next: recover existing workspace, inspect640143a logs/processes, preserve/push
+  local commits, merge this checkpoint without overwriting history, then freeze
+  and run the corrected bounded candidate interval. No24hacceptance clock.
+
+---
+
 # POE continuation checkpoint
 
 Resumed 2026-10-28 at 14:13 UTC. Lead branch `poe-free-data-evaluation-20261027`.
