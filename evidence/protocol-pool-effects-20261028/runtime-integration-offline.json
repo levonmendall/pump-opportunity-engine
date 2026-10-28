@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_SHADOW_RUNTIME_INTEGRATION_NOT_FORWARD_ACCEPTANCE",
+  "baseCommit": "cd6ac47b526d607f01a2b88f1c2e2f4ceb2540a8d67d909",
+  "pureDecoderCommit": "c02ab60da773c69109f668fa57b5aa80e687f619",
+  "strictDefault": "confirmed-program-events-v2",
+  "explicitShadow": "confirmed-program-activity-v3-shadow",
+  "financialExecutionAuthorized": false,
+  "ledgerOpened": false,
+  "liveTradingEnabled": false,
+  "changes": [
+    "Explicit data contract in input/CLI/configSHA/source/status/checkpoint; conflicting selections refused before networking.",
+    "Every required protocol event byte pair retained separately, no ordinary buyer/net-buy/price-ratio fabrication.",
+    "Ordinary six-closed-ten-second-bucket features and thresholds unchanged.",
+    "Per-window strict baseline unavailable marker uses original validated availability and is not extended by late duplicates.",
+    "Actually associated cross-pool events create tagged scope-only ledger evidence, not invented subscription delivery.",
+    "Independent history audits still check every required signature and served-node context floor.",
+    "Bounds/freshness/cutoff/correction behavior preserved; status summaries are bounded and complete packets remain retained."
+  ],
+  "verification": {
+    "build": "PASS",
+    "compile": "PASS",
+    "fullRepositoryTests": 1147,
+    "failures": 0,
+    "fullSuiteDurationMs": 61047.15771,
+    "independentFocusedRuntimeReview": {
+      "decision": "GO",
+      "tests": 110
+    },
+    "retainedActualBoost": {
+      "protocolQuoteLamports": "477341378",
+      "baseUnitsBurned": "1253813629816",
+      "ordinaryBuyers": 0,
+      "ordinaryNetBuyLamports": "0",
+      "transferCrossCheck": "UNAVAILABLE",
+      "meaning": "Actual retained event bytes under explicitly synthetic support/window timing; not a retroactive forward pass."
+    }
+  },
+  "limitations": [
+    "No network request, new observation interval, financial writer or deployment occurred in this integration.",
+    "Pure decoder supports only the explicitly validated direct zero-fee Token2022-burn/classic-WSOL shape. Other shapes remain unavailable.",
+    "Program-authored log fields are distinct from compiled-instruction/SPL transfer verification.",
+    "A shadow predictive not-rejected result is not strict baseline qualification, executable feasibility or profit.",
+    "Two-hour/six-scope sustainable capacity and independent opportunity recall require forward evidence.",
+    "HTTP history batching remains unwired."
+  ]
+}

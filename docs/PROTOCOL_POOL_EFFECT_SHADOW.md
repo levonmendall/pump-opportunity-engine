@@ -48,3 +48,41 @@ node --import tsx --test test/protocol-pool-effect.test.ts test/program-log-mapp
 npm run build
 npm test
 ```
+
+The isolated candidate launcher accepts an explicitly frozen
+`--data-contract confirmed-program-activity-v3-shadow` (or the matching public
+input field). Strict `confirmed-program-events-v2` remains the default. The
+choice is included in the source record, configuration hash, status and watch
+checkpoint; conflicting input/CLI selections are refused before networking.
+Shadow dashboard decision stages begin `shadow-predictive-`. Financial
+execution remains disabled and no ledger is opened.
+
+The adapter retains every selected protocol effect's two actual event byte
+strings and integer fields separately from ordinary trades. It never creates a
+buyer, wallet trade, net-buy contribution or ordinary amount-ratio price from a
+protocol burn. Existing sixty-second/six-bucket ordinary FlowWindow mathematics
+and predictive thresholds remain unchanged. Actual-size prices, if used by a
+later financial runtime, must still come from freshly validated coherent pool
+state; an effect is no fill or quote.
+
+A complete, independently audited shadow window reports any known protocol
+frame as strict-v2 baseline semantics unavailable. This is a source-contract
+comparison, not a corrected historical baseline pass. Per-scope transaction
+markers retain their first validated availability, so identical late deliveries
+cannot move an old effect into a later window. For a transaction observed on A
+that contains a verified selected-pool B event, B receives explicitly tagged
+cross-scope transaction evidence with B-specific counters. That row preserves
+the actual signature, slot, hash and availability; it does not claim that B's
+subscription delivered a separate message. Independent B history still checks
+its full required denominator. Unknown or malformed variants, incomplete
+logging, corrections, stale support and processing overruns invalidate affected
+windows.
+
+Status contains bounded recent effect summaries and exact aggregate integer
+amounts for the current window; complete event packets remain in the selected
+append-only evidence. Maps, queues, source deadlines, byte accounting and
+retention limits stay bounded. Offline fixtures verify the actual retained
+Boost yields zero ordinary buyers/net buying, strict default refusal, ordinary
+trade/feature parity, cross-pool evidence, independent signature auditing,
+duplicate/correction handling, source-version separation and financial refusal.
+They establish mechanics only, not a new forward interval or economic edge.
