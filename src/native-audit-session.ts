@@ -25,7 +25,7 @@ export class NativeAuditSession {
   const {deadlineAt:_deadline,maximumPages=4,audit=auditNativeFlowWindow,...original}=options;
   // The source generation and fences are captured once. Fresh response and
   // helper completion times remain actual; advancing a page never backdates.
-  const captured={...original,target:{...original.target},notifications:structuredClone(original.notifications),...(original.contextFences?{contextFences:structuredClone(original.contextFences)}:{}),admission:original.admission?{...original.admission}:undefined};
+  const captured={...original,target:{...original.target},notifications:structuredClone(original.notifications),...(original.contextFences?{contextFences:structuredClone(original.contextFences)}:{}),admission:original.admission?{...original.admission}:undefined,...(original.notificationGeneration?{notificationGeneration:{...original.notificationGeneration}}:{}),...(original.postSnapshotNotifications?{postSnapshotNotifications:(startedAt:number)=>{if(this.expired())throw Error(this.failure??'NATIVE_AUDIT_SESSION_ABORTED');return original.postSnapshotNotifications!(startedAt);}}:{})};
   this.helper=audit({...captured,now:this.now,signal:this.signal,maximumPages,maximumElapsedMs:this.deadlineAt-this.startedAt,call:<T>(method:string,params:unknown[],signal?:AbortSignal,admission?:PilotRpcCallOptions)=>this.defer<T>(method,params,signal,admission)}).then(result=>{
    this.diagnostic=structuredClone(result);
    if(!this.expired()&&result.availableAt<=this.deadlineAt)this.value=structuredClone(result);

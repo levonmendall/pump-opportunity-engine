@@ -8,6 +8,7 @@ import type {PilotRpcCallOptions} from './pilot-rpc.js';
 export type NativeAuditHistoryRow={signature:string;slot:number;success:boolean;blockTime:number|null;confirmationStatus:'confirmed'|'finalized'};
 type Fence={signature:string;slot:number;receivedAt:number;availableAt:number};
 export type NativeAuditContextFences={lower:{slot:number;availableAt:number;bankClockAt?:number};upper:{slot:number;availableAt:number;bankClockAt:number}};
+export type NativeAuditNotificationGeneration={mint:string;pool:string;openedAt:number;connectionId:number;subscriptionId:number};
 type Page={page:number;requestedLimit:100|1000;rows:number;newestSlot:number|null;oldestSlot:number|null;receivedAt:number;validatedAt:number};
 export type NativeFlowAuditResult={
  schemaVersion:1;classification:'BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT';status:'verified'|'unusable'|'unavailable';reason:string;
@@ -18,6 +19,8 @@ export type NativeFlowAuditResult={
  requiredSignatures:string[];comparedSignatures:string[];missingNotifications:NativeAuditHistoryRow[];missingFailedNotifications:NativeAuditHistoryRow[];missingSuccessfulNotifications:NativeAuditHistoryRow[];unconfirmedCapturedSignatures:string[];
  statusDisagreements:string[];boundaryExcludedSignatures:string[];duplicateNotifications:number;retryAt:number|null;
  scope:string;limitations:readonly string[];
+ notificationSnapshot:{capturedAt:number;rows:number;requiredRows:number};
+ postSnapshotTail:{enabled:boolean;generation:NativeAuditNotificationGeneration|null;refreshedAt:number|null;rows:number;addedSignatures:string[];addedPackets:Array<Pick<NativeNotification,'signature'|'slot'|'receivedAt'|'availableAt'|'success'|'rawHash'>>;matchedInteriorSignatures:string[];meaning:string};
 };
 export type NativeFlowAuditOptions={
  pool:string;notifications:readonly NativeNotification[];target:{startAt:number;endAt:number};
@@ -29,6 +32,10 @@ export type NativeFlowAuditOptions={
  /** Default packet census is preserved. Executed-flow mode tolerates ONLY an
   * independently confirmed failed history row missing from source packets. */
  completenessScope?:'all-notifications'|'executed-transactions';
+ /** Actual local packets that became available after the immutable audit
+  * snapshot. Diagnostic history corroboration ONLY, never target features. */
+ notificationGeneration?:NativeAuditNotificationGeneration;
+ postSnapshotNotifications?:(startedAt:number)=>readonly NativeNotification[];
  record?:(kind:string,data:unknown)=>void;
  /** Already decoded/validated coherent confirmed SDK+Clock contexts. A slot
   * number alone is insufficient; upper bank Clock must reach the target end. */
@@ -44,7 +51,8 @@ const limitations=Object.freeze([
  'Caller must separately require a fresh complete source window, unchanged candidate generation, supported identity and current strategy eligibility.',
  'Injected scheduler owns physical request counts, response bytes, timeouts, cooldowns and cancellation settlement; requestAttempts are callback attempts, not additional provider allowances.',
  'Opt-in executed-transactions completeness may retain missing independently confirmed failed rows as diagnostics; this is not full notification completeness and never excuses missing successful or unknown-status activity.',
- 'Each page records its actual requested limit. Adaptive sizing does not skip history rows, extend deadlines, raise page count or establish provider throughput.'
+ 'Each page records its actual requested limit. Adaptive sizing does not skip history rows, extend deadlines, raise page count or establish provider throughput.',
+ 'An opt-in local post-snapshot tail may corroborate interior history after actual arrival, without changing original target signatures, slot fences or feature availability. Missing successful activity remains blocking.'
 ]);
 const int=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0;
 function need(v:unknown,reason:string):asserts v{if(!v)throw Error('NATIVE_AUDIT_'+reason);}
@@ -54,11 +62,15 @@ const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(e.m
 export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Promise<NativeFlowAuditResult>{
  const now=options.now??Date.now,startedAt=now(),target={...options.target};let lastAt=startedAt,open=true;
  const maximumPages=options.maximumPages??4,maximumElapsedMs=options.maximumElapsedMs??10000,pageLimit=options.pageLimit??100,adaptivePageSizing=options.adaptivePageSizing??false,completenessScope=options.completenessScope??'all-notifications';
- const result:NativeFlowAuditResult={schemaVersion:1,classification:'BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT',status:'unavailable',reason:'NATIVE_AUDIT_NOT_COMPLETED',complete:false,pool:options.pool,target,startedAt,availableAt:startedAt,anchor:null,lowerFence:null,strictInteriorSlots:null,anchorKind:null,contextFences:null,historyRangeCovered:false,requestAttempts:0,maximumPages,pageLimit,adaptivePageSizing,completenessScope,notificationCompletenessVerified:false,executedFlowCompletenessVerified:false,pages:[],historyPayloadBytes:0,historyRows:0,interiorRows:0,requiredSignatures:[],comparedSignatures:[],missingNotifications:[],missingFailedNotifications:[],missingSuccessfulNotifications:[],unconfirmedCapturedSignatures:[],statusDisagreements:[],boundaryExcludedSignatures:[],duplicateNotifications:0,retryAt:null,scope:completenessScope==='executed-transactions'?'Exact target application-availability executed-transaction flow, with missing independently confirmed failed packets retained separately; not full notification coverage.':'Exact target application-availability window, audited conservatively within independently retrieved strict-interior pool-address signature history.',limitations};
+ const result:NativeFlowAuditResult={schemaVersion:1,classification:'BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT',status:'unavailable',reason:'NATIVE_AUDIT_NOT_COMPLETED',complete:false,pool:options.pool,target,startedAt,availableAt:startedAt,anchor:null,lowerFence:null,strictInteriorSlots:null,anchorKind:null,contextFences:null,historyRangeCovered:false,requestAttempts:0,maximumPages,pageLimit,adaptivePageSizing,completenessScope,notificationCompletenessVerified:false,executedFlowCompletenessVerified:false,pages:[],historyPayloadBytes:0,historyRows:0,interiorRows:0,requiredSignatures:[],comparedSignatures:[],missingNotifications:[],missingFailedNotifications:[],missingSuccessfulNotifications:[],unconfirmedCapturedSignatures:[],statusDisagreements:[],boundaryExcludedSignatures:[],duplicateNotifications:0,retryAt:null,scope:completenessScope==='executed-transactions'?'Exact target application-availability executed-transaction flow, with missing independently confirmed failed packets retained separately; not full notification coverage.':'Exact target application-availability window, audited conservatively within independently retrieved strict-interior pool-address signature history.',limitations,notificationSnapshot:{capturedAt:startedAt,rows:Array.isArray(options.notifications)?options.notifications.length:0,requiredRows:0},postSnapshotTail:{enabled:options.postSnapshotNotifications!==undefined,generation:null,refreshedAt:null,rows:0,addedSignatures:[],addedPackets:[],matchedInteriorSignatures:[],meaning:'Actual post-snapshot packet diagnostics only; original target availability and features unchanged.'}};
  const clock=()=>{const at=now();need(int(at)&&at>=lastAt&&at>=startedAt,'CLOCK_REGRESSION');lastAt=at;need(at-startedAt<=maximumElapsedMs,'ELAPSED_LIMIT');return at;};
  const finish=(status:NativeFlowAuditResult['status'],reason:string,coverage?:{notifications:boolean;executed:boolean})=>{const availableAt=clock();result.status=status;result.reason=reason;result.complete=status==='verified';result.availableAt=availableAt;result.notificationCompletenessVerified=result.complete&&coverage?.notifications===true;result.executedFlowCompletenessVerified=result.complete&&coverage?.executed===true;return result;};
  try{
   need(int(startedAt)&&key(options.pool,32)&&int(maximumPages)&&maximumPages>=1&&maximumPages<=4&&int(maximumElapsedMs)&&maximumElapsedMs>=1&&maximumElapsedMs<=10000&&(pageLimit===100||pageLimit===1000)&&typeof adaptivePageSizing==='boolean'&&['all-notifications','executed-transactions'].includes(completenessScope),'INVALID_OPTIONS');
+  const generation=options.notificationGeneration?{...options.notificationGeneration}:null;
+  need(options.postSnapshotNotifications===undefined||typeof options.postSnapshotNotifications==='function'&&generation!==null,'TAIL_OPTIONS');
+  if(generation)need(key(generation.mint,32)&&generation.pool===options.pool&&int(generation.openedAt)&&generation.openedAt<=target.startAt&&int(generation.connectionId)&&int(generation.subscriptionId),'TAIL_GENERATION');
+  result.postSnapshotTail.generation=generation;
   need(int(target.startAt)&&int(target.endAt)&&target.endAt-target.startAt===60000&&target.startAt%10000===0&&target.endAt%10000===0&&target.endAt<=startedAt,'INVALID_TARGET');
   need(Array.isArray(options.notifications)&&options.notifications.length<=8192,'NOTIFICATION_BOUND');
   const captured=new Map<string,NativeNotification>(),all:NativeNotification[]=[];
@@ -66,7 +78,7 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    const n={...raw};need(key(n.signature,64)&&int(n.slot)&&int(n.receivedAt)&&int(n.availableAt)&&n.receivedAt<=n.availableAt&&n.availableAt<=startedAt&&typeof n.success==='boolean'&&typeof n.duplicate==='boolean'&&typeof n.correction==='boolean'&&/^[a-f0-9]{64}$/.test(n.rawHash)&&['failed-transaction','program-event','nontrade','unusable'].includes(n.classification),'NOTIFICATION_SCHEMA');
    all.push(n);const prior=captured.get(n.signature);if(prior){result.duplicateNotifications++;if(prior.slot!==n.slot||prior.success!==n.success||prior.rawHash!==n.rawHash||n.correction)return finish('unusable','NATIVE_AUDIT_CAPTURED_CORRECTION');if(n.availableAt<prior.availableAt)captured.set(n.signature,n);}else captured.set(n.signature,n);
   }
-  const required=[...captured.values()].filter(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt);result.requiredSignatures=required.map(n=>n.signature);
+  const required=[...captured.values()].filter(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt);result.requiredSignatures=required.map(n=>n.signature);result.notificationSnapshot.requiredRows=required.length;
   if(all.some(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt&&(n.classification==='unusable'||n.correction)))return finish('unusable','NATIVE_AUDIT_UNUSABLE_TARGET_INFORMATION');
   const minimumRequired=required.length?Math.min(...required.map(n=>n.slot)):Infinity,maximumRequired=required.length?Math.max(...required.map(n=>n.slot)):-1;
   let lowerSlot:number,upperSlot:number,before:string|undefined,previousSlot:number;
@@ -100,6 +112,19 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
   }
   if(!result.historyRangeCovered)return finish('unavailable',pageLimit===1000&&result.pages.at(-1)?.rows===result.pages.at(-1)?.requestedLimit?'NATIVE_AUDIT_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN':'NATIVE_AUDIT_HISTORY_RANGE_NOT_COVERED');
   const interior=history.filter(r=>r.slot>lowerSlot&&r.slot<upperSlot);result.interiorRows=interior.length;result.comparedSignatures=interior.map(r=>r.signature);result.boundaryExcludedSignatures=[...new Set([...result.boundaryExcludedSignatures,...history.filter(r=>r.slot===lowerSlot||r.slot===upperSlot).map(r=>r.signature)])];
+  if(options.postSnapshotNotifications){
+   options.signal?.throwIfAborted();clock();need(options.admission?.admissionOpen?.()??true,'TAIL_ADMISSION_CLOSED');
+   const tail=options.postSnapshotNotifications(startedAt),refreshedAt=clock();options.signal?.throwIfAborted();need(options.admission?.admissionOpen?.()??true,'TAIL_ADMISSION_CLOSED');
+   need(Array.isArray(tail)&&tail.length<=8192,'TAIL_NOTIFICATION_BOUND');result.postSnapshotTail.refreshedAt=refreshedAt;result.postSnapshotTail.rows=tail.length;
+   for(const raw of tail){
+    const n={...raw};need(key(n.signature,64)&&int(n.slot)&&int(n.receivedAt)&&int(n.availableAt)&&n.receivedAt<=n.availableAt&&n.availableAt>startedAt&&n.availableAt<=refreshedAt&&n.receivedAt>=generation!.openedAt&&typeof n.success==='boolean'&&typeof n.duplicate==='boolean'&&typeof n.correction==='boolean'&&/^[a-f0-9]{64}$/.test(n.rawHash)&&['failed-transaction','program-event','nontrade','unusable'].includes(n.classification),'TAIL_NOTIFICATION_SCHEMA');
+    need(n.subscriptionMint===generation!.mint&&n.subscriptionPool===generation!.pool&&n.connectionId===generation!.connectionId&&n.subscriptionId===generation!.subscriptionId,'TAIL_NOTIFICATION_GENERATION');
+    const prior=captured.get(n.signature);if(n.correction||n.classification==='unusable'||prior&&(prior.slot!==n.slot||prior.success!==n.success||prior.rawHash!==n.rawHash))return finish('unusable','NATIVE_AUDIT_POST_SNAPSHOT_CORRECTION');
+    if(!prior){need(captured.size<8192,'TAIL_NOTIFICATION_BOUND');captured.set(n.signature,n);result.postSnapshotTail.addedSignatures.push(n.signature);result.postSnapshotTail.addedPackets.push({signature:n.signature,slot:n.slot,receivedAt:n.receivedAt,availableAt:n.availableAt,success:n.success,rawHash:n.rawHash});}
+   }
+   const addedSignatures=new Set(result.postSnapshotTail.addedSignatures);result.postSnapshotTail.matchedInteriorSignatures=interior.filter(r=>addedSignatures.has(r.signature)).map(r=>r.signature);
+   options.record?.('native-flow-audit-post-snapshot-tail',{pool:options.pool,target,originalSnapshot:result.notificationSnapshot,...result.postSnapshotTail,requiredTargetSignaturesUnchanged:true,featureInformationBackdated:false});
+  }
   result.missingNotifications=interior.filter(r=>!captured.has(r.signature));result.missingFailedNotifications=result.missingNotifications.filter(r=>r.success===false);result.missingSuccessfulNotifications=result.missingNotifications.filter(r=>r.success===true);
   const bySignature=new Map(interior.map(r=>[r.signature,r]));result.unconfirmedCapturedSignatures=required.filter(n=>!bySignature.has(n.signature)).map(n=>n.signature);
   result.statusDisagreements=interior.filter(r=>{const n=captured.get(r.signature);return n&&(n.slot!==r.slot||n.success!==r.success);}).map(r=>r.signature);

@@ -196,3 +196,21 @@ test('a partial physical history timeout remains an unavailable evaluation and a
 test('a known independent lower context does not copy a busy notification ledger merely to classify dispatch readiness',async()=>{
  const f=fixture({forcePredictiveFeatures:true});const mint=f.importActual();await f.runner.step();f.advance(70000);f.refresh();const original=f.flow.notificationLedger.bind(f.flow);let reads=0;f.flow.notificationLedger=key=>{reads++;return original(key);};f.setPhysicalBusy(true);await f.runner.step();assert.equal(reads,0,'the immutable lower context already proves this classification prerequisite');assert.equal(f.rpcCalls.length,0);f.setPhysicalBusy(false);await f.runner.step();assert.equal(reads,1,'one exact ledger capture is reused by audit lower-fence validation');assert.equal(f.runner.status().counters.predictiveNotRejected,1);assert.equal(f.runner.status().counters.auditFenceWarmingWindows,0);assert.equal(f.runner.status().candidates[0]!.mint,mint);await f.runner.stop();
 });
+
+for(const failure of ['none','connection','closed-admission'] as const)test(`diagnostic audit tail uses exact ACK generation and cannot alter frozen features (${failure})`,async()=>{
+ const f=fixture(),mint=f.importActual();let connectionId=1;
+ const snapshot=f.flow.snapshot.bind(f.flow);f.flow.snapshot=(m,at)=>{const view=snapshot(m,at);return view?{...view,connectionId}:null;};
+ const ledger=f.flow.notificationLedger.bind(f.flow);f.flow.notificationLedger=m=>ledger(m).map(n=>({...n,subscriptionMint:m,subscriptionPool:f.states.get(m)!.scope.pool,subscriptionId:1,connectionId}));
+ const call=f.rpc.call.bind(f.rpc);f.rpc.call=async<T>(method:string,params:unknown[]=[],signal?:AbortSignal,admission?:PilotRpcCallOptions)=>{
+  const rows=await call<any[]>(method,params,signal,admission),state=f.states.get(mint)!;f.advance(1);
+  const note:NativeNotification={signature:sig(881199),slot:state.upper!.slot-1,receivedAt:f.now,availableAt:f.now,success:true,rawHash:'c'.repeat(64),parsedEvents:1,eventsAccepted:1,duplicate:false,correction:false,classification:'program-event',reason:null,chainBlockTime:null};state.notes.push(note);
+  state.window!.ingest({identity:{kind:'program-log',signature:note.signature,program:PUMP_AMM_PROGRAM_ID.toBase58(),logIndex:0,frameOrdinal:0},mint,wallet:new PublicKey(Buffer.alloc(32,7)).toBase58(),side:'buy',quoteLamports:'250000000',tokenUnits:'1000000',receivedAt:f.now,commitment:'confirmed',slot:note.slot});f.runner.onTrade();
+  rows.push({signature:note.signature,slot:note.slot,err:null,blockTime:Math.floor(f.now/1000),confirmationStatus:'confirmed'});rows.sort((a,b)=>b.slot-a.slot);
+  if(failure==='connection')connectionId=2;if(failure==='closed-admission')f.setAllow(false);
+  return rows as T;
+ };
+ await f.runner.step();await f.warm();const audit=f.records.find(r=>r.kind==='native-candidate-window-audit');assert.ok(audit);assert.equal(f.rpcCalls.length,1);
+ if(failure==='none'){assert.equal(audit.data.result.status,'verified',audit.data.result.reason);assert.equal(audit.data.result.postSnapshotTail.addedSignatures.length,1);assert.equal(audit.data.result.requiredSignatures.includes(sig(881199)),false);const assessment=f.records.find(r=>r.kind==='native-predictive-assessment');assert.ok(assessment);assert.equal(assessment.data.assessment.features.tradeCount,0,'post-target newly ingested buy remains in its actual later open bucket, never backdated into predictive features');assert.equal(f.runner.status().counters.auditedWindows,1);}
+ else{assert.equal(audit.data.result.status,'unavailable');assert.equal(audit.data.result.reason,'NATIVE_AUDIT_SOURCE_GENERATION_CHANGED');assert.equal(f.records.some(r=>r.kind==='native-predictive-assessment'),false);assert.equal(f.runner.status().counters.auditedWindows,0);}
+ assert.equal(f.runner.status().financialWriterOpened,false);assert.equal(f.runner.status().financialExecutionAuthorized,false);await f.runner.stop();
+});

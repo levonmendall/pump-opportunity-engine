@@ -1,0 +1,30 @@
+{
+  "baseCommit": "90625f53b686578637accf73ebc457f841743ee2",
+  "createdAt": "2026-10-28T16:42:34.220997+00:00",
+  "files": [
+    {
+      "path": "src/native-flow-audit.ts",
+      "sha256": "a2270e28a637d821f42ebda41e50874f2ad37cd94c82df326cd2dabd69baf5a0"
+    },
+    {
+      "path": "src/native-audit-session.ts",
+      "sha256": "e9aa835f0ae21b79f187b8dfb4174d30f20560372cfc7fcd4f7f0a4153719318"
+    },
+    {
+      "path": "src/native-candidate-runner.ts",
+      "sha256": "0a8ee1a003c0457ed79ec1e06354d030f004d945542f7d401a26f13d1d52c87d"
+    },
+    {
+      "path": "src/pilot-native-flow.ts",
+      "sha256": "de5f2c2caca120675cd4dc2dcd61a674da02fa772f3de9d8e1fb5095955b1c13"
+    },
+    {
+      "path": "test/native-flow-audit-tail.test.ts",
+      "sha256": "462ec293b0fe3d4bebf23629e67051138a4d320cf813fa1b97740ecb635d04ff"
+    },
+    {
+      "path": "test/native-candidate-runner.test.ts",
+      "sha256": "fb54a0aa28c6c2c8bffbb3d55e9e5cc73a208847924ddb4a823f858b9e32d5cf"
+    }
+  ]
+}
