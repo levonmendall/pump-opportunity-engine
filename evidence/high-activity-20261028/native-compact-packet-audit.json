@@ -1,0 +1,68 @@
+{
+  "purpose": "Offline compact packet measurement on retained natural source logs; no network/financial writes",
+  "all": [
+    {
+      "run": "native-flow-20261028004053347",
+      "events": 177,
+      "errors": [],
+      "compactEventBytes": 219425,
+      "p50": 1252,
+      "p95": 1252,
+      "maximum": 1289,
+      "firstPacket": {
+        "dataContract": "confirmed-program-events-v2",
+        "signature": "5QXVXgq1AmPz3JRWNSaF1SnwW6NJky8UqR5qLeR9ahTpr71eyqXEcD6i3YZg3M9LTREaJCkDd1d2uCWYYymTeYw3",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "slot": 462276969,
+        "err": null,
+        "commitment": "confirmed",
+        "receivedAt": 1793148055400,
+        "availableAt": 1793148055402,
+        "eventBase64": "Z/RSHyz1d3eWROFqAAAAALzr5GJCAAAAwB8+agAAAACgwdESFwAAAMAfPmoAAAAANt7gC2c4AABCpoYFRgAAAK71olcAAAAAFAAAAAAAAAC03iwAAAAAAAUAAAAAAAAArTcLAAAAAABi1M9XAAAAAC9Pg1gAAAAAEKFECG4dik8GLNHR1cOGh4vs3Z7UzAHIxcBmARADrhbVVxaIaObUp/PiIRikAsS7OuXiGRX5nnizdnmKuXJbvUnhPEI52tm6aSw+FlqIfAAGq5cMD7L7oT35olF/qqt8kvL97t4GCVCFls4586ahC1axMsvYShUDMN64c/rkui+NGBoMhJ+pN6bzSt7TCB75VwCqywybs9kJpLkUdSek69QRe5ZGOuprDbyDGh4HnYHacr2qjLLmyH7CUkqIrVpVh1d5yYWqD7WarYzDkjpgqpUmheFzqQ0ROYBxB09KFFxLAAAAAAAAACBDqAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvOvkYkIAAAADAAAAYnV5AAAAAAAAAAAAAAAAAAAAAIgTAAAAAAAA1psFAAAAAAAcjdIXBAAAAAAAAAAAAAAAAWdDOn8AiAMAAAAAAAAAAAAAAAAAAAAAAHpDSQAAAAAAAAAAAAAAAAA=",
+        "eventLogIndex": 53,
+        "frameOrdinal": 10,
+        "frameDepth": 1,
+        "frameLabel": "Buy",
+        "framePath": [
+          "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+        ],
+        "rawNotificationSha256": "e6d46db5a4ffb4eeb18349f22d8dacc90d5012085e2cb7de32ec089727792678",
+        "transferCrossCheck": "UNAVAILABLE"
+      },
+      "notTransportBytes": true,
+      "fullRawFrameReplayRetained": true
+    },
+    {
+      "run": "native-flow-20261028011331673",
+      "events": 9,
+      "errors": [],
+      "compactEventBytes": 11378,
+      "p50": 1251,
+      "p95": 1331,
+      "maximum": 1331,
+      "firstPacket": {
+        "dataContract": "confirmed-program-events-v2",
+        "signature": "26414bfhY9ug9TiEAto7UPFi2DQaMHLbYhKLYamWKshRLvSgGRnkcVGiDw7XEqDtLwvecjmZDY5Yihq4bEfW8aeQ",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "slot": 462286149,
+        "err": null,
+        "commitment": "confirmed",
+        "receivedAt": 1793150014308,
+        "availableAt": 1793150014311,
+        "eventBase64": "Z/RSHyz1d3c9TOFqAAAAAIM/k2jTAQAA+IfVDgAAAACwDHpuDxEAAPiH1Q4AAAAA9BcMz6FbAQCumkDHBgAAAPiH1Q4AAAAAAgAAAAAAAAAJwAAAAAAAAF0AAAAAAAAAi+EiAAAAAADtZacOAAAAAOSlpg4AAAAALf/ktsLN8r7Bv3l0f193WP927IONhaJbSa9St6ucFdJqAwWuwV7+qShrrQYXhB+jKeWWXilxIluWVVGV7RWFWWQ3AD+10gatxVkO+kg4IwrcgtXl1oC2NE6vGnthUdd0tDe97EZ9i9qiOM6x5/ivknCtjnjx++aCp8PBGmhTlc6DhHQpLmdalLQ27LCpmIlCMoqD3cYjOAKWEmfFzWEXy6JjF6U7oP1oxMlT7DDw4JuOc2h1HLKBVIbK4+mdCvnd2mUF8Pr4cZtG6Bo+XqMmN1Ohw5mOrDqHGDW62L5cDH8eAAAAAAAAAIBACwAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANZlC7XUBAAASAAAAYnV5X2V4YWN0X3F1b3RlX2luAAAAAAAAAAAAAAAAAAAAAIgTAAAAAAAAxXARAAAAAACG9J0PBAAAAAAAAAAAAAAAAQy1eMxXZwMAAAAAAAAAAAAAAAAAAAAAAKd0VQMAAAAAAAAAAAAAAAA=",
+        "eventLogIndex": 57,
+        "frameOrdinal": 11,
+        "frameDepth": 2,
+        "frameLabel": "BuyExactQuoteIn",
+        "framePath": [
+          "6Vo3245eszAb5wuqEMw8mGdbfRUdKbHhDHP5LcaGuTAB",
+          "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+        ],
+        "rawNotificationSha256": "27f275ee43f3796d38f7b700301a5adf69b229c82c6bbef5e554fe71f7582bc7",
+        "transferCrossCheck": "UNAVAILABLE"
+      },
+      "notTransportBytes": true,
+      "fullRawFrameReplayRetained": true
+    }
+  ]
+}

@@ -1,0 +1,566 @@
+{
+  "runId": "pilot-native-audit-20261028004404407",
+  "originalRunId": "pilot-native-flow-20261028004053347",
+  "originalFailurePreserved": "NATIVE_FLOW_RETAINED_SOFT_STOP",
+  "phase": "NEW separately authorized post-capture independent audit; no second capture, not part of original120s result",
+  "newPhaseStartedAt": 1793148244402,
+  "phaseSourceSha256": "211da6192474321b75c1bfba7bd5cfa72cd19a220b6f3e91a2e59283121f51e9",
+  "finishedAt": 1793148246127,
+  "newPhaseElapsedMs": 1725,
+  "originalCaptureElapsedMs": 42796,
+  "matches": [
+    {
+      "signature": "5QXVXgq1AmPz3JRWNSaF1SnwW6NJky8UqR5qLeR9ahTpr71eyqXEcD6i3YZg3M9LTREaJCkDd1d2uCWYYymTeYw3",
+      "receivedAt": 1793148055400,
+      "logValidatedAt": 1793148055402,
+      "fullValidatedAt": 1793148244690,
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 6,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "66063d1201daebea",
+            "instructionName": "buy",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": true,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "5QXVXgq1AmPz3JRWNSaF1SnwW6NJky8UqR5qLeR9ahTpr71eyqXEcD6i3YZg3M9LTREaJCkDd1d2uCWYYymTeYw3",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 6,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+          "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+          "trader": "FMnrvRaGVLEPX6z3jrVq49vXVkPJEeAne1uom4qN3F2k",
+          "side": "buy",
+          "tokenUnits": "285127011260",
+          "curveQuoteLamports": "1470297518",
+          "userQuoteLamports": "1485000495",
+          "fees": {
+            "lp_fee": "2940596",
+            "protocol_fee": "735149",
+            "coin_creator_fee": "11027232",
+            "cashback": "0",
+            "buyback_fee": "367574",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462276969,
+          "identityKey": "5QXVXgq1AmPz3JRWNSaF1SnwW6NJky8UqR5qLeR9ahTpr71eyqXEcD6i3YZg3M9LTREaJCkDd1d2uCWYYymTeYw3:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:6:outer:6:0",
+          "chainBlockTime": 1793148054,
+          "commitment": "confirmed",
+          "providerReceivedAt": 1793148055400,
+          "availableAt": 1793148244682,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "97ed4a4a32722275355364a15ffca68cc5cf58824e300b724f2ea72497db5358",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "economicParity": true,
+      "slotParity": true,
+      "actualTransferProof": true,
+      "notBackdated": true
+    },
+    {
+      "signature": "3ov4y8hAL75tq6sda55vriX5ynxwJqLhm6XgxPKwCjMmDMWNxkNeGptLezxkoeLDE5vBqB1bfEYmpXgoZLW1WCh3",
+      "receivedAt": 1793148061715,
+      "logValidatedAt": 1793148061716,
+      "fullValidatedAt": 1793148244812,
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 3,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "33e685a4017f83ad",
+            "instructionName": "sell",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "3ov4y8hAL75tq6sda55vriX5ynxwJqLhm6XgxPKwCjMmDMWNxkNeGptLezxkoeLDE5vBqB1bfEYmpXgoZLW1WCh3",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+          "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+          "trader": "cuiSZjT1oS5uT8W3Z18pS4cAPpLXyA9n4vDPKwyBQ9m",
+          "side": "sell",
+          "tokenUnits": "237182853953",
+          "curveQuoteLamports": "1294638761",
+          "userQuoteLamports": "1281692372",
+          "fees": {
+            "lp_fee": "2589278",
+            "protocol_fee": "647320",
+            "coin_creator_fee": "9709791",
+            "cashback": "0",
+            "buyback_fee": "323660",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462277000,
+          "identityKey": "3ov4y8hAL75tq6sda55vriX5ynxwJqLhm6XgxPKwCjMmDMWNxkNeGptLezxkoeLDE5vBqB1bfEYmpXgoZLW1WCh3:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:6:0",
+          "chainBlockTime": 1793148061,
+          "commitment": "confirmed",
+          "providerReceivedAt": 1793148061715,
+          "availableAt": 1793148244806,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "d3e7d344620c26b68e71f5b66bd48bfa342d83fd2d40bda912bb8baa351ebe70",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "economicParity": true,
+      "slotParity": true,
+      "actualTransferProof": true,
+      "notBackdated": true
+    },
+    {
+      "signature": "5EFCtaQ981qD6QEMBu89JwYcwhB53WAzZGZaL7sJBDn9LSjRYdxvJiMAWYFov4CMnyw2fi6nC7HiUfoyRrS38Ums",
+      "receivedAt": 1793148071279,
+      "logValidatedAt": 1793148071280,
+      "fullValidatedAt": 1793148245116,
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 3,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "c2ab1c46684d5b2f",
+            "instructionName": "buy_exact_quote_in_v2",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "5EFCtaQ981qD6QEMBu89JwYcwhB53WAzZGZaL7sJBDn9LSjRYdxvJiMAWYFov4CMnyw2fi6nC7HiUfoyRrS38Ums",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 3,
+            "eventIndex": 0
+          },
+          "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+          "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+          "trader": "5DNAgKTu1PK45Ua9YkAmboo9qjuEJXi5LSHHiTLBsaU2",
+          "side": "buy",
+          "tokenUnits": "19615302642",
+          "curveQuoteLamports": "99009900",
+          "userQuoteLamports": "100000000",
+          "fees": {
+            "lp_fee": "198020",
+            "protocol_fee": "49505",
+            "coin_creator_fee": "742575",
+            "cashback": "0",
+            "buyback_fee": "24752",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462277042,
+          "identityKey": "5EFCtaQ981qD6QEMBu89JwYcwhB53WAzZGZaL7sJBDn9LSjRYdxvJiMAWYFov4CMnyw2fi6nC7HiUfoyRrS38Ums:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+          "chainBlockTime": 1793148069,
+          "commitment": "confirmed",
+          "providerReceivedAt": 1793148071279,
+          "availableAt": 1793148245113,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "6a81c80816eb4bfb1e9dd3d4256fe574a041e150aa6dc994a2f0ea50e5867fb8",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "economicParity": true,
+      "slotParity": true,
+      "actualTransferProof": true,
+      "notBackdated": true
+    },
+    {
+      "signature": "35wzvrKqyYMy3jfZw9vSNXig2JCF8spXpn64pVfisfNAJrq1rfuik6muqCUgDXzfawytQNoBLx1fBkdt6AgV2ZC2",
+      "error": "RELEVANT_AMM_INSTRUCTION_UNSUPPORTED",
+      "fullValidatedAt": 1793148245307
+    },
+    {
+      "signature": "4PYXp5QboiMsjV5esxfdEwvfdz3bQpK6o3bvRc6CXTUAqJ1TZ6ir6x9HuuoYfFSUHTSR8fA38X7DmkYn9Zgvxpmq",
+      "receivedAt": 1793148082972,
+      "logValidatedAt": 1793148082973,
+      "fullValidatedAt": 1793148245593,
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 7,
+            "innerInstructionIndex": 0,
+            "discriminatorHex": "5df6823ce7e940b2",
+            "instructionName": "sell_v2",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "4PYXp5QboiMsjV5esxfdEwvfdz3bQpK6o3bvRc6CXTUAqJ1TZ6ir6x9HuuoYfFSUHTSR8fA38X7DmkYn9Zgvxpmq",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 7,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 4,
+            "eventIndex": 0
+          },
+          "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+          "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+          "trader": "6gHWm4xAywaK9faNdH3v71SMTaXZkGXbPWA4T3TNy6yc",
+          "side": "sell",
+          "tokenUnits": "29932194061",
+          "curveQuoteLamports": "151814081",
+          "userQuoteLamports": "150295938",
+          "fees": {
+            "lp_fee": "303629",
+            "protocol_fee": "75908",
+            "coin_creator_fee": "1138606",
+            "cashback": "0",
+            "buyback_fee": "37954",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462277101,
+          "identityKey": "4PYXp5QboiMsjV5esxfdEwvfdz3bQpK6o3bvRc6CXTUAqJ1TZ6ir6x9HuuoYfFSUHTSR8fA38X7DmkYn9Zgvxpmq:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:7:0:4:0",
+          "chainBlockTime": 1793148082,
+          "commitment": "confirmed",
+          "providerReceivedAt": 1793148082972,
+          "availableAt": 1793148245590,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "6592091f00ea5e69d58864e17488c27931c7697d2f02f4ca92bed4ab0e679656",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "economicParity": true,
+      "slotParity": true,
+      "actualTransferProof": true,
+      "notBackdated": true
+    },
+    {
+      "signature": "2d7HNEjQze8oEMvbKvEQCanj5tHKtsAPxkvMNtbw1DWeEgiP1rf4dsmndLGzc2Ba2ujLJzeCFCgQcX66vmDas6o9",
+      "receivedAt": 1793148094879,
+      "logValidatedAt": 1793148094880,
+      "fullValidatedAt": 1793148245842,
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 3,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "5df6823ce7e940b2",
+            "instructionName": "sell_v2",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "2d7HNEjQze8oEMvbKvEQCanj5tHKtsAPxkvMNtbw1DWeEgiP1rf4dsmndLGzc2Ba2ujLJzeCFCgQcX66vmDas6o9",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 3,
+            "eventIndex": 0
+          },
+          "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+          "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+          "trader": "5DNAgKTu1PK45Ua9YkAmboo9qjuEJXi5LSHHiTLBsaU2",
+          "side": "sell",
+          "tokenUnits": "19615302642",
+          "curveQuoteLamports": "107254436",
+          "userQuoteLamports": "106181890",
+          "fees": {
+            "lp_fee": "214509",
+            "protocol_fee": "53628",
+            "coin_creator_fee": "804409",
+            "cashback": "0",
+            "buyback_fee": "26814",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462277148,
+          "identityKey": "2d7HNEjQze8oEMvbKvEQCanj5tHKtsAPxkvMNtbw1DWeEgiP1rf4dsmndLGzc2Ba2ujLJzeCFCgQcX66vmDas6o9:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+          "chainBlockTime": 1793148092,
+          "commitment": "confirmed",
+          "providerReceivedAt": 1793148094879,
+          "availableAt": 1793148245839,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "44f2b0107583f21ad27bdaf5686e2859ff849dc44a2d749f64fc70ee4a1c0b80",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "economicParity": true,
+      "slotParity": true,
+      "actualTransferProof": true,
+      "notBackdated": true
+    }
+  ],
+  "audit": {
+    "beforeRows": 100,
+    "afterRows": 100,
+    "oldestReturnedSlot": 462277755,
+    "streamSlots": [
+      462276969,
+      462277154
+    ],
+    "denominatorCovered": false,
+    "interiorPoolRows": 0,
+    "missingNotifications": [],
+    "denominatorMeaning": "Bounded interior pool-address transactions, not all swaps; a saturated page may omit earlier interval."
+  },
+  "failure": null,
+  "settled": true,
+  "newPhaseActualUnits": 7,
+  "totalLinkedCaptureAndAuditUnits": 14,
+  "newPhaseMeasuredBytes": 105320,
+  "aggregateRetainedBytesBeforeThisReceipt": 1465034,
+  "usage": {
+    "runId": "pilot-native-audit-20261028004404407",
+    "startedAt": 1793148244408,
+    "deadlineAt": 1793148288402,
+    "remainingMs": 42275,
+    "chapter": 1,
+    "chapterPaths": [
+      "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/04-active/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/05-sampler/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/06-targeted/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/07-field/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/08-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/09-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/10-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/12-combined-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/13-buy-finality/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/01-paced-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/02-failed-buy-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/03-corrected-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/04-current-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/06-targeted-retry-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/08-current-combined/rpc-budget.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-009.json",
+      "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-005.json",
+      "/workspace/poe-pilot/research/pilot-migration-diagnostic-1793138401524/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232426805/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232707767/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232852598/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027233451534/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234046662/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234449066/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028004053347/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-audit-20261028004404407/rpc/chapter-001.json"
+    ],
+    "activeChapterPath": null,
+    "cumulativeUnits": 3639,
+    "newUnits": 7,
+    "accountedCumulativeResponseBytes": 101028872,
+    "newAccountedResponseBytes": 105320,
+    "maximumNewUnits": 10,
+    "maximumNewResponseBytes": 8388608,
+    "requestLimits": {
+      "maxStartsPer10s": 20,
+      "maxGetTransactionStartsPer10s": 8,
+      "maxStartsPerMinute": 60,
+      "minSpacingMs": 250,
+      "physicalInFlight": 1
+    },
+    "methodPacing": {
+      "getTransactionStartsLast10s": [
+        {
+          "at": 1793148244484,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793148244738,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793148244992,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793148245246,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793148245499,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793148245753,
+          "origin": "getTransaction"
+        }
+      ],
+      "capacityRefusals": 0,
+      "baselineUnknownMethodsCountConservatively": true
+    },
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "uncertainResponseBytes": 37748736,
+    "currentChapterUncertainResponseBytes": 0,
+    "inheritedUncertaintyIsRetainedInBaseline": true,
+    "cooldownUntil": 1793147036106,
+    "controlCooldownUntil": 0,
+    "lastFailureWasDataControl": false,
+    "closed": true,
+    "fatal": null,
+    "chapterUsage": null,
+    "dispatchWindow": null,
+    "automaticRequestRetries": 0
+  },
+  "financialWriterOpened": false
+}

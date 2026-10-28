@@ -1,0 +1,68 @@
+{
+  "sourceSignature": "35wzvrKqyYMy3jfZw9vSNXig2JCF8spXpn64pVfisfNAJrq1rfuik6muqCUgDXzfawytQNoBLx1fBkdt6AgV2ZC2",
+  "actualSlot": 462277067,
+  "actualMetaErr": null,
+  "rawTransactionSha256": "852c3bcc8d7bf38522d4348240490a335c4546d40d767b75621b0aed58934e7d",
+  "originalStrictRefusal": "RELEVANT_AMM_INSTRUCTION_UNSUPPORTED",
+  "observedInstructions": [
+    {
+      "outer": 3,
+      "inner": null,
+      "bytes": 26,
+      "hex": "c62e1552b4d9e87000a3e11100000000923914c80d0000000101",
+      "tailHex": "0101"
+    }
+  ],
+  "prefixDiagnostic": {
+    "label": "SYNTHETIC_PREFIX_ONLY_VALIDATION_OF_RETAINED_ACTUAL_TRANSACTIONS",
+    "actualBytesWereChangedForThisDiagnostic": true,
+    "mapped": [
+      {
+        "identity": {
+          "signature": "35wzvrKqyYMy3jfZw9vSNXig2JCF8spXpn64pVfisfNAJrq1rfuik6muqCUgDXzfawytQNoBLx1fBkdt6AgV2ZC2",
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "outerInstructionIndex": 3,
+          "swapInnerInstructionIndex": null,
+          "eventInnerInstructionIndex": 6,
+          "eventIndex": 0
+        },
+        "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "trader": "mATtYiy3Cn1Bihg3aMaWDzWsWN33txxtnhDyJcFFiWZ",
+        "side": "buy",
+        "tokenUnits": "59615796617",
+        "curveQuoteLamports": "297029702",
+        "userQuoteLamports": "300000000",
+        "fees": {
+          "lp_fee": "594060",
+          "protocol_fee": "148515",
+          "coin_creator_fee": "2227723",
+          "cashback": "0",
+          "buyback_fee": "74257",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "slot": 462277067,
+        "identityKey": "35wzvrKqyYMy3jfZw9vSNXig2JCF8spXpn64pVfisfNAJrq1rfuik6muqCUgDXzfawytQNoBLx1fBkdt6AgV2ZC2:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:6:0",
+        "chainBlockTime": 1793148075,
+        "commitment": "confirmed",
+        "providerReceivedAt": null,
+        "availableAt": 1793148471922,
+        "transferChecks": {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        },
+        "fingerprint": "f2de726d07cb27337e3f45d2be7605ff9688d2499f69e118995f71b3098b7303",
+        "normalizedForStrategy": false,
+        "limitations": [
+          "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+          "The strategy quoteLamports economic convention is not frozen by this mapper.",
+          "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+        ]
+      }
+    ],
+    "conclusion": "Economic event/role/transfer checks can agree under the already tested two-u64 prefix; this does NOT establish opaque tail meaning or adopt original26-byte layout."
+  },
+  "productionAdoption": false,
+  "networkRequests": 0
+}

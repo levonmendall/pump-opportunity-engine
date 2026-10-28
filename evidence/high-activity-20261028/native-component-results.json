@@ -1,0 +1,94 @@
+{
+  "generatedAt": "2026-10-28T01:18:34.589225+00:00",
+  "classification": "REUSABLE_V2_FIELD_MILESTONE; COMPLETE_FORWARD_WINDOW_NOT_ESTABLISHED",
+  "phases": [
+    {
+      "label": "initial-partial",
+      "path": "evidence/high-activity-20261028/native-flow-20261028004053347/receipt.json",
+      "runId": "pilot-native-flow-20261028004053347",
+      "units": 7,
+      "measuredBytes": 1019094,
+      "failure": "NATIVE_FLOW_RETAINED_SOFT_STOP",
+      "settled": true,
+      "elapsedMs": 42796
+    },
+    {
+      "label": "matched-only-audit",
+      "path": "evidence/high-activity-20261028/native-flow-20261028004053347/post-capture-audit-receipt.json",
+      "runId": "pilot-native-audit-20261028004404407",
+      "units": 7,
+      "measuredBytes": 0,
+      "failure": null,
+      "settled": true,
+      "elapsedMs": null
+    },
+    {
+      "label": "anchored-history-audit",
+      "path": "evidence/high-activity-20261028/native-flow-20261028004053347/anchored-audit-receipt.json",
+      "runId": "pilot-native-anchor-20261028004722611",
+      "units": 3,
+      "measuredBytes": 54745,
+      "failure": null,
+      "settled": true,
+      "elapsedMs": 1342
+    },
+    {
+      "label": "quiet-maintenance-preflight",
+      "path": "evidence/high-activity-20261028/native-flow-20261028011013865/receipt.json",
+      "runId": "pilot-native-flow-20261028011013865",
+      "units": 5,
+      "measuredBytes": 52695,
+      "failure": "NATIVE_FLOW_RECENT_SUPPORTED_SWAP_NOT_VERIFIED",
+      "settled": true,
+      "elapsedMs": 1252
+    },
+    {
+      "label": "bounded-current-seed-pass",
+      "path": "evidence/high-activity-20261028/pilot-native-prepare-20261028011313592/receipt.json",
+      "runId": "pilot-native-prepare-20261028011313592",
+      "units": 7,
+      "measuredBytes": 70750,
+      "failure": null,
+      "settled": true,
+      "elapsedMs": 1727
+    },
+    {
+      "label": "v2-partial-abrupt-close",
+      "path": "evidence/high-activity-20261028/native-flow-20261028011331673/receipt.json",
+      "runId": "pilot-native-flow-20261028011331673",
+      "units": 10,
+      "measuredBytes": 107462,
+      "failure": "COMPONENT_WS_TRANSPORT",
+      "settled": true,
+      "elapsedMs": 29441
+    }
+  ],
+  "linkedUsage": {
+    "newPhysicalUnits": 39,
+    "measuredResponseBytes": 1304746,
+    "cumulativePhysicalUnits": 3664,
+    "historicalUncertaintyPreserved": true
+  },
+  "established": [
+    "100 retained scoped transactions;96 accepted ordinary event pairs preserve exact economics, roles and fees after narrow legacy24-byte Buy repair",
+    "177 real confirmed MOTHADO ordinary events reparse under whole-AMM-frame v2 rules; original signature-audit strict interior184/184 notifications includes172successes/12failures",
+    "New J6 interval mapped9 real events with fresh current SDK support and actual information-availability times; no parser gaps before unexpected1006close",
+    "Actual program-log indices/frame ordinals, exact event integers and event.user retained; compiled identity/SPL cross-checks explicitly unavailable from logs",
+    "Compact packet size measured: MOTHADO177packets219425B,p501252B,p951252B,max1289B; J6p501251B,p951331B"
+  ],
+  "notEstablished": [
+    "No complete six-closed-bucket forward v2 window",
+    "No combined six-pool flow/held-pricing workload proof",
+    "No new natural PAPER trade, financial qualification, profitability, or production change",
+    "No proof of historical1006 transport cause; no429 or resource refusal observed in this phase"
+  ],
+  "retainedNegativeRecordCaveat": {
+    "path": "evidence/high-activity-20261028/native-flow-20261028011331673/receipt.json",
+    "defect": "Early-failure receipt features were computed at a future planned featureEnd, showing a meaningless future quiet-window placeholder. Result was correctly UNAVAILABLE/capture-ended-before-required-target. Original receipt unchanged; prospective harness now only computes at actual assessmentAt and clamps logical cutoff on close. Do not treat placeholder sufficientlyObserved as completed market evidence."
+  },
+  "nextTechnicalQuestion": "Can a corrected heartbeat/diagnostic transport sustain a complete actual60-second v2 window with independently bounded signature coverage?",
+  "financialWriterOpened": false,
+  "productionChanged": false,
+  "apiFees": "Public read-only endpoints; no paid provider activated",
+  "infrastructureTransferCost": "Unverified, separate from API fees"
+}

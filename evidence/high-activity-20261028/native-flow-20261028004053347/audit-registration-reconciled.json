@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-28T00:44:03.775794+00:00",
+  "runId": "pilot-native-audit-20261028004259207",
+  "classification": "UNSTARTED_AUDIT_REGISTRATION_RECONCILIATION",
+  "originalDeadlineRefusalPreserved": true,
+  "newRequestUnits": 0,
+  "newResponseBytes": 0,
+  "rpcDirectoryCreated": false,
+  "baselinePathsUnchanged": true,
+  "consumedUsageRefunded": false,
+  "uncertainReservationsRefunded": false,
+  "unresolvedRegistrationCleared": true
+}
