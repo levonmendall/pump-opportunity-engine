@@ -64,7 +64,7 @@ test('original financial cache and pilot portfolio authentication remain indepen
  assert.equal((await post('/api/pilot',original)).status,401);assert.equal((await post('/api/snapshot',config.secret)).status,401);
  assert.equal((await post('/api/pilot',config.secret)).status,200);assert.equal(app.cache.read(),null);
  const read=await fetch(url+'/api/pilot').then(r=>r.json());assert.equal(read.snapshot.portfolio.account.id,accountId);assert.equal(read.snapshot.portfolio.positions[0].netLiquidationUsd,null);
- const html=await fetch(url+'/').then(r=>r.text());assert.match(html,/Experimental portfolio/);assert.doesNotMatch(html,new RegExp(config.secret));assert.doesNotMatch(html,new RegExp(original));
+ const html=await fetch(url+'/').then(r=>r.text());assert.doesNotMatch(html,/id="experimental-portfolio"/);assert.doesNotMatch(html,/id="pilot-telemetry-panel"/);assert.doesNotMatch(html,new RegExp(config.secret));assert.doesNotMatch(html,new RegExp(original));
  const body=html.match(/function renderFunnel\(f\)\{([\s\S]*?)\nfunction renderMetrics/);assert.ok(body);const labels:string[]=[];const element={replaceChildren(){},style:{width:''},dataset:{}};const render=new Function('byId','add','return function(f){'+body[1]+';')(()=>element,(_parent:unknown,_tag:string,value:unknown)=>{if(value!==undefined)labels.push(String(value));return element;});assert.doesNotThrow(()=>render(projectPilotStatus(raw()).funnel));assert.ok(labels.includes('Not reported'),'nullable diagnostic counts remain unavailable, never a broken refresh');
 });
 
