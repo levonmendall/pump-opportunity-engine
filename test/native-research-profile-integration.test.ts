@@ -42,7 +42,7 @@ test('native selected flow extends duration/receipt/retention without raising sl
 
 test('profile validation refuses excessive existing history before creating a run or source',async t=>{
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-profile-input-'));t.after(()=>rmSync(directory,{recursive:true,force:true}));const inputPath=join(directory,'public-fixture-input.json'),runDirectory=join(directory,'must-not-exist');
- writeFileSync(inputPath,JSON.stringify({schemaVersion:1,priorPhysicalSettled:true,baselinePaths:Array.from({length:193},(_,i)=>'/fixture/counter-'+i+'.json'),priorCooldownUntil:0,origins:[],source:{commit:'a'.repeat(40),sha256:'b'.repeat(64)}}),{mode:0o600});
+ writeFileSync(inputPath,JSON.stringify({schemaVersion:1,priorPhysicalSettled:true,baselinePaths:Array.from({length:profile.maximumBaselinePaths+1},(_,i)=>'/fixture/counter-'+i+'.json'),priorCooldownUntil:0,origins:[],source:{commit:'a'.repeat(40),sha256:'b'.repeat(64)}}),{mode:0o600});
  await assert.rejects(runNativeCandidates({inputPath,directory:runDirectory,profile:profile.version}),/NATIVE_RESEARCH_BASELINE_COMPACTION_REQUIRED/);assert.equal(existsSync(runDirectory),false);
  await assert.rejects(runNativeCandidates({inputPath:'/does-not-exist',directory:runDirectory,profile:'unknown'}),/UNKNOWN_PROFILE/);assert.equal(existsSync(runDirectory),false);
 });
