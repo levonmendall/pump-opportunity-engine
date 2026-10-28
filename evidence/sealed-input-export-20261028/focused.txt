@@ -1,0 +1,23 @@
+✔ legacy exporter input keeps its exact explicit source list and does not inspect an anchor (1.584852ms)
+✔ first sealed input provides only untrusted raw candidates until original source guards and exact handoff verification run (3.668667ms)
+✔ multiple anchors, absent source list and unsafe anchor names refuse before file access (0.597447ms)
+✔ a changed anchor cannot be adopted merely because its sources are plausible (1.24248ms)
+✔ recursive seals and duplicate/self-referential source lists are explicitly unsupported for this first handoff (1.702948ms)
+✔ updating the local anchor pin cannot hide a changed counter or archived source (1.397304ms)
+✔ importing exporter has no CLI side effects and invalid explicit arguments refuse before accessing an account (1.580386ms)
+✔ quiescent append-only checkpoint preserves all cumulative counters, old429 and uncertain debits while bounding rolling starts (7.702515ms)
+✔ unknown physical stamps retain their latest possible time rather than refund recent provider demand (6.399781ms)
+✔ repeated24h rollovers retain raw history, stable operationIDs and cumulative unknown bytes with a small live chain (49.871366ms)
+✔ in-flight or unsettled transport refuses checkpoint before writing; corruption and anchor mismatch fail closed (2.771665ms)
+✔ checkpointed normal chapters preserve strict hash/starts linkage, default path limits and throttle receipt requirement (3.331305ms)
+✔ unpersisted physical invocation cannot escape rolling control merely because its last durable observation is old (0.864323ms)
+✔ settled-handoff adoption must match every exact source path/hash and counter; archived mutation is detectable without unbounded startup replay (1.649569ms)
+✔ PilotRpc resumes the explicit pinned anchor, links ordinary physical chapters and retains the pin across another restart (37.861677ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1606.818963

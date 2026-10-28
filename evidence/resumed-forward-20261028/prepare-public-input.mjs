@@ -6,17 +6,57 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {decodeMigrationIdentity} from '../../src/migration-identity.ts';
-import {readResearchBaseline} from '../../src/research-baseline.ts';
+import {readResearchBaseline,verifyResearchCheckpointSourceHandoff,RESEARCH_CHECKPOINT_KIND} from '../../src/research-baseline.ts';
 import {validateNativeCandidateInput} from '../../src/run-native-candidates.ts';
 
 const REPOSITORY=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const PILOT='/workspace/poe-pilot',MIB=1024*1024,now=Date.now(),uid=process.getuid();
+const PILOT='/workspace/poe-pilot',MIB=1024*1024;
 const need=(value,reason)=>{if(!value)throw Error('INPUT_EXPORT_'+reason);};
 const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
-const argv=process.argv.slice(2),allowed=new Set(['--bundle-directory','--output','--provenance','--lease-pid','--handoff-directory','--settlement-receipt']);
+/** First-seal inspection supplies UNTRUSTED candidate source paths only. The
+ * caller must still run its original native/archive/historical guards and raw
+ * chain reader, then the reviewed exact checkpoint-source handoff verifier.
+ * No production CLI can override the fixed pilot root. */
+export function inspectNativeInputAccountingPaths(manifest,readBounded,pilotRoot=PILOT){
+ need(Array.isArray(manifest.baselinePaths)&&manifest.baselinePaths.length>0&&manifest.baselinePaths.length<=448,'EXPLICIT_BASELINE_PATHS_REQUIRED');
+ if(manifest.baselineCheckpointSha256===undefined)return {sourcePaths:[...manifest.baselinePaths],checkpoint:null};
+ need(/^[a-f0-9]{64}$/.test(manifest.baselineCheckpointSha256)&&manifest.baselinePaths.length===1,'EXACT_SINGLE_CHECKPOINT_REQUIRED');
+ const checkpointPath=manifest.baselinePaths[0],folder=pilotRoot+'/research-checkpoints/';
+ need(typeof checkpointPath==='string'&&checkpointPath.startsWith(folder)&&path.dirname(checkpointPath)===folder.slice(0,-1)&&/^[a-z0-9-]+\.json$/.test(path.basename(checkpointPath)),'FIXED_CHECKPOINT_PATH_REQUIRED');
+ const raw=readBounded(checkpointPath,512*1024);need(sha(raw)===manifest.baselineCheckpointSha256,'CHECKPOINT_HASH_MISMATCH');
+ const checkpoint=JSON.parse(raw);
+ need(checkpoint.schemaVersion===1&&checkpoint.kind===RESEARCH_CHECKPOINT_KIND&&checkpoint.previousCheckpoint===null&&Array.isArray(checkpoint.sources)&&checkpoint.sources.length>0&&checkpoint.sources.length<=448,'FIRST_CHECKPOINT_SOURCE_LIST_REQUIRED');
+ const sourcePaths=checkpoint.sources.map(row=>{need(row&&typeof row.path==='string'&&path.isAbsolute(row.path)&&/^[a-f0-9]{64}$/.test(row.sha256),'CHECKPOINT_SOURCE_REFERENCE_REQUIRED');return row.path;});
+ need(new Set(sourcePaths).size===sourcePaths.length&&!sourcePaths.includes(checkpointPath),'CHECKPOINT_SOURCE_PATH_CONFLICT');
+ return {sourcePaths,checkpoint:{path:checkpointPath,sha256:manifest.baselineCheckpointSha256,bytes:raw.length,sourcePathsAreUntrustedUntilExistingGuardsPass:true}};
+}
+
+/** Source hashes/counters alone cannot prove rolling demand was preserved.
+ * Re-derive the creator's FIRST-seal conservative history from the already
+ * verified raw books. Missing physical stamps stay at the actual seal time.
+ * This is one quiescent export check, never per-request historical replay. */
+export function verifyNativeInputCheckpointAccounting({checkpointPath,checkpointSha256,sourcePaths,now,readBounded}){
+ const verified=verifyResearchCheckpointSourceHandoff({checkpointPath,checkpointSha256,sourcePaths,now,physicalSettled:true});
+ const linked=readResearchBaseline({paths:sourcePaths,now,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:448});
+ const anchorRaw=readBounded(checkpointPath,512*1024);need(sha(anchorRaw)===checkpointSha256,'CHECKPOINT_HASH_MISMATCH');const anchor=JSON.parse(anchorRaw);
+ need(anchor.previousCheckpoint===null,'FIRST_CHECKPOINT_SOURCE_LIST_REQUIRED');
+ const sealAt=anchor.createdAt,cutoff=Math.max(0,sealAt-60000),starts=[];let unknown=0,lastObservedAt=0;
+ for(let index=0;index<linked.sources.length;index++){
+  const source=linked.sources[index],raw=readBounded(source.path,512*1024);need(sha(raw)===source.sha256,'CHECKPOINT_RAW_SOURCE_CHANGED');const book=JSON.parse(raw);lastObservedAt=book.lastObservedAt;
+  if(index===0){need(book.blockedReason==='RPC_HTTP_429','CHECKPOINT_LEGACY_REFUSAL_REQUIRED');for(const _ of book.starts){unknown++;starts.push(sealAt);}}
+  else{const actual=new Map((book.actualInvocations??[]).map(row=>[row.id,row.at])),base=book.baseline.calls;for(let i=0;i<book.starts.length;i++){const at=actual.get(base+i+1);if(at===undefined){unknown++;starts.push(sealAt);}else starts.push(at);}}
+ }
+ const retained=starts.filter(at=>at>=cutoff).sort((a,b)=>a-b),expected={retainedSinceAt:cutoff,omittedCount:linked.baseline.calls-retained.length,conservativeUnknownAtSeal:unknown,times:retained};
+ need(starts.length===linked.baseline.calls&&anchor.sourceLastObservedAt===lastObservedAt&&anchor.starts.retainedSinceAt===expected.retainedSinceAt&&anchor.starts.omittedCount===expected.omittedCount&&anchor.starts.conservativeUnknownAtSeal===expected.conservativeUnknownAtSeal&&JSON.stringify(anchor.starts.times)===JSON.stringify(expected.times),'CHECKPOINT_START_HISTORY_REFUND_OR_RETIME');
+ return {...verified,firstSealStartHistoryVerified:true,unknownPhysicalStartsConservativelyAtSeal:unknown,retainedStarts:retained.length};
+}
+
+export function prepareNativePublicInput(argv=process.argv.slice(2)){
+const now=Date.now(),uid=process.getuid();
+const allowed=new Set(['--bundle-directory','--output','--provenance','--lease-pid','--handoff-directory','--settlement-receipt']);
 need([8,12].includes(argv.length)&&argv.every((value,index)=>index%2||allowed.has(value))&&new Set(argv.filter((_,index)=>index%2===0)).size===argv.length/2&&['--bundle-directory','--output','--provenance','--lease-pid'].every(name=>argv.includes(name)),'EXPLICIT_ARGUMENTS_REQUIRED');
 const arg=name=>argv[argv.indexOf(name)+1];
 const latestHandoff=argv.includes('--handoff-directory');
@@ -50,13 +90,13 @@ function read(file,maximum){
 const git=(...args)=>{const result=spawnSync('git',args,{cwd:REPOSITORY,encoding:'utf8',timeout:5000,maxBuffer:2*MIB});need(result.status===0,'GIT_METADATA_UNAVAILABLE');return result.stdout.trim();};
 const manifestPath=PILOT+'/pilot.json',manifestRaw=read(manifestPath,2*MIB),manifest=JSON.parse(manifestRaw);
 need(manifest.schemaVersion===1&&manifest.experimental===true&&manifest.authoritative===false&&!manifest.unresolvedResearch,'UNSETTLED_OR_NONEXPERIMENTAL_RESEARCH');
-need(Array.isArray(manifest.baselinePaths)&&manifest.baselinePaths.length>0&&manifest.baselinePaths.length<=448,'EXPLICIT_BASELINE_PATHS_REQUIRED');
+const inspectedAccounting=inspectNativeInputAccountingPaths(manifest,read),accountingPaths=inspectedAccounting.sourcePaths;
 let discovery,watch,checkpoint,checkpointPath,expectedAccounting,handoff;
 if(!latestHandoff){
  const discoveryPath=PILOT+'/runs/discovery-cache-20261028070929965/receipt.json';discovery=JSON.parse(read(discoveryPath,4*MIB));
  need(discovery.running===false&&discovery.physicalSettlementConfirmed===true&&discovery.financialWriterOpened===false&&discovery.entriesEnabled===false&&discovery.liveTrading===false,'SETTLED_DISCOVERY_RECEIPT_REQUIRED');
  need(discovery.usage?.closed===true&&discovery.usage.inFlight===0&&discovery.usage.waitingOrOperating===false&&discovery.usage.fatal===null,'DISCOVERY_COUNTERBOOK_NOT_SETTLED');
- need(JSON.stringify(discovery.usage.chapterPaths)===JSON.stringify(manifest.baselinePaths),'MANIFEST_CHANGED_SINCE_LAST_SETTLEMENT');
+ need(JSON.stringify(discovery.usage.chapterPaths)===JSON.stringify(accountingPaths),'MANIFEST_CHANGED_SINCE_LAST_SETTLEMENT');
  const watchStatusPath=PILOT+'/runs/discovery-cache-20261028070929965/status.json',watchStatus=JSON.parse(read(watchStatusPath,4*MIB));
  need(watchStatus.runId===discovery.runId&&watchStatus.running===false&&watchStatus.generatedAt===discovery.generatedAt,'LATEST_WATCH_HANDOFF_REQUIRED');
  watch=watchStatus.watch;need(JSON.stringify(watch)===JSON.stringify(discovery.watch),'WATCH_RECEIPT_MISMATCH');
@@ -73,7 +113,7 @@ if(!latestHandoff){
  need(readback.schemaVersion===1&&readback.sourceRun===settlement.administrationRun&&readback.wholeArchiveHashVerified===true&&readback.allSelectedSegmentsRetained===true&&readback.financialFilesRead===false&&readback.rawHostEvidenceDeletionPerformed===false,'VERIFIED_PUBLIC_READBACK_REQUIRED');
  need(Array.isArray(prepared.priorBookPaths)&&Array.isArray(settlement.newPaths)&&settlement.newPaths.length>0&&settlement.newPaths.length<=65&&settlement.newPaths.every(row=>typeof row?.path==='string'&&/^[a-f0-9]{64}$/.test(row.sha256)),'EXPLICIT_SETTLED_PATHS_REQUIRED');
  const nativeSettledPaths=[...prepared.priorBookPaths,...settlement.newPaths.map(row=>row.path)];
- need(manifest.baselinePaths.length>=nativeSettledPaths.length&&manifest.baselinePaths.length<=nativeSettledPaths.length+16&&JSON.stringify(manifest.baselinePaths.slice(0,nativeSettledPaths.length))===JSON.stringify(nativeSettledPaths),'MANIFEST_CHANGED_SINCE_NATIVE_SETTLEMENT');
+ need(accountingPaths.length>=nativeSettledPaths.length&&accountingPaths.length<=nativeSettledPaths.length+16&&JSON.stringify(accountingPaths.slice(0,nativeSettledPaths.length))===JSON.stringify(nativeSettledPaths),'MANIFEST_CHANGED_SINCE_NATIVE_SETTLEMENT');
  for(const row of settlement.newPaths){need(row.path.startsWith(directory+'/rpc/chapter-')&&/^chapter-[0-9]{3}\.json$/.test(path.basename(row.path))||row.path===study+'/observed-unmanaged-control.json','SETTLED_COUNTERBOOK_SCOPE');need(sha(read(row.path,512*1024))===row.sha256,'SETTLED_COUNTERBOOK_HASH_MISMATCH');}
  const supervisorPath=study+'/artifact/supervisor.json',receiptPath=directory+'/receipt.json',statusPath=directory+'/status.json',indexPath=study+'/artifact/index.json';
  const supervisor=JSON.parse(read(supervisorPath,256*1024)),receiptRaw=read(receiptPath,8*MIB),receipt=JSON.parse(receiptRaw),statusRaw=read(statusPath,8*MIB),index=JSON.parse(read(indexPath,MIB));
@@ -97,14 +137,14 @@ if(!latestHandoff){
 // books after the market segment. Its results never alter the market checkpoint.
 // Follow only the explicit manifest suffix; no directory/history scan or refund.
 const supplementalHistorical=[];
-while(expectedAccounting.sourceCount<manifest.baselinePaths.length){
- const count=expectedAccounting.sourceCount,first=manifest.baselinePaths[count];
+while(expectedAccounting.sourceCount<accountingPaths.length){
+ const count=expectedAccounting.sourceCount,first=accountingPaths[count];
  need(new RegExp('^'+PILOT+'/runs/historical-adjudication-[0-9]{14}/rpc/chapter-[0-9]{3}\\.json$').test(first),'UNREVIEWED_ACCOUNTING_SUFFIX');
  const run=path.dirname(path.dirname(first)),receiptPath=run+'/receipt.json',beforePath=run+'/manifest-before.json';
  const raw=read(receiptPath,2*MIB),r=JSON.parse(raw),before=JSON.parse(read(beforePath,2*MIB)),u=r.usage;
  need(r.schemaVersion===1&&r.historicalDiagnosisOnly===true&&r.earlierWindowsUnchanged===true&&r.financialFilesRead===false&&r.credentialsRead===false&&r.physicalSettlementConfirmed===true&&r.unresolvedResearchRetained===false&&/^[a-f0-9]{40}$/.test(r.sourceCommit),'SETTLED_HISTORICAL_RECEIPT_REQUIRED');
- need(before.accountId===manifest.accountId&&before.inceptionAt===manifest.inceptionAt&&!before.unresolvedResearch&&JSON.stringify(before.baselinePaths)===JSON.stringify(manifest.baselinePaths.slice(0,count)),'HISTORICAL_PREFIX_CHANGED');
- need(u&&u.closed===true&&u.inFlight===0&&u.waitingOrOperating===false&&Number.isSafeInteger(u.newUnits)&&u.newUnits>=0&&u.newUnits<=6&&Array.isArray(u.chapterPaths)&&u.chapterPaths.length>count&&u.chapterPaths.length<=count+6&&JSON.stringify(u.chapterPaths)===JSON.stringify(manifest.baselinePaths.slice(0,u.chapterPaths.length)),'HISTORICAL_SETTLEMENT_COUNTS');
+ need(before.accountId===manifest.accountId&&before.inceptionAt===manifest.inceptionAt&&!before.unresolvedResearch&&JSON.stringify(before.baselinePaths)===JSON.stringify(accountingPaths.slice(0,count)),'HISTORICAL_PREFIX_CHANGED');
+ need(u&&u.closed===true&&u.inFlight===0&&u.waitingOrOperating===false&&Number.isSafeInteger(u.newUnits)&&u.newUnits>=0&&u.newUnits<=6&&Array.isArray(u.chapterPaths)&&u.chapterPaths.length>count&&u.chapterPaths.length<=count+6&&JSON.stringify(u.chapterPaths)===JSON.stringify(accountingPaths.slice(0,u.chapterPaths.length)),'HISTORICAL_SETTLEMENT_COUNTS');
  for(const next of u.chapterPaths.slice(count))need(path.dirname(next)===run+'/rpc'&&/^chapter-[0-9]{3}\.json$/.test(path.basename(next)),'HISTORICAL_COUNTER_SCOPE');
  need(u.cumulativeUnits===expectedAccounting.calls+u.newUnits&&u.accountedCumulativeResponseBytes===expectedAccounting.bytes+u.newAccountedResponseBytes&&Number.isSafeInteger(u.uncertainResponseBytes)&&u.uncertainResponseBytes>=expectedAccounting.uncertain,'HISTORICAL_COUNTER_TOTAL_MISMATCH');
  expectedAccounting={sourceCount:u.chapterPaths.length,calls:u.cumulativeUnits,bytes:u.accountedCumulativeResponseBytes,uncertain:u.uncertainResponseBytes,observed:u.accountedCumulativeResponseBytes-u.uncertainResponseBytes};
@@ -140,20 +180,35 @@ for(let index=0;index<checkpoint.origins.length;index++){
  if(!prior||finalized.availableAt<prior.proof.originFinalized.availableAt)origins.set(identity.baseMint,{identity,proof:structuredClone(source),ref:{path:checkpointPath,originIndex:index,kind:'latest-native-strict-proof'}});
 }
 need(origins.size<=174,'ORIGIN_IDENTITY_CAP');
-const linked=readResearchBaseline({paths:manifest.baselinePaths,now,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:448});
+const linked=readResearchBaseline({paths:accountingPaths,now,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:448});
 need(linked.sources.length===expectedAccounting.sourceCount&&linked.baseline.calls===expectedAccounting.calls&&linked.baseline.bytes===expectedAccounting.bytes&&linked.uncertainResponseBytes===expectedAccounting.uncertain&&(expectedAccounting.observed===undefined||linked.observedBytes===expectedAccounting.observed),'SETTLED_ACCOUNTING_MISMATCH');
+// The original run/archive/source-prefix/historical checks and full raw-chain
+// accounting verification above are mandatory BEFORE trusting a compact anchor.
+// This is a quiescent first seal only; it does not prove in-process rollover.
+let checkpointHandoff=null,runtimeLinked=linked;
+if(inspectedAccounting.checkpoint){
+ const anchor=inspectedAccounting.checkpoint;
+ checkpointHandoff=verifyNativeInputCheckpointAccounting({checkpointPath:anchor.path,checkpointSha256:anchor.sha256,sourcePaths:accountingPaths,now,readBounded:read});
+ runtimeLinked=readResearchBaseline({paths:manifest.baselinePaths,checkpointSha256:anchor.sha256,now,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:448});
+ need(runtimeLinked.baseline.calls===linked.baseline.calls&&runtimeLinked.baseline.bytes===linked.baseline.bytes&&runtimeLinked.observedBytes===linked.observedBytes&&runtimeLinked.uncertainResponseBytes===linked.uncertainResponseBytes&&runtimeLinked.pendingOperations===linked.pendingOperations&&runtimeLinked.baseline.refusalAt===linked.baseline.refusalAt,'SEALED_ACCOUNTING_COUNTER_MISMATCH');
+ handoff={...handoff,accountingCheckpoint:checkpointHandoff};
+}
 const priorCooldownUntil=Math.max(manifest.cooldownUntil??0,manifest.controlCooldownUntil??0);
 need(Number.isSafeInteger(priorCooldownUntil)&&priorCooldownUntil>=0&&now>=priorCooldownUntil,'PROVIDER_COOLDOWN');
-const input={schemaVersion:1,baselinePaths:manifest.baselinePaths,priorPhysicalSettled:true,priorCooldownUntil,origins:[...origins.values()].sort((a,b)=>b.identity.chainBlockTime-a.identity.chainBlockTime).map(row=>row.proof),source:{commit:metadata.git.commit,sha256:metadata.bundle.sha256},dataContract:'confirmed-program-activity-v3-shadow',observationAgePolicy:'observation-age-selected-24h-study-v1',watchCheckpoint:structuredClone(watch),reportingBinding:binding};
+const input={schemaVersion:1,baselinePaths:manifest.baselinePaths,...(inspectedAccounting.checkpoint?{baselineCheckpointSha256:inspectedAccounting.checkpoint.sha256}:{}),priorPhysicalSettled:true,priorCooldownUntil,origins:[...origins.values()].sort((a,b)=>b.identity.chainBlockTime-a.identity.chainBlockTime).map(row=>row.proof),source:{commit:metadata.git.commit,sha256:metadata.bundle.sha256},dataContract:'confirmed-program-activity-v3-shadow',observationAgePolicy:'observation-age-selected-24h-study-v1',watchCheckpoint:structuredClone(watch),reportingBinding:binding};
 validateNativeCandidateInput(input);
 const encoded=JSON.stringify(input)+'\n';need(Buffer.byteLength(encoded)<=8*MIB,'INPUT_CAP');
 const hintRows=latestHandoff?watch.rows.filter(row=>row.migrationAt===null&&row.verifiedAt===null):watch.rows.filter(row=>row.firstSeenAt>=discovery.startedAt);
 const hints=hintRows.map(row=>{need(row.migrationAt===null&&row.verifiedAt===null&&Number.isSafeInteger(row.firstSeenAt)&&row.firstSeenAt<=now,'UNVERIFIED_HINT_CHANGED');if(!latestHandoff)need(row.mint===null&&row.pool===null&&row.state==='DISCOVERED','ORIGINAL_DISCOVERY_HINT_CHANGED');return {signature:row.signature,feedMint:row.feedMint,firstSeenAt:row.firstSeenAt,receiptAgeMs:now-row.firstSeenAt,state:row.state,migrationAt:null,currentPool:row.pool,semantics:'retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred'};});
 if(!latestHandoff)need(hints.length===discovery.migrationHints,'PRESERVED_HINT_COUNT_MISMATCH');
-const provenance={schemaVersion:1,createdAt:now,source:input.source,dataContract:input.dataContract,observationAgePolicy:input.observationAgePolicy,baselineEntryAge:'5–120min unchanged; no financial execution',inputSha256:sha(encoded),inputBytes:Buffer.byteLength(encoded),baseline:{calls:linked.baseline.calls,accountedResponseBytes:linked.baseline.bytes,observedResponseBytes:linked.observedBytes,uncertainResponseBytes:linked.uncertainResponseBytes,pendingHistoricalReservations:linked.pendingOperations,sourceCount:linked.sources.length,sha256:linked.baseline.sha256},handoff,originCheckpointCount:checkpoint.origins.length,originCount:origins.size,excludedOrigins,origins:[...origins.values()].map(row=>({mint:row.identity.baseMint,pool:row.identity.pool,migrationAt:row.identity.chainBlockTime*1000,source:row.ref})),watchRows:watch.rows.length,unverifiedHints:hints,watchUnchangedFromSettledHandoff:true,reportingBinding:binding,inputs,sourceInputBytes:inputBytes,financialDatabaseOpened:false,financialStatusRead:false,credentialsRead:false,networkCalls:0,pilotManifestModified:false,externalLeaseHolder:leasePid,immutableSourceMeaning:'Executable/commit/configuration are frozen by reviewed metadata and stager; status uses input.source, not publication-time Git HEAD.'};
+const provenance={schemaVersion:1,createdAt:now,source:input.source,dataContract:input.dataContract,observationAgePolicy:input.observationAgePolicy,baselineEntryAge:'5–120min unchanged; no financial execution',inputSha256:sha(encoded),inputBytes:Buffer.byteLength(encoded),baseline:{calls:linked.baseline.calls,accountedResponseBytes:linked.baseline.bytes,observedResponseBytes:linked.observedBytes,uncertainResponseBytes:linked.uncertainResponseBytes,pendingHistoricalReservations:linked.pendingOperations,sourceCount:runtimeLinked.sources.length,originalSourceCount:linked.sources.length,sha256:runtimeLinked.baseline.sha256,baselineCheckpointSha256:manifest.baselineCheckpointSha256??null,rawSourceHashes:linked.sources,rawInputBytes:linked.inputBytes,runtimeInputBytes:runtimeLinked.inputBytes},handoff,originCheckpointCount:checkpoint.origins.length,originCount:origins.size,excludedOrigins,origins:[...origins.values()].map(row=>({mint:row.identity.baseMint,pool:row.identity.pool,migrationAt:row.identity.chainBlockTime*1000,source:row.ref})),watchRows:watch.rows.length,unverifiedHints:hints,watchUnchangedFromSettledHandoff:true,reportingBinding:binding,inputs,sourceInputBytes:inputBytes,financialDatabaseOpened:false,financialStatusRead:false,credentialsRead:false,networkCalls:0,pilotManifestModified:false,externalLeaseHolder:leasePid,immutableSourceMeaning:'Executable/commit/configuration are frozen by reviewed metadata and stager; status uses input.source, not publication-time Git HEAD.'};
 // Recheck source and manifest after all bounded decoding to reject concurrent
 // source or accounting changes rather than exporting a mixed-time snapshot.
 need(git('rev-parse','HEAD')===commit&&git('status','--porcelain','--untracked-files=all','--','src','scripts',':!node_modules')===''&&sha(fs.readFileSync(manifestPath))===sha(manifestRaw),'SOURCE_OR_ACCOUNTING_CHANGED_DURING_EXPORT');
 function writeExclusive(file,bytes){const fd=fs.openSync(file,fs.constants.O_CREAT|fs.constants.O_EXCL|fs.constants.O_WRONLY|fs.constants.O_NOFOLLOW,0o600);try{fs.writeFileSync(fd,bytes);fs.fsyncSync(fd);}finally{fs.closeSync(fd);}}
 writeExclusive(output,encoded);writeExclusive(provenanceOutput,JSON.stringify(provenance,null,2)+'\n');
-console.log(JSON.stringify({...provenance,inputs:undefined,origins:undefined,unverifiedHints:hints.map(({signature,...row})=>row),output,provenanceOutput}));
+console.log(JSON.stringify({...provenance,baseline:{...provenance.baseline,rawSourceHashes:undefined},inputs:undefined,origins:undefined,unverifiedHints:hints.map(({signature,...row})=>row),output,provenanceOutput}));
+
+return provenance;
+}
+if(process.argv[1]&&pathToFileURL(path.resolve(process.argv[1])).href===import.meta.url)prepareNativePublicInput();
