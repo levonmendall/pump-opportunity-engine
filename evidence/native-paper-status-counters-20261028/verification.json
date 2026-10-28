@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-28T20:10:29.830008+00:00",
+  "baseCommit": "ce16f0f3724bd0cbd86f3c052d4b887b3997450b",
+  "scope": "OFFLINE synthetic reporting and SDK lifecycle fixtures; not forward market evidence",
+  "sourceFiles": [
+    {
+      "path": "src/run-native-paper.ts",
+      "bytes": 48601,
+      "sha256": "04604fbffe3b513a8b7c833f2c6ff2e16d0a393ccd2bc432b5238f94792709cf"
+    },
+    {
+      "path": "test/native-paper-observation-reporting.test.ts",
+      "bytes": 5365,
+      "sha256": "28137718f78699e5784b492289e9539e3cb12b7eb3df321443e47032cd43b96a"
+    },
+    {
+      "path": "test/native-paper-launcher.test.ts",
+      "bytes": 5376,
+      "sha256": "a1357963e13d4ea5cf6294ee23e3445ea2e0881ceaf805eb0c2b0d8e222ccc85"
+    },
+    {
+      "path": "test/native-paper-integration.test.ts",
+      "bytes": 16398,
+      "sha256": "78308fe0768b46f6cc63b0125dce5299768e089c479a45165dc8d9562aee37d7"
+    },
+    {
+      "path": "operator/reporting-delivery/native-paper-projection-compatibility.test.mjs",
+      "bytes": 4530,
+      "sha256": "df9b89a8ed1040f6d3f4439fd15d7ec5511be39a86f8dd7d7b45857f20610eb9"
+    }
+  ],
+  "tests": {
+    "repositoryFocusedPassed": 33,
+    "deployedPublisherCompatibilityPassed": 2,
+    "failed": 0,
+    "build": "PASS",
+    "independentReview": "GO; partial projection outputs cleared on any failure as recommended"
+  },
+  "newRiskPolicy": "validated-financial-projection-before-new-risk-v1",
+  "normalAndManagementConfigHashesMustBeRecomputed": true,
+  "financialFunnelPreserved": true,
+  "ownedProtectionAndPendingActionsIndependent": true,
+  "actualFinancialAccountsOpened": false,
+  "providerOrRenderRequests": 0,
+  "deployedPublisherSha256": "649f4cc27f74f3aa53fcc831a3437b7e3d9eb8eef63896782b5b451aba1427eb",
+  "rawOutput": [
+    {
+      "path": "evidence/native-paper-status-counters-20261028/regressions.txt",
+      "bytes": 4081,
+      "sha256": "11c1a9238fcac6fa5b4b988127af11583ecdd027de407fcb1f8eef901ed3fb87"
+    },
+    {
+      "path": "evidence/native-paper-status-counters-20261028/publisher-compatibility.txt",
+      "bytes": 358,
+      "sha256": "ecb3382c0a2700e0f0282cf7ef95d3662f73e0595f16b3d90053087dc9924c56"
+    },
+    {
+      "path": "evidence/native-paper-status-counters-20261028/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ]
+}

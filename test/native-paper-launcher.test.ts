@@ -30,3 +30,8 @@ test('750ms holding reads retain reporting service opportunities without moving 
  assert.equal(nativePaperReportingAdmission({...due,nextPendingAt:null,nextProtectionAt:21000}).admitted,true);
  const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.doesNotMatch(source,/lastProtectionStart<500/);assert.match(source,/reportingOverruns\+\+/);assert.match(source,/maybeReport\(\);await new Promise/);
 });
+
+
+test('financial reporting admission is versioned and only gates new risk, never native capture or owned work',()=>{
+ const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.match(source,/financialProjectionReady=false/);assert.match(source,/return financialProjectionReady&&sourceAdmission\(\)/);assert.match(source,/experimentalAccounting=pilotExperimentalAccounting\(valuation\);financialProjectionReady=true/);const capture=source.slice(source.indexOf('const sourceAdmission='),source.indexOf('const lowerView='));assert.doesNotMatch(capture,/financialProjectionReady/);assert.match(source,/financialReportingPolicy:NATIVE_PAPER_FINANCIAL_REPORTING_POLICY/);assert.match(source,/entriesEnabled:projection.entriesEnabled&&financialProjectionReady/);
+});
