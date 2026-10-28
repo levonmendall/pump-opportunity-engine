@@ -16,7 +16,7 @@ function fixture(config:{notes?:NativeNotification[];pages?:unknown[][];delayMs?
 }
 
 test('strict interior signature audit verifies a complete target using actual pre/post window fences',async()=>{
- const f=fixture(),r=await auditNativeFlowWindow(f.options);assert.equal(r.status,'verified');assert.equal(r.complete,true);assert.equal(r.requestAttempts,1);assert.equal(r.availableAt,f.now);assert.ok(r.availableAt>r.target.endAt);assert.deepEqual(r.strictInteriorSlots,{lower:100,upper:200});assert.equal(r.anchor?.signature,signature(3));assert.equal((f.calls[0]!.params[1] as any).before,signature(3));assert.equal((f.calls[0]!.params[1] as any).limit,100);assert.equal(r.pageLimit,100);assert.equal(r.historyRows,3);assert.equal(r.interiorRows,1);assert.deepEqual(r.requiredSignatures,[signature(2)]);assert.deepEqual(r.missingNotifications,[]);assert.equal(r.historyRangeCovered,true);assert.ok(r.limitations.some(s=>s.includes('not')&&s.includes('swap')));
+ const f=fixture(),r=await auditNativeFlowWindow(f.options);assert.equal(r.status,'verified');assert.equal(r.complete,true);assert.equal(r.requestAttempts,1);assert.equal(r.availableAt,f.now);assert.ok(r.availableAt>r.target.endAt);assert.deepEqual(r.strictInteriorSlots,{lower:100,upper:200});assert.equal(r.anchor?.signature,signature(3));assert.equal((f.calls[0]!.params[1] as any).before,signature(3));assert.equal((f.calls[0]!.params[1] as any).limit,100);assert.equal((f.calls[0]!.params[1] as any).minContextSlot,200);assert.equal(r.pageLimit,100);assert.equal(r.historyRows,3);assert.equal(r.interiorRows,1);assert.deepEqual(r.requiredSignatures,[signature(2)]);assert.deepEqual(r.missingNotifications,[]);assert.equal(r.historyRangeCovered,true);assert.ok(r.limitations.some(s=>s.includes('not')&&s.includes('swap')));
 });
 
 test('failed and nontrade captured signatures participate without becoming executed trades',async()=>{
@@ -36,7 +36,7 @@ test('same-slot target boundaries and missing before/after fences cannot establi
 });
 
 test('three bounded history pages follow actual last-row cursors and cover all required unique signatures',async()=>{
- const history=Array.from({length:400},(_,i)=>row(399-i,399-i)),notes=[note(100,100,99900),...Array.from({length:299},(_,i)=>note(i+101,i+101,100000+i*100)),note(400,400,160100)],f=fixture({notes,pages:[history.slice(0,100),history.slice(100,200),history.slice(200,300),history.slice(300)]}),r=await auditNativeFlowWindow(f.options);assert.equal(r.status,'verified');assert.equal(f.calls.length,3);assert.equal(r.interiorRows,299);assert.deepEqual(f.calls.map(c=>(c.params[1] as any).before),[signature(400),signature(300),signature(200)]);assert.equal(r.pages[2]!.oldestSlot,100);assert.equal(r.requiredSignatures.length,299);
+ const history=Array.from({length:400},(_,i)=>row(399-i,399-i)),notes=[note(100,100,99900),...Array.from({length:299},(_,i)=>note(i+101,i+101,100000+i*100)),note(400,400,160100)],f=fixture({notes,pages:[history.slice(0,100),history.slice(100,200),history.slice(200,300),history.slice(300)]}),r=await auditNativeFlowWindow(f.options);assert.equal(r.status,'verified');assert.equal(f.calls.length,3);assert.equal(r.interiorRows,299);assert.deepEqual(f.calls.map(c=>(c.params[1] as any).before),[signature(400),signature(300),signature(200)]);assert.deepEqual(f.calls.map(c=>(c.params[1] as any).minContextSlot),[400,400,400]);assert.equal(r.pages[2]!.oldestSlot,100);assert.equal(r.requiredSignatures.length,299);
 });
 
 test('saturated four-page history retains an explicit incomplete denominator and performs no fifth read',async()=>{
@@ -73,7 +73,7 @@ test('invalid target, candidate identity and excessive input bounds perform no p
 });
 
 test('fresh coherent bank Clock ceiling independently audits quiet history without an invented notification anchor',async()=>{
- const f=fixture({notes:[],pages:[[row(5,500),row(4,400),row(2,200),row(1,190)]]}),contextFences={lower:{slot:200,availableAt:99900,bankClockAt:99000},upper:{slot:400,availableAt:160500,bankClockAt:160000}},r=await auditNativeFlowWindow({...f.options,contextFences});assert.equal(r.status,'verified');assert.equal(r.anchorKind,'confirmed-bank-context');assert.equal(r.anchor,null);assert.equal(Object.hasOwn(f.calls[0]!.params[1] as object,'before'),false);assert.deepEqual(r.strictInteriorSlots,{lower:200,upper:400});assert.equal(r.requiredSignatures.length,0);assert.equal(r.interiorRows,0);assert.equal(r.historyRows,4);assert.equal(r.historyRangeCovered,true);assert.ok(r.boundaryExcludedSignatures.includes(signature(4)));assert.equal(r.contextFences?.upper.bankClockAt,160000);
+ const f=fixture({notes:[],pages:[[row(5,500),row(4,400),row(2,200),row(1,190)]]}),contextFences={lower:{slot:200,availableAt:99900,bankClockAt:99000},upper:{slot:400,availableAt:160500,bankClockAt:160000}},r=await auditNativeFlowWindow({...f.options,contextFences});assert.equal(r.status,'verified');assert.equal(r.anchorKind,'confirmed-bank-context');assert.equal(r.anchor,null);assert.equal(Object.hasOwn(f.calls[0]!.params[1] as object,'before'),false);assert.deepEqual(r.strictInteriorSlots,{lower:200,upper:400});assert.equal(r.requiredSignatures.length,0);assert.equal(r.interiorRows,0);assert.equal(r.historyRows,4);assert.equal(r.historyRangeCovered,true);assert.ok(r.boundaryExcludedSignatures.includes(signature(4)));assert.equal(r.contextFences?.upper.bankClockAt,160000);assert.equal((f.calls[0]!.params[1] as any).minContextSlot,400);
 });
 
 test('old, future or time-unbound context ceilings are unavailable before any history request',async()=>{
@@ -114,4 +114,19 @@ test('1000-page mode preserves exact row validation, provider failure and accept
  for(const page of [[row(2,110),row(2,110)],[row(2,110),row(1,120)],[{...row(2,110),confirmationStatus:'processed'}]]){const f=fixture({pages:[page]}),r=await auditNativeFlowWindow({...f.options,pageLimit:1000,maximumPages:1});assert.equal(r.status,'unavailable');assert.equal(r.reason,'NATIVE_AUDIT_HISTORY_CONTEXT');assert.equal(f.calls.length,1);}
  const refused=fixture({throwCode:'COMPONENT_HTTP_429'}),bad=await auditNativeFlowWindow({...refused.options,pageLimit:1000,maximumPages:1});assert.equal(bad.reason,'COMPONENT_HTTP_429');assert.equal(refused.calls.length,1);
  const invalid=fixture(),invalidResult=await auditNativeFlowWindow({...invalid.options,pageLimit:500 as any});assert.equal(invalidResult.reason,'NATIVE_AUDIT_INVALID_OPTIONS');assert.equal(invalid.calls.length,0);
+});
+
+
+test('a node behind the upper slot floor cannot verify quiet history in either fence mode',async()=>{
+ for(const useClockFence of [false,true]){
+  const f=fixture({notes:useClockFence?[]:[note(1,100,99900),note(3,200,160100)],pages:[[row(1,100),row(4,90)]],throwCode:'COMPONENT_RPC_ERROR_-32016'}),contextFences=useClockFence?{lower:{slot:100,availableAt:99900},upper:{slot:400,availableAt:160500,bankClockAt:160000}}:undefined;
+  const r=await auditNativeFlowWindow({...f.options,...(contextFences?{contextFences}:{})});
+  assert.equal(f.calls.length,1,'context-not-reached has no hidden retry');assert.equal((f.calls[0]!.params[1] as any).minContextSlot,useClockFence?400:200);assert.equal(r.reason,'COMPONENT_RPC_ERROR_-32016');assert.equal(r.status,'unavailable');assert.equal(r.complete,false);assert.equal(r.historyRangeCovered,false);assert.equal(r.pages.length,0);assert.equal(r.historyRows,0);assert.equal(r.requiredSignatures.length,0);assert.deepEqual(r.target,target);assert.equal(r.strictInteriorSlots?.upper,useClockFence?400:200);assert.equal(r.availableAt,f.now);
+ }
+});
+
+test('Clock-fenced pagination retains the original served-node floor as history cursors move backward',async()=>{
+ const history=Array.from({length:400},(_,i)=>row(399-i,399-i)),notes=Array.from({length:299},(_,i)=>note(i+101,i+101,100000+i*100)),f=fixture({notes,pages:[history.slice(0,100),history.slice(100,200),history.slice(200,300)]});
+ const r=await auditNativeFlowWindow({...f.options,contextFences:{lower:{slot:100,availableAt:99900},upper:{slot:400,availableAt:160500,bankClockAt:160000}}});
+ assert.equal(r.status,'verified');assert.equal(f.calls.length,3);assert.deepEqual(f.calls.map(c=>(c.params[1] as any).minContextSlot),[400,400,400]);assert.deepEqual(f.calls.map(c=>(c.params[1] as any).before),[undefined,signature(300),signature(200)]);assert.equal(r.interiorRows,299);
 });

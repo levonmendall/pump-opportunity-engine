@@ -7,9 +7,10 @@ import {ComponentBudget,type ComponentBaseline,type ComponentBudgetOptions,type 
 import {ComponentTransport} from './component-transport.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';
 import {validateRpc} from './network.js';
+import {NATIVE_TWO_HOUR_RESEARCH_PROFILE,resolveNativeResearchProfile} from './native-research-profile.js';
 
 const MIB=1024*1024;
-export type PilotRpcProfile='candidate-native-research-v1';
+export type PilotRpcProfile='candidate-native-research-v1'|typeof NATIVE_TWO_HOUR_RESEARCH_PROFILE.version;
 /** Explicit first-stage native-flow envelope, not a provider entitlement.
  * Time/request/chapter and physical scheduling limits remain the legacy ones.
  * A two-hour profile needs separately validated cumulative-book capacity. */
@@ -25,7 +26,7 @@ const safe=(e:unknown)=>e instanceof Error&&/^(COMPONENT_[A-Z0-9_:-]{1,100}|PAPE
 // written. It remains charged, but this is neither a provider refusal nor a
 // permanent failure of the shared gate. Existing settlement guards still apply.
 const localAdmissionRefusal=(code:string)=>['COMPONENT_DISPATCH_EXPIRED','COMPONENT_ADMISSION_CLOSED'].includes(code);
-const recoverable=(code:string)=>['COMPONENT_HTTP_429','COMPONENT_RPC_OVERLOAD','COMPONENT_PHYSICAL_TIMEOUT','COMPONENT_HTTP_TRANSPORT','COMPONENT_WS_TRANSPORT','COMPONENT_ABORTED','COMPONENT_HTTP_STATUS_502','COMPONENT_HTTP_STATUS_503','COMPONENT_HTTP_STATUS_504'].includes(code);
+const recoverable=(code:string)=>['COMPONENT_HTTP_429','COMPONENT_RPC_OVERLOAD','COMPONENT_RPC_ERROR_-32016','COMPONENT_PHYSICAL_TIMEOUT','COMPONENT_HTTP_TRANSPORT','COMPONENT_WS_TRANSPORT','COMPONENT_ABORTED','COMPONENT_HTTP_STATUS_502','COMPONENT_HTTP_STATUS_503','COMPONENT_HTTP_STATUS_504'].includes(code);
 function retryAfter(value:unknown,at:number){
   if(typeof value!=='string'||value.length>128)return at+65000;
   const n=/^\d+(?:\.\d+)?$/.test(value.trim())?Number(value)*1000:NaN;
@@ -35,17 +36,20 @@ function retryAfter(value:unknown,at:number){
 
 export class PilotRpc{
   private readonly dir:string;private readonly paths:string[];private readonly now:()=>number;private readonly mono:()=>number;
-  private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;private readonly startsPer10s:number;private readonly transactionStartsPer10s:number|undefined;
+  private readonly metadataBytes:number;private readonly componentProfile:typeof NATIVE_TWO_HOUR_RESEARCH_PROFILE.version|undefined;private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;private readonly startsPer10s:number;private readonly transactionStartsPer10s:number|undefined;
   private readonly initial:ComponentBaseline;private baseline:ComponentBaseline;private budget:ComponentBudget|undefined;private transport:ComponentTransport|undefined;
   private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;
   private methodStarts:Array<{at:number;origin:'inherited-unknown'|'getTransaction'}>=[];private methodRefusals=0;
   constructor(private readonly options:PilotRpcOptions){
     this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.startedAt=this.now();this.startedMono=this.mono();
     const profile=options.profile;
-    if(profile!==undefined&&profile!==CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version)throw new PilotRpcUnavailable('INVALID_OPTIONS');
-    const maximumResponseBytes=profile===CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version?CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.maximumResponseBytes:32*MIB;
-    this.duration=options.durationMs??1800000;this.units=options.maxUnits??1500;this.responseBytes=options.maxResponseBytes??32*MIB;this.chapterMs=options.chapterMs??300000;this.chapterUnits=options.chapterUnits??200;this.maximumChapters=options.maxChapters??32;this.startsPer10s=options.maxStartsPer10s??10;this.transactionStartsPer10s=options.maxGetTransactionStartsPer10s;
-    if(!int(this.startedAt)||!Number.isFinite(this.startedMono)||this.startedMono<0||!int(this.duration)||this.duration<1||this.duration>1800000||!int(this.units)||this.units<1||this.units>1500||!int(this.responseBytes)||this.responseBytes<4*MIB||this.responseBytes>maximumResponseBytes||!int(this.chapterMs)||this.chapterMs<1||this.chapterMs>300000||!int(this.chapterUnits)||this.chapterUnits<1||this.chapterUnits>200||!int(this.maximumChapters)||this.maximumChapters<1||this.maximumChapters>32||!int(this.startsPer10s)||this.startsPer10s<1||this.startsPer10s>20||options.priorPhysicalSettled!==true||!/^[a-z0-9-]{1,60}$/.test(options.runId))throw new PilotRpcUnavailable('INVALID_OPTIONS');
+    if(profile!==undefined&&profile!==CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version&&profile!==NATIVE_TWO_HOUR_RESEARCH_PROFILE.version)throw new PilotRpcUnavailable('INVALID_OPTIONS');
+    const extended=profile===NATIVE_TWO_HOUR_RESEARCH_PROFILE.version?resolveNativeResearchProfile(profile):null;
+    this.componentProfile=extended?.version;this.metadataBytes=extended?.maximumRpcMetadataBytes??256*1024;
+    const maximumResponseBytes=extended?.relatedResponseBytes??(profile===CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.version?CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.maximumResponseBytes:32*MIB);
+    const maximumDuration=extended?.maximumDurationMs??1800000,maximumUnits=extended?.maximumUnits??1500,maximumChapters=extended?.maximumChapters??32;
+    this.duration=options.durationMs??maximumDuration;this.units=options.maxUnits??maximumUnits;this.responseBytes=options.maxResponseBytes??32*MIB;this.chapterMs=options.chapterMs??300000;this.chapterUnits=options.chapterUnits??200;this.maximumChapters=options.maxChapters??maximumChapters;this.startsPer10s=options.maxStartsPer10s??10;this.transactionStartsPer10s=options.maxGetTransactionStartsPer10s;
+    if(!int(this.startedAt)||!Number.isFinite(this.startedMono)||this.startedMono<0||!int(this.duration)||this.duration<1||this.duration>maximumDuration||!int(this.units)||this.units<1||this.units>maximumUnits||!int(this.responseBytes)||this.responseBytes<4*MIB||this.responseBytes>maximumResponseBytes||!int(this.chapterMs)||this.chapterMs<1||this.chapterMs>300000||!int(this.chapterUnits)||this.chapterUnits<1||this.chapterUnits>200||!int(this.maximumChapters)||this.maximumChapters<1||this.maximumChapters>maximumChapters||!int(this.startsPer10s)||this.startsPer10s<1||this.startsPer10s>20||options.priorPhysicalSettled!==true||!/^[a-z0-9-]{1,60}$/.test(options.runId))throw new PilotRpcUnavailable('INVALID_OPTIONS');
     if(this.transactionStartsPer10s!==undefined&&(!int(this.transactionStartsPer10s)||this.transactionStartsPer10s<2||this.transactionStartsPer10s>8))throw new PilotRpcUnavailable('INVALID_OPTIONS');
     this.dir=resolve(options.directory);const parent=lstatSync(dirname(this.dir));if(!parent.isDirectory()||parent.isSymbolicLink()||parent.uid!==process.getuid?.()||(parent.mode&0o077)!==0||realpathSync(dirname(this.dir))!==dirname(this.dir))throw new PilotRpcUnavailable('UNSAFE_DIRECTORY');
     this.paths=options.baselinePaths.map(p=>resolve(p));if(this.paths.length+this.maximumChapters>RESEARCH_MAXIMUM_PATHS)throw new PilotRpcUnavailable('BASELINE_CHAPTER_CAP');
@@ -66,7 +70,7 @@ export class PilotRpc{
   private readonly persistence={attempts:0,totalMs:0,maximumMs:0};
   private save(name:string,value:unknown,replace=false){
     const persistedAt=performance.now();this.persistence.attempts++;try{
-    const path=join(this.dir,name),tmp=replace?path+'.pending':path,body=JSON.stringify(value)+'\n';if(Buffer.byteLength(body)>256*1024)throw new PilotRpcUnavailable('STORAGE_BOUND');
+    const path=join(this.dir,name),tmp=replace?path+'.pending':path,body=JSON.stringify(value)+'\n';if(Buffer.byteLength(body)>this.metadataBytes)throw new PilotRpcUnavailable('STORAGE_BOUND');
     const fd=openSync(tmp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);try{writeFileSync(fd,body);fsyncSync(fd);}finally{closeSync(fd);}if(replace)renameSync(tmp,path);const d=openSync(this.dir,constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(d);}finally{closeSync(d);}
     }finally{const elapsed=Math.max(0,performance.now()-persistedAt);this.persistence.totalMs+=elapsed;this.persistence.maximumMs=Math.max(this.persistence.maximumMs,elapsed);}
   }
@@ -109,7 +113,7 @@ export class PilotRpc{
     this.finishChapter();this.check();if(this.chapter>=this.maximumChapters)throw new PilotRpcUnavailable('CHAPTER_CAP');
     const remainingUnits=this.units-(this.baseline.calls-this.initial.calls),remainingBytes=this.responseBytes-(this.baseline.bytes-this.initial.bytes),at=this.now(),index=++this.chapter;
     const path=join(this.dir,'chapter-'+String(index).padStart(3,'0')+'.json');this.controlFailure=false;
-    this.budget=new ComponentBudget({statePath:path,grantId:this.options.runId+'-'+index,baseline:this.baseline,startedAt:at,totalMs:Math.min(this.chapterMs,Math.max(1,Math.floor(this.remainingMs()))),limits:{maxNewUnits:Math.min(this.chapterUnits,remainingUnits),maxCumulativeUnits:this.initial.calls+this.units,maxHttpBytes:remainingBytes,maxWsBytes:remainingBytes,maxCombinedBytes:remainingBytes,maxCumulativeBytes:this.initial.bytes+this.responseBytes,minSpacingMs:250,maxStartsPerMinute:60,maxStartsPer10s:this.startsPer10s},now:this.now,monotonic:this.mono,sleep:this.options.sleep,record:(kind,data)=>{
+    this.budget=new ComponentBudget({...(this.componentProfile===undefined?{}:{profile:this.componentProfile}),statePath:path,grantId:this.options.runId+'-'+index,baseline:this.baseline,startedAt:at,totalMs:Math.min(this.chapterMs,Math.max(1,Math.floor(this.remainingMs()))),limits:{maxNewUnits:Math.min(this.chapterUnits,remainingUnits),maxCumulativeUnits:this.initial.calls+this.units,maxHttpBytes:remainingBytes,maxWsBytes:remainingBytes,maxCombinedBytes:remainingBytes,maxCumulativeBytes:this.initial.bytes+this.responseBytes,minSpacingMs:250,maxStartsPerMinute:60,maxStartsPer10s:this.startsPer10s},now:this.now,monotonic:this.mono,sleep:this.options.sleep,record:(kind,data)=>{
       this.trackMethodStart(kind,data);
       if(kind==='http-headers'){const h=data as {status:number;retryAfter:unknown;at:number};if(h.status===429)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);}
       this.emit(kind,data);

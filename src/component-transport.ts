@@ -1,10 +1,13 @@
 /** Fixed-endpoint public data transport for ONE component grant. No retry/signing. */
 import WebSocket from 'ws';
 import {HttpsProxyAgent} from 'https-proxy-agent';
-import {ComponentBudget} from './component-budget.js';
+import {ComponentBudget,type ComponentOperation} from './component-budget.js';
 import {validateRpc} from './network.js';
 import {createHash} from 'node:crypto';
 const HTTP='https://api.mainnet.solana.com',WS='wss://api.mainnet.solana.com';
+export type SignatureHistoryBatchRequest={key:string;params:readonly unknown[]};
+export type SignatureHistoryBatchItem<T=unknown>={key:string;id:string;status:'result'|'rpc-error';result?:T;errorCode?:number;requestedAt:number;responseReceivedAt:number;validatedAt:number};
+export type SignatureHistoryBatchResponse<T=unknown>={physicalRequestId:number;requestedAt:number;responseReceivedAt:number;validatedAt:number;responseBytes:number;physicalHttpStarts:1;logicalQueries:number;overloaded:boolean;items:SignatureHistoryBatchItem<T>[]};
 export type ComponentNotice={at:number;connection:number;address:string;slot:number;hash:string;account:any;changed:boolean};
 type RecordFn=(kind:string,data:unknown)=>void;
 type Pending={id:number;method:string;address?:string;resolve:(v:any)=>void;reject:(e:Error,acknowledged?:boolean)=>void};
@@ -26,33 +29,74 @@ export class ComponentTransport {
     return n;
   }
   sampleSocket(){return this.activeConnection?this.sampleConnection(this.activeConnection):undefined;}
+  private async httpJson(op:ComponentOperation,method:string,envelope:unknown,onHttpInvoked?:()=>void){
+    const requestedAt=this.now();onHttpInvoked?.();let res:Response;
+    try{res=await this.fetcher(HTTP,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(envelope),signal:op.signal,redirect:'error'});}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
+    const retryAfter=res.headers.get('retry-after');this.record('http-headers',{id:op.id,method,status:res.status,retryAfter:retryAfter?.slice(0,128)??null,at:this.now(),byteAccounting:'measured-body; response-header-and-wire-overhead-unmeasured'});
+    // A throttle refusal ends this grant at its first known observation. Do
+    // not read the error body to completion; retain the reserved uncertainty.
+    if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
+    if(Number(res.headers.get('content-length'))>2*1024*1024){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_RESPONSE_SIZE');}
+    const reader=res.body?.getReader();if(!reader)throw Error('COMPONENT_HTTP_EMPTY_RESPONSE');
+    const chunks:Uint8Array[]=[];let size=0,complete=false;const abort=()=>{void reader.cancel().catch(()=>{});};op.signal.addEventListener('abort',abort,{once:true});
+    // Fetch exposes decoded body bytes. Only an identity body can be compared
+    // with Content-Length; compressed wire lengths describe different bytes.
+    const length=res.headers.get('content-length'),encoding=res.headers.get('content-encoding');
+    const expectedLength=length!==null&&/^[0-9]+$/.test(length)&&Number.isSafeInteger(Number(length))&&(!encoding||encoding==='identity')?Number(length):null;
+    try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');if(expectedLength!==null&&size!==expectedLength)throw Error('COMPONENT_HTTP_TRUNCATED_RESPONSE');op.completeResponse();complete=true;break;}size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>2*1024*1024)throw Error('COMPONENT_HTTP_RESPONSE_SIZE');if(res.ok)chunks.push(value);}}
+    finally{op.signal.removeEventListener('abort',abort);if(!complete)await reader.cancel().catch(()=>{});reader.releaseLock();}
+    const responseReceivedAt=this.now();this.record('http-response-timing',{id:op.id,method,requestedAt,availableAt:responseReceivedAt,responseBytes:size,status:res.status});
+    // A fully drained bounded error body has known size, even though the
+    // status halts this grant. Never parse, retain or log provider error text.
+    if(!res.ok)throw Error('COMPONENT_HTTP_STATUS_'+res.status);
+    let body:any;try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw Error('COMPONENT_HTTP_MALFORMED_JSON');}
+    return {body,requestedAt,responseReceivedAt,responseBytes:size};
+  }
   async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<T>{
     validateRpc({method});
     return this.budget.operate({transport:'http',method},async op=>{
-      const requestedAt=this.now();let res:Response;
-      try{res=await this.fetcher(HTTP,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:op.id,method,params}),signal:op.signal,redirect:'error'});}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
-      const retryAfter=res.headers.get('retry-after');this.record('http-headers',{id:op.id,method,status:res.status,retryAfter:retryAfter?.slice(0,128)??null,at:this.now(),byteAccounting:'measured-body; response-header-and-wire-overhead-unmeasured'});
-      // A throttle refusal ends this grant at its first known observation. Do
-      // not read the error body to completion; retain the reserved uncertainty.
-      if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
-      if(Number(res.headers.get('content-length'))>2*1024*1024){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_RESPONSE_SIZE');}
-      const reader=res.body?.getReader();if(!reader)throw Error('COMPONENT_HTTP_EMPTY_RESPONSE');
-      const chunks:Uint8Array[]=[];let size=0,complete=false;const abort=()=>{void reader.cancel().catch(()=>{});};op.signal.addEventListener('abort',abort,{once:true});
-      // Fetch exposes decoded body bytes. Only an identity body can be compared
-      // with Content-Length; compressed wire lengths describe different bytes.
-      const length=res.headers.get('content-length'),encoding=res.headers.get('content-encoding');
-      const expectedLength=length!==null&&/^[0-9]+$/.test(length)&&Number.isSafeInteger(Number(length))&&(!encoding||encoding==='identity')?Number(length):null;
-      try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');if(expectedLength!==null&&size!==expectedLength)throw Error('COMPONENT_HTTP_TRUNCATED_RESPONSE');op.completeResponse();complete=true;break;}size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>2*1024*1024)throw Error('COMPONENT_HTTP_RESPONSE_SIZE');if(res.ok)chunks.push(value);}}
-      finally{op.signal.removeEventListener('abort',abort);if(!complete)await reader.cancel().catch(()=>{});reader.releaseLock();}
-      this.record('http-response-timing',{id:op.id,method,requestedAt,availableAt:this.now(),responseBytes:size,status:res.status});
-      // A fully drained bounded error body has known size, even though the
-      // status halts this grant. Never parse, retain or log provider error text.
-      if(!res.ok)throw Error('COMPONENT_HTTP_STATUS_'+res.status);
-      let body:any;try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw Error('COMPONENT_HTTP_MALFORMED_JSON');}
+      const {body}=await this.httpJson(op,method,{jsonrpc:'2.0',id:op.id,method,params});
       if(body?.jsonrpc!=='2.0'||body.id!==op.id||!('result'in body)&&!body.error)throw Error('COMPONENT_HTTP_ENVELOPE');
       if(body.error){const code=body.error.code;if(!Number.isSafeInteger(code))throw Error('COMPONENT_RPC_ERROR');throw Error(code===-32005?'COMPONENT_RPC_-32005':'COMPONENT_RPC_ERROR_'+code);}
       return body.result as T;
     },signal,{timeoutMs:1000,...options});
+  }
+  private readonly historyBatchCounts={plans:0,plannedLogicalQueries:0,physicalHttpStarts:0,logicalQueriesStarted:0,successfulLogicalQueries:0,rpcErrorResponses:0,providerBackoffBatches:0};
+  signatureHistoryBatchUsage(){return {scope:'THIS_TRANSPORT_INSTANCE',...this.historyBatchCounts,logicalQueriesWithoutValidatedResponse:this.historyBatchCounts.logicalQueriesStarted-this.historyBatchCounts.successfulLogicalQueries-this.historyBatchCounts.rpcErrorResponses,meaning:'One physical HTTP envelope is not one provider query or billing unit; provider batch eligibility/metering is unverified.'};}
+  /** A targeted transport only. Every item remains an independent provider query
+   * and must still pass the existing pool-window audit. No automatic retry. */
+  async callSignatureHistoryBatch<T=unknown>(requests:readonly SignatureHistoryBatchRequest[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<SignatureHistoryBatchResponse<T>>{
+    if(!Array.isArray(requests)||requests.length<1||requests.length>6)throw Error('COMPONENT_HISTORY_BATCH_SIZE');
+    const keys=new Set<string>();const copied=requests.map(request=>{
+      if(!request||typeof request!=='object'||Array.isArray(request)||Object.keys(request).some(key=>!['key','params'].includes(key)))throw Error('COMPONENT_HISTORY_BATCH_REQUEST');
+      const key=request.key,params=request.params;
+      if(typeof key!=='string'||!key||key.length>100||/[\u0000-\u001f]/.test(key)||keys.has(key)||!Array.isArray(params)||params.length!==2)throw Error('COMPONENT_HISTORY_BATCH_REQUEST');keys.add(key);
+      const pool=params[0],config=params[1] as Record<string,unknown>;
+      if(typeof pool!=='string'||pool.length<32||pool.length>44||!/^[1-9A-HJ-NP-Za-km-z]+$/.test(pool)||!config||typeof config!=='object'||Array.isArray(config)||Object.keys(config).some(k=>!['before','until','limit','commitment','minContextSlot'].includes(k))||config.commitment!=='confirmed'||![100,1000].includes(Number(config.limit))||typeof config.limit!=='number')throw Error('COMPONENT_HISTORY_BATCH_REQUEST');
+      for(const key of ['before','until'])if(config[key]!==undefined&&(typeof config[key]!=='string'||(config[key] as string).length<64||(config[key] as string).length>88||!/^[1-9A-HJ-NP-Za-km-z]+$/.test(config[key] as string)))throw Error('COMPONENT_HISTORY_BATCH_REQUEST');
+      if(config.minContextSlot!==undefined&&(!Number.isSafeInteger(config.minContextSlot)||Number(config.minContextSlot)<0))throw Error('COMPONENT_HISTORY_BATCH_REQUEST');
+      return Object.freeze({key,params:Object.freeze([pool,Object.freeze({...config})])});
+    });
+    if(signal?.aborted)throw Error('COMPONENT_ABORTED');
+    // Invoke the caller's recorder before admission. Live callers must preserve
+    // this plan durably; an un-settled reservation retains logical uncertainty.
+    // Planned queries are not mislabeled as provider invocations.
+    this.record('signature-history-batch-plan',{at:this.now(),logicalQueries:copied.length,requests:structuredClone(copied),physicalStartNotYetAdmitted:true});this.historyBatchCounts.plans++;this.historyBatchCounts.plannedLogicalQueries+=copied.length;
+    const batch=await this.budget.operate({transport:'http',method:'getSignaturesForAddress'},async op=>{
+      const wire=copied.map((request,index)=>({jsonrpc:'2.0',id:'signature-history:'+op.id+':'+index,method:'getSignaturesForAddress',params:request.params}));
+      if(Buffer.byteLength(JSON.stringify(wire))>64000)throw Error('COMPONENT_HISTORY_BATCH_REQUEST_SIZE');
+      const response=await this.httpJson(op,'getSignaturesForAddress',wire,()=>{this.historyBatchCounts.physicalHttpStarts++;this.historyBatchCounts.logicalQueriesStarted+=wire.length;});
+      if(!Array.isArray(response.body)||response.body.length!==wire.length)throw Error('COMPONENT_HISTORY_BATCH_ENVELOPE');
+      const byId=new Map<string,any>();for(const item of response.body){if(!item||typeof item!=='object'||Array.isArray(item)||item.jsonrpc!=='2.0'||typeof item.id!=='string'||!wire.some(w=>w.id===item.id)||byId.has(item.id)||Object.hasOwn(item,'result')===Object.hasOwn(item,'error')||Object.hasOwn(item,'error')&&(!item.error||typeof item.error!=='object'||Array.isArray(item.error)||!Number.isSafeInteger(item.error.code)))throw Error('COMPONENT_HISTORY_BATCH_ENVELOPE');byId.set(item.id,item);}
+      const validatedAt=this.now(),items:SignatureHistoryBatchItem<T>[]=wire.map((request,index)=>{const item=byId.get(request.id),common={key:copied[index]!.key,id:request.id,requestedAt:response.requestedAt,responseReceivedAt:response.responseReceivedAt,validatedAt};return Object.hasOwn(item,'error')?{...common,status:'rpc-error' as const,errorCode:item.error.code}:{...common,status:'result' as const,result:item.result as T};});
+      const overloaded=items.some(item=>item.errorCode===-32005||item.errorCode===429);this.historyBatchCounts.successfulLogicalQueries+=items.filter(item=>item.status==='result').length;this.historyBatchCounts.rpcErrorResponses+=items.filter(item=>item.status==='rpc-error').length;if(overloaded)this.historyBatchCounts.providerBackoffBatches++;
+      this.record('signature-history-batch-response',{physicalRequestId:op.id,requestedAt:response.requestedAt,responseReceivedAt:response.responseReceivedAt,validatedAt,responseBytes:response.responseBytes,physicalHttpStarts:1,logicalQueries:wire.length,overloaded,items:items.map(({result:_result,...item})=>item),providerErrorTextRetained:false});
+      return {physicalRequestId:op.id,requestedAt:response.requestedAt,responseReceivedAt:response.responseReceivedAt,validatedAt,responseBytes:response.responseBytes,physicalHttpStarts:1 as const,logicalQueries:wire.length,overloaded,items};
+    },signal,{timeoutMs:1000,...options});
+    // Halt only after the response and physical operation have settled; halting
+    // inside its callback would abort the same response and obscure partials.
+    if(batch.overloaded)this.budget.halt(batch.items.some(item=>item.errorCode===429)?'COMPONENT_HTTP_429':'COMPONENT_RPC_OVERLOAD');
+    return batch;
   }
   private accept(message:any,at:number){
     if(!message||message.jsonrpc!=='2.0'){this.fail('COMPONENT_WS_ENVELOPE');return;}

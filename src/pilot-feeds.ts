@@ -1,3 +1,4 @@
+import {resolveNativeResearchProfile,type NativeResearchProfile} from './native-research-profile.js';
 /** Finite PAPER-pilot feeds. Provider payloads are hints; only validated RPC
  * evidence reaches onTrade. This module has no financial or trading methods. */
 import WebSocket from 'ws';
@@ -21,7 +22,7 @@ type FeedName='discovery'|'pumpapi';
 export type PilotFeedControl={operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>;accountControlBytes(bytes:number):void;noteThrottle(retryAfter:string|null,at?:number):number};
 export type PilotFeedRpc={call<T>(method:string,params:unknown[],signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>};
 export type PilotFeedsOptions={
-  control:PilotFeedControl;amountConvention:'curve'|'user';maximumCandidates?:number;durationMs?:number;maxPumpApiBytes?:number;maxDiscoveryBytes?:number;maximumRecordedBytes?:number;
+  control:PilotFeedControl;profile?:NativeResearchProfile['version'];amountConvention:'curve'|'user';maximumCandidates?:number;durationMs?:number;maxPumpApiBytes?:number;maxDiscoveryBytes?:number;maximumRecordedBytes?:number;
   record:(kind:string,data:unknown)=>void;
   onMigration:(seed:{signature:string;feedMint?:string;receivedAt:number})=>void;
   onFlowOpen?:(mint:string,at:number)=>void;
@@ -54,8 +55,9 @@ export class PilotFeeds {
   private pumpBytes=0;private discoveryBytes=0;private controlBytes=0;private frames=0;private irrelevant=0;private selectedFrames=0;private recordedBytes=0;private trades=0;private gaps=0;private rawParses=0;private firstFailure:string|null=null;private lastAnyTrafficAt:number|null=null;private candidateRetryAt=0;private readonly migrationSeen=new Map<string,number>();
   constructor(private readonly options:PilotFeedsOptions,private readonly dependencies:PilotFeedDependencies={}){
     this.now=dependencies.now??Date.now;this.mono=dependencies.monotonic??(()=>performance.now());this.timer=dependencies.setTimer??((cb,ms)=>setTimeout(cb,ms));this.cancel=dependencies.clearTimer??(id=>clearTimeout(id as ReturnType<typeof setTimeout>));this.startedAt=this.now();this.startedMono=this.mono();
-    this.duration=options.durationMs??1800000;this.pumpLimit=options.maxPumpApiBytes??1024*MIB;this.discoveryLimit=options.maxDiscoveryBytes??5*MIB;this.recordLimit=options.maximumRecordedBytes??6*MIB;
-    need(Number.isSafeInteger(this.duration)&&this.duration>0&&this.duration<=1800000&&Number.isSafeInteger(this.pumpLimit)&&this.pumpLimit>=4*MIB&&this.pumpLimit<=1024*MIB&&Number.isSafeInteger(this.discoveryLimit)&&this.discoveryLimit>=256*1024&&this.discoveryLimit<=5*MIB&&Number.isSafeInteger(this.recordLimit)&&this.recordLimit>=64*1024&&this.recordLimit<=PILOT_FEED_MAXIMUM_RECORDED_BYTES&&Number.isSafeInteger(options.maximumCandidates??1)&&(options.maximumCandidates??1)>=1&&(options.maximumCandidates??1)<=20&&['curve','user'].includes(options.amountConvention),'PILOT_FEED_INVALID_LIMITS');
+    const researchProfile=resolveNativeResearchProfile(options.profile);
+    this.duration=options.durationMs??researchProfile?.durationMs??1800000;this.pumpLimit=options.maxPumpApiBytes??researchProfile?.broadWatchBytes??1024*MIB;this.discoveryLimit=options.maxDiscoveryBytes??researchProfile?.discoveryBytes??5*MIB;this.recordLimit=options.maximumRecordedBytes??researchProfile?.feedRecordedBytes??6*MIB;
+    need(Number.isSafeInteger(this.duration)&&this.duration>0&&this.duration<=(researchProfile?.maximumDurationMs??1800000)&&Number.isSafeInteger(this.pumpLimit)&&this.pumpLimit>=4*MIB&&this.pumpLimit<=(researchProfile?.broadWatchBytes??1024*MIB)&&Number.isSafeInteger(this.discoveryLimit)&&this.discoveryLimit>=256*1024&&this.discoveryLimit<=(researchProfile?.discoveryBytes??5*MIB)&&Number.isSafeInteger(this.recordLimit)&&this.recordLimit>=64*1024&&this.recordLimit<=(researchProfile?.feedRecordedBytes??PILOT_FEED_MAXIMUM_RECORDED_BYTES)&&Number.isSafeInteger(options.maximumCandidates??1)&&(options.maximumCandidates??1)>=1&&(options.maximumCandidates??1)<=(researchProfile?.maximumDeep??20)&&['curve','user'].includes(options.amountConvention),'PILOT_FEED_INVALID_LIMITS');
     this.maximumCandidates=options.maximumCandidates??1;
     this.amountConvention=options.amountConvention;
     this.scheduleWatch();

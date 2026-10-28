@@ -17,7 +17,7 @@ const decoded=decodeMigrationIdentity(original,{signature:originalSignature,comm
 type FakeScope={mint:string;pool:string;minSlot?:number};
 type State={scope:FakeScope;openedAt:number|null;window:FlowWindow|null;gap:boolean;upper:{slot:number;availableAt:number;bankClockAt:number}|null;lastSyntheticAt:number;notes:NativeNotification[]};
 
-function fixture(config:{maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean}={}){
+function fixture(config:{maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean;auditRpcError?:string}={}){
  let at=baseAt,allow=true,headroom=20000,stopped=false,supportRequested=false,heartbeatRequested=false,resolveCalls=0,auditCalls=0,physicalBusy=false,lastPhysicalStart=-Infinity,inFlight=0,maximumInFlight=0,syntheticId=100000;
  const states=new Map<string,State>(),retiring=new Set<string>(),records:Array<{kind:string;data:any}>=[],flowActions:string[]=[],rpcCalls:Array<{method:string;params:unknown[];at:number}>=[],added:string[]=[],removed:string[]=[],identities=new Map<string,MigrationIdentity>();
  let runner:NativeCandidateRunner;
@@ -29,7 +29,7 @@ function fixture(config:{maximumDeep?:number;refuseVerification?:number;refuseRe
  const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,admission?:PilotRpcCallOptions):Promise<T>{
   signal?.throwIfAborted();advanceTo(Math.max(at,lastPhysicalStart+250));assert.ok(admission?.admissionOpen?.());assert.ok(admission?.latestStartAt===undefined||at<=admission.latestStartAt);assert.equal(inFlight,0);assert.equal(method,'getSignaturesForAddress','candidate-only runner makes no financial quote or execution request');
   inFlight++;maximumInFlight=Math.max(maximumInFlight,inFlight);lastPhysicalStart=at;rpcCalls.push({method,params:structuredClone(params),at});
-  try{advanceTo(at+(config.responseDelayMs??25));const state=[...states.values()].find(s=>s.scope.pool===params[0]);assert.ok(state);const floor=(state.scope.minSlot??original.slot)+100;
+  try{advanceTo(at+(config.responseDelayMs??25));if(config.auditRpcError)throw Error(config.auditRpcError);const state=[...states.values()].find(s=>s.scope.pool===params[0]);assert.ok(state);const floor=(state.scope.minSlot??original.slot)+100;
    let rows=[...state.notes].reverse().map(n=>({signature:n.signature,slot:n.slot,err:null,blockTime:Math.floor(n.availableAt/1000),confirmationStatus:'confirmed'}));
    if(config.missingAudit)rows.push({signature:sig(9999),slot:floor+50,err:null,blockTime:Math.floor(at/1000)-10,confirmationStatus:'confirmed'});
    rows.push({signature:originalSignature,slot:original.slot,err:null,blockTime:original.blockTime,confirmationStatus:'finalized'});rows.sort((a,b)=>b.slot-a.slot);
@@ -103,4 +103,10 @@ for(const jitterMs of [50,100])test(`SYNTHETIC six strong scopes retain every ro
 test('SYNTHETIC slow settled audit response exceeds the helper envelope without a false predictive decision or hidden retry',async()=>{
  const f=fixture({forcePredictiveFeatures:true,responseDelayMs:2200});f.importActual();await f.runner.step();f.advance(70000);await f.runner.step();await f.runner.step();
  const audit=f.records.find(r=>r.kind==='native-candidate-window-audit');assert.ok(audit);assert.equal(audit.data.result.status,'unavailable');assert.equal(audit.data.result.reason,'NATIVE_AUDIT_ELAPSED_LIMIT');assert.equal(audit.data.result.availableAt-audit.data.result.startedAt,2200);assert.equal(f.rpcCalls.length,1);assert.equal(f.maximumInFlight,1);assert.equal(f.runner.status().counters.predictiveAssessments,0);assert.equal(f.runner.status().counters.auditUnavailable,1);assert.equal(f.records.some(r=>r.kind==='native-predictive-assessment'),false);assert.equal(f.runner.status().financialExecutionAuthorized,false);await f.runner.stop();
+});
+
+
+test('served-node context below the audit floor cannot become an independent predictive pass',async()=>{
+ const f=fixture({forcePredictiveFeatures:true,auditRpcError:'COMPONENT_RPC_ERROR_-32016'});f.importActual();await f.runner.step();f.advance(70000);await f.runner.step();await f.runner.step();
+ const audit=f.records.find(r=>r.kind==='native-candidate-window-audit'),s=f.runner.status();assert.ok(audit);assert.equal(audit.data.result.reason,'COMPONENT_RPC_ERROR_-32016');assert.equal(audit.data.result.status,'unavailable');assert.equal(audit.data.result.complete,false);assert.equal(f.rpcCalls.length,1,'the unavailable audit does not retry within this service turn');assert.ok(Number.isSafeInteger((f.rpcCalls[0]!.params[1] as any).minContextSlot));assert.equal((f.rpcCalls[0]!.params[1] as any).minContextSlot,audit.data.result.strictInteriorSlots.upper);assert.equal(s.counters.auditUnavailable,1);assert.equal(s.counters.auditedWindows,0);assert.equal(s.counters.predictiveAssessments,0);assert.equal(s.counters.predictiveNotRejected,0);assert.equal(f.records.some(r=>r.kind==='native-predictive-assessment'),false);assert.equal(s.financialExecutionAuthorized,false);assert.equal(s.financialWriterOpened,false);await f.runner.stop();
 });

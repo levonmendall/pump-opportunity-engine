@@ -2,28 +2,31 @@
  * edits/refunds a historical grant. Pending reservations require independent
  * confirmation that the prior physical operation/process has settled. */
 import {createHash} from 'node:crypto';
-import {constants,openSync,closeSync,fstatSync,readFileSync} from 'node:fs';
+import {constants,openSync,closeSync,fstatSync,readSync} from 'node:fs';
 import {resolve} from 'node:path';
-import type {ComponentBaseline} from './component-budget.js';
+import {COMPONENT_COUNTERBOOK_MAX_BYTES,type ComponentBaseline} from './component-budget.js';
 
 const MIB=1024*1024;
-/** Explicit finite history runway: at most256 x128KiB (32MiB) of input.
+/** Explicit finite history runway: at most256 books, each at most512KiB,
+ * with an unchanged32MiB aggregate input bound.
  * Callers still default to32 paths; no directory scan, rewrite or refund. */
 export const RESEARCH_MAXIMUM_PATHS=256;
+export const RESEARCH_MAXIMUM_INPUT_BYTES=32*MIB;
 type Book=Record<string,unknown>;
 export type ResearchBaselineSource={path:string;sha256:string;incrementUnits:number;incrementObservedBytes:number;pendingReservedBytes:number};
 export type ResearchBaselineOptions={paths:readonly string[];now:number;physicalSettled?:boolean;/** Standing research explicitly removes only the historical lifetime caps. */allowCumulativeBeyondLegacy?:boolean;/** Bounded explicit chapter list; never searches the filesystem. */maximumPaths?:number};
 const int=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
 function need(v:unknown,code:string):asserts v {if(!v)throw Error('RESEARCH_BASELINE_'+code);}
 function times(value:unknown,now:number):number[]{need(Array.isArray(value)&&value.every((t,i)=>int(t)&&t<=now&&(i===0||t>=value[i-1])),'INVALID_STARTS');return [...value];}
-function readBook(path:string){
+function readBook(path:string,remainingInputBytes:number){
   const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW);
   try{
-    const stat=fstatSync(fd);need(stat.isFile()&&stat.size>0&&stat.size<=128*1024,'INVALID_FILE');
-    const bytes=readFileSync(fd);need(bytes.length===stat.size&&bytes.length<=128*1024,'CHANGED_FILE');
+    const stat=fstatSync(fd);need(stat.isFile()&&stat.size>0&&stat.size<=COMPONENT_COUNTERBOOK_MAX_BYTES,'INVALID_FILE');
+    need(stat.size<=remainingInputBytes,'AGGREGATE_INPUT_BOUND');
+    const buffer=Buffer.alloc(stat.size+1);let length=0;for(;;){const count=readSync(fd,buffer,length,buffer.length-length,length);length+=count;if(!count||length===buffer.length)break;}const after=fstatSync(fd);need(length===stat.size&&after.size===stat.size&&after.mtimeMs===stat.mtimeMs&&after.ctimeMs===stat.ctimeMs,'CHANGED_FILE');const bytes=buffer.subarray(0,length);
     let book:unknown;try{book=JSON.parse(bytes.toString('utf8'));}catch{throw Error('RESEARCH_BASELINE_INVALID_JSON');}
     need(book&&typeof book==='object'&&!Array.isArray(book),'INVALID_BOOK');
-    return {book:book as Book,sha256:createHash('sha256').update(bytes).digest('hex')};
+    return {book:book as Book,sha256:createHash('sha256').update(bytes).digest('hex'),inputBytes:bytes.length};
   }finally{closeSync(fd);}
 }
 function pendingBytes(value:unknown,firstId:number,lastId:number,legacy:boolean){
@@ -46,9 +49,9 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
   need(int(maximumPaths)&&maximumPaths>=1&&maximumPaths<=RESEARCH_MAXIMUM_PATHS&&(options.allowCumulativeBeyondLegacy===undefined||typeof options.allowCumulativeBeyondLegacy==='boolean')&&int(options.now)&&Array.isArray(options.paths)&&options.paths.length>0&&options.paths.length<=maximumPaths,'INVALID_OPTIONS');
   const paths=options.paths.map(p=>{need(typeof p==='string'&&p.length>0,'INVALID_PATH');return resolve(p);});
   need(new Set(paths).size===paths.length,'DUPLICATE_PATH');
-  const sources:ResearchBaselineSource[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0;
+  const sources:ResearchBaselineSource[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0,inputBytes=0;
   for(let index=0;index<paths.length;index++){
-    const path=paths[index]!,{book:b,sha256}=readBook(path);
+    const path=paths[index]!,{book:b,sha256,inputBytes:bookBytes}=readBook(path,RESEARCH_MAXIMUM_INPUT_BYTES-inputBytes);inputBytes+=bookBytes;need(inputBytes<=RESEARCH_MAXIMUM_INPUT_BYTES,'AGGREGATE_INPUT_BOUND');
     need(b.schemaVersion===1&&int(b.lastObservedAt)&&b.lastObservedAt<=options.now&&b.lastObservedAt>=lastObservedAt,'INVALID_CLOCK');lastObservedAt=b.lastObservedAt;
     if(index===0){
       need(b.blockedReason==='RPC_HTTP_429'&&int(b.calls)&&int(b.bytes),'INVALID_LEGACY_BOOK');
@@ -83,5 +86,5 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
   if(pendingOperations&&!options.physicalSettled){
     const error=Object.assign(Error('RESEARCH_BASELINE_PHYSICAL_UNCERTAINTY'),{uncertainResponseBytes,pendingOperations});throw error;
   }
-  return {baseline,sources,observedBytes,uncertainResponseBytes,pendingOperations,physicalSettlementConfirmed:options.physicalSettled===true};
+  return {baseline,sources,observedBytes,uncertainResponseBytes,pendingOperations,inputBytes,maximumInputBytes:RESEARCH_MAXIMUM_INPUT_BYTES,physicalSettlementConfirmed:options.physicalSettled===true};
 }

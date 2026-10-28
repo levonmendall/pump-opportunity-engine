@@ -346,3 +346,63 @@ not invalidate the independently verified SI/FRONGUS/WANSULEK origin times or
 the native FRONGUS window. It prevents assigning INGUS economic outcomes to an
 age cohort. Current cumulative actual units4643 are visibility/accounting, not
 an exhausted lifetime development grant. See age-origin-20261028 evidence.
+
+## Optional selected24-hour observation study (offline preparation)
+
+`observation-age-selected-24h-study-v1` is an explicit opt-in allocation policy,
+not an entry-strategy version. The default `observation-age-v1` remains immediate
+0–2-hour observation plus activity-selected2–6-hour research; baseline entry stays
+5–120minutes. The study extends only the **selected** older cohort to an exclusive
+24-hour boundary, retaining at most24selected identities and one older deep scope.
+It does not automatically retain or subscribe to all older tokens.
+
+Use `new PilotWatch({observationAgePolicy:
+OBSERVATION_AGE_STUDY_24H_POLICY.version,...})`. The same immutable policy must be
+passed as the final argument to `observationAgeEligible`, `observationAgeCohort`,
+`observationExpiryAt`, and `observationRunway` in any opted-in runner. The watch's
+`observationAgePolicy` and snapshot expose the actual active profile. Unknown
+versions or altered policy objects are refused. No launcher or financial runtime
+has been opted in by this change.
+
+Selection still requires retained verified canonical migration metadata and a
+real observed WATCH activity hint no older than60seconds. A hint never establishes
+net buying, event completeness, price, or eligibility for entry. Existing origin
+proof recovery and current SDK support validation remain mandatory before source
+admission; `PilotWatch` is a scheduling registry and does not itself validate
+transaction bytes or current accounts. Re-promotion starts a new complete audited
+60-second window, preserves provider/capacity deferrals, and cannot override a
+structural/manual terminal exclusion or a held/pending financial obligation.
+
+Before integration, preserve these existing gates in both runtime variants:
+
+- Native candidate runner: pass the profile to Watch, runway/cohort reporting and
+  any proof-expiry decisions. Keep the existing exact confirmed/finalized creation
+  proof verification, proof-ready-only allocation and fresh native SDK support.
+- Legacy full pilot: use the same profile in known-origin recovery, cached proof
+  import/pruning, activity-watch enumeration, observation readiness and retirement.
+  A watched selected identity's replaceable origin proof may be retained through
+  `observationExpiryAt(migrationAt,true,policy)`; this never makes old account bytes
+  current. Preserve owned/pending proofs independently of observation expiry.
+- Both existing activity handlers currently guard selection with
+  `!row.olderResearch`. During a study transition they must also allow an already
+  selected identity with age-only EXPIRED state to call `selectOlderResearch`
+  after an actual fresh hint. Retained prior selection alone must not silently
+  revive the candidate; the selector preserves structural/manual/protected and
+  capacity/cooldown checks.
+- Include the active policy in the frozen configuration hash and source/status
+  report. Cache retention, registry retention, observation runway and reported
+  age cohorts must agree; changing only Watch would leave6-hour runtime gates.
+
+Study checkpoints record selection-policy provenance. Resuming with the narrower
+default expires non-owned out-of-scope observation while preserving HELD and
+ENTRY_PENDING records and their provenance through subsequent checkpoints. A
+restart never restores the prior flow window. This is a biased activity-selected
+cohort, not a whole-market denominator or evidence of economic edge. No6–24-hour
+forward results, executable outcomes or financial permission are claimed here.
+
+Validation: `npm run build`; `node --import tsx --test
+test/observation-age*.test.ts test/pilot-watch*.test.ts` (79offline tests).
+`npm test` at `bd37970` passed1,032repository tests before the additional
+profile-transition fixture; runtime source is unchanged by that fixture. Cases
+cover opt-in/default parity, stale/future/unknown hints,24-hour boundary, cooldown,
+24identity/oneolderdeep caps, protected obligations and repeated profile recovery.

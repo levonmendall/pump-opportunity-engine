@@ -258,3 +258,16 @@ test('WATCH pacing cannot hold the shared gate across the next native deadline o
   await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>{starts++;op.completeResponse();},undefined,guarded),/ADMISSION_CLOSED/);assert.equal(starts,0);assert.equal(f.client.usage().newUnits,0);assert.equal(f.client.usage().waitingOrOperating,false);
  }finally{f.close();}
 });
+
+test('served-node context-floor lag is paced unavailable data through real HTTP decoding, never a permanent fatal or audit success',async()=>{
+ let requests=0;const f=fixture({fetcher:(async(_url,init)=>{const request=JSON.parse(String(init?.body));requests++;assert.equal(request.method,'getSignaturesForAddress');assert.equal(request.params[1].minContextSlot,462345886);return new Response(JSON.stringify(requests===1?{jsonrpc:'2.0',id:request.id,error:{code:-32016,message:'provider text must not be retained'}}:{jsonrpc:'2.0',id:request.id,result:[]}));}) as typeof fetch});try{
+  const params=['11111111111111111111111111111111',{commitment:'confirmed',limit:1000,minContextSlot:462345886}];
+  await assert.rejects(f.client.call('getSignaturesForAddress',params),e=>e instanceof PilotRpcUnavailable&&e.code==='COMPONENT_RPC_ERROR_-32016'&&e.retryAt===f.now()+2000);
+  const failed=f.client.usage();assert.equal(failed.fatal,null);assert.equal(failed.newUnits,1);assert.equal(failed.inFlight,0);assert.equal(failed.currentChapterUncertainResponseBytes,0,'fully drained RPC error has measured body size');assert.equal(failed.uncertainResponseBytes,2*MIB,'historical uncertainty is never refunded');assert.ok(failed.newAccountedResponseBytes>0);assert.equal(f.client.available(),false);assert.equal(requests,1,'the unavailable request is not retried internally');assert.ok(f.records.some(r=>r.kind==='pilot-rpc-unavailable'&&r.data.code==='COMPONENT_RPC_ERROR_-32016'));assert.ok(!JSON.stringify(f.records).includes('provider text'));
+  await assert.rejects(f.client.call('getSignaturesForAddress',params),/COOLDOWN/);assert.equal(requests,1);assert.equal(f.client.usage().newUnits,1);f.advance(2000);assert.deepEqual(await f.client.call('getSignaturesForAddress',params),[]);assert.equal(requests,2);assert.equal(f.client.usage().newUnits,2);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().fatal,null);
+ }finally{f.close();}
+});
+
+test('context-floor recovery does not reclassify unrelated invalid-request RPC errors as transient',async()=>{
+ const f=fixture({fetcher:(async(_url,init)=>{const request=JSON.parse(String(init?.body));return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,error:{code:-32602,message:'invalid params'}}));}) as typeof fetch});try{await assert.rejects(f.client.call('getSignaturesForAddress',[]),/RPC_ERROR_-32602/);assert.equal(f.client.usage().fatal,'COMPONENT_RPC_ERROR_-32602');assert.equal(f.client.usage().newUnits,1);assert.equal(f.client.usage().currentChapterUncertainResponseBytes,0);}finally{f.close();}
+});

@@ -6,24 +6,28 @@ import {performance} from 'node:perf_hooks';
 import {constants,openSync,closeSync,lstatSync,fstatSync,readFileSync,writeFileSync,fsyncSync,renameSync,unlinkSync} from 'node:fs';
 import {dirname,resolve} from 'node:path';
 import {validateRpc,dataMessage} from './network.js';
+import {resolveNativeResearchProfile,type NativeResearchProfile} from './native-research-profile.js';
 
 const MIB=1024*1024;
+/** Full cumulative starts stay durable; this bound is shared by every reader. */
+export const COMPONENT_COUNTERBOOK_MAX_BYTES=512*1024;
 export const COMPONENT_LIMITS=Object.freeze({units:70,totalMs:90_000,starts60s:60,starts10s:30,startGapMs:1000,httpBytes:24*MIB,wsBytes:8*MIB,combinedBytes:32*MIB,cumulativeBytes:64*MIB,httpResponseBytes:2*MIB,physicalHeadroomBytes:2*MIB,wsOperationReserveBytes:64*1024});
 export type ComponentBudgetLimits={maxNewUnits:number;maxCumulativeUnits:number|null;maxHttpBytes:number;maxWsBytes:number;maxCombinedBytes:number;maxCumulativeBytes:number|null;minSpacingMs:number;maxStartsPerMinute:number;maxStartsPer10s:number};
 export const LEGACY_COMPONENT_BUDGET_LIMITS:Readonly<ComponentBudgetLimits>=Object.freeze({maxNewUnits:70,maxCumulativeUnits:240,maxHttpBytes:24*MIB,maxWsBytes:8*MIB,maxCombinedBytes:32*MIB,maxCumulativeBytes:64*MIB,minSpacingMs:1000,maxStartsPerMinute:60,maxStartsPer10s:30});
 export type ComponentBaseline={calls:number;bytes:number;starts:number[];refusal:'RPC_HTTP_429';refusalAt:number;sha256:string};
 export type ComponentKind={transport:'http'|'ws-upgrade'|'ws';method:string};
 export type ComponentOperation={id:number;signal:AbortSignal;chargeHttp:(bytes:number)=>void;completeResponse:()=>void};
-export type ComponentBudgetOptions={statePath:string;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;notBefore?:number;/** Explicit per-run limits; null lifetime caps retain cumulative accounting. Historical books require their original limits. */limits?:Partial<ComponentBudgetLimits>;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number,signal?:AbortSignal)=>Promise<void>;record?:(kind:string,data:unknown)=>void;/** Offline durability-latency injection; never configured by the live harness. */beforePersist?:()=>void};
+export type ComponentBudgetOptions={profile?:NativeResearchProfile['version'];statePath:string;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;notBefore?:number;/** Explicit per-run limits; null lifetime caps retain cumulative accounting. Historical books require their original limits. */limits?:Partial<ComponentBudgetLimits>;now?:()=>number;monotonic?:()=>number;sleep?:(ms:number,signal?:AbortSignal)=>Promise<void>;record?:(kind:string,data:unknown)=>void;/** Offline durability-latency injection; never configured by the live harness. */beforePersist?:()=>void};
 type Pending={id:number;transport:ComponentKind['transport'];reservedBytes:number};
-type State={schemaVersion:1;grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;limits?:ComponentBudgetLimits;deadlineAt:number;lastObservedAt:number;starts:number[];actualInvocations:Array<{id:number;at:number}>;byOperation:Record<string,number>;httpBytes:number;wsBytes:number;pending:Pending[];haltedReason:string|null;durationsMs:number[]};
+type State={schemaVersion:1;profile?:NativeResearchProfile['version'];grantId:string;baseline:ComponentBaseline;startedAt:number;totalMs?:number;limits?:ComponentBudgetLimits;deadlineAt:number;lastObservedAt:number;starts:number[];actualInvocations:Array<{id:number;at:number}>;byOperation:Record<string,number>;httpBytes:number;wsBytes:number;pending:Pending[];haltedReason:string|null;durationsMs:number[]};
 const integer=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
 function need(v:unknown,code:string):asserts v {if(!v)throw Error(code);}
-function normalizedLimits(input:Partial<ComponentBudgetLimits>|undefined):ComponentBudgetLimits{
+function normalizedLimits(input:Partial<ComponentBudgetLimits>|undefined,profile?:NativeResearchProfile['version']):ComponentBudgetLimits{
+  const extended=resolveNativeResearchProfile(profile),maximumCombinedBytes=extended?.relatedResponseBytes??256*MIB;
   need(input===undefined||input&&typeof input==='object'&&!Array.isArray(input)&&Object.keys(input).every(k=>Object.hasOwn(LEGACY_COMPONENT_BUDGET_LIMITS,k)),'COMPONENT_INVALID_LIMITS');
   const l={...LEGACY_COMPONENT_BUDGET_LIMITS,...input};
   need(integer(l.maxNewUnits)&&l.maxNewUnits>=1&&l.maxNewUnits<=1000&&[l.maxCumulativeUnits,l.maxCumulativeBytes].every(n=>n===null||integer(n)&&n>=1),'COMPONENT_INVALID_LIMITS');
-  need([l.maxHttpBytes,l.maxWsBytes,l.maxCombinedBytes].every(integer)&&l.maxCombinedBytes>=1&&l.maxCombinedBytes<=256*MIB&&l.maxHttpBytes<=l.maxCombinedBytes&&l.maxWsBytes<=l.maxCombinedBytes,'COMPONENT_INVALID_LIMITS');
+  need([l.maxHttpBytes,l.maxWsBytes,l.maxCombinedBytes].every(integer)&&l.maxCombinedBytes>=1&&l.maxCombinedBytes<=maximumCombinedBytes&&l.maxHttpBytes<=l.maxCombinedBytes&&l.maxWsBytes<=l.maxCombinedBytes,'COMPONENT_INVALID_LIMITS');
   need(integer(l.minSpacingMs)&&l.minSpacingMs>=1&&l.minSpacingMs<=60000&&integer(l.maxStartsPerMinute)&&l.maxStartsPerMinute>=1&&l.maxStartsPerMinute<=600&&integer(l.maxStartsPer10s)&&l.maxStartsPer10s>=1&&l.maxStartsPer10s<=100&&l.maxStartsPer10s<=l.maxStartsPerMinute,'COMPONENT_INVALID_LIMITS');
   return l;
 }
@@ -53,7 +57,7 @@ export class ComponentBudget {
   private readonly limits:ComponentBudgetLimits;
   constructor(options:ComponentBudgetOptions){
     this.path=resolve(options.statePath);this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.sleep=options.sleep??pause;this.beforePersist=options.beforePersist;this.record=options.record??(()=>{});this.resumedMono=this.monotonic();this.notBefore=options.notBefore??0;this.totalMs=options.totalMs??COMPONENT_LIMITS.totalMs;
-    this.limits=normalizedLimits(options.limits);
+    this.limits=normalizedLimits(options.limits,options.profile);
     need(integer(this.totalMs)&&this.totalMs>=1&&this.totalMs<=600000,'COMPONENT_INVALID_DURATION');
     const b=options.baseline;need(b&&within(b.calls,this.limits.maxCumulativeUnits)&&within(b.bytes,this.limits.maxCumulativeBytes)&&Array.isArray(b.starts)&&b.starts.length===b.calls&&b.starts.every((t,i)=>integer(t)&&(i===0||t>=b.starts[i-1]!))&&b.refusal==='RPC_HTTP_429'&&integer(b.refusalAt)&&/^[a-f0-9]{64}$/.test(b.sha256),'COMPONENT_INVALID_BASELINE');
     need(/^[a-z0-9-]{1,100}$/.test(options.grantId)&&integer(options.startedAt)&&integer(this.notBefore)&&b.refusalAt<=options.startedAt&&b.starts.every(t=>t<=options.startedAt),'COMPONENT_INVALID_GRANT');
@@ -63,9 +67,10 @@ export class ComponentBudget {
       const lock=fstatSync(this.lease);need(lock.isFile()&&lock.nlink===1&&lock.uid===process.getuid?.()&&(lock.mode&0o077)===0,'COMPONENT_UNSAFE_LOCK');
       const lease=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',this.lease],timeout:5000});need(!lease.error&&lease.status===0,'COMPONENT_BUDGET_OWNED');
       let saved:State|undefined;
-      try{const file=lstatSync(this.path);need(file.isFile()&&!file.isSymbolicLink()&&file.nlink===1&&file.uid===process.getuid?.()&&(file.mode&0o077)===0&&file.size<=128*1024,'COMPONENT_UNSAFE_STATE');saved=JSON.parse(readFileSync(this.path,'utf8'));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
-      this.state=saved??{schemaVersion:1,grantId:options.grantId,baseline:structuredClone(b),startedAt:options.startedAt,totalMs:this.totalMs,...(options.limits===undefined?{}:{limits:structuredClone(this.limits)}),deadlineAt:options.startedAt+this.totalMs,lastObservedAt:this.now(),starts:[],actualInvocations:[],byOperation:{},httpBytes:0,wsBytes:0,pending:[],haltedReason:null,durationsMs:[]};
-      need(JSON.stringify(normalizedLimits(this.state.limits))===JSON.stringify(this.limits),'COMPONENT_LIMITS_CONFLICT');
+      try{const file=lstatSync(this.path);need(file.isFile()&&!file.isSymbolicLink()&&file.nlink===1&&file.uid===process.getuid?.()&&(file.mode&0o077)===0&&file.size<=COMPONENT_COUNTERBOOK_MAX_BYTES,'COMPONENT_UNSAFE_STATE');saved=JSON.parse(readFileSync(this.path,'utf8'));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
+      this.state=saved??{schemaVersion:1,...(options.profile===undefined?{}:{profile:options.profile}),grantId:options.grantId,baseline:structuredClone(b),startedAt:options.startedAt,totalMs:this.totalMs,...(options.limits===undefined?{}:{limits:structuredClone(this.limits)}),deadlineAt:options.startedAt+this.totalMs,lastObservedAt:this.now(),starts:[],actualInvocations:[],byOperation:{},httpBytes:0,wsBytes:0,pending:[],haltedReason:null,durationsMs:[]};
+      need((this.state.profile??null)===(options.profile??null),'COMPONENT_PROFILE_CONFLICT');
+      need(JSON.stringify(normalizedLimits(this.state.limits,options.profile))===JSON.stringify(this.limits),'COMPONENT_LIMITS_CONFLICT');
       need(this.state.grantId===options.grantId&&JSON.stringify(this.state.baseline)===JSON.stringify(b)&&this.state.startedAt===options.startedAt,'COMPONENT_BASELINE_OR_GRANT_CONFLICT');this.validate();this.clock();if(!saved)this.persist();
     }catch(e){closeSync(this.lease);throw e;}
   }
@@ -82,7 +87,7 @@ export class ComponentBudget {
   }
   private persist(){
     const persistedAt=performance.now();this.persistence.attempts++;const tmp=this.path+'.pending-'+process.pid;let fd:number|undefined,created=false;
-    try{this.beforePersist?.();const encoded=JSON.stringify(this.state)+'\n';need(Buffer.byteLength(encoded)<=128*1024,'COMPONENT_STATE_SIZE');fd=openSync(tmp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);created=true;writeFileSync(fd,encoded);fsyncSync(fd);closeSync(fd);fd=undefined;renameSync(tmp,this.path);created=false;const parent=openSync(dirname(this.path),constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(parent);}finally{closeSync(parent);}}
+    try{this.beforePersist?.();const encoded=JSON.stringify(this.state)+'\n';need(Buffer.byteLength(encoded)<=COMPONENT_COUNTERBOOK_MAX_BYTES,'COMPONENT_STATE_SIZE');fd=openSync(tmp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);created=true;writeFileSync(fd,encoded);fsyncSync(fd);closeSync(fd);fd=undefined;renameSync(tmp,this.path);created=false;const parent=openSync(dirname(this.path),constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(parent);}finally{closeSync(parent);}}
     catch{this.storageFailed=true;if(fd!==undefined)try{closeSync(fd);}catch{}if(created)try{unlinkSync(tmp);}catch{}throw Error('COMPONENT_STORAGE_UNAVAILABLE');}
     finally{const elapsed=Math.max(0,performance.now()-persistedAt);this.persistence.totalMs+=elapsed;this.persistence.maximumMs=Math.max(this.persistence.maximumMs,elapsed);}
   }
