@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-28T19:36:50.755388+00:00",
+  "kind": "OFFLINE_COMPILED_BOOST_CLEANUP_PROOF",
+  "helperTestsPassed": 23,
+  "helperAndExistingProtocolTestsPassed": 47,
+  "buildPassed": true,
+  "independentReview": "GO after correction of reproduced unsynced-SOL-deposit exact-refund bypass",
+  "networkRequests": 0,
+  "historicalResponseAvailableAt": "Uses actual lead-held response receipt; does not backdate source availability.",
+  "files": [
+    {
+      "path": "src/protocol-pool-effects.ts",
+      "bytes": 13888,
+      "sha256": "9a5c7dd68ade007d8233f21016934e5bc1c98fcb3a09dd922f4f4d5df19b0172"
+    },
+    {
+      "path": "test/protocol-cleanup-proof.test.ts",
+      "bytes": 7021,
+      "sha256": "de79174a5c7d178f96efcc653370e1fc087509e457688f06612bb5be8026cad6"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/README.md",
+      "bytes": 2817,
+      "sha256": "9e54d7d3ce995e1771f2bb0e7f3487653df36822087ae49eed1d53552c7d9059"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/actual-proof.json",
+      "bytes": 1722,
+      "sha256": "92436925497adaa7d22a39ce2dca49c10ada6e28d4e3f364cb716c5e5ed2732a"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/boost-close-actual.json",
+      "bytes": 10296,
+      "sha256": "9701cc3c6e6c3f52dfb0ca3acfd8b53920d2e2d96edd4f2f172d883ac8043aba"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/focused-new-tests.txt",
+      "bytes": 1751,
+      "sha256": "006c591a77888e300b6b00807d3b741380a8c454d8b26c9a0836f1674447e323"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/focused-tests.txt",
+      "bytes": 4390,
+      "sha256": "36f6d4f8ee67997ae9c11037c023da76cf2e271a8ce1b195b53d3fe2b9de9a54"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/independent-review.md",
+      "bytes": 1374,
+      "sha256": "3883752274f925747239e3828ca0d8d488c2d4cbd36034fce6ae146a32aaa1f8"
+    }
+  ]
+}

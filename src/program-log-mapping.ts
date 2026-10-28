@@ -10,7 +10,7 @@ import bs58 from 'bs58';
 import {BorshCoder,type Idl} from '@coral-xyz/anchor';
 import {PublicKey} from '@solana/web3.js';
 import {getAssociatedTokenAddressSync,NATIVE_MINT,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID} from '@solana/spl-token';
-import {canonicalPumpPoolPda,PUMP_AMM_PROGRAM_ID} from './sdk.js';
+import {canonicalPumpPoolPda,PUMP_AMM_PROGRAM_ID,PUMP_PROGRAM_ID} from './sdk.js';
 import type {MappedTradeEvidence} from './pumpapi-mapping.js';
 import type {NormalizedTrade} from './strategy.js';
 
@@ -36,7 +36,7 @@ export type ProgramLogEvidence={
  slot:number;commitment:'confirmed'|'finalized';receivedAt:number|null;availableAt:number;programClockTimestamp:string;chainBlockTime:null;
  transferChecks:null;compiledInstructionIdentity:null;transactionCompleteness:'NOT_ESTABLISHED';fingerprint:string;
 };
-type Frame={protocolEvents:FrameEvent[];protocolChildren:ProtocolChild[];otherLabels:string[];program:string;label:string|null;root:number;ordinal:number;eventCredits:number;eventCount:number;swapEvents:number;childSwapEvents:number;selfEventFrame:boolean;childCalls:number};
+type Frame={protocolEvents:FrameEvent[];protocolChildren:ProtocolChild[];otherLabels:string[];program:string;label:string|null;root:number;ordinal:number;eventCredits:number;eventCount:number;swapEvents:number;childSwapEvents:number;selfEventFrame:boolean;childCalls:number;multiHopOwnBuy:boolean};
 export const CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW='confirmed-program-activity-v3-shadow' as const;
 export type ProtocolPoolEffect={
  version:typeof CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW;kind:'PROTOCOL_POOL_EFFECT';effect:'boost-buy-and-burn';normalizedForStrategy:false;
@@ -51,7 +51,37 @@ export type ProtocolPoolEffect={
 };
 export type ProgramLogActivity={dataContract:typeof CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW;trades:ProgramLogEvidence[];protocolEffects:ProtocolPoolEffect[];protocolFramesObserved:number;baselineFeatureSemantics:'V2_WITHOUT_PROTOCOL_FRAMES'|'UNAVAILABLE_PROTOCOL_EFFECT_SHADOW';financialQualificationAllowed:false};
 type FrameEvent={name:string;data:any;encoded:string;logIndex:number};
-type ProtocolChild={program:string;labels:string[];selfEventFrame:boolean;eventCount:number;childCalls:number};
+type ProtocolChild={program:string;labels:string[];selfEventFrame:boolean;eventCount:number;childCalls:number;children?:ProtocolChild[]};
+
+/** Actual SDK2.2.0 first-pool/nonterminal buy leg, not an alias of legacy Buy.
+ * Whole quote input enters the SOL vault; protocol fee is split between the
+ * vault's fee bucket and its buyback recipient. The base output goes directly
+ * to the next curve rather than the placeholder user-base account. */
+function multiHopPoolBuyEconomics(e:any){
+ need(e.ix_name==='multi_hop_swap'&&key(e.user_base_token_account)===PublicKey.default.toBase58()&&decimal(e.user_base_token_reserves)==='0'&&decimal(e.min_base_amount_out)==='0','MULTI_HOP_INTERMEDIATE_ROLE');
+ need(e.track_volume===false&&key(e.protocol_fee_recipient)===PublicKey.default.toBase58()&&key(e.protocol_fee_recipient_token_account)===PublicKey.default.toBase58(),'MULTI_HOP_PROTOCOL_ROLE');
+ const fees=Object.fromEntries(FEES.map(n=>[n,decimal(e[n])]));
+ need(['lp_fee','coin_creator_fee','cashback','holder_rewards','quote_transfer_fee'].every(n=>fees[n]==='0')&&['lp_fee_basis_points','coin_creator_fee_basis_points','cashback_fee_basis_points','holder_rewards_bps'].every(n=>decimal(e[n])==='0'),'MULTI_HOP_FEE_MASK');
+ const gross=BigInt(decimal(e.quote_amount_in)),net=BigInt(decimal(e.user_quote_amount_in)),protocol=BigInt(fees.protocol_fee!),bps=BigInt(decimal(e.protocol_fee_basis_points)),buyback=BigInt(fees.buyback_fee!),buybackBps=BigInt(decimal(e.buyback_fee_basis_points));
+ need(gross>0n&&net>0n&&bps<=10000n&&buybackBps<=10000n&&decimal(e.max_quote_amount_in)===gross.toString()&&decimal(e.quote_amount_in_with_lp_fee)===net.toString()&&gross-net===protocol,'MULTI_HOP_QUOTE_CONVENTION');
+ // Pinned exactQuoteInFees: floor net, ceil fees before any excess shave.
+ const preliminary=gross*10000n/(10000n+bps),computedFee=(preliminary*bps+9999n)/10000n;
+ // SDK poolHopAmountOut spends the entire received budget after fees, which
+ // can exceed exactQuoteInFees.netQuoteForSwap by one rounding lamport.
+ need(computedFee===protocol&&net===gross-computedFee&&buyback===protocol*buybackBps/10000n,'MULTI_HOP_FEE_ARITHMETIC');
+ const base=BigInt(decimal(e.base_amount_out)),baseReserve=BigInt(decimal(e.pool_base_token_reserves)),quoteReserve=BigInt(decimal(e.pool_quote_token_reserves))+BigInt(decimal(e.virtual_quote_reserves));
+ need(net>1n&&base>0n&&baseReserve>base&&baseReserve*(net-1n)/(quoteReserve+net-1n)===base,'MULTI_HOP_EXECUTED_AMOUNT');
+ return {tokenUnits:base.toString(),curveQuoteLamports:net.toString(),userQuoteLamports:gross.toString(),fees};
+}
+function multiHopPoolBuyFrame(frame:Frame){
+ const c=frame.protocolChildren,plain=(x:ProtocolChild|undefined,p:string,labels:string[]=[])=>!!x&&x.program===p&&JSON.stringify(x.labels)===JSON.stringify(labels)&&!x.selfEventFrame&&x.eventCount===0&&x.childCalls===0;
+ need(frame.eventCount===1&&frame.swapEvents===1&&frame.childSwapEvents===0&&frame.childCalls===4&&c.length===4,'MULTI_HOP_FRAME_SHAPE');
+ need(plain(c[0],TOKEN_PROGRAM_ID.toBase58())&&plain(c[1],TOKEN_PROGRAM_ID.toBase58()),'MULTI_HOP_QUOTE_CHILDREN');
+ need(c[2]!.program===PROGRAM&&c[2]!.selfEventFrame&&c[2]!.labels.length===0&&c[2]!.eventCount===0&&c[2]!.childCalls===0,'MULTI_HOP_EVENT_CPI');
+ const curve=c[3]!,children=curve.children??[];
+ need(curve.program===PUMP_PROGRAM_ID.toBase58()&&JSON.stringify(curve.labels)==='["MultiHopCurveSwap"]'&&!curve.selfEventFrame&&curve.childCalls===3&&children.length===3,'MULTI_HOP_CURVE_CHILD');
+ need(plain(children[0],TOKEN_2022_PROGRAM_ID.toBase58(),['TransferChecked'])&&plain(children[1],TOKEN_2022_PROGRAM_ID.toBase58(),['TransferChecked'])&&plain(children[2],PUMP_PROGRAM_ID.toBase58()),'MULTI_HOP_CURVE_TRANSFERS');
+}
 
 /** Direct protocol shapes retain the exact paired official events, zero fees,
  * and classic WSOL transfer. The newly observed unlabeled classic-token burn
@@ -115,16 +145,17 @@ function parseProgramActivity(input:ProgramLogInput,scopes:readonly ProgramLogSc
   const invoke=/^Program ([1-9A-HJ-NP-Za-km-z]+) invoke \[(\d+)\]$/.exec(line),end=/^Program ([1-9A-HJ-NP-Za-km-z]+) (success|failed:.*)$/.exec(line);
   if(invoke){const depth=Number(invoke[2]);need(depth===stack.length+1&&depth<=16,'INVOCATION_STACK');const parent=stack.at(-1);if(parent){need(!parent.selfEventFrame,'EVENT_SELF_CPI_HAS_CHILD');parent.childCalls++;}if(depth===1)rootOrdinal++;let selfEventFrame=false;
    if(invoke[1]===PROGRAM&&parent?.program===PROGRAM&&parent.eventCredits>0){parent.eventCredits--;selfEventFrame=true;}else if(parent?.program===PROGRAM)parent.eventCredits=0;
-   stack.push({protocolEvents:[],protocolChildren:[],otherLabels:[],program:invoke[1]!,label:null,root:rootOrdinal,ordinal:++frameOrdinal,eventCredits:0,eventCount:0,swapEvents:0,childSwapEvents:0,selfEventFrame,childCalls:0});continue;}
+   stack.push({protocolEvents:[],protocolChildren:[],otherLabels:[],program:invoke[1]!,label:null,root:rootOrdinal,ordinal:++frameOrdinal,eventCredits:0,eventCount:0,swapEvents:0,childSwapEvents:0,selfEventFrame,childCalls:0,multiHopOwnBuy:false});continue;}
   if(end){const frame=stack.at(-1);need(frame&&frame.program===end[1],'INVOCATION_END');need(end[2]==='success','FAILED_INVOCATION_UNSUPPORTED');
-   if(frame.program===PROGRAM){if(frame.selfEventFrame)need(frame.label===null&&frame.eventCount===0&&frame.childCalls===0,'EVENT_SELF_CPI_SHAPE');else{need(frame.label!==null,'AMM_FRAME_LABEL_MISSING');if(frame.label==='BoostBuyAndBurn'&&protocolOptIn){const effect=protocolEffect(frame,input,scopeMap,stack.map(f=>f.program),rawNotificationSha256);protocolFramesObserved++;if(effect)protocolEffects.push(effect);}else{need(frame.label!=='BoostBuyAndBurn','UNSUPPORTED_PROTOCOL_BUY_AND_BURN');const swap=SWAPS[frame.label];need(swap||NON_SWAPS.has(frame.label)||frame.label==='MultiHopSwap','UNKNOWN_AMM_FRAME');if(swap)need(frame.swapEvents===1,'SWAP_FRAME_EVENT_COUNT');if(frame.label==='MultiHopSwap')need(frame.childSwapEvents>0,'EMPTY_SWAP_WRAPPER');}}}
-   stack.pop();const protocolParent=stack.at(-1);if(protocolOptIn&&protocolParent?.label==='BoostBuyAndBurn')protocolParent.protocolChildren.push({program:frame.program,labels:[...frame.otherLabels],selfEventFrame:frame.selfEventFrame,eventCount:frame.eventCount,childCalls:frame.childCalls});if(frame.swapEvents||frame.childSwapEvents){const parent=stack.at(-1);if(parent)parent.childSwapEvents+=frame.swapEvents+frame.childSwapEvents;}continue;}
-  const frame=stack.at(-1);if(frame?.program!==PROGRAM){if(protocolOptIn&&frame&&stack.at(-2)?.label==='BoostBuyAndBurn'&&line.startsWith('Program log: Instruction: '))frame.otherLabels.push(line.slice('Program log: Instruction: '.length));continue;}
+   if(frame.program===PROGRAM){if(frame.selfEventFrame)need(frame.label===null&&frame.eventCount===0&&frame.childCalls===0,'EVENT_SELF_CPI_SHAPE');else{need(frame.label!==null,'AMM_FRAME_LABEL_MISSING');if(frame.label==='BoostBuyAndBurn'&&protocolOptIn){const effect=protocolEffect(frame,input,scopeMap,stack.map(f=>f.program),rawNotificationSha256);protocolFramesObserved++;if(effect)protocolEffects.push(effect);}else{need(frame.label!=='BoostBuyAndBurn','UNSUPPORTED_PROTOCOL_BUY_AND_BURN');const swap=SWAPS[frame.label];need(swap||NON_SWAPS.has(frame.label)||frame.label==='MultiHopSwap','UNKNOWN_AMM_FRAME');if(swap)need(frame.swapEvents===1,'SWAP_FRAME_EVENT_COUNT');if(frame.label==='MultiHopSwap'){if(frame.multiHopOwnBuy)multiHopPoolBuyFrame(frame);else need(frame.childSwapEvents>0,'EMPTY_SWAP_WRAPPER');}}}}
+   stack.pop();const protocolParent=stack.at(-1);if(protocolParent&&(protocolOptIn&&protocolParent.label==='BoostBuyAndBurn'||protocolParent.label==='MultiHopSwap'||protocolParent.otherLabels.includes('MultiHopCurveSwap')))protocolParent.protocolChildren.push({program:frame.program,labels:[...frame.otherLabels],selfEventFrame:frame.selfEventFrame,eventCount:frame.eventCount,childCalls:frame.childCalls,...(frame.protocolChildren.length?{children:frame.protocolChildren}:{} )});if(frame.swapEvents||frame.childSwapEvents){const parent=stack.at(-1);if(parent)parent.childSwapEvents+=frame.swapEvents+frame.childSwapEvents;}continue;}
+  const frame=stack.at(-1);if(frame?.program!==PROGRAM){if(frame&&(protocolOptIn&&stack.at(-2)?.label==='BoostBuyAndBurn'||stack.at(-2)?.label==='MultiHopSwap'||stack.at(-2)?.otherLabels.includes('MultiHopCurveSwap'))&&line.startsWith('Program log: Instruction: '))frame.otherLabels.push(line.slice('Program log: Instruction: '.length));continue;}
   if(line.startsWith('Program log: Instruction: ')){need(!frame.selfEventFrame&&frame.label===null,'DUPLICATE_INSTRUCTION_LABEL');frame.label=line.slice('Program log: Instruction: '.length);continue;}
   if(!line.startsWith('Program data: '))continue;need(!frame.selfEventFrame,'EVENT_SELF_CPI_DATA');const encoded=line.slice('Program data: '.length);need(/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)&&encoded.length%4===0,'EVENT_BASE64');const bytes=Buffer.from(encoded,'base64'),event=coder.events.decode(encoded);need(event,'UNRECOGNIZED_PROGRAM_DATA');need(coder.types.encode(event.name,event.data).equals(bytes.subarray(8)),'EVENT_LAYOUT');frame.eventCount++;frame.eventCredits++;
   if(protocolOptIn&&frame.label==='BoostBuyAndBurn'){frame.protocolEvents.push({name:event.name,data:event.data,encoded,logIndex:logArrayIndex});continue;}
-  if(!['BuyEvent','SellEvent'].includes(event.name))continue;frame.swapEvents++;const e=event.data as any,instruction=frame.label===null?undefined:SWAPS[frame.label];need(instruction,'UNSUPPORTED_SWAP_LABEL');const side:'buy'|'sell'=event.name==='BuyEvent'?'buy':'sell';need(side==='buy'?instruction.startsWith('buy'):instruction.startsWith('sell'),'DIRECTION_LABEL');const ixName=typeof e.ix_name==='string'?e.ix_name:null;if(side==='buy')need(ixName===instruction,'BUY_VARIANT_AGREEMENT');const pool=key(e.pool),scope=scopeMap.get(pool);if(!scope)continue;
-  const exact=side==='buy'&&['buy_exact_quote_in','buy_exact_quote_in_v2'].includes(instruction),economics={tokenUnits:decimal(e[side==='buy'?'base_amount_out':'base_amount_in']),curveQuoteLamports:decimal(e[side==='buy'?(exact?'user_quote_amount_in':'quote_amount_in'):'quote_amount_out']),userQuoteLamports:decimal(e[side==='buy'?(exact?'quote_amount_in':'user_quote_amount_in'):'user_quote_amount_out']),fees:Object.fromEntries(FEES.map(n=>[n,decimal(e[n])]))};need(BigInt(economics.tokenUnits)>0n&&BigInt(economics.curveQuoteLamports)>0n&&BigInt(economics.userQuoteLamports)>0n,'EMPTY_AMOUNTS');
+  if(!['BuyEvent','SellEvent'].includes(event.name))continue;frame.swapEvents++;const e=event.data as any,multiHop=frame.label==='MultiHopSwap',instruction=multiHop?'multi_hop_swap':frame.label===null?undefined:SWAPS[frame.label];need(instruction,'UNSUPPORTED_SWAP_LABEL');const side:'buy'|'sell'=event.name==='BuyEvent'?'buy':'sell';if(multiHop){need(side==='buy','MULTI_HOP_DIRECTION_UNSUPPORTED');frame.multiHopOwnBuy=true;}else need(side==='buy'?instruction.startsWith('buy'):instruction.startsWith('sell'),'DIRECTION_LABEL');const ixName=typeof e.ix_name==='string'?e.ix_name:null;if(side==='buy')need(ixName===instruction,'BUY_VARIANT_AGREEMENT');const pool=key(e.pool),scope=scopeMap.get(pool);
+  const checkedMultiHop=multiHop?multiHopPoolBuyEconomics(e):null;if(scope&&multiHop)need(scope.baseTokenProgram===TOKEN_2022_PROGRAM_ID.toBase58(),'MULTI_HOP_VERIFIED_BASE_PROGRAM');if(!scope)continue;
+  const exact=side==='buy'&&['buy_exact_quote_in','buy_exact_quote_in_v2'].includes(instruction),economics=checkedMultiHop??{tokenUnits:decimal(e[side==='buy'?'base_amount_out':'base_amount_in']),curveQuoteLamports:decimal(e[side==='buy'?(exact?'user_quote_amount_in':'quote_amount_in'):'quote_amount_out']),userQuoteLamports:decimal(e[side==='buy'?(exact?'quote_amount_in':'user_quote_amount_in'):'user_quote_amount_out']),fees:Object.fromEntries(FEES.map(n=>[n,decimal(e[n])]))};need(BigInt(economics.tokenUnits)>0n&&BigInt(economics.curveQuoteLamports)>0n&&BigInt(economics.userQuoteLamports)>0n,'EMPTY_AMOUNTS');
   const identity={namespace:'solana-program-log-v1' as const,signature:input.signature,program:PROGRAM,logArrayIndex},content={identity,frameOrdinal:frame.ordinal,pool,mint:scope.mint,side,trader:key(e.user),...economics,slot:input.slot};
   result.push({...content,version:CONFIRMED_PROGRAM_EVENTS_V2,normalizedForStrategy:false,identityKey:[identity.namespace,input.signature,PROGRAM,logArrayIndex,frame.ordinal].join(':'),framePath:stack.map(f=>f.program),rawNotificationSha256,eventBase64:encoded,invocationDepth:stack.length,rootInvocationOrdinal:frame.root,instructionLabel:frame.label!,eventIxName:ixName,eventBytesSha256:digest(bytes),eventByteLength:bytes.length,commitment:input.commitment,receivedAt:input.receivedAt??null,availableAt:input.availableAt,programClockTimestamp:e.timestamp.toString(10),chainBlockTime:null,transferChecks:null,compiledInstructionIdentity:null,transactionCompleteness:'NOT_ESTABLISHED',fingerprint:digest(JSON.stringify(content))});
  }
