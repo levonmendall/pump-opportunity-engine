@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "decision": "VERIFIED_FOR_ONE_BOUNDED_CONFIRMED_PROGRAM_EVENT_FEATURE_WINDOW",
+  "source": {
+    "repository": "levonmendall/meme-machine-admin",
+    "commit": "76ce77134edc27b92b72bbca4aabbcc71a90938f",
+    "runId": 40619930479,
+    "jobId": 122591225512,
+    "completedAt": "2026-10-28T02:17:48Z"
+  },
+  "componentSource": "82a9c10f163ce5d01a13fd52cc33de1be236c562",
+  "bundleSha256": "43a3f249a81501f776c863804ced0442d1a2d3badd52b8568664385fc4dca796",
+  "scope": "One current supported canonical SOL pool, explicitly outside original entry age; research-only confirmed-program-events-v2 contract; no financial account or execution",
+  "target": {
+    "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+    "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT"
+  },
+  "liveElapsedMs": 85644,
+  "observation": {
+    "subscriptionAt": 1793153781469,
+    "logicalCutoffAt": 1793153862000,
+    "lastAcceptedAt": 1793153859866,
+    "stopRequestedAt": 1793153862043,
+    "transportSettledAt": 1793153862376
+  },
+  "window": {
+    "startedAt": "2026-10-28T02:16:40.000Z",
+    "endedAt": "2026-10-28T02:17:40.000Z",
+    "assessmentAt": "2026-10-28T02:17:44.251Z",
+    "tradeCount": 149,
+    "sides": {
+      "buy": 97,
+      "sell": 52
+    },
+    "distinctWallets": 44,
+    "netBuyLamports": "-23821587658",
+    "priceReturnBps": -2117,
+    "qualified": false,
+    "predictiveResult": "failed",
+    "predictiveReason": "persistent-broad-buying-rule-not-met",
+    "entryAgeEligible": false,
+    "signatureAuditUsable": true,
+    "qualityReason": null
+  },
+  "independentAudit": {
+    "interiorPoolAddressTransactions": 293,
+    "missingNotificationSignatures": 0,
+    "pages": 3,
+    "anchor": {
+      "signature": "3gTryAU3XKCzJo3CzRTchJZrjAEqu1b5F5JSveuMSSoL2WCrN171A9zw1zamKbybe6AqvL8e96pGoXCfzvsBikE6",
+      "slot": 462304209
+    },
+    "denominator": "Only bounded interior pool-address history rows, excluding first/last boundary slots; not all are swaps, not market-wide or unqualified full swap completeness"
+  },
+  "representativeMatches": {
+    "transactions": 4,
+    "economicParity": 4,
+    "transferChecks": 4,
+    "validationAvailability": "Full-transaction results arrived after capture and are not backdated into earlier feature availability"
+  },
+  "timing": {
+    "httpAvailableAfterRequestMs": {
+      "n": 13,
+      "min": 73,
+      "p50": 123,
+      "p95": 195,
+      "max": 195
+    },
+    "targetLogCompleteValidationAfterReceiptMs": {
+      "n": 149,
+      "min": 1,
+      "p50": 1,
+      "p95": 2,
+      "max": 2
+    },
+    "heartbeatResponseMs": {
+      "n": 7,
+      "min": 47,
+      "p50": 68,
+      "p95": 234,
+      "max": 234
+    }
+  },
+  "operations": {
+    "remote": 24,
+    "localImdsReads": 2,
+    "totalAcrossCategories": 26,
+    "byOperation": {
+      "http:getMultipleAccounts": 4,
+      "http:getSignaturesForAddress": 4,
+      "http:getTransaction": 5,
+      "ws-upgrade:upgrade": 1,
+      "ws:logsSubscribe": 1,
+      "ws:ping": 7,
+      "ws:logsUnsubscribe": 1,
+      "ws:close": 1
+    },
+    "automaticUnbudgetedFrames": 0
+  },
+  "responses": {
+    "httpBodyBytes": 191107,
+    "completedBodyTimingBytes": 191107,
+    "socketBytes": 1302385,
+    "combined": 1493492,
+    "httpHeadersAndEncryptedWireBytes": "unmeasured under existing decoded-body accounting convention",
+    "priorUncertaintyRetained": true
+  },
+  "resource": {
+    "maximumRss": 133754880,
+    "cpu": {
+      "user": 3278912,
+      "system": 382185
+    },
+    "retainedEventBytes": 1285604,
+    "rawRetainedBytes": 2122370
+  },
+  "originalObserver": {
+    "samePid": true,
+    "pid": "2333724",
+    "restarts": "0",
+    "sameIdentity": true,
+    "lastPublicReconciledAt": "2026-10-28T02:17:42.973Z",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "privateLedgerAuditPerformed": false
+  },
+  "remainingEvidence": [
+    "Full SPL-transfer and compiled-instruction checks are unavailable from logs alone and verified only for four representatives. The v2 data-contract substitution requires explicit compatibility review before replacing confirmed-transaction enrichment.",
+    "No held-position cadence, actual-size exit response, multi-pool concurrency, reconnect, long-run coverage or unattended acceptance was tested.",
+    "The pool is outside original entry age: this feature-only rejection does not establish current eligible-candidate recall or trade profitability.",
+    "No financial writer, PAPER order, wallet or blockchain transaction simulation/submission was opened.",
+    "The interval proves this EC2 route and selected workload only; it does not isolate why previous Cloud WebSocket sessions failed."
+  ],
+  "next": "Review the observed confirmed-program-events-v2 data contract and representative parity before a separate candidate-only native-flow integration. Do not rerun merely to seek a predictive pass.",
+  "usageLinked": true,
+  "additionalApiFees": "Public read-only endpoint; no purchased subscription or credential. Account/provider bill not independently available.",
+  "infrastructureCost": "Existing EC2, GitHub checkout/log traffic and transfer allocation remain separate and unverified."
+}

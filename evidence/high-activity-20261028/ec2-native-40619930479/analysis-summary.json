@@ -1,0 +1,185 @@
+{
+  "runId": "ec2-native-flow-20261028021619992",
+  "startedAt": "2026-10-28T02:16:18.607Z",
+  "finishedAt": "2026-10-28T02:17:44.251Z",
+  "elapsedMs": 85644,
+  "failure": null,
+  "normalised": 194,
+  "notices": {
+    "received": 296,
+    "successful": 202,
+    "failed": 93,
+    "parsedEvents": 202,
+    "duplicates": 0
+  },
+  "featureWindow": {
+    "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+    "asOf": 1793153864251,
+    "windowStartAt": 1793153800000,
+    "windowEndAt": 1793153860000,
+    "sufficientlyObserved": true,
+    "qualityReason": null,
+    "buyLamports": "23971859579",
+    "sellLamports": "47793447237",
+    "netBuyLamports": "-23821587658",
+    "tradeCount": 149,
+    "provisionalTradeCount": 0,
+    "distinctBuyerWallets": 44,
+    "largestBuyerBps": 2391,
+    "positiveNetBuckets": 2,
+    "priceReturnBps": -2117,
+    "firstPrice": {
+      "quoteLamports": "32522014",
+      "tokenUnits": "14309246206"
+    },
+    "lastPrice": {
+      "quoteLamports": "1747853867",
+      "tokenUnits": "975476849013"
+    }
+  },
+  "result": "persistent-broad-buying-rule-not-met",
+  "predictiveStatus": "failed",
+  "signatureAuditUsable": true,
+  "history": {
+    "denominatorCovered": true,
+    "interiorRows": 293,
+    "missing": 0,
+    "pages": 3
+  },
+  "matches": [
+    {
+      "parity": true,
+      "transfers": true
+    },
+    {
+      "parity": true,
+      "transfers": true
+    },
+    {
+      "parity": true,
+      "transfers": true
+    },
+    {
+      "parity": true,
+      "transfers": true
+    }
+  ],
+  "tradeVariants": {
+    "buy:BuyExactQuoteIn:1": 131,
+    "sell:Sell:1": 61,
+    "buy:BuyExactQuoteInV2:2": 3,
+    "sell:SellV2:2": 1,
+    "buy:BuyExactQuoteIn:2": 2,
+    "buy:BuyV2:2": 2,
+    "sell:Sell:2": 1,
+    "buy:Buy:2": 1
+  },
+  "sourceSupportRefreshes": 3,
+  "book": {
+    "keys": [
+      "schemaVersion",
+      "grantId",
+      "baseline",
+      "startedAt",
+      "totalMs",
+      "limits",
+      "deadlineAt",
+      "lastObservedAt",
+      "starts",
+      "actualInvocations",
+      "byOperation",
+      "httpBytes",
+      "wsBytes",
+      "pending",
+      "haltedReason",
+      "durationsMs"
+    ],
+    "starts": 24,
+    "bytes": [
+      191107,
+      1302385
+    ],
+    "pending": [],
+    "byOperation": {
+      "http:getMultipleAccounts": 4,
+      "http:getSignaturesForAddress": 4,
+      "http:getTransaction": 5,
+      "ws-upgrade:upgrade": 1,
+      "ws:logsSubscribe": 1,
+      "ws:ping": 7,
+      "ws:logsUnsubscribe": 1,
+      "ws:close": 1
+    },
+    "lastObservedAt": 1793153864241
+  },
+  "units": 24,
+  "automaticExtra": 0,
+  "responses": {
+    "httpBodyBytes": 191107,
+    "completedBodyTimingBytes": 191107,
+    "socketBytes": 1302385,
+    "combined": 1493492,
+    "httpHeadersAndEncryptedWireBytes": "unmeasured under existing decoded-body accounting convention",
+    "priorUncertaintyRetained": true
+  },
+  "resource": {
+    "maximumRss": 133754880,
+    "cpu": {
+      "user": 3278912,
+      "system": 382185
+    },
+    "retainedEventBytes": 1285604,
+    "rawRetainedBytes": 2122370
+  },
+  "after": {
+    "unchanged": true,
+    "service": {
+      "ActiveState": "active",
+      "MainPID": "2333724",
+      "NRestarts": "0",
+      "SubState": "running",
+      "User": "poe-runtime"
+    },
+    "status": {
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "entriesDisabled": true,
+      "feedConnected": true,
+      "generatedAt": "2026-10-28T02:17:42.973Z",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "lastReconciledAt": "2026-10-28T02:17:42.973Z",
+      "lastUsefulProgressAt": "2026-10-28T02:17:42.973Z",
+      "liveTrading": false,
+      "mode": "PAPER",
+      "project": "pump-opportunity-engine",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+    },
+    "elapsedMs": 86395
+  },
+  "eventKinds": {
+    "native-flow-start": 1,
+    "component-job-enqueued": 24,
+    "component-physical-start": 24,
+    "http-headers": 13,
+    "http-response-timing": 13,
+    "component-physical-settled": 24,
+    "component-pacing-wait": 13,
+    "research-clock-pool-state": 3,
+    "research-clock-observation-support": 3,
+    "native-purpose-eligibility": 1,
+    "native-current-support-passed": 1,
+    "native-rpc-evidence": 9,
+    "native-ws-open": 1,
+    "native-ws-request": 2,
+    "native-flow-open": 1,
+    "native-ws-ack": 2,
+    "native-log-notification": 296,
+    "native-heartbeat-start": 7,
+    "native-ws-pong": 7,
+    "native-heartbeat-complete": 7,
+    "native-support-refreshed": 2,
+    "native-logical-cutoff": 1,
+    "native-ws-close": 1,
+    "native-matched-transaction-result": 4
+  }
+}
