@@ -11,7 +11,9 @@ Wiring: existing free migration discovery → bounded origin verification queue
 256 → existing WATCH registry174 (150 recent +24 selected older) → up to6
 pool-filtered confirmed subscriptions on one WebSocket → six closed10s buckets
 → bounded independent pool-signature audit → feature-only predictive assessment
-at its real availability time. Failed/unknown events invalidate observations.
+at its real availability time. Retained strong candidates are assessed at every
+new completed10s bucket, not at a60s substitute cadence. Failed/unknown events
+invalidate observations.
 Actual entry age remains5–120min; earlier/selected older observations confer no
 entry eligibility. Weak audited candidates return to WATCH; the existing broad
 PumpApi WATCH-hint connection is preserved, without old selected enrichment.
@@ -22,6 +24,13 @@ operation. PumpApi WATCH receipt is independently capped1GiB. Required selected
 compact evidence is retained in8MiB segments under128MiB total; no broad archive.
 CPU240s/RSS384MiB and finite storage/queue/payload/source-time controls apply.
 These are ceilings, not verified six-pool sustained capacity or provider rights.
+The first rolling audit profile uses one complete1,000-row history page per
+candidate per10s, a1.5s physical timeout and2s complete-processing envelope. A
+truncated history remains capacity-unknown. Six sustained candidates project36
+audit requests/min plus6 shared Clock ceilings and6 heartbeats =48/min; only12
+starts/min remain for verification/recovery/discovery controls. Slow responses,
+1000-row saturation or outages can reduce the supported workload. No held-position
+workload is included in this candidate-only envelope.
 
 Build and run as a nonroot owner of a private0700 parent directory:
 
