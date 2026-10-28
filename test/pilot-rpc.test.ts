@@ -4,7 +4,7 @@ import {mkdtempSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
-import {PilotRpc,PilotRpcUnavailable,type PilotRpcOptions} from '../src/pilot-rpc.js';
+import {PilotRpc,PilotRpcUnavailable,type PilotRpcOptions,CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE} from '../src/pilot-rpc.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from '../src/research-baseline.js';
 const MIB=1024*1024,turn=()=>new Promise<void>(r=>setImmediate(r));
 function fixture(options:Partial<PilotRpcOptions>={},recent=false,tickingClock=false){
@@ -180,4 +180,28 @@ test('long settled baseline leaves bounded chapter runway without discarding pat
   assert.throws(()=>new PilotRpc({...options,directory:join(directory,'duplicate'),baselinePaths:[...paths.slice(0,103),paths[0]!]}),/DUPLICATE_PATH/);
   assert.equal(physical,0);assert.deepEqual(paths.map(path=>createHash('sha256').update(readFileSync(path)).digest('hex')),before);
  }finally{client?.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+
+test('native research response envelope is explicit and leaves default finite limits unchanged',async()=>{
+ const f=fixture({profile:'candidate-native-research-v1',maxResponseBytes:256*MIB,maxStartsPer10s:20});try{
+  assert.equal(CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.maximumDurationMs,1800000);assert.equal(CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE.maximumUnits,1500);
+  assert.equal(f.client.usage().profile,'candidate-native-research-v1');assert.equal(f.client.usage().maximumNewResponseBytes,256*MIB);assert.equal(f.client.usage().maximumNewUnits,1500);
+  assert.deepEqual(f.client.usage().requestLimits,{maxStartsPer10s:20,maxGetTransactionStartsPer10s:null,maxStartsPerMinute:60,minSpacingMs:250,physicalInFlight:1});
+  const authorization=JSON.parse(readFileSync(join(f.directory,'run/authorization.json'),'utf8'));assert.equal(authorization.profile,'candidate-native-research-v1');assert.equal(authorization.maxResponseBytes,256*MIB);
+  await f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>op.completeResponse());
+  for(let i=0;i<17;i++)f.client.accountControlBytes(2*MIB);
+  assert.equal(f.client.usage().chapterUsage!.wsBytes,34*MIB);assert.equal(f.client.usage().fatal,null);assert.equal(await f.client.call('getSlot'),123);
+ }finally{f.close();}
+ const defaults=fixture();try{assert.equal(defaults.client.usage().profile,'legacy');assert.equal(defaults.client.usage().maximumNewResponseBytes,32*MIB);assert.equal(defaults.client.usage().maximumNewUnits,1500);}
+ finally{defaults.close();}
+});
+
+test('native profile does not silently authorize longer runs, more starts, larger payload budgets or unknown profiles',()=>{
+ const f=fixture();try{
+  let index=0;const construct=(options:Partial<PilotRpcOptions>)=>new PilotRpc({directory:join(f.directory,'invalid-profile-'+index++),runId:'finite-profile',baselinePaths:[f.old],priorPhysicalSettled:true,now:f.now,monotonic:f.now,...options});
+  assert.throws(()=>construct({maxResponseBytes:32*MIB+1}),/INVALID_OPTIONS/);
+  for(const extra of [{maxResponseBytes:256*MIB+1},{durationMs:1800001},{maxUnits:1501},{maxChapters:33},{chapterUnits:201},{maxStartsPer10s:21}])assert.throws(()=>construct({profile:'candidate-native-research-v1',...extra}),/INVALID_OPTIONS/);
+  assert.throws(()=>construct({profile:'unbounded' as PilotRpcOptions['profile']}),/INVALID_OPTIONS/);assert.equal(f.client.usage().newUnits,0);
+ }finally{f.close();}
 });
