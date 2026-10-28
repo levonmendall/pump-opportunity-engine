@@ -1,0 +1,13 @@
+✔ quiescent append-only checkpoint preserves all cumulative counters, old429 and uncertain debits while bounding rolling starts (6.341378ms)
+✔ unknown physical stamps retain their latest possible time rather than refund recent provider demand (6.300096ms)
+✔ repeated24h rollovers retain raw history, stable operationIDs and cumulative unknown bytes with a small live chain (42.319422ms)
+✔ in-flight or unsettled transport refuses checkpoint before writing; corruption and anchor mismatch fail closed (1.821783ms)
+✔ checkpointed normal chapters preserve strict hash/starts linkage, default path limits and throttle receipt requirement (2.724449ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 362.592409

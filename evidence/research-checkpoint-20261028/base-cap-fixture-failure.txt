@@ -1,0 +1,103 @@
+✔ explicit passive receipt after chapter expiry preserves bytes but cannot admit a late operation (6.92324ms)
+✔ all HTTP/upgrade/subscription starts share durable cumulative counters, pacing and one source baseline (7.494898ms)
+✔ recent prior starts participate in rolling ceilings and all70 new units include WS management (23.081603ms)
+✔ cancel while waiting consumes no new request or reservation and does not rewrite the stored book (3.869295ms)
+✔ actual transport invocations remain spaced when durable reservation writes have variable latency (3.460359ms)
+✔ timeout retains a stalled physical operation and uncertain bytes without a second attempt (10.934175ms)
+✔ HTTP429 is charged once, stops the new grant and remains sticky without changing historical refusal (5.484288ms)
+✔ passive WS bytes count without request units; HTTP category retains cancellation headroom (4.78363ms)
+✔ oversized actual response bytes are retained and halt before any further operation (3.419668ms)
+✔ grant deadline and explicit cooldown are enforced during pacing before another start (2.193952ms)
+✔ explicit ten-minute migration listener duration persists and cannot be enlarged or silently resumed with another duration (9.024004ms)
+✔ minimum duration is bounded and free migration permission does not permit metered or trading subscriptions (2.780631ms)
+✔ signing/simulation/trading, concurrent ownership and malformed baseline are denied offline (4.541982ms)
+✔ the dispatcher observes the authoritative pacing gate without taking its slot or charging requests (2.8678ms)
+✔ latest physical-start deadline is checked before pacing and again after durable reservation latency (5.062032ms)
+✔ slow start diagnostics cannot move the actual stamp ahead of transport or shrink later start spacing (2.28052ms)
+✔ failed diagnostic after invocation retains the physical slot until actual settlement (6.533984ms)
+✔ legacy defaults retain lifetime caps and do not add a limits field to historical books (8.770078ms)
+✔ explicit standing limits carry cumulative calls and accounted bytes beyond historical caps with250ms physical spacing (8.292334ms)
+✔ standing rolling10/10s and60/minute caps constrain bursts independently of250ms spacing (15.615819ms)
+✔ standing mode still enforces per-run request and byte ceilings and keeps failed response uncertainty (5.448835ms)
+✔ monotonic admission closes without a reservation before or after pacing (2.388009ms)
+✔ admission closure during durable reservation never invokes transport and conservatively retains the charged unit and bytes (2.361936ms)
+✔ malformed or unbounded run-limit settings are refused before creating a counterbook (0.77583ms)
+✔ read-only targeted logs management shares physical units and rejects financial methods (3.055428ms)
+✔ physical timeout diagnostics expose scheduled versus actual callback timing without releasing unknown occupancy (7.963402ms)
+✔ chapter rollover preserves cumulative counters, inherited uncertainty, real spacing and frozen prior books (55.917483ms)
+✔ optional getTransaction gate refuses without a physical reservation or hidden wait and keeps held-price methods available (45.358042ms)
+✔ immediate linked run conservatively inherits all recent unknown-method starts and persists its bounded method cache (7.126431ms)
+✔ legacy method pacing is unrestricted beyond shared caps, with explicit bounded configuration and reserve validation (13.572104ms)
+✔ failed actual getTransaction attempts count, while dispatch refusal and cancellation do not invent starts or bypass HTTP429 (33.397737ms)
+✔ HTTP429 never retries; Retry-After plus5s gates a settled new chapter and retains both uncertainty reservations (26.063934ms)
+✔ settled HTTP refusal preserves its Retry-After while permitting separately admitted control on the same gate (12.164607ms)
+✔ actual control Retry-After blocks only controls and cannot be cleared by successful HTTP work (9.272387ms)
+✔ mixed HTTP and control work share the same sixty-start minute and short-window pacing (38.801297ms)
+✔ an unsettled timed-out control operation blocks both domains until actual settlement (15.138806ms)
+✔ a canceled physical request remains occupied after cooldown and cannot create a replacement slot (13.091546ms)
+✔ malformed responses fail closed rather than starting another chapter or inventing data (5.98551ms)
+✔ PAPER submission/signing and paid data methods are rejected before a chapter or physical operation (0.960603ms)
+✔ free control requests share the HTTP physical gate and measured bytes remain chargeable while it is occupied (5.990158ms)
+✔ global time/response allowances remain finite across chapters; a new constructor cannot overwrite the run (5.07355ms)
+✔ WS throttle observation respects an HTTP-date cooldown without retrying the original control operation (8.649259ms)
+✔ a periodic chapter expiry caused by passive control receipt preserves bytes and allows only a settled rollover (8.326419ms)
+✔ passive chapter-expiry receipt cannot cancel or replace an in-flight physical request (5.055543ms)
+✔ passive receipt during a retained RPC cooldown neither clears it nor drops byte reservations (4.866061ms)
+✔ global time and response bounds still stop passive receipt after charging actual bytes once (7.632441ms)
+✔ explicit research burst gate permits at most20 starts while the default stays10 and actual spacing stays250ms (24.892302ms)
+✔ new run requires the retained throttle receipt and cannot guess a long provider Retry-After (6.951953ms)
+✔ settled transient RPC failures use bounded2/5/10s backoff without automatic retry or dropping old reservations (22.641311ms)
+✔ invalid feed protocol remains isolated from held-price RPC while global accounting failures still block it (15.889199ms)
+✔ single admission timestamp avoids one-millisecond method refusals without weakening the real cap (9.592286ms)
+✔ public read-only log subscriptions use the existing gate without authorizing financial WS methods (4.383406ms)
+✖ long settled baseline leaves bounded chapter runway without discarding paths, counters or uncertainty (26.243293ms)
+✔ native research response envelope is explicit and leaves default finite limits unchanged (7.829455ms)
+✔ native profile does not silently authorize longer runs, more starts, larger payload budgets or unknown profiles (1.392613ms)
+✔ local admission and deadline refusals before a reservation preserve the healthy shared gate without provider cooldown (12.876383ms)
+✔ durably reserved COMPONENT_DISPATCH_EXPIRED before physical invocation stays charged and rolls over only after settlement (17.170919ms)
+✔ durably reserved COMPONENT_ADMISSION_CLOSED before physical invocation stays charged and rolls over only after settlement (7.747993ms)
+✔ a local refusal cannot roll a chapter or release a physical operation that has not actually settled (7.853179ms)
+✔ repeated rolling-minute pacing refusals reuse the unhalted chapter beyond32 attempts and consume no additional units (63.377729ms)
+✔ WATCH pacing cannot hold the shared gate across the next native deadline or start after native becomes due (5.72221ms)
+✔ served-node context-floor lag is paced unavailable data through real HTTP decoding, never a permanent fatal or audit success (8.641978ms)
+✔ context-floor recovery does not reclassify unrelated invalid-request RPC errors as transient (4.004244ms)
+✔ actual immutable books produce24 cumulative units and377058 bytes without double counting baseline20 (7.383042ms)
+✔ ordered chapters require exact preceding cumulative calls, bytes, starts and file hash (3.545324ms)
+✔ pending uncertainty blocks unless physical settlement is explicitly confirmed; debit carries once (0.889929ms)
+✔ future clocks, forged event identities, and cumulative overrun are rejected without writes (0.7491ms)
+✔ explicit standing mode crosses historical lifetime caps while retaining uncertainty and the exact linked history (2.104619ms)
+✔ an explicitly larger bounded chapter list preserves default32-path behavior and never scans directories (26.201942ms)
+✔ explicit512-path history retains every hash, counter and uncertain debit while default32 remains bounded (34.707559ms)
+✔ quiescent append-only checkpoint preserves all cumulative counters, old429 and uncertain debits while bounding rolling starts (6.476287ms)
+✔ unknown physical stamps retain their latest possible time rather than refund recent provider demand (6.225466ms)
+✔ repeated24h rollovers retain raw history, stable operationIDs and cumulative unknown bytes with a small live chain (46.64448ms)
+✔ in-flight or unsettled transport refuses checkpoint before writing; corruption and anchor mismatch fail closed (2.305327ms)
+✔ checkpointed normal chapters preserve strict hash/starts linkage, default path limits and throttle receipt requirement (3.722267ms)
+ℹ tests 75
+ℹ suites 0
+ℹ pass 74
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2837.896505
+
+✖ failing tests:
+
+test at test/pilot-rpc.test.ts:1:28166
+✖ long settled baseline leaves bounded chapter runway without discarding paths, counters or uncertainty (26.243293ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (/workspace/poe-research-baseline-checkpoint/test/pilot-rpc.test.ts:206:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /BASELINE_CHAPTER_CAP/,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -1,0 +1,72 @@
+✔ explicit passive receipt after chapter expiry preserves bytes but cannot admit a late operation (8.170775ms)
+✔ all HTTP/upgrade/subscription starts share durable cumulative counters, pacing and one source baseline (10.985694ms)
+✔ recent prior starts participate in rolling ceilings and all70 new units include WS management (30.247299ms)
+✔ cancel while waiting consumes no new request or reservation and does not rewrite the stored book (4.487007ms)
+✔ actual transport invocations remain spaced when durable reservation writes have variable latency (3.575947ms)
+✔ timeout retains a stalled physical operation and uncertain bytes without a second attempt (12.115128ms)
+✔ HTTP429 is charged once, stops the new grant and remains sticky without changing historical refusal (7.844371ms)
+✔ passive WS bytes count without request units; HTTP category retains cancellation headroom (7.637023ms)
+✔ oversized actual response bytes are retained and halt before any further operation (5.747936ms)
+✔ grant deadline and explicit cooldown are enforced during pacing before another start (3.278567ms)
+✔ explicit ten-minute migration listener duration persists and cannot be enlarged or silently resumed with another duration (9.824565ms)
+✔ minimum duration is bounded and free migration permission does not permit metered or trading subscriptions (3.508137ms)
+✔ signing/simulation/trading, concurrent ownership and malformed baseline are denied offline (4.661176ms)
+✔ the dispatcher observes the authoritative pacing gate without taking its slot or charging requests (3.085425ms)
+✔ latest physical-start deadline is checked before pacing and again after durable reservation latency (5.093485ms)
+✔ slow start diagnostics cannot move the actual stamp ahead of transport or shrink later start spacing (2.812716ms)
+✔ failed diagnostic after invocation retains the physical slot until actual settlement (7.12122ms)
+✔ legacy defaults retain lifetime caps and do not add a limits field to historical books (8.285544ms)
+✔ explicit standing limits carry cumulative calls and accounted bytes beyond historical caps with250ms physical spacing (10.247431ms)
+✔ standing rolling10/10s and60/minute caps constrain bursts independently of250ms spacing (15.040786ms)
+✔ standing mode still enforces per-run request and byte ceilings and keeps failed response uncertainty (5.732923ms)
+✔ monotonic admission closes without a reservation before or after pacing (2.712999ms)
+✔ admission closure during durable reservation never invokes transport and conservatively retains the charged unit and bytes (2.637527ms)
+✔ malformed or unbounded run-limit settings are refused before creating a counterbook (0.455445ms)
+✔ read-only targeted logs management shares physical units and rejects financial methods (5.279652ms)
+✔ physical timeout diagnostics expose scheduled versus actual callback timing without releasing unknown occupancy (9.340677ms)
+✔ candidate launcher public binding validation creates no account and refuses financial or credential input (2.056647ms)
+✔ candidate launcher remains finite and contains no financial implementation imports or transaction execution call (0.754488ms)
+✔ root execution refusal precedes reading private inputs or opening the network (0.121861ms)
+✔ one failed source stop cannot skip the other stop or report physical settlement (1.116303ms)
+✔ publisher-compatible status discloses lost broad awareness independently of native health and keeps unknown protection null (0.411089ms)
+✔ shadow source contract is explicit in public input and frozen configuration without changing strategy or financial permissions (0.673748ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (1.754209ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (1.45145ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (17.428303ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.50611ms)
+✔ actual immutable books produce24 cumulative units and377058 bytes without double counting baseline20 (3.659221ms)
+✔ ordered chapters require exact preceding cumulative calls, bytes, starts and file hash (3.343343ms)
+✔ pending uncertainty blocks unless physical settlement is explicitly confirmed; debit carries once (1.29639ms)
+✔ future clocks, forged event identities, and cumulative overrun are rejected without writes (1.204505ms)
+✔ explicit standing mode crosses historical lifetime caps while retaining uncertainty and the exact linked history (1.680079ms)
+✔ an explicitly larger bounded chapter list preserves default32-path behavior and never scans directories (16.773288ms)
+✔ explicit512-path history retains every hash, counter and uncertain debit while default32 remains bounded (32.695155ms)
+✔ quiescent append-only checkpoint preserves all cumulative counters, old429 and uncertain debits while bounding rolling starts (8.279566ms)
+✔ unknown physical stamps retain their latest possible time rather than refund recent provider demand (7.021672ms)
+✔ repeated24h rollovers retain raw history, stable operationIDs and cumulative unknown bytes with a small live chain (42.418149ms)
+✔ in-flight or unsettled transport refuses checkpoint before writing; corruption and anchor mismatch fail closed (2.495157ms)
+✔ checkpointed normal chapters preserve strict hash/starts linkage, default path limits and throttle receipt requirement (2.632069ms)
+✔ unpersisted physical invocation cannot escape rolling control merely because its last durable observation is old (0.787436ms)
+✔ settled-handoff adoption must match every exact source path/hash and counter; archived mutation is detectable without unbounded startup replay (1.429558ms)
+✖ PilotRpc resumes the explicit pinned anchor, links ordinary physical chapters and retains the pin across another restart (30.345304ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 50
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3305.894395
+
+✖ failing tests:
+
+test at test/research-checkpoint.test.ts:1:12434
+✖ PilotRpc resumes the explicit pinned anchor, links ordinary physical chapters and retains the pin across another restart (30.345304ms)
+  PilotRpcUnavailable: PILOT_RPC_COMPONENT_HTTP_ENVELOPE
+      at PilotRpc.perform (/workspace/poe-research-baseline-checkpoint/src/pilot-rpc.ts:171:56)
+      at async TestContext.<anonymous> (/workspace/poe-research-baseline-checkpoint/test/research-checkpoint.test.ts:72:47)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'COMPONENT_HTTP_ENVELOPE',
+    retryAt: 165000
+  }

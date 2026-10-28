@@ -34,7 +34,7 @@ need(!['privateKey','wallet','secret','capital','balance','positions','pending',
 const binding=input.reportingBinding;
 need(binding&&binding.accountId==='poe-pilot-8468add6-f916-48cf-a585-6cd008a81360'&&binding.inceptionAt===1793123773252&&/^[a-f0-9]{64}$/.test(binding.sourceStatusSha256),'ACTUAL_PILOT_REPORTING_BINDING_REQUIRED');
 let initialBookBytes=0;for(const path of input.baselinePaths){need(initialBookBytes<limits.maximumBaselineBytes,'BASELINE_AGGREGATE_BYTE_CAP');const bytes=bounded(path,Math.min(limits.maximumComponentBookBytes,limits.maximumBaselineBytes-initialBookBytes));initialBookBytes+=bytes.length;}
-const baseline=readResearchBaseline({paths:input.baselinePaths,now:Date.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:limits.maximumBaselinePaths});
+const baseline=readResearchBaseline({paths:input.baselinePaths,checkpointSha256:input.baselineCheckpointSha256,now:Date.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:limits.maximumBaselinePaths});
 const api=await import(pathToFileURL(join(bundleDirectory,'native-candidates.mjs')).href);
 need(!profile||typeof api.nativeCandidateRunSettings==='function'&&typeof api.nativeCandidateConfigurationSha256==='function','BUNDLED_EXPLICIT_PROFILE_API_REQUIRED');
 const settings=typeof api.nativeCandidateRunSettings==='function'?api.nativeCandidateRunSettings(observationSeconds*1000,profile??undefined,agePolicy,dataContract):null;

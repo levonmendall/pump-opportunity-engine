@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T17:28:06.165430+00:00",
+  "baseCommit": "c1fc938e60246f5c8d7eab82022076fa02113d8e",
+  "sourceSha256": {
+    "scripts/stage-native-candidate-ec2.mjs": "9cca1e76f6a5a7e24bddd1d178a6adc0fb0a4be8da3ed6744ac2fb95d505dd7b",
+    "src/component-budget.ts": "af6b67dbc0270dda1581809d97f1dc4b089f3b238ad55268ccca9739cb3f5f14",
+    "src/pilot-rpc.ts": "d60cd01aa1d1fef0a14d078ee8fc5fed258f91d609dc30dc0b689017007d94e1",
+    "src/pilot.ts": "8a3e361fc03907ab24f3ca4c9588adeafc99ed720162c036ce276299e087177d",
+    "src/research-baseline.ts": "656cf5174e7127fa1e510917b44db53892c401622923f760f62138d83d6b9037",
+    "src/run-native-candidates.ts": "0f3deddee1615764f3e1c1aa18bb75a248b95a77dfa5212645ab21a1a6f9219f",
+    "src/run-native-paper.ts": "ce3cad1d65c814fac86911b6765cb1150e96a64e5ed9e39ec18beb4b107f5f2c",
+    "test/research-checkpoint.test.ts": "b64f381fcb8ab72ce9f8e9123f477a60fe10fcaffa4cee730f38fae1cbaece64"
+  },
+  "outputs": {
+    "base-cap-fixture-failure.txt": "9ea604f4f6a8de5c8e3de93ee8ad0f96e85055aa6bce1195be4c6bfcba05a886",
+    "focused-verified.txt": "04c64e9aa06f37a67759bda2deea959da3c07a88f8264b5077bab1c22a8bc692",
+    "initial-unsafe-unknown-time-tests.txt": "6320eaec8e7bcd97a03e5605d00764359109dd2f53c56ed97869d09e3e623cba",
+    "build-verified.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "mock-envelope-fixture-failure.txt": "097ae5c483a120e563484175a7b015d94b6097565ea31271cb029e16d1bc52c1",
+    "intermediate-fixture-failure.txt": "61d6e6b43a28b430df6a3f57efd382cad61db8f06dee1cf87bdb6dff29b37d51"
+  },
+  "commands": [
+    {
+      "command": "node --import tsx --test --test-concurrency=1 test/research-checkpoint.test.ts test/research-baseline.test.ts test/component-budget.test.ts test/native-candidate-launcher.test.ts test/native-paper-launcher.test.ts",
+      "exitCode": 0,
+      "tests": 51,
+      "passed": 51,
+      "durationMs": 2765.414359
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    }
+  ],
+  "externalProviderRequests": 0,
+  "realPilotManifestModified": false,
+  "financialLedgerRead": false,
+  "automaticInProcessCompactionVerified": false,
+  "sourceHandoffVerifierTested": true,
+  "liveExporterCompactedBranchImplemented": false
+}
