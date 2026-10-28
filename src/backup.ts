@@ -1,4 +1,6 @@
 import Database from 'better-sqlite3';
+import {isDeepStrictEqual} from 'node:util';
+import {validateReportingTradeCache,reportingFilledTrade} from './reporting.js';
 import {chmodSync,closeSync,constants,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,unlinkSync,type Stats} from 'node:fs';
 import {basename,dirname,join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -131,7 +133,7 @@ export class FinancialBackupStore{
       if(db.prepare('SELECT action_id FROM journal WHERE revision>0 EXCEPT SELECT id FROM actions LIMIT 1').get())throw new Error('backup financial action identity mismatch');
       const inception=db.prepare('SELECT at,kind FROM journal WHERE revision=0').get() as {at:number;kind:string}|undefined;
       if(inception?.kind!=='inception'||inception.at!==state.inceptionAt)throw new Error('backup inception mismatch');
-      const metadata=db.prepare("SELECT key,length(value) size FROM metadata WHERE key IN ('reporting_history','snapshot_sequence')").all() as {key:string;size:number}[];
+      const metadata=db.prepare("SELECT key,length(value) size FROM metadata WHERE key IN ('reporting_history','snapshot_sequence','reporting_trades')").all() as {key:string;size:number}[];
       if(metadata.some(x=>x.size>262_144))throw new Error('backup metadata bound exceeded');
       const historyRow=db.prepare("SELECT value FROM metadata WHERE key='reporting_history'").get() as {value:string}|undefined;
       if(!historyRow)throw new Error('backup inception history absent');
@@ -139,6 +141,16 @@ export class FinancialBackupStore{
       if(!history||typeof history!=='object'||Object.keys(history).sort().join(',')!=='downsampled,points,windowLimited'||!Array.isArray(history.points)||history.points.length>720||typeof history.windowLimited!=='boolean'||typeof history.downsampled!=='boolean')throw new Error('backup reporting history malformed');
       for(const point of history.points){if(!point||Object.keys(point).sort().join(',')!=='at,economicMicroUsd,tradingMicroUsd'||!Number.isSafeInteger(point.at)||point.at<=previous||point.at<state.inceptionAt||![point.tradingMicroUsd,point.economicMicroUsd].every(v=>v===null||typeof v==='string'&&/^-?(0|[1-9][0-9]{0,38})$/.test(v)&&BigInt(v.replace(/^-/,''))<=(1n<<127n)-1n))throw new Error('backup reporting history chronology/value mismatch');previous=point.at;}
       if(!history.windowLimited&&(history.points[0]?.at!==state.inceptionAt||history.points[0]?.tradingMicroUsd!=='0'))throw new Error('backup reporting inception mismatch');
+      const tradesRow=db.prepare("SELECT value FROM metadata WHERE key='reporting_trades'").get() as {value:string}|undefined;
+      if(tradesRow){
+        const cache=validateReportingTradeCache(JSON.parse(tradesRow.value),state.accountId,state.inceptionAt,state.lastAt);
+        for(const trade of cache.trades){
+          const attempt=db.prepare('SELECT j.at,j.kind,j.detail,a.result FROM journal j JOIN actions a ON a.id=j.action_id WHERE j.action_id=?').get(trade.actionId) as {at:number;kind:string;detail:string;result:string}|undefined;
+          if(!attempt||attempt.kind!=='attempt'||Buffer.byteLength(attempt.detail)>65536)throw Error('backup reporting trade attempt absent');
+          const payload=JSON.parse(attempt.detail),order=db.prepare('SELECT detail FROM journal WHERE action_id=?').get('order:'+payload.orderId) as {detail:string}|undefined;
+          if(!order||Buffer.byteLength(order.detail)>65536||!isDeepStrictEqual(trade,reportingFilledTrade(trade.actionId,attempt.at,payload,JSON.parse(order.detail),JSON.parse(attempt.result))))throw Error('backup reporting trade durable evidence mismatch');
+        }
+      }
       const sequence=db.prepare("SELECT value FROM metadata WHERE key='snapshot_sequence'").get() as {value:string}|undefined;
       if(sequence&&!/^[1-9][0-9]{0,39}$/.test(sequence.value))throw new Error('backup sequence malformed');
       return {...this.identity,path,generation,revision:state.revision,lastAt:state.lastAt,snapshotSequence:sequence?.value??null};

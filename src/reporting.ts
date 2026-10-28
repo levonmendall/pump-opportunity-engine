@@ -17,7 +17,7 @@ export type Snapshot = {
   };
   costLabels: { execution: 'simulated'; operating: 'actual' | 'estimated' | 'allocated' | 'mixed' | 'unavailable' };
   positions: { mint: string; label: string; quantity: string; enteredAt: string; entryCostUsd: number; netLiquidationUsd: number | null; executionCostsUsd: number; status: string }[];
-  trades: { id: string; mint: string; side: 'buy' | 'sell'; quantity: string; at: string; valueUsd: number | null; executionCostsUsd: number; status: string; reason: string }[];
+  trades: { id: string; mint: string; side: 'buy' | 'sell'; quantity: string; at: string; valueUsd: number | null; executionCostsUsd: number | null; status: string; reason: string }[];
   decisions: { id: string; mint: string; at: string; stage: string; reason: string }[];
   pnl: { at: string; tradingUsd: number | null; economicUsd: number | null }[];
   history: { windowStartAt: string | null; downsampled: boolean; label: string };
@@ -86,7 +86,7 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   });
   list(s.trades, 50, v => {
     const t = object(v, ['id','mint','side','quantity','at','valueUsd','executionCostsUsd','status','reason']);
-    text(t.id, 128); text(t.mint, 96); oneOf(t.side, ['buy','sell']); units(t.quantity, false); eventTime(t.at); nullable(t.valueUsd, v => number(v, true)); number(t.executionCostsUsd, true); text(t.status, 80); text(t.reason, 512);
+    text(t.id, 128); text(t.mint, 96); oneOf(t.side, ['buy','sell']); units(t.quantity, false); eventTime(t.at); nullable(t.valueUsd, v => number(v, true)); nullable(t.executionCostsUsd, v => number(v, true)); text(t.status, 80); text(t.reason, 512);
   });
   list(s.decisions, 50, v => { const d = object(v, ['id','mint','at','stage','reason']); text(d.id, 128); text(d.mint, 96); eventTime(d.at); text(d.stage, 80); text(d.reason, 512); });
   let last = -Infinity;
@@ -104,6 +104,25 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   oneOf(m.budgetStatus, ['available','degraded','unavailable']); text(m.coverage, 512); text(m.latency, 256);
   if (Buffer.byteLength(JSON.stringify(s)) > MAX_SNAPSHOT_BYTES) throw new Error('snapshot payload limit');
   return s as Snapshot;
+}
+/** Account-bound bounded reporting cache; durable journal/actions remain authority. */
+export type ReportingFilledTrade=Snapshot['trades'][number]&{actionId:string};
+export type ReportingTradeCache={schemaVersion:1;accountId:string;inceptionAt:number;windowLimited:boolean;trades:ReportingFilledTrade[]};
+export function validateReportingTradeCache(value:unknown,accountId:string,inceptionAt:number,now:number):ReportingTradeCache {
+  const cache=object(value,['schemaVersion','accountId','inceptionAt','windowLimited','trades']);
+  if(cache.schemaVersion!==1||cache.accountId!==accountId||cache.inceptionAt!==inceptionAt||!Number.isSafeInteger(inceptionAt)||!Number.isSafeInteger(now)||now<inceptionAt)throw Error('reporting trade cache identity');
+  bool(cache.windowLimited);let previous=Infinity;const seen=new Set<string>();
+  list(cache.trades,50,value=>{const t=object(value,['actionId','id','mint','side','quantity','at','valueUsd','executionCostsUsd','status','reason']);text(t.actionId,160);text(t.id,128);text(t.mint,96);oneOf(t.side,['buy','sell']);units(t.quantity,false);const at=time(t.at);if(at<inceptionAt||at>now||at>previous||seen.has(String(t.actionId)))throw Error('reporting trade cache chronology');previous=at;seen.add(String(t.actionId));nullable(t.valueUsd,v=>number(v,true));nullable(t.executionCostsUsd,v=>number(v,true));oneOf(t.status,['PAPER filled']);text(t.reason,512);});
+  if(Buffer.byteLength(JSON.stringify(cache))>128*1024)throw Error('reporting trade cache bound');return cache as ReportingTradeCache;
+}
+/** Derive one filled row only from the exact durable attempt, order and result. */
+export function reportingFilledTrade(actionId:string,at:number,attempt:any,order:any,result:any):ReportingFilledTrade|null {
+  const integer=(v:unknown):v is string=>typeof v==='string'&&/^(0|[1-9][0-9]{0,38})$/.test(v);
+  const q=attempt?.quote,o=order?.input;
+  if(result?.status!=='filled'||result.at!==at||!o||attempt.orderId!==o.id||typeof o.mint!=='string'||o.mint.length>96||!['buy','sell'].includes(o.side)||!integer(o.gas)||!q||!integer(q.receiveUnits)||!integer(q.spendLamports)||o.side==='sell'&&!integer(q.pricedBaseUnits))return null;
+  const p=attempt.price,validPrice=!!p&&integer(p.microUsdPerSol)&&BigInt(p.microUsdPerSol)>0n&&Number.isSafeInteger(p.at)&&p.at<=at&&at-p.at<=10000;
+  const usd=(v:string)=>validPrice?Number(BigInt(v)*BigInt(p.microUsdPerSol)/1000000000n)/1e6:null;
+  return {actionId,id:'paper-fill:'+createHash('sha256').update(actionId).digest('hex').slice(0,32),mint:o.mint,side:o.side,quantity:o.side==='buy'?q.receiveUnits:q.pricedBaseUnits,at:new Date(at).toISOString(),valueUsd:usd(o.side==='buy'?q.spendLamports:q.receiveUnits),executionCostsUsd:usd(o.gas),status:'PAPER filled',reason:'Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. '+actionId};
 }
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';

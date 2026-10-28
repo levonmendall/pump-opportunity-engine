@@ -4,6 +4,7 @@ import { openSync, closeSync, fstatSync, lstatSync, statSync, realpathSync, cons
 import { dirname, basename, resolve, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { isDeepStrictEqual } from 'node:util';
+import {validateReportingTradeCache,reportingFilledTrade,type ReportingFilledTrade,type ReportingTradeCache} from './reporting.js';
 import { initializeOperatingCosts, validateOperatingCosts, applyOperatingCostEvent, projectOperatingCosts, type OperatingCostState, type OperatingCostEvent } from './costs.js';
 
 /** One PAPER accounting path. Fixture and authoritative identities never mix. No live execution. */
@@ -438,6 +439,33 @@ export class PaperLedger {
   exportJournal(limit = 100) {
     if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1000) throw new Error('bounded export required');
     return this.db.prepare('SELECT * FROM journal ORDER BY revision DESC LIMIT ?').all(limit);
+  }
+  /** Replaceable max50 filled-trade projection, verified by indexed durable actions. */
+  getReportingTrades():ReportingTradeCache {
+    const state=this.state(),size=this.db.prepare("SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key='reporting_trades'").get() as {size:number}|undefined;
+    if(!size)return {schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[]};
+    if(size.size>128*1024)throw Error('reporting trade cache bound');
+    const raw=this.db.prepare("SELECT value FROM metadata WHERE key='reporting_trades'").get() as {value:string};
+    const cache=validateReportingTradeCache(JSON.parse(raw.value),state.accountId,state.inceptionAt,state.lastAt);
+    for(const trade of cache.trades)this.validateReportingTrade(trade);return cache;
+  }
+  private validateReportingTrade(trade:ReportingFilledTrade){
+    const attempt=this.db.prepare('SELECT at,kind,detail FROM journal WHERE action_id=?').get(trade.actionId) as {at:number;kind:string;detail:string}|undefined;
+    if(!attempt||attempt.kind!=='attempt'||Buffer.byteLength(attempt.detail)>65536)throw Error('reporting trade attempt absent');
+    const payload=JSON.parse(attempt.detail),order=this.db.prepare('SELECT detail FROM journal WHERE action_id=?').get('order:'+payload.orderId) as {detail:string}|undefined;
+    if(!order||Buffer.byteLength(order.detail)>65536)throw Error('reporting trade order absent');
+    const expected=reportingFilledTrade(trade.actionId,attempt.at,payload,JSON.parse(order.detail),this.actionResult(trade.actionId));
+    if(!expected||!isDeepStrictEqual(trade,expected))throw Error('reporting trade durable evidence mismatch');
+  }
+  recordReportingTrades(trades:readonly ReportingFilledTrade[]):ReportingTradeCache {
+    const state=this.state();validateReportingTradeCache({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[...trades].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at))},state.accountId,state.inceptionAt,state.lastAt);
+    return this.db.transaction(()=>{
+      const previous=this.getReportingTrades(),byId=new Map(previous.trades.map(row=>[row.actionId,row]));
+      for(const trade of trades){this.validateReportingTrade(trade);const old=byId.get(trade.actionId);if(old&&!isDeepStrictEqual(old,trade))throw Error('reporting trade cache conflict');byId.set(trade.actionId,structuredClone(trade));}
+      const sorted=[...byId.values()].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)||a.actionId.localeCompare(b.actionId)),next:ReportingTradeCache={...previous,windowLimited:previous.windowLimited||sorted.length>50,trades:sorted.slice(0,50)};
+      if(!isDeepStrictEqual(previous,next))this.db.prepare("INSERT INTO metadata VALUES('reporting_trades',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(next));
+      return next;
+    }).immediate();
   }
   /** O(1) lookup of a durable idempotent result; no state or journal mutation. */
   actionResult(id: string): unknown | undefined {
