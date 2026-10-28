@@ -7,6 +7,20 @@ selected active 2–6-hour pools. Earlier and older observation do not authorize
 purchases. The known SI and FRONGUS moves already occurred inside the baseline
 entry interval, so widening entry age alone cannot repair those coverage losses.
 
+**Current offline assessment at `cd6ac47b526d607f01a2b88f1c5186247b86bf7a`:**
+observation and entry are separate in the native candidate runner. Immediate
+observation has actual source-ACK evidence; selected older observation has actual
+feature evidence. Neither establishes that earlier or older entries improve
+returns. The second integrated native interval failed before its planned end and
+recorded only two quiet, historically audit-accepted assessments (bands G/H);
+their served-node context was not proved. No realistic paired $50 entry/exit path
+exists for an age-policy comparison. The pending finite two-hour, six-slot
+selected-24-hour **observation** study is not an entry-age expansion. Its outcomes
+are not included below because it has not supplied retained forward evidence.
+The current inventory and latest artifact assessment appear at the end of this
+report. Earlier plans, counters and implementation descriptions remain explicitly
+historical; new component request usage does not add age or economic evidence.
+
 The initial retrospective analysis below uses unchanged retained evidence. Later
 sections identify subsequent implementation and actual live evidence separately.
 No counterfactual profit is presented as a fill or portfolio result. Source,
@@ -55,7 +69,7 @@ paths. The broader121recorded feature assessments are selected POE windows over
 
 ## Pre-repair age-gate audit
 
-| Component | Current behavior | Consequence |
+| Component at the retained pre-repair source | Historical behavior | Consequence |
 |---|---|---|
 |`strategy.ts:4,188–191`;`pilot-contract.ts:6` |Verified migration required; primary entry5–120min. |An entry hypothesis/boundary, not a proved economic optimum. |
 |`pilot-watch.ts:18,38,41` |WATCH eligibility and deep promotion start at5min; verified identity expires at2h. Unverified hints retained125min from receipt. HELD/ENTRY_PENDING protected. |Observation is coupled to the entry interval; early full windows are never collected, and older shadow awareness is removed. |
@@ -74,10 +88,12 @@ paths. The broader121recorded feature assessments are selected POE windows over
 
 The pre-repair development excerpts, hashes and worktree paths are retained in the
 analysis's`sourceInventory`; they are not claims about every historical release.
-The primary strategy currently excludes ages strictly greater than120min while
-WATCH/retirement use an exclusive120min boundary. The observable pipeline is
-therefore effectively[5,120). This one-boundary discrepancy should be unified
-explicitly during a reviewed implementation, not used to claim new coverage.
+At the pre-repair sources, primary strategy excluded ages strictly greater than
+120min while WATCH/retirement used an exclusive120min boundary, making that
+observation pipeline effectively[5,120). Observation now starts independently
+of this interval. The exact120min entry boundary discrepancy remains in current
+source and is disclosed below; this report does not change entry behavior for
+cosmetic parity.
 
 ## What the retained observations establish
 
@@ -132,10 +148,12 @@ rule-timed protective exit path for this comparison. There are no such size
 states below5min or above2h. Sparse2–6h endpoint observations and absent6–24h data
 cannot justify extending entries or assuming older tokens are harmless.
 
-## Safe capability improvement and next measurement
+## Historical observation-separation design and first measurement proposal
 
-The smallest useful change is to split **observation admission** from **entry
-eligibility**. After genuine migration identity and current support are verified,
+The initial design identified splitting **observation admission** from **entry
+eligibility** as the smallest useful change. This is now implemented; the
+following design and600second/3slot proposal are retained as historical work, not
+the next pending run. After genuine migration identity and current support are verified,
 allow bounded early observation and collect all required trade events. Keep the
 baseline entry check at5–120min. Independent early feature diagnostics may report
 complete/unavailable features and age-ineligibility without permission, quotes
@@ -259,13 +277,17 @@ are separate from public API access; no zero-total-cost claim follows.
 The existing Render service now displays the separate observation policy and
 current early/entry-age/older WATCH counts. Reporting commit
 `9161d3849eae1ffa549a6afa2a1c263b6f3d1185`, deployment
-`dep-dbgl96ugekts73889s40`, is live. Two actual corrected-source cycles matched
+`dep-dbgl96ugekts73889s40`, was deployed for that reporting interval. Two actual corrected-source cycles matched
 local counters, identity and timestamps exactly. Authentication, mobile rendering,
 stale/stopped behavior and the unchanged original portfolio were verified.
 [Reporting evidence](../evidence/migration-age-20261028/reporting/README.md).
-This remains a Cloud publisher, not proof of persistent EC2 PAPER supervision.
+That reporting check used a Cloud publisher, not persistent EC2 PAPER supervision.
+The later reporting-only release is `a40c75e7256ffdf4aff720cf79e53a0960252246`,
+deployment `dep-dbgn8u0ae00c73cugtfg`; the second native artifact below retains
+actual EC2-source publisher acknowledgements. Neither establishes a financial
+writer or current position management.
 
-**Readiness decision:** do not widen entry ages from these data. Preserve the
+**Readiness decision at that checkpoint:** do not widen entry ages from these data. Preserve the
 observation improvement, finish the corrected cohort scorecard, and integrate
 and test the demonstrated high-volume data-path alternative before claiming
 sufficient coverage for a 24-hour autonomous PAPER interval. The initial data
@@ -329,11 +351,13 @@ Actual completion time is still checked; the estimate is not a zero-jitter
 promise. Disposable tests show zero quote/context/execution calls and byte-exact
 ledger/WAL preservation. Forward verification of that correction remains separate.
 
-The native selected-flow adapter is committed as a reusable component with
-bounded subscriptions, exact emitted-event mapping, support batching, reconnect
-invalidation and an independent-audit notification ledger. It is not yet the
-active integrated source. Its component result cannot be used to mark multi-pool
-or unattended acceptance complete. No 24-hour test has started.
+At the `cf8d8bc` checkpoint, the native selected-flow adapter was a reusable
+component with bounded subscriptions, exact emitted-event mapping, support
+batching, reconnect invalidation and an independent-audit notification ledger.
+It subsequently became an integrated candidate-only source; the second actual
+interval is assessed below. A component result or failed integrated interval
+cannot establish multi-pool protection or unattended financial acceptance. No
+24-hour acceptance interval is established by this evidence.
 
 ## Current independent-origin limitation
 
@@ -344,8 +368,9 @@ the creation transaction. The attempt stopped and settled; its old evidence and
 creation time remains a search hint, not cohort evidence. This limitation does
 not invalidate the independently verified SI/FRONGUS/WANSULEK origin times or
 the native FRONGUS window. It prevents assigning INGUS economic outcomes to an
-age cohort. Current cumulative actual units4643 are visibility/accounting, not
-an exhausted lifetime development grant. See age-origin-20261028 evidence.
+age cohort. The cumulative actual units4643 at that historical checkpoint were
+visibility/accounting, not an exhausted lifetime development grant. Later usage
+is append-only and does not create additional age observations by itself. See age-origin-20261028 evidence.
 
 ## Optional selected24-hour observation study (offline preparation)
 
@@ -361,8 +386,12 @@ OBSERVATION_AGE_STUDY_24H_POLICY.version,...})`. The same immutable policy must 
 passed as the final argument to `observationAgeEligible`, `observationAgeCohort`,
 `observationExpiryAt`, and `observationRunway` in any opted-in runner. The watch's
 `observationAgePolicy` and snapshot expose the actual active profile. Unknown
-versions or altered policy objects are refused. No launcher or financial runtime
-has been opted in by this change.
+versions or altered policy objects are refused. At the original offline
+preparation no launcher was wired. At `cd6ac47`, the native launcher/runner accepts
+this explicit profile through input/CLI, frozen configuration hash, Watch,
+runway, proof pruning and reporting. That capability is not evidence that the
+pending selected-24-hour study has run. The legacy financial pilot remains on
+the default policy and no financial contract is widened.
 
 Selection still requires retained verified canonical migration metadata and a
 real observed WATCH activity hint no older than60seconds. A hint never establishes
@@ -373,25 +402,21 @@ transaction bytes or current accounts. Re-promotion starts a new complete audite
 60-second window, preserves provider/capacity deferrals, and cannot override a
 structural/manual terminal exclusion or a held/pending financial obligation.
 
-Before integration, preserve these existing gates in both runtime variants:
+Current native integration preserves exact confirmed/finalized creation-proof
+verification, proof-ready-only allocation, fresh SDK support and selected-only
+retention. Its activity handler already permits a fresh activity hint to
+reselect an age-only EXPIRED older identity within the configured horizon. It
+does not revive structural/manual exclusions or financial obligations.
 
-- Native candidate runner: pass the profile to Watch, runway/cohort reporting and
-  any proof-expiry decisions. Keep the existing exact confirmed/finalized creation
-  proof verification, proof-ready-only allocation and fresh native SDK support.
-- Legacy full pilot: use the same profile in known-origin recovery, cached proof
-  import/pruning, activity-watch enumeration, observation readiness and retirement.
-  A watched selected identity's replaceable origin proof may be retained through
-  `observationExpiryAt(migrationAt,true,policy)`; this never makes old account bytes
-  current. Preserve owned/pending proofs independently of observation expiry.
-- Both existing activity handlers currently guard selection with
-  `!row.olderResearch`. During a study transition they must also allow an already
-  selected identity with age-only EXPIRED state to call `selectOlderResearch`
-  after an actual fresh hint. Retained prior selection alone must not silently
-  revive the candidate; the selector preserves structural/manual/protected and
-  capacity/cooldown checks.
-- Include the active policy in the frozen configuration hash and source/status
-  report. Cache retention, registry retention, observation runway and reported
-  age cohorts must agree; changing only Watch would leave6-hour runtime gates.
+The legacy full pilot still needs an explicit policy parameter before a24-hour
+observation study could use that runtime: known-origin recovery, cached-proof
+import/pruning, activity-watch enumeration, observation readiness and retirement
+currently use the default policy. Its activity handler still requires
+`!known.olderResearch`, unlike the native handler. This is a remaining legacy
+capability limitation, not a reason to block the already-wired native study.
+Owned/pending proofs must remain independently protected. The active policy must
+continue to enter the configuration hash and source/status report; changing only
+Watch would leave inconsistent runtime horizons.
 
 Study checkpoints record selection-policy provenance. Resuming with the narrower
 default expires non-owned out-of-scope observation while preserving HELD and
@@ -406,3 +431,125 @@ test/observation-age*.test.ts test/pilot-watch*.test.ts` (79offline tests).
 profile-transition fixture; runtime source is unchanged by that fixture. Cases
 cover opt-in/default parity, stale/future/unknown hints,24-hour boundary, cooldown,
 24identity/oneolderdeep caps, protected obligations and repeated profile recovery.
+
+
+## Current source inventory at cd6ac47
+
+This inventory supersedes the historical pre-repair table as a description of
+current capability. No runtime or strategy setting is modified by this review.
+
+| Gate | Actual current behavior and consequence |
+|---|---|
+| `observation-age.ts`; `pilot-watch.ts` | Verified observation starts at age0; normal observation expires at2h. Up to24 activity-selected older identities and one older deep scope extend to6h by default, or24h under the explicit study. Unverified receipt retention remains125min. HELD/ENTRY_PENDING are protected. |
+| Native input/CLI/hash, runner allocation/retirement/proof pruning | One versioned observation policy is passed consistently. Actual ACK starts fresh warming; a complete closed60second window, current support and independent audit still precede assessment. Fresh activity can reselect age-only EXPIRED older identities; a hint is allocation evidence, not buying proof. |
+| Legacy `pilot.ts` | Default0–2h/selected2–6h policy is used for proof recovery/import/pruning, watched identities, observation readiness, preparation and retirement. `candidateReadyAt` additionally applies baseline entry age; `predictiveReadiness` uses observation readiness only. The legacy older-activity handler does not yet reselect an already-selected age-only EXPIRED row. |
+| Coupled constants/coverage | Normal observation maximum is derived from `PROVISIONAL_RULE.maximumAgeMs`; Watch also has fixed5min/2h constants for baseline cohort/wait/coverage metrics. Do not change the entry constant to implement a research age flag. Watch coverage is retained-registry, baseline-entry-age coverage, not A/B/C/I market recall. |
+| Primary entry/contract | `evaluatePrimary` excludes age<5min or>120min; `entryAgeEligible` and Watch use age<120min. The exact120min boundary is an existing discrepancy, not newly approved behavior. Frozen pilot contracts assert unchanged entry/sizing/risk/exit rules. |
+| Current native audit | Every history page now sends the original upper-fence `minContextSlot`; context-not-reached is recoverable data unavailability. This repairs the source contract but does not upgrade earlier quiet results or prove a new forward interval. |
+| Independent assessment | Trader's independent `predictiveReadiness` and native runner's verified-window assessment do not require primary age permission, ledger authorization or an extra quote. A feature pass is not executable qualification. |
+| Execution/pricing/exits | Actual-size pricing still requires supported pool/mints/vaults/fees, integer amounts, context/source freshness and≤2second quote age at use. Execution has delay/expiry/slippage rules but no separate migration-age-at-fill check. Exits depend on cost, actual-size liquidation and time held; entry-age expiry cannot retire exposure. |
+| Historical helper | Exported `pilotEligibilityRunway` still uses the baseline entry maximum, but has no runtime caller at this source; it is not an active observation blocker. Active paths use the observation-policy runway. |
+
+The first complete window can only follow the actual subscription ACK and six
+closed10second buckets. The legacy phase/audit guard can add time; the native
+path also needs genuine post-ACK lower and fresh upper support contexts. Age0
+observation therefore does not imply an immediately evaluable0–1min opportunity.
+
+## Second integrated native interval: available A–I evidence
+
+[Retained public artifact](../evidence/migration-age-20261028/native-integrated-40633990901/README.md),
+run`40633990901`, used source`bb6fd9fa899c6a4d07c19643e0cff86b42deb408`
+(SHA256`ccb42f1d629aeaaa6760872064e98936692584608b1dd01b60da590ebf2b916a`)
+and configuration`b50d8b5bde5355910e12c7c09fbc6c0ee3d9f32abcac6e8de585001699cacff9`.
+It started04:44:24.358UTC on2026-10-28. The last source snapshot at04:51:18.151
+was413.793seconds after start and still said running; the wrapper finished
+04:51:23.663. No graceful final source receipt exists. External process-group
+termination and57 physical start/settlement records support conservative usage
+linking, not uninterrupted completion. The failed interval remains failed.
+
+The table uses actual ACK events, feature endpoints and immutable migration
+times in that artifact only. An ACK is not current coverage of an entire age
+band. Overlapping endpoints are not independent minutes; inherited Watch
+counters from earlier runs are excluded.
+
+| Age band | Unique scope ACKs at that age | Raw sufficiently-observed endpoints | Historically audit-accepted / predictive failed | Economic entry/exit evidence |
+|---|---:|---:|---:|---|
+| A:0–1min |1 |0 |0/0 |Unavailable |
+| B:1–3min |0 |0 |0/0 |Unavailable |
+| C:3–5min |0 |0 |0/0 |Unavailable |
+| D:5–10min |0 |0 |0/0 |Unavailable |
+| E:10–30min |0 |0 |0/0 |Unavailable |
+| F:30–60min |0 |0 |0/0 |Unavailable |
+| G:60–120min |5 |4 |1/1 |No paired$50path |
+| H:2–6h |2 |1 |1/1 |No paired$50path |
+| I:6–24h |0 |0 |0/0 |Unavailable |
+
+Eight distinct scopes were acknowledged;49 feature views and163 normalized
+events were recorded. Five raw complete endpoints are not five independently
+usable decisions. The two original audit acceptances were quiet windows ending
+04:45:30UTC: `Ex7C…pump` assessed at age109.611min and `8Yxh…pump` at333.576min,
+both failing buying predicates with zero observed trades. Neither history request
+had `minContextSlot`. Their served-node context remains unproven, and they must
+not satisfy the new context-floor validation gate. Old newest-history slots do
+not by themselves prove node lag or fabricate missing activity. The source
+counts and decisions remain unchanged historical observations.
+
+The A-band scope `5Tdj…pump` opened at age0.34375min and suffered
+`LOG_NATIVE_UNSUPPORTED_SWAP_LABEL` at0.61128min. Its later fetched transaction
+contains BoostBuyAndBurn+Burn; later decoding cannot restore its lost earlier
+window. Support/scopes failures invalidated other candidates. None is a valid
+age-policy strategy rejection. The interval cannot explain whether earlier
+entry would help or whether older pools are economically safer. There were no
+financial entries, orders, holdings, exits or financial writer.
+
+## Smallest useful matched age comparison
+
+Use one source-pinned candidate-only native interval and its single set of
+complete, current, independently audited features. Do not run three ingestion
+stacks or modify `PROVISIONAL_RULE`/the frozen pilot contract. At each actual
+assessment timestamp attach the unchanged buying result and separate research
+age flags: A=`[5,120)min`, B=`[1,120)min`, C=`[5,360)min`. Freeze these half-open
+research boundaries explicitly; do not silently change the existing primary
+exact120min behavior. The pending two-hour/six-slot selected24h study can supply
+this record, but I-band observations are outside all three entry variants.
+
+Compare unique tokens, unioned usable observation time, first-useful decision
+latency, admission waits, data failures and predictive pass/fail/unavailable
+separately. Reuse the same features once: no quote is needed merely to annotate
+an age flag. B differs from A only for valid1–5min evidence; C differs only for
+valid120–360min evidence. Existing H selection is activity-biased and limited to
+one deep slot, so this is a matched-available-information comparison, not equal
+market coverage, equal-resource optimality or a defensible whole-market recall
+denominator. Preserve unselected and unavailable candidates as such.
+
+Adaptive D is **not assessable** until a deterministic causal rule and settings
+hash are frozen before its evaluation. Selecting whichever cohort later wins,
+or calling B∪C adaptive, would not test adaptation. No threshold search, age
+widening or economic superiority follows from the current record.
+
+The named economic prerequisite is a **chronological executable$50round-trip
+evidence path** for otherwise-not-rejected windows: contemporaneous origin,
+support and complete flow; properly sized all-in entry and post1second-delay
+state before5second expiry; integer fees/gas/refundable rent/slippage; then
+fresh actual-holding-size liquidation evidence through stop/profit/15minute
+time exit and its modeled delayed sale. Missing/stale periods remain unavailable;
+no price interpolation or forced free liquidation closes them. Keep SOL/USD
+valuation separate and include an independently selected weak/loser control
+population. Existing sparse capacity quotes and OHLC appreciation cannot meet
+this prerequisite.
+
+The smallest additional measurement within the same pending run is that
+bounded quote-only shadow path, started only when the unchanged predictive rule
+is not rejected, with A/B/C labels from the same information. Reserve the complete
+15minute exit horizon and protection capacity before accepting each hypothetical
+path; stop admitting paths before the run's final holding horizon and shutdown
+reserve. One early path may need roughly20minutes of chronological data; a
+two-hour interval cannot promise a natural qualifying signal or finish paths
+admitted near its end. This needs no financial ledger mutation or duplicated
+feed. A no-signal run supplies coverage evidence, not economic parity.
+
+**Decision: NOT YET PROVEN — specific economic and independently current-window
+evidence missing.** Keep the entry baseline; retain broader observation,
+complete the repaired native-window gate, and obtain paired executable evidence
+before choosing an earlier, extended or adaptive entry policy. No new source,
+network measurement, runtime change or financial action occurred in this review.
