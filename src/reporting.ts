@@ -1,8 +1,10 @@
 import { createHash } from 'node:crypto';
+import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
 
 export const MAX_SNAPSHOT_BYTES = 128 * 1024;
 export type ReportingIdentity = { accountId: string; inceptionAt: string; release: string; strategy: string };
 export type Snapshot = {
+  intelligence?: OperatingIntelligence;
   project: 'pump-opportunity-engine'; mode: 'PAPER'; liveTrading: false; schemaVersion: 1;
   account: { id: string; inceptionAt: string; initialUsd: 1000 };
   sequence: string; source: { release: string; strategy: string };
@@ -58,7 +60,8 @@ export function validateIdentity(identity: ReportingIdentity) {
 /** Full snapshots only; unknown fields are rejected so secrets cannot ride through exports. */
 export function validateSnapshot(value: unknown, expected: ReportingIdentity, now = Date.now()): Snapshot {
   validateIdentity(expected);
-  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics']);
+  const hasIntelligence=!!value&&typeof value==='object'&&Object.hasOwn(value,'intelligence');
+  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics',...(hasIntelligence?['intelligence']:[])]);
   oneOf(s.project, ['pump-opportunity-engine']); oneOf(s.mode, ['PAPER']); oneOf(s.liveTrading, [false]); oneOf(s.schemaVersion, [1]);
   const a = object(s.account, ['id','inceptionAt','initialUsd']);
   if (a.id !== expected.accountId || a.inceptionAt !== expected.inceptionAt || a.initialUsd !== 1000) throw new Error('wrong account/inception');
@@ -102,6 +105,7 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   for (const key of ['processingLagMs','eventLoopLagMs','projectedDailyDataSol','budgetRemainingSol']) nullable(m[key], v => number(v, true));
   for (const key of ['providerEvents','rpcRequests']) if (!Number.isSafeInteger(m[key]) || (m[key] as number) < 0) throw new Error('nonnegative usage counter required');
   oneOf(m.budgetStatus, ['available','degraded','unavailable']); text(m.coverage, 512); text(m.latency, 256);
+  if(hasIntelligence){if(expected.accountId!==ORIGINAL_POE_ACCOUNT||expected.inceptionAt!==ORIGINAL_POE_INCEPTION)throw Error('operating intelligence requires original account');const intelligence=validateOperatingIntelligence(s.intelligence,ts.generatedAt as string);if(intelligence.run.strategyVersion!==source.strategy)throw Error('operating strategy/source mismatch');const atoms=(v:string)=>{const [whole,part='']=v.split('.');return BigInt(whole!)*1000000000n+BigInt(part.padEnd(9,'0'));};if(intelligence.pendingOrders.reduce((n,o)=>n+atoms(o.reservedSol),0n)!==atoms(b.reservedSol as string))throw Error('operating reservation mismatch');if((s.positions as unknown[]).length>0&&intelligence.protection.state==='flat')throw Error('operating ownership mismatch');}
   if (Buffer.byteLength(JSON.stringify(s)) > MAX_SNAPSHOT_BYTES) throw new Error('snapshot payload limit');
   return s as Snapshot;
 }
