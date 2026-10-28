@@ -55,6 +55,8 @@ jobs:
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/before.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/after.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervisor.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervised-status.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervisor-stop-receipt.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/input.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/package.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/runner.log
@@ -79,6 +81,8 @@ jobs:
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/before.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/after.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervisor.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervised-status.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervisor-stop-receipt.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/status.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/receipt.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/rpc/**/*.json

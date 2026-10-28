@@ -5,6 +5,7 @@ Input/package hashes are supplied by the reviewed workflow. This supervisor does
 not read the reporting credential: only the separately reviewed publisher does.
 """
 import argparse
+import errno
 import gzip
 import hashlib
 import io
@@ -30,13 +31,26 @@ SERVICE_FIELDS = ["MainPID", "NRestarts", "ActiveState", "SubState", "User"]
 PUBLIC_FIELDS = ["project", "mode", "liveTrading", "accountId", "inceptionAt", "release", "strategy", "generatedAt", "lastUsefulProgressAt", "lastReconciledAt", "feedConnected", "entriesDisabled"]
 
 
+class SupervisorGuardError(RuntimeError):
+    pass
+
+
 def require(condition, reason):
     if not condition:
-        raise RuntimeError(reason)
+        raise SupervisorGuardError(reason)
 
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def safe_exception(error, phase):
+    """Diagnostic identity only: never disclose private paths or raw messages."""
+    message = str(error)
+    number = getattr(error, "errno", None)
+    number = number if type(number) is int and 0 <= number <= 4095 else None
+    code = message if isinstance(error, SupervisorGuardError) and len(message) <= 160 and message.replace("_", "").isalnum() else "SUPERVISOR_FAILURE"
+    return {"code": code, "type": type(error).__name__[:80], "errno": number, "errnoName": errno.errorcode.get(number), "phase": phase, "messageSha256": digest(message.encode("utf8", errors="replace"))}
 
 
 def regular(path, maximum, owner=None, private=False):
@@ -96,7 +110,17 @@ def existing_node(temp):
 
 
 def tree_size(root):
-    return sum(p.lstat().st_size for p in root.rglob("*") if p.is_file() and not p.is_symlink())
+    total = 0
+    for path in root.rglob("*"):
+        try:
+            value = path.lstat()
+        except FileNotFoundError:
+            # Atomic snapshot/counterbook .pending files may be renamed between
+            # directory enumeration and stat. This is not a storage failure.
+            continue
+        if stat.S_ISREG(value.st_mode):
+            total += value.st_size
+    return total
 
 
 def group_rss(group):
@@ -273,6 +297,27 @@ def capture_accepted_source(root, binding, retained):
     retained.append(record)
 
 
+def supervised_stopped_projection(source, binding, source_sha256, observed_at, receipt_id, reason, groups_settled):
+    """Reporting-only stop observation. Never a runtime/financial final receipt.
+
+    Original source bytes stay untouched. Counters and market/source-fact times
+    are cloned exactly; generatedAt describes only this supervision observation.
+    """
+    require(groups_settled is True, "SUPERVISED_STOP_REQUIRES_VERIFIED_PROCESS_GROUP_DEATH")
+    require(isinstance(source, dict) and source.get("accountId") == binding["accountId"] and source.get("inceptionAt") == binding["inceptionAt"] and source.get("mode") == "candidate-evaluation" and source.get("experimental") is True and source.get("authoritative") is False, "SUPERVISED_STOP_SOURCE_BINDING")
+    require(source.get("financialExecutionAuthorized") is False and source.get("entriesEnabled") is False and source.get("financialWriterOpened") is False and source.get("liveTradingEnabled") is False and source.get("portfolio") is None and source.get("experimentalFinancialPortfolio") is None, "SUPERVISED_STOP_FINANCIAL_SOURCE_DENIED")
+    last_generated = source.get("generatedAt")
+    require(type(last_generated) is int and type(observed_at) is int and observed_at >= last_generated, "SUPERVISED_STOP_CLOCK")
+    require(len(source_sha256) == 64 and len(receipt_id) == 64 and all(c in "0123456789abcdef" for c in source_sha256 + receipt_id), "SUPERVISED_STOP_PROVENANCE")
+    reason = reason if isinstance(reason, str) and len(reason) <= 160 and reason.replace("_", "").isalnum() else "SUPERVISOR_SOURCE_FINAL_UNAVAILABLE"
+    result = json.loads(json.dumps(source))
+    result.update({"running": False, "entriesEnabled": False, "financialExecutionAuthorized": False, "financialWriterOpened": False, "liveTradingEnabled": False, "generatedAt": observed_at, "lastRuntimeGeneratedAt": last_generated, "stopReason": "Supervisor observed process termination; source final checkpoint unavailable: " + reason, "physicalSettlementConfirmed": False, "supervision": {"schemaVersion": 1, "kind": "supervisor-observed-stop", "receiptId": receipt_id, "observedAt": observed_at, "lastRuntimeGeneratedAt": last_generated, "originalStatusSha256": source_sha256, "reason": reason, "ownedProcessGroupsSettled": True, "runtimeGracefulShutdownVerified": False, "applicationTransportAccountingSettled": False, "financialReconciliationVerified": False, "preservesHistoricalMarketFactTimes": True, "nestedRuntimeSnapshotMeaning": "Last runtime snapshot only; nested running/connected facts were not refreshed by the supervisor."}})
+    result["status"] = "SUPERVISOR-GENERATED STOPPED; receipt " + receipt_id + "; last runtime " + str(last_generated) + "; reason " + reason[:48] + "; no graceful shutdown/reconciliation claim."
+    require(len(result["status"]) <= 256, "SUPERVISED_STOP_LABEL_BOUND")
+    require(len(json.dumps(result).encode()) <= 4 * MIB, "SUPERVISED_STOP_PUBLISHER_SIZE_BOUND")
+    return result
+
+
 def export_artifact(root, package_manifest):
     """Index ALL retained selected-flow evidence and mandatory summaries/books.
 
@@ -288,7 +333,7 @@ def export_artifact(root, package_manifest):
         if not p.is_file() or p.is_symlink() or output in p.parents:
             continue
         name = p.relative_to(root).as_posix()
-        allowed = name in ["before.json", "after.json", "supervisor.json", "input.json", "package.json", "runner.log", "publisher.log", "publisher-final.log", "run/status.json", "run/receipt.json", "run/watch-checkpoint.json"] or name.startswith("run/rpc/") and name.endswith(".json") or name.startswith("run/events/") and name.endswith(".ndjson") or name.startswith("reporting-evidence/") and name.endswith(".json")
+        allowed = name in ["before.json", "after.json", "supervisor.json", "supervised-status.json", "supervisor-stop-receipt.json", "input.json", "package.json", "runner.log", "publisher.log", "publisher-final.log", "run/status.json", "run/receipt.json", "run/watch-checkpoint.json"] or name.startswith("run/rpc/") and name.endswith(".json") or name.startswith("run/events/") and name.endswith(".ndjson") or name.startswith("reporting-evidence/") and name.endswith(".json")
         if not allowed:
             continue
         size = p.stat().st_size
@@ -309,7 +354,7 @@ def export_artifact(root, package_manifest):
 def export_failure_manifest(root, error, outcome):
     """Explicitly inventory evidence omitted by the bounded failure fallback."""
     included, omitted = [], []
-    fixed = {"before.json", "after.json", "supervisor.json", "run/status.json", "run/receipt.json"}
+    fixed = {"before.json", "after.json", "supervisor.json", "supervised-status.json", "supervisor-stop-receipt.json", "run/status.json", "run/receipt.json"}
     for path in sorted(root.rglob("*")):
         if not path.is_file() or path.is_symlink() or root / "export" in path.parents:
             continue
@@ -338,7 +383,7 @@ def main():
     require(len(args.manifest_sha256) == 64 and all(c in "0123456789abcdef" for c in args.manifest_sha256), "REVIEWED_MANIFEST_HASH_REQUIRED")
     require(os.getuid() == 994 and pwd.getpwuid(994).pw_name == "mm-ec2-runner" and os.environ.get("ACTUAL_RUNNER") == "meme-machine-ec2-admin", "EXPECTED_NONROOT_RUNNER_REQUIRED")
     def interrupted(_number, _frame):
-        raise RuntimeError("SUPERVISOR_SIGNAL_STOP")
+        raise SupervisorGuardError("SUPERVISOR_SIGNAL_STOP")
     signal.signal(signal.SIGTERM, interrupted)
     signal.signal(signal.SIGINT, interrupted)
     started = time.monotonic()
@@ -367,6 +412,7 @@ def main():
     runner = publisher = None
     accepted_sources = []
     outcome = {"startedAt": before["startedAt"], "packageSha256": args.manifest_sha256, "source": manifest["source"], "boundaries": {"candidateOnly": True, "financialWriter": False, "entriesEnabled": False, "liveTrading": False, "observerReplacement": False}, "runnerExit": None, "publisherStarted": False, "finalStoppedReportAccepted": False, "failure": None, "maximumRunnerRssBytes": 0, "maximumPublisherRssBytes": 0, "finalPublisherDrainSeconds": FINAL_REPORT_SECONDS}
+    phase = "package-preparation"
     try:
         staged_bytes = 0
         for row in manifest["files"]:
@@ -403,13 +449,17 @@ def main():
         until_status = time.monotonic() + 25
         while runner.poll() is None:
             elapsed = time.monotonic() - started
+            phase = "runner-rss-scan"
             runner_rss = group_rss(runner.pid)
             outcome["maximumRunnerRssBytes"] = max(outcome["maximumRunnerRssBytes"], runner_rss)
             require(runner_rss <= 384 * MIB, "RUNNER_RSS_BOUND")
+            phase = "storage-scan"
             require(tree_size(root) <= 256 * MIB and shutil.disk_usage(root).free >= 256 * MIB, "RESEARCH_STORAGE_BOUND")
+            phase = "outer-deadline-check"
             require(time.monotonic() < outer_deadline - FINAL_REPORT_SECONDS - 5, "OUTER_RESEARCH_DEADLINE")
             source_path = root / "run/status.json"
             if publisher is None and source_path.exists():
+                phase = "reporting-start"
                 verify = subprocess.run(report_args + ["--verify-only"], env={"PATH": "/usr/bin:/bin"}, capture_output=True, text=True, timeout=5)
                 require(verify.returncode == 0, "REPORTING_PRIVATE_FILE_OR_IDENTITY_CHECK_FAILED")
                 publisher_seconds = max(1, min(960, int(outer_deadline - time.monotonic() - 3)))
@@ -417,19 +467,23 @@ def main():
                 outcome["publisherStarted"] = True
             require(publisher is not None or time.monotonic() < until_status, "INITIAL_RUNTIME_STATUS_NOT_AVAILABLE")
             if publisher is not None:
+                phase = "publisher-rss-scan"
                 require(publisher.poll() is None, "REPORTING_PUBLISHER_EXITED")
                 publisher_rss = group_rss(publisher.pid)
                 outcome["maximumPublisherRssBytes"] = max(outcome["maximumPublisherRssBytes"], publisher_rss)
                 require(publisher_rss <= 128 * MIB, "PUBLISHER_RSS_BOUND")
                 try:
                     capture_accepted_source(root, binding, accepted_sources)
-                except Exception:
+                except Exception as error:
                     outcome["acceptedSourceSnapshotCaptureFailure"] = "ACTUAL_ACCEPTED_SOURCE_SNAPSHOT_UNAVAILABLE"
+                    outcome["acceptedSourceSnapshotException"] = safe_exception(error, "reporting-snapshot-capture")
             time.sleep(0.5)
+        phase = "runner-exit-check"
         outcome["runnerExit"] = runner.returncode
         require(runner.returncode == 0, "NATIVE_RESEARCH_RUNNER_EXITED_WITH_FAILURE")
     except Exception as error:
-        outcome["failure"] = str(error) if str(error).replace("_", "").isalnum() and len(str(error)) <= 160 else "SUPERVISOR_FAILURE"
+        outcome["supervisorException"] = safe_exception(error, phase)
+        outcome["failure"] = outcome["supervisorException"]["code"]
     finally:
         runner_group_settled = terminate(runner)
         # The normal watch publisher has one 15s cycle/backoff loop. Stop it,
@@ -441,25 +495,44 @@ def main():
             outcome["failure"] = "OWNED_RESEARCH_PROCESS_GROUP_SETTLEMENT_UNVERIFIED"
         final_status = None
         try:
-            final_status = json.loads(regular(root / "run/status.json", 8 * MIB, 994, True))
+            original_source_bytes = regular(root / "run/status.json", 8 * MIB, 994, True)
+            final_status = json.loads(original_source_bytes)
             outcome["reportingAvailability"] = reporting_summary(publisher_acks(root / "publisher.log", manifest["reportingBinding"]), final_status["startedAt"], final_status["generatedAt"])
             outcome["sourcePhysicalSettlementConfirmed"] = final_status.get("physicalSettlementConfirmed") is True
             outcome["physicalSettlementConfirmed"] = outcome["sourcePhysicalSettlementConfirmed"] and outcome["ownedProcessGroupsSettled"]
-            require(final_status.get("running") is False and final_status.get("accountId") == manifest["reportingBinding"]["accountId"] and final_status.get("inceptionAt") == manifest["reportingBinding"]["inceptionAt"], "REAL_STOPPED_SOURCE_NOT_AVAILABLE")
             require(outcome["ownedProcessGroupsSettled"], "WATCH_OR_RUNTIME_PROCESS_GROUP_NOT_SETTLED")
+            require(final_status.get("accountId") == manifest["reportingBinding"]["accountId"] and final_status.get("inceptionAt") == manifest["reportingBinding"]["inceptionAt"], "REAL_SOURCE_BINDING_NOT_AVAILABLE")
+            publish_source = final_status
+            publish_args = report_args
+            outcome["finalStoppedReportKind"] = "runtime-stopped-source"
+            if final_status.get("running") is not False:
+                observed_stop_at = int(time.time() * 1000)
+                reason_code = outcome["failure"] or "SUPERVISOR_SOURCE_FINAL_UNAVAILABLE"
+                exception = outcome.get("supervisorException") or {}
+                if exception.get("errnoName"):
+                    reason_code = (reason_code + "_" + exception["errnoName"] + "_" + exception.get("phase", "unknown").upper().replace("-", "_"))[:160]
+                payload = {"schemaVersion": 1, "kind": "supervisor-observed-stop", "observedAt": observed_stop_at, "ownedProcessGroupsSettled": True, "sourceRunId": final_status.get("runId"), "accountId": manifest["reportingBinding"]["accountId"], "inceptionAt": manifest["reportingBinding"]["inceptionAt"], "lastRuntimeGeneratedAt": final_status.get("generatedAt"), "originalStatusSha256": digest(original_source_bytes), "originalStatusPath": "run/status.json", "packageSha256": args.manifest_sha256, "supervisorSha256": manifest["supervisorSha256"], "reason": reason_code, "supervisorException": exception, "runtimeGracefulShutdownVerified": False, "applicationTransportAccountingSettled": False, "financialReconciliationVerified": False}
+                receipt_id = digest(json.dumps(payload, separators=(",", ":"), sort_keys=True).encode())
+                save(root / "supervisor-stop-receipt.json", {"receiptId": receipt_id, "identityMeaning": "SHA256 of canonical sorted-key payload JSON", "payload": payload})
+                publish_source = supervised_stopped_projection(final_status, manifest["reportingBinding"], digest(original_source_bytes), observed_stop_at, receipt_id, reason_code, True)
+                save(root / "supervised-status.json", publish_source)
+                publish_args = [str(root / "supervised-status.json") if value == str(root / "run/status.json") else value for value in report_args]
+                outcome["finalStoppedReportKind"] = "supervisor-observed-stop-not-runtime-final"
+                outcome["supervisorStoppedProjection"] = {"receiptId": receipt_id, "generatedAt": observed_stop_at, "lastRuntimeGeneratedAt": final_status["generatedAt"], "originalStatusSha256": digest(original_source_bytes), "originalStatusBytesPreserved": True, "financialReconciliationVerified": False}
             deadline = min(outer_deadline - 5, time.monotonic() + FINAL_REPORT_SECONDS)
             require(deadline - time.monotonic() >= 6, "FINAL_REPORT_DRAIN_NOT_AVAILABLE")
-            final_publisher = launch(report_args + ["--once"], root / "publisher-final.log", 5, file_size_mib=1)
+            final_publisher = launch(publish_args + ["--once"], root / "publisher-final.log", 5, file_size_mib=1)
             try:
                 final_publisher.wait(timeout=max(1, min(8, deadline - time.monotonic())))
             finally:
                 outcome["finalPublisherProcessGroupSettled"] = terminate(final_publisher, grace=1)
             require(outcome["finalPublisherProcessGroupSettled"], "FINAL_PUBLISHER_PROCESS_GROUP_NOT_SETTLED")
-            ack = accepted_ack(root / "publisher-final.log", manifest["reportingBinding"], final_status["generatedAt"], False)
+            ack = accepted_ack(root / "publisher-final.log", manifest["reportingBinding"], publish_source["generatedAt"], False)
             outcome["finalStoppedReportAccepted"] = ack is not None
             outcome["finalStoppedReportingAck"] = ack
-        except Exception:
+        except Exception as error:
             outcome["finalStoppedReportAccepted"] = False
+            outcome["finalReportingException"] = safe_exception(error, "final-reporting")
             outcome["finalReportingLimitation"] = "Actual stopped-source report was not verified within the finite drain; receiver must expose stale/disconnected state."
         try:
             after = observer()
@@ -504,6 +577,6 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except Exception as error:
-        message = str(error)
-        print(json.dumps({"failure": message if len(message) <= 160 and message.replace("_", "").isalnum() else "NATIVE_RESEARCH_SUPERVISOR_UNAVAILABLE", "financialExecution": False, "serviceControlAttempted": False}))
+        detail = safe_exception(error, "supervisor-preflight-or-finalization")
+        print(json.dumps({"failure": detail["code"], "exception": detail, "financialExecution": False, "serviceControlAttempted": False}))
         raise SystemExit(1)

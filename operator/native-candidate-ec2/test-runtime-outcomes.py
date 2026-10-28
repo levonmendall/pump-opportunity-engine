@@ -6,6 +6,9 @@ import json
 import pathlib
 import tempfile
 import unittest
+import errno
+import stat
+from types import SimpleNamespace
 
 PATH = pathlib.Path(__file__).with_name("run-bounded.py")
 spec = importlib.util.spec_from_file_location("bounded_supervisor", PATH)
@@ -122,6 +125,61 @@ class ExportFailureEvidence(unittest.TestCase):
             self.assertEqual([row["path"] for row in value["fallbackIncludedFiles"]], ["run/rpc/chapter-001.json"])
             self.assertNotIn("DO-NOT-INCLUDE", pathlib.Path(result["failureManifest"]).read_text())
             self.assertEqual(pathlib.Path(result["failureManifest"]).stat().st_mode & 0o777, 0o600)
+
+
+class VolatileFilesAndSupervisedStop(unittest.TestCase):
+    def test_atomic_pending_rename_reproduces_old_failure_but_new_scan_skips_only_enoent(self):
+        class Entry:
+            def __init__(self, vanished=False):
+                self.vanished = vanished
+            def is_file(self):
+                return True
+            def is_symlink(self):
+                return False
+            def lstat(self):
+                if self.vanished:
+                    raise FileNotFoundError(errno.ENOENT, "fixture-only pending file renamed", "/PRIVATE/DO_NOT_PRINT.pending")
+                return SimpleNamespace(st_mode=stat.S_IFREG | 0o600, st_size=19)
+        entries = [Entry(), Entry(True)]
+        with self.assertRaises(FileNotFoundError):
+            sum(p.lstat().st_size for p in entries if p.is_file() and not p.is_symlink())
+        self.assertEqual(module.tree_size(SimpleNamespace(rglob=lambda _pattern: entries)), 19)
+        denied = SimpleNamespace(lstat=lambda: (_ for _ in ()).throw(PermissionError(errno.EACCES, "fixture-only denied", "/PRIVATE/DO_NOT_PRINT")))
+        with self.assertRaises(PermissionError):
+            module.tree_size(SimpleNamespace(rglob=lambda _pattern: [denied]))
+
+    def test_exception_details_identify_type_errno_phase_without_private_message_or_path(self):
+        value = module.safe_exception(FileNotFoundError(errno.ENOENT, "PRIVATE-CREDENTIAL-VALUE", "/PRIVATE/DO_NOT_PRINT.pending"), "storage-scan")
+        self.assertEqual(value["type"], "FileNotFoundError")
+        self.assertEqual(value["errno"], errno.ENOENT)
+        self.assertEqual(value["errnoName"], "ENOENT")
+        self.assertEqual(value["phase"], "storage-scan")
+        self.assertEqual(value["code"], "SUPERVISOR_FAILURE")
+        self.assertNotIn("PRIVATE", json.dumps(value))
+        self.assertEqual(len(value["messageSha256"]), 64)
+
+    def test_supervised_projection_preserves_original_facts_and_labels_only_verified_process_death(self):
+        binding = {"accountId": "poe-pilot-fixture", "inceptionAt": 1}
+        original = {**source(running=True), **binding, "experimental": True, "authoritative": False, "mode": "candidate-evaluation", "financialExecutionAuthorized": False, "entriesEnabled": False, "financialWriterOpened": False, "liveTradingEnabled": False, "portfolio": None, "experimentalFinancialPortfolio": None, "lastSourceAt": 1000020, "sourceTimes": {"lastMarketNotificationAt": 1000020, "lastFreshSupportAt": 1000010, "lastBankClockAt": 1000000, "lastAuditAt": 1000015, "lastPredictiveAt": 1000016, "financialReconciliationAt": None}}
+        before = json.dumps(original, sort_keys=True)
+        result = module.supervised_stopped_projection(original, binding, "a" * 64, original["generatedAt"] + 1000, "b" * 64, "SUPERVISOR_FAILURE_ENOENT_STORAGE_SCAN", True)
+        self.assertEqual(json.dumps(original, sort_keys=True), before)
+        self.assertFalse(result["running"])
+        self.assertFalse(result["physicalSettlementConfirmed"])
+        self.assertEqual(result["sourceTimes"], original["sourceTimes"])
+        self.assertEqual(result["lastSourceAt"], original["lastSourceAt"])
+        self.assertEqual(result["engine"], original["engine"])
+        self.assertEqual(result["elapsedMs"], original["elapsedMs"])
+        self.assertEqual(result["lastRuntimeGeneratedAt"], original["generatedAt"])
+        self.assertEqual(result["generatedAt"], original["generatedAt"] + 1000)
+        self.assertIn("SUPERVISOR-GENERATED STOPPED", result["status"])
+        self.assertIn("b" * 64, result["status"])
+        self.assertFalse(result["supervision"]["runtimeGracefulShutdownVerified"])
+        self.assertFalse(result["supervision"]["financialReconciliationVerified"])
+        for groups, at, patch in [(False, original["generatedAt"], {}), (True, original["generatedAt"] - 1, {}), (True, original["generatedAt"], {"financialExecutionAuthorized": True})]:
+            with self.subTest(groups=groups, at=at, patch=patch):
+                with self.assertRaises(RuntimeError):
+                    module.supervised_stopped_projection({**original, **patch}, binding, "a" * 64, at, "b" * 64, "SUPERVISOR_FAILURE", groups)
 
 
 if __name__ == "__main__":
