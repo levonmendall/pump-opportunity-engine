@@ -1,0 +1,17 @@
+✔ malformed peer close: an unadmitted library reply is not written, and recovery remains paced (15.691728ms)
+✔ normal peer close: an unadmitted library reply is not written, and recovery remains paced (4.643515ms)
+✔ malformed close during another physical operation cannot settle or bypass that occupied gate (8.1396ms)
+✔ an explicitly scheduled close still writes one counted frame and settles on the real ws close handshake (3.973763ms)
+✔ protocol heartbeat requires matching pong, cleans listeners and preserves a healthy connection (1.84773ms)
+✔ missing pong and cancellation settle only after transport close; a fresh connection works afterward (1.049937ms)
+✔ protocol ping shares physical accounting and pacing; JSON-RPC ping and signing remain forbidden (8.330132ms)
+✔ cancelled ping cannot settle on queued pong before actual close, including an already closed pre-aborted socket (0.548053ms)
+✔ cancelled managed unsubscribe retains actual physical ownership through a queued ACK until transport close (11.708731ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1198.934829

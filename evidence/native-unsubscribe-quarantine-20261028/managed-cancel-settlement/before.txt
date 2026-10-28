@@ -1,0 +1,28 @@
+✖ cancelled managed unsubscribe retains actual physical ownership through a queued ACK until transport close (10.772926ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 860.683649
+
+✖ failing tests:
+
+test at test/native-managed-cancel-settlement.test.ts:1:151
+✖ cancelled managed unsubscribe retains actual physical ownership through a queued ACK until transport close (10.772926ms)
+  AssertionError [ERR_ASSERTION]: queued ACK must not free a cancelled physical request
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/tmp/poe-native-cancel-baseline-5df/test/native-managed-cancel-settlement.test.ts:15:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
