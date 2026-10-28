@@ -1,0 +1,204 @@
+{
+  "scope": "OFFLINE_REGRESSION_NOT_FORWARD_MARKET_PROOF",
+  "baselineSource": "2ce3cf6",
+  "historicalRun": "native-ec2-20261028044416",
+  "historicalSource": "bb6fd9fa899c6a4d07c19643e0cff86b42deb408",
+  "historicalEvidence": [
+    {
+      "artifactRelativePath": "run/rpc/chapter-001.json",
+      "bytes": 69527,
+      "sha256": "7fef8c7ccf9fcddb4671dc921408dbc175ee503317bee5c86e53de779d1735f6"
+    },
+    {
+      "artifactRelativePath": "run/rpc/chapter-001-summary.json",
+      "bytes": 70781,
+      "sha256": "639e60b43299c32718ffd23e47b7e5914e78571e35c307f18352b74ee53fc114"
+    },
+    {
+      "artifactRelativePath": "run/events/events-001.ndjson",
+      "bytes": 5330059,
+      "sha256": "b6f849e2608330da3097baf30651af05fcfee88d02f528b7b1b0a156b6162a86"
+    }
+  ],
+  "selectedHistoricalEvents": [
+    {
+      "line": 701,
+      "lineSha256": "7a8657308ed29b22f8efad4be5d7cf171d9d4f234a95270eb26d2b990c2cadb5",
+      "schemaVersion": 1,
+      "sequence": 701,
+      "receivedAt": "2026-10-28T04:45:35.833Z",
+      "monotonicMs": 71678.82268,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 4731,
+        "at": 1793162735826,
+        "enqueuedAt": 1793162735820,
+        "reservedAt": 1793162735820,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        }
+      }
+    },
+    {
+      "line": 3253,
+      "lineSha256": "ce61ee94d344132188e41d0e3f20240bf366c1c248c5b23220773bfa7ca92ff6",
+      "schemaVersion": 1,
+      "sequence": 3253,
+      "receivedAt": "2026-10-28T04:45:52.583Z",
+      "monotonicMs": 88428.696675,
+      "kind": "http-headers",
+      "data": {
+        "id": 4731,
+        "method": "getSignaturesForAddress",
+        "status": 200,
+        "retryAfter": null,
+        "at": 1793162752583,
+        "byteAccounting": "measured-body; response-header-and-wire-overhead-unmeasured"
+      }
+    },
+    {
+      "line": 3254,
+      "lineSha256": "0f3ca2f588c2d58944b838e7ceb1b71008736abfa85037e76b02b68d85b82c1c",
+      "schemaVersion": 1,
+      "sequence": 3254,
+      "receivedAt": "2026-10-28T04:45:52.594Z",
+      "monotonicMs": 88439.882099,
+      "kind": "pilot-rpc-unavailable",
+      "data": {
+        "at": 1793162752594,
+        "code": "COMPONENT_PHYSICAL_TIMEOUT",
+        "cooldownUntil": 1793162754594,
+        "physicalSettled": false,
+        "reservationsRetained": 2097152
+      }
+    },
+    {
+      "line": 3256,
+      "lineSha256": "d48f4340f9d77da3f93bae570bc8cde709af086263b18946075cf61209e7beed",
+      "schemaVersion": 1,
+      "sequence": 3256,
+      "receivedAt": "2026-10-28T04:45:52.614Z",
+      "monotonicMs": 88460.124235,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 4731,
+        "at": 1793162752614,
+        "responseComplete": false,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "uncertainReservedBytes": 2097152
+      }
+    },
+    {
+      "line": 3301,
+      "lineSha256": "71d71f9997d85474bfdc38c426ffca0e2a175bb17a72482d2fa17317e4a97325",
+      "schemaVersion": 1,
+      "sequence": 3301,
+      "receivedAt": "2026-10-28T04:46:31.435Z",
+      "monotonicMs": 127281.281239,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 4732,
+        "at": 1793162791428,
+        "enqueuedAt": 1793162791421,
+        "reservedAt": 1793162791421,
+        "kind": {
+          "transport": "ws-upgrade",
+          "method": "upgrade"
+        }
+      }
+    },
+    {
+      "line": 3307,
+      "lineSha256": "9122ac259715a152cebe3007813fada834e4b4f555b8b6d7102edeced4a102f3",
+      "schemaVersion": 1,
+      "sequence": 3307,
+      "receivedAt": "2026-10-28T04:46:43.922Z",
+      "monotonicMs": 139768.047709,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 4732,
+        "at": 1793162803922,
+        "responseComplete": false,
+        "kind": {
+          "transport": "ws-upgrade",
+          "method": "upgrade"
+        },
+        "uncertainReservedBytes": 65536
+      }
+    }
+  ],
+  "historicalSettledChapter": {
+    "closedAt": 1793162791336,
+    "physicalSettled": true,
+    "cooldownUntil": 1793162754594,
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "pending": [
+      {
+        "id": 4731,
+        "transport": "http",
+        "reservedBytes": 2097152
+      }
+    ],
+    "uncertainResponseBytes": 2097152,
+    "haltedReason": "COMPONENT_PHYSICAL_TIMEOUT"
+  },
+  "measuredHistoricalTimes": {
+    "physicalStartedAt": 1793162735826,
+    "timeoutUnavailableAt": 1793162752594,
+    "physicalSettledAt": 1793162752614,
+    "rpcCooldownUntil": 1793162754594,
+    "archiveAt": 1793162791336,
+    "nextPhysicalStartAt": 1793162791428,
+    "settlementToArchiveMs": 38722,
+    "cooldownToArchiveMs": 36742
+  },
+  "demonstratedDefect": "Runner checks raw pending-as-busy before native service. Settled timeout uncertainty therefore prevents the native operation from reaching existing safe chapter rollover. Legacy asynchronous control can later cause rollover via a different path.",
+  "notEstablished": "This counterexample does not attribute the prior 16.8-second physical delay to provider saturation, nor establish that every historical observation gap came from this planning defect.",
+  "negativeRegression": {
+    "retainedOutput": "baseline-before.txt",
+    "actual": "wait",
+    "expected": "ping",
+    "assertion": "real native control resumes without any WATCH/legacy upgrade"
+  },
+  "correction": "PilotRpc-only planning view retains raw low-level view and pending bytes; only physically settled recoverable chapters become planning-ready after existing pacing/cooldown. Existing openChapter remains sole transition owner. Control admission honors existing control cooldown; HTTP remains independent.",
+  "offlineChecks": [
+    "real NativeCandidateRunner + PilotNativeFlow + PilotRpc resume ping without a legacy operation",
+    "unsettled fetch blocks controls even after cooldown",
+    "settled recovery waits for cooldown and never eagerly changes the failed book",
+    "held protection and unresolved financial action retain scheduler priority",
+    "control cooldown has monotonic readiness and does not block unrelated HTTP",
+    "settled -32016 context-floor cooldown defers native service without disconnecting healthy scopes"
+  ],
+  "unchanged": [
+    "ComponentBudget uncertain-operation admission guard",
+    "historical books and consumed usage",
+    "provider rate/concurrency/pacing ceilings",
+    "market event validation",
+    "strategy and quote rules",
+    "financial and production state"
+  ],
+  "networkOperationsFromThisTask": 0,
+  "validation": {
+    "build": "passed",
+    "focusedComponentTests": "92 passed before one additional context-floor regression",
+    "newRegressionTests": "4 passed",
+    "initialFullSuiteFailure": "The backup-worker compilation check found a TypeScript union inference issue in the new test. Corrected the null return type and reran build/full suite; no runtime/source behavior change.",
+    "finalFullSuite": "1151/1151 passed; 65382.064017ms",
+    "finalFullSuiteOutputSha256": "342d12e07aeb42ecae08f7608d926e970d218fed995adbfd5baa557b0eba1a67"
+  },
+  "remainingLimitations": [
+    "Forward validation of the repaired scheduler is still required; synthetic rescheduling does not prove provider behavior.",
+    "The common dispatch planning view conservatively waits for Portal-only control cooldown; direct unrelated HTTP remains available. It is not a new provider entitlement or a proof of held-position protection.",
+    "The full historical 16.8-second physical delay and all prior observation gaps are not attributed to this one planning defect.",
+    "No pending reservation is refunded, and a new chapter cannot replace an actual inFlight or waiting operation."
+  ],
+  "codeHashes": {
+    "src/pilot-rpc.ts": "b0a13106b12de46be9b42a7c726840114f2038be03ec47a9c69a4954d927a5a4",
+    "test/native-settled-recovery.test.ts": "e659a0e9b1b3e27c7215f556a3f6cc6270a34f2c1d18c9c9e60d6b61e7286a0f"
+  }
+}

@@ -38,7 +38,7 @@ export class PilotRpc{
   private readonly dir:string;private readonly paths:string[];private readonly now:()=>number;private readonly mono:()=>number;
   private readonly metadataBytes:number;private readonly componentProfile:typeof NATIVE_TWO_HOUR_RESEARCH_PROFILE.version|undefined;private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;private readonly startsPer10s:number;private readonly transactionStartsPer10s:number|undefined;
   private readonly initial:ComponentBaseline;private baseline:ComponentBaseline;private budget:ComponentBudget|undefined;private transport:ComponentTransport|undefined;
-  private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;
+  private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;private controlCooldownMono=0;
   private methodStarts:Array<{at:number;origin:'inherited-unknown'|'getTransaction'}>=[];private methodRefusals=0;
   constructor(private readonly options:PilotRpcOptions){
     this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.startedAt=this.now();this.startedMono=this.mono();
@@ -125,6 +125,7 @@ export class PilotRpc{
   }
   private async perform<T>(work:(options:PilotRpcCallOptions)=>Promise<T>,signal:AbortSignal|undefined,options:PilotRpcCallOptions,domain:'rpc'|'control'):Promise<T>{
     if(signal?.aborted)throw new PilotRpcUnavailable('ABORTED');
+    if(domain==='control'&&(this.now()<this.controlCooldown||this.mono()<this.controlCooldownMono))throw new PilotRpcUnavailable('COOLDOWN',Math.max(this.controlCooldown,this.now()+Math.ceil(Math.max(0,this.controlCooldownMono-this.mono()))));
     this.openChapter();this.active=true;this.pendingRetryAfter=null;
     try{
       const remaining=Math.floor(this.remainingMs()),timeout=options.timeoutMs??1000;if(!int(timeout)||timeout<1||timeout>1500)throw new PilotRpcUnavailable('INVALID_TIMEOUT');
@@ -173,11 +174,27 @@ export class PilotRpc{
    * existing physical operation. It never starts or retries a request. */
   noteThrottle(value:string|null,at=this.now()){
     if(!int(at)||at>this.now())throw new PilotRpcUnavailable('INVALID_THROTTLE_TIME');
-    const until=retryAfter(value,at);this.controlCooldown=Math.max(this.controlCooldown,until);this.persist();return until;
+    const until=retryAfter(value,at);this.controlCooldown=Math.max(this.controlCooldown,until);this.controlCooldownMono=Math.max(this.controlCooldownMono,this.mono()+Math.max(0,until-this.now()));this.persist();return until;
+  }
+  /** Planning over the wrapper which can archive a SETTLED failed chapter.
+   * Low-level pending reservations remain busy inside ComponentBudget. They are
+   * not physical occupancy after settlement, and openChapter still owns every
+   * cooldown, budget, settlement and immutable-book transition check. */
+  private dispatchView(u:ReturnType<ComponentBudget['usage']>|undefined){
+    const raw=this.budget?.dispatchWindow()??null;if(!raw||!u)return {raw:null,planned:null};
+    const at=this.now(),mono=this.mono(),physicalBusy=this.active||u.inFlight!==0||u.waitingOrOperating;
+    const reason=u.haltedReason,reasonRecoverable=reason!==null&&(this.controlFailure||recoverable(reason)||localAdmissionRefusal(reason)||['COMPONENT_UNIT_CAP','COMPONENT_TIME_CAP'].includes(reason));
+    const needsChapterRecovery=u.pending.length!==0||reason!==null;
+    const recoveryAdmissible=needsChapterRecovery&&reasonRecoverable&&!physicalBusy&&!this.closed&&!this.fatal&&!u.storageFailed&&this.remainingMs()>0&&u.cumulativeUnits-this.initial.calls<this.units&&u.cumulativeResponseBytes+u.uncertainResponseBytes-this.initial.bytes+4*MIB<=this.responseBytes&&this.chapter<this.maximumChapters;
+    // The common planner is used by native controls as well as HTTP work. A
+    // Portal-only cooldown therefore delays this conservative control view;
+    // direct ordinary HTTP still uses its independent existing check().
+    const readyAt=Math.max(raw.readyAt,this.cooldown,this.controlCooldown,at+Math.ceil(Math.max(0,this.cooldownMono-mono,this.controlCooldownMono-mono)));
+    return {raw,planned:{...raw,readyAt,waitMs:Math.max(0,readyAt-at),physicalBusy:physicalBusy||raw.physicalBusy&&!recoveryAdmissible,actualPhysicalBusy:physicalBusy,needsChapterRecovery,recoveryAdmissible,uncertainResponseReservationsRetained:u.uncertainResponseBytes}};
   }
   usage(){
-    const u=this.current(),calls=u?.cumulativeUnits??this.baseline.calls,bytes=u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes;
-    return {persistence:{...this.persistence},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:60,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,dispatchWindow:this.budget?.dispatchWindow()??null,automaticRequestRetries:0};
+    const u=this.current(),dispatch=this.dispatchView(u),calls=u?.cumulativeUnits??this.baseline.calls,bytes=u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes;
+    return {persistence:{...this.persistence},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:60,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,rawChapterDispatchWindow:dispatch.raw,dispatchWindow:dispatch.planned,automaticRequestRetries:0};
   }
   available(){try{this.check();return true;}catch{return false;}}
   cooldownUntil(){return this.cooldown;}

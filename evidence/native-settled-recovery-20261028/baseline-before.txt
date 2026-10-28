@@ -1,0 +1,28 @@
+✖ settled timeout uncertainty does not deadlock native service behind the coordinator planning guard (53.907228ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 939.706797
+
+✖ failing tests:
+
+test at test/native-settled-recovery.test.ts:1:4322
+✖ settled timeout uncertainty does not deadlock native service behind the coordinator planning guard (53.907228ms)
+  AssertionError [ERR_ASSERTION]: real native control resumes without any WATCH/legacy upgrade
+  
+  'wait' !== 'ping'
+  
+      at TestContext.<anonymous> (/workspace/poe-native-settled-recovery/test/native-settled-recovery.test.ts:57:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'wait',
+    expected: 'ping',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
