@@ -111,12 +111,91 @@ def ledger_audit(account_fd,uid,last):
 EVENT_KINDS=frozenset(['trader-decision','trader-execution','trader-pilot-execution-quote','trader-pilot-execution-refusal','trader-held-evaluation','native-paper-entry-permission','native-paper-entry-preparation-unavailable','native-paper-entry-unavailable','native-paper-startup-protection','native-paper-startup-source-deferred','native-paper-management-reserve','native-paper-source-unavailable','native-paper-admission-suspended','native-paper-reporting-overrun'])
 EVENT_FIELDS=frozenset(['at','mint','orderId','side','status','stage','reason','ruleVersion','attemptedAt','quoteAt','quoteSlot','requiredDepositLamports','depositEvidence','evaluatedAt','completedAt','sourceValidUntil','usable','units','pendingExit','action','outcome','windowEndAt','predictiveOnly','executableQualification','orderCreated','candidateCoverageSuspended','financialExposureRetained','holdingManagerContinues','remainingUnits','remainingResponseBytes','remainingChapters','elapsedMs','budgetMs','nextSource','managementOnly','attemptedBeforeSource','marketSourceStarted'])
 QUOTE_FIELDS=frozenset(['at','spendLamports','receiveUnits','evidence','pricedBaseUnits','refundedDepositLamports','refundEvidence'])
+# Observation diagnostics are metadata only. No generic recursive object or
+# provider payload is copied; source files/hashes remain the complete evidence.
+DIAGNOSTIC_KINDS=frozenset([
+ 'pilot-watch-discovered','pilot-watch-verified','pilot-watch-promotion','pilot-watch-transition','pilot-watch-expired','pilot-watch-evicted','pilot-watch-capacity-refusal','pilot-watch-complete-window','pilot-watch-verification-deferred','native-migration-refused','native-candidate-observation-open','native-candidate-retired','native-candidate-quality-gap','native-candidate-source-admissions-closed','native-candidate-work-unavailable',
+ 'native-candidate-audit-session-open','native-candidate-window-audit','native-candidate-window-audit-unavailable','native-candidate-audit-cancelled-diagnostic','native-candidate-audit-cancelled-after-page-return',
+ 'native-candidate-audit-batch-selected','native-candidate-audit-batch-return','native-candidate-audit-batch-unavailable','native-audit-dispatch-state','native-audit-dispatch-summary','native-audit-late-page',
+ 'native-independent-audit-warming','native-predictive-window-expired','native-predictive-unavailable','native-predictive-assessment','native-deep-admission-deferred','native-shared-audit-ceiling-requested',
+ 'native-flow-upgrade-refused','native-flow-socket-error','native-flow-early-heartbeat-request','native-flow-transport-integrity-gap','native-flow-control-refused','native-flow-subscription-ack','native-flow-subscription-retired','native-flow-subscription-rebound','native-flow-service-deferred','native-flow-support-refresh-deferred','native-flow-round-trip-proof','native-flow-ledger-capacity-refusal',
+ 'component-physical-start','component-physical-settled','component-physical-timeout','http-headers','http-response-timing','http-lifecycle-timing','pilot-rpc-unavailable','pilot-job-admission-refused','pilot-data-control-unavailable','pilot-candidate-batch-unavailable','pilot-query-timeout-unavailable','pilot-query-timeout-escalated','pilot-rpc-provider-backoff-observed','pilot-history-batch-disabled','signature-history-batch-response'])
+DIAGNOSTIC_FIELDS=frozenset('page maximumPages onePhysicalPagePerStep notHoldingProtectionAcceptance operationPurpose key scope httpStatus queryCooldownUntil queryFailures distinctTimedOutQueriesLast10s globalBackoffRequired globalRpcCooldownUnchanged globalFailureStreakUnchanged ordinaryRequestsRequireSharedGate providerCooldownUnchanged publicRpcCooldownUnchanged physicalGateUnchanged observedAfterLogicalCompletion chapterHalted nextAttemptRequiresExistingSettlementGuards optimizationDisabledForRun individualQueriesAndFinancialPricingRequireExistingSharedRecovery uncertainReservationsRetained automaticRetry state requestedState priorState deferUntil deepAllocated capacityStatus signature feedMint migrationAt verifiedAt verified repromotion waitMs observationWaitMs entryEligible freshFullWindowRequired deepSince maximum lostHorizon delayMs repeatedSaturatedOrigin structuralExactSeedOnly provisionalMintNotPermanentlyExcluded notPredictiveRejection at mint pool reason code status stage outcome version windowStartAt windowEndAt targetEndAt currentEndAt decisionDeadlineAt deadlineAt firstReadyAt lastAt remainingDecisionMs nextAction transitionRecord transitionRecords omittedTransitions final allocatedAt openedAt completeWindows actualAcknowledgment freshWindowRequired awarenessRetained financialExecutionAuthorized partialHistoryNeverComplete notBackdated admitted physicalStartClaimed physicalSettlementClaimed physicalRequestStarted physicalGateInFlight physicalGateWaitingOrOperating callerOwnsPhysicalSettlement cancelledAt recordedAt availableAt auditAvailableAt auditPreserved baselineFeatureSemantics strictV2BaselineUnavailable assessmentScope auditCompletenessScope notificationCompletenessVerified executedFlowCompletenessVerified dataContract strategyVersion entryAgeEligible ageCohort observationAgePolicy financialQualification historyRequestStarted deadlineEligible windowUsable executionFeasibility transferCrossCheck id enqueuedAt reservedAt requestedAt headersAt firstBodyAt lastBodyAt bodyCompleteAt jsonDecodedAt httpWorkEndedAt responseReceivedAt validatedAt responseBytes chunksReceived aborted headersDelayMs bodyAfterHeadersMs jsonDecodeMonotonicMs elapsedMonotonicMs connectionReuse validationScope method retryAfter byteAccounting responseComplete uncertainReservedBytes scheduledAt requestedTimeoutMs scheduledDelayMs callbackLatenessMs cooldownUntil providerCooldownUntil controlCooldownUntil physicalSettled reservationsRetained physicalRequestId physicalHttpStarts logicalQueries logicalQueriesRequested requestedLimit maximumResponseBytes overloaded late providerErrorTextRetained logicalPagesRetainedForScheduling latestStartAt dispatchedAt operationBoundMs connection operationId rpcErrorCode supportFresh candidateStillRegistered cancelled transportClosing subscription retiredAt retentionMs sourceExpiresAt previousDueAt nextHeartbeatAt conservativeRoundTripAt transportReceiptLowerBoundAt requestStartedAt domain retryAt deferredUntilAt notificationCapturePreserved freshSupportStillRequired priorSupportUnchanged freshnessExtended consecutiveFailures automaticRequestRetry rows maximumRows candidateLocal allReceivedBytesStillAccounted validatedPacketRetained currentDeep maximumDeep watchAwarenessRetained requiredNativeServicePreserved'.split())
+CONTEXT_FIELDS=frozenset('reason selectedMint readyOrder readyCandidates page sessionOpened requestedLimit responseRows rpcReadyAt controlReadyAt physicalBusy actualPhysicalBusy inFlight waitingOrOperating rolling60SecondStarts rolling10SecondStarts startsPerMinuteLimit startsPer10SecondLimit providerCooldownUntil controlCooldownUntil nextNativeServiceAt nextNativeServiceDomain nextNativeServiceAction nativeServiceSlackMs pageOperationBoundMs nextCeilingRefreshAt latestStartAt operationBoundMs readyAt selectionClass selectedClass selectedDeadlineAt physicalSettlementClaimed'.split())
+TRACE_FIELDS=frozenset('version windowEndAt decisionDeadlineAt firstReadyAt lastAt transitionRecords omittedTransitions final'.split())
+DISPATCH_REASONS=frozenset('eligible native-service-wait native-service-dispatch native-service-return rpc-gate-wait ceiling-backoff ceiling-refresh prepare-native-runway scheduler-wait scheduler-refusal audit-selected peer-selected page-admission page-response page-refusal page-not-exposed work-exception'.split())
+AUDIT_FIELDS=frozenset('schemaVersion classification status reason complete pool startedAt availableAt historyRangeCovered requestAttempts maximumPages pageLimit adaptivePageSizing completenessScope notificationCompletenessVerified executedFlowCompletenessVerified historyPayloadBytes historyRows interiorRows duplicateNotifications retryAt anchorKind'.split())
+FEATURE_FIELDS=frozenset('mint asOf windowStartAt windowEndAt sufficientlyObserved qualityReason buyLamports sellLamports netBuyLamports tradeCount provisionalTradeCount distinctBuyerWallets largestBuyerBps positiveNetBuckets priceReturnBps firstPrice lastPrice'.split())
+def scalars(value,fields):
+ if type(value)is not dict:return {}
+ out={k:v for k,v in value.items()if k in fields and(v is None or type(v)in[bool,int,float,str])}
+ for v in out.values():need(not isinstance(v,str)or len(v)<=4096,'EVENT_FIELD_BOUND')
+ return out
+
+def trace_projection(value):
+ out=scalars(value,TRACE_FIELDS)
+ if type(value)is not dict:return out
+ state=value.get('lastState')
+ if type(state)is dict:out['lastState']={**scalars(state,frozenset(['reason','nextAction'])),'context':scalars(state.get('context'),CONTEXT_FIELDS)}
+ counts=value.get('reasonCounts')
+ if type(counts)is dict:out['reasonCounts']={k:v for k,v in counts.items()if k in DISPATCH_REASONS and integer(v)}
+ return out
+
+def audit_projection(value):
+ out=scalars(value,AUDIT_FIELDS)
+ if type(value)is not dict:return out
+ for field,fields in [('target',frozenset(['startAt','endAt'])),('strictInteriorSlots',frozenset(['lower','upper'])),('notificationSnapshot',frozenset(['capturedAt','rows','requiredRows']))]:
+  if type(value.get(field))is dict:out[field]=scalars(value[field],fields)
+ fences=value.get('contextFences')
+ if type(fences)is dict:out['contextFences']={k:scalars(fences[k],frozenset(['slot','availableAt','bankClockAt']))for k in ['lower','upper']if type(fences.get(k))is dict}
+ pages=value.get('pages')
+ if type(pages)is list:
+  need(len(pages)<=6,'AUDIT_PAGE_METADATA_BOUND');out['pages']=[scalars(v,frozenset('page requestedLimit rows newestSlot oldestSlot receivedAt validatedAt'.split()))for v in pages]
+ # Counts and explicitly labelled small samples cannot become a complete flow
+ # denominator. All original signature lists/history stay privately retained.
+ for key in ['requiredSignatures','comparedSignatures','missingNotifications','missingFailedNotifications','missingSuccessfulNotifications','unconfirmedCapturedSignatures','statusDisagreements','boundaryExcludedSignatures']:
+  values=value.get(key)
+  if type(values)is list:
+   need(len(values)<=32768,'AUDIT_DIAGNOSTIC_LIST_BOUND');out[key+'Count']=len(values)
+   if key in ['missingSuccessfulNotifications','statusDisagreements','unconfirmedCapturedSignatures']:
+    sample=[]
+    for row in values[:16]:
+     if type(row)is str:need(re.fullmatch('[1-9A-HJ-NP-Za-km-z]{64,100}',row)is not None,'AUDIT_SIGNATURE_METADATA_BOUND');sample.append(row)
+     elif type(row)is dict:sample.append(scalars(row,frozenset(['signature','slot','success','blockTime','confirmationStatus'])))
+    out[key+'DiagnosticSample']=sample;out[key+'SampleTruncated']=len(values)>16
+ return out
+
+def observation_projection(kind,data):
+ value=scalars(data,DIAGNOSTIC_FIELDS)
+ if type(data.get('seed'))is dict:value['seed']=scalars(data['seed'],frozenset(['signature','feedMint','receivedAt']))
+ if type(data.get('kind'))is dict:value['kind']=scalars(data['kind'],frozenset(['transport','method']))
+ if type(data.get('context'))is dict:value['context']=scalars(data['context'],CONTEXT_FIELDS)
+ for name in ['dispatchTrace']:
+  if type(data.get(name))is dict:value[name]=trace_projection(data[name])
+ if kind=='native-audit-dispatch-summary':value.update(trace_projection(data))
+ for name in ['result','diagnosticResult']:
+  if type(data.get(name))is dict:value[name]=audit_projection(data[name])
+ if type(data.get('assessment'))is dict:
+  a=data['assessment'];features=scalars(a.get('features'),FEATURE_FIELDS)
+  if type(a.get('features'))is dict:
+   for name in ['firstPrice','lastPrice']:
+    if type(a['features'].get(name))is dict:features[name]=scalars(a['features'][name],frozenset(['quoteLamports','tokenUnits']))
+  value['assessment']={**scalars(a,frozenset(['status','reason','qualified'])),'features':features}
+ if type(data.get('acknowledgement'))is dict:value['acknowledgement']=scalars(data['acknowledgement'],frozenset('resultType safeNonnegativeInteger subscriptionId retiredSubscriptionMatch activeSubscriptionMatch'.split()))
+ for name in ['mints','readyMints']:
+  if type(data.get(name))is list:
+   need(len(data[name])<=6 and all(isinstance(v,str)and re.fullmatch('[1-9A-HJ-NP-Za-km-z]{32,44}',v)is not None for v in data[name]),'SCOPED_MINT_METADATA_BOUND');value[name]=data[name]
+ if type(data.get('scopes'))is list:
+  need(len(data['scopes'])<=6,'SCOPED_SUPPORT_METADATA_BOUND');value['scopes']=[scalars(v,frozenset('mint subscription sourceSupportFresh verifiedAt bankClockAt sourceExpiresAt hasQualityLoss'.split()))for v in data['scopes']]
+ if type(data.get('items'))is list:
+  need(len(data['items'])<=6,'AUDIT_BATCH_ITEM_METADATA_BOUND');value['items']=[scalars(v,frozenset('key id status errorCode requestedAt responseReceivedAt validatedAt'.split()))for v in data['items']]
+ return value
 def select_event(row,raw,filename,line):
  kind=row.get('kind');data=row.get('data');need(type(data)is dict,'EVENT_DATA_MALFORMED')
- value={k:v for k,v in data.items()if k in EVENT_FIELDS and(v is None or type(v)in[bool,int,float,str])}
+ value=observation_projection(kind,data)if kind in DIAGNOSTIC_KINDS else scalars(data,EVENT_FIELDS)
  for k,v in value.items():need(not isinstance(v,str)or len(v)<=4096,'EVENT_FIELD_BOUND')
  if kind=='trader-pilot-execution-quote'and type(data.get('quote'))is dict:value['quote']={k:v for k,v in data['quote'].items()if k in QUOTE_FIELDS and(v is None or type(v)in[int,str])}
- return {'kind':kind,'sourceFile':filename,'sourceLine':line,'sourceLineSha256':digest(raw),'receivedAt':row.get('receivedAt'),'data':value}
+ return {'kind':kind,'sourceFile':filename,'sourceLine':line,'sourceLineSha256':digest(raw),'receivedAt':row.get('receivedAt')if isinstance(row.get('receivedAt'),str)and len(row['receivedAt'])<=64 else None,'sourceSequence':row.get('sequence')if integer(row.get('sequence'))else None,'sourceMonotonicMs':row.get('monotonicMs')if type(row.get('monotonicMs'))in[int,float]else None,'data':value}
 
 def events_summary(run_fd,uid,segment_run_id):
  names=sorted(n for n in os.listdir(run_fd)if re.fullmatch(r'events-[0-9]{3}\.ndjson',n));need(len(names)<=32,'SOURCE_EVENT_FILE_BOUND')
@@ -130,11 +209,11 @@ def events_summary(run_fd,uid,segment_run_id):
      raw=stream.readline(8*MIB+1)
      if not raw:break
      need(len(raw)<=8*MIB and raw.endswith(b'\n'),'SOURCE_EVENT_LINE_BOUND');hashfile.update(raw);lines+=1;row=parse(raw);kind=row.get('kind');need(isinstance(kind,str)and len(kind)<=128,'EVENT_KIND_BOUND');counts[kind]=counts.get(kind,0)+1
-     if kind in EVENT_KINDS:
+     if kind in EVENT_KINDS|DIAGNOSTIC_KINDS:
       encoded=encode({'runId':segment_run_id,**select_event(row,raw,name,lines)});need(len(encoded)<=64*1024 and len(out)+len(encoded)<=4*MIB,'SELECTED_EVENT_TOTAL_BOUND');out.extend(encoded)
    need(h.stat_identity(before)==h.stat_identity(h.private_file(f,uid,8*MIB)),'SOURCE_EVENTS_CHANGED');index.append({'file':name,'bytes':before.st_size,'sha256':hashfile.hexdigest(),'records':lines})
   finally:os.close(f)
- return bytes(out),{'runId':segment_run_id,'sourceFiles':index,'sourceKindCounts':counts,'selectedKinds':sorted(EVENT_KINDS),'selectedBytes':len(out),'classification':'Allowlisted diagnostic/financial event projection, not a complete market-flow archive; original complete event files remain privately retained.'}
+ return bytes(out),{'runId':segment_run_id,'sourceFiles':index,'sourceKindCounts':counts,'selectedKinds':sorted(EVENT_KINDS|DIAGNOSTIC_KINDS),'completeMarketEvidenceIncluded':False,'observationDiagnostics':'Explicit allowlisted metadata only; audit signature samples are labelled and not complete evidence; no provider payload, raw logs, raw history pages or trading-flow archive; only labelled bounded missing-signature metadata samples.','selectedBytes':len(out),'classification':'Allowlisted diagnostic/financial event projection, not a complete market-flow archive; original complete event files remain privately retained.'}
 
 class BoundedArchiveWriter:
  def __init__(self,stream):self.stream,self.written=stream,0

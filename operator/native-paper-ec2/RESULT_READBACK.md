@@ -87,3 +87,20 @@ Offline reproduction uses generated disposable fixtures only:
 ```bash
 python3 -B operator/native-paper-ec2/test-readback-results.py
 ```
+
+The same event projection also includes explicit observation/scheduling metadata:
+watch verification/promotion/retirement; candidate-local gaps and shared native
+transport/control incidents; audit target eligibility, dispatch state/summary,
+page/result metadata and independent predictive assessment; physical start/
+settlement/timeout; HTTP headers, first/body completion/decode timings; and local
+admission, isolated-query and global-provider cooldown classifications. Original
+source sequence/monotonic time, source file/line/hash and receipt time stay
+separate. Connection reuse remains `not-instrumented` when the source says so.
+No response bodies, request parameters, raw notification logs, account bytes or
+arbitrary nested objects are included. Feature scalar/price-ratio evidence is
+kept for predictive diagnostics. Audit signature arrays retain counts; missing
+successful/unconfirmed/status-disagreement lists have explicitly labelled first
+16 diagnostic samples and truncation flags. These are not complete flow or
+independent market denominators. Complete original events remain private.
+The existing4MiB projected-event ceiling still fails before export on pressure;
+it never silently discards selected diagnostic records or changes qualification.
