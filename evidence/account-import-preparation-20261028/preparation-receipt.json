@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_FIXED_EXISTING_ACCOUNT_IMPORT_PREPARATION",
+  "preparedAt": 1793210320523,
+  "importFixtureTests": 13,
+  "importFixturePassed": 13,
+  "encryptionFixtureTests": 10,
+  "encryptionFixturePassed": 10,
+  "actualOriginalAccountRead": false,
+  "actualTransportPrivateKeyRead": false,
+  "actualArchivePrepared": false,
+  "accountImportPerformed": false,
+  "ec2DispatchPerformed": false,
+  "adminCommitOrPushPerformed": false,
+  "providerRequests": 0,
+  "fixtureOnlyCryptoRoundtrip": {
+    "archiveBytes": 233683,
+    "decryptElapsedMs": 39,
+    "maximumCombinedRssBytes": 52461568,
+    "physicalProcessSettled": true
+  },
+  "files": {
+    "operator/native-paper-ec2/import-account.py": {
+      "bytes": 29660,
+      "sha256": "9a3bbf7de00cdc28cc95595db5a4577ccd76028e7d1ec89824ed38a4cfa87740"
+    },
+    "operator/native-paper-ec2/test-import-account.py": {
+      "bytes": 16757,
+      "sha256": "5eae6563ece215920df31cecdea96bb29bc05514d15de54310cf2ac9b7ed0e27"
+    },
+    "operator/native-paper-ec2/encrypt-account.mjs": {
+      "bytes": 9552,
+      "sha256": "bf5187137d09a2e7374f0c604abac629b8b71cb62b8dbbab018d606b92b13223"
+    },
+    "operator/native-paper-ec2/test-encrypt-account.mjs": {
+      "bytes": 8423,
+      "sha256": "d8091bf248f4575c07ff6f139230d5800ed47f09fc17ab72a088486651b376d3"
+    },
+    "operator/native-paper-ec2/ACCOUNT_IMPORT.md": {
+      "bytes": 8111,
+      "sha256": "53d627acea6c9a082630b694df40e5db3c25c96454280819599468da8390ce4b"
+    },
+    ".github/workflows/poe-native-paper-account-import.yml": {
+      "bytes": 4031,
+      "sha256": "1d5b48aec87f252251c4d7b396bebf57b8878944ad15bebe65042d8296e7d949"
+    }
+  },
+  "rawTestOutputSha256": "6e6e6e8c64fd0aeac84194c90dc8d948d5830fee2adf1aa0facb3ad98a5d9a66",
+  "remainingLeadActions": [
+    "Complete exact code-only host probe first",
+    "Prepare and verify consistent readonly source backup and settled research chain",
+    "Construct USTAR private archive/content manifest/canonical AAD using documented exact interface",
+    "Encrypt with fixed public transport key; only envelope/cipher enter private admin repo",
+    "Bind final envelope/cipher/currentselector hashes and review/commit/push; deliberate import-only workflow dispatch",
+    "Verify host imported bytes/financial body; fence Cloud writer before host PAPER activation"
+  ],
+  "scopeLimitations": [
+    "Fixed flat source revision8934 only; refuses unresolved positions/actions/entries or research",
+    "Import does not initialize/resume financial execution or publish portfolio",
+    "Unchanged retry only; runtime-modified imported account refuses overwrite",
+    "No actual EC2 account-import proof yet"
+  ]
+}

@@ -1,0 +1,18 @@
+test_actual_disposable_package_runs_after_hash_pinned_immutable_staging (__main__.PackageTests.test_actual_disposable_package_runs_after_hash_pinned_immutable_staging) ... {"actualDisposableCodeOnlyProbe": true, "resources": {"elapsedMs": 394, "maximumCombinedRssBytes": 128647168, "stdoutBytes": 861, "stderrBytes": 0, "physicalProcessSettled": true}, "sqlite": "3.53.4", "existingAccountRead": false}
+ok
+test_child_output_pressure_is_bounded_and_settled (__main__.PackageTests.test_child_output_pressure_is_bounded_and_settled) ... ok
+test_compressed_hash_truncation_and_exact_output_are_checked (__main__.PackageTests.test_compressed_hash_truncation_and_exact_output_are_checked) ... ok
+test_conflicting_or_partial_releases_are_preserved (__main__.PackageTests.test_conflicting_or_partial_releases_are_preserved) ... ok
+test_manifest_is_exact_code_only_and_hash_pinned (__main__.PackageTests.test_manifest_is_exact_code_only_and_hash_pinned) ... ok
+test_metadata_cannot_claim_live_or_unproved_financial_readiness (__main__.PackageTests.test_metadata_cannot_claim_live_or_unproved_financial_readiness) ... ok
+test_no_replace_publication_preserves_racing_existing_directory (__main__.PackageTests.test_no_replace_publication_preserves_racing_existing_directory) ... ok
+test_path_and_payload_bounds_are_not_inflated_by_manifest (__main__.PackageTests.test_path_and_payload_bounds_are_not_inflated_by_manifest) ... ok
+test_private_immutable_stage_and_idempotent_revalidation_do_not_overwrite (__main__.PackageTests.test_private_immutable_stage_and_idempotent_revalidation_do_not_overwrite) ... ok
+test_production_main_refuses_cloud_uid_before_any_account_or_provider_work (__main__.PackageTests.test_production_main_refuses_cloud_uid_before_any_account_or_provider_work) ... ok
+test_stalled_physical_probe_is_killed_and_reaped (__main__.PackageTests.test_stalled_physical_probe_is_killed_and_reaped) ... ok
+test_symlink_fifo_wrong_owner_and_hardlink_are_refused (__main__.PackageTests.test_symlink_fifo_wrong_owner_and_hardlink_are_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 2.373s
+
+OK

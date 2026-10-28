@@ -1,68 +1,119 @@
-Updated 2026-10-28 17:24 UTC — lead recovery milestone.
+Updated 2026-10-28 18:18 UTC — retained forward718 evidence reconciled.
 
-Latest verified core is d08fe0a13a344b5096a7da5a328dfebb94154173. Combined
-serial full regression: 1307/1307 PASS, build/compile PASS, 43 existing host
-packaging/readback checks PASS. Raw outputs and file hashes are in
+Latest lead source is 71896104f07faa2b193b90d3d3133a8e29236f35 on
+poe-free-data-evaluation-20261027. Core runtime is unchanged from the verified
+d08fe0a tree: serial 1307/1307 tests, build/compile and43 operator checks PASS.
+Raw output and exact hashes remain in
 `evidence/continuous-recovery-20261028/integrated-native-paper-corrected/`.
-Earlier parallel compiler timeouts and two stale history-bound fixtures remain
-preserved separately; no runtime/fixture timeout was relaxed.
+This checkpoint is evidence/docs only; other isolated repair worktrees may have
+newer uncommitted work. Inspect them before integrating, never overwrite them.
 
-No market source is currently running. First corrected source906 completed its
-bounded interval 16:29:30.001–16:44:20.294 UTC; GH40726448588 and all physical
-operations/publisher settled. Its 81-file archive hashes verified. Actual result:
-41 audited assessments/19 tokens/3005 trades/3 predicate passes, 48 gap callbacks
-(including 6 shutdown callbacks), 13 audit-unavailable, 4 unusable, 16 missed
-current-window decisions. No native PAPER writer, positions, fills or P&L.
+VERIFIED COMPLETE: the second corrected six-slot candidate-only interval ran
+17:27:13.245–17:42:03.575 UTC, logical cutoff17:42:03.245, GH40735836963.
+Frozen bundle80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3,
+configuration1362f6ccf3d31cc0693f4f77040486e380e23251f685817908ce4267ee7c5b5c.
+All physical operations and publisher settled; final STOPPED report was accepted.
+Archive22,036,792B/d34137bfcdeb0bb33af05ddd6838d6f9d2a3ff2a0d09d559d701ed3983f52a5b
+was fully recovered, rehashed and analysis reproduced exactly offline. Public
+bounded analysis/receipts are in
+`evidence/continuous-recovery-20261028/forward-02/`; raw event archive remains
+private under the existing pilot run directory, not in Git.
 
-Observed repairs: HTTP cooldown did NOT close native capture, and ready audits
-received 14 explicit replacement deferrals. New diagnosis: four same-pool retired
-ID reuse refusals caused 24 callbacks; 12 first-page audit timeouts received no
-headers, and 7 other targets never dispatched. Those repairs are now integrated:
-8661475 safe same-filter ACK reuse with conservative per-candidate generation
-fences; e50a0e6 scoped history-query timeout backoff/global true throttle handling;
-fdf23ac actual post-snapshot audit-tail corroboration; ced1093 coalesced derived
-status writes with unchanged durable authoritative byte accounting.
+Actual result:47 independently audited ordinary-flow predictive assessments,
+21 unique tokens,5273 normalized trades;44 predictive failures and3 passes.
+All3 passes are overlapping windows of the SAME entry-age-eligible4Ytm5 token,
+not3 unique opportunities or executable financial qualifications. Six ACKed
+scopes overlapped for764.795s of890s admission. There were32 quality callbacks
+(29 pre-cutoff,3 cutoff),18 unavailable audits,8 unusable audits and16 genuine
+current-window decision misses (12 timeout targets,4 without audit dispatch).
+23 ordinary initial fence-warming windows remain separate, not failure counts.
+No financial writer opened; no natural PAPER submissions/fills/positions/closes
+or financial P&L occurred. Financial nonauthorization was intentional here.
 
-Seven bounded historical requests independently established all six missing
-successful signatures as executed swaps (2 buys, 4 sells), exact frozen-native /
-full-transaction economics parity. They are genuine evidence gaps; missing sells
-were about2.92 SOL curve amounts. No past window was retroactively repaired.
-Loss location remains unknown between provider and unretained transport/app.
-The first version0-only diagnostic request failed on a supported v1 transaction;
-corrected, separately labeled v1 requests succeeded. This was a diagnostic cap
-mismatch, not proven provider incapacity. All usage is retained and linked:
-218 books, 6196 units, 466149333 accounted bytes, 196739072 uncertain bytes.
-Manifest has no unresolved research. Historical counters were not reset/refunded.
+VERIFIED REPAIR GAINS:23 same-pool subscription rebindings, zero ID-reuse shared
+teardowns/control refusals;17 isolated audit timeouts without global escalation;
+19 ready-audit replacement deferrals; real post-snapshot corroboration without
+backdating; one2054-signature/3-page audit completed in2507ms. Derived status
+writes1384/9.61s versus prior14569/98.63s, with authoritative receipt accounting
+unchanged. These unequal market samples are not a controlled throughput or
+profitability comparison. No429/503 was observed in this interval.
 
-Root lease71736 is coordination only (finite2h from17:03); old36042 is a zombie,
-not an owner/listener. Check actual processes after any interruption. Existing
-experimental financial ledger was checked READ-ONLY: original pilot identity /
-inception, revision8934, virtual$1000 baseline, no positions/pending, zero modeled
-execution costs, entries stopped. Original authoritative EC2 ledger remains
-untouched; last original public identity check16:40, no later health claim.
-Render correctly reports source906 STOPPED/stale, not continuous operation.
+STILL BLOCKING RELIABLE BUSY SIX-SLOT QUALIFICATION:
+- One actual support-read timeout interrupted5 healthy scopes while their prior
+  coherent source state still had6.883s freshness. Recovery later arrived before
+  that original expiry. Preserve capture during recoverable HTTP failure without
+  extending source freshness or accepting invalid current state.
+- Busy Mega hit its8192-row notification bound; retained global16384/180s cache
+  pressure then gapped5 peers. Correct retention/ownership/correction handling,
+  not a blind memory-cap increase, is required.
+- Five busy audit timeouts received HTTP200 and185–241KB partial bodies before
+  the1.5s cutoff;12 other audit timeouts received no headers. Processing decode
+  was under1ms for completed large pages. Four no-session decision targets had
+  no recorded per-step wait cause; provider saturation is NOT established.
+- Unusable audits contain95 unknown successful and10 failed history identities,
+  with no matching retained packet. All95 are NOT established executed swaps.
+  The prior906 six-signature checks did establish real missing buys/sells, so
+  executed-flow completeness cannot be waived. Failed-only rows are diagnostic
+  if independently confirmed failed; unknown successful activity stays blocking.
 
-Native-PAPER integration85e1495 and separate standalone packagec1fc938 are now
-in lead. Disposable fixtures prove two actual SDK-priced positions, coherent
-holding batch, retained exposure, backup/restart and reconciled exits. They do
-NOT prove natural PAPER trades or live protection. Before actual PAPER startup:
-finish next six-scope repaired forward evidence, EC2 disposable package probe,
-verified account-preserving transfer/single-writer handoff and live pricing /
-protection/reporting checks. No24h acceptance clock has started.
+IN PROGRESS IN ISOLATED WORKTREES: fresh-support containment
+`/workspace/poe-native-support-containment`; ownership-aware seen-cache repair
+`/workspace/poe-native-seen-retention`; PAPER startup/protection/reserve and
+bounded supervision corrections `/workspace/poe-native-paper-supervision`.
+Do not call their existence a completed repair or forward pass. The existing
+quiescent sealed accounting checkpoint work is not yet adopted and does not
+prove uninterrupted long-run rollover.
 
-Next immediate action: freeze and push this verified executable, export the
-latest strict native checkpoint plus the two settled historical-accounting
-suffixes, stage the existing bounded900s six-slot forward run, and supervise
-same-ID reuse, query isolation, audit tail, gaps/deadlines and resource behavior.
-Keep all negative outcomes. The 90/min profile remains a local ceiling, not
-provider entitlement. Source/configuration stays pinned during the interval.
+VERIFIED USAGE/RESOURCES:673 starts=673 settlements, peak66/min and20/10s;
+262 linked books/6869 cumulative units/641422025 accounted response bytes,
+352408265 observed and289013760 uncertain. Manifest has no unresolved research;
+actual use and uncertainty were not refunded. Native WS70,893,333B and broad
+PumpApi960,988,997B are separate counts; irrelevant broad payloads were not
+archived. Source CPU265.09s/890s, supervisor peak392,941,568B(374.74MiB), only
+9.26MiB below384MiB source ceiling. Eighteen retained selected segments total
+150,067,575B. Existing infrastructure/transfer costs are unverified separately
+from documented no-charge API access.90/min is a local ceiling, not entitlement.
 
-Parallel isolated work: `/workspace/poe-research-baseline-checkpoint` implements
-reviewed append-only sealed research checkpoints (not adopted; quiescent-only
-proof does not establish uninterrupted24h rollover). Admin code-only package
-check prepared under `operator/native-paper-ec2/` (not dispatched). Host-generated
-transfer PRIVATE key remains host-only; public compatibility/key hash retained.
-No experimental account import or original observer deployment/restart occurred.
+VERIFIED PAPER COMPONENT, NOT LIVE EXECUTION: EC2 code-only package probe
+GH40738447829 passed actual Node24.21/ABI137/SQLite3.53.4 disposable idempotency,
+worker backup/reopen/closure in411ms; peak combined RSS156,221,440B. It did not
+open/import the existing financial account or start a trader/publisher. Package
+and receipt are in `evidence/native-paper-host-package-20261028/`. Existing
+controlled fixtures already prove2 SDK-priced disposable positions, coherent
+holding batch, retained exposure, restart/recovery and reconciled exits; these
+remain synthetic mechanics, not natural profit or live protection evidence.
+
+VERIFIED ACCOUNT PRESERVATION: read-only consistent backup of the existing
+experimental account retained revision8934, identical exact financial body and
+all four tables' rows/hashes (actions8934, journal8935, metadata2). Original account
+poe-pilot-8468add6-f916-48cf-a585-6cd008a81360/inception1793123773252 retains its
+$1000 initial virtual contribution, no positions/pending and entries disabled.
+Receipt is `evidence/account-import-preparation-20261028/actual-cloud-backup-receipt.json`.
+No reseed, host account import or active PAPER writer has occurred. The host-only
+transport key already exists; do not request wallet/provider secrets or repeat
+key provisioning. Finish verified encrypted transfer and a single-writer fence
+before any host account activation. Original authoritative observer/account were
+not changed. Last public original-identity check was16:40; no later health claim.
+
+REPORTING:59 running acknowledgements/58 source timestamps, largest observed
+ack gap15.162s; final STOPPED snapshot accepted at sourceAt1793209323575. These
+are publisher acknowledgement timing, not independent Render receipt timing.
+The public sampler began about48s late, so it does not prove exact public parity
+for both first archived local snapshots. Start independent public polling before
+the next launch and retain matching source cycles. A heartbeat must never make
+stopped/stale market observations appear current. No24h acceptance clock started.
+
+At read-only process inspection18:14:53UTC no research listener/financial writer
+was running; coordination PID71736 was a zombie, not a lock owner or observer.
+Recheck actual process state after interruption; do not infer background operation.
+
+NEXT EXACT ACTION: finish/review the two demonstrated containment repairs and
+PAPER financial-priority/reserve corrections, integrate one lead source, run
+focused and required full regression, freeze its executable/configuration, then
+run a purposeful bounded corrected forward interval. Initial isolated PAPER
+activation additionally requires account-preserving transfer/single-writer
+handoff and the verified startup/protection/reporting path. Do not increase slots
+or begin24h acceptance on the currently inadequate busy-six configuration.
 
 The chronological entries below are historical; they do not override this state.
 

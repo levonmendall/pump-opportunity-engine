@@ -1,0 +1,243 @@
+{
+  "artifact": {
+    "index": "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40735836963-1/export/index.json",
+    "indexSha256": "1dab0cc13bdba09b77cb589b50ea810fb55c2a79895907f05536d94094236b37",
+    "localArchiveCopies": 1,
+    "localArchiveCopiesAtIndexing": 0,
+    "losslessArchive": {
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "archive": {
+        "bytes": 22036792,
+        "file": "selected-evidence.tar.gz",
+        "sha256": "d34137bfcdeb0bb33af05ddd6838d6f9d2a3ff2a0d09d559d701ed3983f52a5b",
+        "stat": {
+          "ctimeNs": 1793209326734066229,
+          "device": 66305,
+          "inode": 62896,
+          "mtimeNs": 1793209326709066275,
+          "size": 22036792
+        }
+      },
+      "classification": "candidate-only-public-evidence",
+      "complete": true,
+      "compressionLevel": 6,
+      "costMeaning": "Existing compute/disk/transfer allowance is not verified free; no artifact-storage purchase or overage is authorized.",
+      "cpuMs": 2202,
+      "credentialsIncluded": false,
+      "elapsedMs": 2228,
+      "financialFilesIncluded": false,
+      "format": "tar+gzip",
+      "githubRunAttempt": "1",
+      "githubRunId": "40735836963",
+      "inceptionAt": 1793123773252,
+      "indexSha256": "1dab0cc13bdba09b77cb589b50ea810fb55c2a79895907f05536d94094236b37",
+      "rawSelectedEvidenceRetained": true,
+      "researchProfile": "candidate-native-two-hour-90-research-v1",
+      "resourceBounds": {
+        "cpuSeconds": 120,
+        "maximumRssMiB": 256,
+        "nice": 10,
+        "remainingOuterDeadlineIsBinding": true
+      },
+      "runtimeOutcome": {
+        "actualRunElapsedMs": 890330,
+        "actualWallSpanMs": 890330,
+        "candidateWindowEvidence": {
+          "auditedWindows": 47,
+          "classification": "audited-window-views-recorded-not-readiness",
+          "mechanicalCompletionIsNotWindowValidation": true,
+          "overlappingViewsAreNotIndependentCoverage": true,
+          "predictiveAssessments": 47,
+          "uniqueEvaluated": 21
+        },
+        "classification": "mechanically-completed",
+        "expectedLogicalObservationCutoffAt": 1793209323245,
+        "failureReason": null,
+        "logicalObservationCutoffAt": 1793209323245,
+        "mechanicallyCompleted": true,
+        "plannedAdmissionCutoffReached": true,
+        "plannedAdmissionDurationMs": 890000,
+        "plannedRunDurationMs": 900000,
+        "reportingMeaning": "Receiver acceptance and physical settlement are evaluated separately; neither makes a fatal or premature source interval successful.",
+        "shutdownReserveMs": 10000,
+        "sourceRpcFatalState": null,
+        "sourceStopReason": "logical observation cutoff reached; shutdown reserve begins",
+        "stopRequestedAt": 1793209323246
+      },
+      "schemaVersion": 1,
+      "selectedEvidenceBytes": 138701889,
+      "source": {
+        "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+        "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+      },
+      "uncompressedSelectedBytes": 164406945
+    },
+    "omittedSegments": 0,
+    "partialLocalArchiveRetained": false,
+    "selectedEvidenceBytes": 138701889,
+    "uncompressedBytes": 164406945
+  },
+  "directory": "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40735836963-1",
+  "outcome": {
+    "acceptedSourceSnapshots": [
+      {
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "acknowledgement": {
+          "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+          "published": true,
+          "result": "accepted",
+          "runId": "native-candidates-20261028172713245",
+          "running": true,
+          "sourceAgeMs": 585,
+          "sourceAt": 1793208435779
+        },
+        "inceptionAt": 1793123773252,
+        "meaning": "Exact private status bytes observed while their generatedAt matched an accepted running publisher acknowledgement; no backdated reconstruction.",
+        "observedAt": 1793208436671,
+        "runId": "native-candidates-20261028172713245",
+        "sourceAt": 1793208435779,
+        "sourceBytes": 941568,
+        "sourceFile": "accepted-source-001.json",
+        "sourceSha256": "79ddbb2c57692da3ec1ce6ce297b37ac794a97d1f1a55208203c4d332ad7547b"
+      },
+      {
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "acknowledgement": {
+          "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+          "published": true,
+          "result": "accepted",
+          "runId": "native-candidates-20261028172713245",
+          "running": true,
+          "sourceAgeMs": 283,
+          "sourceAt": 1793208451179
+        },
+        "inceptionAt": 1793123773252,
+        "meaning": "Exact private status bytes observed while their generatedAt matched an accepted running publisher acknowledgement; no backdated reconstruction.",
+        "observedAt": 1793208451623,
+        "runId": "native-candidates-20261028172713245",
+        "sourceAt": 1793208451179,
+        "sourceBytes": 954314,
+        "sourceFile": "accepted-source-002.json",
+        "sourceSha256": "b8a79d687c2f4bd3ce87a7571c678955b41a24a27891081bf2e9e97cb7ca2f8c"
+      }
+    ],
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "actualRunElapsedMs": 890330,
+    "aggregateElapsedSeconds": 891.457686534035,
+    "baselineByteRunway": {
+      "fullSizeChapterHeadroom": 42,
+      "fullWorstCaseRunwayGuaranteed": false,
+      "initialInputBytes": 11017522,
+      "limitation": "Path-count runway does not guarantee byte runway. A future aggregate-chain cap remains a disclosed resource stop; no counters are reset or refunded.",
+      "maximumChainBytes": 33554432,
+      "maximumPossibleNewChapters": 64,
+      "remainingBytes": 22536910
+    },
+    "boundaries": {
+      "candidateOnly": true,
+      "entriesEnabled": false,
+      "financialWriter": false,
+      "liveTrading": false,
+      "observerReplacement": false
+    },
+    "candidateCounters": {
+      "auditFenceWarmingWindows": 23,
+      "auditUnavailable": 18,
+      "auditUnusable": 8,
+      "auditedWindows": 47,
+      "decisionDeadlineMisses": 16,
+      "featureViews": 606,
+      "migrationHints": 16,
+      "normalizedEvents": 5273,
+      "predictiveAssessments": 47,
+      "predictiveFailed": 44,
+      "predictiveNotRejected": 3,
+      "predictiveUnavailable": 0,
+      "protocolAwareShadowViews": 47,
+      "qualityGaps": 32,
+      "strictV2BaselineUnavailableViews": 2,
+      "uniqueEvaluated": 21,
+      "verificationAttempts": 51,
+      "verificationQueueRefusals": 0,
+      "verificationRefusals": 41,
+      "verifiedOrigins": 148
+    },
+    "dataContract": "confirmed-program-activity-v3-shadow",
+    "evidenceDirectory": "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40735836963-1",
+    "evidencePersistence": "private-durable-until-verified-backup",
+    "failure": null,
+    "finalPublisherDrainSeconds": 45,
+    "finalPublisherProcessGroupSettled": true,
+    "finalStoppedReportAccepted": true,
+    "finalStoppedReportKind": "runtime-stopped-source",
+    "finalStoppedReportingAck": {
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "published": true,
+      "result": "accepted",
+      "runId": "native-candidates-20261028172713245",
+      "running": false,
+      "sourceAgeMs": 666,
+      "sourceAt": 1793209323575
+    },
+    "finishedAt": 1793209324285,
+    "inceptionAt": 1793123773252,
+    "maximumPublisherRssBytes": 100900864,
+    "maximumRunnerRssBytes": 392941568,
+    "observationAgePolicy": "observation-age-selected-24h-study-v1",
+    "observationSeconds": 900,
+    "originalFinancialAccountTouched": false,
+    "ownedProcessGroupsSettled": true,
+    "packageSha256": "2df2b00c7075a04d6389cdfe21db0d75e660350cef46c173e299eb67ce77877e",
+    "physicalSettlementConfirmed": true,
+    "publisherStarted": true,
+    "reportingAvailability": {
+      "continuityVerifiedForInterval": true,
+      "distinctRunningSourceTimestamps": 58,
+      "firstAcceptedSourceAt": 1793208435779,
+      "lastAcceptedSourceAt": 1793209297774,
+      "maximumAcknowledgedSourceAgeMs": 15422,
+      "maximumObservedAcknowledgementGapMs": 15162,
+      "runningAcknowledgements": 59,
+      "staleBoundaryMs": 90000,
+      "targetCadenceMs": 15000,
+      "timingMeaning": "Publisher local acknowledgement times reconstructed from sourceAt+sourceAgeMs; not independent Render receipt timestamps."
+    },
+    "reportingCredentialReadBySupervisor": false,
+    "researchProfile": "candidate-native-two-hour-90-research-v1",
+    "runnerExit": 0,
+    "runnerTimeoutSeconds": 915,
+    "runtimeOutcome": {
+      "actualRunElapsedMs": 890330,
+      "actualWallSpanMs": 890330,
+      "candidateWindowEvidence": {
+        "auditedWindows": 47,
+        "classification": "audited-window-views-recorded-not-readiness",
+        "mechanicalCompletionIsNotWindowValidation": true,
+        "overlappingViewsAreNotIndependentCoverage": true,
+        "predictiveAssessments": 47,
+        "uniqueEvaluated": 21
+      },
+      "classification": "mechanically-completed",
+      "expectedLogicalObservationCutoffAt": 1793209323245,
+      "failureReason": null,
+      "logicalObservationCutoffAt": 1793209323245,
+      "mechanicallyCompleted": true,
+      "plannedAdmissionCutoffReached": true,
+      "plannedAdmissionDurationMs": 890000,
+      "plannedRunDurationMs": 900000,
+      "reportingMeaning": "Receiver acceptance and physical settlement are evaluated separately; neither makes a fatal or premature source interval successful.",
+      "shutdownReserveMs": 10000,
+      "sourceRpcFatalState": null,
+      "sourceStopReason": "logical observation cutoff reached; shutdown reserve begins",
+      "stopRequestedAt": 1793209323246
+    },
+    "source": {
+      "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+      "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+    },
+    "sourcePhysicalSettlementConfirmed": true,
+    "sourceStopReason": "logical observation cutoff reached; shutdown reserve begins",
+    "startedAt": 1793208432854,
+    "twoDistinctAcceptedSourcesRetained": true
+  }
+}

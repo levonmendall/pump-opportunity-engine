@@ -1,0 +1,3168 @@
+{
+  "schemaVersion": 1,
+  "classification": "RETAINED_ACTUAL_FORWARD_718_NOT_ACCEPTANCE",
+  "source": {
+    "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+    "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+  },
+  "runId": "native-candidates-20261028172713245",
+  "configurationSha256": "1362f6ccf3d31cc0693f4f77040486e380e23251f685817908ce4267ee7c5b5c",
+  "readback": {
+    "schemaVersion": 1,
+    "sourceRun": 40735836963,
+    "archiveBytes": 22036792,
+    "archiveSha256": "d34137bfcdeb0bb33af05ddd6838d6f9d2a3ff2a0d09d559d701ed3983f52a5b",
+    "wholeArchiveHashVerified": true,
+    "allSelectedFilesVerified": true,
+    "files": 124,
+    "uncompressedBytes": 164423626,
+    "rawRemoteEvidenceDeleted": false,
+    "credentialsOrFinancialFilesRead": false,
+    "allSelectedSegmentsRetained": true,
+    "financialFilesRead": false,
+    "rawHostEvidenceDeletionPerformed": false,
+    "indexFileHashesVerified": 124
+  },
+  "segments": [
+    {
+      "path": "run/events/events-001.ndjson",
+      "bytes": 8155370,
+      "sha256": "43c8ead2288941a55da66662e59d64305f063906f49f82b87dcda3b85438ccb1"
+    },
+    {
+      "path": "run/events/events-002.ndjson",
+      "bytes": 7942150,
+      "sha256": "5d2ec329254b70fc8f0fc9cdf829e22583becb26d3e544ded4ae4c346918b499"
+    },
+    {
+      "path": "run/events/events-003.ndjson",
+      "bytes": 7529160,
+      "sha256": "eb000c07ea7fee805c457a0c4aae01213b0aeb90a63640bea8a8c73b850bccd7"
+    },
+    {
+      "path": "run/events/events-004.ndjson",
+      "bytes": 7659634,
+      "sha256": "d23719e5c10ec38a13e4cc79fd28bb69705734cb503ad62347a1970e55c532f3"
+    },
+    {
+      "path": "run/events/events-005.ndjson",
+      "bytes": 7599346,
+      "sha256": "c627e72c1aba996a0b0572e7adb429481b66985bf865354045eaa92995ea259d"
+    },
+    {
+      "path": "run/events/events-006.ndjson",
+      "bytes": 7575990,
+      "sha256": "33dd696e5f13a8ad9f310a16608dcc87a2f3e92dc899fce26dcc1d9492a498e6"
+    },
+    {
+      "path": "run/events/events-007.ndjson",
+      "bytes": 7715293,
+      "sha256": "c3635cda33ea794972937363222a3087e28595c0b05af0a1934c9dced648526c"
+    },
+    {
+      "path": "run/events/events-008.ndjson",
+      "bytes": 7565156,
+      "sha256": "089f925ab3b7d58990855c20a010e239920230348e6c06f2a616de163e5c7799"
+    },
+    {
+      "path": "run/events/events-009.ndjson",
+      "bytes": 7599340,
+      "sha256": "90cfb7f5983f5e10b3cf23626080a323c636febee08c4c5efa02018cb15cae13"
+    },
+    {
+      "path": "run/events/events-010.ndjson",
+      "bytes": 7604138,
+      "sha256": "da6263cc5e127c6f826476e3bae0e51244e7f43a7d0c5824d0e27d1e86bf300a"
+    },
+    {
+      "path": "run/events/events-011.ndjson",
+      "bytes": 7699339,
+      "sha256": "1e8acb92dec91eea8d28a82230f4863b08b5e0a0156a2fe923305d6ab675ee48"
+    },
+    {
+      "path": "run/events/events-012.ndjson",
+      "bytes": 7552566,
+      "sha256": "22f4dc81846f7327a70602c8622080d911926d900f12b78dfe690f79c058b17c"
+    },
+    {
+      "path": "run/events/events-013.ndjson",
+      "bytes": 7643098,
+      "sha256": "11a1133da9dbda5f2133a80fc07bdd3fd616a4b307207b1796a6093011e38ba0"
+    },
+    {
+      "path": "run/events/events-014.ndjson",
+      "bytes": 7561258,
+      "sha256": "e57b4a433072f17d1cb18b052fb46d7ddb3f2d22b766295844bccb81aafaa706"
+    },
+    {
+      "path": "run/events/events-015.ndjson",
+      "bytes": 7626656,
+      "sha256": "0388836a8319a5eacddcccb467b77907aff053d9aa7d6c0d6e180b606d0beea1"
+    },
+    {
+      "path": "run/events/events-016.ndjson",
+      "bytes": 7572808,
+      "sha256": "c684e02efda609f5559cd426508fc60668c89a12bfb6c95160d2b52dabdc594e"
+    },
+    {
+      "path": "run/events/events-017.ndjson",
+      "bytes": 7517548,
+      "sha256": "40ce5bab3a69de648df1b0a157e85714e256bea78c98d80d754fd1ef65bb0555"
+    },
+    {
+      "path": "run/events/events-018.ndjson",
+      "bytes": 6988113,
+      "sha256": "4e42cf14e0de381f48a6cb3f63511085baf0abe7e5750c628a747e267c9e332d"
+    },
+    {
+      "path": "run/events/events-019.ndjson",
+      "bytes": 1594926,
+      "sha256": "fbc29fdaa05114ac2648e55896e93728691e30dfeecb4a1c4c24ea3cec63fa44"
+    }
+  ],
+  "observation": {
+    "startedAt": 1793208433245,
+    "generatedAt": 1793209323575,
+    "lastSourceAt": 1793209323234,
+    "logicalObservationCutoffAt": 1793209323245,
+    "stopRequestedAt": 1793209323246,
+    "transportSettledAt": 1793209323575,
+    "physicalSettlementConfirmed": true,
+    "elapsedMs": 890330
+  },
+  "counters": {
+    "migrationHints": 16,
+    "verificationQueueRefusals": 0,
+    "verificationAttempts": 51,
+    "verifiedOrigins": 148,
+    "verificationRefusals": 41,
+    "normalizedEvents": 5273,
+    "qualityGaps": 32,
+    "featureViews": 606,
+    "auditedWindows": 47,
+    "predictiveAssessments": 47,
+    "predictiveFailed": 44,
+    "predictiveNotRejected": 3,
+    "predictiveUnavailable": 0,
+    "auditUnavailable": 18,
+    "auditUnusable": 8,
+    "decisionDeadlineMisses": 16,
+    "auditFenceWarmingWindows": 23,
+    "uniqueEvaluated": 21,
+    "strictV2BaselineUnavailableViews": 2,
+    "protocolAwareShadowViews": 47
+  },
+  "repairChecks": {
+    "sameFilterRebindings": 23,
+    "controlRefusals": 0,
+    "reusedIdSharedTeardowns": 0,
+    "reboundAmbiguousCandidateLocal": 2,
+    "queryIsolatedTimeouts": 17,
+    "queryGlobalEscalations": 0,
+    "readyReplacementDeferrals": 19,
+    "actualProvider429or503": "Not observed; correct handling remains offline evidence only.",
+    "tailCorroborationCases": [
+      {
+        "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+        "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+        "target": {
+          "startAt": 1793208540000,
+          "endAt": 1793208600000
+        },
+        "originalSnapshot": {
+          "capturedAt": 1793208601958,
+          "rows": 40,
+          "requiredRows": 38
+        },
+        "enabled": true,
+        "generation": {
+          "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+          "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+          "openedAt": 1793208507837,
+          "connectionId": 1,
+          "subscriptionId": 102147949
+        },
+        "refreshedAt": 1793208602205,
+        "rows": 2,
+        "addedSignatures": [
+          "3FyByYRcP6iR1j46G3RD7ZaL8ap7Nb8MJ7sMhjsPpx4GfL6cfNHf3ZHJhzUXes3g1dt5Zk3Ewgg2UkQz7LWdMx5d",
+          "31Jq1fohujqMTV4Rk1HNLuLbaYgXrUMC1RatnMEC35Pqa5i8bpEYhxbfWR98BMqrQVac7DUe3DLZNX9awPMgeQt1"
+        ],
+        "addedPackets": [
+          {
+            "signature": "3FyByYRcP6iR1j46G3RD7ZaL8ap7Nb8MJ7sMhjsPpx4GfL6cfNHf3ZHJhzUXes3g1dt5Zk3Ewgg2UkQz7LWdMx5d",
+            "slot": 462561360,
+            "receivedAt": 1793208601725,
+            "availableAt": 1793208602093,
+            "success": true,
+            "rawHash": "ae4ce71d236be06308912ef89ac0ad9f688439e9b619c9e231d4bd4b7b51a189"
+          },
+          {
+            "signature": "31Jq1fohujqMTV4Rk1HNLuLbaYgXrUMC1RatnMEC35Pqa5i8bpEYhxbfWR98BMqrQVac7DUe3DLZNX9awPMgeQt1",
+            "slot": 462561360,
+            "receivedAt": 1793208601725,
+            "availableAt": 1793208602094,
+            "success": false,
+            "rawHash": "12abfce1bf23471bd4f0490cdbcba36cbd41c6dcb2c7151de119d8fde8f5a111"
+          }
+        ],
+        "matchedInteriorSignatures": [
+          "31Jq1fohujqMTV4Rk1HNLuLbaYgXrUMC1RatnMEC35Pqa5i8bpEYhxbfWR98BMqrQVac7DUe3DLZNX9awPMgeQt1",
+          "3FyByYRcP6iR1j46G3RD7ZaL8ap7Nb8MJ7sMhjsPpx4GfL6cfNHf3ZHJhzUXes3g1dt5Zk3Ewgg2UkQz7LWdMx5d"
+        ],
+        "meaning": "Actual post-snapshot packet diagnostics only; original target availability and features unchanged.",
+        "requiredTargetSignaturesUnchanged": true,
+        "featureInformationBackdated": false
+      }
+    ],
+    "derivedStatusPersistence": {
+      "attempts": 1384,
+      "totalMs": 9612.408759999165,
+      "maximumMs": 9.671498999989126
+    },
+    "derivedStatus": {
+      "maximumDelayMs": 1000,
+      "passiveReceiptCalls": 36597,
+      "coalescedPassiveReceipts": 36390,
+      "timerFlushes": 352,
+      "flushFailures": 0,
+      "lastFailureAt": null,
+      "maximumObservedDirtyAgeMs": 1211.4382869999972,
+      "lastGeneratedAt": 1793209323565,
+      "dirty": false,
+      "pendingSinceAt": null,
+      "pendingAgeMs": 0,
+      "authority": "Derived metadata only; chapter counterbooks durably account every receipt. Not a market-data timestamp.",
+      "timing": "At most1s scheduled delay; actual flush can be late during event-loop stalls and remains source-timestamped."
+    }
+  },
+  "qualityGaps": {
+    "total": 32,
+    "byReason": {
+      "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL": 8,
+      "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED": 8,
+      "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT": 1,
+      "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT": 5,
+      "NATIVE_FLOW_REBOUND_GENERATION_AMBIGUOUS": 2,
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 5,
+      "NATIVE_FLOW_INFORMATION_CUTOFF": 3
+    },
+    "precutoff": 29,
+    "cutoff": 3,
+    "episodes": [
+      {
+        "at": 1793208510989,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208572822,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208612014,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208632486,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208665356,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "G4oPDxjosSDQYWaLPqw95Mb6Wah79jfNiqW2btCUpump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208703151,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208734262,
+        "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+        "mints": [
+          "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208748636,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208823773,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208835360,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "mints": [
+          "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs",
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ],
+        "callbacks": 2
+      },
+      {
+        "at": 1793208835369,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump",
+          "bLQsRP5bLaJPkW1MZ1tYLk5xE84bKUGSctZ5S1Ppump"
+        ],
+        "callbacks": 2
+      },
+      {
+        "at": 1793208839338,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "mints": [
+          "7nJWoemyVzQy92ow3p5tF3fQtaVXrMBAe8kwqHKspump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208934249,
+        "reason": "NATIVE_FLOW_REBOUND_GENERATION_AMBIGUOUS",
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208941174,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793208943504,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209036248,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209037116,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "mints": [
+          "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+          "7UjAKbrEt5CVZ6HTboGqU5BV6fsftAxacWc6AYhmpump"
+        ],
+        "callbacks": 2
+      },
+      {
+        "at": 1793209037117,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "mints": [
+          "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+          "7nJWoemyVzQy92ow3p5tF3fQtaVXrMBAe8kwqHKspump",
+          "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5"
+        ],
+        "callbacks": 3
+      },
+      {
+        "at": 1793209043754,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209115669,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209116900,
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "mints": [
+          "2oN2ZxSh7bwATX8JqLS4Zbf7ewrPU7w7wqgQMYJEpump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209133425,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209222532,
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "mints": [
+          "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209227162,
+        "reason": "NATIVE_FLOW_REBOUND_GENERATION_AMBIGUOUS",
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209323246,
+        "reason": "NATIVE_FLOW_INFORMATION_CUTOFF",
+        "mints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209323251,
+        "reason": "NATIVE_FLOW_INFORMATION_CUTOFF",
+        "mints": [
+          "56xZsxJkoEyVisFtDFcK9TQ3GxDUHLUGi1kyDnbNpump"
+        ],
+        "callbacks": 1
+      },
+      {
+        "at": 1793209323256,
+        "reason": "NATIVE_FLOW_INFORMATION_CUTOFF",
+        "mints": [
+          "BwHQ4QcooRU1D8Dp7JtQjWsZWeqEQjGpy93jFeS7pump"
+        ],
+        "callbacks": 1
+      }
+    ]
+  },
+  "freshSupportFailure": {
+    "operation": [
+      {
+        "id": 6678,
+        "method": "getMultipleAccounts",
+        "requestedAt": 1793209035845,
+        "headersAt": 1793209036786,
+        "firstBodyAt": 1793209036787,
+        "lastBodyAt": 1793209036800,
+        "bodyCompleteAt": null,
+        "jsonDecodedAt": null,
+        "httpWorkEndedAt": 1793209037094,
+        "status": 200,
+        "responseBytes": 9718,
+        "chunksReceived": 3,
+        "outcome": "COMPONENT_HTTP_BODY_INTERRUPTED",
+        "aborted": true,
+        "headersDelayMs": 941,
+        "bodyAfterHeadersMs": null,
+        "jsonDecodeMonotonicMs": null,
+        "elapsedMonotonicMs": 1248.721840000013,
+        "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+        "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+      }
+    ],
+    "affectedScopes": [
+      {
+        "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "gapAt": 1793209037116,
+        "priorSupport": {
+          "at": 1793209015276,
+          "sourceSlot": 462563302,
+          "bankClockAt": 1793209014000,
+          "sourceExpiryAt": 1793209044000,
+          "ref": "events/events-012.ndjson:3561"
+        },
+        "priorSourceAgeMs": 23116,
+        "remainingSourceFreshnessMs": 6884,
+        "priorValidationAgeMs": 21840
+      },
+      {
+        "mint": "7UjAKbrEt5CVZ6HTboGqU5BV6fsftAxacWc6AYhmpump",
+        "gapAt": 1793209037116,
+        "priorSupport": {
+          "at": 1793209015278,
+          "sourceSlot": 462563302,
+          "bankClockAt": 1793209014000,
+          "sourceExpiryAt": 1793209044000,
+          "ref": "events/events-012.ndjson:3562"
+        },
+        "priorSourceAgeMs": 23116,
+        "remainingSourceFreshnessMs": 6884,
+        "priorValidationAgeMs": 21838
+      },
+      {
+        "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+        "gapAt": 1793209037117,
+        "priorSupport": {
+          "at": 1793209015280,
+          "sourceSlot": 462563302,
+          "bankClockAt": 1793209014000,
+          "sourceExpiryAt": 1793209044000,
+          "ref": "events/events-012.ndjson:3563"
+        },
+        "priorSourceAgeMs": 23117,
+        "remainingSourceFreshnessMs": 6883,
+        "priorValidationAgeMs": 21837
+      },
+      {
+        "mint": "7nJWoemyVzQy92ow3p5tF3fQtaVXrMBAe8kwqHKspump",
+        "gapAt": 1793209037117,
+        "priorSupport": {
+          "at": 1793209015284,
+          "sourceSlot": 462563302,
+          "bankClockAt": 1793209014000,
+          "sourceExpiryAt": 1793209044000,
+          "ref": "events/events-012.ndjson:3564"
+        },
+        "priorSourceAgeMs": 23117,
+        "remainingSourceFreshnessMs": 6883,
+        "priorValidationAgeMs": 21833
+      },
+      {
+        "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+        "gapAt": 1793209037117,
+        "priorSupport": {
+          "at": 1793209015285,
+          "sourceSlot": 462563302,
+          "bankClockAt": 1793209014000,
+          "sourceExpiryAt": 1793209044000,
+          "ref": "events/events-012.ndjson:3565"
+        },
+        "priorSourceAgeMs": 23117,
+        "remainingSourceFreshnessMs": 6883,
+        "priorValidationAgeMs": 21832
+      }
+    ],
+    "diagnosis": "All five prior coherent supports remained source-fresh with6.883s remaining at failed refresh. Generic support-domain actual RPC timeout catch unnecessarily gaps every candidate and terminates healthy capture. Preserving valid prior support through bounded HTTP recovery would not create new freshness.",
+    "subsequentSuccessfulSupportAt": 1793209039809
+  },
+  "audits": {
+    "totalResults": 73,
+    "sessionsOpened": 74,
+    "cancelledDiagnostics": 1,
+    "byStatus": {
+      "unavailable": 18,
+      "verified": 47,
+      "unusable": 8
+    },
+    "unavailableByReason": {
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 17,
+      "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS": 1
+    },
+    "unavailable": [
+      {
+        "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+        "target": {
+          "startAt": 1793208440000,
+          "endAt": 1793208500000
+        },
+        "startedAt": 1793208501852,
+        "availableAt": 1793208503386,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6256,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793208501863,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793208503370,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1507.055456999995,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+        "target": {
+          "startAt": 1793208450000,
+          "endAt": 1793208510000
+        },
+        "startedAt": 1793208513757,
+        "availableAt": 1793208515291,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6277,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793208513766,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793208515275,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1508.4478879999951,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+        "target": {
+          "startAt": 1793208460000,
+          "endAt": 1793208520000
+        },
+        "startedAt": 1793208520838,
+        "availableAt": 1793208522394,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6284,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793208520848,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793208522378,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1530.7680180000025,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+        "target": {
+          "startAt": 1793208610000,
+          "endAt": 1793208670000
+        },
+        "startedAt": 1793208673895,
+        "availableAt": 1793208675718,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6398,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793208673904,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793208675702,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1797.6146109999972,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+        "target": {
+          "startAt": 1793208620000,
+          "endAt": 1793208680000
+        },
+        "startedAt": 1793208682519,
+        "availableAt": 1793208684077,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6406,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793208682529,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793208684061,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1531.7845610000077,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+        "target": {
+          "startAt": 1793208630000,
+          "endAt": 1793208690000
+        },
+        "startedAt": 1793208692760,
+        "availableAt": 1793208694394,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6416,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793208692770,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793208694378,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1608.0638139999937,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "jGCH5EP5o1ac1XsZUTkpc3FRUvvhdpJTuVkxkHwpump",
+        "target": {
+          "startAt": 1793209050000,
+          "endAt": 1793209110000
+        },
+        "startedAt": 1793209111899,
+        "availableAt": 1793209113433,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6718,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209111909,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209113416,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1507.4307430000044,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "jGCH5EP5o1ac1XsZUTkpc3FRUvvhdpJTuVkxkHwpump",
+        "target": {
+          "startAt": 1793209060000,
+          "endAt": 1793209120000
+        },
+        "startedAt": 1793209121947,
+        "availableAt": 1793209123489,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6738,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209121956,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209123473,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1516.200159,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "jGCH5EP5o1ac1XsZUTkpc3FRUvvhdpJTuVkxkHwpump",
+        "target": {
+          "startAt": 1793209070000,
+          "endAt": 1793209130000
+        },
+        "startedAt": 1793209131064,
+        "availableAt": 1793209132602,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6744,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209131074,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209132585,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1511.8877540000249,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "target": {
+          "startAt": 1793209140000,
+          "endAt": 1793209200000
+        },
+        "startedAt": 1793209201681,
+        "availableAt": 1793209203252,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 2541,
+        "matchingHttp": [
+          {
+            "id": 6790,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209201720,
+            "headersAt": 1793209202101,
+            "firstBodyAt": 1793209202149,
+            "lastBodyAt": 1793209203218,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209203236,
+            "status": 200,
+            "responseBytes": 215024,
+            "chunksReceived": 75,
+            "outcome": "COMPONENT_HTTP_BODY_INTERRUPTED",
+            "aborted": true,
+            "headersDelayMs": 381,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1515.9835279999534,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "target": {
+          "startAt": 1793209150000,
+          "endAt": 1793209210000
+        },
+        "startedAt": 1793209211843,
+        "availableAt": 1793209213407,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 2496,
+        "matchingHttp": [
+          {
+            "id": 6794,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209211883,
+            "headersAt": 1793209212228,
+            "firstBodyAt": 1793209212232,
+            "lastBodyAt": 1793209213377,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209213392,
+            "status": 200,
+            "responseBytes": 235638,
+            "chunksReceived": 82,
+            "outcome": "COMPONENT_HTTP_BODY_INTERRUPTED",
+            "aborted": true,
+            "headersDelayMs": 345,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1508.612628999981,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+        "target": {
+          "startAt": 1793209160000,
+          "endAt": 1793209220000
+        },
+        "startedAt": 1793209222014,
+        "availableAt": 1793209223585,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6798,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209222024,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209223569,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1544.7494070000248,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "target": {
+          "startAt": 1793209160000,
+          "endAt": 1793209220000
+        },
+        "startedAt": 1793209224800,
+        "availableAt": 1793209224838,
+        "reason": "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS",
+        "historyRangeCovered": false,
+        "requiredSignatures": 2885,
+        "matchingHttp": []
+      },
+      {
+        "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+        "target": {
+          "startAt": 1793209190000,
+          "endAt": 1793209250000
+        },
+        "startedAt": 1793209254398,
+        "availableAt": 1793209256007,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6818,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209254408,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209255991,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1583.0852829999058,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+        "target": {
+          "startAt": 1793209200000,
+          "endAt": 1793209260000
+        },
+        "startedAt": 1793209265245,
+        "availableAt": 1793209266941,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 0,
+        "matchingHttp": [
+          {
+            "id": 6828,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209265254,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209266924,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1669.4317039999878,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7SF6umqmWb5di8gDXurQgwErDnpVuCqsQEyojZiBpump",
+        "target": {
+          "startAt": 1793209230000,
+          "endAt": 1793209290000
+        },
+        "startedAt": 1793209292475,
+        "availableAt": 1793209294192,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 5144,
+        "matchingHttp": [
+          {
+            "id": 6841,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209292542,
+            "headersAt": 1793209292829,
+            "firstBodyAt": 1793209292833,
+            "lastBodyAt": 1793209294021,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209294176,
+            "status": 200,
+            "responseBytes": 185038,
+            "chunksReceived": 61,
+            "outcome": "COMPONENT_HTTP_BODY_INTERRUPTED",
+            "aborted": true,
+            "headersDelayMs": 287,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1634.2381760000717,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7SF6umqmWb5di8gDXurQgwErDnpVuCqsQEyojZiBpump",
+        "target": {
+          "startAt": 1793209240000,
+          "endAt": 1793209300000
+        },
+        "startedAt": 1793209302549,
+        "availableAt": 1793209304132,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 4538,
+        "matchingHttp": [
+          {
+            "id": 6850,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209302608,
+            "headersAt": 1793209302767,
+            "firstBodyAt": 1793209302767,
+            "lastBodyAt": 1793209304098,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209304116,
+            "status": 200,
+            "responseBytes": 240597,
+            "chunksReceived": 79,
+            "outcome": "COMPONENT_HTTP_BODY_INTERRUPTED",
+            "aborted": true,
+            "headersDelayMs": 159,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1507.6565359999659,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7SF6umqmWb5di8gDXurQgwErDnpVuCqsQEyojZiBpump",
+        "target": {
+          "startAt": 1793209250000,
+          "endAt": 1793209310000
+        },
+        "startedAt": 1793209311999,
+        "availableAt": 1793209313601,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "historyRangeCovered": false,
+        "requiredSignatures": 3664,
+        "matchingHttp": [
+          {
+            "id": 6857,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793209312049,
+            "headersAt": 1793209312288,
+            "firstBodyAt": 1793209312292,
+            "lastBodyAt": 1793209313413,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793209313585,
+            "status": 200,
+            "responseBytes": 186770,
+            "chunksReceived": 62,
+            "outcome": "COMPONENT_HTTP_BODY_INTERRUPTED",
+            "aborted": true,
+            "headersDelayMs": 239,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1536.2705700000515,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      }
+    ],
+    "unusable": [
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "target": {
+          "startAt": 1793208510000,
+          "endAt": 1793208570000
+        },
+        "startedAt": 1793208571823,
+        "availableAt": 1793208572821,
+        "requiredSignatures": 453,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462561218,
+            "oldestSlot": 462560668,
+            "receivedAt": 1793208572808,
+            "validatedAt": 1793208572819
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462560929,
+          "upper": 462561220
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "5ueJ4tomYbAQrhmnrC1RNHXMojrKFKZwoPTkDLEGFRSZyRQU7et1MwgcfV85yB8h1SF8MrAVWGLzqfJYnqfvJCre",
+              "slot": 462561014,
+              "success": false,
+              "blockTime": 1793208527,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2M1z1EWE7WGmxrwfS6giesL8q1FNpD7eMDdXzqwM6jv4ESJ4Qxum7V5ofTNibLWSYA9VDMBGnofmg36chsb8QsrX",
+              "slot": 462561014,
+              "success": true,
+              "blockTime": 1793208527,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      },
+      {
+        "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+        "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+        "target": {
+          "startAt": 1793208550000,
+          "endAt": 1793208610000
+        },
+        "startedAt": 1793208611849,
+        "availableAt": 1793208612014,
+        "requiredSignatures": 40,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 100,
+            "rows": 100,
+            "newestSlot": 462561409,
+            "oldestSlot": 462559745,
+            "receivedAt": 1793208612012,
+            "validatedAt": 1793208612014
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462561099,
+          "upper": 462561412
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "xpH1YtHnKXDJVKfEVLunp4j8Vs6qHe84jLJKzYD1YjPndregwGsrActPvuDALEt3Kpr4Dy8msH3qCzFnwrGizPP",
+              "slot": 462561409,
+              "success": true,
+              "blockTime": 1793208610,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "Zowc8Y7UQPyyS5JAW2gRuV7MJLDiw9zJrs3PVKA7MruszpqCd7A2QaKmF8wx4AfdEMjE1DBuW7fKhM9DifG16Zf",
+              "slot": 462561407,
+              "success": true,
+              "blockTime": 1793208610,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      },
+      {
+        "mint": "G4oPDxjosSDQYWaLPqw95Mb6Wah79jfNiqW2btCUpump",
+        "pool": "2At7ag2CAkX8kbcJSSDn5A3rDgPd1rC1tCPsQkBQLajR",
+        "target": {
+          "startAt": 1793208600000,
+          "endAt": 1793208660000
+        },
+        "startedAt": 1793208663488,
+        "availableAt": 1793208665354,
+        "requiredSignatures": 1820,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462561616,
+            "oldestSlot": 462561534,
+            "receivedAt": 1793208664505,
+            "validatedAt": 1793208664517
+          },
+          {
+            "page": 2,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462561534,
+            "oldestSlot": 462561345,
+            "receivedAt": 1793208665336,
+            "validatedAt": 1793208665348
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462561350,
+          "upper": 462561650
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "5998WYDJNMhuPTLhdPLA4LDBBbAjJJTA9Vo9Fdh16sMMMuJTVmv92p9TrC3uHjuUiHno3UwWCj1i11ZVhp2Xdcht",
+              "slot": 462561542,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4yPxkkScZCobyUhQtoNX9tsgUbqmBLEa3RYUuBJEBu3tS2dY1UQChdQfiyPkHbvWcmZMY4eGRLxw7ugSuEc8SSh1",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4rFvtYQur44f8snGhPXRkaenMuEmVzFApe6pkVt3dLe9MnH5Xy5ncS7MGoCPMuFGa62WoYgsemxwGSw7pinHyC99",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5BmARqPqafdALqTWfZyueQWWxLUZekiZprwBvvE3saXWwJZXTv1QgQnJLh2ok7Wv6VA2szvmagVF4oRr4gQkmB2x",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "322L172GBWB6qiVFqKTG5ofiHoY6VbJhdv59u7ASqzHZKPumE3SEPMxkrhH2GQxBsSQDLWC8vESznerm18siHsqH",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2vbR1xTdfcqi3EnMLmoqHfV4kxx6nDB1L1WrQSY4iEaYWVT1Xd1Z8qyA7kjwZPve33B6Txff9nWMA4vC8rLHap8G",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5WjFRtuPRA1aw8EUiJrhvUgcU8DEkNC7HTUzw1epU3yiup8MWhaZJy2xUsGYttEHijsUm46pC4K6sHsWbmt3bp1b",
+              "slot": 462561542,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "PyXATanW69yA9wduVShfNs3cCgt6B6i232EWfmLmzCDs5Y2QkKLeXqdFuw3o44u9N4cZCahtYWvnDX2Rnbeq3Zv",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "121Zr2TyCLAfqZKEatQ68ffdN5jQtCgMnYkP7zi7hrjxdm65ZPzxeK5ahSkvGg141YvN9Q9qD9oX7serd2AvidFw",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3LCjNgbtBNtw391iadvrh82nKGcf37RLSegParWR9QJixnpEVdAPrc2p6aeDzpiW3e2qd1RS2hk2U4SUtBRGsnqQ",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2MzBR1ipN4cCtR52vdRStKPsRS3oNbmuT8SxJZ4BvdJorK8eP2952QAvRnohsYc5Cy6QZJEt5zzimPBy3fGJg1gq",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5Dk9gZzMM9i8cmEQC1oEgm13JD7SgQ8VK5ByEcuMU5mtAQyy911RxYXkshrALFhjFo15Km3PXnvoA3xKTmhxtaJi",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5NAnwUu7Vihumf2KyE9jyiBC7wjNuVNAoew5MpXm7WX3mn4GGcRnDpXvbApNL5v6fDuMk8xKwo6sbF5y641qGSq6",
+              "slot": 462561542,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5aG5MVaK6fhyWqbYfEWp3xhw73kYjcA5DwGPUW8Bkd1TA2HGJSMXvgSka2wr2uqBEnQqN3sz1guYeeHHJJoP8eXP",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "21j2M7iaPdtePWB4xxtF8avjbVVoJscT9vp9ymW4mDFVdXRHA9Eezs9CPtCUxSCNUrv4WUqDyf47SXP8tJQp3L5T",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3Vx4Cmpr1zbinvvSHfYizeJ74GKN9TaqdYSsqbksQX6MwpqDFX4mazKuYwMQYUYhnqPd1SfAq6gUQUiErUoGFDKi",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5QiuHQyZTt3nWk6ZDEC4PE47WiXVRbdf7RoEj8pepnLn66jV1yHcjRQEcSx8Ry3Zhjhqxw2u8Fw5x4yLASLaewNt",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3VY57TfkenAh6puEBCetm49NkpnbPRE2geqabZX3CZB38UrhwcifhPKsc1s8jbLN1JKtqsdSUy7hHpJPSdJRrbc5",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "mEWiDAAd5yPvEAm8eW9vxAEAGMpaBYPg9QEQmVLTgJoAQbF6w99VxorJJ6unTx3VzxLJ7NKG9rnvL43vwBt8nKY",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3iQKXXvohFFGepHVNVQR5ozQPdK2KEKe34KbySUUeX98XUmMNSdxBNPNCrHSazTvvNXiXFuS7conxz6e5btX8zWR",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2BugjxeCaYZyta3fRYQ6kEBXRAT1dt6yCBCm2K784CkWvhe77NEpJLJy5aVYtRBa76gUp8PaQYCH3MbnkVWFX8g7",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "25SNuM5dpkDzQUX7CLZhw52EVYt25Zu1ETNVHvwnFbd3cse9g4TTNwcNvfPBzLWufZMkhrEiKmQZtn7uEPA5mRT3",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "1291sdPp838XC33XREonxrSmRS1DDw2pya216Jwniz1R2ukZDSYbRBtFMz3yJepghCjRHsF4G7CnRxdqjkLW7gha",
+              "slot": 462561542,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2irzsgD3My8oSVzGTi7wfsThu7oRFK6QaZtFtphTjoBQbRwu7D4uGx3FhFdiGNw4BStpY7gaKKUEvXLZkMo4hfXp",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "392bGMcMLJA4mzGDMaarcp6ZwVLXk4WMgFDAg6LMcJFPW7p8TxRGECGGYKdJmLXj2qwJDVi2Vr38abW63KEv7iiM",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "54q5R3DhHJ9YGoG5dEwdNVnVaGLi23DcEVNEj8WAstSmDh5EkgzaXZ6KwKorRtf84gp3Mzs9v4awA7TBrg4WemhE",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3dXcAVLoNLDLk2AwTbJnRieuR3VTvyVwtGYm19obbefnseudNUkAnfc4xqtzTocN7bM16s5YwkaZ2xLp23ZBv6GD",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5XZMGHETJdbR6KXKCwytuXM2XuoETLBHEaWg7oAzucDLXSK7QzX9X9W1tbQc65WJEdrkEKMFEo8pFPibm6bmEUTC",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "bQ7dEGAzw56LDWKnukMfmmsfytSuJawVj9XQRR3qpJ2igagYZvp4x2Y5r4BZLZY18ZyT31DastiUEWiQL3wYqGc",
+              "slot": 462561540,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2Xc9MPTZRP1Bvy51fuDWEa835KsG9dBQ4ZDgdJRerk6Wmvy96AC18H3xVuHYdi6K2ANX6gkoD2KgX24vn2iFnVpc",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2HPCAqn87wzsxKpH7aCgSS5NcDX2uu3FpsCvVzDqXXTwLuBM6Z6d6CSxq22Q2NmHRPt5MSPaKMDoyhqCv76y9ZtZ",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5z8mr29rkSeqgzJeVDTH9XTh3p6EjmQSDraZDxHMNuRxPYHUxNKC9zmM2E1NzyvYSa8gz4F2sLQjeKuHziAaDhcn",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2x1JJvwWiDqWo41F868JVozPJznW1fAYG7rPwyiHro5y81MekUhTCQNq2t8nL8xbtubt7JpzMaPwtUYtfMDVrVmu",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4J3rrHe9xNC5tVeHe5sQwnXKRr6ZJfFaJAVVnRK8SfyUXdEfYMBazWTNm9BkEsGRjefbnYKUcdNe3wftLFCvRpxD",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3K6KmWhsNyUyoYyFRfTrgb34TntZB6LFWQZH6u1BaanD3hSUySYzjx23RctipQ9or9CasmDdFTFVmDaZY99UiHKW",
+              "slot": 462561540,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2fspudwPx8BTx31M6Q5ArziyyRofN69N153Dtpd5qvq8sz7mNmUqFXRefaoCcDf5eR2FiB8HU5fwUDzmUFYKckv1",
+              "slot": 462561540,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2cmcE8VE5KkPrErsenz3SGAGnKBK24UB8intsbbpa9xFuMTFPr5RAvU1PoeMyXjC2stNEfueeJxwm2dVqByfEqVC",
+              "slot": 462561540,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2L8X6Y1xPeoXbYcQYK3KKbSmYjGSRjuyUcXm8v1T4BnoUjikjAQktMShWZnTm3N91Vn1qgPqQQZWCmBgnsxip7gS",
+              "slot": 462561540,
+              "success": false,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5hUvQ89FDZ9TQwdLYRYRk1z9Q2KsKnKM9inBcqMqjfWejdRjsTDUuAa7vNG8vEUprMbcbGAU9NBLC2zh1sLhigZB",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "33k2z6KrXX4EDyqkktEfKrH6VhVccZvy4h6142WNDmjTxGrjJm32gVJLK3LbEG29PYL6QfPC4VQWZN8VM773cUwd",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5JRHC6kU6kKwWb1CNB2hcL9QrZnY4ASCm2LtBFZfZsSLiFkCmhsCmospV5pNVvUY6rqaxN1V7sEx5wrdoAQLn69",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5gG77yLc4JoXr2hxW138CejaYZV5C8GuBzsRoexiGoFHd7dSU2qaWKzwrxJXd7cBJh7D9PAqW4FH7zrrANzDUXa",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "Wxd1ShsCFQAZaj6N8rHs5mCMT7PkN8fCyeK2fCde5jbq4RaQcqsfwPTNNRU79p11enFvWBbiFzi4fe7vY9c3Lf4",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4gGszF4QkZmTpRSBCR4HewkEkPoNDPXJLNnjCK4eXyazsvhih9m7VHhoH7o7vCD7eGxdj5XVeZNmtEgYmjaaHUC7",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "54QV6vRxBXfAyJ7tVWPFiALXVosZzeykF2jgxM9rcfJD1KW6SwMt27DYkpTUJ9wiNHiWfSngpJqzJUkeQHnoE5TF",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3b8qALPfioxdr1rUiNgMQRNp6di1ULWriwtJDwTDNTPhSdZqRvUTpqhgfUD55Dv32dRAojKBdLnppNxFPWJJvbEG",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3yPAwv4xLr4dbFAVqF2VvuyJtBrz75DjX9HQFBahjnhKzL7uEcxruxc1HJHJRCgQ9JLYTCpF59tmiKozdriid85N",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5Z7wSkzM1tM55ZHykyavjv6S8Nzzb8emaFyGzUWL6C8dL3KH7j9ro5GALjnXkHUqtPkPE9W3nmJgJhTEs7sPoAih",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3wNUxRmHf9JW4Z8uZ9wumF4C34Gi3czRrbTwD9zukBKr1gtBX9ygbV3kV3ZbRh3KDxCm6WTHHXs6K2wrYw7Zd23G",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "iNDCmWRoFgztFnyRBfUpiUJMJFFpNAYJA81z2jjZV4Azu1yxgYRmsW97SMikrjTMDwRzzoTRLuK3FJzoWSZZkPT",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2hsKn6Ep6kiFgF232nKfGtbnivhAi4g83uPSzWiQb5erGVjFDk1735Ac2zruCw8UMUZhnbCSR9id4hHESZdvhXQ4",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3VyNUwQRSw9cy8MnSntF4BD7TFTzGBJPW9gFvcpj7U8Ls68vfeGmRGFuQRxc43arv3kr5M5sHTyKZ9jbDELjX6JD",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5p2jhz6MLAFnWtDLs49dJuLnnDAFqWMa6TaknuukjGKBZBQvUbTBfE2VTwhZhHKQ2DiDDZV3xeND2goXdW5N1id6",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4ThLKdeDmLdwsEWNZH3ZMHF3wNFBBztpyAxe2rbir7uw4gouo7KtnwgYp6VDUrWXy82HUQ8RpAPeeCoccifWuJ1m",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4LUpXxztRKJY9TmsYzHKgtYr9Ck5CmXsu53kErmzQgRtBp4YAxtKMBszVxmxS6MQ5CstnYZXZeYUHkwar1ZwEhRF",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3DMNrpzKoFG372Qna8wHdMJW8BvpANb1B9Kpbkj9WKbAi3Ei717da4zBDy3ETAfXNiRNsS8UGjUpd5gpWkZskzXg",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "669MteqMcha7dmApraBHgtGwbyekjwe5K4xEipXbMVNqTPrSChWJZkX5xM2S7759dmtCKFfdYvAPD4kYKT9ycUyR",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2r9tkmpNxX2Ph3bP4wdVdnkpLoF6mUBRxw3Pro9L2SZqJGJSmsCQhLhZ718RW742TGV4CrfXBQL7vLUpuzcP9UoN",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5ncZP3x3stC8Lq59tnP74UkAHwEsNABC9qCbkHnJfndG2ikF41ECjk7nbABMo3cjt8wuRgYa1ZkJDB7sxCov3APp",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3hyKqLHoVcQc4vHErihY9r1xnR1uHcyd9V57gBtB5juzsuLFmgwKkVRa3jyRZmBhSV7Tm1ymoF7LqgZdvXjvJmaf",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3ddhdM73favK8gzvW391hi2C84RU8t3xkKJuQfChQVUiJpsu3MrLJpT9xKX1kKK8dojwyh6jQmvCaUV4ALrTHFv8",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5tqUSWSZD4D6FRZjhtFZD4MnxFxNBbkRj7cw9XnKcWN8RNUQUaP7iFVYAqACVuyf9BHdusa8WMcbDyZHAwtkeCEo",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "43CfBPgwLDHLKzYgtCR1N454dDWbRytfAR68pg9uy1iP6tYcrK7A5zBiBgTgw9h3E45djCjYjavZ1wvR3o3xMN8v",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3NroqZSa9HEJYn215VFB1zZwYsSpLu6Eot4RqGSQQj61LQFVdHGDUm4B3pKBC2cFJe4zuHe7JjHonRDPPBLxmvbw",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5wdvJbuUe8nrThW5yWQXsdxAEfomqSvHeXQTFYmQV3WC5x4tKEvpTATtwGuLj3vRadw9CnMrp2WPNdG7TpFiK5xV",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3wfczGWSaKHqSgQPGpU3ZbGAqCdCuT6zMCMvUL58AtNhmz7ufg22X1ZAf6VtNruQeS37h2ahAb3g6URLatNY6uRs",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5SrfTYLdSU1svWbp6mf5cajFAsEiNp5wsTQ3t471kUNPTyiKcS8TNuQFQJLdcZRtJ47fZcEaiMpRYsHahCXMHbqX",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5GSUpYA64azzNuSqzsY4k8915kxSanWXiNQUMUjkAvM4vR2GseEmKprBNT3oTb7NEuuBFHbSWkKT4PqGeZteUpC3",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "tiyAy8mFdRy8p8bQL4AUHJW2AADtSFNhNMCJuEu7kV5hqDyEQHBvt1eAbGXs86MJm1cVPBaCH6TdzYwuGqtcs8A",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4WcZdn1M5D3SeDsuME44DQidVE4zgT2W1CFaXazsz3PtEJVTP4nX2Sfba6UfRAEyBvQBq6FaYpDXQuYD3vPhcZxM",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5csKVk3pHXZKn3AT4TM6HzPq4iaAdZ8WepF1T7chpsU2gzK4dedS14KjVgaZWhUrPt5GQuLAHrvuY6snQP2FDfiC",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3rdLrAX4xfY2yVgKTeheQGHoHvyQJqaGFjW2dBB2DTL3YqJmnxfXameGvFM7kewy77Gb9WC8qcTNK4Kqaqy5Tzvw",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4RUQuo6xXzhx5JK9AysiJAXxv55hU1gnt788TAfeHWreAMPFQgkf8JKWZ365L4h7VbzdLERQwA2Z8Dq9A5SAXvAn",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3Ru47pKTXVmvvf8TNpBbHeqrmMLBNKwa3WanBeZUETA89bt5vzSKSTRLAiLTa12E1bDgiqcpbfpzxGaYjJ1f3ZRZ",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4urwAyatDpzUMfQSzMAiQkGsuPfJjVTDfnzA7HQFWrwYsDVi8bEqdKyExyu66F8Pi32F7rUrpQmt7biguvbgcWsy",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "Z4ChY2rGGgCGSbiqoG8gWJx5MhcP36H3T7jUpBn2hfK3eCsFpM3Gq2WiMdxZ3FkzG315vk5mXVD5xU5A18K87zo",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "T8cR77wh2fnh2xTcmKwmqJCNTnohGPDLY9axp4T5AhYCDFuUTVkxhF828srTavstM9n3Q1Pers7r4ydwqQwDkZS",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5SqHxsjY3iEWxYaMn9ZRrz5HrcpKyWWyLFGSQW3J9Sitd5wHybDGHF6gcfN4LpuJoBRiE7Xvg8JWQP5JiEPiQ9Z7",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2y5gZevoZNA5PfBmBuhH4ykW6iJNnUaLzn3zVMjvJhgCoEgC9bXfbovFfZP3aLLAaF7FLf1feKqxuYTGJfAV2gXw",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5k9mdNEp4bL9y1MZnYgqLsTdeyRSPJLLqfxstH537H3dZx2Byp8qeYnQeAtGHScm12j7T29U5YkhVJjcdHnaG9Qd",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "AGSbTErYJZBe4YchRkE1sTDojaA6A4CntMXSyPQvmNsHRx3sMQxJd68XvTUyWCtKi7NFEcq3wW6FKBahjh6EkU4",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "42x7q1CatUGSwR7jvdEiGdaaYU5Kdv9P7WssczLcgLyyxdEbb7iMvhfVnaRQbPb6XtoRxZaKXPpqnxJycsuARhon",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3oYXtsZoDAfYiafWSJAfcGDmZEpzmWkNwpnwpK1AXTCHofK7jFKsNzJrXiuKdpkqE5FZQ7d6J7vkxfWRFVJ194pQ",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "u9a6vZbbFAUAphDLn6VPCS8NSp279nQFciFVCi1mVQLqbontMBySwDkJ4r1x2HSVNrg7ZDmkkgEwCh5DoUZjA4a",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2QQ1WXFPz4kz1d22crGXdWjr1HBuM5eZ8LGEzguUFJ2WgQo8n1ApuJC3EPPSeuToe1TDUksttqQhKkhC5QfFXo3F",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "4kWWZjib795xXAE1w5TrasH3LzPMFk1AaAu2N22TVAkGsG39Rf1uuMAu7hWHrsZEc7FHqTNZpPbRcYAS5z3FFhg8",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "21DA8rssChticw8AejJB3XmdTee7P8w8ZNq1NLhcPrEdYv6JNKPeBoRnrHRdW8b2oC5ThSeQNwvB1kQJv1tFfLhR",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2KBtvBqkeRmv9SSHMz6hJgbVARRNnFVmXtVqx3zdYfV8kvLWv68HJ15N54C7shfj5sKaiMes9cpVBBKCCHm8jRjW",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "38u3RQFoNJemFTH932LwMi81ExKyxws8BtSr8tjAEhu8xVrPu7aXvNy9vQNGLApaNPaNwr82yR7pdvkL73katgr9",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5eU1VwtU8rp1cPNRVpP9PCoK9G5zCm3zekyQQXDxTB1N8zH8Kb1sxh3yEiddxYrWMLTVURP2T3w9kH1qCNLk4GYT",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "5xqzPe1m2AS9JuiXKVLqsPJoYjEg16VndBF9Zh3GPDTLiJP7j8aptqeed3p2yBSdjURtSEt7pDLvczC4oS6Frwsp",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "6J1N8vTicxotextRwNnV41gwgce4cfZkoct8DsKULn864UmdSbZkzJqwJu7rvG8G3ytF1JrcXjDbyHjohtbT3S4",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "2nDCyNa9JnAWPLxiyyAkmBgdCwRo3LQ3ugeyr9FjdPdxStxvFnHQJsXRMq165BWas2MtgcZwbbMZzt8Gus3jv2w5",
+              "slot": 462561540,
+              "success": true,
+              "blockTime": 1793208638,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "target": {
+          "startAt": 1793208640000,
+          "endAt": 1793208700000
+        },
+        "startedAt": 1793208701913,
+        "availableAt": 1793208703150,
+        "requiredSignatures": 518,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462561841,
+            "oldestSlot": 462561251,
+            "receivedAt": 1793208703137,
+            "validatedAt": 1793208703148
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462561543,
+          "upper": 462561839
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "PP54tkmz54ijLQpmFsT9LduAUa9Q9iVmpLC9TnXXGS9eqe629QHStQ9GVYSrEE2vDKxVVLMkMcrTfjAPXSydwF8",
+              "slot": 462561718,
+              "success": true,
+              "blockTime": 1793208675,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "3RetrNsu5u5UeQirzpJoZLhvj5eeHywaNdWV7kaTSKk9JDa2gMe8Z8xvHgFa8qKyrfb27i5pAepoo6wKkUoZhv6m",
+              "slot": 462561718,
+              "success": true,
+              "blockTime": 1793208675,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "target": {
+          "startAt": 1793208760000,
+          "endAt": 1793208820000
+        },
+        "startedAt": 1793208822450,
+        "availableAt": 1793208823772,
+        "requiredSignatures": 539,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462562403,
+            "oldestSlot": 462561864,
+            "receivedAt": 1793208823758,
+            "validatedAt": 1793208823770
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462562117,
+          "upper": 462562404
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "48jmczYMWn5jaGEmt48AHKfhtKLfDohrRCr3vDMVp4FNryiNwBC6emvExZdCdtJ2PQWh1Fcxguywja8yeiACsPPU",
+              "slot": 462562282,
+              "success": true,
+              "blockTime": 1793208795,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "target": {
+          "startAt": 1793208880000,
+          "endAt": 1793208940000
+        },
+        "startedAt": 1793208942067,
+        "availableAt": 1793208943504,
+        "requiredSignatures": 528,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462562962,
+            "oldestSlot": 462562432,
+            "receivedAt": 1793208943489,
+            "validatedAt": 1793208943501
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462562672,
+          "upper": 462562963
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "3JKkMgEGvACgqdaB7DTD3SuVBtxAfaavmrksspBJzxZKFYaDbMnCcHssbTpvdBPN94KTMGwCab6hj8xwJzU6YzFC",
+              "slot": 462562702,
+              "success": false,
+              "blockTime": 1793208885,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "52ZLcjvfDR9pEB2qAiVW7bjWVDD9YCMbfbTfZ6nkiSQy7RZAH8TuKuy2JmWvSni7C4aCSNgBeq7MmoGduWw3ZoZx",
+              "slot": 462562702,
+              "success": true,
+              "blockTime": 1793208885,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "target": {
+          "startAt": 1793209050000,
+          "endAt": 1793209110000
+        },
+        "startedAt": 1793209114459,
+        "availableAt": 1793209115668,
+        "requiredSignatures": 530,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462563759,
+            "oldestSlot": 462563249,
+            "receivedAt": 1793209115654,
+            "validatedAt": 1793209115666
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462563461,
+          "upper": 462563751
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "2BzyEQABTLK3zHLJbd7Uc7Eg94hTPA32EXyNGmTAAdEFnD7Jdwu7VLgDvb3MBKqExjE2MKK8rttToDw33DmtVxUZ",
+              "slot": 462563730,
+              "success": true,
+              "blockTime": 1793209106,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          },
+          {
+            "history": {
+              "signature": "G9CuLpKpiskiSkVetUVCpZSZCw3r1RgHeeV6dw7whUhsMDYTq6sNb647VXdpC7ccY4x4TE3WZ4gSKAwbJPG1gjV",
+              "slot": 462563730,
+              "success": true,
+              "blockTime": 1793209106,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      },
+      {
+        "mint": "2oN2ZxSh7bwATX8JqLS4Zbf7ewrPU7w7wqgQMYJEpump",
+        "pool": "J8FcCuhzAgd8XKYqa91rUTSC35Lh5dbvryAK63efEyFn",
+        "target": {
+          "startAt": 1793209050000,
+          "endAt": 1793209110000
+        },
+        "startedAt": 1793209116750,
+        "availableAt": 1793209116899,
+        "requiredSignatures": 61,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 100,
+            "rows": 100,
+            "newestSlot": 462563734,
+            "oldestSlot": 462563411,
+            "receivedAt": 1793209116898,
+            "validatedAt": 1793209116899
+          }
+        ],
+        "strictInteriorSlots": {
+          "lower": 462563461,
+          "upper": 462563751
+        },
+        "unknownNotifications": [
+          {
+            "history": {
+              "signature": "2tXQUFV1puweUjHX6J1bKTtxsxTZ8EooWnn2ouS63uGFDN2zoskBnUuHbP6w4oFsSQct7KVJVSHfFm26CwHJv8S4",
+              "slot": 462563730,
+              "success": true,
+              "blockTime": 1793209106,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformation": []
+          }
+        ]
+      }
+    ],
+    "missingCounts": {
+      "unique": 105,
+      "successful": 95,
+      "failed": 10,
+      "matchingRetainedInformation": 0
+    },
+    "multiPage": [
+      {
+        "mint": "G4oPDxjosSDQYWaLPqw95Mb6Wah79jfNiqW2btCUpump",
+        "status": "unusable",
+        "target": {
+          "startAt": 1793208600000,
+          "endAt": 1793208660000
+        },
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462561616,
+            "oldestSlot": 462561534,
+            "receivedAt": 1793208664505,
+            "validatedAt": 1793208664517
+          },
+          {
+            "page": 2,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462561534,
+            "oldestSlot": 462561345,
+            "receivedAt": 1793208665336,
+            "validatedAt": 1793208665348
+          }
+        ],
+        "requiredSignatures": 1820,
+        "durationMs": 1866
+      },
+      {
+        "mint": "2oN2ZxSh7bwATX8JqLS4Zbf7ewrPU7w7wqgQMYJEpump",
+        "status": "verified",
+        "target": {
+          "startAt": 1793208910000,
+          "endAt": 1793208970000
+        },
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462563084,
+            "oldestSlot": 462562920,
+            "receivedAt": 1793208972665,
+            "validatedAt": 1793208972677
+          },
+          {
+            "page": 2,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462562920,
+            "oldestSlot": 462562840,
+            "receivedAt": 1793208973485,
+            "validatedAt": 1793208973497
+          },
+          {
+            "page": 3,
+            "requestedLimit": 1000,
+            "rows": 1000,
+            "newestSlot": 462562840,
+            "oldestSlot": 462562652,
+            "receivedAt": 1793208974343,
+            "validatedAt": 1793208974355
+          }
+        ],
+        "requiredSignatures": 2054,
+        "durationMs": 2507
+      }
+    ],
+    "pageLimitReached": 0,
+    "pageMetrics": {
+      "100": {
+        "count": 48,
+        "responseBytes": 1103096,
+        "elapsedMs": {
+          "count": 48,
+          "p50": 187.34416099998634,
+          "p95": 522.5083159999922,
+          "maximum": 570.586147999973
+        },
+        "headersDelayMs": {
+          "count": 48,
+          "p50": 73,
+          "p95": 306,
+          "maximum": 464
+        },
+        "bodyAfterHeadersMs": {
+          "count": 48,
+          "p50": 63,
+          "p95": 188,
+          "maximum": 466
+        },
+        "jsonDecodeMs": {
+          "count": 48,
+          "p50": 0.09331899997778237,
+          "p95": 0.13402999995741993,
+          "maximum": 0.14239999999699648
+        }
+      },
+      "1000": {
+        "count": 10,
+        "responseBytes": 2314269,
+        "elapsedMs": {
+          "count": 10,
+          "p50": 947.5889160000079,
+          "p95": 1384.7375760000432,
+          "maximum": 1384.7375760000432
+        },
+        "headersDelayMs": {
+          "count": 10,
+          "p50": 159,
+          "p95": 416,
+          "maximum": 416
+        },
+        "bodyAfterHeadersMs": {
+          "count": 10,
+          "p50": 787,
+          "p95": 1074,
+          "maximum": 1074
+        },
+        "jsonDecodeMs": {
+          "count": 10,
+          "p50": 0.8804560000135098,
+          "p95": 0.9717229999951087,
+          "maximum": 0.9717229999951087
+        }
+      }
+    }
+  },
+  "deadlineMisses": {
+    "total": 16,
+    "classifications": {
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 12,
+      "undispatched": 4
+    },
+    "targets": [
+      {
+        "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+        "at": 1793208510137,
+        "windowEndAt": 1793208500000,
+        "decisionDeadlineAt": 1793208510000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 1852,
+        "auditAvailableDelayMs": 3386
+      },
+      {
+        "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+        "at": 1793208520172,
+        "windowEndAt": 1793208510000,
+        "decisionDeadlineAt": 1793208520000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 3757,
+        "auditAvailableDelayMs": 5291
+      },
+      {
+        "mint": "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+        "at": 1793208660022,
+        "windowEndAt": 1793208650000,
+        "decisionDeadlineAt": 1793208660000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "undispatched",
+        "auditDispatchDelayMs": null,
+        "auditAvailableDelayMs": null
+      },
+      {
+        "mint": "AUzxwHbzhR1rxC8xU4YV438oYVaQYZydotSNBf6vpump",
+        "at": 1793208660022,
+        "windowEndAt": 1793208650000,
+        "decisionDeadlineAt": 1793208660000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "undispatched",
+        "auditDispatchDelayMs": null,
+        "auditAvailableDelayMs": null
+      },
+      {
+        "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+        "at": 1793208680094,
+        "windowEndAt": 1793208670000,
+        "decisionDeadlineAt": 1793208680000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 3895,
+        "auditAvailableDelayMs": 5718
+      },
+      {
+        "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+        "at": 1793208690058,
+        "windowEndAt": 1793208680000,
+        "decisionDeadlineAt": 1793208690000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 2519,
+        "auditAvailableDelayMs": 4077
+      },
+      {
+        "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+        "at": 1793208770023,
+        "windowEndAt": 1793208760000,
+        "decisionDeadlineAt": 1793208770000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "undispatched",
+        "auditDispatchDelayMs": null,
+        "auditAvailableDelayMs": null
+      },
+      {
+        "mint": "jGCH5EP5o1ac1XsZUTkpc3FRUvvhdpJTuVkxkHwpump",
+        "at": 1793209120024,
+        "windowEndAt": 1793209110000,
+        "decisionDeadlineAt": 1793209120000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 1899,
+        "auditAvailableDelayMs": 3433
+      },
+      {
+        "mint": "jGCH5EP5o1ac1XsZUTkpc3FRUvvhdpJTuVkxkHwpump",
+        "at": 1793209130078,
+        "windowEndAt": 1793209120000,
+        "decisionDeadlineAt": 1793209130000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 1947,
+        "auditAvailableDelayMs": 3489
+      },
+      {
+        "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "at": 1793209210004,
+        "windowEndAt": 1793209200000,
+        "decisionDeadlineAt": 1793209210000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 1681,
+        "auditAvailableDelayMs": 3252
+      },
+      {
+        "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "at": 1793209220029,
+        "windowEndAt": 1793209210000,
+        "decisionDeadlineAt": 1793209220000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 1843,
+        "auditAvailableDelayMs": 3407
+      },
+      {
+        "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+        "at": 1793209230004,
+        "windowEndAt": 1793209220000,
+        "decisionDeadlineAt": 1793209230000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 2014,
+        "auditAvailableDelayMs": 3585
+      },
+      {
+        "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+        "at": 1793209240148,
+        "windowEndAt": 1793209230000,
+        "decisionDeadlineAt": 1793209240000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "undispatched",
+        "auditDispatchDelayMs": null,
+        "auditAvailableDelayMs": null
+      },
+      {
+        "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+        "at": 1793209260079,
+        "windowEndAt": 1793209250000,
+        "decisionDeadlineAt": 1793209260000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 4398,
+        "auditAvailableDelayMs": 6007
+      },
+      {
+        "mint": "7SF6umqmWb5di8gDXurQgwErDnpVuCqsQEyojZiBpump",
+        "at": 1793209300073,
+        "windowEndAt": 1793209290000,
+        "decisionDeadlineAt": 1793209300000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 2475,
+        "auditAvailableDelayMs": 4192
+      },
+      {
+        "mint": "7SF6umqmWb5di8gDXurQgwErDnpVuCqsQEyojZiBpump",
+        "at": 1793209310091,
+        "windowEndAt": 1793209300000,
+        "decisionDeadlineAt": 1793209310000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "classification": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "auditDispatchDelayMs": 2549,
+        "auditAvailableDelayMs": 4132
+      }
+    ],
+    "undispatchedUncertainty": "Four no-session targets have two successful ceiling reads then no audit start, despite available physical/rate headroom. Exact local wait/admission reason was not recorded per step, so provider saturation, replacement contention or unsubscribe occupancy are not established explanations."
+  },
+  "capacityRefusals": {
+    "ledger": [
+      {
+        "mint": "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs",
+        "at": 1793208734263,
+        "rows": 8192,
+        "maximumRows": 8192,
+        "retainedFence": {
+          "signature": "4MRudPQfGv9GHkim2tNjoxyR2mmg716ZSBhUXNoCYwzgSqinL1QdpFudrZ6aH8vC89aUjEPaCzPZqaUu13sh3i4C",
+          "slot": 462561680,
+          "availableAt": 1793208669964,
+          "windowStartAt": 1793208670000
+        },
+        "windowUsable": false,
+        "candidateLocal": true,
+        "allReceivedBytesStillAccounted": true,
+        "validatedPacketRetained": true,
+        "refusalEvidence": "actual offending signature retained outside capped live ledger; source window remains unusable"
+      }
+    ],
+    "cacheScopeCallbacks": [
+      {
+        "mint": "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs",
+        "at": 1793208835360,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "requiresFreshWindow": true,
+        "freshWindowRequired": true,
+        "financialExecutionAuthorized": false
+      },
+      {
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "at": 1793208835360,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "requiresFreshWindow": true,
+        "freshWindowRequired": true,
+        "financialExecutionAuthorized": false
+      },
+      {
+        "mint": "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump",
+        "at": 1793208835369,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "requiresFreshWindow": true,
+        "freshWindowRequired": true,
+        "financialExecutionAuthorized": false
+      },
+      {
+        "mint": "bLQsRP5bLaJPkW1MZ1tYLk5xE84bKUGSctZ5S1Ppump",
+        "at": 1793208835369,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "requiresFreshWindow": true,
+        "freshWindowRequired": true,
+        "financialExecutionAuthorized": false
+      },
+      {
+        "mint": "7nJWoemyVzQy92ow3p5tF3fQtaVXrMBAe8kwqHKspump",
+        "at": 1793208839338,
+        "reason": "NATIVE_FLOW_TRANSACTION_CACHE_LIMIT",
+        "requiresFreshWindow": true,
+        "freshWindowRequired": true,
+        "financialExecutionAuthorized": false
+      }
+    ],
+    "interpretation": "Global180s/16384 transaction-cache saturation affected five otherwise independent scopes after a busy pool reached8192 notification metadata rows. Candidate-local refusal prevented source-wide fatal termination, but did not prevent shared cache pressure poisoning other candidates. Never silently evict required current-window or correction evidence."
+  },
+  "featureResults": {
+    "uniqueTokens": 21,
+    "zeroTradeAssessments": 28,
+    "nonzeroTradeAssessments": 19,
+    "passes": [
+      {
+        "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+        "at": 1793208582590,
+        "windowEndAt": 1793208580000,
+        "entryAgeEligible": true,
+        "features": {
+          "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+          "asOf": 1793208582590,
+          "windowStartAt": 1793208520000,
+          "windowEndAt": 1793208580000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "9197112073",
+          "sellLamports": "1577813195",
+          "netBuyLamports": "7619298878",
+          "tradeCount": 27,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 11,
+          "largestBuyerBps": 2107,
+          "positiveNetBuckets": 4,
+          "priceReturnBps": 943,
+          "firstPrice": {
+            "quoteLamports": "486430613",
+            "tokenUnits": "298809755658"
+          },
+          "lastPrice": {
+            "quoteLamports": "81936630",
+            "tokenUnits": "45994211694"
+          }
+        },
+        "financialQualification": false
+      },
+      {
+        "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+        "at": 1793208594921,
+        "windowEndAt": 1793208590000,
+        "entryAgeEligible": true,
+        "features": {
+          "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+          "asOf": 1793208594921,
+          "windowStartAt": 1793208530000,
+          "windowEndAt": 1793208590000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "11861471924",
+          "sellLamports": "1091382582",
+          "netBuyLamports": "10770089342",
+          "tradeCount": 31,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 12,
+          "largestBuyerBps": 2043,
+          "positiveNetBuckets": 5,
+          "priceReturnBps": 1312,
+          "firstPrice": {
+            "quoteLamports": "242851233",
+            "tokenUnits": "149822617672"
+          },
+          "lastPrice": {
+            "quoteLamports": "242214531",
+            "tokenUnits": "132091462290"
+          }
+        },
+        "financialQualification": false
+      },
+      {
+        "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+        "at": 1793208602206,
+        "windowEndAt": 1793208600000,
+        "entryAgeEligible": true,
+        "features": {
+          "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+          "asOf": 1793208602206,
+          "windowStartAt": 1793208540000,
+          "windowEndAt": 1793208600000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "14540449719",
+          "sellLamports": "848531349",
+          "netBuyLamports": "13691918370",
+          "tradeCount": 36,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 12,
+          "largestBuyerBps": 1999,
+          "positiveNetBuckets": 5,
+          "priceReturnBps": 1633,
+          "firstPrice": {
+            "quoteLamports": "242907582",
+            "tokenUnits": "149429947933"
+          },
+          "lastPrice": {
+            "quoteLamports": "968858129",
+            "tokenUnits": "512320401296"
+          }
+        },
+        "financialQualification": false
+      }
+    ],
+    "overlapMeaning": "Overlapping windows and repeated same-token passes are not independent market coverage or unique profitable opportunities."
+  },
+  "provider": {
+    "physicalStarts": 673,
+    "physicalSettlements": 673,
+    "startsByMethod": {
+      "upgrade": 4,
+      "subscribeMigration": 1,
+      "getMultipleAccounts": 226,
+      "logsSubscribe": 85,
+      "ping": 110,
+      "getTransaction": 61,
+      "getSignaturesForAddress": 113,
+      "logsUnsubscribe": 73
+    },
+    "peakStarts": {
+      "10000": 20,
+      "60000": 66
+    },
+    "httpStatuses": {
+      "200": 363,
+      "None": 37
+    },
+    "timeoutsByMethod": {
+      "getSignaturesForAddress": 42,
+      "getTransaction": 1,
+      "getMultipleAccounts": 1
+    },
+    "queryTimeoutStatuses": {
+      "None": 12,
+      "200": 5
+    },
+    "newUnits": 673,
+    "newAccountedResponseBytes": 175272692,
+    "cumulativeUnits": 6869,
+    "cumulativeAccountedResponseBytes": 641422025,
+    "cumulativeUncertainResponseBytes": 289013760,
+    "fatal": null,
+    "closed": true
+  },
+  "resources": {
+    "maximumRssBytes": 392208384,
+    "cpu": {
+      "user": 253864511,
+      "system": 11223587
+    },
+    "eventLoopDelayP95Ms": 78.118911,
+    "eventLoopDelayMaximumMs": 716.701695,
+    "retainedEvidenceBytes": 150067575,
+    "evidenceSegments": 18
+  },
+  "supervisorMaxima": {
+    "runnerRssBytes": 392941568,
+    "publisherRssBytes": 100900864
+  },
+  "nativeFlow": {
+    "socketBytes": 70893333,
+    "applicationBytes": 70697099,
+    "recordedBytes": 88427204,
+    "notifications": 47087,
+    "normalizedEvents": 5273,
+    "processingMs": {
+      "count": 256,
+      "p95": 3.8976549999788404,
+      "maximum": 5.890124000026844
+    },
+    "queueAgeMs": {
+      "p95": 766,
+      "maximum": 824
+    },
+    "notificationRetentionAggregate": {
+      "compactedScopeRows": 4112,
+      "compactionOperations": 24,
+      "peakRetainedRowsPerScope": 8193,
+      "peakRetainedRowsAcrossScopes": 8213,
+      "candidatePressureRefusals": 1,
+      "units": "Scoped notification metadata rows, including one refusal reserve per scope; the same transaction in two scopes counts twice",
+      "meaning": "Run totals survive subscription ACK reset and candidate retirement; compaction operations count only removals. These are not unique trades, audit completeness or market coverage."
+    },
+    "perTransactionEnrichmentRequests": 0,
+    "subscriptionRebindings": 23,
+    "retiredNotifications": 0,
+    "corrections": 0,
+    "protocolEffects": 44,
+    "fatal": null,
+    "transportIntegrityGaps": 0
+  },
+  "throughput": {
+    "informationRecords": 47066,
+    "success": 21399,
+    "failed": 25667,
+    "receiptToAvailabilityMs": {
+      "count": 47066,
+      "p50": 472,
+      "p95": 1404,
+      "maximum": 3500
+    },
+    "peakReceiptRecords": {
+      "1000": 651,
+      "10000": 2439,
+      "60000": 8202
+    },
+    "sixAckedScopeMs": 764795,
+    "sixAckedLongestMs": 69441,
+    "deepConcurrencyMs": {
+      "0": 6693,
+      "1": 2818,
+      "2": 6548,
+      "3": 9155,
+      "4": 26687,
+      "5": 73304,
+      "6": 764795
+    },
+    "byPool": {
+      "HpUwLF6GZwvvp2Bcx86LQ1UpTnVaUnWgHhY3wNb2pump": 3,
+      "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump": 3035,
+      "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump": 5266,
+      "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5": 146,
+      "nyHJiwvXBQj9rLjAfx3kuhmHczrfw33dwXCK79spump": 10,
+      "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump": 22,
+      "G4oPDxjosSDQYWaLPqw95Mb6Wah79jfNiqW2btCUpump": 2073,
+      "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs": 16493,
+      "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump": 2,
+      "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump": 3091,
+      "bLQsRP5bLaJPkW1MZ1tYLk5xE84bKUGSctZ5S1Ppump": 72,
+      "7nJWoemyVzQy92ow3p5tF3fQtaVXrMBAe8kwqHKspump": 363,
+      "2oN2ZxSh7bwATX8JqLS4Zbf7ewrPU7w7wqgQMYJEpump": 2211,
+      "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump": 8137,
+      "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump": 1,
+      "56xZsxJkoEyVisFtDFcK9TQ3GxDUHLUGi1kyDnbNpump": 149,
+      "7SF6umqmWb5di8gDXurQgwErDnpVuCqsQEyojZiBpump": 5511,
+      "BwHQ4QcooRU1D8Dp7JtQjWsZWeqEQjGpy93jFeS7pump": 481
+    }
+  },
+  "feeds": {
+    "maximumCandidates": 6,
+    "watchActivity": {
+      "requested": false,
+      "semantics": "unverified selection hints only; observed only while a deep stream is already open",
+      "knownIdentities": 134,
+      "framesExamined": 606436,
+      "matchedPayloadParses": 797,
+      "hints": 703,
+      "failures": 0,
+      "processingMs": 1104.7775200245846,
+      "coalesceMs": 10000
+    },
+    "candidates": [],
+    "enrichmentInFlight": false,
+    "startedAt": 1793208434217,
+    "durationMs": 900000,
+    "stopped": true,
+    "firstFailure": null,
+    "pumpApiSocketBytes": 960988997,
+    "discoverySocketBytes": 3499,
+    "controlBytesCharged": 3748,
+    "totalSocketBytes": 960992496,
+    "lastAnyTrafficAt": 1793209323222,
+    "frames": 606453,
+    "irrelevantFrames": 606436,
+    "selectedFrames": 0,
+    "parsedPumpApiFrames": 0,
+    "recordedBytes": 4773,
+    "normalizedTrades": 0,
+    "gaps": 0,
+    "discoveryConnected": false,
+    "pumpApiConnected": false,
+    "discoveryDesired": false,
+    "pumpApiDesired": false,
+    "failedCandidate": false,
+    "candidateRetryAt": 0,
+    "connections": {
+      "discovery": 1,
+      "pumpapi": 1
+    },
+    "candidate": null,
+    "physicalTransportsSettled": true,
+    "streamFieldCompleteness": "REQUIRES_BOUNDED_INDEPENDENT_AUDIT",
+    "liveTrading": false
+  },
+  "financial": {
+    "financialWriterOpened": false,
+    "entriesEnabled": false,
+    "portfolio": null,
+    "fills": 0,
+    "positions": 0,
+    "pnl": "not measured"
+  },
+  "decision": "MEASURED_REPAIR_GAINS; UNSUITABLE FOR RELIABLE BUSY SIX-SLOT CONTINUOUS QUALIFICATION IN THIS CONFIGURATION",
+  "nextMaterialRepairs": [
+    "Preserve fresh valid prior support and healthy WS during recoverable HTTP refresh failure; expire individual scopes only at actual validation/source deadline or structural invalidity.",
+    "Contain global transaction-cache pressure with correctness-preserving ownership/reclamation/admission; do not merely raise memory caps.",
+    "Investigate unrecorded local audit wait reasons and busy1000-row body timeout efficiency without claiming provider entitlement or accepting missing executed flow."
+  ]
+}
