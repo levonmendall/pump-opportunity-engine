@@ -15,7 +15,7 @@ const code=(error:unknown)=>error instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.
 export class NativeAuditSession {
  readonly startedAt:number;readonly deadlineAt:number;
  private readonly now:()=>number;private readonly abort=new AbortController();private readonly signal:AbortSignal;
- private pendingPage:DeferredPage|null=null;private nextPage=0;private completed=false;private failure:string|null=null;private value:NativeFlowAuditResult|null=null;
+ private pendingPage:DeferredPage|null=null;private nextPage=0;private completed=false;private failure:string|null=null;private value:NativeFlowAuditResult|null=null;private diagnostic:NativeFlowAuditResult|null=null;
  private readonly helper:Promise<void>;
  constructor(options:NativeAuditSessionOptions){
   if(!Array.isArray(options.notifications)||options.notifications.length>8192)throw Error('NATIVE_AUDIT_SESSION_INPUT_BOUND');
@@ -27,6 +27,7 @@ export class NativeAuditSession {
   // helper completion times remain actual; advancing a page never backdates.
   const captured={...original,target:{...original.target},notifications:structuredClone(original.notifications),...(original.contextFences?{contextFences:structuredClone(original.contextFences)}:{}),admission:original.admission?{...original.admission}:undefined};
   this.helper=audit({...captured,now:this.now,signal:this.signal,maximumPages,maximumElapsedMs:this.deadlineAt-this.startedAt,call:<T>(method:string,params:unknown[],signal?:AbortSignal,admission?:PilotRpcCallOptions)=>this.defer<T>(method,params,signal,admission)}).then(result=>{
+   this.diagnostic=structuredClone(result);
    if(!this.expired()&&result.availableAt<=this.deadlineAt)this.value=structuredClone(result);
    else if(!this.failure)this.cancel('NATIVE_AUDIT_SESSION_DEADLINE');
   },error=>{this.failure??=code(error);}).finally(()=>{this.completed=true;this.pendingPage?.detach();this.pendingPage=null;});
@@ -64,6 +65,10 @@ export class NativeAuditSession {
   const pending=this.pendingPage;this.pendingPage=null;pending.detach();pending.reject(error);return true;
  }
  result():NativeFlowAuditResult|null{this.expired();return this.value?structuredClone(this.value):null;}
+ /** Historical helper outcome, including late/unavailable/cancelled results.
+  * Diagnostic evidence only; error(), generation and current-window admission
+  * must still pass before any assessment. */
+ diagnosticResult():NativeFlowAuditResult|null{return this.diagnostic?structuredClone(this.diagnostic):null;}
  error():string|null{this.expired();return this.failure;}
  cancel(reason='NATIVE_AUDIT_SESSION_CANCELLED'){
   if(this.completed||this.failure)return;

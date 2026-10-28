@@ -65,7 +65,7 @@ test('custom audit injection still receives only a deferred caller and the origi
 
 test('complete validation available only after the fixed deadline is never admitted as an earlier pass',async()=>{
  let at=161000;const f=fixture(2),session=new NativeAuditSession({...f.source,now:()=>at,deadlineAt:169999,maximumPages:2,audit:async options=>{const result=await auditNativeFlowWindow(options);at=170000;return result;}});
- await session.advance();assert.equal(session.respond(1,f.history.slice(0,100)),true);await session.advance();assert.equal(session.respond(2,f.history.slice(100,200)),true);await session.advance();assert.equal(session.result(),null);assert.equal(session.error(),'NATIVE_AUDIT_SESSION_DEADLINE');f.session.cancel();await f.session.advance();
+ await session.advance();assert.equal(session.respond(1,f.history.slice(0,100)),true);await session.advance();assert.equal(session.respond(2,f.history.slice(100,200)),true);await session.advance();assert.equal(session.result(),null);assert.equal(session.error(),'NATIVE_AUDIT_SESSION_DEADLINE');const diagnostic=session.diagnosticResult();assert.ok(diagnostic);assert.equal(diagnostic.status,'verified');assert.equal(diagnostic.complete,true);assert.equal(diagnostic.availableAt,161000,'historical helper availability is preserved without backdating the delayed wrapper admission');f.session.cancel();await f.session.advance();
 });
 
 
