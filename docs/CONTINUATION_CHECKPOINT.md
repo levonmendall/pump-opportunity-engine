@@ -1,3 +1,27 @@
+Updated2026-10-28 18:35UTC — integrated recovery source9b895364 (use actual full git hash below in verification).
+
+The combined support-refresh containment, compact retired-pool correction cache,
+bounded per-target audit wait trace, and PAPER management reservations passed
+1352/1352 serial repository tests, build/compile,43 candidate operator checks,
+and16 PAPER supervisor checks. Exact source files/raw outputs:
+evidence/continuous-recovery-20261028/integrated-containment-03/verification.json.
+No source inputs changed during verification; no market requests or financial
+account writes occurred. Original FUNDING work remains untouched.
+
+Next: source-pin this code and run one bounded900s six-slot candidate interval.
+Purpose: actual HTTP-refresh continuity/cache resource containment and auditable
+per-target wait reasons; no24-hour acceptance or financial activity claim.
+Existing source718 run is fully settled/linked:262books,6869units,
+641422025accountedB,289013760uncertainB. Original evidence/usage remains unchanged.
+Cloud coordination-only leasePID103332, finite3h from18:16UTC; old71736zombie.
+No live source or financial writer currently running. Original experimental
+account remains flat atrevision8934 with read-only verified consistent backup.
+Host code-only SQLite/worker check passed; same-account transfer prepared but
+NOT executed. Actual original observer was read-only verified unchanged before/
+after the source718 interval; no later health claim. Render shows STOPPED/stale.
+
+The source718 measured findings and historical chronology below remain valid.
+
 Updated 2026-10-28 18:18 UTC — retained forward718 evidence reconciled.
 
 Latest lead source is 71896104f07faa2b193b90d3d3133a8e29236f35 on

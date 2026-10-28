@@ -1,0 +1,63 @@
+{
+  "verifiedAt": "2026-10-28T18:35:39.055677+00:00",
+  "sourceCommit": "9b895364dcbe28951c52a10b25b3578813abdf3d",
+  "sourceInputsUnchangedAfterTests": true,
+  "fullSerialTests": 1352,
+  "fullSerialPass": 1352,
+  "fullSerialFail": 0,
+  "buildCompilePassed": true,
+  "candidateOperatorChecksPassed": 43,
+  "paperSupervisionChecksPassed": 16,
+  "mergedContainmentFocusedPassed": 95,
+  "logs": [
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/compile.txt",
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/focused-merge.txt",
+      "bytes": 11525,
+      "sha256": "fcc8728baf6f351cc5fa5d84d110de61acc18a4ea9166367119360572d89d3da"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/full-suite.txt",
+      "bytes": 161103,
+      "sha256": "5f9202db9142a35b1fbb344bfc0358c8917191f3d328fa6fd051cea58eb00f42"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/operator-outcomes.txt",
+      "bytes": 109,
+      "sha256": "38eeff1237d74275801617a271eced659e08b1cad8069897d18e659ae40641d8"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/operator-package.txt",
+      "bytes": 109,
+      "sha256": "228b75e3a1f0e7825ee090168a4a2f5adc8930ac247a8d3f4cb1f658e0ef690a"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/operator-readback.txt",
+      "bytes": 114,
+      "sha256": "40fc5897631438765e362ef938a7c0b00f892f19390bd3edbfac70e520d0fd0f"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/operator-stager.txt",
+      "bytes": 1000,
+      "sha256": "be7f4aacaff1fbda94ebeb4f60806e0b72833e24f050adba0f7d76b83d7bf254"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-containment-03/paper-supervision.txt",
+      "bytes": 115,
+      "sha256": "9ddc8d8e8f364003639a2068be788e2632ffd2b3731ae5c3e1c000dece0f67d2"
+    }
+  ],
+  "originalFundingChangePreserved": true,
+  "marketRequests": 0,
+  "financialAccountOpened": false,
+  "acceptanceClaim": false
+}
