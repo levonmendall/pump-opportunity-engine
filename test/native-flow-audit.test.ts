@@ -69,7 +69,7 @@ test('quiet interval can verify bounded signature absence only with genuine temp
 });
 
 test('invalid target, candidate identity and excessive input bounds perform no provider request',async()=>{
- for(const patch of [{pool:'invalid'},{target:{startAt:100000,endAt:150000}},{maximumPages:5},{maximumElapsedMs:10001},{target:{startAt:110000,endAt:170000}}]){const f=fixture(),r=await auditNativeFlowWindow({...f.options,...patch});assert.equal(r.status,'unavailable');assert.equal(f.calls.length,0);}
+ for(const patch of [{pool:'invalid'},{target:{startAt:100000,endAt:150000}},{maximumPages:7},{maximumElapsedMs:10001},{target:{startAt:110000,endAt:170000}}]){const f=fixture(),r=await auditNativeFlowWindow({...f.options,...patch});assert.equal(r.status,'unavailable');assert.equal(f.calls.length,0);}
 });
 
 test('fresh coherent bank Clock ceiling independently audits quiet history without an invented notification anchor',async()=>{

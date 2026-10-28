@@ -15,11 +15,11 @@ function fixture(pages=3,patch:Pick<Partial<NativeFlowAuditOptions>,'signal'>={}
  let at=161000,physicalInFlight=false;
  const high=100+pages*100,history=Array.from({length:pages*100},(_,i)=>row(high-1-i,high-1-i)),notifications=[note(100,100,99900),...Array.from({length:pages*100-1},(_,i)=>note(101+i,101+i,100000+i*100)),note(high,high,160100)];
  const source={pool,target:{...target},notifications,now:()=>at,pageLimit:100 as const,...patch};
- const session=new NativeAuditSession({...source,deadlineAt:169999,maximumPages:4});
+ const session=new NativeAuditSession({...source,deadlineAt:169999,maximumPages:Math.max(4,pages) as 4|5|6});
  return {session,source,history,get at(){return at;},advance(ms:number){at+=ms;},setPhysical(v:boolean){physicalInFlight=v;},get physicalInFlight(){return physicalInFlight;}};
 }
 
-for(const count of [2,3,4])test(`${count} deferred pages use existing validation and permit explicit controls between caller dispatches`,async()=>{
+for(const count of [2,3,4,5,6])test(`${count} deferred pages use existing validation and permit explicit controls between caller dispatches`,async()=>{
  const f=fixture(count),dispatches:NativeAuditPage[]=[],order:string[]=[];
  for(let page=1;page<=count;page++){
   await f.session.advance();assert.equal(f.session.result(),null);const pending=f.session.pending();assert.ok(pending);assert.equal(pending.page,page);assert.equal(pending.method,'getSignaturesForAddress');assert.equal(pending.options.admissionOpen?.(),true);assert.equal(pending.options.latestStartAt,169999);assert.equal((pending.params[1] as any).minContextSlot,100+count*100);
@@ -29,7 +29,7 @@ for(const count of [2,3,4])test(`${count} deferred pages use existing validation
   assert.equal(f.session.respond(page,[]),false,'duplicate response cannot settle a newer page');
  }
  await f.session.advance();const result=f.session.result();assert.ok(result);assert.equal(result.status,'verified');assert.equal(result.requestAttempts,count);assert.equal(result.historyRows,count*100);assert.equal(result.requiredSignatures.length,count*100-1);assert.equal(result.availableAt,f.at);assert.deepEqual(result.target,target);assert.equal(f.session.pending(),null);assert.equal(f.session.error(),null);assert.equal(dispatches.length,count);assert.equal(order.length,count);
- let comparisonAt=161000,index=0;const direct=await auditNativeFlowWindow({...f.source,now:()=>comparisonAt,call:async<T>()=>{comparisonAt+=250;return f.history.slice(index++*100,index*100) as T;},maximumPages:4,maximumElapsedMs:8999});
+ let comparisonAt=161000,index=0;const direct=await auditNativeFlowWindow({...f.source,now:()=>comparisonAt,call:async<T>()=>{comparisonAt+=250;return f.history.slice(index++*100,index*100) as T;},maximumPages:Math.max(4,count),maximumElapsedMs:8999});
  assert.deepEqual(result,direct,'resumption reuses the established auditor rather than duplicating validation');
 });
 

@@ -5,7 +5,7 @@ import {auditNativeFlowWindow,type NativeFlowAuditOptions,type NativeFlowAuditRe
 import type {PilotRpcCallOptions} from './pilot-rpc.js';
 
 export type NativeAuditSessionOptions=Omit<NativeFlowAuditOptions,'call'|'maximumElapsedMs'|'maximumPages'> & {
- deadlineAt:number;maximumPages?:1|2|3|4;audit?:typeof auditNativeFlowWindow;
+ deadlineAt:number;maximumPages?:1|2|3|4|5|6;audit?:typeof auditNativeFlowWindow;
 };
 export type NativeAuditPage={page:number;requestedLimit:100|1000;method:'getSignaturesForAddress';params:unknown[];signal:AbortSignal;options:PilotRpcCallOptions};
 type DeferredPage={request:NativeAuditPage;resolve:(value:unknown)=>void;reject:(error:unknown)=>void;detach:()=>void};
@@ -13,7 +13,7 @@ const int=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const code=(error:unknown)=>error instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(error.message)?error.message:'NATIVE_AUDIT_SESSION_UNAVAILABLE';
 
 export class NativeAuditSession {
- readonly startedAt:number;readonly deadlineAt:number;
+ readonly startedAt:number;readonly deadlineAt:number;private readonly maximumPages:number;
  private readonly now:()=>number;private readonly abort=new AbortController();private readonly signal:AbortSignal;
  private pendingPage:DeferredPage|null=null;private nextPage=0;private completed=false;private failure:string|null=null;private value:NativeFlowAuditResult|null=null;private diagnostic:NativeFlowAuditResult|null=null;
  private readonly helper:Promise<void>;
@@ -23,6 +23,7 @@ export class NativeAuditSession {
   if(!int(this.startedAt)||!int(this.deadlineAt)||this.deadlineAt<=this.startedAt||this.deadlineAt>options.target.endAt+9999||this.startedAt<options.target.endAt||this.deadlineAt-this.startedAt>10000)throw Error('NATIVE_AUDIT_SESSION_DEADLINE');
   this.signal=options.signal?AbortSignal.any([options.signal,this.abort.signal]):this.abort.signal;
   const {deadlineAt:_deadline,maximumPages=4,audit=auditNativeFlowWindow,...original}=options;
+  if(!int(maximumPages)||maximumPages<1||maximumPages>6)throw Error('NATIVE_AUDIT_SESSION_PAGE_BOUND');this.maximumPages=maximumPages;
   // The source generation and fences are captured once. Fresh response and
   // helper completion times remain actual; advancing a page never backdates.
   const captured={...original,target:{...original.target},notifications:structuredClone(original.notifications),...(original.contextFences?{contextFences:structuredClone(original.contextFences)}:{}),admission:original.admission?{...original.admission}:undefined,...(original.notificationGeneration?{notificationGeneration:{...original.notificationGeneration}}:{}),...(original.postSnapshotNotifications?{postSnapshotNotifications:(startedAt:number)=>{if(this.expired())throw Error(this.failure??'NATIVE_AUDIT_SESSION_ABORTED');return original.postSnapshotNotifications!(startedAt);}}:{})};
@@ -41,7 +42,7 @@ export class NativeAuditSession {
  }
  private defer<T>(method:string,params:unknown[],signal?:AbortSignal,admission?:PilotRpcCallOptions):Promise<T>{
   if(this.expired())return Promise.reject(Error(this.failure!));
-  if(method!=='getSignaturesForAddress'||this.pendingPage!==null||this.nextPage>=4)return Promise.reject(Error('NATIVE_AUDIT_SESSION_PAGE_BOUND'));
+  if(method!=='getSignaturesForAddress'||this.pendingPage!==null||this.nextPage>=this.maximumPages)return Promise.reject(Error('NATIVE_AUDIT_SESSION_PAGE_BOUND'));
   const requestedLimit=(params[1] as {limit?:unknown}|undefined)?.limit;if(requestedLimit!==100&&requestedLimit!==1000)return Promise.reject(Error('NATIVE_AUDIT_SESSION_PAGE_LIMIT'));
   const combined=signal?AbortSignal.any([signal,this.signal]):this.signal;
   return new Promise<T>((resolve,reject)=>{

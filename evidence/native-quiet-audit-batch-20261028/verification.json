@@ -1,0 +1,107 @@
+{
+  "baseCommit": "f620c324749d5e9528b569df086edb4ddc482272",
+  "classification": "OFFLINE_QUIET_BATCH_AND_OPPORTUNISTIC_SIX_PAGE_LIMIT_NOT_FORWARD_PERFORMANCE",
+  "sourceFiles": [
+    {
+      "path": "src/component-transport.ts",
+      "sha256": "c18837794903c47eafc3a3ba101c9e671dbc20b2916fe8c25a35bbb80e6215bc"
+    },
+    {
+      "path": "src/native-audit-session.ts",
+      "sha256": "a9d0231d00b2ddddf274bbbbc49d9122d1f8168d342b6eb6d2b8f25d60d164eb"
+    },
+    {
+      "path": "src/native-candidate-runner.ts",
+      "sha256": "05016a7b279d8f38de62e0badb8f6ff5643e84c1f7839604b78be045d097598a"
+    },
+    {
+      "path": "src/native-flow-audit.ts",
+      "sha256": "b255c848d69550e3efa6983e6aed73294f7634ee52474e3853628e5c400e4e23"
+    },
+    {
+      "path": "src/pilot-rpc.ts",
+      "sha256": "35340dd19709ba22aad40bdba30cc86e6ba0ac1ef6ce09066a9339de7e862806"
+    },
+    {
+      "path": "src/run-native-paper.ts",
+      "sha256": "18d9d5007e325ffb2cab7523ec6934e9d6527d40839f0fbba9d35bb041cb5dbf"
+    },
+    {
+      "path": "test/native-audit-session.test.ts",
+      "sha256": "3e9536602ba5df44314b1a8110141ba81fc4d0849a6f69b9770a1fdc3850428d"
+    },
+    {
+      "path": "test/native-candidate-runner.test.ts",
+      "sha256": "22a35361b3aa824cf8365185999ecc5c0ab2e4f7d5ccd464f519428b8a2e4989"
+    },
+    {
+      "path": "test/native-flow-audit.test.ts",
+      "sha256": "fe927e7c650cc879d9ad9140149d43a98e6c04538f066441712d26b4a8d53fb9"
+    },
+    {
+      "path": "test/pilot-rpc-history-batch.test.ts",
+      "sha256": "dfc45468763bda0aaf5ffa5c7386636ebefc424c621089b3520d429133010b8a"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-concurrency=2",
+        "test/component-history-batch.test.ts",
+        "test/native-audit-session.test.ts",
+        "test/native-candidate-runner.test.ts",
+        "test/native-flow-audit.test.ts",
+        "test/native-flow-audit-batch.test.ts",
+        "test/pilot-rpc-history-batch.test.ts",
+        "test/pilot-rpc.test.ts",
+        "test/pilot-rpc-derived-status.test.ts",
+        "test/pilot-rpc-minute-research.test.ts",
+        "test/pilot-rpc-query-timeout.test.ts",
+        "test/native-paper-integration.test.ts",
+        "test/native-paper-startup.test.ts",
+        "test/native-paper-management-reserve.test.ts"
+      ],
+      "startedAt": "2026-10-28T19:03:15.566593+00:00",
+      "finishedAt": "2026-10-28T19:03:26.192569+00:00",
+      "exitCode": 0,
+      "rawOutput": "evidence/native-quiet-audit-batch-20261028/focused.log",
+      "sha256": "17456584dbda7640a461f114d2a217c3c9b360462dd3afbdebb264bbe359c19c",
+      "bytes": 25920
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-28T19:03:26.192716+00:00",
+      "finishedAt": "2026-10-28T19:03:34.012685+00:00",
+      "exitCode": 0,
+      "rawOutput": "evidence/native-quiet-audit-batch-20261028/build.log",
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "bytes": 55
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "compile"
+      ],
+      "startedAt": "2026-10-28T19:03:34.012754+00:00",
+      "finishedAt": "2026-10-28T19:03:44.105942+00:00",
+      "exitCode": 0,
+      "rawOutput": "evidence/native-quiet-audit-batch-20261028/compile.log",
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a",
+      "bytes": 77
+    }
+  ],
+  "independentReview": "GO after declared2MiB hard-limit and disabled-state persistence/diagnostic fatality corrections; final regressions cover those paths.",
+  "networkRequests": 0,
+  "realFinancialLedgerOpened": false,
+  "originalObserverModified": false,
+  "fullRepositorySuitePerformed": false
+}

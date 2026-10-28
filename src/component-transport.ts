@@ -29,7 +29,7 @@ export class ComponentTransport {
     return n;
   }
   sampleSocket(){return this.activeConnection?this.sampleConnection(this.activeConnection):undefined;}
-  private async httpJson(op:ComponentOperation,method:string,envelope:unknown,onHttpInvoked?:()=>void){
+  private async httpJson(op:ComponentOperation,method:string,envelope:unknown,onHttpInvoked?:()=>void,maximumResponseBytes=2*1024*1024,historyBatch=false){
     const requestedAt=this.now(),startedMono=performance.now();onHttpInvoked?.();
     let res:Response|undefined,headersAt:number|null=null,firstBodyAt:number|null=null,lastBodyAt:number|null=null,bodyCompleteAt:number|null=null,jsonDecodedAt:number|null=null,decodeMs:number|null=null,size=0,chunksReceived=0,outcome='not-completed';
     try{
@@ -38,16 +38,17 @@ export class ComponentTransport {
       // Stop at throttle headers; the unread body remains reserved uncertainty.
       if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
       if(Number(res.headers.get('content-length'))>2*1024*1024){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_RESPONSE_SIZE');}
+      if(Number(res.headers.get('content-length'))>maximumResponseBytes){await res.body?.cancel().catch(()=>{});throw Error(historyBatch&&maximumResponseBytes<2*1024*1024?'COMPONENT_HISTORY_BATCH_RESPONSE_SIZE':'COMPONENT_HTTP_RESPONSE_SIZE');}
       const reader=res.body?.getReader();if(!reader)throw Error('COMPONENT_HTTP_EMPTY_RESPONSE');
       const chunks:Uint8Array[]=[];let complete=false;const abort=()=>{void reader.cancel().catch(()=>{});};op.signal.addEventListener('abort',abort,{once:true});
       // Fetch yields decoded bytes. Compressed Content-Length is not that size.
       const length=res.headers.get('content-length'),encoding=res.headers.get('content-encoding');
       const expectedLength=length!==null&&/^[0-9]+$/.test(length)&&Number.isSafeInteger(Number(length))&&(!encoding||encoding==='identity')?Number(length):null;
-      try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');if(expectedLength!==null&&size!==expectedLength)throw Error('COMPONENT_HTTP_TRUNCATED_RESPONSE');op.completeResponse();complete=true;bodyCompleteAt=this.now();break;}const at=this.now();firstBodyAt??=at;lastBodyAt=at;chunksReceived++;size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>2*1024*1024)throw Error('COMPONENT_HTTP_RESPONSE_SIZE');if(res.ok)chunks.push(value);}}
+      try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');if(expectedLength!==null&&size!==expectedLength)throw Error('COMPONENT_HTTP_TRUNCATED_RESPONSE');op.completeResponse();complete=true;bodyCompleteAt=this.now();break;}const at=this.now();firstBodyAt??=at;lastBodyAt=at;chunksReceived++;size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>maximumResponseBytes)throw Error(historyBatch&&maximumResponseBytes<2*1024*1024?'COMPONENT_HISTORY_BATCH_RESPONSE_SIZE':'COMPONENT_HTTP_RESPONSE_SIZE');if(res.ok)chunks.push(value);}}
       finally{op.signal.removeEventListener('abort',abort);if(!complete)await reader.cancel().catch(()=>{});reader.releaseLock();}
       const responseReceivedAt=this.now();this.record('http-response-timing',{id:op.id,method,requestedAt,availableAt:responseReceivedAt,responseBytes:size,status:res.status});
       if(!res.ok)throw Error('COMPONENT_HTTP_STATUS_'+res.status);
-      let body:any;const decodeStarted=performance.now();try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw Error('COMPONENT_HTTP_MALFORMED_JSON');}finally{decodeMs=performance.now()-decodeStarted;}
+      let body:any;const decodeStarted=performance.now();try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw Error(historyBatch?'COMPONENT_HISTORY_BATCH_MALFORMED_JSON':'COMPONENT_HTTP_MALFORMED_JSON');}finally{decodeMs=performance.now()-decodeStarted;}
       jsonDecodedAt=this.now();outcome='json-decoded';return {body,requestedAt,responseReceivedAt,responseBytes:size};
     }catch(error){outcome=error instanceof Error&&/^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(error.message)?error.message:'COMPONENT_HTTP_BODY_INTERRUPTED';throw error;}
     finally{
@@ -69,8 +70,9 @@ export class ComponentTransport {
   signatureHistoryBatchUsage(){return {scope:'THIS_TRANSPORT_INSTANCE',...this.historyBatchCounts,logicalQueriesWithoutValidatedResponse:this.historyBatchCounts.logicalQueriesStarted-this.historyBatchCounts.successfulLogicalQueries-this.historyBatchCounts.rpcErrorResponses,meaning:'One physical HTTP envelope is not one provider query or billing unit; provider batch eligibility/metering is unverified.'};}
   /** A targeted transport only. Every item remains an independent provider query
    * and must still pass the existing pool-window audit. No automatic retry. */
-  async callSignatureHistoryBatch<T=unknown>(requests:readonly SignatureHistoryBatchRequest[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<SignatureHistoryBatchResponse<T>>{
+  async callSignatureHistoryBatch<T=unknown>(requests:readonly SignatureHistoryBatchRequest[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean;maximumResponseBytes?:number}={}):Promise<SignatureHistoryBatchResponse<T>>{
     if(!Array.isArray(requests)||requests.length<1||requests.length>6)throw Error('COMPONENT_HISTORY_BATCH_SIZE');
+    const maximumResponseBytes=options.maximumResponseBytes??2*1024*1024;if(!Number.isSafeInteger(maximumResponseBytes)||maximumResponseBytes<65536||maximumResponseBytes>2*1024*1024)throw Error('COMPONENT_HISTORY_BATCH_RESPONSE_LIMIT');
     const keys=new Set<string>();const copied=requests.map(request=>{
       if(!request||typeof request!=='object'||Array.isArray(request)||Object.keys(request).some(key=>!['key','params'].includes(key)))throw Error('COMPONENT_HISTORY_BATCH_REQUEST');
       const key=request.key,params=request.params;
@@ -89,7 +91,7 @@ export class ComponentTransport {
     const batch=await this.budget.operate({transport:'http',method:'getSignaturesForAddress'},async op=>{
       const wire=copied.map((request,index)=>({jsonrpc:'2.0',id:'signature-history:'+op.id+':'+index,method:'getSignaturesForAddress',params:request.params}));
       if(Buffer.byteLength(JSON.stringify(wire))>64000)throw Error('COMPONENT_HISTORY_BATCH_REQUEST_SIZE');
-      const response=await this.httpJson(op,'getSignaturesForAddress',wire,()=>{this.historyBatchCounts.physicalHttpStarts++;this.historyBatchCounts.logicalQueriesStarted+=wire.length;});
+      const response=await this.httpJson(op,'getSignaturesForAddress',wire,()=>{this.historyBatchCounts.physicalHttpStarts++;this.historyBatchCounts.logicalQueriesStarted+=wire.length;},maximumResponseBytes,true);
       if(!Array.isArray(response.body)||response.body.length!==wire.length)throw Error('COMPONENT_HISTORY_BATCH_ENVELOPE');
       const byId=new Map<string,any>();for(const item of response.body){if(!item||typeof item!=='object'||Array.isArray(item)||item.jsonrpc!=='2.0'||typeof item.id!=='string'||!wire.some(w=>w.id===item.id)||byId.has(item.id)||Object.hasOwn(item,'result')===Object.hasOwn(item,'error')||Object.hasOwn(item,'error')&&(!item.error||typeof item.error!=='object'||Array.isArray(item.error)||!Number.isSafeInteger(item.error.code)))throw Error('COMPONENT_HISTORY_BATCH_ENVELOPE');byId.set(item.id,item);}
       const validatedAt=this.now(),items:SignatureHistoryBatchItem<T>[]=wire.map((request,index)=>{const item=byId.get(request.id),common={key:copied[index]!.key,id:request.id,requestedAt:response.requestedAt,responseReceivedAt:response.responseReceivedAt,validatedAt};return Object.hasOwn(item,'error')?{...common,status:'rpc-error' as const,errorCode:item.error.code}:{...common,status:'result' as const,result:item.result as T};});
