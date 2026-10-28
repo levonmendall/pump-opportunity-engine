@@ -40,6 +40,8 @@ export class PilotRpc{
   private readonly initial:ComponentBaseline;private baseline:ComponentBaseline;private budget:ComponentBudget|undefined;private transport:ComponentTransport|undefined;
   private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;private controlCooldownMono=0;
   private methodStarts:Array<{at:number;origin:'inherited-unknown'|'getTransaction'}>=[];private methodRefusals=0;
+  private derivedTimer:ReturnType<typeof setTimeout>|null=null;private derivedDirtyAt:number|null=null;private derivedDirtyMono:number|null=null;private derivedGeneratedAt:number|null=null;private derivedGeneratedMono:number|null=null;
+  private readonly derivedPersistence={maximumDelayMs:1000,passiveReceiptCalls:0,coalescedPassiveReceipts:0,timerFlushes:0,flushFailures:0,lastFailureAt:null as number|null,maximumObservedDirtyAgeMs:0};
   constructor(private readonly options:PilotRpcOptions){
     this.now=options.now??Date.now;this.mono=options.monotonic??(()=>performance.now());this.startedAt=this.now();this.startedMono=this.mono();
     const profile=options.profile;
@@ -75,7 +77,22 @@ export class PilotRpc{
     const fd=openSync(tmp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);try{writeFileSync(fd,body);fsyncSync(fd);}finally{closeSync(fd);}if(replace)renameSync(tmp,path);const d=openSync(this.dir,constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(d);}finally{closeSync(d);}
     }finally{const elapsed=Math.max(0,performance.now()-persistedAt);this.persistence.totalMs+=elapsed;this.persistence.maximumMs=Math.max(this.persistence.maximumMs,elapsed);}
   }
-  private persist(){this.save('status.json',this.usage(),true);}
+  /** Only this derived projection is coalesced. ComponentBudget still durably
+   * charges every received chunk before this method can be considered. */
+  private persist(){
+    if(this.derivedTimer!==null){clearTimeout(this.derivedTimer);this.derivedTimer=null;}
+    const generatedAt=this.now(),generatedMono=this.mono();if(this.derivedDirtyMono!==null)this.derivedPersistence.maximumObservedDirtyAgeMs=Math.max(this.derivedPersistence.maximumObservedDirtyAgeMs,Math.max(0,generatedMono-this.derivedDirtyMono));
+    try{const usage=this.usage();this.save('status.json',{...usage,projectionGeneratedAt:generatedAt,derivedStatus:{...usage.derivedStatus,lastGeneratedAt:generatedAt,dirty:false,pendingSinceAt:null,pendingAgeMs:0}},true);}catch(error){this.derivedPersistence.flushFailures++;this.derivedPersistence.lastFailureAt=this.now();throw error;}
+    this.derivedGeneratedAt=generatedAt;this.derivedGeneratedMono=generatedMono;this.derivedDirtyAt=null;this.derivedDirtyMono=null;
+  }
+  private deferPassiveStatus(){
+    this.derivedPersistence.passiveReceiptCalls++;const at=this.now(),mono=this.mono();if(this.derivedDirtyAt===null){this.derivedDirtyAt=at;this.derivedDirtyMono=mono;}
+    const delay=Math.max(0,this.derivedPersistence.maximumDelayMs-(mono-(this.derivedGeneratedMono??mono)));if(delay===0){this.persist();return;}
+    this.derivedPersistence.coalescedPassiveReceipts++;if(this.derivedTimer!==null)return;
+    // A single trailing timer is never pushed back by further receipt. The
+    // timestamp/observed delay remains honest if the event loop is delayed.
+    this.derivedTimer=setTimeout(()=>{this.derivedTimer=null;if(this.closed||this.derivedDirtyAt===null)return;this.derivedPersistence.timerFlushes++;try{this.persist();}catch{this.fatal='STORAGE_UNAVAILABLE';try{this.emit('pilot-derived-status-flush-unavailable',{at:this.now(),code:'STORAGE_UNAVAILABLE',automaticRetry:false,authoritativeCounterbooksUnchanged:true});}catch{this.fatal='DIAGNOSTIC_FAILURE';}}},Math.max(1,Math.ceil(delay)));this.derivedTimer.unref();
+  }
   private emit(kind:string,data:unknown){this.options.record?.(kind,data);}
   private remainingMs(){return Math.max(0,Math.min(this.duration-(this.now()-this.startedAt),this.duration-(this.mono()-this.startedMono)));}
   private recentMethodStarts(at=this.now()){if(!int(at))throw new PilotRpcUnavailable('METHOD_CLOCK');this.methodStarts=this.methodStarts.filter(r=>r.at>at-10000);return this.methodStarts;}
@@ -165,10 +182,10 @@ export class PilotRpc{
   accountControlBytes(bytes:number){
     if(!int(bytes)||bytes>2*MIB)throw new PilotRpcUnavailable('CONTROL_BYTE_CHARGE');
     if(!this.budget||this.closed)throw new PilotRpcUnavailable('CONTROL_WITHOUT_OPEN_CHAPTER');
-    try{this.budget.chargePassiveWs(bytes);const u=this.budget.usage();if(u.cumulativeResponseBytes+u.uncertainResponseBytes-this.initial.bytes+2*MIB>this.responseBytes){this.budget.halt('COMPONENT_RESPONSE_RESERVE');throw Error('COMPONENT_RESPONSE_RESERVE');}this.persist();}catch(error){const code=safe(error);if(!['COMPONENT_TIME_CAP','COMPONENT_UNIT_CAP'].includes(code))this.fatal=code;this.persist();throw new PilotRpcUnavailable(code);}
+    try{this.budget.chargePassiveWs(bytes);const u=this.budget.usage();if(u.cumulativeResponseBytes+u.uncertainResponseBytes-this.initial.bytes+2*MIB>this.responseBytes){this.budget.halt('COMPONENT_RESPONSE_RESERVE');throw Error('COMPONENT_RESPONSE_RESERVE');}if(this.derivedPersistence.flushFailures>0&&this.fatal)throw Error('COMPONENT_STORAGE_UNAVAILABLE');this.deferPassiveStatus();}catch(error){const code=safe(error);if(!['COMPONENT_TIME_CAP','COMPONENT_UNIT_CAP'].includes(code))this.fatal=code;this.persist();throw new PilotRpcUnavailable(code);}
     // The receipt already happened and remains counted even when the global
     // interval has ended. It cannot admit another request or extend that run.
-    if(this.remainingMs()<=0)throw new PilotRpcUnavailable('RUN_TIME_CAP');
+    if(this.remainingMs()<=0){this.persist();throw new PilotRpcUnavailable('RUN_TIME_CAP');}
   }
   chargeDataBytes(bytes:number){this.accountControlBytes(bytes);}
   /** A WS unexpected-response handler must call this before rejecting its
@@ -195,7 +212,7 @@ export class PilotRpc{
   }
   usage(){
     const u=this.current(),dispatch=this.dispatchView(u),rpcDispatch=this.dispatchView(u,'rpc'),controlDispatch=this.dispatchView(u,'control'),calls=u?.cumulativeUnits??this.baseline.calls,bytes=u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes;
-    return {persistence:{...this.persistence},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:this.startsPerMinute,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,rawChapterDispatchWindow:dispatch.raw,dispatchWindow:dispatch.planned,rpcDispatchWindow:rpcDispatch.planned,controlDispatchWindow:controlDispatch.planned,automaticRequestRetries:0};
+    return {persistence:{...this.persistence},derivedStatus:{...this.derivedPersistence,lastGeneratedAt:this.derivedGeneratedAt,dirty:this.derivedDirtyAt!==null,pendingSinceAt:this.derivedDirtyAt,pendingAgeMs:this.derivedDirtyMono===null?0:Math.max(0,this.mono()-this.derivedDirtyMono),authority:'Derived metadata only; chapter counterbooks durably account every receipt. Not a market-data timestamp.',timing:'At most1s scheduled delay; actual flush can be late during event-loop stalls and remains source-timestamped.'},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:this.startsPerMinute,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,rawChapterDispatchWindow:dispatch.raw,dispatchWindow:dispatch.planned,rpcDispatchWindow:rpcDispatch.planned,controlDispatchWindow:controlDispatch.planned,automaticRequestRetries:0};
   }
   available(){try{this.check();return true;}catch{return false;}}
   cooldownUntil(){const remaining=this.cooldownMono-this.mono();return remaining>0?Math.max(this.cooldown,this.now()+Math.ceil(remaining)):this.cooldown;}

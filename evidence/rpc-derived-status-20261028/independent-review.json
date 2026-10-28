@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-10-28T16:45:02.020385+00:00",
+  "reviewer": "/root/live_completeness_contract_review/cooldown_domain_review",
+  "result": "GO",
+  "sourceSha256": {
+    "src/pilot-rpc.ts": "2a885ee841277d47b09e1d3751174f39c3f39236d6abe3488a7f916a820c8477",
+    "test/pilot-rpc-derived-status.test.ts": "a821d1ad302f675afb9a6a86272affb65efdb9bb94551bb153afcce1261a9e5a",
+    "scripts/benchmark-rpc-derived-status.ts": "d1a5803e28e595bb94c1b5332b685aca96e689f0616925d3010b969df98a69dc"
+  },
+  "focusedTests": {
+    "passed": 68,
+    "failed": 0,
+    "receipt": "focused-final-receipt.json"
+  },
+  "build": {
+    "exitCode": 0,
+    "receipt": "build-final-receipt.json"
+  },
+  "scope": "Only successful passive-receipt derived status coalesces; authoritative per-chunk chapter writes, reservations, limits, forced final writes and recovery remain intact.",
+  "remainingValidation": "Lead repository-wide regression and actual EC2 forward impact; Cloud microbenchmark is not capacity acceptance.",
+  "networkRequests": 0,
+  "leadCheckoutModified": false,
+  "deployed": false
+}

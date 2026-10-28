@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-10-28T16:42:03.005273+00:00",
+  "head": "90625f53b686578637accf73ebc457f841743ee2",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/pilot-rpc.test.ts",
+    "test/pilot-rpc-derived-status.test.ts",
+    "test/component-budget.test.ts"
+  ],
+  "networkRequests": 0,
+  "sourceSha256": {
+    "src/pilot-rpc.ts": "fb35d818813a6dc8a6707c790f49b8b236dd65cc549ed69689ebb2e9c195af73",
+    "test/pilot-rpc-derived-status.test.ts": "1768af452878e55bd95ea27d58abd90e347f1f8a58fdde71762858965563b808",
+    "scripts/benchmark-rpc-derived-status.ts": "d1a5803e28e595bb94c1b5332b685aca96e689f0616925d3010b969df98a69dc"
+  },
+  "exitCode": 0,
+  "completedAt": "2026-10-28T16:42:07.382474+00:00",
+  "outputSha256": "4bf435c176b203f304c56bab37cecdbe184f5b2a7ce6e95fd466faf31121b9fc"
+}
