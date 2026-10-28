@@ -87,9 +87,8 @@ def private_directory(path, owner=UID):
     need(stat.S_ISDIR(value.st_mode) and not stat.S_ISLNK(value.st_mode) and value.st_uid == owner and not value.st_mode & 0o077 and path.resolve(strict=True) == path, 'PRIVATE_DIRECTORY_REQUIRED')
 
 
-def save(path, value):
-    body = (json.dumps(value, separators=(',', ':')) + '\n').encode()
-    need(len(body) <= 128 * 1024, 'SUPERVISOR_RECEIPT_BOUND')
+def save_bytes(path, body):
+    need(type(body) is bytes and 0 < len(body) <= 128 * 1024, 'SUPERVISOR_RECEIPT_BOUND')
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
     try:
         offset = 0
@@ -98,6 +97,10 @@ def save(path, value):
         os.fsync(fd)
     finally:
         os.close(fd)
+
+
+def save(path, value):
+    save_bytes(path, (json.dumps(value, separators=(',', ':')) + '\n').encode())
 
 
 def validate_manifest(raw, expected):
@@ -657,7 +660,8 @@ def main():
     host = helpers.identity()
     before = helpers.observer()
     save(root/'before.json', before)
-    save(root/'package.json', manifest)
+    # Preserve the exact reviewed bytes whose hash is in the supervision receipt.
+    save_bytes(root/'package.json', raw)
     outer = time.monotonic()+LIMITS['outerSeconds']
     segments = []
     publisher_state = {'process': None, 'logs': [], 'restarts': 0, 'started': False}

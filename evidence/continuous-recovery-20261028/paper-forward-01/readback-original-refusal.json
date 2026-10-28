@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-28T20:25:35.804085+00:00",
+  "administrationRun": 40762380491,
+  "failure": "SUPERVISION_PACKAGE_HASH_MISMATCH",
+  "logBytes": 27049,
+  "logSha256": "8cfe7c6d7193606e44fd65959a640a476b30cd70935db480da6f276f5ec00062",
+  "rawPrivatePath": "/tmp/poe-paper-readback-prepare6d.log",
+  "cause": "Exact reviewed pretty JSON was reserialized compactly before saving; receipt used original reviewed-byte hash",
+  "financialFailureEstablished": false,
+  "oldHostEvidenceChanged": false
+}

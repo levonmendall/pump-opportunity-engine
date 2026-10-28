@@ -582,5 +582,28 @@ class SourceUpgrade(unittest.TestCase):
         self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
 
 
+class ExactReviewedPackageTest(unittest.TestCase):
+    def test_reviewed_manifest_retains_original_whitespace_and_hash_without_overwrite(self):
+        raw = (json.dumps(manifest(), indent=2) + '\n').encode()
+        with tempfile.TemporaryDirectory(prefix='poe-OFFLINE-package-bytes-') as directory:
+            path = pathlib.Path(directory)/'package.json'
+            m.save_bytes(path, raw)
+            self.assertEqual(path.read_bytes(), raw)
+            self.assertEqual(m.digest(path.read_bytes()), m.digest(raw))
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            with self.assertRaises(FileExistsError):
+                m.save_bytes(path, raw)
+            self.assertEqual(path.read_bytes(), raw)
+
+    def test_raw_package_is_bounded_and_json_receipts_keep_the_existing_compact_format(self):
+        with tempfile.TemporaryDirectory(prefix='poe-OFFLINE-package-bytes-') as directory:
+            root = pathlib.Path(directory)
+            for raw in [b'', b'x'*(128*1024+1), 'not-bytes']:
+                with self.assertRaises(m.Guard):
+                    m.save_bytes(root/'refused.json', raw)
+            m.save(root/'receipt.json', {'a': 1})
+            self.assertEqual((root/'receipt.json').read_bytes(), b'{"a":1}\n')
+
+
 if __name__ == '__main__':
     unittest.main()
