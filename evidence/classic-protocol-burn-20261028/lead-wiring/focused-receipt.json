@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/pilot-native-flow.test.ts",
+    "test/protocol-classic-burn.test.ts"
+  ],
+  "exitCode": 0,
+  "at": "2026-10-28T14:50:59.668477+00:00",
+  "logSha256": "3abdf205fa97ae950342ba28a4ed4c84f8c51ee39c617cb7604f4cca4da45e8b",
+  "fixtureSha256": "6b00e08f9d72c2a7edb0ce93f617ac25a1bd1d026fcc7cbfdb8df44c41546777"
+}

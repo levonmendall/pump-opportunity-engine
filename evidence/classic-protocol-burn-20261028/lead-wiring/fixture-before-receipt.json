@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "--test-name-pattern",
+    "native support forwards",
+    "test/pilot-native-flow.test.ts"
+  ],
+  "exitCode": 1,
+  "at": "2026-10-28T14:50:54.435066+00:00",
+  "logSha256": "5efbd2665180eadd1b6222c53d38a169f7b26306b436d3ca19c28b27666b6536",
+  "fixtureSha256": "968bee0b0cbe54a1eb6c9ec16e5f527c8c24aa694267416c0a13fc47809158fa",
+  "classification": "TEST_EXPECTATION_DEFECT: partial-bucket protocol effect does not belong to already closed feature window; use exact notification semantics for this wiring check"
+}

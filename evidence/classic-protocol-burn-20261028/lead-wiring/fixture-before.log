@@ -1,0 +1,28 @@
+✖ native support forwards its validated base mint owner into classic protocol effect decoding (28.465384ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1150.917118
+
+✖ failing tests:
+
+test at test/pilot-native-flow.test.ts:1:55550
+✖ native support forwards its validated base mint owner into classic protocol effect decoding (28.465384ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/pilot-native-flow.test.ts:293:201)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
