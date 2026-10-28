@@ -1,0 +1,28 @@
+✖ a ready quiet target survives the dispatch ceiling refresh instead of losing its lower fence between selection and session creation (83.86183ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 902.577924
+
+✖ failing tests:
+
+test at test/native-support-context-retention.test.ts:1:8787
+✖ a ready quiet target survives the dispatch ceiling refresh instead of losing its lower fence between selection and session creation (83.86183ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/workspace/poe-audit-context-retention/test/native-support-context-retention.test.ts:99:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
