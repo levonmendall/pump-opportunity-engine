@@ -45,7 +45,7 @@ export class PilotRpc{
   private readonly queryTimeouts=new Map<string,{failures:number;until:number;untilMono:number;failedAt:number}>();private recentQueryTimeouts:Array<{key:string;at:number}>=[];private isolatedQueryTimeouts=0;private queryTimeoutEscalations=0;
   private readonly historyBatchCounts={plans:0,logicalQueriesRequested:0,physicalHttpStarts:0,logicalQueriesInvoked:0,logicalQueriesValidated:0,successfulLogicalQueries:0,rpcErrorResponses:0,providerBackoffBatches:0};
   private activeHistoryBatch:{transport:ComponentTransport;before:ReturnType<ComponentTransport['signatureHistoryBatchUsage']>}|null=null;
-  private methodStarts:Array<{at:number;origin:'inherited-unknown'|'getTransaction'}>=[];private methodRefusals=0;
+  private knownMethodStarts:Array<{at:number;method:string}>=[];private methodStarts:Array<{at:number;origin:'inherited-unknown'|'getTransaction'}>=[];private methodRefusals=0;
   private derivedTimer:ReturnType<typeof setTimeout>|null=null;private derivedDirtyAt:number|null=null;private derivedDirtyMono:number|null=null;private derivedGeneratedAt:number|null=null;private derivedGeneratedMono:number|null=null;
   private readonly derivedPersistence={maximumDelayMs:1000,passiveReceiptCalls:0,coalescedPassiveReceipts:0,timerFlushes:0,flushFailures:0,lastFailureAt:null as number|null,maximumObservedDirtyAgeMs:0};
   constructor(private readonly options:PilotRpcOptions){
@@ -77,6 +77,7 @@ export class PilotRpc{
     // allowance; callers must review its receipts and explicitly link a new run.
     mkdirSync(this.dir,{mode:0o700});
     this.save('authorization.json',{profile:options.profile??'legacy',runId:options.runId,startedAt:this.startedAt,persistent:options.persistent===true,lifetimeCapsEnabled:options.persistent!==true,durationMs:options.persistent?null:this.duration,maxUnits:options.persistent?null:this.units,maxResponseBytes:options.persistent?null:this.responseBytes,chapterMs:this.chapterMs,chapterUnits:this.chapterUnits,maxChapters:options.persistent?null:this.maximumChapters,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:this.startsPerMinute,minSpacingMs:250,physicalInFlight:1},baseline:linked,priorCooldownUntil:this.cooldown,endpoint:'https://api.mainnet.solana.com',historyRoute:options.historyRoute===PUBLICNODE_HISTORY_ROUTE.version?PUBLICNODE_HISTORY_ROUTE:null,priorHistoryCooldownUntil:this.historyCooldown,readOnly:true,automaticRequestRetries:0});
+    if(options.persistent&&this.paths.length>=32)this.compactAccounting();
     this.persist();
   }
   private readonly persistence={attempts:0,totalMs:0,maximumMs:0};
@@ -116,7 +117,7 @@ export class PilotRpc{
   }
   private trackMethodStart(kind:string,data:unknown){
     if(kind==='component-physical-start'&&this.activeHistoryBatch){this.collectHistoryBatchCounts();this.persist();}
-    if(kind!=='component-physical-start')return;const d=data as {at:number;kind?:ComponentKind};if(d.kind?.transport!=='http'||d.kind.method!=='getTransaction')return;
+    if(kind!=='component-physical-start')return;const d=data as {at:number;kind?:ComponentKind};if(!d.kind)return;if(!int(d.at)||d.at>this.now())throw new PilotRpcUnavailable('METHOD_CLOCK');this.knownMethodStarts=this.knownMethodStarts.filter(r=>r.at>d.at-10000);this.knownMethodStarts.push({at:d.at,method:d.kind.method});if(this.knownMethodStarts.length>600)throw new PilotRpcUnavailable('METHOD_HISTORY_BOUND');if(d.kind.transport!=='http'||d.kind.method!=='getTransaction')return;
     if(!int(d.at)||d.at>this.now()||this.methodStarts.at(-1)?.at!>d.at)throw new PilotRpcUnavailable('METHOD_CLOCK');this.recentMethodStarts();this.methodStarts.push({at:d.at,origin:'getTransaction'});if(this.methodStarts.length>600)throw new PilotRpcUnavailable('METHOD_HISTORY_BOUND');this.persist();
   }
   private current(){return this.budget?.usage();}
@@ -140,6 +141,10 @@ export class PilotRpc{
     if(!this.options.persistent||this.active||this.budget?.inFlight)throw new PilotRpcUnavailable('PHYSICAL_SLOT_OCCUPIED');
     const result=createResearchBaselineCheckpoint({paths:this.paths,checkpointSha256:this.checkpointSha256,now:this.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:RESEARCH_MAXIMUM_PATHS,outputPath:join(this.dir,'operating-checkpoint-'+String(++this.compactedEpochs).padStart(6,'0')+'.json'),liveAccountingBoundary:true,settlement:{inFlight:0,waitingOrOperating:false,physicalTransportsSettled:false}});
     this.paths.splice(0,this.paths.length,...result.baselinePaths);this.checkpointSha256=result.baselineCheckpointSha256;const linked=readResearchBaseline({paths:this.paths,checkpointSha256:this.checkpointSha256,now:this.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});this.baseline=linked.baseline;this.inheritedUncertainty=linked.uncertainResponseBytes;
+    // Sealing may conservatively move uninvoked legacy reservations to NOW.
+    // Rebase their method window too. Actual methods observed by this process
+    // remain known; every other retained start counts conservatively as getTX.
+    const cutoff=this.now()-10000,known=new Map<number,string[]>();for(const r of this.knownMethodStarts.filter(r=>r.at>cutoff)){const methods=known.get(r.at)??[];methods.push(r.method);known.set(r.at,methods);}this.methodStarts=this.baseline.starts.filter(at=>at>cutoff).flatMap(at=>{const method=known.get(at)?.shift();return method!==undefined&&method!=='getTransaction'?[]:[{at,origin:method==='getTransaction'?'getTransaction' as const:'inherited-unknown' as const}];});
     this.emit('pilot-operating-accounting-checkpoint',{at:this.now(),...result,passiveStreamsMayRemainOpen:true,physicalOperationsSettled:true,lifetimeUsageRefunded:false});
   }
   private openChapter(domain:'rpc'|'control'|'history'='rpc',accountingOnly=false){
