@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { Script, createContext } from 'node:vm';
 import { createDashboard, type DashboardConfig } from '../src/dashboard.js';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, SnapshotPublisher, validateSnapshot, type ReportingIdentity, type Snapshot } from '../src/reporting.js';
 
@@ -247,4 +248,34 @@ test('partial source identity fails configuration and credentials remain mandato
   }
   assert.throws(() => createDashboard({ ...credentials, viewerPassword: '' }), /credentials required/);
   assert.throws(() => createDashboard({ ...credentials, ingestionSecret: '' }), /ingestion secret required/);
+});
+
+
+test('single portfolio viewer retires the experimental channel and retains original authenticated snapshots',async t=>{
+ const app=await serve(t,{...config,publicViewer:true});
+ assert.equal((await app.get('/api/pilot')).status,410);assert.equal((await fetch(app.url+'/api/pilot',{method:'POST',body:'{}'})).status,410);assert.equal((await app.get('/api/connections')).status,404);
+ assert.equal((await app.post(sample())).status,200);const response=await app.get('/api/snapshot').then(r=>r.json());assert.equal(response.snapshot.account.id,config.accountId);assert.equal(response.connections,undefined);
+ const html=await app.get('/').then(r=>r.text());for(const text of ['Experimental portfolio','Experimental trades','Pilot diagnostics','pilot-telemetry-panel','experimental-portfolio'])assert.equal(html.includes(text),false,text);
+ assert.equal((html.match(/id="portfolio"/g)||[]).length,1);assert.match(html,/Pending orders and reservations/);assert.match(html,/visibilitychange/);assert.match(html,/setInterval\(refresh,15000\)/);assert.match(html,/refreshInFlight/);
+ const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,1);for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
+ assert.equal((await app.get('/healthz').then(r=>r.json())).unifiedPortfolio,true);
+});
+
+test('source funnel distinguishes observer placeholders, predictive assessments, actual financial decisions and unavailable unique counts',async t=>{
+ const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text()),start=html.indexOf('function renderFunnel('),end=html.indexOf('\nfunction renderMetrics(',start);assert.ok(start>=0&&end>start);
+ class Node{textContent='';className='';dataset:Record<string,string>={};style={width:''};children:Node[]=[];append(...v:Node[]){this.children.push(...v);}replaceChildren(){this.children=[];}query(selector:string):Node[]{return this.children.flatMap(c=>[...(c.className===selector?[c]:[]),...c.query(selector)]);}}
+ const root=new Node(),add=(p:Node,_t:string,text?:unknown,cls='')=>{const n=new Node();n.textContent=text===undefined?'':String(text);n.className=cls;p.append(n);return n;};const context=createContext({byId:()=>root,add,Number,String});new Script(html.slice(start,end)).runInContext(context);
+ const render=(f:unknown,i:unknown,observer=false)=>new Script('renderFunnel('+JSON.stringify(f)+','+JSON.stringify(i)+','+observer+')').runInContext(context);const value=(key:string)=>root.query('funnel-line').find(r=>r.dataset.funnelStage===key)!.query('funnel-count')[0]!.textContent;
+ render(sample().funnel,null,true);assert.equal(value('discovered'),'12');assert.equal(value('evaluated'),'NOT CONNECTED');
+ render({...sample().funnel,qualified:0,paperFilled:0},{candidates:{migrationsReceived:12,known:100,watch:94,eligible:8,queued:5,auditedWindows:20,uniqueAudited:null,predictiveAssessments:20,predictivePasses:0,predictiveFailures:20,deepActive:3,deepMaximum:6}});assert.equal(value('predictiveAssessments'),'20');assert.equal(value('uniqueAudited'),'Unavailable');assert.equal(value('qualified'),'0');assert.equal(value('paperFilled'),'0');assert.equal(value('deepActive'),'3 / 6');
+});
+
+test('compact one-account command view keeps metrics accessible without a duplicate portfolio',async t=>{const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text());assert.match(html,/Show all /);assert.match(html,/portfolio metrics/);assert.match(html,/compact-disclosure/);assert.match(html,/focus-visible/);assert.match(html,/overflow-wrap:anywhere/);assert.doesNotMatch(html,/experimental-portfolio|pilotIntelligence|setPilotIntelligence/);});
+
+test('first snapshot paint immediately preserves stopped and stale source truth',async t=>{
+ const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text()),show=html.slice(html.indexOf('function showSnapshot('),html.indexOf('\nlet refreshInFlight=')),freshness=html.slice(html.indexOf('function paintFreshness('),html.indexOf('\nclock();setInterval('));const signals:string[][]=[];
+ const noop=()=>{},context=createContext({Date,Math,latest:null,latestReceivedAt:null,renderCards:noop,put:noop,renderTable:noop,renderCandidateIntelligence:noop,renderMetrics:noop,plot:noop,money:noop,byId:()=>({hidden:true}),signal:(...args:string[])=>signals.push(args)});new Script(show+'\n'+freshness).runInContext(context);
+ const paint=(snapshot:Snapshot,state:string)=>new Script('showSnapshot('+JSON.stringify(snapshot)+','+JSON.stringify(iso(NOW))+','+JSON.stringify({state})+')').runInContext(context);
+ const stopped=sample();stopped.status.runtime='stopped';paint(stopped,'unavailable');assert.equal(signals.at(-1)![0],'STOPPED');assert.equal(signals.at(-1)![3],'warning');
+ paint(sample('2',NOW-100000),'stale');assert.equal(signals.at(-1)![0],'STALE SOURCE SNAPSHOT');assert.equal(signals.at(-1)![3],'warning');
 });
