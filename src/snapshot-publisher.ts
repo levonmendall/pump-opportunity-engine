@@ -8,12 +8,12 @@ import {createHash} from 'node:crypto';
 import {SnapshotPublisher,validateSnapshot,type ReportingIdentity,type SnapshotAcknowledgement} from './reporting.js';
 import {ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION} from './operating-intelligence.js';
 export const ORIGINAL_SNAPSHOT_URL='https://meme-machine-dashboard-staging.onrender.com/api/snapshot';
-export type SnapshotFilePublisherArguments={file:string;identity:ReportingIdentity;watch:true};
+export type SnapshotFilePublisherArguments={file:string;identity:ReportingIdentity;watch:boolean;once?:true};
 export function snapshotFilePublisherArguments(args:string[]):SnapshotFilePublisherArguments{
- const values=new Map<string,string>();let watch=false;
- for(let i=0;i<args.length;i++){const key=args[i]!;if(key==='--watch'){if(watch)throw Error('PUBLISHER_DUPLICATE_ARGUMENT');watch=true;continue;}if(!['--file','--account-id','--inception-at','--release','--strategy'].includes(key)||values.has(key))throw Error('PUBLISHER_ARGUMENT');const value=args[++i];if(!value||value.startsWith('--'))throw Error('PUBLISHER_ARGUMENT_VALUE');values.set(key,value);}
+ const values=new Map<string,string>();let watch=false,once=false;
+ for(let i=0;i<args.length;i++){const key=args[i]!;if(key==='--watch'||key==='--once'){if(watch||once)throw Error('PUBLISHER_DUPLICATE_ARGUMENT');watch=key==='--watch';once=key==='--once';continue;}if(!['--file','--account-id','--inception-at','--release','--strategy'].includes(key)||values.has(key))throw Error('PUBLISHER_ARGUMENT');const value=args[++i];if(!value||value.startsWith('--'))throw Error('PUBLISHER_ARGUMENT_VALUE');values.set(key,value);}
  const file=values.get('--file')??'',identity={accountId:values.get('--account-id')??'',inceptionAt:values.get('--inception-at')??'',release:values.get('--release')??'',strategy:values.get('--strategy')??''};
- if(!watch||values.size!==5||!isAbsolute(file)||resolve(file)!==file||basename(file)!=='snapshot.json'||identity.accountId!==ORIGINAL_POE_ACCOUNT||identity.inceptionAt!==ORIGINAL_POE_INCEPTION||!/^[a-f0-9]{40}$/.test(identity.release)||!identity.strategy||identity.strategy.length>128||/[\u0000-\u001f]/.test(identity.strategy))throw Error('PUBLISHER_EXACT_ORIGINAL_BINDING_REQUIRED');return {file,identity,watch:true};
+ if(!watch&&!once||values.size!==5||!isAbsolute(file)||resolve(file)!==file||basename(file)!=='snapshot.json'||identity.accountId!==ORIGINAL_POE_ACCOUNT||identity.inceptionAt!==ORIGINAL_POE_INCEPTION||!/^[a-f0-9]{40}$/.test(identity.release)||!identity.strategy||identity.strategy.length>128||/[\u0000-\u001f]/.test(identity.strategy))throw Error('PUBLISHER_EXACT_ORIGINAL_BINDING_REQUIRED');return {file,identity,watch,...(once?{once:true as const}:{})};
 }
 function privateRead(path:string,maximum:number,credential=false){
  const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
@@ -42,6 +42,7 @@ export class SnapshotFilePublisher{
 export async function runSnapshotFilePublisher(args=process.argv.slice(2),env=process.env){
  if(process.getuid?.()===0)throw Error('PUBLISHER_NONROOT_REQUIRED');const settings=snapshotFilePublisherArguments(args),secret=readPublisherCredential(env);
  const write=(value:unknown)=>{process.stdout.write(JSON.stringify(value)+'\n');};
+ if(settings.once){const {snapshot,rawSourceSha256}=readSnapshotFileWithProvenance(settings.file,settings.identity),publisher=new SnapshotPublisher({url:ORIGINAL_SNAPSHOT_URL,secret,identity:settings.identity,timeoutMs:5000,onAcknowledgement:write});publisher.offer(snapshot,rawSourceSha256);const metrics=await publisher.publishOnce();if(metrics.successes!==1)throw Error('PUBLISHER_FINAL_REPORT_NOT_ACKNOWLEDGED');return metrics;}
  const publisher=new SnapshotFilePublisher({...settings,secret,onAcknowledgement:write,onSourceState:write});
  let stopped=false;const stop=()=>{stopped=true;};process.once('SIGTERM',stop);process.once('SIGINT',stop);publisher.start();
  try{while(!stopped)await new Promise<void>(r=>setTimeout(r,250));}finally{await publisher.stop();process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}return publisher.metrics();

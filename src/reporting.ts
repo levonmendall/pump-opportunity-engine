@@ -178,6 +178,7 @@ export class SnapshotPublisher {
     this.latest = { snapshot: structuredClone(snapshot), body: JSON.stringify(snapshot), fingerprint, ...(rawSourceSha256===undefined?{}:{rawSourceSha256}) };
   }
   queuedSequence() { return this.latest?.snapshot.sequence ?? null; }
+  async publishOnce(){if(this.running||this.inflight||this.active)throw Error('publisher already active');this.inflight=this.publish();try{await this.inflight;}finally{this.inflight=undefined;}return {...this.metrics};}
   start() { if (!this.running) { this.running = true; this.schedule(0); } }
   private schedule(delay: number) {
     if (this.running) this.timer = setTimeout(() => { this.inflight = this.publish(); }, delay);
