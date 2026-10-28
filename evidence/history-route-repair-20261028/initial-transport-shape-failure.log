@@ -1,0 +1,96 @@
+✔ HTTP429 stops at headers, retains uncertain body reserve and prior refusal, and never retries (29.470333ms)
+✖ a fully received bounded HTTP503 body is charged exactly without an unknown response reservation (26.751809ms)
+✔ stalled HTTP503 body times out, charges partial receipt and preserves uncertain response bytes (15.48158ms)
+✔ canceling a partially received HTTP503 cannot turn cancellation into a complete response (6.370826ms)
+✔ declared oversize HTTP503 is canceled before reading and preserves uncertainty (5.52455ms)
+✔ streamed oversize HTTP503 charges delivered chunks and cannot mark a partial body complete (4.982856ms)
+✔ truncated HTTP503 body does not clear uncertainty when the identity Content-Length disagrees (4.430887ms)
+✔ upgrade, ACK and passive data share counters without double-counting socket/payload (8.903565ms)
+✔ raw partial and oversized receipt is charged before application parsing (7.226236ms)
+✔ notification before subscribe ACK preserves receipt time and resolves only the acknowledged scope (3.985797ms)
+✔ rejected invalid ACK halts without an automatic second request (4.121908ms)
+✔ rejected error ACK halts without an automatic second request (3.506305ms)
+✔ missing ACK cancellation retains uncertain response and cannot release a replacement request (5.298715ms)
+✔ planned reconnect waits for CLOSED and ignores stale first-socket events (5.473143ms)
+✔ close timeout halts without opening a second session (7.965784ms)
+✔ unsupported request methods are denied before network and budget use (3.562649ms)
+✔ HTTP lifecycle separates headers, body transfer and JSON availability without claiming pool reuse (3.667624ms)
+✔ HTTP lifecycle retains partial successful-body timing after timeout without logging payload (13.820625ms)
+✔ HTTP lifecycle does not emit a settled-body claim while timed-out fetch still owns physical gate (13.667537ms)
+✔ HTTP lifecycle distinguishes fully received malformed JSON from a validated response (5.161812ms)
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (25.887535ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (15.047324ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (22.689337ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (6.115457ms)
+✔ chapter rollover preserves cumulative counters, inherited uncertainty, real spacing and frozen prior books (67.357528ms)
+✔ optional getTransaction gate refuses without a physical reservation or hidden wait and keeps held-price methods available (26.263012ms)
+✔ immediate linked run conservatively inherits all recent unknown-method starts and persists its bounded method cache (5.108733ms)
+✔ legacy method pacing is unrestricted beyond shared caps, with explicit bounded configuration and reserve validation (11.037343ms)
+✔ failed actual getTransaction attempts count, while dispatch refusal and cancellation do not invent starts or bypass HTTP429 (17.304685ms)
+✔ HTTP429 never retries; Retry-After plus5s gates a settled new chapter and retains both uncertainty reservations (10.077768ms)
+✔ settled HTTP refusal preserves its Retry-After while permitting separately admitted control on the same gate (10.156254ms)
+✔ actual control Retry-After blocks only controls and cannot be cleared by successful HTTP work (10.441498ms)
+✔ mixed HTTP and control work share the same sixty-start minute and short-window pacing (35.114269ms)
+✔ an unsettled timed-out control operation blocks both domains until actual settlement (15.211749ms)
+✔ a canceled physical request remains occupied after cooldown and cannot create a replacement slot (14.500102ms)
+✔ malformed responses fail closed rather than starting another chapter or inventing data (5.069705ms)
+✔ PAPER submission/signing and paid data methods are rejected before a chapter or physical operation (0.710424ms)
+✔ free control requests share the HTTP physical gate and measured bytes remain chargeable while it is occupied (5.80092ms)
+✔ global time/response allowances remain finite across chapters; a new constructor cannot overwrite the run (4.658244ms)
+✔ WS throttle observation respects an HTTP-date cooldown without retrying the original control operation (8.476732ms)
+✔ a periodic chapter expiry caused by passive control receipt preserves bytes and allows only a settled rollover (7.398431ms)
+✔ passive chapter-expiry receipt cannot cancel or replace an in-flight physical request (5.855291ms)
+✔ passive receipt during a retained RPC cooldown neither clears it nor drops byte reservations (8.799516ms)
+✔ global time and response bounds still stop passive receipt after charging actual bytes once (7.972684ms)
+✔ explicit research burst gate permits at most20 starts while the default stays10 and actual spacing stays250ms (26.297894ms)
+✔ new run requires the retained throttle receipt and cannot guess a long provider Retry-After (9.288366ms)
+✔ settled transient RPC failures use bounded2/5/10s backoff without automatic retry or dropping old reservations (13.951749ms)
+✔ invalid feed protocol remains isolated from held-price RPC while global accounting failures still block it (9.670314ms)
+✔ single admission timestamp avoids one-millisecond method refusals without weakening the real cap (9.174387ms)
+✔ public read-only log subscriptions use the existing gate without authorizing financial WS methods (4.77007ms)
+✔ long settled baseline leaves bounded chapter runway without discarding paths, counters or uncertainty (30.015602ms)
+✔ native research response envelope is explicit and leaves default finite limits unchanged (6.042188ms)
+✔ native profile does not silently authorize longer runs, more starts, larger payload budgets or unknown profiles (0.751846ms)
+✔ local admission and deadline refusals before a reservation preserve the healthy shared gate without provider cooldown (7.708392ms)
+✔ durably reserved COMPONENT_DISPATCH_EXPIRED before physical invocation stays charged and rolls over only after settlement (8.605924ms)
+✔ durably reserved COMPONENT_ADMISSION_CLOSED before physical invocation stays charged and rolls over only after settlement (6.852011ms)
+✔ a local refusal cannot roll a chapter or release a physical operation that has not actually settled (6.998397ms)
+✔ repeated rolling-minute pacing refusals reuse the unhalted chapter beyond32 attempts and consume no additional units (68.182703ms)
+✔ WATCH pacing cannot hold the shared gate across the next native deadline or start after native becomes due (5.525741ms)
+✔ served-node context-floor lag is paced unavailable data through real HTTP decoding, never a permanent fatal or audit success (7.268739ms)
+✔ context-floor recovery does not reclassify unrelated invalid-request RPC errors as transient (3.826389ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 60
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1757.469001
+
+✖ failing tests:
+
+test at test/component-transport.test.ts:1:2196
+✖ a fully received bounded HTTP503 body is charged exactly without an unknown response reservation (26.751809ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      availableAt: 200000,
+  +   endpoint: 'https://api.mainnet.solana.com',
+      id: 21,
+      method: 'getSlot',
+      requestedAt: 200000,
+      responseBytes: 44,
+      status: 503
+  
+      at TestContext.<anonymous> (/workspace/poe-history-route-repair/test/component-transport.test.ts:27:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: 21, method: 'getSlot', endpoint: 'https://api.mainnet.solana.com', requestedAt: 200000, availableAt: 200000, responseBytes: 44, status: 503 },
+    expected: { id: 21, method: 'getSlot', requestedAt: 200000, availableAt: 200000, responseBytes: 44, status: 503 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
