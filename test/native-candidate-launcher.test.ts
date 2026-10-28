@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {validateNativeCandidateInput,NATIVE_CANDIDATE_LIMITS,runNativeCandidates,settleNativeCandidateSources} from '../src/run-native-candidates.js';
+import {validateNativeCandidateInput,NATIVE_CANDIDATE_LIMITS,runNativeCandidates,settleNativeCandidateSources,nativeCandidateReportingProjection} from '../src/run-native-candidates.js';
 const input=()=>({schemaVersion:1,baselinePaths:['/public/counters/prior.json'],priorPhysicalSettled:true,priorCooldownUntil:0,origins:[],source:{commit:'906c2aa',sha256:'1'.repeat(64)},reportingBinding:{accountId:'poe-pilot-8468add6-f916-48cf-a585-6cd008a81360',inceptionAt:1793123773252,sourceStatusSha256:'2'.repeat(64)}});
 test('candidate launcher public binding validation creates no account and refuses financial or credential input',()=>{
  const good=input();assert.doesNotThrow(()=>validateNativeCandidateInput(good));assert.equal(Object.hasOwn(good,'balance'),false);
@@ -25,4 +25,9 @@ test('one failed source stop cannot skip the other stop or report physical settl
  const result=await settleNativeCandidateSources(feeds as any,runner as any,native as any,rpc as any,'fixture');assert.deepEqual(calls,['feeds','native']);assert.equal(result.settled,false);assert.ok(result.failures.includes('PILOT_FEED_TRANSPORT_UNSETTLED'));assert.ok(result.failures.includes('NATIVE_RESEARCH_PHYSICAL_SETTLEMENT_UNKNOWN'));
  calls.length=0;const completed=await settleNativeCandidateSources({async stop(){calls.push('feeds');},usage:()=>({physicalTransportsSettled:true})} as any,runner as any,native as any,rpc as any,'fixture');assert.equal(completed.settled,true);assert.deepEqual(calls,['feeds','native','rpc-close']);
  const occupied=await settleNativeCandidateSources(undefined,undefined,undefined,{usage:()=>({inFlight:1,waitingOrOperating:true}),close(){throw Error('must not close');}} as any,'fixture');assert.equal(occupied.settled,false);
+});
+test('publisher-compatible status discloses lost broad awareness independently of native health and keeps unknown protection null',()=>{
+ const feeds={discoveryConnected:false,pumpApiConnected:false,frames:3,totalSocketBytes:100,pumpApiSocketBytes:80,discoverySocketBytes:20};
+ const projected=nativeCandidateReportingProjection(undefined,feeds as any,1,true,'fixture');assert.match(projected.status,/Migration discovery disconnected/);assert.match(projected.status,/WATCH activity hints unavailable/);assert.equal(projected.sourceTimes.lastMarketNotificationAt,null);assert.deepEqual(projected.timing,{});assert.equal(projected.funnel.supported,null);assert.equal(projected.usage.feeds.normalizedTrades,null);assert.ok(projected.status.length<=256);
+ const stopped=nativeCandidateReportingProjection(undefined,feeds as any,null,false,'fixture ended');assert.match(stopped.status,/stopped: fixture ended/);assert.doesNotMatch(stopped.status,/currently allocated/);
 });
