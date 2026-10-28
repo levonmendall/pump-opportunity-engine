@@ -129,6 +129,66 @@ main{max-width:1480px;margin:0 auto}
 @media(max-width:900px){.app{grid-template-columns:66px minmax(0,1fr)}.rail{padding:23px 5px}.rail-link{width:44px;height:48px}.rail-link.selected:before{left:-8px}.workspace{padding:0 18px 28px}.hero{grid-template-columns:1fr 210px;min-height:305px}.hero-visual{min-height:305px}.hero-copy{padding:33px 0 33px 26px}h1{font-size:clamp(38px,5.2vw,53px)}.radar{transform:translate(-42%,-50%) scale(.8)}.visual-caption{right:16px}.clock{display:none}.two-up,.system-grid{grid-template-columns:1fr}}
 @media(max-width:640px){html{scroll-behavior:auto}.app{display:block}.rail{position:static;height:66px;width:100%;flex-direction:row;border-right:0;border-bottom:1px solid var(--border);padding:10px 15px;gap:0;justify-content:space-between}.brand-mark{width:42px;height:42px;border-radius:12px}.rail-links{flex-direction:row;width:auto;gap:3px}.rail-link{width:44px;height:43px}.rail-link.selected:before{left:15px;top:auto;bottom:-11px;width:14px;height:2px}.rail-foot{display:none}.workspace{padding:0 14px 20px}.topbar{height:83px}.breadcrumb{font-size:9px;letter-spacing:1.2px}.top-label{font-size:13px}.top-actions{gap:8px}.chip{font-size:9px;padding:7px 8px}.export-link{font-size:10px;padding:9px}.export-link svg{width:13px;height:13px}.hero{margin-top:14px;grid-template-columns:1fr;min-height:0;border-radius:14px}.hero-copy{padding:32px 23px 23px}.eyebrow{font-size:9px;letter-spacing:1.2px}.hero h1{font-size:clamp(38px,9.1vw,59px);margin:18px 0 17px}.hero-description{font-size:12px;line-height:1.7}.hero-chips{gap:6px}.hero-chip{font-size:8px;padding:6px 7px}.hero-visual{height:165px;min-height:165px;overflow:hidden;border-top:1px solid rgba(80,240,236,.08)}.radar{left:50%;top:27%;transform:translate(-50%,-50%) scale(.62)}.visual-caption{bottom:14px;right:17px}.status-strip{padding:16px;display:block}.status-content{gap:12px}.status-beacon{width:38px;height:38px}.status-title{font-size:16px}.status-right{padding-left:50px;align-items:flex-start;margin-top:9px;gap:2px;text-align:left}.section-heading{margin-top:28px;align-items:flex-start}.section-heading h2{font-size:20px}.section-note{font-size:9px;max-width:135px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{padding:16px 13px;min-height:125px}.stat-label{font-size:9px;letter-spacing:.5px}.stat-value{font-size:23px;margin-top:17px}.stat-value.long{font-size:15px}.stat-foot{font-size:9px}.panel,.chart-panel{padding:18px;border-radius:12px}.panel-heading{flex-wrap:wrap;margin-bottom:16px}.panel-heading h2{font-size:19px}.panel-tag{font-size:8px}.chart-shell{min-height:225px}.chart-shell svg{height:225px}.chart-meta{flex-wrap:wrap;gap:4px}.metric-grid{grid-template-columns:1fr 1fr}.metric{padding:11px}.metric-value{font-size:11px}.funnel-line{grid-template-columns:minmax(70px,1fr) minmax(50px,1fr) 33px;gap:9px}.funnel-name{font-size:9px}.footer{display:block;line-height:1.8;margin-top:25px}.footer div+div{margin-top:9px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+
+/* Compact command view: full source data and details remain accessible. */
+body.poe-compact-view .hero{min-height:0!important;display:block!important;margin:14px 0 10px!important}
+body.poe-compact-view .hero-copy{padding:21px 24px!important}
+body.poe-compact-view .hero h1{font-size:clamp(27px,3.1vw,43px)!important;line-height:1.1!important;letter-spacing:-.04em!important;margin:7px 0 8px!important}
+body.poe-compact-view .hero-description{font-size:11px!important;line-height:1.5!important;margin:4px 0 11px!important;max-width:700px!important}
+body.poe-compact-view .hero-visual,body.poe-compact-view .holo-index{display:none!important}
+body.poe-compact-view .hero-chips{gap:6px!important}
+body.poe-compact-view .hero-chip{padding:5px 7px!important}
+body.poe-compact-view .status-strip{margin:6px 0 10px!important}
+body.poe-compact-view .compact-quick-links{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 17px}
+body.poe-compact-view .compact-quick-links a{display:inline-flex;align-items:center;min-height:37px;border:1px solid rgba(151,177,223,.24);background:rgba(30,41,71,.42);padding:7px 12px;border-radius:8px;font:600 10px var(--mono);color:#c8daec;white-space:nowrap}
+body.poe-compact-view .compact-quick-links a:focus-visible,body.poe-compact-view .compact-toggle:focus-visible,body.poe-compact-view summary:focus-visible{outline:2px solid #96ffec;outline-offset:3px}
+body.poe-compact-view .compact-quick-links a:hover{border-color:rgba(140,255,225,.55);color:#caffef}
+body.poe-compact-view main>.panel,body.poe-compact-view main>.section-heading,body.poe-compact-view main>section{margin-top:12px;margin-bottom:12px}
+body.poe-compact-view .panel{padding:20px!important}
+body.poe-compact-view .panel-heading{margin-bottom:10px}
+body.poe-compact-view .compact-folded>.panel-heading{margin-bottom:0}
+body.poe-compact-view .compact-disclosure{display:block;margin-top:11px;border-top:1px solid rgba(166,181,223,.13);padding-top:8px;min-width:0}
+body.poe-compact-view .compact-disclosure>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:42px;color:#aacee7;font:600 11px var(--mono);padding:8px 0}
+body.poe-compact-view .compact-disclosure>summary::-webkit-details-marker{display:none}
+body.poe-compact-view .compact-disclosure>summary:after{content:"+";flex:0 0 auto;font:600 18px var(--mono);color:#8affea}
+body.poe-compact-view .compact-disclosure[open]>summary:after{content:"−"}
+body.poe-compact-view .compact-disclosure-body{padding-top:9px}
+body.poe-compact-view .compact-toggle{display:block;width:100%;text-align:left;cursor:pointer;margin:9px 0 0;padding:11px 13px;background:rgba(68,90,140,.12);color:#addccf;border:1px solid rgba(136,185,226,.25);border-radius:8px;font:600 11px var(--mono)}
+body.poe-compact-view .compact-toggle:hover{border-color:rgba(138,255,234,.48)}
+body.poe-compact-view #portfolio:not(.compact-expanded) #cards>.stat:nth-child(n+7){display:none!important}
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric{display:none!important}
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(2),
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(3),
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(4),
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(5),
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(6),
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(9),
+body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(16){display:block!important}
+body.poe-compact-view #experimental-portfolio .metric-grid{margin-top:9px}
+body.poe-compact-view #experimental-portfolio .metric{padding:11px!important}
+body.poe-compact-view #experimental-portfolio h3{margin:13px 0 6px!important}
+body.poe-compact-view .section-heading{margin-top:20px!important;margin-bottom:10px!important}
+body.poe-compact-view .section-heading .section-note{font-size:9px}
+body.poe-compact-view .compact-folded{min-height:0}
+body.poe-compact-view #pilot-telemetry-panel .pilot-note{font-size:11px}
+@media(max-width:640px){
+ body.poe-compact-view .topbar{height:64px!important}
+ body.poe-compact-view .hero-copy{padding:14px 16px!important}
+ body.poe-compact-view .hero h1{font-size:27px!important}
+ body.poe-compact-view .hero-description{display:none!important}
+ body.poe-compact-view .panel{padding:15px!important}
+ body.poe-compact-view .compact-quick-links{gap:5px;margin:7px 0 12px}
+ body.poe-compact-view .compact-quick-links a{flex:1 1 auto;justify-content:center;font-size:9px;padding:6px 8px;min-height:35px}
+ body.poe-compact-view .stat{padding:13px!important}
+ body.poe-compact-view #experimental-portfolio .metric{padding:10px!important}
+}
+@media print{
+ body.poe-compact-view .hero-visual{display:none!important}
+ body.poe-compact-view .compact-quick-links,body.poe-compact-view .compact-toggle{display:none!important}
+ body.poe-compact-view #portfolio #cards>.stat,body.poe-compact-view #experimental-portfolio #experimental-portfolio-cards>.metric{display:block!important}
+ body.poe-compact-view .compact-disclosure-body{display:block!important}
+}
+
 </style>
 </head>
 <body data-link="pending">
@@ -321,6 +381,78 @@ async function refresh(){
 document.querySelectorAll('.rail-link').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.rail-link').forEach(n=>n.classList.remove('selected'));link.classList.add('selected')}));
 clock();setInterval(clock,1000);plot([]);refresh();setInterval(refresh,15000);
 window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
+
+/** UI-only progressive disclosure. All projections, API endpoints and financial boundaries are unchanged. */
+(function compactCommandView(){
+ 'use strict';
+ const one=selector=>document.querySelector(selector);
+ const panelFold=(selector,description)=>{
+  const panel=one(selector);if(!panel||panel.classList.contains('compact-folded'))return;
+  const heading=panel.querySelector('.panel-heading');if(!heading||heading.parentElement!==panel)return;
+  const details=document.createElement('details');details.className='compact-disclosure';
+  const summary=document.createElement('summary');summary.textContent=description;
+  const body=document.createElement('div');body.className='compact-disclosure-body';
+  while(heading.nextSibling)body.append(heading.nextSibling);
+  details.append(summary,body);panel.append(details);panel.classList.add('compact-folded');
+ };
+ const metricToggle=(panelId,gridId,description)=>{
+  const panel=document.getElementById(panelId),grid=document.getElementById(gridId);
+  if(!panel||!grid)return;
+  const button=document.createElement('button');button.type='button';button.className='compact-toggle';
+  button.setAttribute('aria-controls',gridId);button.setAttribute('aria-expanded','false');
+  const update=()=>{const expanded=panel.classList.contains('compact-expanded');button.textContent=(expanded?'Show key figures only':'Show all '+description);button.setAttribute('aria-expanded',String(expanded));};
+  button.addEventListener('click',()=>{panel.classList.toggle('compact-expanded');update();});
+  grid.after(button);update();
+ };
+ const status=one('section.status-strip'),hero=one('section.hero');
+ if(status&&hero)hero.after(status);
+ const portfolio=document.getElementById('portfolio'),experimental=document.getElementById('experimental-portfolio');
+ if(portfolio&&experimental)portfolio.after(experimental);
+ if(status){
+  const nav=document.createElement('nav');nav.className='compact-quick-links';nav.setAttribute('aria-label','Jump to dashboard sections');
+  for(const [href,label] of [['#portfolio','Original portfolio'],['#experimental-portfolio','PAPER account'],['#system','Candidates'],['#reporting-status','System health']]){
+   if(!document.querySelector(href))continue;
+   const link=document.createElement('a');link.href=href;link.textContent=label;nav.append(link);
+  }
+  status.after(nav);
+ }
+ // Key figures stay visible; refreshes rebuild only their contents, not these controls.
+ metricToggle('portfolio','cards','original portfolio metrics');
+ metricToggle('experimental-portfolio','experimental-portfolio-cards','experimental PAPER accounting metrics');
+ if(experimental){
+  const source=document.getElementById('experimental-portfolio-source');
+  if(source){
+   const details=document.createElement('details');details.className='compact-disclosure';
+   const summary=document.createElement('summary');summary.textContent='Account identity, freshness and source notes';
+   const body=document.createElement('div');body.className='compact-disclosure-body';
+   source.replaceWith(details);body.append(source);details.append(summary,body);
+   const heading=experimental.querySelector('.panel-heading');if(heading)heading.after(details);
+  }
+  const tradesHeading=Array.from(experimental.querySelectorAll('h3')).find(h=>h.textContent.includes('Experimental trades'));
+  if(tradesHeading){
+   const details=document.createElement('details');details.className='compact-disclosure';details.id='experimental-trade-history-details';
+   const summary=document.createElement('summary');summary.textContent='Trade attempts, execution history and P&L chart';
+   const body=document.createElement('div');body.className='compact-disclosure-body';
+   let current=tradesHeading;
+   while(current){const next=current.nextSibling;body.append(current);current=next;}
+   details.append(summary,body);experimental.append(details);
+  }
+ }
+ // Both candidate totals and source/staleness badges remain visible in their panel headings.
+ panelFold('#pilot-telemetry-panel','Full pilot funnel, market watch and failure diagnostics');
+ panelFold('#reportingConnections','Connection details, source identity and refresh controls');
+ panelFold('section[aria-labelledby="metricsTitle"]','Runtime metrics and provider usage');
+ panelFold('section[aria-labelledby="decisionsTitle"]','Full evaluation decisions and refusal reasons');
+ panelFold('#performance','Portfolio P&L chart and historical timestamps');
+ document.body.classList.add('poe-compact-view');
+ // Side-rail navigation opens the requested disclosure without hiding its destination.
+ document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',()=>{
+  const id=link.getAttribute('href');if(!id)return;
+  const dest=document.getElementById(id.slice(1)),details=dest&&dest.querySelector('.compact-disclosure');
+  if(details&&dest.classList.contains('compact-folded'))details.open=true;
+ }));
+})();
+
 </script>
 </body></html>`;
 
