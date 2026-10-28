@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_MISSING_SUCCESSFUL_HISTORY_ADJUDICATION",
+  "adjudicationPolicy": "validated-legacy-v0-only-v2",
+  "probeStartedAt": 1793229131133,
+  "probeEndedAt": 1793229134947,
+  "originalWindowsRemainUnusable": true,
+  "networkCalls": 0,
+  "financialFilesRead": false,
+  "rows": [
+    {
+      "signature": "4Fd2XpfRKAd81nnYpeDw5MnKf9tERyqpYv31QHykesfk7j6wqaRZorm7hjmudtK3Eub694CP9TXsR5hptFrdkdBP",
+      "mint": "Fy9czFKSJg68mD8dJ3kePwNgFCKfKtKu6srdRja4pump",
+      "pool": "BnfH2sf9E6JEqsnCLfGqbWVnGBvsRGrWxmLWkw2eewnC",
+      "expectedSlot": 462623316,
+      "diagnosticAvailableAt": 1793229131303,
+      "originalWindowAdmission": "UNUSABLE_RETAINED",
+      "earlierDecisionReconstructed": false,
+      "qualificationAuthorized": false,
+      "classification": "SCOPED_KNOWN_NON_SWAP_PROVEN",
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 4,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "0830be07b644b7e5",
+            "instructionName": "sweep_protocol_fee",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": true,
+            "classification": "known-non-swap"
+          }
+        ],
+        "supportedSwapInstructions": 0,
+        "knownNonSwapInstructions": 1
+      },
+      "mapped": [],
+      "essentialFlowMissingBecauseOfThisRow": false,
+      "notificationCompleteness": false,
+      "meaning": "Retrospective non-swap proof only. Original frozen contract had no timely exemption; historical window remains unusable. Reserve/liquidity changes still require fresh authoritative pricing.",
+      "responseProof": "1b83dc0c36493ea2ec75a1f327d3c184dc1e4bfbd6ed41bdd52b1e1e59b99205"
+    },
+    {
+      "signature": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU",
+      "mint": "DZYkvNnuL3GanzVw6h1ZhN9NMs2DQFAaXjHrYtUDpump",
+      "pool": "NwcrCZgQk8P5JceYjTFoL8KM28FmQ9xzwPUZdyKfp4P",
+      "expectedSlot": 462628210,
+      "diagnosticAvailableAt": 1793229131955,
+      "originalWindowAdmission": "UNUSABLE_RETAINED",
+      "earlierDecisionReconstructed": false,
+      "qualificationAuthorized": false,
+      "classification": "MISSING_EXECUTED_TRADE_PROVEN",
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 5,
+            "innerInstructionIndex": 0,
+            "discriminatorHex": "33e685a4017f83ad",
+            "instructionName": "sell",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 5,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 7,
+            "eventIndex": 0
+          },
+          "pool": "NwcrCZgQk8P5JceYjTFoL8KM28FmQ9xzwPUZdyKfp4P",
+          "mint": "DZYkvNnuL3GanzVw6h1ZhN9NMs2DQFAaXjHrYtUDpump",
+          "trader": "SqcwCsWVACV5o2jK6sRYqgs5eW5dMHyfZo33kiJ8fbU",
+          "side": "sell",
+          "tokenUnits": "20472353223",
+          "curveQuoteLamports": "3768055",
+          "userQuoteLamports": "3720953",
+          "fees": {
+            "lp_fee": "754",
+            "protocol_fee": "35043",
+            "coin_creator_fee": "11305",
+            "cashback": "0",
+            "buyback_fee": "17521",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462628210,
+          "identityKey": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:0:7:0",
+          "chainBlockTime": 1793222888,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793229131955,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "575b5578dae86424c4e7ab9263e0a1dffdaa8bb51a87d36e6d785902c5a6c38c",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "essentialFlowComplete": false,
+      "meaning": "Actual supported executed trade evidence was missing; original window remains unusable. Later amounts/identity never enter the historical decision.",
+      "responseProof": "57155802c943ad3090de8ba730a59a4e1bdcd5f2f6bf913246304f97920d759f"
+    },
+    {
+      "signature": "2Wm8dw2yBFbgp2WqJm91jC3A6ouq1BG6YGq17SXUe4X1ELUQo7bjQkkQULm5e6DmT9fBbhVA9KDVvcS5Ww7sJZcB",
+      "mint": "AfPhjrZx3oyh38G28ZVViP4p7h53N5kTxEeg5tzhpump",
+      "pool": "2qvq4k9MGpySbyA1AmoKjm1kDXCtWfodaW7kyvuRJihL",
+      "expectedSlot": 462647346,
+      "diagnosticAvailableAt": 1793229132708,
+      "originalWindowAdmission": "UNUSABLE_RETAINED",
+      "earlierDecisionReconstructed": false,
+      "qualificationAuthorized": false,
+      "classification": "MISSING_EXECUTED_TRADE_PROVEN",
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 3,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "33e685a4017f83ad",
+            "instructionName": "sell",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "2Wm8dw2yBFbgp2WqJm91jC3A6ouq1BG6YGq17SXUe4X1ELUQo7bjQkkQULm5e6DmT9fBbhVA9KDVvcS5Ww7sJZcB",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "2qvq4k9MGpySbyA1AmoKjm1kDXCtWfodaW7kyvuRJihL",
+          "mint": "AfPhjrZx3oyh38G28ZVViP4p7h53N5kTxEeg5tzhpump",
+          "trader": "BWZoZkM3nN5pVBdcQumSQVT5gDTZ7wvxR4SbUw99hfAF",
+          "side": "sell",
+          "tokenUnits": "207062892852",
+          "curveQuoteLamports": "1123626751",
+          "userQuoteLamports": "1112390482",
+          "fees": {
+            "lp_fee": "2247254",
+            "protocol_fee": "561814",
+            "coin_creator_fee": "8427201",
+            "cashback": "0",
+            "buyback_fee": "280907",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462647346,
+          "identityKey": "2Wm8dw2yBFbgp2WqJm91jC3A6ouq1BG6YGq17SXUe4X1ELUQo7bjQkkQULm5e6DmT9fBbhVA9KDVvcS5Ww7sJZcB:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:6:0",
+          "chainBlockTime": 1793226975,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793229132708,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "f5a57b89b4d1e0beb84b96cb14e1453d800bf41ba8562e7a097c7d8d84a21b2f",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "essentialFlowComplete": false,
+      "meaning": "Actual supported executed trade evidence was missing; original window remains unusable. Later amounts/identity never enter the historical decision.",
+      "responseProof": "761074b6d9ffa78a79f255ea995c2fec0bcf7f799f145d4c32f5bd1075f17c8a"
+    },
+    {
+      "signature": "5qPAXjWbLsnwMxxb1nVaqF1Fx56X7cJi5wmUe1rP2Gj5TRNPdWqFqdiiqexNE5u1ZvcrKfkGfqULaiHnscbxAKjc",
+      "mint": "CurpZpXsvhKKcLjJv215hNkBRKAENoYnVSLMju7rpump",
+      "pool": "BzCwV1kZda1QCt6odfBVNchb8tHxfLch31fjfFa8pyjo",
+      "expectedSlot": 462648404,
+      "diagnosticAvailableAt": 1793229133457,
+      "originalWindowAdmission": "UNUSABLE_RETAINED",
+      "earlierDecisionReconstructed": false,
+      "qualificationAuthorized": false,
+      "classification": "MISSING_EXECUTED_TRADE_PROVEN",
+      "inspection": {
+        "checks": [
+          {
+            "outerInstructionIndex": 4,
+            "innerInstructionIndex": null,
+            "discriminatorHex": "33e685a4017f83ad",
+            "instructionName": "sell",
+            "exactRecognizedLayout": true,
+            "exactPackagedLayout": true,
+            "instructionLayout": "pinned-sdk",
+            "trackVolumeAvailable": false,
+            "knownNonSwap": false,
+            "classification": "supported-swap"
+          }
+        ],
+        "supportedSwapInstructions": 1,
+        "knownNonSwapInstructions": 0
+      },
+      "mapped": [
+        {
+          "identity": {
+            "signature": "5qPAXjWbLsnwMxxb1nVaqF1Fx56X7cJi5wmUe1rP2Gj5TRNPdWqFqdiiqexNE5u1ZvcrKfkGfqULaiHnscbxAKjc",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "BzCwV1kZda1QCt6odfBVNchb8tHxfLch31fjfFa8pyjo",
+          "mint": "CurpZpXsvhKKcLjJv215hNkBRKAENoYnVSLMju7rpump",
+          "trader": "FoKeekt6wpYq9nvYgzSXfXE46GTipqYECa5HBhSWNavQ",
+          "side": "sell",
+          "tokenUnits": "788226675413",
+          "curveQuoteLamports": "349407370",
+          "userQuoteLamports": "345214480",
+          "fees": {
+            "lp_fee": "698815",
+            "protocol_fee": "174704",
+            "coin_creator_fee": "3319371",
+            "cashback": "0",
+            "buyback_fee": "87352",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462648404,
+          "identityKey": "5qPAXjWbLsnwMxxb1nVaqF1Fx56X7cJi5wmUe1rP2Gj5TRNPdWqFqdiiqexNE5u1ZvcrKfkGfqULaiHnscbxAKjc:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+          "chainBlockTime": 1793227200,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793229133457,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "a6dbb2c8f5e78724cdbd171933ec05b801ddffec38e5a2869c2bb922ab40573e",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "essentialFlowComplete": false,
+      "meaning": "Actual supported executed trade evidence was missing; original window remains unusable. Later amounts/identity never enter the historical decision.",
+      "responseProof": "3232639faef31794554729f5a2c5d64a9f5789e6185163855fc8da660627c738"
+    },
+    {
+      "signature": "4YPhc2XfgLysfZWh8UGNetPufP75acK9TtRQ5UvQR5QiWnDsumFbs5PH5EDtXSSF5wLLz1eJUzCHETaQ5LuqTNWy",
+      "mint": "3XNUKu5K6353Y3r13ZbPpw5pbPc9tSxzvhS9NcYQpump",
+      "pool": "7DopHx5TjHWRX9AZsY523AWY7SYwz4QGNdsKpmSiPYCA",
+      "expectedSlot": 462649662,
+      "diagnosticAvailableAt": 1793229134217,
+      "originalWindowAdmission": "UNUSABLE_RETAINED",
+      "earlierDecisionReconstructed": false,
+      "qualificationAuthorized": false,
+      "classification": "UNRESOLVED_UNSUPPORTED_TRANSACTION_VERSION",
+      "observedTransactionVersion": 1,
+      "reason": "DIAGNOSTIC_JSON_TRANSACTION_VERSION_NOT_VALIDATED",
+      "essentialFlowComplete": false,
+      "meaning": "The retained full-transaction decoder accepts this version syntactically, but this diagnostic has no validated semantics for its message shape. It is neither harmless nontrade proof nor executed-trade proof; original window remains unusable.",
+      "responseProof": "10d01e1ba3fada6c006e1462a181ecd8e081b86602dde38713d23442a758e15f"
+    },
+    {
+      "signature": "5HTeKjkVPLF95nxR7c36fC7Bvsx7MwEHGzf24cf58UZMwhjpaHBnYQwGqV2GoyszgQa9AnsF2Dz6bZZHr6Bq4vKC",
+      "mint": "5VTin7qaK9auBrvC54dkCuEXVw3SbBNcnb8XD497pump",
+      "pool": "Bxh8mWHK9xcPLM7J7zuuuVVgQp4Q6JFKJioD2uSL2nm1",
+      "expectedSlot": 462650718,
+      "diagnosticAvailableAt": 1793229134936,
+      "originalWindowAdmission": "UNUSABLE_RETAINED",
+      "earlierDecisionReconstructed": false,
+      "qualificationAuthorized": false,
+      "classification": "UNRESOLVED_UNSUPPORTED_TRANSACTION_VERSION",
+      "observedTransactionVersion": 1,
+      "reason": "DIAGNOSTIC_JSON_TRANSACTION_VERSION_NOT_VALIDATED",
+      "essentialFlowComplete": false,
+      "meaning": "The retained full-transaction decoder accepts this version syntactically, but this diagnostic has no validated semantics for its message shape. It is neither harmless nontrade proof nor executed-trade proof; original window remains unusable.",
+      "responseProof": "7a5f6b79dcc3ef6a947731c3a898683ae93a08fd8fe0be9dc6782cc45a18de95"
+    }
+  ],
+  "limitations": [
+    "Not a new forward observation or reconstructed earlier signal.",
+    "Known nontrade exemption would require a versioned future evidence contract, actual proof before its original deadline, and measured workload.",
+    "Whole-market completeness and capture reliability are not established by adjudicating selected failures."
+  ],
+  "inputSha256": "25e0d5477365325b04ecda522ad75fef008e1b6ada41d548679fcb3e9e2ab0e5",
+  "classifierSha256": "42642c201bb1941f405f8ea643179ae5c23d46d1b1d2b3d2462252ffad3518af",
+  "decoderSha256": "4d422c70b6a8305ede4a8e61541cd2e313d4dbef1e879d506d049fedbfa72ffd"
+}

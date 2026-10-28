@@ -1,0 +1,34 @@
+✔ actual executed trade classification preserves amounts/roles/transfers and never admits the historical window (19.146864ms)
+✔ exact known non-swap fixture is distinguishable from unknown/missing trade data (5.54788ms)
+✔ unknown instruction, missing event, mismatched slot and absent transaction cannot be excused as nontrades (4.251657ms)
+✔ fixed two-case diagnostic uses only finalized getTransaction with one physical operation and actual750ms pacing (26.410829ms)
+✔ plan refuses duplicate/unbounded identities, endpoint changes and fabricated source roles before network (0.334957ms)
+✔ provider429 stops after one request, records Retry-After and retains unknown response reservation without retry (1.405445ms)
+✔ physical timeout with unsettled injected fetch stops every further request and retains uncertainty (10.144169ms)
+✔ pre-start durable admission overrun sends no request and cannot fabricate uncertainty or an earlier availability (0.524968ms)
+✔ offline adjudication verifies raw response hash and actual response availability (20.510736ms)
+✔ actual CLI refuses privileged execution before touching paths or providers (0.27604ms)
+✔ actual hook row endpoint is wired and error/socket settlement precedes the next physical case (3.663364ms)
+✔ any explicit Retry-After stops further cases and survives a successful response without fabricating HTTPstatus (0.681621ms)
+✔ unparseable or negative retry hints remain unresolved with conservative recovery headroom (0.876971ms)
+✔ prepared six-case population retains actual source provenance and historical windows (0.137895ms)
+✔ unvalidated transaction version cannot prove either a missing trade or a harmless pool reference (0.293375ms)
+✔ a version1 label is not attributed to an expected transaction before identity and success checks (0.500242ms)
+✔ actual retained confirmed direct Sell maps executed integer amounts and full CPI identity (10.477422ms)
+✔ constraint minima and transaction fee are never mapped as executed notional (3.806096ms)
+✔ signature hints ignore UI numbers and txSigner, requiring RPC enrichment (0.271533ms)
+✔ logs and event CPI are one evidence source; repeated bytes preserve identity and availability is not backdated (6.257562ms)
+✔ failed, mismatched, unresolved-stack and noncanonical transactions cannot supply flow (7.930464ms)
+✔ conflicting event contents remain identifiable, while role/transfer disagreement is visible (8.327985ms)
+✔ changed transfer quality invalidates an unchanged event instead of being classified as a duplicate (4.617981ms)
+✔ explicit curve/user research views preserve true CPI position and RPC availability without choosing a primary convention (1.997884ms)
+✔ synthetic fee-payer separation uses event user and instruction role rather than key zero (2.423605ms)
+✔ current actual custom-quote Sell and program-address mentions cannot establish a supported pool sample (3.554493ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1023.936075

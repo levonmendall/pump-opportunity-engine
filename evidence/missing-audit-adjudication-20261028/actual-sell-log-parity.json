@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_REAL_MISSING_SELL_NATIVE_FULL_PARITY",
+  "inputSha256": "25e0d5477365325b04ecda522ad75fef008e1b6ada41d548679fcb3e9e2ab0e5",
+  "nativeMapperSha256": "3afa6a27c60e96673a4476fbf143e4fa816803933d2c0e4ed49bdd36a7c0b7b1",
+  "fullMapperSha256": "4d422c70b6a8305ede4a8e61541cd2e313d4dbef1e879d506d049fedbfa72ffd",
+  "classifierSha256": "42642c201bb1941f405f8ea643179ae5c23d46d1b1d2b3d2462252ffad3518af",
+  "rows": [
+    {
+      "signature": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU",
+      "mint": "DZYkvNnuL3GanzVw6h1ZhN9NMs2DQFAaXjHrYtUDpump",
+      "pool": "NwcrCZgQk8P5JceYjTFoL8KM28FmQ9xzwPUZdyKfp4P",
+      "transactionVersion": 0,
+      "responseSha256": "57155802c943ad3090de8ba730a59a4e1bdcd5f2f6bf913246304f97920d759f",
+      "staticPoolReference": true,
+      "poolStaticIndex": 2,
+      "poolInLoadedAddresses": false,
+      "logLines": 56,
+      "explicitTruncationMarker": false,
+      "parserError": null,
+      "parsedTradeCount": 1,
+      "compiledValidatedTradeCount": 1,
+      "exactEconomicsAndTraderParity": true,
+      "matches": [
+        {
+          "nativeIdentity": {
+            "namespace": "solana-program-log-v1",
+            "signature": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "logArrayIndex": 43
+          },
+          "frameOrdinal": 9,
+          "framePath": [
+            "b1oomGGqPKGD6errbyfbVMBuzSC8WtAAYo8MwNafWW1",
+            "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+          ],
+          "compiledIdentity": {
+            "signature": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 5,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 7,
+            "eventIndex": 0
+          },
+          "side": "sell",
+          "trader": "SqcwCsWVACV5o2jK6sRYqgs5eW5dMHyfZo33kiJ8fbU",
+          "feePayer": "SqcwCsWVACV5o2jK6sRYqgs5eW5dMHyfZo33kiJ8fbU",
+          "feePayerIsTrader": true,
+          "tokenUnits": "20472353223",
+          "curveQuoteLamports": "3768055",
+          "userQuoteLamports": "3720953",
+          "fees": {
+            "lp_fee": "754",
+            "protocol_fee": "35043",
+            "coin_creator_fee": "11305",
+            "cashback": "0",
+            "buyback_fee": "17521",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "compiledTransfers": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "parity": true
+        }
+      ],
+      "originalWindowStatus": "UNUSABLE_RETAINED",
+      "oldNotificationReceiptEstablished": false,
+      "meaning": "These later complete getTransaction log bytes decode offline. This does not establish that the original websocket delivered identical bytes or when any earlier information became available."
+    },
+    {
+      "signature": "2Wm8dw2yBFbgp2WqJm91jC3A6ouq1BG6YGq17SXUe4X1ELUQo7bjQkkQULm5e6DmT9fBbhVA9KDVvcS5Ww7sJZcB",
+      "mint": "AfPhjrZx3oyh38G28ZVViP4p7h53N5kTxEeg5tzhpump",
+      "pool": "2qvq4k9MGpySbyA1AmoKjm1kDXCtWfodaW7kyvuRJihL",
+      "transactionVersion": "legacy",
+      "responseSha256": "761074b6d9ffa78a79f255ea995c2fec0bcf7f799f145d4c32f5bd1075f17c8a",
+      "staticPoolReference": true,
+      "poolStaticIndex": 2,
+      "poolInLoadedAddresses": false,
+      "logLines": 57,
+      "explicitTruncationMarker": false,
+      "parserError": null,
+      "parsedTradeCount": 1,
+      "compiledValidatedTradeCount": 1,
+      "exactEconomicsAndTraderParity": true,
+      "matches": [
+        {
+          "nativeIdentity": {
+            "namespace": "solana-program-log-v1",
+            "signature": "2Wm8dw2yBFbgp2WqJm91jC3A6ouq1BG6YGq17SXUe4X1ELUQo7bjQkkQULm5e6DmT9fBbhVA9KDVvcS5Ww7sJZcB",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "logArrayIndex": 44
+          },
+          "frameOrdinal": 7,
+          "framePath": [
+            "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+          ],
+          "compiledIdentity": {
+            "signature": "2Wm8dw2yBFbgp2WqJm91jC3A6ouq1BG6YGq17SXUe4X1ELUQo7bjQkkQULm5e6DmT9fBbhVA9KDVvcS5Ww7sJZcB",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "side": "sell",
+          "trader": "BWZoZkM3nN5pVBdcQumSQVT5gDTZ7wvxR4SbUw99hfAF",
+          "feePayer": "BWZoZkM3nN5pVBdcQumSQVT5gDTZ7wvxR4SbUw99hfAF",
+          "feePayerIsTrader": true,
+          "tokenUnits": "207062892852",
+          "curveQuoteLamports": "1123626751",
+          "userQuoteLamports": "1112390482",
+          "fees": {
+            "lp_fee": "2247254",
+            "protocol_fee": "561814",
+            "coin_creator_fee": "8427201",
+            "cashback": "0",
+            "buyback_fee": "280907",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "compiledTransfers": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "parity": true
+        }
+      ],
+      "originalWindowStatus": "UNUSABLE_RETAINED",
+      "oldNotificationReceiptEstablished": false,
+      "meaning": "These later complete getTransaction log bytes decode offline. This does not establish that the original websocket delivered identical bytes or when any earlier information became available."
+    },
+    {
+      "signature": "5qPAXjWbLsnwMxxb1nVaqF1Fx56X7cJi5wmUe1rP2Gj5TRNPdWqFqdiiqexNE5u1ZvcrKfkGfqULaiHnscbxAKjc",
+      "mint": "CurpZpXsvhKKcLjJv215hNkBRKAENoYnVSLMju7rpump",
+      "pool": "BzCwV1kZda1QCt6odfBVNchb8tHxfLch31fjfFa8pyjo",
+      "transactionVersion": 0,
+      "responseSha256": "3232639faef31794554729f5a2c5d64a9f5789e6185163855fc8da660627c738",
+      "staticPoolReference": true,
+      "poolStaticIndex": 3,
+      "poolInLoadedAddresses": false,
+      "logLines": 55,
+      "explicitTruncationMarker": false,
+      "parserError": null,
+      "parsedTradeCount": 1,
+      "compiledValidatedTradeCount": 1,
+      "exactEconomicsAndTraderParity": true,
+      "matches": [
+        {
+          "nativeIdentity": {
+            "namespace": "solana-program-log-v1",
+            "signature": "5qPAXjWbLsnwMxxb1nVaqF1Fx56X7cJi5wmUe1rP2Gj5TRNPdWqFqdiiqexNE5u1ZvcrKfkGfqULaiHnscbxAKjc",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "logArrayIndex": 46
+          },
+          "frameOrdinal": 8,
+          "framePath": [
+            "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+          ],
+          "compiledIdentity": {
+            "signature": "5qPAXjWbLsnwMxxb1nVaqF1Fx56X7cJi5wmUe1rP2Gj5TRNPdWqFqdiiqexNE5u1ZvcrKfkGfqULaiHnscbxAKjc",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "side": "sell",
+          "trader": "FoKeekt6wpYq9nvYgzSXfXE46GTipqYECa5HBhSWNavQ",
+          "feePayer": "FoKeekt6wpYq9nvYgzSXfXE46GTipqYECa5HBhSWNavQ",
+          "feePayerIsTrader": true,
+          "tokenUnits": "788226675413",
+          "curveQuoteLamports": "349407370",
+          "userQuoteLamports": "345214480",
+          "fees": {
+            "lp_fee": "698815",
+            "protocol_fee": "174704",
+            "coin_creator_fee": "3319371",
+            "cashback": "0",
+            "buyback_fee": "87352",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "compiledTransfers": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "parity": true
+        }
+      ],
+      "originalWindowStatus": "UNUSABLE_RETAINED",
+      "oldNotificationReceiptEstablished": false,
+      "meaning": "These later complete getTransaction log bytes decode offline. This does not establish that the original websocket delivered identical bytes or when any earlier information became available."
+    }
+  ],
+  "networkRequests": 0,
+  "financialWrites": 0,
+  "originalWindowsUnusable": true,
+  "limitations": [
+    "Late RPC log bytes cannot prove original websocket receipt, completeness or latency.",
+    "Pool-static status rules out address-table-only scope for these three cases only.",
+    "No unsupported transaction-version semantics are inferred."
+  ]
+}

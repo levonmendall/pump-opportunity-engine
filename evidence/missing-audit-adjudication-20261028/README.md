@@ -1,6 +1,6 @@
 # Post-settlement missing-signature adjudication
 
-This component is prepared for one finite diagnostic after `40780989966` has physically settled flat. It has **not run against a provider**. No runtime, ledger, account, trading permission, provider plan, credential or historical result is changed.
+This component is prepared for one finite diagnostic after `40780989966` has physically settled flat. It was reviewed before execution. The lead subsequently completed one bounded six-read diagnostic; the version-guard review below makes no additional network request. No runtime, ledger, account, trading permission, provider plan, credential or historical result is changed.
 
 The six fixed cases contain two retained c189 failures plus four current cases: AfPhjr midwindow, CurpZp at the end boundary, 3XNU midwindow, and 5VTin7 requiring two audit pages. Selection diagnoses failure mechanisms; it is not a winner sample or a completeness denominator. The current cases were extracted from the independently verified16-file archive and its exact selected-event hash. Their original timestamps, slots, source lines and hashes remain in `plan.json`.
 
@@ -28,3 +28,9 @@ node --import tsx scripts/adjudicate-missing-audit.ts RESULT_JSON OFFLINE_RESULT
 ```
 
 Source-frozen application remains d7eab54; this diagnostic is not a production data-path adoption or acceptance. Actual API calls/bytes/uncertainty and any unverified infrastructure costs must be reported after execution. A successful code test is not a successful live adjudication.
+
+## Version-guard correction and actual offline parity
+
+The six captured responses contain legacy/v0 transactions plus two version1 messages with `transactionConfig`. The frozen fetch source explicitly requested `maxSupportedTransactionVersion:1` (sourceSHA642166a6…), not0. Accepting acquisition of a version is not proof that its semantics have been validated. The existing full mapper's syntactic version allowlist included1, but this diagnostic has no supported-version1 fixture or independently established message semantics. The offline classifier now marks both `UNRESOLVED_UNSUPPORTED_TRANSACTION_VERSION`, preserving the initial output as adverse evidence. Main runtime/mapper policy is unchanged.
+
+The revised result is one exact `sweep_protocol_fee` nontrade, three missing executed Sells, and two unresolved version1 cases. Every original window remains unusable. One Sell was routed; two were direct. Replaying the three actual later full-RPC log arrays through the existing native parser gives exact trade count, amounts, trader and fee parity with the compiled-instruction/transfer-validated full mapper. All three pool addresses are in static keys, not only lookup tables; none has an explicit truncation marker or parser error. These facts do not prove original WebSocket delivery, its timing, or which upstream/local stage lost a packet. `compare-real-sell-logs.ts` reproduces the offline comparison without networking.
