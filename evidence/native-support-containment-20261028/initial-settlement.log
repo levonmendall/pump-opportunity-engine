@@ -1,0 +1,85 @@
+✔ settled timeout uncertainty does not deadlock native service behind the coordinator planning guard (84.247834ms)
+✔ settled chapter recovery preserves cooldown readiness, raw history, and held/pending priority (30.38784ms)
+✔ control cooldown is enforced at native admission without blocking unrelated HTTP or losing monotonic wait (9.138635ms)
+✔ native planner defers a settled context-floor cooldown without disconnecting healthy scopes (22.055358ms)
+✖ real shared gate: failed support refresh retains fresh capture through lateHTTP200 physical settlement (1023.107615ms)
+✖ real shared gate: failed support refresh retains fresh capture through lateHTTP503 physical settlement (1033.349801ms)
+✔ real shared gate: support can actually expire while its failed HTTP request remains physically unsettled (1013.595571ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4123.651282
+
+✖ failing tests:
+
+test at test/native-settled-recovery.test.ts:1:12026
+✖ real shared gate: failed support refresh retains fresh capture through lateHTTP200 physical settlement (1023.107615ms)
+  AssertionError [ERR_ASSERTION]: physical settlement restores independent liveness, not an extra HTTP budget
+  
+  'support' !== 'ping'
+  
+      at TestContext.<anonymous> (/workspace/poe-native-support-containment/test/native-settled-recovery.test.ts:113:25)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'support',
+    expected: 'ping',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-settled-recovery.test.ts:1:12026
+✖ real shared gate: failed support refresh retains fresh capture through lateHTTP503 physical settlement (1033.349801ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+  + Buffer(934) [Uint8Array] [
+  - Buffer(929) [Uint8Array] [
+      123,
+      34,
+      115,
+      99,
+      104,
+  ...
+      50,
+  +   53,
+  +   48,
+  +   54,
+  +   56,
+  -   49,
+  -   51,
+  -   49,
+  -   57,
+      44,
+      34,
+      115,
+      116,
+      97,
+  ...
+      48,
+  +   44,
+  +   51,
+  +   55,
+  +   52,
+  +   57,
+      93,
+      125,
+      10
+    ]
+  
+      at TestContext.<anonymous> (/workspace/poe-native-support-containment/test/native-settled-recovery.test.ts:113:154)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: <Buffer 7b 22 73 63 68 65 6d 61 56 65 72 73 69 6f 6e 22 3a 31 2c 22 67 72 61 6e 74 49 64 22 3a 22 73 65 74 74 6c 65 64 2d 74 69 6d 65 6f 75 74 2d 72 65 63 6f ... 884 more bytes>,
+    expected: <Buffer 7b 22 73 63 68 65 6d 61 56 65 72 73 69 6f 6e 22 3a 31 2c 22 67 72 61 6e 74 49 64 22 3a 22 73 65 74 74 6c 65 64 2d 74 69 6d 65 6f 75 74 2d 72 65 63 6f ... 879 more bytes>,
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

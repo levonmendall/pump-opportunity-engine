@@ -1,0 +1,34 @@
+✔ settled timeout uncertainty does not deadlock native service behind the coordinator planning guard (76.990163ms)
+✔ settled chapter recovery preserves cooldown readiness, raw history, and held/pending priority (27.834898ms)
+✔ control cooldown is enforced at native admission without blocking unrelated HTTP or losing monotonic wait (12.75225ms)
+✔ native planner defers a settled context-floor cooldown without disconnecting healthy scopes (24.913431ms)
+✖ real shared gate: failed support refresh retains fresh capture through lateHTTP200 physical settlement (1020.962728ms)
+✔ real shared gate: failed support refresh retains fresh capture through lateHTTP503 physical settlement (1019.050431ms)
+✔ real shared gate: support can actually expire while its failed HTTP request remains physically unsettled (1009.267069ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4081.150341
+
+✖ failing tests:
+
+test at test/native-settled-recovery.test.ts:1:12026
+✖ real shared gate: failed support refresh retains fresh capture through lateHTTP200 physical settlement (1020.962728ms)
+  AssertionError [ERR_ASSERTION]: physical settlement restores independent liveness, not an extra HTTP budget
+  
+  'support' !== 'ping'
+  
+      at TestContext.<anonymous> (/workspace/poe-native-support-containment/test/native-settled-recovery.test.ts:113:25)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'support',
+    expected: 'ping',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

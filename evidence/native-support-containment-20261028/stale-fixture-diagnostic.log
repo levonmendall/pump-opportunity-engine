@@ -1,0 +1,28 @@
+✖ RETAINED718 timing-shaped failed refresh preserves five fresh scopes and recovers before original expiry (57.419291ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 952.86555
+
+✖ failing tests:
+
+test at test/pilot-native-flow.test.ts:1:86201
+✖ RETAINED718 timing-shaped failed refresh preserves five fresh scopes and recovers before original expiry (57.419291ms)
+  AssertionError [ERR_ASSERTION]: {"gaps":[{"mint":"2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump","at":1793209037094,"reason":"LOG_NATIVE_PROGRAM_CLOCK_STALE_OR_FUTURE","requiresFreshWindow":true}],"refusals":[{"kind":"native-flow-refusal","data":{"signature":"LuHGSF7H2wouHfHVGArgt72Fi1jf14P1merSyXZ2Lc84DuECmXCDbE8i9WEfaUgzpbQux3jFKbwntU7qGsccSJA","slot":462205500,"receivedAt":1793209037094,"availableAt":1793209037094,"success":true,"rawHash":"afa8d94dc25b9c4796dade2a0866a62b93564ed26f28842c9927ce26c909439c","subscriptionMint":"2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump","subscriptionPool":"FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt","subscriptionId":101,"connectionId":1,"parsedEvents":1,"eventsAccepted":0,"duplicate":false,"correction":false,"classification":"unusable","reason":"LOG_NATIVE_PROGRAM_CLOCK_STALE_OR_FUTURE","chainBlockTime":null,"protocolEffects":0,"protocolFramesObserved":0,"strictV2Unavailable":false}}]}
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/workspace/poe-native-support-containment/test/pilot-native-flow.test.ts:410:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
