@@ -1,0 +1,277 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.coingecko.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Pool OHLCV Chart by Pool Address
+
+> To get the OHLCV chart (Open, High, Low, Close, Volume) of a pool based on the provided pool address on a network
+
+#### Notes
+
+* Use `timeframe` with `aggregate` for custom intervals (e.g. `minute?aggregate=15` for 15-minute OHLCV).
+* Timestamps use epoch/unix format (e.g. `1708850449`).
+* Each call retrieves a **max 6-month range** — use `before_timestamp` for older data.
+* Each `ohlcv_list` element:
+  ```
+  [
+    timestamp,
+    open,
+    high,
+    low,
+    close,
+    volume
+  ]
+  ```
+* Intervals with no swaps are skipped by default. Set `include_empty_intervals=true` to fill gaps (OHLC = previous close, volume = 0).
+
+**Historical Access by Plan:**
+
+* **Basic:** past 6 months
+* **[Analyst and above](https://www.coingecko.com/en/api/pricing):** September 2021 to present (depending on pool tracking start)
+
+**Cache / Update Frequency:**<ul><li>(Paid API)</li><li>(Demo / Keyless API)</li></ul>
+
+#### SDK Examples
+
+```typescript TypeScript theme={null}
+const response = await client.onchain.networks.pools.ohlcv.getTimeframe('day', {
+  network: 'eth',
+  pool_address: '0x06da0fd433c1a5d7a4faa01111c044910a184553',
+});
+
+console.log(JSON.stringify(response, null, 2));
+```
+
+```python Python theme={null}
+response = client.onchain.networks.pools.ohlcv.get_timeframe(
+  "day",
+  network="eth",
+  pool_address="0x06da0fd433c1a5d7a4faa01111c044910a184553",
+)
+
+print(response.model_dump_json(indent=2))
+```
+
+
+## OpenAPI
+
+````yaml openapi-specs/demo-api.json get /onchain/networks/{network}/pools/{pool_address}/ohlcv/{timeframe}
+openapi: 3.0.0
+info:
+  title: CoinGecko Demo API
+  version: 3.0.0
+servers:
+  - url: https://api.coingecko.com/api/v3
+security:
+  - headerAuth: []
+  - queryAuth: []
+paths:
+  /onchain/networks/{network}/pools/{pool_address}/ohlcv/{timeframe}:
+    get:
+      summary: Pool OHLCV Chart by Pool Address
+      description: >-
+        To get the OHLCV chart (Open, High, Low, Close, Volume) of a pool based
+        on the provided pool address on a network
+      operationId: pool-ohlcv-contract-address
+      parameters:
+        - name: network
+          in: path
+          required: true
+          description: |-
+            Network ID. 
+            *refers to [`/onchain/networks`](/reference/networks-list).
+          schema:
+            type: string
+            default: eth
+        - name: pool_address
+          in: path
+          required: true
+          description: Pool contract address.
+          schema:
+            type: string
+            default: '0x06da0fd433c1a5d7a4faa01111c044910a184553'
+        - name: timeframe
+          in: path
+          required: true
+          description: Timeframe of the OHLCV chart.
+          schema:
+            type: string
+            default: day
+            enum:
+              - day
+              - hour
+              - minute
+        - name: aggregate
+          in: query
+          required: false
+          description: |-
+            Time period to aggregate each OHLCV. 
+            Available values (day): `1` 
+            Available values (hour): `1`, `4`, `12` 
+            Available values (minute): `1`, `5`, `15` 
+            Default value: 1
+          schema:
+            type: string
+        - name: before_timestamp
+          in: query
+          required: false
+          description: >-
+            Return OHLCV data before this timestamp (integer seconds since
+            epoch).
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          description: |-
+            Number of OHLCV results to return, maximum 1000. 
+            Default value: 100
+          schema:
+            type: integer
+        - name: currency
+          in: query
+          required: false
+          description: |-
+            Return OHLCV in USD or quote token. 
+            Default: `usd`
+          schema:
+            type: string
+            enum:
+              - usd
+              - token
+        - name: token
+          in: query
+          required: false
+          description: |-
+            Return OHLCV for token, use this to invert the chart. 
+            Available values: `base`, `quote`, or token address. 
+            Default: `base`
+          schema:
+            type: string
+        - name: include_empty_intervals
+          in: query
+          required: false
+          description: |-
+            Include empty intervals with no trade data. 
+            Default: `false`
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Pool OHLCV chart data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OHLCV'
+              example:
+                data:
+                  id: c2728da2-1bc8-4b3a-94ca-6248a3c6e966
+                  type: ohlcv_request_response
+                  attributes:
+                    ohlcv_list:
+                      - - 1779926400
+                        - 1.00208165944741
+                        - 1.00257871811779
+                        - 0.985925654401274
+                        - 1.00027690571219
+                        - 3481.679733097695
+                      - - 1779840000
+                        - 0.996152188066521
+                        - 1.0040610548489
+                        - 0.996152188066521
+                        - 1.00208165944741
+                        - 11911.669491500581
+                meta:
+                  base:
+                    name: Tether USD
+                    symbol: USDT
+                    coingecko_coin_id: tether
+                    address: '0xdac17f958d2ee523a2206206994597c13d831ec7'
+                  quote:
+                    name: Wrapped Ether
+                    symbol: WETH
+                    coingecko_coin_id: weth
+                    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+components:
+  schemas:
+    OHLCV:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: object
+          required:
+            - id
+            - type
+            - attributes
+          properties:
+            id:
+              type: string
+              description: Request ID
+            type:
+              type: string
+              description: Resource type
+            attributes:
+              type: object
+              required:
+                - ohlcv_list
+              properties:
+                ohlcv_list:
+                  type: array
+                  description: >-
+                    OHLCV data as [timestamp, open, high, low, close, volume]
+                    arrays
+                  items:
+                    type: array
+                    items:
+                      type: number
+        meta:
+          type: object
+          properties:
+            base:
+              type: object
+              description: Base token metadata
+              properties:
+                name:
+                  type: string
+                symbol:
+                  type: string
+                coingecko_coin_id:
+                  type: string
+                  nullable: true
+                address:
+                  type: string
+            quote:
+              type: object
+              description: Quote token metadata
+              properties:
+                name:
+                  type: string
+                symbol:
+                  type: string
+                coingecko_coin_id:
+                  type: string
+                  nullable: true
+                address:
+                  type: string
+  securitySchemes:
+    headerAuth:
+      type: apiKey
+      in: header
+      name: x-cg-demo-api-key
+      description: >-
+        Learn how to [set up your API
+        key](https://docs.coingecko.com/docs/setting-up-your-api-key)
+    queryAuth:
+      type: apiKey
+      in: query
+      name: x_cg_demo_api_key
+      description: >-
+        Learn how to [set up your API
+        key](https://docs.coingecko.com/docs/setting-up-your-api-key)
+
+````
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

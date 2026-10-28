@@ -1,0 +1,14 @@
+{
+  "title": "POE // Opportunity Command Center",
+  "href": "https://meme-machine-dashboard-staging.onrender.com/",
+  "viewport": 390,
+  "documentWidth": 390,
+  "bodyWidth": 390,
+  "watchText": "Recent identities known\n50\nEligible verified identities\n34\nWatch candidates\n33\nDeep slots active / maximum\n4 / 6\nReady deep-analysis queue\n27\nCurrent queue wait: average / maximum (s)\n862.02 / 1,561.62\nCompleted admission wait: average / maximum (s)\n603.06 / 1,624.17\nPromotions / re-promotions\n116 / 86\nDemotions\n112\nComplete 60-second windows\n181\nFeature-only assessments\n3\nFeature-only failures\n3\nPrimary strategy rejections\n0\nCapacity exclusions\n0\nIncomplete-data exclusions\n0\nEnrichment deadline failures\n0\nStructural exclusions\n7\nExpired identities\n6",
+  "pilotState": "RUNNING REPORTED",
+  "sourceText": "Account poe-pilot-8468add6-f916-48cf-a585-6cd008a81360 · inception 2026-10-27T17:56:13.252Z\nRun pilot-20261027223839107-205d2bb9\nRuntime 98601c40b65fede59e75c5fb3de1546475d4dfed · strategy persistent-buying-pilot-concurrent-stage-3-v1\nLocal source 2026-10-27T22:40:36.745Z (8.34s old) · first accepted 2026-10-27T22:40:36.893Z\nLast authenticated publisher contact 2026-10-27T22:40:36.893Z (8.2s ago). Receiver contact does not refresh source facts.",
+  "checkedAt": "2026-10-27T22:40:45.499Z",
+  "errors": [],
+  "horizontalOverflow": false,
+  "tlsVerificationEnabled": true
+}

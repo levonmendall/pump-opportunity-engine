@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-28T00:23:45.280Z",
+  "segment": {
+    "source": "4aaf6e1",
+    "startedAt": "2026-10-28T00:13:53.575Z",
+    "expectedEndAt": "2026-10-28T00:43:48.000Z",
+    "kind": "isolated frozen experimental interval; reference collection begins later and does not reconstruct a contemporaneous early census"
+  },
+  "selection": {
+    "universe": "all rows from independent current PumpSwap DEX pages1–3 at each pass; retain rejected rows and duplicate positions",
+    "eligibility": "canonicalSOL PDA address consistency and indexed creation-age5min–2h at actual receipt; hint only, not onchain support",
+    "ranking": "union of independently indexed provisional eligible leads from both passes, descending maximum reported5minute volume, then maximum24hour volume, then pool lexical; never POE-selected or ranked by later OHLC outcome",
+    "maximumSelectedPools": 10,
+    "feesOrExecution": "not established by listing or OHLC",
+    "wholeMarketDenominator": false
+  },
+  "prior": {
+    "path": "/workspace/pump-opportunity-engine/evidence/opportunity-coverage-20261027/cohort-ohlcv-20261027T235506594Z-receipt.json",
+    "sha256": "08c273ee77853f1d9477604315bea6f9e2c11ee6b58b736a8391ec8dc0e56df5",
+    "requestStarts": 27,
+    "measuredBodyBytes": 608054,
+    "uncertainBodyBytes": 272
+  },
+  "termsEvidence": "evidence/opportunity-coverage-20261027/reference-raw/official-public-api.html: public freekeyless API10calls/min; own>=12s startspacing",
+  "startPhase": "forward-reference-20261028T002345281Z-start-receipt.json",
+  "endPhase": null,
+  "expandedPhase": "forward-reference-20261028T002814493Z-expand-receipt.json"
+}

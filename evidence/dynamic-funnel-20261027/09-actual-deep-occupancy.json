@@ -1,0 +1,20 @@
+{
+  "runId": "pilot-20261027223839107-205d2bb9",
+  "sourceAt": 1793141091607,
+  "observedElapsedMs": 372500,
+  "maximumActualDeep": 6,
+  "wallMsByActualDeep": {
+    "0": 13823,
+    "1": 50556,
+    "2": 126183,
+    "3": 77425,
+    "4": 73092,
+    "5": 30665,
+    "6": 756
+  },
+  "physicalStarts": 157,
+  "maximumPhysicalStartsPer10s": 11,
+  "maximumPhysicalStartsPer60s": 31,
+  "minimumStartSpacingMs": 252,
+  "meaning": "Actual recorded chronological prefix; deep allocation duration differs from complete usable window concurrency. Request starts include the shared conservative control policy."
+}

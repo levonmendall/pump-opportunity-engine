@@ -1,0 +1,413 @@
+{
+  "schemaVersion": 1,
+  "classification": "SETTLED_CANDIDATE_ONLY_COMPONENT_COMPARISON_NOT_MATCHED_MARKET_OR_FINANCIAL_PERFORMANCE",
+  "runs": [
+    {
+      "runId": "pilot-20261027223839107-205d2bb9",
+      "source": {
+        "commit": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+        "sha256": "41f279529295148685009e7ccd85ad6c87b5d47f78339bf9728f564c92863999"
+      },
+      "elapsedMs": 696790,
+      "configuredDeepMaximum": 6,
+      "actualFlowPeak": 6,
+      "actualFlowDurationByCountMs": {
+        "0": 14592,
+        "1": 80299,
+        "2": 244966,
+        "3": 185950,
+        "4": 117511,
+        "5": 52717,
+        "6": 755
+      },
+      "uniqueAdmitted": 28,
+      "admissionRecords": 28,
+      "uniqueAudited": 25,
+      "uniquePredictivelyEvaluated": 25,
+      "predictiveAssessmentStatuses": {
+        "failed": 25
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 189,
+        "risk-rejection:entries-not-authorized-by-ledger": 25
+      },
+      "intentionallyDisabledFinancialControlNotPredictiveFailure": true,
+      "uniqueUnavailable": [
+        "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+        "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+        "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump"
+      ],
+      "unavailableReasons": [
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1
+          }
+        },
+        {
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "independent history verification unavailable": 1
+          }
+        },
+        {
+          "mint": "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "required enrichment cannot fit method rate limit and usefulness deadline": 1
+          }
+        }
+      ],
+      "withinRunWeakRevisits": 0,
+      "recordedHistoricalRepromotions": 17,
+      "physicalRequests": 301,
+      "physicalRequestsPerUniqueEvaluated": 12.04,
+      "requestMeanPerMinute": 25.918856470385627,
+      "rentPreparationRequests": 56,
+      "selectedSignatures": 64,
+      "normalizedTrades": 45,
+      "normalizedSideShapeCounts": {
+        "sell:inner/routed": 15,
+        "sell:direct": 3,
+        "buy:direct": 6,
+        "buy:inner/routed": 21
+      },
+      "enrichmentPhysicalStarts": 45,
+      "enrichmentAvailabilityMs": {
+        "samples": 45,
+        "p50": 1108,
+        "p95": 1879,
+        "maximum": 3078
+      },
+      "selectedPeakRolling10s": 22,
+      "selectedPeakRolling60s": 31,
+      "requestPeakRolling10s": 11,
+      "requestPeakRolling60s": 41,
+      "providerFailures": {
+        "COMPONENT_PHYSICAL_TIMEOUT": 1,
+        "COMPONENT_HTTP_STATUS_503": 1
+      },
+      "localRefusals": {
+        "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 24,
+        "entry-capacity-refusal": 25,
+        "candidate-enrichment-unavailable": 1,
+        "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 1,
+        "candidate-preparation-unavailable": 2,
+        "independent-audit-unavailable": 1,
+        "PILOT_SCHEDULER_LOWER_PRIORITY_DEFER": 1,
+        "candidate-method-capacity-unavailable": 1
+      },
+      "gapReasons": {
+        "valid-window-predictive-assessment-failed": 25,
+        "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+        "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+        "independent history verification unavailable": 1,
+        "required enrichment cannot fit method rate limit and usefulness deadline": 1
+      },
+      "resources": {
+        "eventEvidenceBytes": 6248883,
+        "maximumRss": 329150464,
+        "cpu": {
+          "user": 75771773,
+          "system": 8455297
+        },
+        "eventLoopDelayP95Ms": 21.544959,
+        "candidateRecordingClosed": false,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost"
+      },
+      "pumpApiBytes": 785150761,
+      "inputs": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/result.json",
+          "bytes": 100056,
+          "sha256": "41c08917992d61f5ccf94fc4e92510eebfe0bcb4aead4eaa7e0cc00daa4cf18e"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/events.ndjson",
+          "bytes": 6248883,
+          "sha256": "b6f6395628a00cf6503f89191801e289bf5b612666e0e23e9d64b033e5420d51"
+        }
+      ]
+    },
+    {
+      "runId": "pilot-20261027230222347-7a5dc2cf",
+      "source": {
+        "commit": "92b50f8f331021da8da5b7ced366abffcd3a4e5a",
+        "sha256": "d9b9b87d23a663fd6d4afc4c37b5d604c16cdd95bbf448126708f401e05f839d"
+      },
+      "elapsedMs": 895303,
+      "configuredDeepMaximum": 6,
+      "actualFlowPeak": 6,
+      "actualFlowDurationByCountMs": {
+        "0": 132635,
+        "1": 35278,
+        "2": 85245,
+        "3": 124464,
+        "4": 154588,
+        "5": 213697,
+        "6": 149396
+      },
+      "uniqueAdmitted": 48,
+      "admissionRecords": 49,
+      "uniqueAudited": 40,
+      "uniquePredictivelyEvaluated": 40,
+      "predictiveAssessmentStatuses": {
+        "failed": 40
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 323,
+        "candidate-observation:financial-execution-intentionally-disabled": 40
+      },
+      "intentionallyDisabledFinancialControlNotPredictiveFailure": true,
+      "uniqueUnavailable": [
+        "EBd37wFkN8FFZYbrMae2aDW4KZ55a3Ftwhit3A61pump",
+        "5GKPTBe1k6EpFqX4ZVkcyWTSHAtVMTLE7roJbXmZpump",
+        "Qy3SbSUeVETiMeAJQQzweNVfEwJ2cguYWX6bNvhpump",
+        "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+        "F8wvZ5HLxfsvTCz7z6um2T5kyaLkBDUFqXGrqQzupump",
+        "EAzbqoy9NRCjtHe8Ebrcovq8tQstH93mUrHk9oPwpump",
+        "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+        "Hzdiu6GPFFrh9695fBWUXb4G662B2WXVK9cWyk7Xpump"
+      ],
+      "unavailableReasons": [
+        {
+          "mint": "EBd37wFkN8FFZYbrMae2aDW4KZ55a3Ftwhit3A61pump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1
+          }
+        },
+        {
+          "mint": "5GKPTBe1k6EpFqX4ZVkcyWTSHAtVMTLE7roJbXmZpump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "candidate recording reserve reached; protection continues": 1
+          }
+        },
+        {
+          "mint": "Qy3SbSUeVETiMeAJQQzweNVfEwJ2cguYWX6bNvhpump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "required enrichment cannot fit method rate limit and usefulness deadline": 1
+          }
+        },
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "required enrichment cannot fit method rate limit and usefulness deadline": 1
+          }
+        },
+        {
+          "mint": "F8wvZ5HLxfsvTCz7z6um2T5kyaLkBDUFqXGrqQzupump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "candidate information lost; fresh candidate required: PILOT_SELECTED_ESSENTIAL_FIELDS_UNAVAILABLE": 1
+          }
+        },
+        {
+          "mint": "EAzbqoy9NRCjtHe8Ebrcovq8tQstH93mUrHk9oPwpump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "independent audit denominator unavailable": 1
+          }
+        },
+        {
+          "mint": "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "required enrichment cannot fit method rate limit and usefulness deadline": 1
+          }
+        },
+        {
+          "mint": "Hzdiu6GPFFrh9695fBWUXb4G662B2WXVK9cWyk7Xpump",
+          "classification": "unavailable; not predictive failure",
+          "reasons": {
+            "candidate recording reserve reached; protection continues": 1
+          }
+        }
+      ],
+      "withinRunWeakRevisits": 1,
+      "recordedHistoricalRepromotions": 34,
+      "physicalRequests": 367,
+      "physicalRequestsPerUniqueEvaluated": 9.175,
+      "requestMeanPerMinute": 24.595025371298878,
+      "rentPreparationRequests": 0,
+      "selectedSignatures": 121,
+      "normalizedTrades": 94,
+      "normalizedSideShapeCounts": {
+        "buy:direct": 15,
+        "sell:direct": 10,
+        "sell:inner/routed": 52,
+        "buy:inner/routed": 17
+      },
+      "enrichmentPhysicalStarts": 94,
+      "enrichmentAvailabilityMs": {
+        "samples": 94,
+        "p50": 1119,
+        "p95": 2834,
+        "maximum": 3558
+      },
+      "selectedPeakRolling10s": 17,
+      "selectedPeakRolling60s": 30,
+      "requestPeakRolling10s": 13,
+      "requestPeakRolling60s": 44,
+      "providerFailures": {
+        "COMPONENT_PHYSICAL_TIMEOUT": 1
+      },
+      "localRefusals": {
+        "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 26,
+        "candidate-method-capacity-unavailable": 3,
+        "candidate-preparation-unavailable": 2,
+        "PILOT_RPC_COMPONENT_ADMISSION_CLOSED": 2,
+        "PILOT_RPC_METHOD_PACING": 1,
+        "independent-audit-capacity": 1,
+        "candidate-evidence-capacity-unavailable": 1
+      },
+      "gapReasons": {
+        "valid-window-predictive-assessment-failed": 40,
+        "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+        "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+        "required enrichment cannot fit method rate limit and usefulness deadline": 3,
+        "PILOT_SELECTED_ESSENTIAL_FIELDS_UNAVAILABLE": 1,
+        "candidate information lost; fresh candidate required: PILOT_SELECTED_ESSENTIAL_FIELDS_UNAVAILABLE": 1,
+        "independent audit denominator unavailable": 1,
+        "candidate recording reserve reached; protection continues": 3
+      },
+      "resources": {
+        "eventEvidenceBytes": 8213654,
+        "maximumRss": 335179776,
+        "cpu": {
+          "user": 113658391,
+          "system": 11678030
+        },
+        "eventLoopDelayP95Ms": 22.544383,
+        "candidateRecordingClosed": true,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost",
+        "evidenceAdmissionClosedAt": 1793142925724,
+        "evidenceAdmissionClosedAfterMs": 783377,
+        "postEvidenceCloseElapsedMs": 111926,
+        "evidenceAdmissionCloseTrigger": {
+          "feedRecordedBytes": 5243239,
+          "eventBytes": 8206455,
+          "financialHistoryPreserved": true
+        },
+        "evidenceMeaning": "This run finished naturally, but candidate observation was explicitly suspended at its recording reserve. Do not count the closed tail as usable candidate observation."
+      },
+      "pumpApiBytes": 919065591,
+      "inputs": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/result.json",
+          "bytes": 101703,
+          "sha256": "f82005e565909740179197dfa7477a72fd010e910beb70874bb4bcf8e83de488"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/events.ndjson",
+          "bytes": 8213654,
+          "sha256": "b9769a8c51a0019cc2f63ee6e0cae577a8c9e9bc0e286531700f39169088dc4f"
+        }
+      ]
+    }
+  ],
+  "exactModeChanges": {
+    "newMode": "candidate-evaluation",
+    "financialExecutionAuthorized": false,
+    "financialRevision": 7745,
+    "actualFinancialReferenceAt": 1793141415677,
+    "financialNoops": 40,
+    "changes": "New mode omits financial-context valuation/reconciliation, entry authorization/execution and refundable-rent preparation while retaining fresh supported-pool identity/account/fee/actual-size quote validation for candidate information. Baseline predictive conditions and complete60second window remain unchanged.",
+    "supportPreparation": {
+      "oldDeclaredWorstReads": 5,
+      "newDeclaredWorstReads": 3,
+      "actualNewPhaseAdmissions": 51,
+      "actualNewSuccessfulSupportPreparations": 49,
+      "actualNewRentCalls": 0,
+      "priorObservedRentCalls": 56,
+      "previousRequestSharePercent": 18.6046511627907
+    },
+    "noFinanceDoesNotFailPrediction": "All40 failed assessments have explicit predictive-feature evidence; intentional execution-disabled primary observations are not failures. No pass was observed. Eight admitted identities lacked usable predictive information and remain unavailable."
+  },
+  "timingAndLimits": {
+    "newActualSixFlowTotalMs": 149396,
+    "newLongestUnchangedSixFlowPortfolioMs": 21162,
+    "newLongestUnchangedSixFlowPortfolio": {
+      "from": 1793142503950,
+      "to": 1793142525112,
+      "durationMs": 21162,
+      "mints": [
+        "3fajJhhDirSDMg9ddqVA69K96rjQKA6iqffD1y5Lpump",
+        "4tooZXbQN77pzsZkNfYiKdjEKVSQQiK188wCxWRNCnQS",
+        "5SE1hA8a819e8wiEJaRqHch5tajuy9ERdCotDwyxpump",
+        "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+        "Cq16miAMkk4STYeqgt5SphTz5HJHZ9MfQ1MHD5vHpump",
+        "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump"
+      ]
+    },
+    "sincePreviousPhysicalStartAtPhaseAdmissionMs": {
+      "samples": 51,
+      "p50": 7196,
+      "p95": 9546,
+      "maximum": 9551
+    },
+    "recordedSupportPolicySamples": [
+      {
+        "mint": "KaL4Dty996oZc5aHETc2XHqdwAp1ASrnwtRfjTopump",
+        "at": 1793142153254,
+        "supportReads": 3,
+        "openingReserves": {
+          "short": 15,
+          "minute": 20
+        },
+        "meaning": "phase headroom only; per-physical higher-priority admission still required"
+      },
+      {
+        "mint": "DsiZovKknp2UibQNmCKHh3TRWmg5sM5R81oiSdPrpump",
+        "at": 1793142163547,
+        "supportReads": 3,
+        "openingReserves": {
+          "short": 15,
+          "minute": 20
+        },
+        "meaning": "phase headroom only; per-physical higher-priority admission still required"
+      },
+      {
+        "mint": "2k9ThvFBBAtSfubUG3oVhjfS8TY3Js27xq7Gghb8pump",
+        "at": 1793142173593,
+        "supportReads": 3,
+        "openingReserves": {
+          "short": 15,
+          "minute": 20
+        },
+        "meaning": "phase headroom only; per-physical higher-priority admission still required"
+      }
+    ],
+    "enrichmentDeadlineMs": 5000,
+    "quoteValidityRulesChanged": false,
+    "meanRequestRateDoesNotEstablishBurstCapacity": true,
+    "newEvidenceClose": {
+      "sourceAt": 1793142925724,
+      "afterElapsedMs": 783377,
+      "closedTailMs": 111926,
+      "trigger": {
+        "feedRecordedBytes": 5243239,
+        "eventBytes": 8206455,
+        "financialHistoryPreserved": true
+      },
+      "interpretation": "Feed evidence soft5MiB stop fired first; events remained under8MiB soft cap. Original received traffic is still counted. Final run completion is not continuous candidate coverage."
+    }
+  },
+  "interpretation": {
+    "verified": "Candidate-only enforcement preserved financialrevision7745. Zero rent calls matches the exact omitted-financial-preparation change. Forty unique candidate identities received current-window audits and explicit predictive outcomes. Candidate-only6slot configuration spent149.396s at actual six active scopes across multiple portfolios.",
+    "notEstablished": "Different periods, candidate populations and market activity prevent causal profit/coverage comparisons. 149.396s aggregate at six scopes is not one complete60second observation window of unchanged six scopes. Largest same-six interval21.162s. No natural exposures, executed entries, stops, realized P&L or operational acceptance are established.",
+    "remainingLocalLimits": "Saturated-origin retries remain26refusals; selected peaks17/10s still caused aggregate/method deadline scope losses. The selected evidence recorder exhausted before natural completion. Independent winner benchmark is separate; a token later rising is not an executable missed strategy trade."
+  },
+  "networkRequests": 0,
+  "financialWriterOpened": false,
+  "productionTouched": false
+}

@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-28T00:30:28.786970+00:00",
+  "reason": "candidate observation suspended at evidence reserve; high-activity coverage repairs prepared separately",
+  "runId": "pilot-20261028001353575-91ed5596",
+  "source": {
+    "commit": "4aaf6e1fbab82b445df1d6e3bfdc3863fc09f3c2",
+    "sha256": "a46722f8f8c8bd50b92354849a187f25e2c7d5d7c61a5b9711555cc453077035"
+  },
+  "configurationSha256": "a6476de192451fd11487e5f7a70cb4f40a5061b229c67a39170ac81dac4d0d9d",
+  "elapsedMs": 994290,
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "ledgerRevision": 8931,
+  "positions": {},
+  "pending": {},
+  "entriesEnabled": false,
+  "candidateRecordingClosed": true,
+  "funnel": {
+    "discovered": 11,
+    "supported": 61,
+    "sufficientlyObserved": 45,
+    "evaluated": 415,
+    "qualified": 0,
+    "reserved": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 1185,
+    "discoveryCountMeaning": "migration notifications; token/base identities require later verification",
+    "uniqueDiscoverySignaturesInBoundedSet": 11,
+    "verifiedMigrationOrigins": 42,
+    "admitted": 61,
+    "usableWindows": 45
+  },
+  "refusals": {
+    "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 2,
+    "candidate-method-capacity-unavailable": 7,
+    "entry-capacity-refusal": 45,
+    "candidate-preparation-unavailable": 2,
+    "independent-audit-unavailable": 1,
+    "candidate-eligibility-window-unavailable": 1,
+    "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 1,
+    "candidate-enrichment-unavailable": 1,
+    "PILOT_MIGRATION_CUSTOM_QUOTE_OUTSIDE_SCOPE": 1,
+    "candidate-evidence-capacity-unavailable": 1
+  },
+  "usage": {
+    "eventBytes": 12713478,
+    "feedRecordedBytes": 7089942,
+    "rpcNewUnits": 538,
+    "rpcCumulativeUnits": 3625
+  },
+  "financialHistoryPreserved": true,
+  "counterReset": false,
+  "naturalPaperTrades": {
+    "entries": 0,
+    "exits": 0
+  }
+}

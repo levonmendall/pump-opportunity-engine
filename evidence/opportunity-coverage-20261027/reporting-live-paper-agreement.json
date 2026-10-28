@@ -1,0 +1,102 @@
+{
+  "checkedAt": "2026-10-28T00:14:47.823Z",
+  "dashboardCommit": "444e5f6177d0ce89d5a699afcba18b2ad992fd69",
+  "deploymentId": "dep-dbgjrh2fngtc73frr3ug",
+  "matches": [
+    {
+      "checkedAt": "2026-10-28T00:14:31.128Z",
+      "sourceAt": 1793146470185,
+      "receivedAt": 1793146470587,
+      "runId": "pilot-20261028001353575-91ed5596",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "mode": "paper",
+      "running": true,
+      "financialAuthorized": true,
+      "entriesEnabled": false,
+      "portfolioAccountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "portfolioSequence": "8",
+      "funnel": {
+        "discovered": 0,
+        "supported": 5,
+        "sufficientlyObserved": 0,
+        "evaluated": 13,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 37,
+        "verifiedMigrationOrigins": 5,
+        "admitted": 5,
+        "usableWindows": 0
+      },
+      "accounting": {
+        "schemaVersion": 1,
+        "at": 1793146470185,
+        "totalPnlLamports": "0",
+        "realizedLamports": "0",
+        "unrealizedLamports": "0",
+        "executionCostsLamports": "0",
+        "lockedDepositLamports": "0"
+      },
+      "exactProjectionAgreement": true,
+      "state": "reporting",
+      "publisherConnected": true,
+      "sourceAgeMs": 910
+    },
+    {
+      "checkedAt": "2026-10-28T00:14:47.292Z",
+      "sourceAt": 1793146485240,
+      "receivedAt": 1793146485758,
+      "runId": "pilot-20261028001353575-91ed5596",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "mode": "paper",
+      "running": true,
+      "financialAuthorized": true,
+      "entriesEnabled": false,
+      "portfolioAccountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "portfolioSequence": "11",
+      "funnel": {
+        "discovered": 0,
+        "supported": 5,
+        "sufficientlyObserved": 0,
+        "evaluated": 16,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 54,
+        "verifiedMigrationOrigins": 5,
+        "admitted": 5,
+        "usableWindows": 0
+      },
+      "accounting": {
+        "schemaVersion": 1,
+        "at": 1793146485240,
+        "totalPnlLamports": "0",
+        "realizedLamports": "0",
+        "unrealizedLamports": "0",
+        "executionCostsLamports": "0",
+        "lockedDepositLamports": "0"
+      },
+      "exactProjectionAgreement": true,
+      "state": "reporting",
+      "publisherConnected": true,
+      "sourceAgeMs": 2020
+    }
+  ],
+  "originalIdentity": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "originalSource": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "originalReconciliation": "2026-10-28T00:13:57.870Z",
+  "unauthorizedPostStatus": 401,
+  "observedCycles": 2,
+  "financialWritesByThisCheck": 0
+}

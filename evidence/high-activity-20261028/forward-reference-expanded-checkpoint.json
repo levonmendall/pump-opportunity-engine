@@ -1,0 +1,178 @@
+{
+  "classification": "FROZEN_INDEPENDENT_ACTIVE_REFERENCE_COHORT_CONTINUATION",
+  "generatedAt": "2026-10-28T00:29:55.000Z",
+  "networkRequests": 0,
+  "negativePrefixReceipt": "forward-reference-20261028T002345281Z-start-receipt.json",
+  "expandedReceipt": "forward-reference-20261028T002814493Z-expand-receipt.json",
+  "sourceSha256": "6713a511f2d994f3454d0c86d8c829c51af7b2aaafbb278326cdde2fe0e6b021",
+  "cohortFrozenAt": "2026-10-28T00:29:02.995Z",
+  "totalIndexedRowsReceived": 160,
+  "distinctPoolAddresses": 160,
+  "provisionalEligibleActiveLeads": [
+    {
+      "page": 5,
+      "position": 19,
+      "indexedPoolId": "solana_uaUgoS3LS39fxffGmdaRRYDee4Bz6JatVBSwgXXJvGS",
+      "pool": "uaUgoS3LS39fxffGmdaRRYDee4Bz6JatVBSwgXXJvGS",
+      "mint": "J2hFoWkCd61Fyh19XUYZYSTf8Dpm9WyepDQYffY7pump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "name": "XGO / SOL",
+      "indexedCreatedAt": "2026-10-27T23:23:51Z",
+      "observedAt": "2026-10-28T00:28:26.995Z",
+      "ageAtReceiptMs": 3875995,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "uaUgoS3LS39fxffGmdaRRYDee4Bz6JatVBSwgXXJvGS",
+      "provisionallyEntryAgeEligible": true,
+      "classification": "ELIGIBLE_INDEXED_LEAD_NEEDS_CHAIN_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "34935.4063858878",
+        "m15": "422435.44449497",
+        "m30": "745752.317902768",
+        "h1": "1224327.83852585",
+        "h6": "1604240.61626569",
+        "h24": "1604240.61626569"
+      },
+      "reportedPriceChanges": {
+        "m5": "-99.523",
+        "m15": "-99.419",
+        "m30": "-99.238",
+        "h1": "-97.516",
+        "h6": "-97.23",
+        "h24": "-97.23"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 177,
+          "sells": 260,
+          "buyers": 142,
+          "sellers": 201
+        },
+        "m15": {
+          "buys": 6518,
+          "sells": 6586,
+          "buyers": 725,
+          "sellers": 658
+        },
+        "m30": {
+          "buys": 12564,
+          "sells": 12512,
+          "buyers": 1008,
+          "sellers": 924
+        },
+        "h1": {
+          "buys": 19543,
+          "sells": 21009,
+          "buyers": 1311,
+          "sellers": 1379
+        },
+        "h6": {
+          "buys": 20168,
+          "sells": 21789,
+          "buyers": 1418,
+          "sellers": 1419
+        },
+        "h24": {
+          "buys": 20168,
+          "sells": 21789,
+          "buyers": 1418,
+          "sellers": 1419
+        }
+      },
+      "reportedCurrentReserveUsd": "4491.3268"
+    },
+    {
+      "page": 7,
+      "position": 10,
+      "indexedPoolId": "solana_27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+      "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+      "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "name": "MOTHADO / SOL",
+      "indexedCreatedAt": "2026-10-27T23:08:28Z",
+      "observedAt": "2026-10-28T00:28:50.928Z",
+      "ageAtReceiptMs": 4822928,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+      "provisionallyEntryAgeEligible": true,
+      "classification": "ELIGIBLE_INDEXED_LEAD_NEEDS_CHAIN_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "29532.2348438836",
+        "m15": "137421.518921368",
+        "m30": "366300.757808111",
+        "h1": "826410.474743007",
+        "h6": "1266570.79091009",
+        "h24": "1266570.79091009"
+      },
+      "reportedPriceChanges": {
+        "m5": "-5.512",
+        "m15": "-24.213",
+        "m30": "1.699",
+        "h1": "23.174",
+        "h6": "485.99",
+        "h24": "485.99"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 621,
+          "sells": 141,
+          "buyers": 298,
+          "sellers": 104
+        },
+        "m15": {
+          "buys": 2265,
+          "sells": 1056,
+          "buyers": 778,
+          "sellers": 571
+        },
+        "m30": {
+          "buys": 5368,
+          "sells": 2262,
+          "buyers": 1226,
+          "sellers": 882
+        },
+        "h1": {
+          "buys": 10745,
+          "sells": 5015,
+          "buyers": 1835,
+          "sellers": 1270
+        },
+        "h6": {
+          "buys": 14921,
+          "sells": 7094,
+          "buyers": 2379,
+          "sellers": 2087
+        },
+        "h24": {
+          "buys": 14921,
+          "sells": 7094,
+          "buyers": 2379,
+          "sellers": 2087
+        }
+      },
+      "reportedCurrentReserveUsd": "53177.2024"
+    }
+  ],
+  "remainingStep": "Afteractualfrozenpilotsegmentends,getoneOHLCresponseforeachoftheTWOpredeclaredleads. DoNOTselectnewtokensfromlaterreturns. NolistingorSolanaRPCinendphase.",
+  "physicalRequestBudget": {
+    "expandedListingActual": 5,
+    "maximumOhlcv": 8,
+    "requiredFrozenLeads": 2,
+    "maximumExpandedPlusOhlcv": 13,
+    "unusedIfBothLeadQueriesSucceed": 6
+  },
+  "command": "flock -n /tmp/poe-forward-reference.lock prlimit --cpu=30:31 --fsize=2097152:2097152 --nofile=64:64 -- node --max-old-space-size=128 --use-env-proxy --import tsx scripts/capture-forward-reference.ts --end --segment-end <actual-ISO-end>",
+  "cumulative": {
+    "requestStarts": 35,
+    "measuredBodyBytes": 895373,
+    "uncertainBodyBytes": 272
+  },
+  "limitations": [
+    "Twocanonicaladdressandageconsistentindexleadsarenotaconfirmedsupported/tradablewinneruniverse.",
+    "Thesamplecurrent24h-rankedpages1–8doesnotestablishwholemarketcoverage.",
+    "Initialreferencebegan00:23:45.281,aftersegmentstart00:13:53.575; expandedcohortfrozen00:29:02.995cannotbebackdated.",
+    "Reportedtransactioncountsareproviderclaims,notcompleteconfirmedfloworindependenthumanbuyers.",
+    "Noadditionalmarketrequestsperformedbythischeckpoint."
+  ]
+}

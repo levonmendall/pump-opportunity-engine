@@ -1,0 +1,560 @@
+{
+  "classification": "INDEPENDENT_INDEXED_PRICE_ACTIVITY_EVIDENCE_NOT_EXECUTION_OR_FLOW_PROOF",
+  "generatedAt": "2026-10-27T23:21:42.448Z",
+  "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+  "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+  "indexedName": "Super Intelligence",
+  "baseQuoteIdentityConcordance": true,
+  "indexedPoolCreatedAt": "2026-10-27T20:21:11Z",
+  "localVerifiedMigrationTimeSuppliedByLead": "2026-10-27T20:21:11.000Z",
+  "eligibility": {
+    "startAt": "2026-10-27T20:26:11.000Z",
+    "endAt": "2026-10-27T22:21:11.000Z",
+    "indexCreationMatchesLocalMigration": true,
+    "firstFullyContainedBarAt": "2026-10-27T20:27:00.000Z",
+    "boundaryCaveat": "20:26 candle straddles the20:26:11 eligibility boundary; it cannot establish first11seconds or later events precisely."
+  },
+  "indexCoverage": {
+    "requestedBeforeAt": "2026-10-27T23:00:00.000Z",
+    "barCount": 42,
+    "firstBarAt": "2026-10-27T20:21:00.000Z",
+    "lastBarAt": "2026-10-27T22:57:00.000Z",
+    "includeEmptyIntervals": false,
+    "gaps": "Unfilled; missing minute bars are not fabricated flat prices or independently proved no-trade intervals.",
+    "allRetainedVolumeUsd": 713365.4526045141,
+    "currentMetadataH24VolumeUsd": 712864.245384063,
+    "differenceUsd": 501.2072204510914,
+    "differenceMeaning": "Different indexed aggregation/snapshot conventions or corrections are unresolved; do not assert exact volume completeness."
+  },
+  "priceFacts": {
+    "eligibleHigh": {
+      "barStartAt": "2026-10-27T20:36:00.000Z",
+      "barEndAt": "2026-10-27T20:37:00.000Z",
+      "highUsd": 0.0003359435861199627
+    },
+    "firstFullyEligibleClose": {
+      "barAt": "2026-10-27T20:27:00.000Z",
+      "closeUsd": 0.000035039497509227427
+    },
+    "firstFullyEligibleCloseToLaterHighFactor": 9.587568601161992,
+    "firstFullyEligibleCloseToLaterHighPct": 858.7568601161993,
+    "crashBar": [
+      {
+        "barAt": "2026-10-27T20:44:00.000Z",
+        "raw": [
+          1793133840,
+          0.00015214181431682893,
+          0.00015214181431682893,
+          0.0000021967387353643,
+          0.0000021967387353643,
+          17200.52015847402
+        ]
+      }
+    ],
+    "exactEndpointAppreciation": {
+      "60": {
+        "exactEndpointPairs": 19,
+        "strongestIndexedCloseChange": {
+          "fromBar": "2026-10-27T20:27:00.000Z",
+          "toBar": "2026-10-27T20:28:00.000Z",
+          "closeRatio": 4.193381912332285,
+          "closeChangePct": 319.3381912332285
+        },
+        "meaning": "Retrospective close-to-close price change at exact minute endpoints; not executable return or information available to POE."
+      },
+      "300": {
+        "exactEndpointPairs": 17,
+        "strongestIndexedCloseChange": {
+          "fromBar": "2026-10-27T20:27:00.000Z",
+          "toBar": "2026-10-27T20:32:00.000Z",
+          "closeRatio": 7.329181173469248,
+          "closeChangePct": 632.9181173469248
+        },
+        "meaning": "Retrospective close-to-close price change at exact minute endpoints; not executable return or information available to POE."
+      },
+      "900": {
+        "exactEndpointPairs": 11,
+        "strongestIndexedCloseChange": {
+          "fromBar": "2026-10-27T20:27:00.000Z",
+          "toBar": "2026-10-27T20:42:00.000Z",
+          "closeRatio": 5.261482564004993,
+          "closeChangePct": 426.1482564004993
+        },
+        "meaning": "Retrospective close-to-close price change at exact minute endpoints; not executable return or information available to POE."
+      }
+    }
+  },
+  "segments": {
+    "eligibleRallyAndCollapse": {
+      "startAt": "2026-10-27T20:27:00.000Z",
+      "endAt": "2026-10-27T20:45:00.000Z",
+      "meaning": "Wholly contained minute bars only; excluded boundaries are not reconstructed.",
+      "barCount": 18,
+      "nonemptyIndexedVolumeUsd": 633794.7435597343,
+      "minimumIndexedLowUsd": 0.0000021967387353643,
+      "maximumIndexedHighUsd": 0.0003359435861199627,
+      "firstBarAt": "2026-10-27T20:27:00.000Z",
+      "lastBarAt": "2026-10-27T20:44:00.000Z",
+      "bars": [
+        {
+          "barAt": "2026-10-27T20:27:00.000Z",
+          "raw": [
+            1793132820,
+            0.00003602989024288732,
+            0.000037918601213542755,
+            0.00003495928180644547,
+            0.000035039497509227427,
+            526.4277315642152
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:28:00.000Z",
+          "raw": [
+            1793132880,
+            0.000035039497509227427,
+            0.00014698733892056154,
+            0.00003435372298452651,
+            0.00014693399507240644,
+            34930.232351588675
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:29:00.000Z",
+          "raw": [
+            1793132940,
+            0.00014693399507240644,
+            0.0002103336053937542,
+            0.00012685796816712792,
+            0.00019795309665399325,
+            53942.06933027009
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:30:00.000Z",
+          "raw": [
+            1793133000,
+            0.00019795309665399325,
+            0.00023538210658280426,
+            0.00018237264180215548,
+            0.00022122138574250604,
+            36447.0194531809
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:31:00.000Z",
+          "raw": [
+            1793133060,
+            0.00022122138574250604,
+            0.00024698455511961044,
+            0.0002026138284432515,
+            0.00023615480597225414,
+            42867.113557231976
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:32:00.000Z",
+          "raw": [
+            1793133120,
+            0.00023615480597225414,
+            0.00029232131145218637,
+            0.00021761923629129947,
+            0.0002568108254724523,
+            60934.32818361502
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:33:00.000Z",
+          "raw": [
+            1793133180,
+            0.0002568108254724523,
+            0.0003338882201202616,
+            0.0002568108254724523,
+            0.0003009281175476405,
+            65459.791659127695
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:34:00.000Z",
+          "raw": [
+            1793133240,
+            0.0003009281175476405,
+            0.00033202352108191023,
+            0.00028250198103186533,
+            0.00031774252483833266,
+            34698.36844459853
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:35:00.000Z",
+          "raw": [
+            1793133300,
+            0.00031774252483833266,
+            0.0003192985987206801,
+            0.00026863705072564884,
+            0.0002841954010626296,
+            45097.74881970695
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:36:00.000Z",
+          "raw": [
+            1793133360,
+            0.0002841954010626296,
+            0.0003359435861199627,
+            0.0002755198536663826,
+            0.0002931860717360968,
+            53967.79118744919
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:37:00.000Z",
+          "raw": [
+            1793133420,
+            0.0002931860717360968,
+            0.00030067863137177634,
+            0.0002397307601486659,
+            0.00024255673845317822,
+            23991.907895758515
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:38:00.000Z",
+          "raw": [
+            1793133480,
+            0.00024255673845317822,
+            0.0002696101352826334,
+            0.00021629897627856601,
+            0.00022092375265933315,
+            36894.566061755264
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:39:00.000Z",
+          "raw": [
+            1793133540,
+            0.00022092375265933315,
+            0.00024237638370446936,
+            0.00021288823735254362,
+            0.00023353482129902556,
+            32632.01701918845
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:40:00.000Z",
+          "raw": [
+            1793133600,
+            0.00023353482129902556,
+            0.00023353482129902556,
+            0.00016440511119174392,
+            0.00016852354268446894,
+            31605.612743517264
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:41:00.000Z",
+          "raw": [
+            1793133660,
+            0.00016852354268446894,
+            0.0001945975950929056,
+            0.00015336212052618567,
+            0.00016842350104321935,
+            15824.491299653522
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:42:00.000Z",
+          "raw": [
+            1793133720,
+            0.00016842350104321935,
+            0.00018942588700387149,
+            0.00016170026630156603,
+            0.00018435970519629647,
+            19933.272061215495
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:43:00.000Z",
+          "raw": [
+            1793133780,
+            0.00018435970519629647,
+            0.00020059333086499482,
+            0.00014878074656185053,
+            0.00015214181431682893,
+            26841.465601838703
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:44:00.000Z",
+          "raw": [
+            1793133840,
+            0.00015214181431682893,
+            0.00015214181431682893,
+            0.0000021967387353643,
+            0.0000021967387353643,
+            17200.52015847402
+          ]
+        }
+      ]
+    },
+    "postCollapseBefore21h19": {
+      "startAt": "2026-10-27T20:45:00.000Z",
+      "endAt": "2026-10-27T21:19:00.000Z",
+      "meaning": "Wholly contained minute bars only; excluded boundaries are not reconstructed.",
+      "barCount": 8,
+      "nonemptyIndexedVolumeUsd": 53.68162222324612,
+      "minimumIndexedLowUsd": 0.0000021451910750817786,
+      "maximumIndexedHighUsd": 0.0000022397973055640295,
+      "firstBarAt": "2026-10-27T20:45:00.000Z",
+      "lastBarAt": "2026-10-27T21:11:00.000Z",
+      "bars": [
+        {
+          "barAt": "2026-10-27T20:45:00.000Z",
+          "raw": [
+            1793133900,
+            0.0000021967387353643,
+            0.0000021967387353643,
+            0.000002162181510446024,
+            0.000002162441173284907,
+            16.2223294681264
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:46:00.000Z",
+          "raw": [
+            1793133960,
+            0.000002162441173284907,
+            0.000002162441173284907,
+            0.000002161991494306087,
+            0.000002161991494306087,
+            0.001408659654299674
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:48:00.000Z",
+          "raw": [
+            1793134080,
+            0.000002161991494306087,
+            0.000002161991494306087,
+            0.0000021540893943721292,
+            0.0000021540893943721292,
+            7.4280570397596595
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:52:00.000Z",
+          "raw": [
+            1793134320,
+            0.0000021540893943721292,
+            0.0000021540893943721292,
+            0.000002147535623676156,
+            0.000002147535623676156,
+            0.10563628679715151
+          ]
+        },
+        {
+          "barAt": "2026-10-27T20:54:00.000Z",
+          "raw": [
+            1793134440,
+            0.000002147535623676156,
+            0.000002147535623676156,
+            0.0000021451910750817786,
+            0.0000021451910750817786,
+            0.0002862258582608302
+          ]
+        },
+        {
+          "barAt": "2026-10-27T21:06:00.000Z",
+          "raw": [
+            1793135160,
+            0.0000021451910750817786,
+            0.000002208002632869939,
+            0.0000021451910750817786,
+            0.000002208002632869939,
+            29.801075740175428
+          ]
+        },
+        {
+          "barAt": "2026-10-27T21:09:00.000Z",
+          "raw": [
+            1793135340,
+            0.000002208002632869939,
+            0.000002208002632869939,
+            0.0000021805021543632307,
+            0.0000021805021543632307,
+            0.000021805021543632308
+          ]
+        },
+        {
+          "barAt": "2026-10-27T21:11:00.000Z",
+          "raw": [
+            1793135460,
+            0.0000021805021543632307,
+            0.0000022397973055640295,
+            0.0000021805021543632307,
+            0.0000022114255980580446,
+            0.12280699785338035
+          ]
+        }
+      ]
+    },
+    "barContainingPoe21h19m30View": [
+      {
+        "barAt": "2026-10-27T21:19:00.000Z",
+        "raw": [
+          1793135940,
+          0.0000022114255980580446,
+          0.0000022114255980580446,
+          0.0000022101682299143745,
+          0.0000022101682299143745,
+          0.04594049130877318
+        ],
+        "meaning": "Minute straddles the21:19:30 observation; individual swap time must come from chain evidence."
+      }
+    ],
+    "afterPoe21h19m30UntilEligibilityExpiry": {
+      "startAt": "2026-10-27T21:19:30.000Z",
+      "endAt": "2026-10-27T22:21:11.000Z",
+      "meaning": "Wholly contained minute bars only; excluded boundaries are not reconstructed.",
+      "barCount": 5,
+      "nonemptyIndexedVolumeUsd": 2.385646166295255,
+      "minimumIndexedLowUsd": 0.000002195790359976586,
+      "maximumIndexedHighUsd": 0.000002245574832388937,
+      "firstBarAt": "2026-10-27T21:21:00.000Z",
+      "lastBarAt": "2026-10-27T21:54:00.000Z",
+      "bars": [
+        {
+          "barAt": "2026-10-27T21:21:00.000Z",
+          "raw": [
+            1793136060,
+            0.0000022101682299143745,
+            0.0000022101682299143745,
+            0.0000022061254413111667,
+            0.0000022061254413111667,
+            2.3491764573989644
+          ]
+        },
+        {
+          "barAt": "2026-10-27T21:36:00.000Z",
+          "raw": [
+            1793136960,
+            0.0000022061254413111667,
+            0.0000022208833699514335,
+            0.0000022061254413111667,
+            0.0000022208833699514335,
+            0.027624898113982353
+          ]
+        },
+        {
+          "barAt": "2026-10-27T21:38:00.000Z",
+          "raw": [
+            1793137080,
+            0.0000022208833699514335,
+            0.0000022208833699514335,
+            0.000002195790359976586,
+            0.000002195790359976586,
+            0.000021957903599765856
+          ]
+        },
+        {
+          "barAt": "2026-10-27T21:46:00.000Z",
+          "raw": [
+            1793137560,
+            0.000002195790359976586,
+            0.000002245574832388937,
+            0.000002195790359976586,
+            0.000002245574832388937,
+            0.008138647185689154
+          ]
+        },
+        {
+          "barAt": "2026-10-27T21:54:00.000Z",
+          "raw": [
+            1793138040,
+            0.000002245574832388937,
+            0.000002245574832388937,
+            0.0000022136850202886552,
+            0.0000022136850202886552,
+            0.0006842056930192118
+          ]
+        }
+      ]
+    },
+    "afterEligibilityExpiry": {
+      "startAt": "2026-10-27T22:21:11.000Z",
+      "endAt": "2026-10-27T23:00:00.000Z",
+      "meaning": "Wholly contained minute bars only; excluded boundaries are not reconstructed.",
+      "barCount": 4,
+      "nonemptyIndexedVolumeUsd": 2.0181731613552043,
+      "minimumIndexedLowUsd": 0.000002213558405943716,
+      "maximumIndexedHighUsd": 0.000002240128063207075,
+      "firstBarAt": "2026-10-27T22:23:00.000Z",
+      "lastBarAt": "2026-10-27T22:57:00.000Z",
+      "bars": [
+        {
+          "barAt": "2026-10-27T22:23:00.000Z",
+          "raw": [
+            1793139780,
+            0.0000022136850202886552,
+            0.0000022387255248277893,
+            0.0000022136850202886552,
+            0.0000022387255248277893,
+            0.008532445749810331
+          ]
+        },
+        {
+          "barAt": "2026-10-27T22:40:00.000Z",
+          "raw": [
+            1793140800,
+            0.0000022387255248277893,
+            0.000002240128063207075,
+            0.0000022387255248277893,
+            0.000002240128063207075,
+            1.8766478667667523
+          ]
+        },
+        {
+          "barAt": "2026-10-27T22:56:00.000Z",
+          "raw": [
+            1793141760,
+            0.000002240128063207075,
+            0.000002240128063207075,
+            0.000002213558405943716,
+            0.000002213558405943716,
+            0.06518115970328725
+          ]
+        },
+        {
+          "barAt": "2026-10-27T22:57:00.000Z",
+          "raw": [
+            1793141820,
+            0.000002213558405943716,
+            0.000002213769537950313,
+            0.000002213558405943716,
+            0.000002213769537950313,
+            0.0678116891353544
+          ]
+        }
+      ]
+    }
+  },
+  "interpretation": [
+    "Substantial indexed rally occurred20:28–20:36UTC, followed by a20:44 collapse; the21:19 feature view is later, not before this rally.",
+    "The rally is inside the local verified5min–2h eligibility horizon, but the lead identified a research interruption20:27:18.326–20:54:59.767; overlap must be checked against actual run records, not assumed continuous.",
+    "No later large price move appears in these returned bars through22:57UTC; later unrequested history and index omissions remain unknown.",
+    "These bars lack actual trader identities, net buying, six10second bins, intra-minute ordering, historical reserve/fee state and size-specific50USD liquidation quotes. They cannot prove frozen-strategy qualification, a missed profitable trade, or realistic stop/profit execution."
+  ],
+  "inputs": [
+    {
+      "path": "reference-raw/si-minute-ohlcv.json",
+      "bytes": 5521,
+      "sha256": "3fac7d672af8f80a29efec93845db3478c8a97eb722d971ae3f2c94a8a9d900f"
+    },
+    {
+      "path": "reference-raw/si-current-pool-metadata.json",
+      "bytes": 2313,
+      "sha256": "74d892127a5fd75c65a4fc1e0416176a558ce66c4294567ccfa7d2d0e2e5c10f"
+    }
+  ],
+  "networkRequests": 0,
+  "financialExecution": false
+}

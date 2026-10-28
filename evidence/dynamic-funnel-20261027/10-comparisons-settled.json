@@ -1,0 +1,1574 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_DIFFERENT_CHRONOLOGICAL_RUN_COMPARISON_NOT_MATCHED_ECONOMIC_EVIDENCE",
+  "comparison": "Unique candidate identities and actual predictive results replace raw admissions/re-promotions as coverage measures. Ledger-disabled is a financial-control outcome, never predictive failure.",
+  "runs": [
+    {
+      "runId": "pilot-20261027210316237-57a92bce",
+      "source": {
+        "commit": "4abb86fba6f249d3964c5bab43e14e9685cbfcd7",
+        "sha256": "9042a83f5c88568b25f8162ee1eb9b32671ff66d75c965692f85191e9a91aff2"
+      },
+      "elapsedMs": 467017,
+      "configuredDeepMaximum": 3,
+      "actualFlowPeak": 3,
+      "actualPeakDurationMs": 141461,
+      "uniqueAdmitted": 6,
+      "uniqueWithAuditedWindow": 6,
+      "uniqueWithExplicitPredictiveAssessment": 0,
+      "uniqueWithPrimaryPredictiveRejection": 6,
+      "uniqueWithAnyActualPredictiveResult": 6,
+      "uniqueWithoutAnyPredictiveResult": [],
+      "validWindowRecords": 21,
+      "predictiveOutcomesDeduplicatedByMintWindow": {
+        "failed": 11
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 82,
+        "risk-rejection:entries-not-authorized-by-ledger": 10,
+        "strategy-rejection:persistent-broad-buying-rule-not-met": 11
+      },
+      "historicalRepromotionFlags": 8,
+      "withinIntervalWeakRevisits": [
+        {
+          "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+          "promotedAt": 1793135218208,
+          "priorWeak": {
+            "at": 1793135085353,
+            "windowEndAt": 1793135080000,
+            "source": "primary-strategy-rejection"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "promotedAt": 1793135276371,
+          "priorWeak": {
+            "at": 1793135085349,
+            "windowEndAt": 1793135080000,
+            "source": "primary-strategy-rejection"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+          "promotedAt": 1793135326527,
+          "priorWeak": {
+            "at": 1793135265342,
+            "windowEndAt": 1793135260000,
+            "source": "primary-strategy-rejection"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+          "promotedAt": 1793135356168,
+          "priorWeak": {
+            "at": 1793135265347,
+            "windowEndAt": 1793135260000,
+            "source": "primary-strategy-rejection"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+          "promotedAt": 1793135367198,
+          "priorWeak": {
+            "at": 1793135165215,
+            "windowEndAt": 1793135160000,
+            "source": "primary-strategy-rejection"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "promotedAt": 1793135446416,
+          "priorWeak": {
+            "at": 1793135345207,
+            "windowEndAt": 1793135340000,
+            "source": "primary-strategy-rejection"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "promotedAt": 1793135457734,
+          "priorWeak": {
+            "at": 1793135185117,
+            "windowEndAt": 1793135180000,
+            "source": "primary-strategy-rejection"
+          },
+          "historicalRepromotionFlag": true
+        }
+      ],
+      "withinIntervalWeakRevisitCount": 7,
+      "repeatedWeakWithKnownNewBacklogLowerBound": 0,
+      "backlogCaveat": "Existing reducer only links fresh-backlog to explicit feature failures; old source4abb lacks explicit assessments. Within-interval weakRevisits here also recognizes genuine primary strategy rejections. Never derive weakness from ledger-disabled.",
+      "selectedDistinctSignatures": 0,
+      "normalizedTrades": 0,
+      "physicalRequestUnits": 126,
+      "physicalCallsPerUniquePredictivelyEvaluated": 21,
+      "physicalCallsPerUniqueAuditWindowIdentity": 21,
+      "selectedWork": {
+        "enrichmentStarts": 0,
+        "enrichmentAvailabilityMs": {
+          "samples": 0,
+          "p50": null,
+          "p95": null,
+          "maximum": null
+        },
+        "selectedPeakRolling10s": 0,
+        "selectedPeakRolling60s": 0,
+        "enrichmentPeakRolling10s": 0,
+        "enrichmentPeakRolling60s": 0,
+        "dataGapReasons": {
+          "valid-window-currently-weak": 11
+        },
+        "localRefusals": {
+          "candidate-preparation-unavailable": 3,
+          "entry-capacity-refusal": 10,
+          "PILOT_MIGRATION_CUSTOM_QUOTE_OUTSIDE_SCOPE": 1,
+          "independent-audit-unavailable": 1
+        },
+        "providerFailures": {
+          "COMPONENT_HTTP_STATUS_503": 4
+        },
+        "requestPeakRolling10s": 6,
+        "requestPeakRolling60s": 24
+      },
+      "resources": {
+        "eventEvidenceBytes": 2444243,
+        "maximumRss": 263835648,
+        "cpu": {
+          "user": 32786583,
+          "system": 5634906
+        },
+        "eventLoopDelayP95Ms": 20.971519,
+        "candidateRecordingClosed": false,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost",
+        "pumpApiBytes": 467612211,
+        "preparationChoices": 87,
+        "cachedIdentityReuse": 86,
+        "supportPhaseZeroReadDeferrals": 65
+      },
+      "financialExecution": {
+        "intent": "Interpret intentional financial entry-disabled control separately from predictive outcomes; no new execution permission is inferred.",
+        "entriesEnabledAtFinal": false,
+        "firstEnabledAtReported": 1793135085346,
+        "naturalForward": {
+          "entries": 0,
+          "exits": 0
+        },
+        "openPositions": 0,
+        "pendingActions": 0,
+        "ledgerOpenedByThisAnalysis": false,
+        "fullHistoricalControlIntervals": "not independently recomputed; this analysis reads only settled market/result evidence"
+      },
+      "inputHashes": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/result.json",
+          "bytes": 106789,
+          "sha256": "c9e0f20bf67648f8a47ffd75113094bbb88b4da8a18eaf825b92162909adacd8"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/events.ndjson",
+          "bytes": 2444243,
+          "sha256": "883a4a011bc885a597b41cd8c5aeda4ab38d797cecdfb501a1856841a4719ada"
+        }
+      ],
+      "networkRequests": 0
+    },
+    {
+      "runId": "pilot-20261027214222149-d39aee9a",
+      "source": {
+        "commit": "6668e6c15eb25ec6cbf068bebf92b3d2a1063ad8",
+        "sha256": "802a03170fb810fe6377e1b1b6dfab0c5184cfac8f33d1722a5126602b5f1dc6"
+      },
+      "elapsedMs": 536740,
+      "configuredDeepMaximum": 6,
+      "actualFlowPeak": 6,
+      "actualPeakDurationMs": 725,
+      "uniqueAdmitted": 14,
+      "uniqueWithAuditedWindow": 12,
+      "uniqueWithExplicitPredictiveAssessment": 12,
+      "uniqueWithPrimaryPredictiveRejection": 3,
+      "uniqueWithAnyActualPredictiveResult": 12,
+      "uniqueWithoutAnyPredictiveResult": [
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793137402328,
+              "reason": "required enrichment cannot fit method rate limit and usefulness deadline",
+              "coverageLost": true
+            },
+            {
+              "at": 1793137555807,
+              "reason": "required enrichment cannot fit method rate limit and usefulness deadline",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        },
+        {
+          "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793137772233,
+              "reason": "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        }
+      ],
+      "validWindowRecords": 18,
+      "predictiveOutcomesDeduplicatedByMintWindow": {
+        "failed": 18
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 138,
+        "risk-rejection:entries-not-authorized-by-ledger": 15,
+        "strategy-rejection:persistent-broad-buying-rule-not-met": 3
+      },
+      "historicalRepromotionFlags": 20,
+      "withinIntervalWeakRevisits": [
+        {
+          "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+          "promotedAt": 1793137627245,
+          "priorWeak": {
+            "at": 1793137455180,
+            "windowEndAt": 1793137450000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+          "promotedAt": 1793137667106,
+          "priorWeak": {
+            "at": 1793137445213,
+            "windowEndAt": 1793137440000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "235s6hetMnDB8GNQd742hVhBo47KyuA6LSNm2dk1DN1d",
+          "promotedAt": 1793137725505,
+          "priorWeak": {
+            "at": 1793137635079,
+            "windowEndAt": 1793137630000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "8aiejCVNDWWVbDoygX6fYeH3PoBRiAH4raHWPrJ3pump",
+          "promotedAt": 1793137746145,
+          "priorWeak": {
+            "at": 1793137675181,
+            "windowEndAt": 1793137670000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "75Z5Q2kDYdZXfh4JMQMXGxmpNzbqMXfLmLiTcFh5pump",
+          "promotedAt": 1793137757151,
+          "priorWeak": {
+            "at": 1793137425155,
+            "windowEndAt": 1793137420000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "Cq16miAMkk4STYeqgt5SphTz5HJHZ9MfQ1MHD5vHpump",
+          "promotedAt": 1793137786490,
+          "priorWeak": {
+            "at": 1793137435240,
+            "windowEndAt": 1793137430000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+          "promotedAt": 1793137836105,
+          "priorWeak": {
+            "at": 1793137495144,
+            "windowEndAt": 1793137490000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "4tooZXbQN77pzsZkNfYiKdjEKVSQQiK188wCxWRNCnQS",
+          "promotedAt": 1793137866195,
+          "priorWeak": {
+            "at": 1793137485099,
+            "windowEndAt": 1793137480000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        }
+      ],
+      "withinIntervalWeakRevisitCount": 8,
+      "repeatedWeakWithKnownNewBacklogLowerBound": 2,
+      "backlogCaveat": "Existing reducer only links fresh-backlog to explicit feature failures; old source4abb lacks explicit assessments. Within-interval weakRevisits here also recognizes genuine primary strategy rejections. Never derive weakness from ledger-disabled.",
+      "selectedDistinctSignatures": 56,
+      "normalizedTrades": 19,
+      "physicalRequestUnits": 205,
+      "physicalCallsPerUniquePredictivelyEvaluated": 17.083333333333332,
+      "physicalCallsPerUniqueAuditWindowIdentity": 17.083333333333332,
+      "selectedWork": {
+        "enrichmentStarts": 20,
+        "enrichmentAvailabilityMs": {
+          "samples": 19,
+          "p50": 1345,
+          "p95": 1922,
+          "maximum": 1922
+        },
+        "selectedPeakRolling10s": 22,
+        "selectedPeakRolling60s": 22,
+        "enrichmentPeakRolling10s": 8,
+        "enrichmentPeakRolling60s": 9,
+        "dataGapReasons": {
+          "required enrichment cannot fit method rate limit and usefulness deadline": 2,
+          "valid-window-predictive-assessment-failed": 18,
+          "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+          "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1
+        },
+        "localRefusals": {
+          "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 8,
+          "MIGRATION_IDENTITY_MIGRATION_INSTRUCTION_NOT_VERIFIED": 8,
+          "candidate-method-capacity-unavailable": 2,
+          "PILOT_RPC_METHOD_PACING": 8,
+          "entry-capacity-refusal": 15,
+          "candidate-preparation-unavailable": 7,
+          "PILOT_MIGRATION_CUSTOM_QUOTE_OUTSIDE_SCOPE": 1
+        },
+        "providerFailures": {
+          "COMPONENT_HTTP_STATUS_503": 7
+        },
+        "requestPeakRolling10s": 14,
+        "requestPeakRolling60s": 40
+      },
+      "resources": {
+        "eventEvidenceBytes": 4843926,
+        "maximumRss": 287203328,
+        "cpu": {
+          "user": 45295310,
+          "system": 6233712
+        },
+        "eventLoopDelayP95Ms": 21.004287,
+        "candidateRecordingClosed": false,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost",
+        "pumpApiBytes": 580066536,
+        "preparationChoices": 490,
+        "cachedIdentityReuse": 459,
+        "supportPhaseZeroReadDeferrals": 428
+      },
+      "financialExecution": {
+        "intent": "Interpret intentional financial entry-disabled control separately from predictive outcomes; no new execution permission is inferred.",
+        "entriesEnabledAtFinal": false,
+        "firstEnabledAtReported": 1793137485096,
+        "naturalForward": {
+          "entries": 0,
+          "exits": 0
+        },
+        "openPositions": 0,
+        "pendingActions": 0,
+        "ledgerOpenedByThisAnalysis": false,
+        "fullHistoricalControlIntervals": "not independently recomputed; this analysis reads only settled market/result evidence"
+      },
+      "inputHashes": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/result.json",
+          "bytes": 125867,
+          "sha256": "ab32134e550b1b9f4b4830c501a9a8ad37c23d6a9dc5945bedf3b61caea9a64a"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+          "bytes": 4843926,
+          "sha256": "6434d2c4556efc9d1024e43de0bfb3da94304a61b321be91d8d18a82bcfafa31"
+        }
+      ],
+      "networkRequests": 0
+    },
+    {
+      "runId": "pilot-20261027215124336-ed67d639",
+      "source": {
+        "commit": "6668e6c15eb25ec6cbf068bebf92b3d2a1063ad8",
+        "sha256": "802a03170fb810fe6377e1b1b6dfab0c5184cfac8f33d1722a5126602b5f1dc6"
+      },
+      "elapsedMs": 404461,
+      "configuredDeepMaximum": 12,
+      "actualFlowPeak": 6,
+      "actualPeakDurationMs": 1299,
+      "uniqueAdmitted": 15,
+      "uniqueWithAuditedWindow": 13,
+      "uniqueWithExplicitPredictiveAssessment": 13,
+      "uniqueWithPrimaryPredictiveRejection": 0,
+      "uniqueWithAnyActualPredictiveResult": 13,
+      "uniqueWithoutAnyPredictiveResult": [
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793138078225,
+              "reason": "required enrichment cannot fit method rate limit and usefulness deadline",
+              "coverageLost": true
+            },
+            {
+              "at": 1793138255379,
+              "reason": "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        },
+        {
+          "mint": "3DwY8yKqbnDUkddahH3VnbLVt7nAqrFVfcVLENsxpump",
+          "completeWindows": 0,
+          "demotions": [],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        }
+      ],
+      "validWindowRecords": 13,
+      "predictiveOutcomesDeduplicatedByMintWindow": {
+        "failed": 13
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 100,
+        "risk-rejection:entries-not-authorized-by-ledger": 13
+      },
+      "historicalRepromotionFlags": 16,
+      "withinIntervalWeakRevisits": [],
+      "withinIntervalWeakRevisitCount": 0,
+      "repeatedWeakWithKnownNewBacklogLowerBound": 0,
+      "backlogCaveat": "Existing reducer only links fresh-backlog to explicit feature failures; old source4abb lacks explicit assessments. Within-interval weakRevisits here also recognizes genuine primary strategy rejections. Never derive weakness from ledger-disabled.",
+      "selectedDistinctSignatures": 31,
+      "normalizedTrades": 20,
+      "physicalRequestUnits": 171,
+      "physicalCallsPerUniquePredictivelyEvaluated": 13.153846153846153,
+      "physicalCallsPerUniqueAuditWindowIdentity": 13.153846153846153,
+      "selectedWork": {
+        "enrichmentStarts": 21,
+        "enrichmentAvailabilityMs": {
+          "samples": 20,
+          "p50": 1101,
+          "p95": 1225,
+          "maximum": 1335
+        },
+        "selectedPeakRolling10s": 17,
+        "selectedPeakRolling60s": 17,
+        "enrichmentPeakRolling10s": 8,
+        "enrichmentPeakRolling60s": 10,
+        "dataGapReasons": {
+          "required enrichment cannot fit method rate limit and usefulness deadline": 2,
+          "valid-window-predictive-assessment-failed": 13,
+          "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+          "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1
+        },
+        "localRefusals": {
+          "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 12,
+          "MIGRATION_IDENTITY_MIGRATION_INSTRUCTION_NOT_VERIFIED": 7,
+          "candidate-preparation-unavailable": 3,
+          "PILOT_RPC_COMPONENT_ADMISSION_CLOSED": 1,
+          "candidate-method-capacity-unavailable": 2,
+          "PILOT_RPC_METHOD_PACING": 12,
+          "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 1,
+          "entry-capacity-refusal": 13
+        },
+        "providerFailures": {
+          "COMPONENT_HTTP_STATUS_503": 3,
+          "COMPONENT_PHYSICAL_TIMEOUT": 1
+        },
+        "requestPeakRolling10s": 13,
+        "requestPeakRolling60s": 35
+      },
+      "resources": {
+        "eventEvidenceBytes": 4313565,
+        "maximumRss": 318566400,
+        "cpu": {
+          "user": 36678860,
+          "system": 4835761
+        },
+        "eventLoopDelayP95Ms": 21.037055,
+        "candidateRecordingClosed": false,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost",
+        "pumpApiBytes": 351408518,
+        "preparationChoices": 628,
+        "cachedIdentityReuse": 590,
+        "supportPhaseZeroReadDeferrals": 570
+      },
+      "financialExecution": {
+        "intent": "Interpret intentional financial entry-disabled control separately from predictive outcomes; no new execution permission is inferred.",
+        "entriesEnabledAtFinal": false,
+        "firstEnabledAtReported": null,
+        "naturalForward": {
+          "entries": 0,
+          "exits": 0
+        },
+        "openPositions": 0,
+        "pendingActions": 0,
+        "ledgerOpenedByThisAnalysis": false,
+        "fullHistoricalControlIntervals": "not independently recomputed; this analysis reads only settled market/result evidence"
+      },
+      "inputHashes": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/result.json",
+          "bytes": 111108,
+          "sha256": "e9939459461604325dc501e31554f11ae9d69119a28c21415d39cfce516a2698"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/events.ndjson",
+          "bytes": 4313565,
+          "sha256": "56711128ea7bc20cfd9dbe4e71b8b4350b897124c64374e2986ee868bf1d51d3"
+        }
+      ],
+      "networkRequests": 0
+    },
+    {
+      "runId": "pilot-20261027220800928-089eac29",
+      "source": {
+        "commit": "20567a8f27c627b890de124552f4ffadc42d2068",
+        "sha256": "7c464e8956865cd9eb7c39b3a4e96e28df669acbd1936183da8fb095574ff4d0"
+      },
+      "elapsedMs": 1306050,
+      "configuredDeepMaximum": 6,
+      "actualFlowPeak": 6,
+      "actualPeakDurationMs": 7966,
+      "uniqueAdmitted": 24,
+      "uniqueWithAuditedWindow": 21,
+      "uniqueWithExplicitPredictiveAssessment": 21,
+      "uniqueWithPrimaryPredictiveRejection": 1,
+      "uniqueWithAnyActualPredictiveResult": 21,
+      "uniqueWithoutAnyPredictiveResult": [
+        {
+          "mint": "5pLMhLiSjAM8roK77SGB9iZGjbdWwESnH6nnvwPipump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793139280823,
+              "reason": "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        },
+        {
+          "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793139329100,
+              "reason": "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        },
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793139342859,
+              "reason": "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        }
+      ],
+      "validWindowRecords": 22,
+      "predictiveOutcomesDeduplicatedByMintWindow": {
+        "failed": 22
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 170,
+        "risk-rejection:entries-not-authorized-by-ledger": 21,
+        "strategy-rejection:persistent-broad-buying-rule-not-met": 1
+      },
+      "historicalRepromotionFlags": 20,
+      "withinIntervalWeakRevisits": [
+        {
+          "mint": "HEyHzCFAoQxojT5K4YtwYdz51yjyU2Kn11HjYvi3pump",
+          "promotedAt": 1793139421009,
+          "priorWeak": {
+            "at": 1793138966200,
+            "windowEndAt": 1793138960000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "7ZeTBCZMioW5H1hbB5vr6peYYiBTxQr5bCXkwb19pump",
+          "promotedAt": 1793139510127,
+          "priorWeak": {
+            "at": 1793139005749,
+            "windowEndAt": 1793139000000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+          "promotedAt": 1793139521439,
+          "priorWeak": {
+            "at": 1793139045137,
+            "windowEndAt": 1793139040000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        },
+        {
+          "mint": "CQTssrASotA6ZLqPJM11pFmf2ahz9NPPaV697ZMhpump",
+          "promotedAt": 1793139532497,
+          "priorWeak": {
+            "at": 1793139075085,
+            "windowEndAt": 1793139070000,
+            "source": "explicit-feature-assessment"
+          },
+          "historicalRepromotionFlag": true
+        }
+      ],
+      "withinIntervalWeakRevisitCount": 4,
+      "repeatedWeakWithKnownNewBacklogLowerBound": 4,
+      "backlogCaveat": "Existing reducer only links fresh-backlog to explicit feature failures; old source4abb lacks explicit assessments. Within-interval weakRevisits here also recognizes genuine primary strategy rejections. Never derive weakness from ledger-disabled.",
+      "selectedDistinctSignatures": 60,
+      "normalizedTrades": 28,
+      "physicalRequestUnits": 275,
+      "physicalCallsPerUniquePredictivelyEvaluated": 13.095238095238095,
+      "physicalCallsPerUniqueAuditWindowIdentity": 13.095238095238095,
+      "selectedWork": {
+        "enrichmentStarts": 31,
+        "enrichmentAvailabilityMs": {
+          "samples": 28,
+          "p50": 1114,
+          "p95": 1679,
+          "maximum": 1781
+        },
+        "selectedPeakRolling10s": 23,
+        "selectedPeakRolling60s": 27,
+        "enrichmentPeakRolling10s": 7,
+        "enrichmentPeakRolling60s": 9,
+        "dataGapReasons": {
+          "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 3,
+          "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 3,
+          "valid-window-predictive-assessment-failed": 22,
+          "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+          "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+          "candidate recording reserve reached; protection continues": 3
+        },
+        "localRefusals": {
+          "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 22,
+          "MIGRATION_IDENTITY_OUTSIDE_PUMP_PROGRAM_FAMILY": 1,
+          "candidate-preparation-unavailable": 3,
+          "entry-capacity-refusal": 21,
+          "candidate-enrichment-unavailable": 1,
+          "candidate-evidence-capacity-unavailable": 1
+        },
+        "providerFailures": {
+          "COMPONENT_HTTP_STATUS_503": 2
+        },
+        "requestPeakRolling10s": 12,
+        "requestPeakRolling60s": 37
+      },
+      "resources": {
+        "eventEvidenceBytes": 9156783,
+        "maximumRss": 353800192,
+        "cpu": {
+          "user": 106483114,
+          "system": 10945213
+        },
+        "eventLoopDelayP95Ms": 21.037055,
+        "candidateRecordingClosed": true,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost",
+        "pumpApiBytes": 703126160,
+        "preparationChoices": 1519,
+        "cachedIdentityReuse": 1488,
+        "supportPhaseZeroReadDeferrals": 1456
+      },
+      "financialExecution": {
+        "intent": "Interpret intentional financial entry-disabled control separately from predictive outcomes; no new execution permission is inferred.",
+        "entriesEnabledAtFinal": false,
+        "firstEnabledAtReported": 1793139495208,
+        "naturalForward": {
+          "entries": 0,
+          "exits": 0
+        },
+        "openPositions": 0,
+        "pendingActions": 0,
+        "ledgerOpenedByThisAnalysis": false,
+        "fullHistoricalControlIntervals": "not independently recomputed; this analysis reads only settled market/result evidence"
+      },
+      "inputHashes": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/result.json",
+          "bytes": 97914,
+          "sha256": "7f196e2af32303a3d4069f4d4af602eb52bf0d44561ec1ea340732f16d40d23b"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+          "bytes": 9156783,
+          "sha256": "5e258b5984e3c65e09f7446b15c63febde85b2cd3a6a6124fa0e159941b10919"
+        }
+      ],
+      "networkRequests": 0
+    },
+    {
+      "runId": "pilot-20261027223455745-ec07c3bc",
+      "source": {
+        "commit": "e696e9f7edbdd7d6c986eea08f64b21ada637c70",
+        "sha256": "7b8bf0754e23d03be4e3c8e1e1d68bde1eb966765de470b1a78aafef4e8e2094"
+      },
+      "elapsedMs": 114138,
+      "configuredDeepMaximum": 6,
+      "actualFlowPeak": 5,
+      "actualPeakDurationMs": 30964,
+      "uniqueAdmitted": 5,
+      "uniqueWithAuditedWindow": 3,
+      "uniqueWithExplicitPredictiveAssessment": 3,
+      "uniqueWithPrimaryPredictiveRejection": 0,
+      "uniqueWithAnyActualPredictiveResult": 3,
+      "uniqueWithoutAnyPredictiveResult": [
+        {
+          "mint": "5gbB8wPNgTLXEwNx6sjAcBqFLAzP6PpaiXtrQMpZpump",
+          "completeWindows": 0,
+          "demotions": [],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        },
+        {
+          "mint": "AEFQiYobCmuA3ygx53mydi6CQaatEbViCUMcHbo6pump",
+          "completeWindows": 0,
+          "demotions": [],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        }
+      ],
+      "validWindowRecords": 3,
+      "predictiveOutcomesDeduplicatedByMintWindow": {
+        "failed": 3
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 34,
+        "risk-rejection:entries-not-authorized-by-ledger": 3
+      },
+      "historicalRepromotionFlags": 1,
+      "withinIntervalWeakRevisits": [],
+      "withinIntervalWeakRevisitCount": 0,
+      "repeatedWeakWithKnownNewBacklogLowerBound": 0,
+      "backlogCaveat": "Existing reducer only links fresh-backlog to explicit feature failures; old source4abb lacks explicit assessments. Within-interval weakRevisits here also recognizes genuine primary strategy rejections. Never derive weakness from ledger-disabled.",
+      "selectedDistinctSignatures": 0,
+      "normalizedTrades": 0,
+      "physicalRequestUnits": 54,
+      "physicalCallsPerUniquePredictivelyEvaluated": 18,
+      "physicalCallsPerUniqueAuditWindowIdentity": 18,
+      "selectedWork": {
+        "enrichmentStarts": 0,
+        "enrichmentAvailabilityMs": {
+          "samples": 0,
+          "p50": null,
+          "p95": null,
+          "maximum": null
+        },
+        "selectedPeakRolling10s": 0,
+        "selectedPeakRolling60s": 0,
+        "enrichmentPeakRolling10s": 0,
+        "enrichmentPeakRolling60s": 0,
+        "dataGapReasons": {
+          "valid-window-predictive-assessment-failed": 3
+        },
+        "localRefusals": {
+          "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 4,
+          "PILOT_RPC_METHOD_PACING": 29,
+          "MIGRATION_IDENTITY_OUTSIDE_PUMP_PROGRAM_FAMILY": 2,
+          "candidate-preparation-unavailable": 1,
+          "entry-capacity-refusal": 3
+        },
+        "providerFailures": {
+          "COMPONENT_HTTP_STATUS_503": 1
+        },
+        "requestPeakRolling10s": 12,
+        "requestPeakRolling60s": 38
+      },
+      "resources": {
+        "eventEvidenceBytes": 1176890,
+        "maximumRss": 283660288,
+        "cpu": {
+          "user": 13110129,
+          "system": 1476308
+        },
+        "eventLoopDelayP95Ms": 21.757951,
+        "candidateRecordingClosed": false,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost",
+        "pumpApiBytes": 110865322,
+        "preparationChoices": 47,
+        "cachedIdentityReuse": 6,
+        "supportPhaseZeroReadDeferrals": 0
+      },
+      "financialExecution": {
+        "intent": "Interpret intentional financial entry-disabled control separately from predictive outcomes; no new execution permission is inferred.",
+        "entriesEnabledAtFinal": false,
+        "firstEnabledAtReported": null,
+        "naturalForward": {
+          "entries": 0,
+          "exits": 0
+        },
+        "openPositions": 0,
+        "pendingActions": 0,
+        "ledgerOpenedByThisAnalysis": false,
+        "fullHistoricalControlIntervals": "not independently recomputed; this analysis reads only settled market/result evidence"
+      },
+      "inputHashes": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/result.json",
+          "bytes": 107744,
+          "sha256": "239318c18e8a3e9589a704f39df157dc030085d5e6944617dd94ca4a436f776b"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+          "bytes": 1176890,
+          "sha256": "596ee624dff18a98c53cccfe473aec0ddd6f83c26fe1b8046ba27556fd3674d7"
+        }
+      ],
+      "networkRequests": 0
+    },
+    {
+      "runId": "pilot-20261027223839107-205d2bb9",
+      "source": {
+        "commit": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+        "sha256": "41f279529295148685009e7ccd85ad6c87b5d47f78339bf9728f564c92863999"
+      },
+      "elapsedMs": 696790,
+      "configuredDeepMaximum": 6,
+      "actualFlowPeak": 6,
+      "actualPeakDurationMs": 755,
+      "uniqueAdmitted": 28,
+      "uniqueWithAuditedWindow": 25,
+      "uniqueWithExplicitPredictiveAssessment": 25,
+      "uniqueWithPrimaryPredictiveRejection": 0,
+      "uniqueWithAnyActualPredictiveResult": 25,
+      "uniqueWithoutAnyPredictiveResult": [
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793140988525,
+              "reason": "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        },
+        {
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793141365099,
+              "reason": "independent history verification unavailable",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        },
+        {
+          "mint": "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+          "completeWindows": 0,
+          "demotions": [
+            {
+              "at": 1793141412686,
+              "reason": "required enrichment cannot fit method rate limit and usefulness deadline",
+              "coverageLost": true
+            }
+          ],
+          "status": "no recorded predictive evaluation in this interval; unavailable, never inferred as rejection"
+        }
+      ],
+      "validWindowRecords": 25,
+      "predictiveOutcomesDeduplicatedByMintWindow": {
+        "failed": 25
+      },
+      "primaryDecisionCounts": {
+        "missing-data:warming": 189,
+        "risk-rejection:entries-not-authorized-by-ledger": 25
+      },
+      "historicalRepromotionFlags": 17,
+      "withinIntervalWeakRevisits": [],
+      "withinIntervalWeakRevisitCount": 0,
+      "repeatedWeakWithKnownNewBacklogLowerBound": 0,
+      "backlogCaveat": "Existing reducer only links fresh-backlog to explicit feature failures; old source4abb lacks explicit assessments. Within-interval weakRevisits here also recognizes genuine primary strategy rejections. Never derive weakness from ledger-disabled.",
+      "selectedDistinctSignatures": 64,
+      "normalizedTrades": 45,
+      "physicalRequestUnits": 301,
+      "physicalCallsPerUniquePredictivelyEvaluated": 12.04,
+      "physicalCallsPerUniqueAuditWindowIdentity": 12.04,
+      "selectedWork": {
+        "enrichmentStarts": 45,
+        "enrichmentAvailabilityMs": {
+          "samples": 45,
+          "p50": 1108,
+          "p95": 1879,
+          "maximum": 3078
+        },
+        "selectedPeakRolling10s": 22,
+        "selectedPeakRolling60s": 31,
+        "enrichmentPeakRolling10s": 8,
+        "enrichmentPeakRolling60s": 29,
+        "dataGapReasons": {
+          "valid-window-predictive-assessment-failed": 25,
+          "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+          "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+          "independent history verification unavailable": 1,
+          "required enrichment cannot fit method rate limit and usefulness deadline": 1
+        },
+        "localRefusals": {
+          "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN": 24,
+          "entry-capacity-refusal": 25,
+          "candidate-enrichment-unavailable": 1,
+          "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 1,
+          "candidate-preparation-unavailable": 2,
+          "independent-audit-unavailable": 1,
+          "PILOT_SCHEDULER_LOWER_PRIORITY_DEFER": 1,
+          "candidate-method-capacity-unavailable": 1
+        },
+        "providerFailures": {
+          "COMPONENT_PHYSICAL_TIMEOUT": 1,
+          "COMPONENT_HTTP_STATUS_503": 1
+        },
+        "requestPeakRolling10s": 11,
+        "requestPeakRolling60s": 41
+      },
+      "resources": {
+        "eventEvidenceBytes": 6248883,
+        "maximumRss": 329150464,
+        "cpu": {
+          "user": 75771773,
+          "system": 8455297
+        },
+        "eventLoopDelayP95Ms": 21.544959,
+        "candidateRecordingClosed": false,
+        "resourceFailure": null,
+        "apiData": "$0 additional API fees; public endpoints only",
+        "infrastructure": "existing Cloud/transfer allocation unverified; not zero total operating cost",
+        "pumpApiBytes": 785150761,
+        "preparationChoices": 70,
+        "cachedIdentityReuse": 30,
+        "supportPhaseZeroReadDeferrals": 0
+      },
+      "financialExecution": {
+        "intent": "Interpret intentional financial entry-disabled control separately from predictive outcomes; no new execution permission is inferred.",
+        "entriesEnabledAtFinal": false,
+        "firstEnabledAtReported": null,
+        "naturalForward": {
+          "entries": 0,
+          "exits": 0
+        },
+        "openPositions": 0,
+        "pendingActions": 0,
+        "ledgerOpenedByThisAnalysis": false,
+        "fullHistoricalControlIntervals": "not independently recomputed; this analysis reads only settled market/result evidence"
+      },
+      "inputHashes": [
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/result.json",
+          "bytes": 100056,
+          "sha256": "41c08917992d61f5ccf94fc4e92510eebfe0bcb4aead4eaa7e0cc00daa4cf18e"
+        },
+        {
+          "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/events.ndjson",
+          "bytes": 6248883,
+          "sha256": "b6f6395628a00cf6503f89191801e289bf5b612666e0e23e9d64b033e5420d51"
+        }
+      ],
+      "networkRequests": 0
+    }
+  ],
+  "demonstratedLocalBottlenecks986": {
+    "phasePolicy": {
+      "sourceCommit": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+      "recordedSupportReadsAndOpeningReserves": {
+        "{\"supportReads\":5,\"openingReserves\":{\"short\":15,\"minute\":20}}": 30
+      },
+      "implication": "No holdings:15short opening reserve +5support starts equals entire20starts/10s limit. Cached support cannot be selected until preceding10s has zero physical starts.",
+      "phaseEntries": 30,
+      "sincePreviousPhysicalStartMs": {
+        "samples": 30,
+        "p50": 10034,
+        "p95": 10058,
+        "maximum": 10073
+      },
+      "phaseEntryRows": [
+        {
+          "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+          "at": 1793140730996,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140720971,
+          "sincePreviousPhysicalStartMs": 10025
+        },
+        {
+          "mint": "CyHZktF8QKQ6rRsa4q7zBFYEryjEsb4snv3YfaQDpump",
+          "at": 1793140748203,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140738165,
+          "sincePreviousPhysicalStartMs": 10038
+        },
+        {
+          "mint": "QyjXN4CcmnDZpkXw1ZyJoQTVFygDeYXKggLBFL2pump",
+          "at": 1793140759260,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140749242,
+          "sincePreviousPhysicalStartMs": 10018
+        },
+        {
+          "mint": "235s6hetMnDB8GNQd742hVhBo47KyuA6LSNm2dk1DN1d",
+          "at": 1793140770312,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140760280,
+          "sincePreviousPhysicalStartMs": 10032
+        },
+        {
+          "mint": "FvYmX88TgdPv3rpVzFiKgGjhQzkBubwfz8cqeFnpump",
+          "at": 1793140791889,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140781839,
+          "sincePreviousPhysicalStartMs": 10050
+        },
+        {
+          "mint": "4SUbJv15ASxQ2s74iSS4HHoMEtu57H7ajcNWncuBpump",
+          "at": 1793140802980,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140792907,
+          "sincePreviousPhysicalStartMs": 10073
+        },
+        {
+          "mint": "8aiejCVNDWWVbDoygX6fYeH3PoBRiAH4raHWPrJ3pump",
+          "at": 1793140825071,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140815051,
+          "sincePreviousPhysicalStartMs": 10020
+        },
+        {
+          "mint": "75Z5Q2kDYdZXfh4JMQMXGxmpNzbqMXfLmLiTcFh5pump",
+          "at": 1793140855045,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140845028,
+          "sincePreviousPhysicalStartMs": 10017
+        },
+        {
+          "mint": "5pLMhLiSjAM8roK77SGB9iZGjbdWwESnH6nnvwPipump",
+          "at": 1793140885115,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140875057,
+          "sincePreviousPhysicalStartMs": 10058
+        },
+        {
+          "mint": "2VkqUSdBGYkf6ZDU2PZfxbSHFDARwCFjktWrN4UFpump",
+          "at": 1793140937489,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140927455,
+          "sincePreviousPhysicalStartMs": 10034
+        },
+        {
+          "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+          "at": 1793140948850,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140938795,
+          "sincePreviousPhysicalStartMs": 10055
+        },
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "at": 1793140985003,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140974947,
+          "sincePreviousPhysicalStartMs": 10056
+        },
+        {
+          "mint": "Cq16miAMkk4STYeqgt5SphTz5HJHZ9MfQ1MHD5vHpump",
+          "at": 1793140998288,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793140988269,
+          "sincePreviousPhysicalStartMs": 10019
+        },
+        {
+          "mint": "4tooZXbQN77pzsZkNfYiKdjEKVSQQiK188wCxWRNCnQS",
+          "at": 1793141035201,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141025149,
+          "sincePreviousPhysicalStartMs": 10052
+        },
+        {
+          "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+          "at": 1793141046732,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141036721,
+          "sincePreviousPhysicalStartMs": 10011
+        },
+        {
+          "mint": "3DwY8yKqbnDUkddahH3VnbLVt7nAqrFVfcVLENsxpump",
+          "at": 1793141057818,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141047783,
+          "sincePreviousPhysicalStartMs": 10035
+        },
+        {
+          "mint": "BqMG67yBmwcc9qshsneUPzSMZneus4F38ynVUpUgNsty",
+          "at": 1793141075075,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141065047,
+          "sincePreviousPhysicalStartMs": 10028
+        },
+        {
+          "mint": "HEyHzCFAoQxojT5K4YtwYdz51yjyU2Kn11HjYvi3pump",
+          "at": 1793141095680,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141085675,
+          "sincePreviousPhysicalStartMs": 10005
+        },
+        {
+          "mint": "HQanwijpgjALtn4QdAD76wYV6hV76QhVgB1SmVnMpump",
+          "at": 1793141135077,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141125024,
+          "sincePreviousPhysicalStartMs": 10053
+        },
+        {
+          "mint": "5Hd55oHSBtHw2mzpNCKXtQ7NkBtWD6pvrj1J8ZL6pump",
+          "at": 1793141157187,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141147178,
+          "sincePreviousPhysicalStartMs": 10009
+        },
+        {
+          "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+          "at": 1793141185285,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141175262,
+          "sincePreviousPhysicalStartMs": 10023
+        },
+        {
+          "mint": "7ZeTBCZMioW5H1hbB5vr6peYYiBTxQr5bCXkwb19pump",
+          "at": 1793141196342,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141186308,
+          "sincePreviousPhysicalStartMs": 10034
+        },
+        {
+          "mint": "CQTssrASotA6ZLqPJM11pFmf2ahz9NPPaV697ZMhpump",
+          "at": 1793141248725,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141238694,
+          "sincePreviousPhysicalStartMs": 10031
+        },
+        {
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "at": 1793141281338,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141271318,
+          "sincePreviousPhysicalStartMs": 10020
+        },
+        {
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "at": 1793141291385,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141281342,
+          "sincePreviousPhysicalStartMs": 10043
+        },
+        {
+          "mint": "7MkFjz9wFT9yvZsUTot7miJN89qUgqeEc5yx6Xo2pump",
+          "at": 1793141302441,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141292435,
+          "sincePreviousPhysicalStartMs": 10006
+        },
+        {
+          "mint": "3n79gGz3MQSYoWuaCjXn9N1vkGt6gtfpH1pungHPpump",
+          "at": 1793141313512,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141303458,
+          "sincePreviousPhysicalStartMs": 10054
+        },
+        {
+          "mint": "Hzdiu6GPFFrh9695fBWUXb4G662B2WXVK9cWyk7Xpump",
+          "at": 1793141325064,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141315030,
+          "sincePreviousPhysicalStartMs": 10034
+        },
+        {
+          "mint": "Hzdiu6GPFFrh9695fBWUXb4G662B2WXVK9cWyk7Xpump",
+          "at": 1793141339422,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141329383,
+          "sincePreviousPhysicalStartMs": 10039
+        },
+        {
+          "mint": "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+          "at": 1793141350477,
+          "supportReads": 5,
+          "openingReserves": {
+            "short": 15,
+            "minute": 20
+          },
+          "meaning": "phase headroom only; per-physical higher-priority admission still required",
+          "previousPhysicalStartAt": 1793141340440,
+          "sincePreviousPhysicalStartMs": 10037
+        }
+      ],
+      "blockedAtRecordedActualStartsMs": 694140,
+      "blockedAtRecordedActualStartsPercent": 99.61968455345226,
+      "interpretation": "Deterministic rolling-headroom reconstruction using actual request starts. This is phase selection eligibility, not measured job enqueue-to-dispatch wait. Backlog, higher-priority work, scope eligibility and financial protection also constrain dispatch; do not attribute every blocked millisecond as avoidable idle."
+    },
+    "physicalOccupancy": {
+      "settledOperations": 301,
+      "occupancyMs": {
+        "samples": 301,
+        "p50": 60,
+        "p95": 212,
+        "maximum": 1011
+      },
+      "totalMs": 28658,
+      "percentOfElapsed": 4.112860402703827,
+      "responseIncompleteAtSettlement": [
+        {
+          "id": 2265,
+          "method": "getTransaction",
+          "at": 1793141138762,
+          "settledAt": 1793141139773,
+          "occupancyMs": 1011,
+          "responseComplete": false
+        }
+      ],
+      "pacingWaitRows": 176,
+      "pacingWaitMs": {
+        "samples": 176,
+        "p50": 187,
+        "p95": 205,
+        "maximum": 208
+      },
+      "summedEmittedPacingWaitMs": 29394,
+      "interpretation": "Observed low physical occupancy/average usage does not prove endpoint entitlement or absence of burst throttles. The two recorded provider errors are real; global provider saturation is not established."
+    },
+    "saturatedOriginRetries": {
+      "reason": "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN",
+      "rows": [
+        {
+          "signature": "3P5xhDzP6Uq9Kd6JtAXWAE36ztpzjxDv16kgu3qQxKn2FJpMchMcMZ2YPom4n32cDiZ9vbUYdEwqtULq6UHpCRyH",
+          "refusals": 12,
+          "preparationAttempts": 13,
+          "physicalStarts": 25,
+          "methodCounts": {
+            "getTransaction": 13,
+            "getSignaturesForAddress": 12
+          },
+          "measuredHttpResponseBodyBytes": 2912938,
+          "refusalTimes": [
+            1793140720177,
+            1793140781020,
+            1793140841957,
+            1793140902994,
+            1793140963727,
+            1793141024351,
+            1793141084869,
+            1793141146332,
+            1793141207154,
+            1793141267660,
+            1793141328348,
+            1793141391333
+          ]
+        },
+        {
+          "signature": "5vWEuPaNsHwTM9NfFwZiUzL2sMdrpwpaGAER396RGsumMRC3s6WgmmniQ5SfHMpgkwDiHhbrscnP3inGQBmGZ5Td",
+          "refusals": 12,
+          "preparationAttempts": 12,
+          "physicalStarts": 24,
+          "methodCounts": {
+            "getTransaction": 12,
+            "getSignaturesForAddress": 12
+          },
+          "measuredHttpResponseBodyBytes": 2806808,
+          "refusalTimes": [
+            1793140720698,
+            1793140782008,
+            1793140842930,
+            1793140904046,
+            1793140964758,
+            1793141025320,
+            1793141085887,
+            1793141147348,
+            1793141208146,
+            1793141268685,
+            1793141329554,
+            1793141390550
+          ]
+        }
+      ],
+      "physicalStarts": 49,
+      "percentAllStarts": 16.27906976744186,
+      "measuredHttpBodyBytes": 5719746,
+      "percentNewAccountedResponseBytes": 55.738401439361965,
+      "sourceMechanism": "resolvePilotMigration reads confirmed seed transaction; absent creation CPI, reads canonical pool latest1000 signatures. A full page refuses origin completeness. seedOutcome sets60s defer; watch maintenance re-enqueues that same unverified signature when defer expires.",
+      "certainty": "The original signature is immutable evidence identity; the confirmed representation/latest history page can change through finality/correction/pruning, so this is deferred unverified identity, not permanent token exclusion.",
+      "suggestedSmallestPostRunRepair": "Reason-specific persisted raw-signature cooldown: first5min, repeated15min, honor existing deferUntil on discovery enqueue and restart. Expire cooldown by observed wall time/retention; different genuine signature for same base proceeds independently and can supply canonical proof. Activity alone must not cancel origin-unknown cooldown. Preserve reason/history and report deferred coverage.",
+      "measuredAvoidableBound": "49starts/24large history pages is this interval total associated with two repeated seeds, not a guarantee every request can be removed. Keeping first attempts means at most45starts could have been avoided in this exact interval with no repeated same-signature attempt; the proposed5/15min policy conservatively saves fewer.",
+      "expectedProposedCooldownArithmetic": {
+        "baselineTwoSignatureRefusals": 24,
+        "first5Then15MinutesMaximumAttemptsWithin696790MsIfNoPreexistingCooldown": 4,
+        "maximumRefusalAttemptsAvoided": 20,
+        "maximumTwoRequestRetriesAvoided": 40,
+        "assumptions": "Both initial attempts begin near run start, attempts each costtwo reads, neither new proof nor structural code change occurs; not provider-verified future savings."
+      }
+    },
+    "requestBreakdown": {
+      "starts": 301,
+      "byPurposeAndMethod": {
+        "idle:upgrade": 2,
+        "idle:subscribeMigration": 1,
+        "discovery:getTransaction": 56,
+        "discovery:getSignaturesForAddress": 26,
+        "discovery:getMultipleAccounts": 59,
+        "discovery:getBlockTime": 28,
+        "discovery:getMinimumBalanceForRentExemption": 56,
+        "enrichment:getTransaction": 45,
+        "candidate:getSignaturesForAddress": 26,
+        "candidate:getTransaction": 2
+      },
+      "rentPreparationStarts": 56,
+      "rentPercent": 18.6046511627907,
+      "candidateAuditStarts": 28,
+      "candidateAuditPercent": 9.30232558139535,
+      "alreadyRemovedInNewCandidateOnlyMode": "Root source92b50 removes two rent preparations per successful support admission;56old rent calls=18.60% of301. This is an exact candidate-information-only efficiency change; new source live outcome must be measured separately."
+    },
+    "enrichmentBurstContract": {
+      "selectedPeakRolling10s": 22,
+      "selectedPeakRolling60s": 31,
+      "enrichmentPeakRolling10s": 8,
+      "enrichmentPeakRolling60s": 29,
+      "gaps": {
+        "valid-window-predictive-assessment-failed": 25,
+        "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+        "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 1,
+        "independent history verification unavailable": 1,
+        "required enrichment cannot fit method rate limit and usefulness deadline": 1
+      },
+      "capacityRefusals": [
+        {
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "at": 1793140988524,
+          "reason": "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY",
+          "priorCapacityFailures": 0,
+          "deferUntil": 1793141108524,
+          "awarenessRetained": true,
+          "freshFullWindowRequired": true,
+          "missedCoverage": "unknown executable opportunity; no inferred missed profit"
+        },
+        {
+          "mint": "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+          "at": 1793141412685,
+          "reason": "required enrichment cannot fit method rate limit and usefulness deadline",
+          "priorCapacityFailures": 0,
+          "deferUntil": 1793141532685,
+          "awarenessRetained": true,
+          "freshFullWindowRequired": true,
+          "missedCoverage": "unknown executable opportunity; no inferred missed profit"
+        }
+      ],
+      "conclusion": "The observed22selected signatures/10s versus8getTransaction starts/10s plus5s usefulness deadline caused admitted-scope coverage loss. Average26requests/minute leaves average headroom but does not resolve these burst deadlines. Removing rent/preparation retries improves headroom without proving burst-complete flow."
+    }
+  },
+  "sameCaseChanges": {
+    "sharedPreparationCoalescing": {
+      "source20567": {
+        "elapsedMs": 1306050,
+        "preparationChoices": 1519,
+        "cachedIdentityReuse": 1488,
+        "supportPhaseZeroReadDeferrals": 1456,
+        "eventEvidenceBytes": 9156783,
+        "evidenceClosed": true
+      },
+      "source986": {
+        "elapsedMs": 696790,
+        "preparationChoices": 70,
+        "cachedIdentityReuse": 30,
+        "supportPhaseZeroReadDeferrals": 0,
+        "eventEvidenceBytes": 6248883,
+        "evidenceClosed": false
+      },
+      "conclusion": "Offline regression establishes shared wait coalescing. Chronological observations corroborate reduced metadata churn; differing activity/elapsed times prohibit matched-market performance attribution."
+    },
+    "unchangedStrategy": "No rule thresholds or window duration changed in these sources. Explicit feature-only diagnostics were added at6668, so old primary-only and new explicit+primary counts are not interchangeable."
+  },
+  "decision": "Six is a tested configuration ceiling, not sustained six-scope usable-window capacity. Twelve was configured but never achieved. Unique audited/predictive coverage improved in later observed intervals, but markets/timing differ. Current request inefficiencies have narrow fixes; per-transaction burst completeness remains inadequate for demonstrated busy scopes.",
+  "uncertainty": [
+    "No whole-market denominator, natural financial lifecycle, later-winner profitability or live simultaneous holding protection is established.",
+    "Historical repromotion flags include earlier runs; within-interval weak revisits are computed from actual earlier failures in the same source interval.",
+    "Original HTTP429s, grants, failures, counters and uncertainty remain unchanged.",
+    "New candidate-only92b50 is running elsewhere under root sole network ownership; no incomplete live result is included here."
+  ],
+  "networkRequests": 0,
+  "financialWriterOpened": false,
+  "productionTouched": false
+}

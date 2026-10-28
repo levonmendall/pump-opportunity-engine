@@ -1,0 +1,244 @@
+{
+  "classification": "INDEPENDENT_PRICE_ACTIVITY_LEADS_TIME_ALIGNED_TO_ACTUAL_RESEARCH_INTERVALS_NOT_EXECUTABLE_OPPORTUNITY_RANKING",
+  "generatedAt": "2026-10-27T23:27:25.121058+00:00",
+  "histories": [
+    {
+      "symbol": "SI",
+      "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+      "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+      "indexedMigrationAt": "2026-10-27T20:21:11Z",
+      "eligibilityStartAt": "2026-10-27T20:26:11+00:00",
+      "eligibilityEndAt": "2026-10-27T22:21:11+00:00",
+      "firstReturnedBarAt": "2026-10-27T20:21:00+00:00",
+      "lastReturnedBarAt": "2026-10-27T22:57:00+00:00",
+      "returnedBars": 42,
+      "eligibleHigh": {
+        "barAt": "2026-10-27T20:36:00+00:00",
+        "highUsd": 0.0003359435861199627
+      },
+      "perRecordedRun": [
+        {
+          "runId": "pilot-20261027210316237-57a92bce",
+          "source": "4abb86fba6f249d3964c5bab43e14e9685cbfcd7",
+          "firstWhollyContainedBarAt": "2026-10-27T21:06:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T21:09:00+00:00",
+          "nonemptyMinuteBars": 2,
+          "indexedVolumeUsd": 29.80109754519697,
+          "firstCloseUsd": 2.208002632869939e-06,
+          "lastCloseUsd": 2.1805021543632307e-06,
+          "closeToClosePct": -1.2454912008398877,
+          "maximumHighUsd": 2.208002632869939e-06,
+          "minimumLowUsd": 2.1451910750817786e-06,
+          "strongestOneTo15MinuteCloseChange": {
+            "fromCloseBarAt": "2026-10-27T21:06:00+00:00",
+            "toCloseBarAt": "2026-10-27T21:09:00+00:00",
+            "elapsedSeconds": 180,
+            "closePriceChangePct": -1.2454912008398877
+          },
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027214222149-d39aee9a",
+          "source": "6668e6c15eb25ec6cbf068bebf92b3d2a1063ad8",
+          "firstWhollyContainedBarAt": "2026-10-27T21:46:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T21:46:00+00:00",
+          "nonemptyMinuteBars": 1,
+          "indexedVolumeUsd": 0.008138647185689154,
+          "firstCloseUsd": 2.245574832388937e-06,
+          "lastCloseUsd": 2.245574832388937e-06,
+          "closeToClosePct": 0.0,
+          "maximumHighUsd": 2.245574832388937e-06,
+          "minimumLowUsd": 2.195790359976586e-06,
+          "strongestOneTo15MinuteCloseChange": null,
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027215124336-ed67d639",
+          "source": "6668e6c15eb25ec6cbf068bebf92b3d2a1063ad8",
+          "firstWhollyContainedBarAt": "2026-10-27T21:54:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T21:54:00+00:00",
+          "nonemptyMinuteBars": 1,
+          "indexedVolumeUsd": 0.0006842056930192118,
+          "firstCloseUsd": 2.2136850202886552e-06,
+          "lastCloseUsd": 2.2136850202886552e-06,
+          "closeToClosePct": 0.0,
+          "maximumHighUsd": 2.245574832388937e-06,
+          "minimumLowUsd": 2.2136850202886552e-06,
+          "strongestOneTo15MinuteCloseChange": null,
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        }
+      ],
+      "input": {
+        "path": "reference-raw/si-minute-ohlcv.json",
+        "bytes": 5521,
+        "sha256": "3fac7d672af8f80a29efec93845db3478c8a97eb722d971ae3f2c94a8a9d900f"
+      }
+    },
+    {
+      "symbol": "FRONGUS",
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "indexedMigrationAt": "2026-10-27T21:13:41Z",
+      "eligibilityStartAt": "2026-10-27T21:18:41+00:00",
+      "eligibilityEndAt": "2026-10-27T23:13:41+00:00",
+      "firstReturnedBarAt": "2026-10-27T21:13:00+00:00",
+      "lastReturnedBarAt": "2026-10-27T23:17:00+00:00",
+      "returnedBars": 124,
+      "eligibleHigh": {
+        "barAt": "2026-10-27T22:28:00+00:00",
+        "highUsd": 0.001069720924229121
+      },
+      "perRecordedRun": [
+        {
+          "runId": "pilot-20261027212808269-733416a8",
+          "source": "1aef59dc2885ea0a4bc644f566cc72ea0064c5e8",
+          "firstWhollyContainedBarAt": "2026-10-27T21:29:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T21:32:00+00:00",
+          "nonemptyMinuteBars": 4,
+          "indexedVolumeUsd": 8690.202363833316,
+          "firstCloseUsd": 0.00011470214754223398,
+          "lastCloseUsd": 0.00010713432657704435,
+          "closeToClosePct": -6.597802331820435,
+          "maximumHighUsd": 0.00013124948761550288,
+          "minimumLowUsd": 9.124647570573176e-05,
+          "strongestOneTo15MinuteCloseChange": {
+            "fromCloseBarAt": "2026-10-27T21:30:00+00:00",
+            "toCloseBarAt": "2026-10-27T21:31:00+00:00",
+            "elapsedSeconds": 60,
+            "closePriceChangePct": 13.964523422282271
+          },
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027214222149-d39aee9a",
+          "source": "6668e6c15eb25ec6cbf068bebf92b3d2a1063ad8",
+          "firstWhollyContainedBarAt": "2026-10-27T21:43:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T21:50:00+00:00",
+          "nonemptyMinuteBars": 8,
+          "indexedVolumeUsd": 215911.1017009639,
+          "firstCloseUsd": 0.00033514698304191277,
+          "lastCloseUsd": 0.00030775995788152405,
+          "closeToClosePct": -8.171646037751668,
+          "maximumHighUsd": 0.0005938745340652812,
+          "minimumLowUsd": 0.0002599694045376801,
+          "strongestOneTo15MinuteCloseChange": {
+            "fromCloseBarAt": "2026-10-27T21:43:00+00:00",
+            "toCloseBarAt": "2026-10-27T21:46:00+00:00",
+            "elapsedSeconds": 180,
+            "closePriceChangePct": 57.21235997971217
+          },
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027215124336-ed67d639",
+          "source": "6668e6c15eb25ec6cbf068bebf92b3d2a1063ad8",
+          "firstWhollyContainedBarAt": "2026-10-27T21:52:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T21:57:00+00:00",
+          "nonemptyMinuteBars": 6,
+          "indexedVolumeUsd": 48080.53489846385,
+          "firstCloseUsd": 0.0002626213796854307,
+          "lastCloseUsd": 7.50658455857972e-05,
+          "closeToClosePct": -71.41670427757577,
+          "maximumHighUsd": 0.00043439579478070687,
+          "minimumLowUsd": 7.404536114197578e-05,
+          "strongestOneTo15MinuteCloseChange": {
+            "fromCloseBarAt": "2026-10-27T21:56:00+00:00",
+            "toCloseBarAt": "2026-10-27T21:57:00+00:00",
+            "elapsedSeconds": 60,
+            "closePriceChangePct": -6.447494457425229
+          },
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027220800928-089eac29",
+          "source": "20567a8f27c627b890de124552f4ffadc42d2068",
+          "firstWhollyContainedBarAt": "2026-10-27T22:09:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T22:28:00+00:00",
+          "nonemptyMinuteBars": 20,
+          "indexedVolumeUsd": 483993.8777732834,
+          "firstCloseUsd": 7.838737105927443e-05,
+          "lastCloseUsd": 0.0009943544169728794,
+          "closeToClosePct": 1168.5135418318537,
+          "maximumHighUsd": 0.001069720924229121,
+          "minimumLowUsd": 4.8085879620887276e-05,
+          "strongestOneTo15MinuteCloseChange": {
+            "fromCloseBarAt": "2026-10-27T22:13:00+00:00",
+            "toCloseBarAt": "2026-10-27T22:28:00+00:00",
+            "elapsedSeconds": 900,
+            "closePriceChangePct": 1967.871950793965
+          },
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027223455745-ec07c3bc",
+          "source": "e696e9f7edbdd7d6c986eea08f64b21ada637c70",
+          "firstWhollyContainedBarAt": "2026-10-27T22:35:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T22:35:00+00:00",
+          "nonemptyMinuteBars": 1,
+          "indexedVolumeUsd": 19203.15905253859,
+          "firstCloseUsd": 0.0007072129473393548,
+          "lastCloseUsd": 0.0007072129473393548,
+          "closeToClosePct": 0.0,
+          "maximumHighUsd": 0.0007143783179390957,
+          "minimumLowUsd": 0.0006386875892621742,
+          "strongestOneTo15MinuteCloseChange": null,
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027223839107-205d2bb9",
+          "source": "98601c40b65fede59e75c5fb3de1546475d4dfed",
+          "firstWhollyContainedBarAt": "2026-10-27T22:39:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T22:49:00+00:00",
+          "nonemptyMinuteBars": 11,
+          "indexedVolumeUsd": 171047.86822192228,
+          "firstCloseUsd": 0.0007023382717658861,
+          "lastCloseUsd": 0.00045095005829435186,
+          "closeToClosePct": -35.79303927713777,
+          "maximumHighUsd": 0.0008271144006897819,
+          "minimumLowUsd": 0.0004455758071595922,
+          "strongestOneTo15MinuteCloseChange": {
+            "fromCloseBarAt": "2026-10-27T22:43:00+00:00",
+            "toCloseBarAt": "2026-10-27T22:46:00+00:00",
+            "elapsedSeconds": 180,
+            "closePriceChangePct": 12.239136550446839
+          },
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        },
+        {
+          "runId": "pilot-20261027230222347-7a5dc2cf",
+          "source": "92b50f8f331021da8da5b7ced366abffcd3a4e5a",
+          "firstWhollyContainedBarAt": "2026-10-27T23:03:00+00:00",
+          "lastWhollyContainedBarAt": "2026-10-27T23:12:00+00:00",
+          "nonemptyMinuteBars": 10,
+          "indexedVolumeUsd": 27635.107166671165,
+          "firstCloseUsd": 0.0004939570490299324,
+          "lastCloseUsd": 0.0004913177647374704,
+          "closeToClosePct": -0.5343145315256037,
+          "maximumHighUsd": 0.0005323216539727806,
+          "minimumLowUsd": 0.0004278465425588029,
+          "strongestOneTo15MinuteCloseChange": {
+            "fromCloseBarAt": "2026-10-27T23:05:00+00:00",
+            "toCloseBarAt": "2026-10-27T23:11:00+00:00",
+            "elapsedSeconds": 360,
+            "closePriceChangePct": 13.086859214162793
+          },
+          "interpretation": "Independent indexed historical price/activity lead; not a trading outcome, predictive-rule reconstruction, historical liquidity proof or executable return."
+        }
+      ],
+      "input": {
+        "path": "reference-raw/frongus-minute-ohlcv.json",
+        "bytes": 15319,
+        "sha256": "7b2c1b964b0368ebbcd898c67aea0871271e6c88dfa02c72787e1b9cddddd49d"
+      }
+    }
+  ],
+  "limitations": [
+    "Only wholly contained minute candles are used; boundary minutes are omitted, not interpolated.",
+    "Missing candles are not filled; all price changes are between reported closes, not executable actual-size returns.",
+    "Price/high-volume leads do not establish net buying, buyer breadth/concentration, transaction completeness, fees, historical liquidity or $50entry/exit feasibility.",
+    "Retrospective strongest close pairs are descriptive/hindsight rankings of indexed price changes, not strategy signals or missed profits.",
+    "The Frongus request returned a candle exactly at before_timestamp; analytical cutoffs use actual bar boundaries rather than assuming endpoint exclusivity.",
+    "No on-chain or financial action was performed by this offline reduction."
+  ],
+  "networkRequests": 0
+}
