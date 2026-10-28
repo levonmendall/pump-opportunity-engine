@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-28T19:46:36.061424+00:00",
+  "verifiedSourceCommit": "19cdd8c5a6bb23874bd8179cdc698ee7e355e442",
+  "runtimeInputsUnchanged": true,
+  "sourceInputCount": 286,
+  "repositoryTests": {
+    "passed": 1426,
+    "failed": 0,
+    "serial": true,
+    "command": "node --import tsx --test --test-concurrency=1 test/*.test.ts",
+    "firstAttempt": "Interrupted; preserved without pass claim"
+  },
+  "build": "PASS",
+  "compile": "PASS",
+  "operatorChecks": {
+    "candidatePackage": 10,
+    "candidateRuntime": 10,
+    "candidateStage": 8,
+    "candidateReadback": 15,
+    "paperSupervisor": 16,
+    "paperReadback": 18,
+    "totalPassed": 77
+  },
+  "marketRequests": 0,
+  "financialAccountWrites": 0,
+  "originalObserverModified": false,
+  "files": [
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/full-suite.txt",
+      "bytes": 11642,
+      "sha256": "404623504c6bf63f68e96f11bdf1db3ab39807b7f0debb82cf02a54096a3853a"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/interrupted-suite.json",
+      "bytes": 409,
+      "sha256": "b349cc8a05969542a6f031e4ef5735055e978763be911bb854d321d5b0a057a1"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/full-suite-resumed.txt",
+      "bytes": 171127,
+      "sha256": "c03c83185b7521af5f3d4dab575e0074a28c24430a77980efcc8efb1658497da"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/full-suite-result.json",
+      "bytes": 67,
+      "sha256": "f7f76ee9f48467a4e070496ac21df3612d6ecabe5f5c0fbf962213af95e077fb"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/compile.txt",
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/paper-supervisor.txt",
+      "bytes": 115,
+      "sha256": "f33988962d8ec74ff11f0dd85af85b9b327c7f9bdfb97b03ec9ee13eb8d26aba"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/paper-readback.txt",
+      "bytes": 117,
+      "sha256": "41eb2927b487cf7bec7e420b78f4086d4f86f17cd4fe03a53a1fd2eeffad641b"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/candidate-package.txt",
+      "bytes": 109,
+      "sha256": "812be2eb942509f0bca6107aff0613ca33de35dac9826b30471f4aed3879a6ac"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/candidate-runtime.txt",
+      "bytes": 109,
+      "sha256": "38eeff1237d74275801617a271eced659e08b1cad8069897d18e659ae40641d8"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/candidate-stage.txt",
+      "bytes": 1000,
+      "sha256": "754df43776df3dbf43d7aa4cafd6cd0e7e7a6766e4bfa12f934a566fc10861fd"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/candidate-readback.txt",
+      "bytes": 114,
+      "sha256": "a2559acc15f77968f7464de870fe0ada0f420ba08fbb0aff8b84929e3f68d0a6"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/candidate-operator.txt",
+      "bytes": 149,
+      "sha256": "7369a2d459ab7ebd2dbcc15416e2dba7589cae204eef78acadefe16df4f1fffe"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/focused-merge.txt",
+      "bytes": 16604,
+      "sha256": "6ba4c77151b4e300726c804f7269ed34191ba3b3c2d9bc23a8b1ce60195a813e"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-next/source-identity.json",
+      "bytes": 41331,
+      "sha256": "a56b38b9cdf5c3dde8ff057147a16fcb4b9552163a8ff72209eba17423f4e0ac"
+    }
+  ]
+}

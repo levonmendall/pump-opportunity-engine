@@ -1,0 +1,11 @@
+{
+  "at": 1793212936245,
+  "run": 40747004112,
+  "administrationCommit": "bd2ff2a5cc5827cef5c06b80ca629d548f4dc800",
+  "actualSourceRun": "native-candidates-20261028183837830",
+  "sourceCommit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+  "sourceSha256": "395d7c9effb4a16004f511ed5647fc02c8666c5af18e5c81995884160f116812",
+  "publicSourceObserved": true,
+  "financialExecutionAuthorized": false,
+  "samplingIssue": "Initial Node sampler did not use required Cloud proxy; failures retained, curl receiver200, --use-env-proxy corrected sampler. Not a receiver/runtime outage."
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "label": "historical-adjudication-20261028192120",
+  "source": {
+    "commit": "90f68c707b54ff422e504d591124b664caa4c6d2"
+  },
+  "completed": 2,
+  "failure": null,
+  "physicalSettlementConfirmed": true,
+  "newUnits": 2,
+  "newAccountedResponseBytes": 22852,
+  "cumulativeUnits": 7466,
+  "accountedResponseBytes": 811632414,
+  "uncertainResponseBytes": 389808128,
+  "receiptSha256": "3756aa63733b8acaef991896ed4d964119161f620eb08b6188dc96ef736e04c7",
+  "provenanceSha256": "513af4f4d4773d8d7fab826d0fa9fd24c97018f31e341615d60ba06317e108ae",
+  "results": [
+    {
+      "signature": "21UdCqyUj1wWcVuPH7vbRL8YYCoHnbLzjRBJpJ9YoMk1N4DfUYTNwkpvbi7KkAnwZ5AKWwppezpbKjnEbfT4ycnu",
+      "requestedAt": 1793215281529,
+      "availableAt": 1793215281860,
+      "responseSha256": "35230ba1673b68d2fc24ef47e1dbb04d3dfc59cf5367912e568e93de0b0a5684",
+      "slot": 462580695,
+      "success": true,
+      "version": 1,
+      "historicalOnly": true
+    },
+    {
+      "signature": "4kp9ph7W3ziFuNvd2E1TpXgqydHzjquXaBHr6RYo7dDikkbJ5qvVmbRGj3oPkudVTrXpAtBYxaMVxU2iVnmEns7E",
+      "requestedAt": 1793215282862,
+      "availableAt": 1793215283052,
+      "responseSha256": "9701cc3c6e6c3f52dfb0ca3acfd8b53920d2e2d96edd4f2f172d883ac8043aba",
+      "slot": 462583391,
+      "success": true,
+      "version": 0,
+      "historicalOnly": true
+    }
+  ],
+  "automaticRetries": 0,
+  "financialFilesRead": false
+}

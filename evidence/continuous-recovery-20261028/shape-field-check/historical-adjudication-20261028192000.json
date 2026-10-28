@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "label": "historical-adjudication-20261028192000",
+  "source": {
+    "commit": "90f68c707b54ff422e504d591124b664caa4c6d2"
+  },
+  "completed": 0,
+  "failure": "PILOT_RPC_INVALID_TIMEOUT",
+  "physicalSettlementConfirmed": true,
+  "newUnits": 0,
+  "newAccountedResponseBytes": 0,
+  "cumulativeUnits": 7464,
+  "accountedResponseBytes": 811609562,
+  "uncertainResponseBytes": 389808128,
+  "receiptSha256": "d169b00ce781be1af315029916624beede5290e6ffbda43db470530d683f2b40",
+  "provenanceSha256": "6a29817c01ee595607bb00150e816621274ab91816f75f06d5c35c8f73c7b9a4",
+  "results": [],
+  "automaticRetries": 0,
+  "financialFilesRead": false
+}

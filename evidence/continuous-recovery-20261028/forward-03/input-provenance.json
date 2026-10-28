@@ -1,0 +1,2059 @@
+{
+  "schemaVersion": 1,
+  "createdAt": 1793212581115,
+  "source": {
+    "commit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+    "sha256": "395d7c9effb4a16004f511ed5647fc02c8666c5af18e5c81995884160f116812"
+  },
+  "dataContract": "confirmed-program-activity-v3-shadow",
+  "observationAgePolicy": "observation-age-selected-24h-study-v1",
+  "baselineEntryAge": "5–120min unchanged; no financial execution",
+  "inputSha256": "d7993b5327f375abfb0c24f35126421fd4c73fb08d5c4b686b72e37abe622231",
+  "inputBytes": 6263536,
+  "baseline": {
+    "calls": 6869,
+    "accountedResponseBytes": 641422025,
+    "observedResponseBytes": 352408265,
+    "uncertainResponseBytes": 289013760,
+    "pendingHistoricalReservations": 163,
+    "sourceCount": 262,
+    "sha256": "2a7b3ef5a395df79a8df188c35572cec07f0009bc123b656e4b2ca3961073e18"
+  },
+  "handoff": {
+    "mode": "explicit-settled-native-handoff",
+    "directory": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run",
+    "settlementReceipt": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/settlement-link.json",
+    "source": {
+      "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+      "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+    },
+    "runId": "native-candidates-20261028172713245",
+    "administrationRun": 40735836963,
+    "configurationSha256": "1362f6ccf3d31cc0693f4f77040486e380e23251f685817908ce4267ee7c5b5c",
+    "wholeArchive": {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/selected-evidence.tar.gz",
+      "bytes": 22036792,
+      "sha256": "d34137bfcdeb0bb33af05ddd6838d6f9d2a3ff2a0d09d559d701ed3983f52a5b",
+      "verifiedByThisExport": true
+    },
+    "indexVerifiedFileCount": 124,
+    "physicalSettlementConfirmed": true,
+    "extraObservedUnmanagedControls": 0,
+    "historicalHintsReinserted": false
+  },
+  "originCheckpointCount": 134,
+  "originCount": 124,
+  "excludedOrigins": [
+    {
+      "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+      "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+      "migrationAt": 1793126079000,
+      "originIndex": 114,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "92zZ43MQcq44ofBZkxDirLG38wiyMEpszkLwXpjj2wy2",
+      "pool": "CPUKr6jQdq4cNPWsi1MT4RZKHVfnRCSrGCpK6yG6M2HC",
+      "migrationAt": 1793126057000,
+      "originIndex": 115,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "2VzZYM4UYkMjvPYPooBFm4zstqco8eeKn2DojNUrpump",
+      "pool": "6FrZE5dEqiLmsoa4tcAqxwem8fWdgwe4Qumda2ExviDF",
+      "migrationAt": 1793125846000,
+      "originIndex": 116,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "BYnVXhAC1LczDoCjqAmx3UNYeVHauoXDxboK9Z9pump",
+      "pool": "BYdiqTn55wfx5VRqM66tpTguGjHSyjB9WssXcNEFbBMT",
+      "migrationAt": 1793125823000,
+      "originIndex": 117,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "DYtHDCcEKgkyxQmxL2zVy1yiDhxygkpcjvyPjfbMpump",
+      "pool": "2GsFEH2Ak28UuvqnuFBJukVFmhtDse1sPujPpdSwV84K",
+      "migrationAt": 1793125783000,
+      "originIndex": 118,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "FWQx8Q8Nxtc6S4YkcuUcT7eFPHYdAox8V1UZQ4YWpump",
+      "pool": "9QB3AtP71GKd837nXxQxPsEpyZzGu4sch89DTvMxfPAx",
+      "migrationAt": 1793124479000,
+      "originIndex": 119,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+      "pool": "GDy6g5UsC4nEdx1S1p23X3mWw9jk44ZkT3UgV1tdrkjZ",
+      "migrationAt": 1793124374000,
+      "originIndex": 120,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "Ch7vWP6x2pW5yqPasXyVMGa1FnsWNgqJBvbW5fZCpump",
+      "pool": "2BbB9YdN9DvZo48fZ85DstZFYZDFQBdGL5tfBt85gLzH",
+      "migrationAt": 1793123893000,
+      "originIndex": 121,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "wHqbDAuCqgM5h8ekvbV3TJ2KfkdEBk6vCgqU1Zupump",
+      "pool": "tNAKuUwxg96JegvVWn7iFuij6gKtKQpZ8NU8MUWpcvR",
+      "migrationAt": 1793123865000,
+      "originIndex": 122,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    },
+    {
+      "mint": "7B8zjchogtQ217hieyQaMM6HeTp2iyhRwf6xPDnxpump",
+      "pool": "2k8w9NyiKim3znftecYTV8xCuzDHkM9F3X1p3KUhqTfw",
+      "migrationAt": 1793123860000,
+      "originIndex": 123,
+      "reason": "outside selected24h observation horizon at export; original proof retained"
+    }
+  ],
+  "origins": [
+    {
+      "mint": "AdTkz2Ec9ETtvnobaw4nqtLn579MsjSin9mxB8Dqpump",
+      "pool": "2gFJhcD53jFcJernZpwSY91FK1ehvzmexb4T6okAbQN5",
+      "migrationAt": 1793205152000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 0,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7UjAKbrEt5CVZ6HTboGqU5BV6fsftAxacWc6AYhmpump",
+      "pool": "E2XEUFsq6fKd8uXgPz5wbP9RPeRDrQ9w88XE74mmi1KL",
+      "migrationAt": 1793205027000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 1,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+      "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+      "migrationAt": 1793205003000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 2,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump",
+      "pool": "HknqzEAg7Q78CqAGfG1LZRVcnNzbFfczEV1hjKF7ELq9",
+      "migrationAt": 1793202782000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 3,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HpUwLF6GZwvvp2Bcx86LQ1UpTnVaUnWgHhY3wNb2pump",
+      "pool": "7RRNa3XTJESFq1eyeNyEUbFgMdk1pTLZ7TfTidMQxuJi",
+      "migrationAt": 1793202507000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 4,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "x5tzEf5eF5EUMxYLvQa6wxe9bL3mLubKtBH7fpspump",
+      "pool": "FKCppmEDkGJqpCqBv9ELkqT5eHRHgvNK4Qf4cFqjFDYS",
+      "migrationAt": 1793202490000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 5,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+      "pool": "E4r2uCyTHfzF5ZD7aYBFMhAqaY628b7oqNEdTfmAEbXH",
+      "migrationAt": 1793202399000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 6,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "GRqLZkWRaxSyqaj3MyH6AM71RhubP56JNnHPWQqUpump",
+      "pool": "J9Etc5wgJZnUuhQjLySmzWtgALGcb2XFhNTGvpQbuVjd",
+      "migrationAt": 1793202372000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 7,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+      "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+      "migrationAt": 1793202371000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 8,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Asjmk93s5j9XtTayrNt52yYahtz8dYXHB9wbEjNDpump",
+      "pool": "8uNsN9GLhZjTo4VPcEkXspVTHLGibyaaanNzE8zZm9Eb",
+      "migrationAt": 1793202253000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 9,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "CvmgXx7u5tX93iCBDexnGAV58aHKqGMDFVkRiUhWpump",
+      "pool": "48fQ8iZPajZy8J9WuqtX2rkVdY2jUKhuYfa41KkCH96a",
+      "migrationAt": 1793202205000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 10,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+      "pool": "7jjmXZCdPt3n9r3yPrEqekUDGYogX4CP7AvF7sPWjDAS",
+      "migrationAt": 1793202110000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 11,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+      "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+      "migrationAt": 1793202060000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 12,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "AUzxwHbzhR1rxC8xU4YV438oYVaQYZydotSNBf6vpump",
+      "pool": "DUguk8QZdRoGxW8XDArqdFQ3ftbTMySjyynAWxitRneB",
+      "migrationAt": 1793201929000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 13,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "EFUwoW2EW5qEinEyVFzqo9SAxtFiPA8AhEBnSxeCpump",
+      "pool": "FSwhcMuTnRzmC1zF7V1MsddnNptpGfU7btyYjwsqKjRo",
+      "migrationAt": 1793201826000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 14,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HWjJ8dFwf68sdWzhj4qHQpUf6rSG3u3xRWzV2Y29pump",
+      "pool": "8q1QSrxomMNa2WJky3Q8LVpWJVHqcmuoRhWqgUzRYMK2",
+      "migrationAt": 1793201668000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 15,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FhsZqiGsBrBe3kkZZ1H3Z35ae9uCqfKhMJdJs9bPpump",
+      "pool": "EmwXsyQYWPpjsVy1TWMjuKfjUneeKs6tuFNZ6TJ3XBxu",
+      "migrationAt": 1793201102000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 16,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "YxD2uUmH7cBiWYhfgXnPon3NThaK6BGSzAU2JNjpump",
+      "pool": "4zaGk9feqoVtPmChBD1JmZx3Bkh4HDbJ7Uo5E9rzDPWL",
+      "migrationAt": 1793201059000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 17,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+      "pool": "6qfuG7nueGuFFo7vQUgha6jtr6ea79fAB6RTg2BzkDB6",
+      "migrationAt": 1793200817000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 18,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "6hAxoWxNohprwtgEokTbLTgJDHthGwAJR3HDPKbCpump",
+      "pool": "G7976kYdtWMjdfS3fNi9NWZdr6tteryMA53ZswWNccEk",
+      "migrationAt": 1793197659000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 19,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4biV2urUKduJvWvwpZfw4Cn8VnQf1cefhev5rakBA8Cq",
+      "pool": "J7vj4hx62n2cHQLmisiujhsAXN5evnuqPz384mahpLcX",
+      "migrationAt": 1793197627000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 20,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Tp7EZyRaU7Qkb41WA5yrLTuwCyLj1Fpe2CXrChW8mdt",
+      "pool": "BsJ5P4vCAdxaSfzYnL2CMhqZST31wi9doPs1xhT3BQ3F",
+      "migrationAt": 1793197618000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 21,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "9ojYt5LiB5FqBoyYYAZbPP6VGtGRpCWem35ENxitpump",
+      "pool": "CxJeBaSnXXbWqN8Eks1ioJL4PF8e7u2cYctFoC2LdE31",
+      "migrationAt": 1793197577000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 22,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+      "pool": "9LPb8pFNFS2ACpvwyDtvdbFrmCSxfjPkDCRCASEoLJsm",
+      "migrationAt": 1793197575000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 23,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "evEidkshRzz55PovfPY8PaKGWvmxPjLHbKCWy2spump",
+      "pool": "B4bsG1Gwm6BeRvAq6d836Yv9kLRdjnvpRtfcLvnCoJou",
+      "migrationAt": 1793197475000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 24,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4VqezWppX3Nq5XLGoTZTqom7NqfMH539UFEZtN9Upump",
+      "pool": "8S5djFpjkAiWxTcWznAZqEwvKyXWyg8CdQgzSdYVpX8X",
+      "migrationAt": 1793197463000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 25,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HuUgLZGMAVqtUA5MVcBDDjQswzCKViH7i8CNxeKzpump",
+      "pool": "Czp11XNFfTny3VrBWwFnd47Kd6nxuQTY1UHMKQ3T8W3Y",
+      "migrationAt": 1793197396000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 26,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "D9NXzZxiJxgp2U69EDWJ1tJDMtGcEiWh2xGGY58Gpump",
+      "pool": "gEAeFNaUVjjYLmcCdk7y4fWCbiEvKmo7bEWq9zxYW3g",
+      "migrationAt": 1793197377000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 27,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Ag9iUb3W88zngMy73qjvXar4VDPnkWdk12HK62ZFpump",
+      "pool": "HAu5BLjqozgJiTnBp49tyqwTEcqbS2joALBHvetcbbLK",
+      "migrationAt": 1793197297000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 28,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "pool": "7VBYqqMz3tKLKUUfsvGQ1hHBpfWWieDbw2DNW7GuKvaH",
+      "migrationAt": 1793168072000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 29,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "pool": "DgnZz8ck3p8FZBZiYuTTaeprgdbrAU3VEPXq3iPEkvxK",
+      "migrationAt": 1793168045000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 30,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "pool": "8KUpPgbFeuuYe3biWWFmmDytFuTqfZVdbpp3JZ1RG6QB",
+      "migrationAt": 1793168039000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 31,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "migrationAt": 1793162715000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 32,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BE3Pibd3N3MitNZPzgYDfdFQw6QA2qAxfo4rLiSkpump",
+      "pool": "rSoXwoh1Q8grCm7rSEf8Kmik8jF3raS6NawHH4asiGT",
+      "migrationAt": 1793156242000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 33,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Ex7Czx3en6ESwi1EANrNjnTm7KQDW1qN3hhXhNtypump",
+      "pool": "K7ao5Ysd7EhjXcuVP956NkvHUd5rGtxcFzDbuoHpas6",
+      "migrationAt": 1793156158000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 34,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "mWTK7nLFCjcAWXH4tyCUSvLvdwjZ9sQ6NWbK72cpump",
+      "pool": "D1NnF4Soo8TybadG9t51dMie4MiTLwUVC8oHZHq9bcZE",
+      "migrationAt": 1793156083000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 35,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+      "pool": "GjQSPyxVU9kJGFNRaBPRVqcwmqw9oc38C3uyEh2L63bn",
+      "migrationAt": 1793155808000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 36,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4t1ujzXipQWEnsRHhTaQbM5dvhvr9uRyoqCcFX1ypump",
+      "pool": "9zn7naCtTLTqFZg5bzMP4WX7bKLVnsHmy2qu6XjWucBR",
+      "migrationAt": 1793155538000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 37,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "GtETXWKL8iEJzC3S38CBzrzyaqfVh7Jf2qWYE2J1pump",
+      "pool": "5PbF4C4fyesSULT5CnncP8Nzt8dfTKgbomr1cLArJ3UH",
+      "migrationAt": 1793155474000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 38,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+      "pool": "3snfGb4KpjVJ7WXiTfThnwuhZSWmYTvqBjZQzTByFyp5",
+      "migrationAt": 1793154254000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 39,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HKBjxvnEeDBXKPAEEZUgkbWGMRGMNhkx2MTYiJogpump",
+      "pool": "EWh1cupB8s6XUKDzgErVpJaj3m4YsAe9ZuZpXNPab3Np",
+      "migrationAt": 1793154183000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 40,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+      "pool": "DS83fGxDTfGRKeZp4mW7tMVrzxgKGC8CLZJgNzyRqznB",
+      "migrationAt": 1793154127000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 41,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+      "pool": "3SwrqX7MSKr634onBrN5L4BChWSqw1QTUQCXeRvsmmsS",
+      "migrationAt": 1793154111000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 42,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "E2QtMc39ifrmadLzadECyEQr1fn7LVKH3bsQiiRupump",
+      "pool": "2n9dhFqrRbJNGBmGLgNbDJ2QMd6uccWETJLtTojEYKpm",
+      "migrationAt": 1793154088000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 43,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "DSG6o8SR6MLgnrvA7FPHGKnjeALYNfV65Md7fT5opump",
+      "pool": "DttrJVctQsDP3hycsD1prpMCbHmKKE1UGnTX23pNHhaR",
+      "migrationAt": 1793152845000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 44,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+      "pool": "QMdYK2rSZ3KeNpmCBXxUXESaz6cHtyRGHnuc2HMP11a",
+      "migrationAt": 1793152798000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 45,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+      "pool": "2f1yTu2mqFCeAmNwC8Qz8kC6CvubPZortU9a9n1nXMyK",
+      "migrationAt": 1793152697000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 46,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FGbCAVqF7D4WTAVDyoT1L4KXwWScytWKbXBbj4kMpump",
+      "pool": "BrTExqGsYFMwRd8pwKjztPonExDZ1SCf1dws5shN5dnm",
+      "migrationAt": 1793147425000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 47,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "79hzurToSKurKZ39WL2MGk88wmPBuQLn719rtpAepump",
+      "pool": "EYiJjTZ9SbYtEPwJyjez5NBBgSVkkgGuhyGrzKct8SVp",
+      "migrationAt": 1793147307000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 48,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "migrationAt": 1793147241000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 49,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7B5F2CmoQaRee6mdy4sSWt1XSz4aUrKQx4cAmVMpump",
+      "pool": "Es7yDdPnroiHX7fac7T9W5TLhEVBgyPUjdtbkZd1a9Nb",
+      "migrationAt": 1793147214000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 50,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+      "pool": "CztHycQsHC2BuYLFDDuveVAJGgJAjN74E2hUSQGFGcYY",
+      "migrationAt": 1793147127000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 51,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "migrationAt": 1793146776000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 52,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7v2Z7oLSTWDsRwEXs5NK72rXYRwWktHUGzmgtMT1pump",
+      "pool": "6dQdzjxAvhA4mQnwpxxpKcDG9Sdx5Hd3Q16C3paptSX1",
+      "migrationAt": 1793146668000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 53,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "32kHap7E2KHLMkxX2e1bYvp1U2f1agf1L7rCrG6ipump",
+      "pool": "9kkuuqkt9o7swxGa8ccX6Rp8LNbQ39TJJVq66b2NR2HT",
+      "migrationAt": 1793146609000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 54,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Ra2cNmSnk9NLGdWwdLaCcLfdzZSrFTh8gEvQUwGpump",
+      "pool": "89uo6YCUZjJNU1NeEmfWnUXBBGMvqf8oZMDBxebGLYio",
+      "migrationAt": 1793146600000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 55,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "77jPexT8QfBzyMZn19QVoY51emMgEaKpu3EskKPbpump",
+      "pool": "B1zaeuauG2PKfXDC81CBqMV5mh7CR4yGMBbSeAjrfLss",
+      "migrationAt": 1793145411000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 56,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "DjB8KGFtYFdQfq6RFVQg1vTepwwAXTvRX57hcq7xpump",
+      "pool": "EQG1EuoQjVSJjDBrQUBoWuHcnKkjUsSCBB5JuV3AZHWc",
+      "migrationAt": 1793145349000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 57,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "zjZx5qpHSeTYShWWZrp6PZ3gemgRMuPbqvrWA65pump",
+      "pool": "DB3hL8Ze3GaE6xMjZG4p7szYVy1qtHUNSzsB7NZC5p9V",
+      "migrationAt": 1793145327000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 58,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "DFPbbGFF8G4HXNqyMGSyvyW7o5ATRP2r7Aqw7yp4pump",
+      "pool": "3CkmnT3roNPejvgGQeEfM94Tsr9e9DytkL3V9FLDygMP",
+      "migrationAt": 1793145279000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 59,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BPQxuEe5JgosnmyEKfVysjXirshZJJaAvNJHEiznpump",
+      "pool": "7fC9dqv1GrNQSS3hAeeYqKMmRAu7iRW82zaG6KFKWKJR",
+      "migrationAt": 1793145242000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 60,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "qqG6D1jm6upQ2oVxWVpzEP1ALikcW2hiRd4qtjhpump",
+      "pool": "7puSyBtNfuhtC9NimThxEDPfJVVL2xcmPzcbi3QFXfG1",
+      "migrationAt": 1793145194000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 61,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "9UJfCYDbYdKt19emZkFqGHo9pvGn6hVAHmYkALEkpump",
+      "pool": "ErnCHbVY6Wxn8tiEKsn3Ku6sP9TjacJqjfdwg3bvN6QU",
+      "migrationAt": 1793142993000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 62,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "pool": "6AbnoC7dqqoZ5v3EvoRHHsRYVmBVS3NZjNLdLcSv8CgG",
+      "migrationAt": 1793142756000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 63,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "jGCH5EP5o1ac1XsZUTkpc3FRUvvhdpJTuVkxkHwpump",
+      "pool": "4oLRYro3QRZyyq1pDTmXBHtw4g9fBuv8sCigcDfhZRjE",
+      "migrationAt": 1793142721000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 64,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "8Yxh8VkeE6kFMW7M41ViW35YYTvh5kP2Me7paAtrpump",
+      "pool": "8VitvnSfPCYzS2xFsCJMYcnUXYdpawNfEtFcMY5apN7j",
+      "migrationAt": 1793142718000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 65,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "8ToPTJcW57WqXPGpuDcQXwQZGbBUJqyAVrdUqvjpump",
+      "pool": "FuBh4MMeHxFVzrJvhxqRPyrhExTdFW6jA3EGaM6qqjDZ",
+      "migrationAt": 1793142544000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 66,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+      "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+      "migrationAt": 1793142508000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 67,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+      "pool": "AUhxf5d5y8U11BsAKXSsVCMbUeGceEyT4Dn7CnfANqr2",
+      "migrationAt": 1793142478000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 68,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Qur3Q8N2BbU2eD299hdmPRcPquozuAidMiWPke4pump",
+      "pool": "C8L4vwP3ytSvNYnsvJwbBQothiU2bacKKknSvfJTpUZ1",
+      "migrationAt": 1793142408000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 69,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4Feq6iXFqJtAQFruf3Je65pFXrr2bp3E8McUoa9Epump",
+      "pool": "2yzeqZnTLirPQhVzUYt8iuvCvD3aPGYNVZ6dPvep45rS",
+      "migrationAt": 1793142379000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 70,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "pool": "FDpRWfSV5TJeJ1Ni5NYg54UxgrVN1fpAVNnXE2GLRYKu",
+      "migrationAt": 1793142373000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 71,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "C6xGUfFBsqzp85JoWGXto4fH3wmfWjxxHqkNyxtzpump",
+      "pool": "Hz3zHRcwAVxdXthXrrvfVhj6CsheNKmb4X92mcAjQcFp",
+      "migrationAt": 1793142327000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 72,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5GKPTBe1k6EpFqX4ZVkcyWTSHAtVMTLE7roJbXmZpump",
+      "pool": "9GcXsz1TwciiSjBouRfyAdbUza3y2pz1DPkBr66GuxgT",
+      "migrationAt": 1793142190000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 73,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "aasGutcLvXoioKDNLeTskURz6STm7SeoGAthrXopump",
+      "pool": "AYuZ3GuueqJ5HrFj2v2hGnoGNKe39QphDRWizaC5eGRy",
+      "migrationAt": 1793141344000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 74,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "27GAcdyRnNaQ3ufHcynWu5UmN1PvTEJ2xBWhFHLBpump",
+      "pool": "5hdqGPrKDdV8LaiVcj253XP57MAPFjMn8aFtovbjhNVJ",
+      "migrationAt": 1793141293000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 75,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7GSsGcF5ARJ1p2zwzidHidVGjSQe4sEkyxYG9WNmpump",
+      "pool": "G5NdsJ5KkEDKGHTP9QSW93MF7vyRRSaaRNQSWnoAQDXz",
+      "migrationAt": 1793141203000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 76,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "nyHJiwvXBQj9rLjAfx3kuhmHczrfw33dwXCK79spump",
+      "pool": "GP4ttjH3CitMZCBWfgTjPqtf8WCrxCTmMswrPWYqYYuc",
+      "migrationAt": 1793141199000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 77,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "EAzbqoy9NRCjtHe8Ebrcovq8tQstH93mUrHk9oPwpump",
+      "pool": "AAG5L24of8jypNU4pkV669wV1tvTo9Z2eQyanY7aNxcb",
+      "migrationAt": 1793141180000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 78,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Cpf3KpLjpcvaLetYahVDRSiU8NnJS3NLApbW3UANpump",
+      "pool": "J7bEQbs7RnhTJaFzvTCXRrkjmd5D1EbZr5AZKbfrgesi",
+      "migrationAt": 1793141139000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 79,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "3fajJhhDirSDMg9ddqVA69K96rjQKA6iqffD1y5Lpump",
+      "pool": "CLUXe7pKLMydHwpPUZqZzUDXdNKd1aLXrtW7JS4nBa2A",
+      "migrationAt": 1793141103000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 80,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5SE1hA8a819e8wiEJaRqHch5tajuy9ERdCotDwyxpump",
+      "pool": "8gjUcVGFnyX7ui1xaT6EHjTcJQd6NQiRqvYHDRd5N86d",
+      "migrationAt": 1793141065000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 81,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "F8wvZ5HLxfsvTCz7z6um2T5kyaLkBDUFqXGrqQzupump",
+      "pool": "7uVHaZ76yoM2sFPxy7DsMCuFs1CxcYaDQnYiHEYK9YvR",
+      "migrationAt": 1793141001000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 82,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Qy3SbSUeVETiMeAJQQzweNVfEwJ2cguYWX6bNvhpump",
+      "pool": "C9PHUyd5Cqgr98KNtDagrekRRutjj8zivjqwCpHMGLSL",
+      "migrationAt": 1793140891000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 83,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "71uyNgZn5KdutEHrnnX1Eo6bBgZXKB9rDsfwzVGbpump",
+      "pool": "95VVCHV1WWQuGmACj7yo8zXugh4r24vusSCnKrN81Z8y",
+      "migrationAt": 1793140860000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 84,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+      "pool": "7enDDw9N6nnZA3tS2J7owsjPEwyQ3teY6GMxtiZw1F7k",
+      "migrationAt": 1793140147000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 85,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Hzdiu6GPFFrh9695fBWUXb4G662B2WXVK9cWyk7Xpump",
+      "pool": "ABY4FBXXZagepjkyWpSNuQqEJH1zcKcYsvS3GLtCTB7i",
+      "migrationAt": 1793140044000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 86,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "3n79gGz3MQSYoWuaCjXn9N1vkGt6gtfpH1pungHPpump",
+      "pool": "93CeFpfFT8ZRwNkjrNKnxxiGCgMyWCbkxp5aNzyVJefT",
+      "migrationAt": 1793139822000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 87,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7MkFjz9wFT9yvZsUTot7miJN89qUgqeEc5yx6Xo2pump",
+      "pool": "7FyZwmxokdt6Q99GMRJB9QDSbE9esWxY8813wW54TUY8",
+      "migrationAt": 1793139733000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 88,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+      "pool": "7zYgdF5RVu6NEUEkKtxViT3AAG61tz7Yr2Ykdz6YU6bJ",
+      "migrationAt": 1793139510000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 89,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5Hd55oHSBtHw2mzpNCKXtQ7NkBtWD6pvrj1J8ZL6pump",
+      "pool": "6cSk6mVRZSpPwhEvcUHYvkrewpWvCo3rihgJ371ErU9",
+      "migrationAt": 1793139506000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 90,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HQanwijpgjALtn4QdAD76wYV6hV76QhVgB1SmVnMpump",
+      "pool": "BYdDDJUjYmxYUbMuXwf8oC9zLX76H6Tf9oEuvvnaoYfo",
+      "migrationAt": 1793139503000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 91,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "2VkqUSdBGYkf6ZDU2PZfxbSHFDARwCFjktWrN4UFpump",
+      "pool": "D7Z2ZMpUr2jWDwK1enEGfSHba8FsLMNpm5KsYZarZDA5",
+      "migrationAt": 1793139324000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 92,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "QyjXN4CcmnDZpkXw1ZyJoQTVFygDeYXKggLBFL2pump",
+      "pool": "Htu5Cmpiq1WP4J9PB7EsQ41dR6hc9UABHm964EXy1MLd",
+      "migrationAt": 1793139177000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 93,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+      "pool": "BL12FRAyNik2gu3n4iNCQzwLKHMn622BQbYtMjmT4mpS",
+      "migrationAt": 1793139111000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 94,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "AEFQiYobCmuA3ygx53mydi6CQaatEbViCUMcHbo6pump",
+      "pool": "5Fqp2XXEPGE8Hi4JvNGYnmNguLPMRSpiCowh6c9QVh1Z",
+      "migrationAt": 1793139110000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 95,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5gbB8wPNgTLXEwNx6sjAcBqFLAzP6PpaiXtrQMpZpump",
+      "pool": "4qdRP1mZanjd3Nufcknbgh9KNVur4rVqYk3DfSNm5zWT",
+      "migrationAt": 1793139057000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 96,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "C8kyPKLDzxCTJbZG1E1vDDVRr6414xKuSciFon7Dpump",
+      "pool": "APSNUqrPsF4wVE1QfJz2TYpyz6qFFn9GRqrmk4eHYUNs",
+      "migrationAt": 1793139056000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 97,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "DsiZovKknp2UibQNmCKHh3TRWmg5sM5R81oiSdPrpump",
+      "pool": "5YHEskCPvTpm52k5trQtKQSmgseSL8tis49WoN5LUogN",
+      "migrationAt": 1793138958000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 98,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "migrationAt": 1793138286000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 99,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4SUbJv15ASxQ2s74iSS4HHoMEtu57H7ajcNWncuBpump",
+      "pool": "FErrGyuHrfqx9rqTEEBDS5DDsH8QWgz1Q57PGq3KShug",
+      "migrationAt": 1793138160000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 100,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FvYmX88TgdPv3rpVzFiKgGjhQzkBubwfz8cqeFnpump",
+      "pool": "CsGYTAGM87pco3eeFvbnZ8xCd67JBGTCnCjcPxRYKhUz",
+      "migrationAt": 1793138147000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 101,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "CQTssrASotA6ZLqPJM11pFmf2ahz9NPPaV697ZMhpump",
+      "pool": "CJkKiYPfvudXwPnDfddMcW2ZhJBEwSu4AHckRdJt85kj",
+      "migrationAt": 1793137953000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 102,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7ZeTBCZMioW5H1hbB5vr6peYYiBTxQr5bCXkwb19pump",
+      "pool": "AiYzfvqHmxhE4kj2kwTt8woeKdbkKLp7JDsGfh9KAh7J",
+      "migrationAt": 1793137908000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 103,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "2k9ThvFBBAtSfubUG3oVhjfS8TY3Js27xq7Gghb8pump",
+      "pool": "9S6UxYagQ7cJgxiXczXeqqxhsqvntfr1n2CdyzoUuyEU",
+      "migrationAt": 1793137661000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 104,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HEyHzCFAoQxojT5K4YtwYdz51yjyU2Kn11HjYvi3pump",
+      "pool": "GucURXRcBXKiijZoBTH3N7QBH5zoZbzBt1KtwTTCsY9B",
+      "migrationAt": 1793137644000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 105,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "3DwY8yKqbnDUkddahH3VnbLVt7nAqrFVfcVLENsxpump",
+      "pool": "GCsovoqbA5WFtRsYYb5hd2xq8rEhjBm4TE4ZWjoZ2gNw",
+      "migrationAt": 1793137620000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 106,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+      "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+      "migrationAt": 1793137427000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 107,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "235s6hetMnDB8GNQd742hVhBo47KyuA6LSNm2dk1DN1d",
+      "pool": "5q3dS5dds1Uu1HMwq32pkm4GNzFYW6PjsZT5Ai7MrWci",
+      "migrationAt": 1793136778000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 108,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4tooZXbQN77pzsZkNfYiKdjEKVSQQiK188wCxWRNCnQS",
+      "pool": "FbkKvSzXPFkotf9nTxBN6mQ4XCu6DCo63E1tFmjjvBwE",
+      "migrationAt": 1793136622000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 109,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "75Z5Q2kDYdZXfh4JMQMXGxmpNzbqMXfLmLiTcFh5pump",
+      "pool": "FVEnfwDZSbE4ajtkSJBdzXHqBMnmG3i6bzFWSBGHSmmK",
+      "migrationAt": 1793135895000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 110,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BFXYBD5v7W6Tkaa6SwqTDXsbZgekVDPESVQFovhkpump",
+      "pool": "3nSSm27hjBhAB8s3VjJahNeoyt8B6VhMQhKqNCeESfyo",
+      "migrationAt": 1793126522000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 111,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "92VpDepQXqV7Tk4BWwksrjKYBFeLCBccekgmPf2Lpump",
+      "pool": "AWaExVqaKWS2XQ8jysrDdrKrmiG7N44n7YtLWNf9p2Lg",
+      "migrationAt": 1793126417000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 112,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "9QLj1Xobr8rccPVokr68pLWafkuZkErcJsrRTEhNpump",
+      "pool": "G1q2sG65p8H9vNdEGWaGb85SP6KtK5cHssgvwxS6YRuW",
+      "migrationAt": 1793126286000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 113,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "G4oPDxjosSDQYWaLPqw95Mb6Wah79jfNiqW2btCUpump",
+      "pool": "2At7ag2CAkX8kbcJSSDn5A3rDgPd1rC1tCPsQkBQLajR",
+      "migrationAt": 1793208581000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 124,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "mega4qqdQcsrCmj43fzHmxfZNmThNYeN3cz2kfR7fqs",
+      "pool": "G3oscbXtpTsaMFUGJuLA2cFzz8f6x7HEZgySXZdrt3cE",
+      "migrationAt": 1793208606000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 125,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "bLQsRP5bLaJPkW1MZ1tYLk5xE84bKUGSctZ5S1Ppump",
+      "pool": "64xDVSHX4PqvQkuv9xMJv9JTh7fhNQ1qy9QWndmU3E6z",
+      "migrationAt": 1793208717000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 126,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7nJWoemyVzQy92ow3p5tF3fQtaVXrMBAe8kwqHKspump",
+      "pool": "FcyS37FNJFdr4UeGeNqoEw9486Jpxzny7wMxnuD6mj36",
+      "migrationAt": 1793208808000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 127,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "2oN2ZxSh7bwATX8JqLS4Zbf7ewrPU7w7wqgQMYJEpump",
+      "pool": "J8FcCuhzAgd8XKYqa91rUTSC35Lh5dbvryAK63efEyFn",
+      "migrationAt": 1793208824000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 128,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+      "pool": "89MFRL9ypWvMYsMvpGayei4rje6MDctEpoWqrSfuYWw8",
+      "migrationAt": 1793208945000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 129,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "56xZsxJkoEyVisFtDFcK9TQ3GxDUHLUGi1kyDnbNpump",
+      "pool": "DciqspDSXHf3eRi97Lze3HY9M2NTG2Pt2FbfwC6o2BsN",
+      "migrationAt": 1793209035000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 130,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7SF6umqmWb5di8gDXurQgwErDnpVuCqsQEyojZiBpump",
+      "pool": "71y3XAptjte98H7nAzqRBNpHKrdFoTfbFEAAUFNjfhDA",
+      "migrationAt": 1793209188000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 131,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "9ox4CZZcKZ9FspuHFd7qFoAbvyno4W1rbvJ2MVk5pump",
+      "pool": "6KGacAiAyaD9AVX3JbHe3SRjnxBXh844378nCQpjvtb8",
+      "migrationAt": 1793209192000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 132,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BwHQ4QcooRU1D8Dp7JtQjWsZWeqEQjGpy93jFeS7pump",
+      "pool": "GmQ4s3XQWQWWv151bsUpNdeE2gqNhtUjHFZbkJryypLR",
+      "migrationAt": 1793209296000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+        "originIndex": 133,
+        "kind": "latest-native-strict-proof"
+      }
+    }
+  ],
+  "watchRows": 174,
+  "unverifiedHints": [
+    {
+      "signature": "3P5xhDzP6Uq9Kd6JtAXWAE36ztpzjxDv16kgu3qQxKn2FJpMchMcMZ2YPom4n32cDiZ9vbUYdEwqtULq6UHpCRyH",
+      "feedMint": "Hxw2QUyRJHUugmiNXLXRSD5qgcPHbzXtrVDJWt3hdsmd",
+      "firstSeenAt": 1793135888693,
+      "receiptAgeMs": 76692422,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "xUvrLqGgigzo6aepKRHnwSzUcmAyz2WVS5nJwFC6XSSUxEZQ9rBgjHgzJCqBsduMTnXiipFsec7QUVspEGgDT5F",
+      "feedMint": "6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx",
+      "firstSeenAt": 1793135954006,
+      "receiptAgeMs": 76627109,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "9iuLQrTaZUMpee4qfchrwHXdzxnSMHArjc6erkgV3vDbMTpA1ohu8TAEtynftsU7EHwcYWWtZ5pqa3Ebx4ZxFSf",
+      "feedMint": "6CaTKnA3eJEisxYrS4dKGmqBPJ8apePbc65xteJhpump",
+      "firstSeenAt": 1793136673420,
+      "receiptAgeMs": 75907695,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "46nprguitQhTQwk1Qf36yTdjQr4GLWQwcJcywd4Z1HkVJHEH95zZVVNouZro9d1zUFv4ejHaii1HkfrsXKcKfX2X",
+      "feedMint": "C5xph2yL6gMdxmuLGxJBkGpmuDFfyi5fqkBNhvL6pump",
+      "firstSeenAt": 1793137598259,
+      "receiptAgeMs": 74982856,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "5vWEuPaNsHwTM9NfFwZiUzL2sMdrpwpaGAER396RGsumMRC3s6WgmmniQ5SfHMpgkwDiHhbrscnP3inGQBmGZ5Td",
+      "feedMint": "2cRhjCGvMQViKtTpgdQUBUxUBfQQpvG2VjnEYZmQpump",
+      "firstSeenAt": 1793137913162,
+      "receiptAgeMs": 74667953,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "pBDaHSXmCnTjAHsBGwpxYrhG7Tyun9ijc9mSC6PojrdhXKhZMoz8esdZuV1YYZ5oTXGwtZ8FXEh6FJKykEcMGb8",
+      "feedMint": "6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx",
+      "firstSeenAt": 1793139763147,
+      "receiptAgeMs": 72817968,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "3K1X8wz6SN2rJrXYuSpNs64teuWZjks9mjFhQ35CJg7s5kidUw6raUbRZM1SPqWyRYUWcaEu5DZTnDxwwLZNKNAq",
+      "feedMint": "Hhnf3dZTBvhedKjFCNh8Ci23YLEQg1MKTzMTHUwruMmz",
+      "firstSeenAt": 1793140119655,
+      "receiptAgeMs": 72461460,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "2RsarUZt3Ldj4XcipzfPJvpajFi5eVqWQCLYooaSgGp6L97tFPBezqieNK5bUq8GcLk7aJPCp4fc1LzmP25GVWDo",
+      "feedMint": "9XzZ5PEn1rEG8xX3peCzMyYMsppT9ud78kYZZAvdjRPc",
+      "firstSeenAt": 1793145395005,
+      "receiptAgeMs": 67186110,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "49XpPHkJiTKTgPhRtonxRRh6PW1c3VsqrTSSCHZyybyPdkw4jFLcNsrQrgmPozgCD6Lf7WYMx1JZrQ27FjqyVkMN",
+      "feedMint": "DJTu7vi8norVzdVAffgvb39VP7wjKeTsgaMBJrzfxvoF",
+      "firstSeenAt": 1793145508333,
+      "receiptAgeMs": 67072782,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "2vk2VAytt8xwCN2aiSC76sEh8d6miHXSGh1q9bRTaAyXVFTQQPfwcbpftkFyZm8uy3ejjdvz3mVmLAb6vi78CMP",
+      "feedMint": "KMCHuK6W4F3M669wGyj2VFnjGErJrddqxakEWozw89z",
+      "firstSeenAt": 1793145546877,
+      "receiptAgeMs": 67034238,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "2vJmQQeGY9Nb3DMe7xRnrMUZHHCuc5xnC65EFMASpWPGqTeRajXQhvJqUaDKm3hMPQ35Xufb5NhgiHaF6niZjwx4",
+      "feedMint": "4vyJ8NujPevAPrB34otEBbP8Z7oHLPrZfEhgrW94pump",
+      "firstSeenAt": 1793146997090,
+      "receiptAgeMs": 65584025,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "391wquRBMKiWkz1EfYwBaa8UFiEH3PGtVXaewhDCMP9WrPcSs5VWvMeVUpBJgKpHK4ZgL1Ao8nsCUrXN5Rnt9HhZ",
+      "feedMint": "A7bdiYdS5GjqGFtxf17ppRHtDKPkkRqbKtR27dxvQXaS",
+      "firstSeenAt": 1793147142954,
+      "receiptAgeMs": 65438161,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "5U14q2RVBjXSwcEiAWt8Yhmu64T6KUKrTpf6S924PLFzzDXNHioMvpaxXKM3QwxJH6yzsCsWhf5RTknZU5utWnE9",
+      "feedMint": "SPCXxcqXj6e5dJDVNovHN8744zkbhM2bYudU45BimGb",
+      "firstSeenAt": 1793152740869,
+      "receiptAgeMs": 59840246,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "2NAahBCuNPysb7kJDGVGbjo8Yjti8v4DnadZwBUzXU9ucLJkHC3Rbu31rwWcTVAvGxucFunJJ8D1Lg82hvurBq55",
+      "feedMint": "4kjruqGHDsSqkMdFfCjV7Vb62HPFhtXyWc2t6JpQzDnz",
+      "firstSeenAt": 1793154226655,
+      "receiptAgeMs": 58354460,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "zMptB6SNvC3wLMfUqX92PPjKc7FEgPcBchf8PjtTxDwNpn9iKqZohBvoH5gZYCRsFrzwd926D3PwkHp3n6sFjZv",
+      "feedMint": "Hyh6vBokBY2qaWMP44qTQi7LkvsqhGzSFWPe6uK8rich",
+      "firstSeenAt": 1793155694982,
+      "receiptAgeMs": 56886133,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "Uyr4QYv3qfxJLgfco1fdB817cRVRzH4Y2dPpdfRWBUqwYY2J5kX8PLtg9rZFDSJT4rZRSiLhtFFJLCVnBrGDrth",
+      "feedMint": "FeFJBWGuG65xypEEawyEnzbBFY1q5xUjzCbaLjEWpump",
+      "firstSeenAt": 1793155828279,
+      "receiptAgeMs": 56752836,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "3p79bWuJLcFS3RxJUn2sTrM6kLYL7wsGMmzAh6Ag8TJDG16XU1MqEGFu4o4WqvvwrQTNFyXZKrX517CB2UTehqF8",
+      "feedMint": "7K6GMuD2muHoSLuaCFNMY3FNzQuerrWuRerncQ8epump",
+      "firstSeenAt": 1793171597106,
+      "receiptAgeMs": 40984009,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4LkY2jWRzrWvopcbAsFxg2hB8uPUAcuzaTcfpcbdaiw3pPWo2DR4syqpj3NqX9m2nQYjTutY4dN4Y7awbfsdxeYy",
+      "feedMint": "51gYnrYvbU5hbqvxovHoRbhnAZuLG7Xvsvfj9tj1MKcq",
+      "firstSeenAt": 1793171776687,
+      "receiptAgeMs": 40804428,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4XyjwyGttDirBe9KPz1kkcVMovVQWSPvzdraS7yKjtbHLjPHWt8arcgRALzJqxqu3JxeKaT5i11SqMUGwHwNq3F3",
+      "feedMint": "ENkivw8CNx4o9FS19U1XWU585JRxiGVpyhpQVPKwf96F",
+      "firstSeenAt": 1793171832109,
+      "receiptAgeMs": 40749006,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4dqKQQvTsSEngPbGei7CcJxnrfmDRv8RmPVPuE2ASJf4pynF1FfUH9XYafX6DcFQCVXVxsUbxdV16SZQ3e9dtQUr",
+      "feedMint": "DJb6jwYTRTT4mtfMXoZmwvYuJ4Prd9t91LPxnEhiDUoq",
+      "firstSeenAt": 1793197299222,
+      "receiptAgeMs": 15281893,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4e11pNmWAnuiDKAWshkiPjJVqDbryNRLVZwZ9p1gRaLW5NDJLb3qYyVX4TGoYE4oRi7pNseQYAA1Ej8mRATLWavf",
+      "feedMint": "SPCXxcqXj6e5dJDVNovHN8744zkbhM2bYudU45BimGb",
+      "firstSeenAt": 1793197615599,
+      "receiptAgeMs": 14965516,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "5wQXPXTkjKkJvmQv4rmD9qAsRi1KoEtJ8DgnjYMieWmbWHJQt6cFeKJGmFZ2jsgq17Xm72Ai6ekisSgtyc4q1NBo",
+      "feedMint": "BmBrevFsWaT2joU62bz5zuUUYoQvHubEXADAfkw3pump",
+      "firstSeenAt": 1793200995728,
+      "receiptAgeMs": 11585387,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "2j8ZeRtv9nEk8XhSMvQgxMiGp7SsP2vPHnmb9eKidEymQX2SUAZdCWVCChJTRYCfPwVK4gc2sVmnzYx9mEHMYWRd",
+      "feedMint": "5sXSNqZ9arGEz7kRrKvJh59Q8ant4HGGJbMZ8SHpump",
+      "firstSeenAt": 1793201075296,
+      "receiptAgeMs": 11505819,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "57ZLCAYqRY8V6ma3iu7SgxFcWMaNTA4dGVpMc41dZoinh2eQrnRHfzfvc1eBqn4oaGjPsvbYituKGopP28WSdTfr",
+      "feedMint": "8F9hK9qnemZ9rPfbLWuhvMwXbVXFusPtQUFiZNzxpump",
+      "firstSeenAt": 1793201261267,
+      "receiptAgeMs": 11319848,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4gZUDxjFCqiz5vVaFgjFkJN6NfdZHd63bDykCyDunwctqyqMtwJNmG4Z2k3TxZSAV42Ui7nGrszQt24aoJmt44n8",
+      "feedMint": "4pKL2LdjgFbTVFXcNDLfr9PaT1VPi2DaNzj8zBwhpump",
+      "firstSeenAt": 1793201491251,
+      "receiptAgeMs": 11089864,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "L697NCnTKrNTtRnAe5QT9cDiB1A1gGbRseBHoDXArBERbFJZC6zvD4BPbNrF2GJPSqGyNmKnCgEFvqJWfAp2RgW",
+      "feedMint": "83WuTBUf1vMDShCZyMD2PrDbd5ZY9DZVQd6vpfy1pump",
+      "firstSeenAt": 1793201599713,
+      "receiptAgeMs": 10981402,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "32p4n8H5Gx7KdbBVVYygsa6SjiX51ZtYAf7stQp1cEJHiP3gTKxmJtxTcSRBpBiy7nQsgxGKaEmKnG8EaeBj4uxd",
+      "feedMint": "9CGVLMqTmvnu86FMXX9hEy3cb75eQHER1Rg1qecwpump",
+      "firstSeenAt": 1793201739415,
+      "receiptAgeMs": 10841700,
+      "state": "EXPIRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "5HYMK4wpkG3mqiUi5FEdurTX2w2nnLWQrnvF71pH16irMsVCkXmKrUBGHAfcuPtzcFUrkf28ZZrvAtNCTH59LQSb",
+      "feedMint": "EpPrc9E9VdfgsEvvKZKUvzxv5FFdt8ewQyHd8EJMpump",
+      "firstSeenAt": 1793202341388,
+      "receiptAgeMs": 10239727,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "46GXb84RXZ5iH2nsjz6ChJ59fjk35FvPyJSp3ni9w81izG9w27ogTRS4mUrxHtDLUmPxcYC9p8FsCjo5DRcBjw7C",
+      "feedMint": "CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp",
+      "firstSeenAt": 1793205001513,
+      "receiptAgeMs": 7579602,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4UjvMdxfaYtLc8ouHm1ybgqESsyWsoncdZv56T27amT3zyR7XKvwaW6ueYSymkKRuESd4j5sbTRoW7siZwnmUzeD",
+      "feedMint": "DbVuPekCtVZdQYGXu5vtA5oBu1RAdnMn5xjSBstwpump",
+      "firstSeenAt": 1793205061061,
+      "receiptAgeMs": 7520054,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4SFgEFGqGfsKkFQaUGpgRFBQadwh7NPf9VyWG2GNKjrRsY9S2qiHKu1bf3GgSiEGJUHpgnRnTs6vy3qFq2rt6W5x",
+      "feedMint": "qHD61nALNb5uFoLqy29rpWLB6Ug9q48DkzHLXXUpump",
+      "firstSeenAt": 1793205107178,
+      "receiptAgeMs": 7473937,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "3uuzrAyjVeMEEHmtb7aLGfvfWvSeB6chnwA4rZiT6qe7vmky8ptLMKQLZfkHJoePFhTBug7JY3wBgpzg7ZxXTF8g",
+      "feedMint": "BbuukgthzJbANtEDnjMtoyV8y1VAUdTF2gLHAHHBpump",
+      "firstSeenAt": 1793205647763,
+      "receiptAgeMs": 6933352,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4DehSpgixymwaG6oimkF9KEktYD6ZBqD2Fm8GfmodFEkGvcf557QgxXLhLhuqB9oPdJt9g1L7P36DBc5h5itS2Ae",
+      "feedMint": "GYFGHK9eiuwB8UJ3FqTSpGeUsykTxH97MfXBGDchpump",
+      "firstSeenAt": 1793205676006,
+      "receiptAgeMs": 6905109,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "5Bcy8du2BpBzecWxtnKTpucR9W8yFs7soUo3oobPXCE4LSLmy5TU9Vb3aR7kufJxcSBqLbUeeP3Ugv4LfSfsgPSJ",
+      "feedMint": "e82MfB9hRVzCJqwoZCzziPseqXEUHerMKt4MHJCpump",
+      "firstSeenAt": 1793205746002,
+      "receiptAgeMs": 6835113,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "5DvYPDYa11jab7jNnSzm9kwca8JYT4FozAqBqJLQJkJFZdDZwY3otQLJvZRpRrimfSPEBuUC6y9PU5UaCkcJzP99",
+      "feedMint": "GfAy3Anxu9wJ1UJLBuNYFvbcTYpbsiX7xAuYy6wxpump",
+      "firstSeenAt": 1793208519964,
+      "receiptAgeMs": 4061151,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4meNg3GJudCpGGCCxvZ6ximmrLztaSRNMbt9shHCF7GLWiSn2xUw2nG8RiKc4g3txEPpGAxknUBdPNhC3ikviWzp",
+      "feedMint": "37yGBGNuPn2rBYwJLp1Kampjjv1yEubzaTB1nbUtpump",
+      "firstSeenAt": 1793208610302,
+      "receiptAgeMs": 3970813,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4DqGMopTRtFU6aRdgGi9Tzeu9TVz7e8CR1VgxdECr9UVysqquhevHPJW9kzYTUfzDMcfuA5u2bovzo1C9vzbUnLm",
+      "feedMint": "HiMSSzzwkZkrXJ4PGVJRdtfLaANeAztjjcgk5Dxe7Lwx",
+      "firstSeenAt": 1793208676069,
+      "receiptAgeMs": 3905046,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "4wrZnpvTALMLKRN4uSjDWcpUWja7Ja5gSQz5fPJh8NsDNETZ1qy9bn9KJfuoEXNiFXCmc7hf2GjB1HqQ1n6GHt1G",
+      "feedMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+      "firstSeenAt": 1793208691593,
+      "receiptAgeMs": 3889522,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "2CUjSPvBu9aQd9BRRv8oVyehi1eTp8HnC6XxxFNQ6fx1pjTwDT1vCGvZ9eqeAc2k4qd385yTTSfyASVwGgzRq3yi",
+      "feedMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+      "firstSeenAt": 1793209049488,
+      "receiptAgeMs": 3531627,
+      "state": "PERMANENTLY_UNSUPPORTED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    },
+    {
+      "signature": "5Ftf8LRbKirCwEq8SD3kqhmoFdga3uK1hAAJTUQRgHwKYRp3BbD3JpKuMT4quhWsmc8encwUZ5dPxTYXzMKDmzRw",
+      "feedMint": "7xM3PBe3Z8hNbVcrSeLiwptPqRVts2KNUFA7HSaXpump",
+      "firstSeenAt": 1793209319010,
+      "receiptAgeMs": 3262105,
+      "state": "DEFERRED",
+      "migrationAt": null,
+      "currentPool": null,
+      "semantics": "retained unverified discovery hint; receipt age is not migration age; no eligibility or activity inferred"
+    }
+  ],
+  "watchUnchangedFromSettledHandoff": true,
+  "reportingBinding": {
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": 1793123773252,
+    "sourceStatusSha256": "9e13e049f6882ad6f8266217cb870e6d62e9a183cdf7bc6b0b6789c5535aa9c3"
+  },
+  "inputs": [
+    {
+      "path": "/workspace/poe-pilot/pilot.json",
+      "bytes": 165893,
+      "sha256": "faa9efd0251e0bc9d9ced8e51102d431cb931789f25c179313fc384536d82495"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/settlement-link.json",
+      "bytes": 10589,
+      "sha256": "533da7108b7386eb310ad00558aba35d73478ce03f4b96f0b8a50801ca40b198"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/prepared.json",
+      "bytes": 22018,
+      "sha256": "fedc3a5aacaae79ef4bdb19dde13b1bd4e7104d77797932744ef0354b8feaeda"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/readback-receipt.json",
+      "bytes": 520,
+      "sha256": "9ea01cc7f4aadd4a3ff1f4417ff2602c9c817c2281183fc36069a35acdcad42d"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-001.json",
+      "bytes": 91052,
+      "sha256": "ee75ac1b5eae8d1ce7533f7ae33c56fe240a3f72f4cd0056ce29934a42b42e3f"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-002.json",
+      "bytes": 88903,
+      "sha256": "50d8214b76e9271bd9cef0a56de17dc0e2aa4c24ed131ed42c4a86aa2a811619"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-003.json",
+      "bytes": 89884,
+      "sha256": "915221b15db18b833b625b0853902544f5d2bc841673daa9dab6edc088cee1a5"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-004.json",
+      "bytes": 89264,
+      "sha256": "b18ef0b2979cad0d3b8f10885a431c3d79595ed17f157cc0b33976670a07dd47"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-005.json",
+      "bytes": 89473,
+      "sha256": "409eec5fa371f07d5862a31b31aff56658157fbc1b3a9affb04d9c5b05c788a6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-006.json",
+      "bytes": 89290,
+      "sha256": "a9e14ac8dcdfc50654221f0c757053fe6977065fe2fb0ca8d5448c3364b366ac"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-007.json",
+      "bytes": 92243,
+      "sha256": "bb45fc57a36ad24ec529f70f6208f281766b2ef2b16c2eb092e2ac9d95bbddc5"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-008.json",
+      "bytes": 90646,
+      "sha256": "f0e1762c80b93b66594be168877b5203f82f1aa703c4c4ababac9940dfc00db6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-009.json",
+      "bytes": 90465,
+      "sha256": "e1aed603fe4de970758383efb7104003739a7aaef93d7f7ff7a4879328ae3b18"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-010.json",
+      "bytes": 91892,
+      "sha256": "e9c0cf3698e64207cae14958fa8a13ec25596ed75f71797357768ce5656621b3"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-011.json",
+      "bytes": 90681,
+      "sha256": "07e130201b0b0ae546e86d50608975eaaed4fda959ac98ca4d281605b2341b76"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-012.json",
+      "bytes": 90774,
+      "sha256": "b4fe7da5a0738c55ebde5d96adcf265f6b1e771bb91cecffae8822ee99245e29"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-013.json",
+      "bytes": 90817,
+      "sha256": "f6b5a672ad9713753999449873d4141a77ccbcf2d3b88880e428793bbbd40fc9"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-014.json",
+      "bytes": 91160,
+      "sha256": "22f7e79a00c9f3dda4b0fcf9540aeca58e204ff14cc53f4ea0044383c8f46495"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-015.json",
+      "bytes": 90836,
+      "sha256": "e78623581b5dabbf88403eed434bab2f8e6ce875bd6f0898269b21b5f0f20857"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-016.json",
+      "bytes": 91960,
+      "sha256": "43038105231ef4064dd6fd0801b9b23e33f69e480af267215809a170f2ce4997"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-017.json",
+      "bytes": 92275,
+      "sha256": "10e1858df98d56cad048ddec29bca1bf5fd78e639e868d93bce0f86c842105ad"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-018.json",
+      "bytes": 91544,
+      "sha256": "310b7a5701564f6663267047389285352770df3c49c6cbc2a5f1737e3c2f9893"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-019.json",
+      "bytes": 94632,
+      "sha256": "136903d8aedd16e419c632fe5c724c5e648fed96461a830295597c416ee8c117"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-020.json",
+      "bytes": 92313,
+      "sha256": "5917f6b9707daa346a70d1e3faa9d3e4d029ea98d317bb70bd15a1a315f47d24"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-021.json",
+      "bytes": 95143,
+      "sha256": "e0e8a82c0aad0389d6e013b5a0f68ff2245219b526cb8baf90de937758f4aa48"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-022.json",
+      "bytes": 93453,
+      "sha256": "ca8c3ee26d13a8f04df66428c5ef37af173c984b990f728435aa292ad3c2c31d"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-023.json",
+      "bytes": 95755,
+      "sha256": "56f80bef5335061e31dde7b73c012299b9508e179bc78bc288c17bdbcbd819b5"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-024.json",
+      "bytes": 94336,
+      "sha256": "7f758082327a6e0c18cf45ba6d2d7a10ead05b470ef9d265c0275061adeaf9d8"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-025.json",
+      "bytes": 95710,
+      "sha256": "1d0f8fe534090050235e1af05e979ed5dcf895cf979e77aa2a48aaab339c4656"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-026.json",
+      "bytes": 94811,
+      "sha256": "7b843c70efd9e87605f12cd5152ce951db7b0926f74919c1bcb604d5283db4a6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-027.json",
+      "bytes": 95052,
+      "sha256": "d98ca72eb0b6f6f9ca425197f49b8652d63b5b6607efc9c172caf09e79b5d790"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-028.json",
+      "bytes": 96280,
+      "sha256": "c7849716efb0c93ab82f1f90a1a1dbe884670a62abf939c549052bb62e122ba8"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-029.json",
+      "bytes": 95595,
+      "sha256": "ad3433a57b4f0b47651bdf896a0b9e3473b8a6827cf9d61465188619cdde6d97"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-030.json",
+      "bytes": 96288,
+      "sha256": "1e78d396f5162bd6af4d53d2bb95243ab30754b3377931be0c25b9693007d8ae"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-031.json",
+      "bytes": 95534,
+      "sha256": "a1d40f3b83098d6a4224efb24496e4f63e20886df5027518593e1e77713e8821"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-032.json",
+      "bytes": 95427,
+      "sha256": "3ede9131a417591ca76c5a7630b9a83c0b52d498e87ab84713e5550a1fce31a6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-033.json",
+      "bytes": 96936,
+      "sha256": "440a9368f463ee463d4cf72c40c92bda84877fdc58063df1cd7d00ca14920bc3"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-034.json",
+      "bytes": 97148,
+      "sha256": "381f9d7038c6a3273f015ee27806c582cb67733a94838652f275de5c08d752e6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-035.json",
+      "bytes": 96240,
+      "sha256": "433286e6d734df4fcecea3bc3060e79dd9b5703db76b6be9a43206990311d8c6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-036.json",
+      "bytes": 96295,
+      "sha256": "cc1002aabc30be908be51ebff6791472e42d8ea429327cfb7dd50b48f67bfa10"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-037.json",
+      "bytes": 97307,
+      "sha256": "7169719f064b767960cf3e435ef1eee331603aa6b7fe05e348dc0aff243472e4"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-038.json",
+      "bytes": 96463,
+      "sha256": "a6c7f4658c6a842e1f216df21d417bcb509ab7737d9c24c84d2019b6eb30a723"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-039.json",
+      "bytes": 97031,
+      "sha256": "e37f108cd7d16839e3b44e57fbd9d2cc8249315f7eff372161b16e3e24a75160"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-040.json",
+      "bytes": 97387,
+      "sha256": "e130d06e99c6d3b82d337779d598483a0aefac8a917f11243f3bca69ca848f8c"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-041.json",
+      "bytes": 97317,
+      "sha256": "59ed6a5d47d29ab57b63fc29325dcac438af62d741c18f273e5e50e34bdd9fbf"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-042.json",
+      "bytes": 97290,
+      "sha256": "f07047bceaf782c449cfd6e1746b6b656ac8242e025ad4036e268ca27dae61dc"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-043.json",
+      "bytes": 97496,
+      "sha256": "aac109c2a63d0d4891ff9748e1932132bf340f7de0dd61d22910ae8073dc30b6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/rpc/chapter-044.json",
+      "bytes": 97312,
+      "sha256": "2a7b3ef5a395df79a8df188c35572cec07f0009bc123b656e4b2ca3961073e18"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/supervisor.json",
+      "bytes": 5546,
+      "sha256": "d7920d205f252618020a74fee91489534cc84a0b433bdc064115c69f4c451ff2"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/receipt.json",
+      "bytes": 797320,
+      "sha256": "d044f8e5d9a6a1c06f11939b6aa66d3726345d7fd4a72226dd21de126e0d6c22"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/status.json",
+      "bytes": 797320,
+      "sha256": "d044f8e5d9a6a1c06f11939b6aa66d3726345d7fd4a72226dd21de126e0d6c22"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/index.json",
+      "bytes": 16681,
+      "sha256": "1dab0cc13bdba09b77cb589b50ea810fb55c2a79895907f05536d94094236b37"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-reuse-isolation-20261028172800/artifact/run/watch-checkpoint.json",
+      "bytes": 6681519,
+      "sha256": "3ba5de89e4eef3cc0aad0a565e6341f464deebb54ff0e2b51e99c7adf26c0edf"
+    },
+    {
+      "path": "/workspace/poe-ec2-ws-diagnostic-admin/scripts/poe/reporting-source-context.json",
+      "bytes": 179,
+      "sha256": "a9ac3528f3a3bdd024e151990dd904d14cdeef3442f9a0f6511e7df44664bfff"
+    },
+    {
+      "path": "/tmp/poe-native-candidate-output-containment-20261028/metadata.json",
+      "bytes": 141433,
+      "sha256": "779d2c15b24b778197fb08ae46ddfd290cf173d3841b25c9d3ae10179f191565"
+    },
+    {
+      "path": "/tmp/poe-native-candidate-output-containment-20261028/native-candidates.mjs",
+      "bytes": 4538301,
+      "sha256": "395d7c9effb4a16004f511ed5647fc02c8666c5af18e5c81995884160f116812"
+    }
+  ],
+  "sourceInputBytes": 17305029,
+  "financialDatabaseOpened": false,
+  "financialStatusRead": false,
+  "credentialsRead": false,
+  "networkCalls": 0,
+  "pilotManifestModified": false,
+  "externalLeaseHolder": 103332,
+  "immutableSourceMeaning": "Executable/commit/configuration are frozen by reviewed metadata and stager; status uses input.source, not publication-time Git HEAD."
+}

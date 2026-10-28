@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "b9bba473de026ec630033a2c95167fa31c027c0d",
+  "receiptSha256": "58aca7a44a5324554c69edf37327f2301167d2f9c8c6d352877d5c9706a6668a",
+  "checkpoint": {
+    "path": "/workspace/poe-pilot/research-checkpoints/settled-forward9a-20261028.json",
+    "sha256": "bc67d2353eb49413dbb9a071840ea2584d7fc707e165efc9e8fb388e3f4e0be2",
+    "bytes": 88029,
+    "accounted": {
+      "calls": 7466,
+      "bytes": 811632414,
+      "observedBytes": 421824286,
+      "uncertainResponseBytes": 389808128,
+      "pendingOperations": 213
+    },
+    "retainedStarts": 32,
+    "unknownPhysicalStartsConservativelyAtSeal": 32,
+    "omittedStarts": 7434,
+    "rawSourcesRetained": true
+  },
+  "verifiedRawHandoff": {
+    "checkpointPath": "/workspace/poe-pilot/research-checkpoints/settled-forward9a-20261028.json",
+    "checkpointSha256": "bc67d2353eb49413dbb9a071840ea2584d7fc707e165efc9e8fb388e3f4e0be2",
+    "sourceCount": 314,
+    "accountedUnits": 7466,
+    "accountedResponseBytes": 811632414,
+    "observedResponseBytes": 421824286,
+    "uncertainResponseBytes": 389808128,
+    "rawSourcesHashVerified": true,
+    "financialOrProviderAuthority": false
+  },
+  "allRawEvidenceRetained": true,
+  "consumedOrUncertainUsageRefunded": false,
+  "financialLedgerOpened": false
+}
