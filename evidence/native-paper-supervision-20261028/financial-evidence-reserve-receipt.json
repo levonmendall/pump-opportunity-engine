@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline-native-paper-financial-evidence-headroom",
+  "at": "2026-10-28T18:22:37.879914+00:00",
+  "providerRequests": 0,
+  "financialAccountsOpened": 0,
+  "files": [
+    {
+      "path": "src/run-native-paper.ts",
+      "bytes": 44806,
+      "sha256": "73dacbc227323562629dce9161186b14d2a9cdfde073056d9bc21549083ecf9f"
+    },
+    {
+      "path": "test/native-paper-startup.test.ts",
+      "bytes": 6757,
+      "sha256": "172d366c2a4b425c3fcecb5489b3535e5521bcd68c74d97b1b1036af59a37685"
+    },
+    {
+      "path": "evidence/native-paper-supervision-20261028/financial-evidence-reserve-focused.log",
+      "bytes": 3487,
+      "sha256": "8a877dc682f9dc7e15f2eea11d3bb8edef52a55035ab5697840de347e668fdbd"
+    },
+    {
+      "path": "evidence/native-paper-supervision-20261028/financial-evidence-reserve-build.log",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ],
+  "focusedChecks": 27,
+  "build": "PASS",
+  "review": "independent GO for bounded isolated scope",
+  "liveProtectionVerified": false
+}

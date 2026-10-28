@@ -66,3 +66,16 @@ The original startup and wrapper reviews are retained separately. Final source
 review and bounded host supervision are separate from this offline core result.
 The existing account must be imported unchanged and have exactly one writer
 before actual activation. No24-hour readiness is inferred.
+
+## Final evidence-space reservation
+
+A follow-up review found that the shared127MiB event limit formerly closed
+candidate work at120MiB, leaving only7MiB for continued SDK account-state and
+financial records. New entries now require event evidence below80MiB; candidate
+work stops below95MiB, retaining32MiB under the unchanged hard limit. Financial
+records are not omitted to stay under the cap. This conservative local reserve
+is frozen in configuration identity together with CPU reservation. It does not
+guarantee unlimited protection under an unbounded outage or payload stream.
+The independent supervisor reviewer inspected every actual admission call and
+gave GO for this delta. The27-check focused lifecycle suite and TypeScript build
+were rerun successfully; raw output remains separate from earlier results.

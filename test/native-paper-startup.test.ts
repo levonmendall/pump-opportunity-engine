@@ -56,6 +56,6 @@ test('candidate CPU work gives way before management handoff without weakening q
  assert.deepEqual(admission(160000000,300*1024*1024),{candidateAllowed:true,entryAllowed:false});
  assert.deepEqual(admission(180000000,300*1024*1024),{candidateAllowed:false,entryAllowed:false});
  assert.deepEqual(admission(0,384*1024*1024+1),{candidateAllowed:false,entryAllowed:false});
- assert.equal(r.supervisorRecoveryCpuMicros-r.candidateCpuMicros,40000000);assert.equal(r.processSoftCpuMicros-r.supervisorRecoveryCpuMicros,20000000);
+ assert.deepEqual(admission(0,1,80*1024*1024),{candidateAllowed:true,entryAllowed:false});assert.deepEqual(admission(0,1,95*1024*1024),{candidateAllowed:false,entryAllowed:false});assert.equal(r.maximumEvidenceBytes-r.candidateEvidenceBytes,32*1024*1024);assert.equal(r.supervisorRecoveryCpuMicros-r.candidateCpuMicros,40000000);assert.equal(r.processSoftCpuMicros-r.supervisorRecoveryCpuMicros,20000000);
  assert.throws(()=>admission(NaN,1),/PROCESSING_VIEW/);assert.throws(()=>admission(0,-1),/PROCESSING_VIEW/);
 });
