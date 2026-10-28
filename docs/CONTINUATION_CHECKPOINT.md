@@ -1,5 +1,28 @@
 # POE recovered continuation checkpoint
 
+Updated 2026-10-28 15:52 UTC: user-requested attribution of source640's
+15:24:48.374 snapshot is complete. Exact36qualitygaps are six all-six shared
+interruptions:12callbacks from2subscriptiontimeouts,24from4HTTPcooldown cascades
+that locallyterminate the native socket. All9unavailableaudits are1.5s first-page
+timeouts, notmissing-signature orpage-limit failures.12expiredtargets=6own-audit
+timeouts+6neverdispatched; warming separatelyexcluded. Replacement setup takes
+priority ahead of already-warm audits. See
+`evidence/ongoing-run-analysis-20261028/README.md` and hashverified945recordprefix.
+No runtimeexecutable/strategy/financial changes or new market run for thisanalysis.
+
+IMPORTANT: GH40714364745 cancelled15:32:24 but didNOTsettle researchchildren or
+produce fullarchive. Nonrootreadback40718943091 directlyverified15:44:12.601:
+source640 stillrunning, fourmatchingresearchprocesses, existingfinitecontrols.
+DoNOTclear unresolvedmarker orrelease uncertainusage. Source and independent
+Render/reference samplers maystillrun: inspect before startinganythingnew.
+Private rawroot remains
+`/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40714364745-1`.
+The read-only diagnostic helper is admincommit5a0bae1; manifestcopy is compactJSON
+SHA2c06e5e7, not originalformattedpackageSHA33f555a3. No sourcechange implied.
+Nextrepairtargets: contain HTTPcooldown withoutdestroying validcapture and defer
+replacementsetup while ready-audit batch remains. Historicalinterruptions remain
+real; successfulreplay cannotretroactively repairthem. No24hacceptanceclock.
+
 Recovered 2026-10-28 at15:17UTC. Source640143a5924a7ff7d98039967c2db17957f71f24
 finalverification DID complete15:05:48UTC:1218tests/build/compile/39packagingchecks
 allpassed. All7rawloghashesverifiedafterreconnect. No runtime/source edits since.

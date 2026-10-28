@@ -1,0 +1,10 @@
+{
+  "run": 40718943091,
+  "sourceAdminCommit": "5a0bae18845419cf78eafa23eace943165a54427",
+  "bytes": 420910,
+  "sha256": "d32fbfb11227bff92d67a5a232049b006aff12cc947e70c10c3818aaeda4c38e",
+  "logBytes": 584033,
+  "logSha256": "6f95c5e0ef8917703e8724d98469f1d123f1dc0de86d1db8209002d9db83a70e",
+  "targetPrefixComplete": true,
+  "rawEvidenceModified": false
+}
