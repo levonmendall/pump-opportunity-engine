@@ -40,13 +40,13 @@ test('primary financial, eligibility and execution ordering is unchanged by shar
  assert.equal(evaluatePrimary(features(),context()).qualified,true,'the actual primary still separately qualifies valid risk/quote evidence');
 });
 
-function fixture(t:TestContext,options:{ready?:boolean;diagnostics?:boolean;missingReadiness?:boolean;candidateOnly?:boolean}={}){
- const directory=mkdtempSync(join(tmpdir(),'poe-ISOLATED-predictive-')),ledger=new PaperLedger(join(directory,'fixture.sqlite'),'poe-pilot-predictive-diagnostic-fixture');let now=T,ready=options.ready??true;const records:Array<{kind:string;data:any}>=[],quotes:unknown[]=[];
+function fixture(t:TestContext,options:{ready?:boolean;diagnostics?:boolean;missingReadiness?:boolean;candidateOnly?:boolean;migrationAt?:number;predictiveReady?:boolean;predictiveReadiness?:(mint:string,at:number)=>boolean}={}){
+ const directory=mkdtempSync(join(tmpdir(),'poe-ISOLATED-predictive-')),ledger=new PaperLedger(join(directory,'fixture.sqlite'),'poe-pilot-predictive-diagnostic-fixture');let now=T,ready=options.ready??true,predictiveReady=options.predictiveReady;const records:Array<{kind:string;data:any}>=[],quotes:unknown[]=[];
  const price=()=>({microUsdPerSol:'100000000',at:now,source:'ISOLATED synthetic USD'});ledger.initialize(price(),now);t.after(()=>{ledger.close();rmSync(directory,{recursive:true,force:true});});
  const calls={context:0,executionContext:0,executionQuote:0};
- const config:TraderOptions={ledger,now:()=>now,...(options.candidateOnly?{candidateEvaluationOnly:true}:{}),context:async()=>{calls.context++;return {price:price(),marks:{}};},quote:async request=>{quotes.push(request);return null;},costs:{gasLamports:'7000',depositLamports:'0',slippageBps:100,evidence:'ISOLATED diagnostic costs'},flowVerification:{verified:true,evidence:'ISOLATED verified fields'},recorder:{record:(kind,data)=>records.push({kind,data})},experimentalPilot:{version:PILOT_VERSION,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1},pilotExecution:{context:async()=>{calls.executionContext++;return {price:price(),marks:{}};},quote:async()=>{calls.executionQuote++;return null;}},...(options.diagnostics===false?{}:{predictiveDiagnostics:true}),...(options.missingReadiness?{}:{candidateReadiness:()=>ready})};
- const trader=new PaperTrader(config);trader.start();trader.admit({mint:MINT,migrationAt:T-300000,migrationVerified:true,supportedPool:true,evidence:'ISOLATED verified identity'});trader.activateFlow(MINT,'ISOLATED subscription start');
- return {ledger,trader,records,quotes,config,calls,set now(at:number){now=at;},set ready(value:boolean){ready=value;},warm(kind='empty'){if(kind!=='empty')for(let i=0;i<6;i++){const trade=event(i,kind);now=trade.receivedAt;trader.ingest(trade,'curve');}now=T+60000;},assessments:()=>records.filter(r=>r.kind==='trader-predictive-assessment').map(r=>r.data),decisions:()=>records.filter(r=>r.kind==='trader-decision').map(r=>r.data)};
+ const config:TraderOptions={ledger,now:()=>now,...(options.candidateOnly?{candidateEvaluationOnly:true}:{}),context:async()=>{calls.context++;return {price:price(),marks:{}};},quote:async request=>{quotes.push(request);return null;},costs:{gasLamports:'7000',depositLamports:'0',slippageBps:100,evidence:'ISOLATED diagnostic costs'},flowVerification:{verified:true,evidence:'ISOLATED verified fields'},recorder:{record:(kind,data)=>records.push({kind,data})},experimentalPilot:{version:PILOT_VERSION,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1},pilotExecution:{context:async()=>{calls.executionContext++;return {price:price(),marks:{}};},quote:async()=>{calls.executionQuote++;return null;}},...(options.diagnostics===false?{}:{predictiveDiagnostics:true}),...(options.missingReadiness?{}:{candidateReadiness:()=>ready}),...(options.predictiveReadiness?{predictiveReadiness:options.predictiveReadiness}:options.predictiveReady!==undefined?{predictiveReadiness:()=>predictiveReady===true}:{})};
+ const trader=new PaperTrader(config);trader.start();trader.admit({mint:MINT,migrationAt:options.migrationAt??T-300000,migrationVerified:true,supportedPool:true,evidence:'ISOLATED verified identity'});trader.activateFlow(MINT,'ISOLATED subscription start');
+ return {ledger,trader,records,quotes,config,calls,set now(at:number){now=at;},set ready(value:boolean){ready=value;},set predictiveReady(value:boolean){predictiveReady=value;},warm(kind='empty'){if(kind!=='empty')for(let i=0;i<6;i++){const trade=event(i,kind);now=trade.receivedAt;trader.ingest(trade,'curve');}now=T+60000;},assessments:()=>records.filter(r=>r.kind==='trader-predictive-assessment').map(r=>r.data),decisions:()=>records.filter(r=>r.kind==='trader-decision').map(r=>r.data)};
 }
 
 test('paused audited weak candidate emits failed predictive diagnostic alongside unchanged risk rejection',async t=>{
@@ -106,4 +106,35 @@ test('candidate-only recorder loss prevents a predictive pass and never writes f
  await assert.rejects(f.trader.tick(),/selected evidence unavailable/);assert.equal(f.assessments().length,0);assert.deepEqual(f.ledger.state(),before);
  f.now=T+70000;await assert.rejects(f.trader.tick(),/selected evidence unavailable/);assert.equal(f.assessments().length,0);assert.deepEqual(f.calls,{context:0,executionContext:0,executionQuote:0});
  f.trader.pauseNewEntries('ISOLATED mode pause');assert.deepEqual(f.ledger.state(),before);
+});
+
+
+test('early and selected-older audited feature windows are assessed without widening baseline entry eligibility',async t=>{
+ for(const migrationAt of [T,T-7200001]){const f=fixture(t,{candidateOnly:true,migrationAt,ready:false,predictiveReady:true});f.warm('strong');const before=f.ledger.state();await f.trader.tick();
+  assert.equal(f.decisions().at(-1)!.stage,'market-exclusion');assert.equal(f.decisions().at(-1)!.reason,'outside-provisional-migration-age');assert.equal(f.assessments()[0]!.status,'not-rejected');assert.equal(f.assessments()[0]!.riskDecision.reason,'outside-provisional-migration-age');assert.equal(f.assessments()[0]!.features.asOf,T+60000);assert.equal(f.assessments()[0]!.windowEndAt,T+60000);
+  assert.deepEqual(f.ledger.state(),before);assert.deepEqual(f.calls,{context:0,executionContext:0,executionQuote:0});assert.equal(f.quotes.length,0);assert.equal(f.trader.funnel.qualified,0);assert.equal(f.trader.funnel.reserved,0);assert.equal(f.trader.nextDueAt(),null);
+ }
+});
+
+test('PAPER financial mode also retains primary age exclusion while emitting the independent early assessment',async t=>{
+ const f=fixture(t,{migrationAt:T,ready:false,predictiveReady:true});f.warm('strong');const before=f.ledger.state();await f.trader.tick();assert.equal(f.assessments()[0]!.status,'not-rejected');assert.equal(f.decisions().at(-1)!.reason,'outside-provisional-migration-age');assert.equal(f.quotes.length,0);assert.deepEqual(f.ledger.state().pending,{});assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().lamports,before.lamports);assert.equal(f.ledger.state().inceptionAt,before.inceptionAt);assert.equal(f.ledger.state().controls.entriesEnabled,false);
+});
+
+test('predictive readiness cannot authorize an entry even when the PAPER ledger is otherwise ready',async t=>{
+ const f=fixture(t,{ready:false,predictiveReady:true});f.trader.setPilotEntryDeposit('2000000','ISOLATED current rent; remove unrelated missing-plan veto');f.warm('strong');const price={microUsdPerSol:'100000000',at:T+60000,source:'ISOLATED fresh paper readiness'};f.ledger.reconcile('entry-gate-reconcile',T+60000,price,{});f.ledger.resume('entry-gate-ready',T+60000,price,{}, {version:PILOT_VERSION,evidence:'ISOLATED independent financial readiness',marketAt:T+60000,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
+ await f.trader.tick();assert.equal(f.ledger.state().controls.entriesEnabled,true,'this fixture financial gate is genuinely enabled');assert.equal(f.assessments()[0]!.status,'not-rejected');assert.equal(f.decisions().at(-1)!.reason,'entries-not-authorized-by-ledger');assert.equal(f.quotes.length,0);assert.deepEqual(f.ledger.state().pending,{});assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.trader.funnel.reserved,0);
+});
+
+test('explicit predictive readiness may close diagnostics independently of an entry-ready candidate',async t=>{
+ const f=fixture(t,{candidateOnly:true,ready:true,predictiveReady:false});f.warm('strong');const before=f.ledger.state();await f.trader.tick();assert.equal(f.assessments().length,0);assert.deepEqual(f.ledger.state(),before);f.predictiveReady=true;f.now=T+70000;await f.trader.tick();assert.equal(f.assessments()[0]!.status,'not-rejected');assert.equal(f.quotes.length,0);assert.deepEqual(f.ledger.state(),before);
+});
+
+test('separate predictive readiness cannot bypass warming, gaps, pending evidence or diagnostic availability time',async t=>{
+ for(const state of ['warming','gap','pending']){const f=fixture(t,{candidateOnly:true,ready:false,predictiveReady:true});if(state==='warming')f.now=T+30000;else f.warm('strong');if(state==='gap')f.trader.candidateGap(MINT);if(state==='pending')f.trader.setCandidateInformationPending(MINT,true);const before=f.ledger.state();await f.trader.tick();assert.equal(f.assessments().length,0,state);assert.deepEqual(f.ledger.state(),before);assert.equal(f.quotes.length,0);}
+ const closed=fixture(t,{candidateOnly:true,ready:true,predictiveReadiness:()=>{throw Error('ISOLATED audit unavailable');}});closed.warm('strong');await closed.trader.tick();assert.equal(closed.assessments().length,0);
+ let crossed:ReturnType<typeof fixture>;crossed=fixture(t,{candidateOnly:true,ready:false,predictiveReadiness:()=>{crossed.now=T+70000;return true;}});crossed.warm('strong');const before=crossed.ledger.state();await crossed.trader.tick();assert.equal(crossed.assessments().length,0,'late readiness cannot backdate a previous bucket assessment');assert.deepEqual(crossed.ledger.state(),before);assert.equal(crossed.quotes.length,0);
+});
+
+test('omitting separate predictive readiness preserves the existing entry-readiness diagnostic fallback',async t=>{
+ for(const ready of [true,false]){const f=fixture(t,{candidateOnly:true,ready});f.warm('strong');await f.trader.tick();assert.equal(f.assessments().length,ready?1:0);assert.equal(f.quotes.length,0);}
 });

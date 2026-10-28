@@ -17,8 +17,11 @@ export type TraderOptions={
   costs:{gasLamports:string;depositLamports:string;slippageBps:number;evidence:string};
   recorder:{record:(kind:string,data:unknown)=>void};
   flowVerification?:{verified:boolean;evidence:string};
-  /** Synchronous caller-owned current-window/audit check; no provider work. */
+  /** Financial-entry readiness, including current window/audit and eligibility; no provider work. */
   candidateReadiness?:(mint:string,at:number)=>boolean;
+  /** Feature-only observation/audit readiness; never financial entry permission.
+   * Omission preserves the existing candidateReadiness diagnostic contract. */
+  predictiveReadiness?:(mint:string,at:number)=>boolean;
   /** Isolated research opt-in. Default quote ordering is unchanged. */
   deferPredictivelyRejectedQuotes?:true;
   /** Isolated pilot selection diagnostics only; never entry permission. */
@@ -224,7 +227,7 @@ export class PaperTrader{
     const initialAt=this.clock(),bucket=Math.floor(initialAt/PROVISIONAL_RULE.bucketMs);
     if(c.predictiveAssessedBucket===bucket||Math.floor(decision.at/PROVISIONAL_RULE.bucketMs)!==bucket)return;
     const original=assessPredictiveBuying(decision.features,decision.at);if(!original.features?.sufficientlyObserved)return;
-    let ready=false;try{ready=this.options.candidateReadiness?.(c.mint,initialAt)===true;}catch{return;}
+    let ready=false;try{ready=(this.options.predictiveReadiness??this.options.candidateReadiness)?.(c.mint,initialAt)===true;}catch{return;}
     const availableAt=this.clock();if(!ready||Math.floor(availableAt/PROVISIONAL_RULE.bucketMs)!==bucket||this.candidates.get(c.mint)!==c||!c.active||c.informationPending)return;
     // Re-read only bounded in-memory features at actual diagnostic availability;
     // no quote/provider work or change to the existing primary risk decision.
