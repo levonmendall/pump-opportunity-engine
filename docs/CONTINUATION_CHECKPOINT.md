@@ -169,3 +169,15 @@ unresolvedResearch native-retention-20261028142017 untilreal transport/external
 settlement+counterlink. Do NOT start a competing source or financialwriter.
 Firstminute:one olderselectedscope,8normalizedtrades,noassessments/noqualitygap;
 this is NOT six-concurrent busy capacity proof. No24hacceptance orfinancialrun.
+
+## Source640 recovery measurement actually started
+
+GH40714364745/admin2c239a5, actualrun native-candidates-20261028151711944,
+started15:17:11.944UTC, plannedend17:17:11.944. Exact640startupsource/executable
+4c035987…/config29d9de0…; actualsource fresh onRender, sixslots allocated in firstminute.
+No completedwindow yet;6qualitygaps alreadyrecorded, not a cleanpass. Nofinancial
+writer orentries; pendingmanifest native-640-recovery-20261028151700 untilverified
+settlement. Newlease36042, publicsampler54801; independentboundedreference
+startedusingactualrunID andprevious52-indexcall receipt. Frozenbundle onexisting
+nonrootEC2, noauthoritativeobserver/account modifications. Do not restart or modify
+this exactmeasuredsource.
