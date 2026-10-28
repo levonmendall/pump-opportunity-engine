@@ -1213,7 +1213,19 @@
         462527154
       ],
       "historyRangeCovered": false,
-      "notAFourPageCapacityRefusal": true
+      "notAFourPageCapacityRefusal": true,
+      "target": {
+        "startAt": 1793201280000,
+        "endAt": 1793201340000
+      },
+      "requiredCapturedSignatures": 6955,
+      "strictInteriorSlots": {
+        "lower": 462526861,
+        "upper": 462527154
+      },
+      "minimumHistoryRowsForAllRequired": 6955,
+      "minimum1000RowPagesForAllRequired": 7,
+      "reasoning": "Actual source required6955distinct signatures; a complete independent result would have to represent every one.7pages is a cardinality lower bound conditional on all being independently confirmed, not observed successful provider throughput or a recorded4page-capacity refusal."
     }
   },
   "providerAndResources": {

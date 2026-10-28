@@ -1,0 +1,23 @@
+{
+  "accountContentsRead": false,
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "accountImported": false,
+  "architecture": "x64",
+  "generated": true,
+  "glibc": "2.39",
+  "inceptionAt": 1793123773252,
+  "kind": "POE_FIXED_ACCOUNT_TRANSFER_PUBLIC_KEY",
+  "maximumObservedCombinedRssBytes": 74141696,
+  "nodeAbi": "137",
+  "nodeVersion": "v24.21.0",
+  "platform": "linux",
+  "privateFileBytes": 1795,
+  "privateFileMode": "0600",
+  "privateKeyMaterialPublished": false,
+  "providerRequests": 0,
+  "publicSpkiPem": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA1L/M6cmSHvSC0bBGcaWa\ne1l0O/4err+b1LNmWga0Qjm7pNr9XnkNqdWAFrL109PFnVsiWtH6PXXt55Cpk39h\nGjuqcNWQYqcdLU7B3RicoVxM6AvoKxc3DZosPhH5PDtwqqWAoQbwX5C/vJEL7G+r\n3Aj/4YT6RCJyv7QziHQL2jcCwnV2/YD2JrEdcLJ+vm8iVVSsPctbIthyLtPTJGPb\nguQ6g0nM3HRXHWbn+1BS1vwIXiRJ16PG+6St9rKMhfRgiy/VlVq2mpIlDobCWFKh\nah0CymTU1kVE9P+LOLQjNy8AX9x2n1da2eN4OIWOmUg5NSGPd5QNdr9bPksyma25\nYonDDuZilUKPD31pHz7bNXBqCVcOxQNRr/MA1nIgqLMpejndKDvx4TSW1yHuFc7z\nnPb7fXYdLAjA+wc88cHVQ7aUgqq53V1xbAlq6aECVdZdskPjaqVtkxsa8rkGWVe5\n0VqTSNVieElaXixTyq04Olz+7rwgVtcAT697l5q5eYqtAgMBAAE=\n-----END PUBLIC KEY-----\n",
+  "publicSpkiSha256": "ebbc358eb8051011d62432e4ddf4108c9e7653ed2fe27a6e0bc6976280c5d8cc",
+  "purposeManifestSha256": "fd9844dedd386a6206702fe1bf381382c228ae962b2f89bb1b69c13979909869",
+  "schemaVersion": 1,
+  "serviceChanges": false
+}

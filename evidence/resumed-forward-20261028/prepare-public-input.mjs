@@ -72,7 +72,8 @@ if(!latestHandoff){
  need(prepared.schemaVersion===1&&prepared.priorPhysicalSettled===true&&prepared.financialWriterOpened===false&&prepared.entriesEnabled===false&&prepared.liveTrading===false&&prepared.administrationRun===settlement.administrationRun,'PREPARED_NATIVE_BOUNDARIES_MISMATCH');
  need(readback.schemaVersion===1&&readback.sourceRun===settlement.administrationRun&&readback.wholeArchiveHashVerified===true&&readback.allSelectedSegmentsRetained===true&&readback.financialFilesRead===false&&readback.rawHostEvidenceDeletionPerformed===false,'VERIFIED_PUBLIC_READBACK_REQUIRED');
  need(Array.isArray(prepared.priorBookPaths)&&Array.isArray(settlement.newPaths)&&settlement.newPaths.length>0&&settlement.newPaths.length<=65&&settlement.newPaths.every(row=>typeof row?.path==='string'&&/^[a-f0-9]{64}$/.test(row.sha256)),'EXPLICIT_SETTLED_PATHS_REQUIRED');
- need(JSON.stringify([...prepared.priorBookPaths,...settlement.newPaths.map(row=>row.path)])===JSON.stringify(manifest.baselinePaths),'MANIFEST_CHANGED_SINCE_NATIVE_SETTLEMENT');
+ const nativeSettledPaths=[...prepared.priorBookPaths,...settlement.newPaths.map(row=>row.path)];
+ need(manifest.baselinePaths.length>=nativeSettledPaths.length&&manifest.baselinePaths.length<=nativeSettledPaths.length+16&&JSON.stringify(manifest.baselinePaths.slice(0,nativeSettledPaths.length))===JSON.stringify(nativeSettledPaths),'MANIFEST_CHANGED_SINCE_NATIVE_SETTLEMENT');
  for(const row of settlement.newPaths){need(row.path.startsWith(directory+'/rpc/chapter-')&&/^chapter-[0-9]{3}\.json$/.test(path.basename(row.path))||row.path===study+'/observed-unmanaged-control.json','SETTLED_COUNTERBOOK_SCOPE');need(sha(read(row.path,512*1024))===row.sha256,'SETTLED_COUNTERBOOK_HASH_MISMATCH');}
  const supervisorPath=study+'/artifact/supervisor.json',receiptPath=directory+'/receipt.json',statusPath=directory+'/status.json',indexPath=study+'/artifact/index.json';
  const supervisor=JSON.parse(read(supervisorPath,256*1024)),receiptRaw=read(receiptPath,8*MIB),receipt=JSON.parse(receiptRaw),statusRaw=read(statusPath,8*MIB),index=JSON.parse(read(indexPath,MIB));
@@ -88,10 +89,28 @@ if(!latestHandoff){
  const archiveFd=fs.openSync(archivePath,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);let archiveHash;
  try{const before=fs.fstatSync(archiveFd);need(before.isFile()&&before.uid===uid&&before.nlink===1&&before.size===readback.archiveBytes,'PUBLIC_ARCHIVE_SIZE_MISMATCH');const hash=crypto.createHash('sha256'),buffer=Buffer.alloc(64*1024);let total=0;for(;;){const count=fs.readSync(archiveFd,buffer,0,buffer.length,null);if(!count)break;total+=count;need(total<=readback.archiveBytes,'ARCHIVE_CHANGED_DURING_HASH');hash.update(buffer.subarray(0,count));}const after=fs.fstatSync(archiveFd);need(total===before.size&&after.size===before.size&&after.mtimeMs===before.mtimeMs&&after.ctimeMs===before.ctimeMs,'ARCHIVE_CHANGED_DURING_HASH');archiveHash=hash.digest('hex');need(archiveHash===readback.archiveSha256,'WHOLE_ARCHIVE_HASH_MISMATCH');}finally{fs.closeSync(archiveFd);}
  watch=checkpoint.watch;need(JSON.stringify(watch?.rows)===JSON.stringify(receipt.engine.watch.rows),'FINAL_WATCH_SOURCE_MISMATCH');
- expectedAccounting={sourceCount:manifest.baselinePaths.length,calls:settlement.cumulativeAccountedUnits,bytes:settlement.cumulativeAccountedResponseBytes,uncertain:settlement.cumulativeUncertainResponseBytes,observed:settlement.cumulativeObservedResponseBytes};
+ expectedAccounting={sourceCount:nativeSettledPaths.length,calls:settlement.cumulativeAccountedUnits,bytes:settlement.cumulativeAccountedResponseBytes,uncertain:settlement.cumulativeUncertainResponseBytes,observed:settlement.cumulativeObservedResponseBytes};
  need(settlement.cumulativeAccountedUnits===prepared.priorUnits+settlement.newAccountedUnits&&settlement.newAccountedUnits===settlement.actualManagedStarts+settlement.extraObservedUnmanagedControls&&settlement.actualManagedStarts===settlement.actualManagedSettlements,'NATIVE_SETTLED_OPERATION_COUNTS_MISMATCH');
  handoff={mode:'explicit-settled-native-handoff',directory,settlementReceipt:settlementPath,source:receipt.source,runId:receipt.runId,administrationRun:settlement.administrationRun,configurationSha256:receipt.configurationSha256,wholeArchive:{path:archivePath,bytes:readback.archiveBytes,sha256:archiveHash,verifiedByThisExport:true},indexVerifiedFileCount:readback.indexFileHashesVerified,physicalSettlementConfirmed:true,extraObservedUnmanagedControls:settlement.extraObservedUnmanagedControls,historicalHintsReinserted:false};
 }
+// A completed field-only historical diagnosis may append settled public RPC
+// books after the market segment. Its results never alter the market checkpoint.
+// Follow only the explicit manifest suffix; no directory/history scan or refund.
+const supplementalHistorical=[];
+while(expectedAccounting.sourceCount<manifest.baselinePaths.length){
+ const count=expectedAccounting.sourceCount,first=manifest.baselinePaths[count];
+ need(new RegExp('^'+PILOT+'/runs/historical-adjudication-[0-9]{14}/rpc/chapter-[0-9]{3}\\.json$').test(first),'UNREVIEWED_ACCOUNTING_SUFFIX');
+ const run=path.dirname(path.dirname(first)),receiptPath=run+'/receipt.json',beforePath=run+'/manifest-before.json';
+ const raw=read(receiptPath,2*MIB),r=JSON.parse(raw),before=JSON.parse(read(beforePath,2*MIB)),u=r.usage;
+ need(r.schemaVersion===1&&r.historicalDiagnosisOnly===true&&r.earlierWindowsUnchanged===true&&r.financialFilesRead===false&&r.credentialsRead===false&&r.physicalSettlementConfirmed===true&&r.unresolvedResearchRetained===false&&/^[a-f0-9]{40}$/.test(r.sourceCommit),'SETTLED_HISTORICAL_RECEIPT_REQUIRED');
+ need(before.accountId===manifest.accountId&&before.inceptionAt===manifest.inceptionAt&&!before.unresolvedResearch&&JSON.stringify(before.baselinePaths)===JSON.stringify(manifest.baselinePaths.slice(0,count)),'HISTORICAL_PREFIX_CHANGED');
+ need(u&&u.closed===true&&u.inFlight===0&&u.waitingOrOperating===false&&Number.isSafeInteger(u.newUnits)&&u.newUnits>=0&&u.newUnits<=6&&Array.isArray(u.chapterPaths)&&u.chapterPaths.length>count&&u.chapterPaths.length<=count+6&&JSON.stringify(u.chapterPaths)===JSON.stringify(manifest.baselinePaths.slice(0,u.chapterPaths.length)),'HISTORICAL_SETTLEMENT_COUNTS');
+ for(const next of u.chapterPaths.slice(count))need(path.dirname(next)===run+'/rpc'&&/^chapter-[0-9]{3}\.json$/.test(path.basename(next)),'HISTORICAL_COUNTER_SCOPE');
+ need(u.cumulativeUnits===expectedAccounting.calls+u.newUnits&&u.accountedCumulativeResponseBytes===expectedAccounting.bytes+u.newAccountedResponseBytes&&Number.isSafeInteger(u.uncertainResponseBytes)&&u.uncertainResponseBytes>=expectedAccounting.uncertain,'HISTORICAL_COUNTER_TOTAL_MISMATCH');
+ expectedAccounting={sourceCount:u.chapterPaths.length,calls:u.cumulativeUnits,bytes:u.accountedCumulativeResponseBytes,uncertain:u.uncertainResponseBytes,observed:u.accountedCumulativeResponseBytes-u.uncertainResponseBytes};
+ supplementalHistorical.push({receipt:receiptPath,sha256:sha(raw),newUnits:u.newUnits,completed:r.completed,failure:r.failure,physicalSettlementConfirmed:true,marketHistoryRewritten:false});
+}
+if(supplementalHistorical.length)handoff={...handoff,supplementalHistorical};
 need(watch?.schemaVersion===1&&watch.observationAgePolicyVersion==='observation-age-selected-24h-study-v1'&&Array.isArray(watch.rows)&&watch.rows.length<=174,'BOUNDED_WATCH_EXPORT_REQUIRED');
 const bindingPath='/workspace/poe-ec2-ws-diagnostic-admin/scripts/poe/reporting-source-context.json',binding=JSON.parse(read(bindingPath,4096));
 need(binding.accountId===manifest.accountId&&binding.inceptionAt===manifest.inceptionAt&&/^[a-f0-9]{64}$/.test(binding.sourceStatusSha256),'ACTUAL_REPORTING_IDENTITY_BINDING_REQUIRED');

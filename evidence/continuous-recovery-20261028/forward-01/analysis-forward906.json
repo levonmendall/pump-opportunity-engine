@@ -1,0 +1,1718 @@
+{
+  "schemaVersion": 1,
+  "classification": "RETAINED_FORWARD_EVIDENCE_ANALYSIS_NOT_ACCEPTANCE",
+  "source": {
+    "commit": "90625f53b686578637accf73ebc457f841743ee2",
+    "sha256": "be2a5fc3132c7a2bfefe04ec7717d61e0d7030c6c462ccebca2e384d5558915a"
+  },
+  "runId": "native-candidates-20261028162930001",
+  "configurationSha256": "5a55cc6635b814cb4b76d5b9636d2eecca1439ebd534ed1c84ed587c03aa377b",
+  "readback": {
+    "schemaVersion": 1,
+    "sourceRun": 40726448588,
+    "archiveBytes": 9625590,
+    "archiveSha256": "4338b7996d42fc16470bcfe0052152e804d5c1a8c7eb8ba29b775cd21da6c473",
+    "wholeArchiveHashVerified": true,
+    "allSelectedFilesVerified": true,
+    "files": 81,
+    "uncompressedBytes": 67371317,
+    "rawRemoteEvidenceDeleted": false,
+    "credentialsOrFinancialFilesRead": false,
+    "allSelectedSegmentsRetained": true,
+    "financialFilesRead": false,
+    "rawHostEvidenceDeletionPerformed": false,
+    "indexFileHashesVerified": 81
+  },
+  "eventSegments": [
+    {
+      "file": "run/events/events-001.ndjson",
+      "bytes": 8248675,
+      "sha256": "43cbb4657af312952a01eeddc1f2e659d086c9fb60e193f7a536f50eae6845d5"
+    },
+    {
+      "file": "run/events/events-002.ndjson",
+      "bytes": 7913341,
+      "sha256": "e501f86118257f7176f6d520c3e5df7ba62589a4e334cbc9d41aebba90604af4"
+    },
+    {
+      "file": "run/events/events-003.ndjson",
+      "bytes": 7617542,
+      "sha256": "bbadd400312099b09aae14942a86f5f14f11d0c00aba87f90cd454b1bb90972a"
+    },
+    {
+      "file": "run/events/events-004.ndjson",
+      "bytes": 7738820,
+      "sha256": "fdddd7020b76eb13ed22b20a3a2830f795b76b8ee3470c5149ee61fa9800c8ba"
+    },
+    {
+      "file": "run/events/events-005.ndjson",
+      "bytes": 7673076,
+      "sha256": "5e18cc01ac139e068b38f05eb8bee88a72b9a66a0d82bbf1a8bb3b35b8afff38"
+    },
+    {
+      "file": "run/events/events-006.ndjson",
+      "bytes": 5811041,
+      "sha256": "e11aaeffd7cba65cf261d6bbc3a6f84d3f3dcc0d321e4dd2d0c96b07d63afa3b"
+    }
+  ],
+  "observation": {
+    "startedAt": 1793204970001,
+    "logicalObservationCutoffAt": 1793205860001,
+    "stopRequestedAt": 1793205860003,
+    "transportSettledAt": 1793205860294,
+    "generatedAt": 1793205860294,
+    "elapsedMs": 890293,
+    "lastSourceAt": 1793205859999,
+    "physicalSettlementConfirmed": true
+  },
+  "counters": {
+    "migrationHints": 9,
+    "verificationQueueRefusals": 0,
+    "verificationAttempts": 29,
+    "verifiedOrigins": 140,
+    "verificationRefusals": 25,
+    "normalizedEvents": 3005,
+    "qualityGaps": 48,
+    "featureViews": 541,
+    "auditedWindows": 41,
+    "predictiveAssessments": 41,
+    "predictiveFailed": 38,
+    "predictiveNotRejected": 3,
+    "predictiveUnavailable": 0,
+    "auditUnavailable": 13,
+    "auditUnusable": 4,
+    "decisionDeadlineMisses": 16,
+    "auditFenceWarmingWindows": 36,
+    "uniqueEvaluated": 19,
+    "strictV2BaselineUnavailableViews": 1,
+    "protocolAwareShadowViews": 41
+  },
+  "completedEvaluations": {
+    "uniqueTokens": 19,
+    "assessments": 41,
+    "zeroTradeAssessments": 26,
+    "nonzeroTradeAssessments": 15,
+    "notIndependentSamples": "Overlapping 60-second windows are not independent minutes or whole-market recall.",
+    "passes": [
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "at": 1793205065013,
+        "windowEndAt": 1793205060000,
+        "entryAgeEligible": true,
+        "ageCohort": "entry-eligible",
+        "baselineFeatureSemantics": "V2_WITHOUT_PROTOCOL_FRAMES",
+        "features": {
+          "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+          "asOf": 1793205065013,
+          "windowStartAt": 1793205000000,
+          "windowEndAt": 1793205060000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "21724173652",
+          "sellLamports": "12469427755",
+          "netBuyLamports": "9254745897",
+          "tradeCount": 378,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 92,
+          "largestBuyerBps": 1026,
+          "positiveNetBuckets": 5,
+          "priceReturnBps": 1061,
+          "firstPrice": {
+            "quoteLamports": "11469541",
+            "tokenUnits": "7091833670"
+          },
+          "lastPrice": {
+            "quoteLamports": "680697710",
+            "tokenUnits": "380515335079"
+          }
+        },
+        "financialQualification": false,
+        "executablePricing": "not assessed"
+      },
+      {
+        "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+        "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+        "at": 1793205134879,
+        "windowEndAt": 1793205130000,
+        "entryAgeEligible": false,
+        "ageCohort": "pre-entry",
+        "baselineFeatureSemantics": "UNAVAILABLE_PROTOCOL_EFFECT_SHADOW",
+        "features": {
+          "mint": "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+          "asOf": 1793205134879,
+          "windowStartAt": 1793205070000,
+          "windowEndAt": 1793205130000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "18996780181",
+          "sellLamports": "5246045166",
+          "netBuyLamports": "13750735015",
+          "tradeCount": 62,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 26,
+          "largestBuyerBps": 2070,
+          "positiveNetBuckets": 4,
+          "priceReturnBps": 3630,
+          "firstPrice": {
+            "quoteLamports": "978260868",
+            "tokenUnits": "1749217708471"
+          },
+          "lastPrice": {
+            "quoteLamports": "534090405",
+            "tokenUnits": "700621369126"
+          }
+        },
+        "financialQualification": false,
+        "executablePricing": "not assessed"
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "at": 1793205655737,
+        "windowEndAt": 1793205650000,
+        "entryAgeEligible": true,
+        "ageCohort": "entry-eligible",
+        "baselineFeatureSemantics": "V2_WITHOUT_PROTOCOL_FRAMES",
+        "features": {
+          "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+          "asOf": 1793205655737,
+          "windowStartAt": 1793205590000,
+          "windowEndAt": 1793205650000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "85300058190",
+          "sellLamports": "60813248706",
+          "netBuyLamports": "24486809484",
+          "tradeCount": 402,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 145,
+          "largestBuyerBps": 271,
+          "positiveNetBuckets": 5,
+          "priceReturnBps": 2665,
+          "firstPrice": {
+            "quoteLamports": "1151423",
+            "tokenUnits": "554417604"
+          },
+          "lastPrice": {
+            "quoteLamports": "24763941",
+            "tokenUnits": "9414528940"
+          }
+        },
+        "financialQualification": false,
+        "executablePricing": "not assessed"
+      }
+    ]
+  },
+  "qualityGaps": {
+    "callbackCount": 48,
+    "preCutoffCallbackCount": 42,
+    "atOrAfterCutoffCallbacks": 6,
+    "byReason": {
+      "NATIVE_FLOW_PROCESSING_DEADLINE": 1,
+      "LOG_NATIVE_RECEIPT_DEADLINE": 1,
+      "PILOT_RPC_COMPONENT_OPERATION_FAILED": 24,
+      "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL": 3,
+      "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED": 4,
+      "LOG_NATIVE_PROTOCOL_CHILD_SHAPE": 1,
+      "NATIVE_FLOW_CONFIRMED_CORRECTION": 2,
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 6,
+      "NATIVE_FLOW_INFORMATION_CUTOFF": 1,
+      "NATIVE_FLOW_DISCONNECTED_1006": 5
+    },
+    "episodesByExactTimestamp": [
+      {
+        "at": 1793205065383,
+        "atUtc": "2026-10-28T16:31:05.383+00:00",
+        "reason": "NATIVE_FLOW_PROCESSING_DEADLINE",
+        "callbacks": 1,
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205065796,
+        "atUtc": "2026-10-28T16:31:05.796+00:00",
+        "reason": "LOG_NATIVE_RECEIPT_DEADLINE",
+        "callbacks": 1,
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205136494,
+        "atUtc": "2026-10-28T16:32:16.494+00:00",
+        "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+        "callbacks": 6,
+        "mints": [
+          "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+          "2VzZYM4UYkMjvPYPooBFm4zstqco8eeKn2DojNUrpump",
+          "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+          "HpUwLF6GZwvvp2Bcx86LQ1UpTnVaUnWgHhY3wNb2pump",
+          "7UjAKbrEt5CVZ6HTboGqU5BV6fsftAxacWc6AYhmpump",
+          "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205146501,
+        "atUtc": "2026-10-28T16:32:26.501+00:00",
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "callbacks": 1,
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205217440,
+        "atUtc": "2026-10-28T16:33:37.440+00:00",
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "callbacks": 1,
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205293149,
+        "atUtc": "2026-10-28T16:34:53.149+00:00",
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "callbacks": 1,
+        "mints": [
+          "AdTkz2Ec9ETtvnobaw4nqtLn579MsjSin9mxB8Dqpump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205346478,
+        "atUtc": "2026-10-28T16:35:46.478+00:00",
+        "reason": "LOG_NATIVE_PROTOCOL_CHILD_SHAPE",
+        "callbacks": 1,
+        "mints": [
+          "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205395213,
+        "atUtc": "2026-10-28T16:36:35.213+00:00",
+        "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+        "callbacks": 1,
+        "mints": [
+          "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205395214,
+        "atUtc": "2026-10-28T16:36:35.214+00:00",
+        "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+        "callbacks": 5,
+        "mints": [
+          "HpUwLF6GZwvvp2Bcx86LQ1UpTnVaUnWgHhY3wNb2pump",
+          "GRqLZkWRaxSyqaj3MyH6AM71RhubP56JNnHPWQqUpump",
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump",
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+          "AdTkz2Ec9ETtvnobaw4nqtLn579MsjSin9mxB8Dqpump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205472280,
+        "atUtc": "2026-10-28T16:37:52.280+00:00",
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "callbacks": 1,
+        "mints": [
+          "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205506542,
+        "atUtc": "2026-10-28T16:38:26.542+00:00",
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "callbacks": 1,
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205544180,
+        "atUtc": "2026-10-28T16:39:04.180+00:00",
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "callbacks": 1,
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205574595,
+        "atUtc": "2026-10-28T16:39:34.595+00:00",
+        "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+        "callbacks": 6,
+        "mints": [
+          "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+          "Asjmk93s5j9XtTayrNt52yYahtz8dYXHB9wbEjNDpump",
+          "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+          "AdTkz2Ec9ETtvnobaw4nqtLn579MsjSin9mxB8Dqpump",
+          "AUzxwHbzhR1rxC8xU4YV438oYVaQYZydotSNBf6vpump",
+          "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205594311,
+        "atUtc": "2026-10-28T16:39:54.311+00:00",
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "callbacks": 1,
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205658801,
+        "atUtc": "2026-10-28T16:40:58.801+00:00",
+        "reason": "NATIVE_FLOW_CONFIRMED_CORRECTION",
+        "callbacks": 1,
+        "mints": [
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205680137,
+        "atUtc": "2026-10-28T16:41:20.137+00:00",
+        "reason": "NATIVE_FLOW_CONFIRMED_CORRECTION",
+        "callbacks": 1,
+        "mints": [
+          "AdTkz2Ec9ETtvnobaw4nqtLn579MsjSin9mxB8Dqpump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205681316,
+        "atUtc": "2026-10-28T16:41:21.316+00:00",
+        "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+        "callbacks": 6,
+        "mints": [
+          "7UjAKbrEt5CVZ6HTboGqU5BV6fsftAxacWc6AYhmpump",
+          "HpUwLF6GZwvvp2Bcx86LQ1UpTnVaUnWgHhY3wNb2pump",
+          "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+          "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+          "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205808622,
+        "atUtc": "2026-10-28T16:43:28.622+00:00",
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "callbacks": 6,
+        "mints": [
+          "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5",
+          "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+          "AUzxwHbzhR1rxC8xU4YV438oYVaQYZydotSNBf6vpump",
+          "FhsZqiGsBrBe3kkZZ1H3Z35ae9uCqfKhMJdJs9bPpump",
+          "AdTkz2Ec9ETtvnobaw4nqtLn579MsjSin9mxB8Dqpump",
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ],
+        "atOrAfterLogicalCutoff": false
+      },
+      {
+        "at": 1793205860002,
+        "atUtc": "2026-10-28T16:44:20.002+00:00",
+        "reason": "NATIVE_FLOW_INFORMATION_CUTOFF",
+        "callbacks": 1,
+        "mints": [
+          "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump"
+        ],
+        "atOrAfterLogicalCutoff": true
+      },
+      {
+        "at": 1793205860020,
+        "atUtc": "2026-10-28T16:44:20.020+00:00",
+        "reason": "NATIVE_FLOW_DISCONNECTED_1006",
+        "callbacks": 2,
+        "mints": [
+          "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+          "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump"
+        ],
+        "atOrAfterLogicalCutoff": true
+      },
+      {
+        "at": 1793205860021,
+        "atUtc": "2026-10-28T16:44:20.021+00:00",
+        "reason": "NATIVE_FLOW_DISCONNECTED_1006",
+        "callbacks": 3,
+        "mints": [
+          "7UjAKbrEt5CVZ6HTboGqU5BV6fsftAxacWc6AYhmpump",
+          "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+          "Asjmk93s5j9XtTayrNt52yYahtz8dYXHB9wbEjNDpump"
+        ],
+        "atOrAfterLogicalCutoff": true
+      }
+    ],
+    "diagnosis": "Four re-promotion subscription-ID refusals each interrupted six scopes; one logsSubscribe physical timeout interrupted six. No HTTP-cooldown-triggered native teardown. Twelve candidate-local callbacks and six cutoff/shutdown callbacks are separate."
+  },
+  "controlRefusals": [
+    {
+      "at": 1793205136465,
+      "method": "logsSubscribe",
+      "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+      "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+      "connection": 1,
+      "operationId": 5800,
+      "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+      "acknowledgement": {
+        "resultType": "number",
+        "safeNonnegativeInteger": true,
+        "subscriptionId": 101877376,
+        "retiredSubscriptionMatch": true,
+        "activeSubscriptionMatch": false
+      },
+      "rpcErrorCode": null,
+      "supportFresh": true,
+      "candidateStillRegistered": true,
+      "cancelled": false,
+      "transportClosing": false,
+      "physicalSettlementClaimed": false,
+      "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+    },
+    {
+      "at": 1793205395184,
+      "method": "logsSubscribe",
+      "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+      "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+      "connection": 2,
+      "operationId": 5941,
+      "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+      "acknowledgement": {
+        "resultType": "number",
+        "safeNonnegativeInteger": true,
+        "subscriptionId": 101907904,
+        "retiredSubscriptionMatch": true,
+        "activeSubscriptionMatch": false
+      },
+      "rpcErrorCode": null,
+      "supportFresh": true,
+      "candidateStillRegistered": true,
+      "cancelled": false,
+      "transportClosing": false,
+      "physicalSettlementClaimed": false,
+      "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+    },
+    {
+      "at": 1793205574565,
+      "method": "logsSubscribe",
+      "mint": "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+      "pool": "E4r2uCyTHfzF5ZD7aYBFMhAqaY628b7oqNEdTfmAEbXH",
+      "connection": 3,
+      "operationId": 6047,
+      "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+      "acknowledgement": {
+        "resultType": "number",
+        "safeNonnegativeInteger": true,
+        "subscriptionId": 101824239,
+        "retiredSubscriptionMatch": true,
+        "activeSubscriptionMatch": false
+      },
+      "rpcErrorCode": null,
+      "supportFresh": true,
+      "candidateStillRegistered": true,
+      "cancelled": false,
+      "transportClosing": false,
+      "physicalSettlementClaimed": false,
+      "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+    },
+    {
+      "at": 1793205681287,
+      "method": "logsSubscribe",
+      "mint": "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump",
+      "pool": "HknqzEAg7Q78CqAGfG1LZRVcnNzbFfczEV1hjKF7ELq9",
+      "connection": 4,
+      "operationId": 6119,
+      "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+      "acknowledgement": {
+        "resultType": "number",
+        "safeNonnegativeInteger": true,
+        "subscriptionId": 101909025,
+        "retiredSubscriptionMatch": true,
+        "activeSubscriptionMatch": false
+      },
+      "rpcErrorCode": null,
+      "supportFresh": true,
+      "candidateStillRegistered": true,
+      "cancelled": false,
+      "transportClosing": false,
+      "physicalSettlementClaimed": false,
+      "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+    }
+  ],
+  "audits": {
+    "total": 58,
+    "byStatus": {
+      "unavailable": 13,
+      "verified": 41,
+      "unusable": 4
+    },
+    "unavailableByReason": {
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 12,
+      "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS": 1
+    },
+    "unavailable": [
+      {
+        "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+        "target": {
+          "startAt": 1793204980000,
+          "endAt": 1793205040000
+        },
+        "startedAt": 1793205042933,
+        "availableAt": 1793205044512,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5739,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205042942,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205044496,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1554.3766789999936,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "target": {
+          "startAt": 1793204990000,
+          "endAt": 1793205050000
+        },
+        "startedAt": 1793205054079,
+        "availableAt": 1793205054084,
+        "reason": "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS",
+        "matchingHttpLifecycle": []
+      },
+      {
+        "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+        "target": {
+          "startAt": 1793204990000,
+          "endAt": 1793205050000
+        },
+        "startedAt": 1793205054171,
+        "availableAt": 1793205055703,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5751,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205054179,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205055687,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1507.697709999993,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+        "target": {
+          "startAt": 1793205000000,
+          "endAt": 1793205060000
+        },
+        "startedAt": 1793205065086,
+        "availableAt": 1793205066630,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5761,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205065095,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205066615,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1519.7205579999863,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "target": {
+          "startAt": 1793205150000,
+          "endAt": 1793205210000
+        },
+        "startedAt": 1793205211962,
+        "availableAt": 1793205213494,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5837,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205211971,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205213479,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1508.7855960000015,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "target": {
+          "startAt": 1793205160000,
+          "endAt": 1793205220000
+        },
+        "startedAt": 1793205223675,
+        "availableAt": 1793205225208,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5851,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205223684,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205225192,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1508.3335099999967,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "target": {
+          "startAt": 1793205170000,
+          "endAt": 1793205230000
+        },
+        "startedAt": 1793205232080,
+        "availableAt": 1793205233611,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5862,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205232089,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205233595,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1505.9951690000016,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "target": {
+          "startAt": 1793205430000,
+          "endAt": 1793205490000
+        },
+        "startedAt": 1793205492190,
+        "availableAt": 1793205493721,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5981,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205492199,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205493706,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1506.972088999988,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "target": {
+          "startAt": 1793205440000,
+          "endAt": 1793205500000
+        },
+        "startedAt": 1793205502544,
+        "availableAt": 1793205504294,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 5993,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205502553,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205504278,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1725.5888789999299,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "target": {
+          "startAt": 1793205450000,
+          "endAt": 1793205510000
+        },
+        "startedAt": 1793205512108,
+        "availableAt": 1793205513639,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 6004,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205512116,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205513624,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1507.2339739999734,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+        "target": {
+          "startAt": 1793205720000,
+          "endAt": 1793205780000
+        },
+        "startedAt": 1793205781852,
+        "availableAt": 1793205783384,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 6147,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205781861,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205783368,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1507.074231000035,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+        "target": {
+          "startAt": 1793205730000,
+          "endAt": 1793205790000
+        },
+        "startedAt": 1793205792492,
+        "availableAt": 1793205794022,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 6161,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205792501,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205794007,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1506.2740919999778,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      },
+      {
+        "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+        "target": {
+          "startAt": 1793205740000,
+          "endAt": 1793205800000
+        },
+        "startedAt": 1793205802292,
+        "availableAt": 1793205803916,
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "matchingHttpLifecycle": [
+          {
+            "id": 6172,
+            "method": "getSignaturesForAddress",
+            "requestedAt": 1793205802302,
+            "headersAt": null,
+            "firstBodyAt": null,
+            "lastBodyAt": null,
+            "bodyCompleteAt": null,
+            "jsonDecodedAt": null,
+            "httpWorkEndedAt": 1793205803900,
+            "status": null,
+            "responseBytes": 0,
+            "chunksReceived": 0,
+            "outcome": "COMPONENT_HTTP_TRANSPORT",
+            "aborted": true,
+            "headersDelayMs": null,
+            "bodyAfterHeadersMs": null,
+            "jsonDecodeMonotonicMs": null,
+            "elapsedMonotonicMs": 1598.9167560000205,
+            "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+            "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+          }
+        ]
+      }
+    ],
+    "unusableMissingNotifications": [
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "target": {
+          "startAt": 1793205150000,
+          "endAt": 1793205210000
+        },
+        "startedAt": 1793205216221,
+        "availableAt": 1793205217439,
+        "missing": [
+          {
+            "history": {
+              "signature": "59BVuGZhSp7jwNjCLb4myrgAWazxshi6nssEpJcMepNJHALDtTsYYtbyF1kcA4GkBrNkQaYqxp5eviWzHjmPpeN",
+              "slot": 462545154,
+              "success": true,
+              "blockTime": 1793205154,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": []
+          },
+          {
+            "history": {
+              "signature": "2g7JspaSug1RSp94MrxLyqoijjHmZqqrHU3r3izLkn78YmrRJFM9PjL4ShA3mvs1Wt1bqZbiJyEv8So9mZaX2Mej",
+              "slot": 462545154,
+              "success": true,
+              "blockTime": 1793205154,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": []
+          }
+        ],
+        "allMissingSuccessfulRowsAvailableBeforeCompletion": false
+      },
+      {
+        "mint": "AdTkz2Ec9ETtvnobaw4nqtLn579MsjSin9mxB8Dqpump",
+        "target": {
+          "startAt": 1793205230000,
+          "endAt": 1793205290000
+        },
+        "startedAt": 1793205291882,
+        "availableAt": 1793205293149,
+        "missing": [
+          {
+            "history": {
+              "signature": "29pDGmSLNd6aTDkGCFAsx7eGgQdcxypmGYUXgQPzvUy9BbGpDAMLaGdF2NNsTdVGPgTjBTR5TZ9HB2pSbL4jSQap",
+              "slot": 462545546,
+              "success": false,
+              "blockTime": 1793205237,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": []
+          },
+          {
+            "history": {
+              "signature": "3THNRiLTRX6nJa41oo1UyUwEvAeFHEpTWvpec1aDLobMpVV7EwkB89A7uUsPVRcUCMvMqWAST37abErSk2cdxgcn",
+              "slot": 462545546,
+              "success": true,
+              "blockTime": 1793205237,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": []
+          },
+          {
+            "history": {
+              "signature": "RRC5hUtHpbHQs6KcRCTy1Pyox248GiBRaD7Vnj8S5RSS8B4tbksoHo2R5ebPYATH2NdwZivYnj7B4UBpcXN44be",
+              "slot": 462545546,
+              "success": true,
+              "blockTime": 1793205237,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": []
+          },
+          {
+            "history": {
+              "signature": "5ZFjHmRYjUcFcbZ1cT6Um7jxGsfWCPTdDnod4a2d45LQMBFmVitmbGcD9rawxGA86i7GAU1oKLXU7A7e3Z9e8rfY",
+              "slot": 462545546,
+              "success": true,
+              "blockTime": 1793205237,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": []
+          }
+        ],
+        "allMissingSuccessfulRowsAvailableBeforeCompletion": false
+      },
+      {
+        "mint": "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+        "target": {
+          "startAt": 1793205410000,
+          "endAt": 1793205470000
+        },
+        "startedAt": 1793205472134,
+        "availableAt": 1793205472280,
+        "missing": [
+          {
+            "history": {
+              "signature": "5DW1RTcyDnmjvEWPFxD4m1mcspQ6sxX74nsm3zoeZFdQ4KXmXufsCXDk5G3vWw4WdoXekL2wJBNYhWoH2yiRDdsk",
+              "slot": 462546626,
+              "success": true,
+              "blockTime": 1793205467,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": []
+          }
+        ],
+        "allMissingSuccessfulRowsAvailableBeforeCompletion": false
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "target": {
+          "startAt": 1793205480000,
+          "endAt": 1793205540000
+        },
+        "startedAt": 1793205543157,
+        "availableAt": 1793205544179,
+        "missing": [
+          {
+            "history": {
+              "signature": "4mZvKXogWjcwSG2fiDShLoMkXYfVbTrvZ1o1BZ2Kch9m4Wems4S5PtYexUUUAfBjdbiaoC2SzY7RMth5uwNfrUM5",
+              "slot": 462546980,
+              "success": true,
+              "blockTime": 1793205542,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": [
+              {
+                "success": true,
+                "slot": 462546980,
+                "receivedAt": 1793205543979,
+                "availableAt": 1793205544042,
+                "subscriptionMint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+                "connectionId": 3,
+                "afterSnapshotBeforeAuditCompletion": true
+              }
+            ]
+          },
+          {
+            "history": {
+              "signature": "6Pg7GCKo1uqzJ7VY3onpByzfCZcbuV5XZjh5QrmBv6FhicPqSQYVKPdan4aRUJfHj6u5m72bgV7uiCJ2y4LUo4a",
+              "slot": 462546979,
+              "success": false,
+              "blockTime": 1793205542,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": [
+              {
+                "success": false,
+                "slot": 462546979,
+                "receivedAt": 1793205543848,
+                "availableAt": 1793205543878,
+                "subscriptionMint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+                "connectionId": 3,
+                "afterSnapshotBeforeAuditCompletion": true
+              }
+            ]
+          },
+          {
+            "history": {
+              "signature": "62sxWJYs2rHBiG9wwapVmTsDmaMwsR863mgVZ2YmRSz6GeWNByxE5z8m9JUMdXfsGoYvDTXdyQfai68YfuHj4UhT",
+              "slot": 462546978,
+              "success": true,
+              "blockTime": 1793205541,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": [
+              {
+                "success": true,
+                "slot": 462546978,
+                "receivedAt": 1793205543581,
+                "availableAt": 1793205543727,
+                "subscriptionMint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+                "connectionId": 3,
+                "afterSnapshotBeforeAuditCompletion": true
+              }
+            ]
+          },
+          {
+            "history": {
+              "signature": "ncX5nDYv5nD3JkCLrMNdvJ3zAZyaU2itKqjwDJkwnBfSELHWBnKaS2dEY771TCbCRg4bx5k4iFdnu7kJwCGZELM",
+              "slot": 462546978,
+              "success": true,
+              "blockTime": 1793205541,
+              "confirmationStatus": "finalized"
+            },
+            "retainedInformationMatches": [
+              {
+                "success": true,
+                "slot": 462546978,
+                "receivedAt": 1793205543581,
+                "availableAt": 1793205543717,
+                "subscriptionMint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+                "connectionId": 3,
+                "afterSnapshotBeforeAuditCompletion": true
+              }
+            ]
+          }
+        ],
+        "allMissingSuccessfulRowsAvailableBeforeCompletion": true
+      }
+    ],
+    "completedPageMetrics": {
+      "100": {
+        "count": 38,
+        "totalResponseBytes": 876433,
+        "elapsedMonotonicMs": {
+          "count": 38,
+          "p50": 133.62050900002941,
+          "p95": 746.4926060000435,
+          "maximum": 1010.0935199999949
+        },
+        "headersDelayMs": {
+          "count": 38,
+          "p50": 67,
+          "p95": 653,
+          "maximum": 951
+        },
+        "bodyAfterHeadersMs": {
+          "count": 38,
+          "p50": 61,
+          "p95": 206,
+          "maximum": 245
+        },
+        "jsonDecodeMonotonicMs": {
+          "count": 38,
+          "p50": 0.09561499999836087,
+          "p95": 0.1433299999916926,
+          "maximum": 0.1546200000011595
+        }
+      },
+      "1000": {
+        "count": 7,
+        "totalResponseBytes": 1644622,
+        "elapsedMonotonicMs": {
+          "count": 7,
+          "p50": 1170.4506110000075,
+          "p95": 1366.0141939999885,
+          "maximum": 1366.0141939999885
+        },
+        "headersDelayMs": {
+          "count": 7,
+          "p50": 164,
+          "p95": 507,
+          "maximum": 507
+        },
+        "bodyAfterHeadersMs": {
+          "count": 7,
+          "p50": 858,
+          "p95": 1100,
+          "maximum": 1100
+        },
+        "jsonDecodeMonotonicMs": {
+          "count": 7,
+          "p50": 0.9306549999164417,
+          "p95": 1.227188999997452,
+          "maximum": 1.227188999997452
+        }
+      }
+    },
+    "pageLimitReached": 0,
+    "missingFailedOnlyVerifiedWindows": 0,
+    "readyReplacementDeferrals": 14
+  },
+  "deadlineMisses": {
+    "total": 16,
+    "classifications": {
+      "audit-timeout": 8,
+      "undispatched": 7,
+      "audit-boundary-ambiguity": 1
+    },
+    "targets": [
+      {
+        "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+        "at": 1793205050025,
+        "windowEndAt": 1793205040000,
+        "decisionDeadlineAt": 1793205050000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:30:40.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 2933,
+          "completionDelayMs": 4512
+        }
+      },
+      {
+        "mint": "Asjmk93s5j9XtTayrNt52yYahtz8dYXHB9wbEjNDpump",
+        "at": 1793205050025,
+        "windowEndAt": 1793205040000,
+        "decisionDeadlineAt": 1793205050000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:30:40.000+00:00",
+        "classification": "undispatched",
+        "audit": null
+      },
+      {
+        "mint": "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+        "at": 1793205050025,
+        "windowEndAt": 1793205040000,
+        "decisionDeadlineAt": 1793205050000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:30:40.000+00:00",
+        "classification": "undispatched",
+        "audit": null
+      },
+      {
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "at": 1793205050025,
+        "windowEndAt": 1793205040000,
+        "decisionDeadlineAt": 1793205050000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:30:40.000+00:00",
+        "classification": "undispatched",
+        "audit": null
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "at": 1793205050025,
+        "windowEndAt": 1793205040000,
+        "decisionDeadlineAt": 1793205050000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:30:40.000+00:00",
+        "classification": "undispatched",
+        "audit": null
+      },
+      {
+        "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+        "at": 1793205060103,
+        "windowEndAt": 1793205050000,
+        "decisionDeadlineAt": 1793205060000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:30:50.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 4171,
+          "completionDelayMs": 5703
+        }
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "at": 1793205060103,
+        "windowEndAt": 1793205050000,
+        "decisionDeadlineAt": 1793205060000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:30:50.000+00:00",
+        "classification": "audit-boundary-ambiguity",
+        "audit": {
+          "status": "unavailable",
+          "reason": "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS",
+          "dispatchDelayMs": 4079,
+          "completionDelayMs": 4084
+        }
+      },
+      {
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "at": 1793205220042,
+        "windowEndAt": 1793205210000,
+        "decisionDeadlineAt": 1793205220000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:33:30.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 1962,
+          "completionDelayMs": 3494
+        }
+      },
+      {
+        "mint": "HWjJ8dFwf68sdWzhj4qHQpUf6rSG3u3xRWzV2Y29pump",
+        "at": 1793205220042,
+        "windowEndAt": 1793205210000,
+        "decisionDeadlineAt": 1793205220000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:33:30.000+00:00",
+        "classification": "undispatched",
+        "audit": null
+      },
+      {
+        "mint": "AUzxwHbzhR1rxC8xU4YV438oYVaQYZydotSNBf6vpump",
+        "at": 1793205220042,
+        "windowEndAt": 1793205210000,
+        "decisionDeadlineAt": 1793205220000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:33:30.000+00:00",
+        "classification": "undispatched",
+        "audit": null
+      },
+      {
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "at": 1793205230099,
+        "windowEndAt": 1793205220000,
+        "decisionDeadlineAt": 1793205230000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:33:40.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 3675,
+          "completionDelayMs": 5208
+        }
+      },
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "at": 1793205500051,
+        "windowEndAt": 1793205490000,
+        "decisionDeadlineAt": 1793205500000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:38:10.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 2190,
+          "completionDelayMs": 3721
+        }
+      },
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "at": 1793205510207,
+        "windowEndAt": 1793205500000,
+        "decisionDeadlineAt": 1793205510000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:38:20.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 2544,
+          "completionDelayMs": 4294
+        }
+      },
+      {
+        "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+        "at": 1793205790040,
+        "windowEndAt": 1793205780000,
+        "decisionDeadlineAt": 1793205790000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:43:00.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 1852,
+          "completionDelayMs": 3384
+        }
+      },
+      {
+        "mint": "x5tzEf5eF5EUMxYLvQa6wxe9bL3mLubKtBH7fpspump",
+        "at": 1793205790040,
+        "windowEndAt": 1793205780000,
+        "decisionDeadlineAt": 1793205790000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:43:00.000+00:00",
+        "classification": "undispatched",
+        "audit": null
+      },
+      {
+        "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+        "at": 1793205800059,
+        "windowEndAt": 1793205790000,
+        "decisionDeadlineAt": 1793205800000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "targetEndUtc": "2026-10-28T16:43:10.000+00:00",
+        "classification": "audit-timeout",
+        "audit": {
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "dispatchDelayMs": 2492,
+          "completionDelayMs": 4022
+        }
+      }
+    ],
+    "interpretation": "Actual missed current-window predictive decisions, not strategy rejections; no proof that they would pass or be executable. Normal initial fence warming separately counted. Seven remaining undispatched targets followed timeout/cooldown, heartbeat/unsubscribe occupancy and conservative 2s-operation admission guard. Replacement setup no longer interposed during those ready batches."
+  },
+  "throughput": {
+    "validatedNotificationRecords": 8840,
+    "validatedSuccess": 5956,
+    "validatedFailed": 2884,
+    "availabilityMinusReceiptMs": {
+      "count": 8839,
+      "p50": 694,
+      "p95": 1938,
+      "maximum": 4942
+    },
+    "peakValidatedReceiptRecords": {
+      "1000": 555,
+      "10000": 1611,
+      "60000": 1758
+    },
+    "perTransactionEnrichmentRequests": 0,
+    "scopedNativeSocketBytes": 23621867,
+    "broadPumpApiSocketBytes": 974999851,
+    "discoverySocketBytes": 2096,
+    "broadFrames": 631113,
+    "deepConcurrencyMs": {
+      "0": 87131,
+      "1": 11370,
+      "2": 15457,
+      "3": 14110,
+      "4": 18611,
+      "5": 49872,
+      "6": 693449
+    },
+    "sixAckedScopeIntervals": [
+      {
+        "startAt": 1793204975064,
+        "endAt": 1793205047985,
+        "durationMs": 72921
+      },
+      {
+        "startAt": 1793205062897,
+        "endAt": 1793205065383,
+        "durationMs": 2486
+      },
+      {
+        "startAt": 1793205070179,
+        "endAt": 1793205132400,
+        "durationMs": 62221
+      },
+      {
+        "startAt": 1793205143101,
+        "endAt": 1793205146501,
+        "durationMs": 3400
+      },
+      {
+        "startAt": 1793205149494,
+        "endAt": 1793205217440,
+        "durationMs": 67946
+      },
+      {
+        "startAt": 1793205229151,
+        "endAt": 1793205233617,
+        "durationMs": 4466
+      },
+      {
+        "startAt": 1793205236559,
+        "endAt": 1793205293149,
+        "durationMs": 56590
+      },
+      {
+        "startAt": 1793205294193,
+        "endAt": 1793205302018,
+        "durationMs": 7825
+      },
+      {
+        "startAt": 1793205305651,
+        "endAt": 1793205332898,
+        "durationMs": 27247
+      },
+      {
+        "startAt": 1793205333896,
+        "endAt": 1793205346478,
+        "durationMs": 12582
+      },
+      {
+        "startAt": 1793205347519,
+        "endAt": 1793205362044,
+        "durationMs": 14525
+      },
+      {
+        "startAt": 1793205363118,
+        "endAt": 1793205391987,
+        "durationMs": 28869
+      },
+      {
+        "startAt": 1793205402797,
+        "endAt": 1793205472280,
+        "durationMs": 69483
+      },
+      {
+        "startAt": 1793205474265,
+        "endAt": 1793205482410,
+        "durationMs": 8145
+      },
+      {
+        "startAt": 1793205483785,
+        "endAt": 1793205496718,
+        "durationMs": 12933
+      },
+      {
+        "startAt": 1793205499197,
+        "endAt": 1793205506542,
+        "durationMs": 7345
+      },
+      {
+        "startAt": 1793205507851,
+        "endAt": 1793205513646,
+        "durationMs": 5795
+      },
+      {
+        "startAt": 1793205516512,
+        "endAt": 1793205544180,
+        "durationMs": 27668
+      },
+      {
+        "startAt": 1793205545457,
+        "endAt": 1793205552623,
+        "durationMs": 7166
+      },
+      {
+        "startAt": 1793205553526,
+        "endAt": 1793205562017,
+        "durationMs": 8491
+      },
+      {
+        "startAt": 1793205563228,
+        "endAt": 1793205572064,
+        "durationMs": 8836
+      },
+      {
+        "startAt": 1793205588143,
+        "endAt": 1793205594311,
+        "durationMs": 6168
+      },
+      {
+        "startAt": 1793205595556,
+        "endAt": 1793205653798,
+        "durationMs": 58242
+      },
+      {
+        "startAt": 1793205656634,
+        "endAt": 1793205658801,
+        "durationMs": 2167
+      },
+      {
+        "startAt": 1793205659854,
+        "endAt": 1793205661986,
+        "durationMs": 2132
+      },
+      {
+        "startAt": 1793205666041,
+        "endAt": 1793205672319,
+        "durationMs": 6278
+      },
+      {
+        "startAt": 1793205673503,
+        "endAt": 1793205680137,
+        "durationMs": 6634
+      },
+      {
+        "startAt": 1793205703917,
+        "endAt": 1793205786182,
+        "durationMs": 82265
+      },
+      {
+        "startAt": 1793205798985,
+        "endAt": 1793205803923,
+        "durationMs": 4938
+      },
+      {
+        "startAt": 1793205807447,
+        "endAt": 1793205808622,
+        "durationMs": 1175
+      },
+      {
+        "startAt": 1793205853491,
+        "endAt": 1793205860001,
+        "durationMs": 6510
+      }
+    ]
+  },
+  "provider": {
+    "physicalStarts": 508,
+    "physicalSettlements": 508,
+    "peakStarts": {
+      "10000": 20,
+      "60000": 58
+    },
+    "startsByMethod": {
+      "upgrade": 8,
+      "subscribeMigration": 1,
+      "getMultipleAccounts": 156,
+      "logsSubscribe": 89,
+      "ping": 88,
+      "getTransaction": 33,
+      "getSignaturesForAddress": 79,
+      "logsUnsubscribe": 54
+    },
+    "httpLifecycleStatus": {
+      "200": 250,
+      "None": 18
+    },
+    "newAccountedResponseBytes": 81184569,
+    "newMeasuredResponseBytes": 32556857,
+    "newUncertainResponseBytes": 48627712,
+    "accountingMeaning": "Derived from settled run usage and preserved prior uncertainty148111360; no uncertainty refunded. Public provider entitlement and transfer expenses remain unverified.",
+    "derivedStatusPersistence": {
+      "attempts": 14569,
+      "totalMs": 98633.74964899923,
+      "maximumMs": 13.461421999963932
+    },
+    "providerSaturationClaim": "Not established; all250 received headers were200,18 operations ended before headers. Query-specific repeated audit stalls are not proof of whole-endpoint overload. TCP connection reuse is not instrumented."
+  },
+  "resources": {
+    "maximumRssBytes": 346677248,
+    "cpu": {
+      "user": 169932951,
+      "system": 8840940
+    },
+    "eventLoopDelayP95Ms": 51.806207,
+    "eventLoopDelayMaximumMs": 711.458815,
+    "retainedEvidenceBytes": 46467397,
+    "evidenceSegments": 6
+  },
+  "financial": {
+    "financialWriterOpened": false,
+    "financialExecutionAuthorized": false,
+    "portfolio": null,
+    "paperTrades": 0,
+    "positionsCreated": 0,
+    "profitability": "not measured"
+  },
+  "decision": "USEFUL DATA-PATH GAIN; INADEQUATE FOR RELIABLE SIX-SLOT CONTINUOUS QUALIFICATION OR PAPER ACCEPTANCE",
+  "nextRepairs": [
+    "Safely handle legitimate same-filter retired subscription-ID reuse without treating an old generation as current.",
+    "Keep real query failures fail-closed while avoiding unnecessary global HTTP timeout backoff and immediate discretionary retirement overhead displacing ready audits.",
+    "Admit actual post-snapshot validated tail for corroboration without changing target features; only one of four unusable results is entirely explained by a stale tail snapshot.",
+    "Coalesce duplicate derived status writes while preserving every authoritative charge and physical settlement."
+  ],
+  "evidenceContract": {
+    "essential": "Executed ordinary trade identity, direction, integer quantities/fees/user, confirmed availability, supported pool, complete contemporaneous target window and independent bounded history support. Successful unknown rows remain blocking.",
+    "diagnostic": "Independently confirmed failed-only missing packets need not count as executed flow. This run had no verified window relying on that exception. Full raw diagnostic/status duplication and whole broad-stream archiving are not needed for financial decisions.",
+    "notProven": "No whole-market opportunity denominator, live holding workload, executable quotes, fills, exits, financial accounting or unattended acceptance in this candidate-only run."
+  }
+}

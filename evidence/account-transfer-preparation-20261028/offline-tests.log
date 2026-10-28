@@ -1,0 +1,16 @@
+test_actual_cli_refuses_wrong_environment_before_mutation_and_sanitizes (__main__.TransferPreparationTests.test_actual_cli_refuses_wrong_environment_before_mutation_and_sanitizes) ... ok
+test_directory_symlink_and_insecure_mode_refused_without_chmod (__main__.TransferPreparationTests.test_directory_symlink_and_insecure_mode_refused_without_chmod) ... ok
+test_fixed_path_refused_before_directory_creation (__main__.TransferPreparationTests.test_fixed_path_refused_before_directory_creation) ... ok
+test_identity_rejects_wrong_uid_runner_and_name (__main__.TransferPreparationTests.test_identity_rejects_wrong_uid_runner_and_name) ... ok
+test_interrupted_private_is_retained_and_refused_not_reseeded (__main__.TransferPreparationTests.test_interrupted_private_is_retained_and_refused_not_reseeded) ... ok
+test_manifest_exclusive_and_conflict_never_overwrites (__main__.TransferPreparationTests.test_manifest_exclusive_and_conflict_never_overwrites) ... ok
+test_no_financial_or_provider_or_service_runtime_calls (__main__.TransferPreparationTests.test_no_financial_or_provider_or_service_runtime_calls) ... ok
+test_parent_death_terminates_only_its_disposable_node_child (__main__.TransferPreparationTests.test_parent_death_terminates_only_its_disposable_node_child) ... ok
+test_private_symlink_rejected_without_private_stdout (__main__.TransferPreparationTests.test_private_symlink_rejected_without_private_stdout) ... ok
+test_public_symlink_and_fifo_fail_without_following_or_blocking (__main__.TransferPreparationTests.test_public_symlink_and_fifo_fail_without_following_or_blocking) ... ok
+test_rsa3072_public_only_and_same_key_resume (__main__.TransferPreparationTests.test_rsa3072_public_only_and_same_key_resume) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.380s
+
+OK

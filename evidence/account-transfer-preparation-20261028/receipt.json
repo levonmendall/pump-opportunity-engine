@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-28T16:47:49Z",
+  "adminBase": "221094f347665cb5553b5769cd693f73d776409c",
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/prepare-transfer.py",
+      "bytes": 13114,
+      "sha256": "9d049c2b6d5480d6227495cb02e15560675f6546a7d954b3832c2d98d3d4aff6"
+    },
+    {
+      "path": ".github/workflows/poe-native-paper-transfer-prepare.yml",
+      "bytes": 2472,
+      "sha256": "1662f741b375b35bee7a100a0c668a8f7d26955ee098905840534d30b6e1ed99"
+    },
+    {
+      "path": "scripts/poe/native-candidate-run-bounded.py",
+      "bytes": 53622,
+      "sha256": "dde1e5ea8af45ecc91b3b6cb44574f9382852ca869a28a3a1a136bf8d4155a67"
+    }
+  ],
+  "offlineTests": {
+    "command": "python3 -B -I evidence/account-transfer-preparation-20261028/offline-tests.py",
+    "tests": 11,
+    "passed": 11,
+    "exitCode": 0,
+    "logSha256": "f9901609c1909248aace9912c3cb65d590bf97c9a37ac56bc6c0204594c2aab4"
+  },
+  "independentReview": "GO after verified-byte supervisor loading and child settlement corrections",
+  "networkRequests": 0,
+  "accountContentsRead": false,
+  "realFixedHostKeyGenerated": false,
+  "committed": false,
+  "dispatched": false,
+  "limitation": "Interrupted partial private or immutable-file write is retained and fails closed for review; no overwrite, automatic rotation, account import or financial-runtime deployment."
+}

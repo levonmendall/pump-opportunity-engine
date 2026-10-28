@@ -1,0 +1,93 @@
+[
+  {
+    "name": "full",
+    "command": [
+      "bash",
+      "-c",
+      "exec node --import tsx --test --test-concurrency=1 test/*.test.ts"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-10-28T17:17:00.494689+00:00",
+    "elapsedSeconds": 180.0305449962616,
+    "bytes": 155650,
+    "sha256": "d6d470a36c89423aba790d860b58c28357fd0ee70040879b35cf7e374efdeb12"
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-10-28T17:20:00.526103+00:00",
+    "elapsedSeconds": 6.5118889808654785,
+    "bytes": 55,
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  {
+    "name": "compile",
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-10-28T17:20:07.038372+00:00",
+    "elapsedSeconds": 8.528470993041992,
+    "bytes": 77,
+    "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+  },
+  {
+    "name": "host-outcomes",
+    "command": [
+      "python3",
+      "-B",
+      "operator/native-candidate-ec2/test-runtime-outcomes.py"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-10-28T17:20:15.567267+00:00",
+    "elapsedSeconds": 0.1143651008605957,
+    "bytes": 109,
+    "sha256": "38eeff1237d74275801617a271eced659e08b1cad8069897d18e659ae40641d8"
+  },
+  {
+    "name": "host-package",
+    "command": [
+      "python3",
+      "-B",
+      "operator/native-candidate-ec2/test-two-hour-package.py"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-10-28T17:20:15.682142+00:00",
+    "elapsedSeconds": 1.770164966583252,
+    "bytes": 109,
+    "sha256": "4f735206234b7aab11c5b043a04015c65db1d97325542772c76ee6bb703c3439"
+  },
+  {
+    "name": "host-readback",
+    "command": [
+      "python3",
+      "-B",
+      "operator/native-candidate-ec2/test-readback-public-evidence.py"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-10-28T17:20:17.453093+00:00",
+    "elapsedSeconds": 0.41519832611083984,
+    "bytes": 114,
+    "sha256": "babf1245b1bee9187b6c0f000e8e66d02c1ac179a7b1b082390bd709f21e3278"
+  },
+  {
+    "name": "host-stager",
+    "command": [
+      "node",
+      "--test",
+      "operator/native-candidate-ec2/test-stage-package.mjs"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-10-28T17:20:17.868820+00:00",
+    "elapsedSeconds": 5.65207052230835,
+    "bytes": 997,
+    "sha256": "e816652dea98ead1bcb325e645bc1d3c04ea7148934965f9f679bc5b21de8cad"
+  }
+]

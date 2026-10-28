@@ -1,3 +1,71 @@
+Updated 2026-10-28 17:24 UTC — lead recovery milestone.
+
+Latest verified core is d08fe0a13a344b5096a7da5a328dfebb94154173. Combined
+serial full regression: 1307/1307 PASS, build/compile PASS, 43 existing host
+packaging/readback checks PASS. Raw outputs and file hashes are in
+`evidence/continuous-recovery-20261028/integrated-native-paper-corrected/`.
+Earlier parallel compiler timeouts and two stale history-bound fixtures remain
+preserved separately; no runtime/fixture timeout was relaxed.
+
+No market source is currently running. First corrected source906 completed its
+bounded interval 16:29:30.001–16:44:20.294 UTC; GH40726448588 and all physical
+operations/publisher settled. Its 81-file archive hashes verified. Actual result:
+41 audited assessments/19 tokens/3005 trades/3 predicate passes, 48 gap callbacks
+(including 6 shutdown callbacks), 13 audit-unavailable, 4 unusable, 16 missed
+current-window decisions. No native PAPER writer, positions, fills or P&L.
+
+Observed repairs: HTTP cooldown did NOT close native capture, and ready audits
+received 14 explicit replacement deferrals. New diagnosis: four same-pool retired
+ID reuse refusals caused 24 callbacks; 12 first-page audit timeouts received no
+headers, and 7 other targets never dispatched. Those repairs are now integrated:
+8661475 safe same-filter ACK reuse with conservative per-candidate generation
+fences; e50a0e6 scoped history-query timeout backoff/global true throttle handling;
+fdf23ac actual post-snapshot audit-tail corroboration; ced1093 coalesced derived
+status writes with unchanged durable authoritative byte accounting.
+
+Seven bounded historical requests independently established all six missing
+successful signatures as executed swaps (2 buys, 4 sells), exact frozen-native /
+full-transaction economics parity. They are genuine evidence gaps; missing sells
+were about2.92 SOL curve amounts. No past window was retroactively repaired.
+Loss location remains unknown between provider and unretained transport/app.
+The first version0-only diagnostic request failed on a supported v1 transaction;
+corrected, separately labeled v1 requests succeeded. This was a diagnostic cap
+mismatch, not proven provider incapacity. All usage is retained and linked:
+218 books, 6196 units, 466149333 accounted bytes, 196739072 uncertain bytes.
+Manifest has no unresolved research. Historical counters were not reset/refunded.
+
+Root lease71736 is coordination only (finite2h from17:03); old36042 is a zombie,
+not an owner/listener. Check actual processes after any interruption. Existing
+experimental financial ledger was checked READ-ONLY: original pilot identity /
+inception, revision8934, virtual$1000 baseline, no positions/pending, zero modeled
+execution costs, entries stopped. Original authoritative EC2 ledger remains
+untouched; last original public identity check16:40, no later health claim.
+Render correctly reports source906 STOPPED/stale, not continuous operation.
+
+Native-PAPER integration85e1495 and separate standalone packagec1fc938 are now
+in lead. Disposable fixtures prove two actual SDK-priced positions, coherent
+holding batch, retained exposure, backup/restart and reconciled exits. They do
+NOT prove natural PAPER trades or live protection. Before actual PAPER startup:
+finish next six-scope repaired forward evidence, EC2 disposable package probe,
+verified account-preserving transfer/single-writer handoff and live pricing /
+protection/reporting checks. No24h acceptance clock has started.
+
+Next immediate action: freeze and push this verified executable, export the
+latest strict native checkpoint plus the two settled historical-accounting
+suffixes, stage the existing bounded900s six-slot forward run, and supervise
+same-ID reuse, query isolation, audit tail, gaps/deadlines and resource behavior.
+Keep all negative outcomes. The 90/min profile remains a local ceiling, not
+provider entitlement. Source/configuration stays pinned during the interval.
+
+Parallel isolated work: `/workspace/poe-research-baseline-checkpoint` implements
+reviewed append-only sealed research checkpoints (not adopted; quiescent-only
+proof does not establish uninterrupted24h rollover). Admin code-only package
+check prepared under `operator/native-paper-ec2/` (not dispatched). Host-generated
+transfer PRIVATE key remains host-only; public compatibility/key hash retained.
+No experimental account import or original observer deployment/restart occurred.
+
+The chronological entries below are historical; they do not override this state.
+
 # POE recovered continuation checkpoint
 
 Continuous recovery update 2026-10-28 16:42 UTC. Latest frozen SOURCE90625f53b686578637accf73ebc457f841743ee2

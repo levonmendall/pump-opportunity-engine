@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-28T17:16:42.514171+00:00",
+  "access": "SQLite read-only existing isolated ledger; no financial writer",
+  "quickCheck": "ok",
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "revision": 8934,
+  "initialMicroUsd": "1000000000",
+  "openPositions": 0,
+  "pendingActions": 0,
+  "modeledExecutionCostsLamports": "0",
+  "controls": {
+    "entriesEnabled": false,
+    "reason": "safe stop requested",
+    "changedAt": 1793147429599,
+    "readinessVersion": "persistent-buying-pilot-concurrent-stage-3-v1",
+    "stopRequested": true
+  },
+  "journalKindCounts": {
+    "inception": 1,
+    "pause": 107,
+    "reconcile": 8720,
+    "resume": 89,
+    "safe-stop": 18
+  }
+}
