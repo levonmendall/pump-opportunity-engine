@@ -7,6 +7,9 @@ import {createHash} from 'node:crypto';
 import {channel} from 'node:diagnostics_channel';
 import {AsyncLocalStorage} from 'node:async_hooks';
 const HTTP='https://api.mainnet.solana.com',WS='wss://api.mainnet.solana.com';
+/** Fixed, keyless research route. Only history is eligible; no retry/fallback. */
+export const PUBLICNODE_HISTORY_ROUTE=Object.freeze({version:'publicnode-history-only-v1' as const,endpoint:'https://solana-rpc.publicnode.com',method:'getSignaturesForAddress' as const});
+export type ComponentHistoryRoute=typeof PUBLICNODE_HISTORY_ROUTE.version;
 const httpDispatchContext=new AsyncLocalStorage<object>();
 const HTTP_DISPATCH_ERROR_CODES=new Set(['ABORT_ERR','UND_ERR_ABORTED','UND_ERR_HEADERS_TIMEOUT','UND_ERR_BODY_TIMEOUT','UND_ERR_CONNECT_TIMEOUT','UND_ERR_SOCKET','UND_ERR_DESTROYED','UND_ERR_CLOSED','UND_ERR_INVALID_ARG','UND_ERR_REQUEST_CONTENT_LENGTH_MISMATCH','ECONNRESET','ECONNREFUSED','EHOSTUNREACH','ENETUNREACH','EPIPE','ETIMEDOUT','EAI_AGAIN','ENOTFOUND','ERR_TLS_CERT_ALTNAME_INVALID','DEPTH_ZERO_SELF_SIGNED_CERT','CERT_HAS_EXPIRED','UNABLE_TO_VERIFY_LEAF_SIGNATURE']);
 const observedHttpSockets=new WeakMap<object,{id:number;token:object;lastObservedAt:number|null}>();let nextHttpSocket=0;
@@ -75,7 +78,7 @@ export class ComponentTransport {
   readonly subscriptions=new Map<number,string>();readonly notices:ComponentNotice[]=[];
   private pending:Pending|null=null;private early:Array<{message:any;at:number}>=[];
   private activeConnection:Connection|undefined;private fatal:Error|null=null;private hashes=new Map<string,string>();
-  constructor(readonly budget:ComponentBudget,private readonly record:RecordFn,private readonly onNotice:(n:ComponentNotice)=>void,private readonly now=Date.now,private readonly fetcher:typeof fetch=fetch,private readonly makeSocket?:()=>WebSocket){}
+  constructor(readonly budget:ComponentBudget,private readonly record:RecordFn,private readonly onNotice:(n:ComponentNotice)=>void,private readonly now=Date.now,private readonly fetcher:typeof fetch=fetch,private readonly makeSocket?:()=>WebSocket,private readonly historyRoute?:ComponentHistoryRoute){if(historyRoute!==undefined&&historyRoute!==PUBLICNODE_HISTORY_ROUTE.version)throw Error('COMPONENT_HISTORY_ROUTE');}
   error(){return this.fatal;}
   private fail(reason:string){
     if(this.fatal)return;this.fatal=Error(reason);
@@ -88,11 +91,12 @@ export class ComponentTransport {
   }
   sampleSocket(){return this.activeConnection?this.sampleConnection(this.activeConnection):undefined;}
   private async httpJson(op:ComponentOperation,method:string,envelope:unknown,onHttpInvoked?:()=>void,maximumResponseBytes=2*1024*1024,historyBatch=false){
-    const requestedAt=this.now(),startedMono=performance.now();onHttpInvoked?.();const dispatchTiming=observeComponentHttpDispatch(this.now);
+    const endpoint=this.historyRoute===PUBLICNODE_HISTORY_ROUTE.version&&method===PUBLICNODE_HISTORY_ROUTE.method?PUBLICNODE_HISTORY_ROUTE.endpoint:HTTP;
+    const requestedAt=this.now(),startedMono=performance.now();onHttpInvoked?.();const dispatchTiming=observeComponentHttpDispatch(this.now,endpoint);
     let res:Response|undefined,headersAt:number|null=null,firstBodyAt:number|null=null,lastBodyAt:number|null=null,bodyCompleteAt:number|null=null,jsonDecodedAt:number|null=null,decodeMs:number|null=null,size=0,chunksReceived=0,outcome='not-completed';
     try{
-      try{res=await dispatchTiming.run(()=>this.fetcher(HTTP,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(envelope),signal:op.signal,redirect:'error'}));}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
-      headersAt=this.now();const retryAfter=res.headers.get('retry-after');this.record('http-headers',{id:op.id,method,status:res.status,retryAfter:retryAfter?.slice(0,128)??null,at:headersAt,byteAccounting:'measured-body; response-header-and-wire-overhead-unmeasured'});
+      try{res=await dispatchTiming.run(()=>this.fetcher(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(envelope),signal:op.signal,redirect:'error'}));}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
+      headersAt=this.now();const retryAfter=res.headers.get('retry-after');this.record('http-headers',{id:op.id,method,endpoint,status:res.status,retryAfter:retryAfter?.slice(0,128)??null,at:headersAt,byteAccounting:'measured-body; response-header-and-wire-overhead-unmeasured'});
       // Stop at throttle headers; the unread body remains reserved uncertainty.
       if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
       if(Number(res.headers.get('content-length'))>2*1024*1024){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_RESPONSE_SIZE');}
@@ -112,7 +116,7 @@ export class ComponentTransport {
     finally{
       // Bounded metadata also survives partial bodies. No payload, headers,
       // provider text, inferred TTFB origin or fabricated connection reuse.
-      const dispatch=dispatchTiming.finish(),httpWorkEndedAt=this.now();this.record('http-lifecycle-timing',{id:op.id,method,requestedAt,headersAt,firstBodyAt,lastBodyAt,bodyCompleteAt,jsonDecodedAt,httpWorkEndedAt,status:res?.status??null,responseBytes:size,chunksReceived,outcome,aborted:op.signal.aborted,headersDelayMs:headersAt===null?null:headersAt-requestedAt,bodyAfterHeadersMs:bodyCompleteAt===null||headersAt===null?null:bodyCompleteAt-headersAt,jsonDecodeMonotonicMs:decodeMs,elapsedMonotonicMs:performance.now()-startedMono,...dispatch,validationScope:'HTTP body/JSON only; caller owns envelope/domain validation and physical settlement'});
+      const dispatch=dispatchTiming.finish(),httpWorkEndedAt=this.now();this.record('http-lifecycle-timing',{id:op.id,method,endpoint,requestedAt,headersAt,firstBodyAt,lastBodyAt,bodyCompleteAt,jsonDecodedAt,httpWorkEndedAt,status:res?.status??null,responseBytes:size,chunksReceived,outcome,aborted:op.signal.aborted,headersDelayMs:headersAt===null?null:headersAt-requestedAt,bodyAfterHeadersMs:bodyCompleteAt===null||headersAt===null?null:bodyCompleteAt-headersAt,jsonDecodeMonotonicMs:decodeMs,elapsedMonotonicMs:performance.now()-startedMono,...dispatch,validationScope:'HTTP body/JSON only; caller owns envelope/domain validation and physical settlement'});
     }
   }
   async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<T>{
