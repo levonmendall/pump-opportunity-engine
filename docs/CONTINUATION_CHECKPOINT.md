@@ -1,150 +1,131 @@
 # POE continuation checkpoint
 
-Updated 2026-10-28T04:25:01+00:00. Lead review branch `poe-free-data-evaluation-20261027`.
-No forward runtime is currently running. The first integrated native segment stopped
-during setup; all evidence and usage are settled. Do not confuse a build or publisher
-heartbeat with a live observer/trader. All real-money operations remain disabled.
+Updated 2026-10-28T05:47:46.710672+00:00. Lead branch `poe-free-data-evaluation-20261027`.
+Current lead source `cd6ac47`; source changes are not deployed to the production
+trading runtime. No market research runtime is active. Two failed integrated native
+intervals remain failed; useful component results do not constitute acceptance.
 
-## Completed age and CPU intervals
+## Financial and production authority
 
-Existing isolated account: `poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`,
-inception2026-10-27T17:56:13.252Z. No natural orders, positions or pending actions;
-never reseed. Original authoritative EC2 account remains separate and unchanged.
-Candidate-only mode intentionally has zero financial authorization.
+- Original EC2 account `poe-3123e352-4581-455b-85db-acd7e825e99e`, inception
+  `2026-10-26T22:07:36.212Z`, installed release `bce3d22bb434eb429aafacb788a18f39ec189c1b`.
+  Last direct check **04:51:23 UTC**: active PID2333724, NRestarts0, identity unchanged,
+  public reconciliation04:51:23.136. Not a current uptime guarantee/private DB audit.
+- Existing isolated account `poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`, inception
+  `2026-10-27T17:56:13.252Z`. Never reseed. No natural orders/positions/pending actions
+  demonstrated. Current native runner is candidate-only and never opens its ledger.
+- Standing research/PAPER development authorization supersedes historical lifetime
+  grant ceilings. Preserve actual/uncertain usage; use finite purposeful research.
+  No real financial operations, paid commitments or unrelated changes.
+- Baseline entry **5–120min**, six closed10s buckets/60s, persistent-buying, unchanged
+  sizing/costs/exits/quote validity. Observation is immediate0–2h plus selected2–6h;
+  selected6–24h observation is now implemented **as opt-in research only**, not yet
+  forward validated. There is no evidence to declare a superior entry-age policy.
 
-Three immutable intervals, same frozen baseline/config4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d:
--1657bb4/runpilot-20261028015809342-f9514585:318.444s/35units/3windows;
- stopped for a demonstrated older-WATCH missing-proof selection head blockage.
- Corrected runnable selection and exact known-origin recovery preserve awareness.
--e69ad8b/runpilot-20261028022044929-0a67e810:765.250s/390units;
- CPU240.415s caused early stop.22unique admitted/17assessed/32actual assessments,
- allfailed.5earlytokens had no audited early assessment; mapping/audit/capacity losses.
--cf8d8bc/runpilot-20261028024343351-654738bd:895.320s normal finite completion,
- CPU165.929s/RSS358.33MB/491units/870.66MBPumpApi.25unique admitted/21assessed,
- 50actual assessments/allfailed;51audit-covered endpoints, NOT51decisions.
- One valid quiet early assessment atage4.464min; other early evidence gaps persist.
+## Immutable evidence and actual failures
 
-Read `evidence/age-forward-20261028/cpu-forward-three-intervals/` and exact
-per-token/audit-availability traces. Overlapping lookbacks are unioned; no market
-recall or profit percentage is supported. Current settled remote units4684 after the bounded native setup failure;
-read actual books again before network. Historical uncertainty46,137,344bytes is
-retained separately from measured response bytes; no counter refund/reset.
+Old three CPU/age intervals:1657bb4 (318.444s/selection head blockage), e69ad8b
+(765.250s/CPU240.415s stop), cf8d8bc (895.320s completed,50 assessments/21tokens,
+allFAILED). One quiet early assessment atage4.464min; early/older economic evidence
+incomplete. Overlapping windows are unioned, not counted as independent minutes.
+See `evidence/age-forward-20261028/cpu-forward-three-intervals/`.
 
-## Implemented changes / current lead
+FRONGUS component run40619930479:149trades/97Buy/52Sell/44buyers,
+net−23.821587658SOL, legitimate predicateFAIL.34trades in10s exceeds old enrichment
+capacity.293 interior history rows/zero missing, four representative TX/SPL checks,
+not per-event full-transfer equivalence. No concurrent financial protection test.
 
-Immediate observation and selected2–6h research are separate from entry5–120min.
-WATCH174(total150primary+24selectedolder)/one older deep; baseline risk/fees/window
-and quote<=2s unchanged. No6–24h economic claim. Missing proofs cannot monopolize
-selection or revive terminal/owned identities. Technical capacity losses retain
-awareness/reassessment instead of an effective24h abandonment.
+First integrated native run40631355108/source60b9392:20.651s setup failure,
+41accounted units/40 proven starts, zero subscriptions. Stale loop-time comparison
+and deferred fall-through repeatedly refreshed valid support; an expired durable
+local reservation was wrongly classified globalfatal. Fixed and regression-tested.
+Full evidence under `native-setup-40631355108/`.
 
-Cheap WATCH identity reads removed full-registry projection from hot paths;
-full expiry/capacity/protected-state semantics preserved. Runtime CPU verification
-above completed under the SAME240s allowance. Microbenchmarks are separate from
-forward effects; markets differed. Lean ActivePipeline/PilotFeeds readiness API
-also preserves current data while avoiding unnecessary diagnostic projections.
+Second integrated native run40633990901/sourcebb6fd9f: started04:44:24.358;
+last runtime snapshot04:51:18.151, wrapper ended04:51:23.663. Eight scope ACKs,
+163normalized events; two quiet G/H assessment failures. Historical audit lacked
+served-node minContextSlot; preserve original counts without promoting freshness.
+Early token subscribed atage0.344min then unsupported BoostBuyAndBurn invalidated
+its evidence. A physical operation interval/timer callback stretched16.77s during
+847 native callbacks; later legacy reconnects occupied the gate while native
+support expired. Sourcefatal was null; not proven provider saturation/CPU exhaustion.
+Wrapper generic failure lacks exact exception. Independent atomic-file scan race
+was reproduced/fixed, not retroactively asserted as the actual wrapper cause.
+External process groups settled; source did NOT produce a graceful final receipt.
+All57 actual start/settle tuples matched. Retain uncertain passive tail, no refund.
+Complete lossless public archive/byte hashes under `native-integrated-40633990901/`.
 
-Local recognition defect in cf8: audited5jV windowend02:55:50 became ready
-02:55:56.767, but unrelatedFssj pending hints closed a network-work gate through
-02:56. Commit ed09597 gives verified candidate-only CPU assessment a bounded
-service opportunity BEFORE the next physical enrichment start, without quotes,
-context/execution/financial calls. Current build/compile/full971tests passed.
-No forward validation of this controller correction is claimed yet.
+One exact later historical TX read at05:14:40.504 established the early frame:
+0.477341378SOL protocol-funded reserve increase +1,253,813,629,816base units burned;
+PDA actor, no ordinary buyer receipt. Never backdate this evidence. Original strict
+v2 correctly refuses it; new pure opt-in protocol-effect decoder preserves effects
+separately from ordinary buyers/net buying. No profitability inference.
 
-Native selected-flow adapter is committed (7177bbe; tests included), one socket
-up to6deep scopes, exact v2 program events, fresh batched support, recovery,
-compact complete selected evidence and an audit ledger. Not yet integrated live.
-No general provider platform or paid provider was introduced.
+## Implemented / work in progress
 
-## Actual EC2 native evidence
+`cd6ac47` consolidates separately reviewed code; build/compile/full1122 tests pass:
+- Native WebSocket yields between same-chunk callbacks and conservatively records
+  earliest undrained transport arrival; stale backlog invalidates, not relabeled.
+- Legacy WATCH reconnect control cannot preempt due native unsubscribe/support work.
+- Retired subscription tombstones, separate refusal evidence, support-expiry checks.
+- Every independent audit page has original upper-slot minContextSlot; -32016 is
+  recoverable data unavailability, never a valid audit or permanent abandonment.
+- Unwired coherent history HTTP-batch adapter: physical vs logical counts separate,
+  exact IDs/floors/cancellation preserved. No live provider batch entitlement proven.
+- Finite two-hour profile7200s/7500units/64chapters, compatible book/evidence sizes,
+  real constructor-composition checks. Still research-only, not a persistent trader.
+- Optional selected24h observation, reactivation of age-only expired identities,
+  existing protected HELD/ENTRY_PENDING and structural exclusions preserved.
 
-Admin76ce771/run40619930479/job122591225512 completed a bounded read-only FRONGUS
-component. Exactwindow02:16:40–02:17:40:149trades(97Buy/52Sell),44buyeraddresses,
-net-23.821587658SOL/twopositivebuckets; legitimate unchanged predicateFAIL.
-One10sbucket had34trades, beyond old8getTX/10senvelope.293independent interior
-pool-address rows/3pages/0missing; ALL149targetsig+slot+success tuples matched.
-Upperanchor arrived02:17:41.786afterfeatureend; excludedboundaries contain0target
-events. New independent replay artifact preserves scope/limits. FourfullTX/SPL
-matches do NOT establish per-event full-transfer equivalence.24remoteoperations,
-1,493,492bytes,CPU3.66s/RSS133.75MB, no holdings or financial writer. Pool isolder
-than baselineentryage. `confirmed-program-events-v2` is an explicit research
-contract, not a claim of baseline full-transaction identity/transfer coverage.
+Native lead is finishing explicit `confirmed-program-activity-v3-shadow` wiring in
+`/workspace/poe-native-protocol-shadow`: protocol effects separate; strict-v2 baseline
+unavailable for affected windows, no financial qualification. Never silently claim
+strict-v2 economic equivalence. Independent review/full suite before the next run.
+Packaging worker is adapting existing bounded runner for2h and durable UID994
+public evidence storage with bounded existing-admin log readback. Artifact quota is
+unverified; do NOT upload a1GiB artifact assuming free storage. No new platform.
 
-Original observer unchanged: activePID2333724/NRestarts0/account/inception/release
-same; public reconciliation02:17:42.973UTC. This is the last direct host check,
-not a private financial-DB audit or a guarantee of present uptime.
+## Usage and research ownership
 
-## Active delegated work — separate worktrees
+`/workspace/poe-pilot/pilot.json` now has127 exact baseline book paths, cumulative
+4742 accounted units,168,284,311 accounted response bytes; uncertainty48,889,856B
+plus disclosed unresolved forced-stop passive tail. Read actual books before use.
+Old HTTP429 and every negative receipt remain unchanged.
+Cloud lease PID172405 (tool session27266), started05:10:39UTC, finite10800s, holds
+both research locks. No competing market job. Do not create duplicate tests.
+Source/input/config must be frozen per segment; append unsettled/settlement records
+before/after a new run, link each exact book once. Latest native WATCH/origin
+checkpoint contains new verified migrations; do not lose them by importing only
+old Cloud status. Original Cloud stopped status remains identity attestation only.
 
--native_flow_capacity: `/workspace/poe-native-candidate-runner`, assembled ledger-
- free continuous discovery→verify→WATCH→native6deep→independent audit→frozen
- predictive decision loop; broad PumpApi WATCH hints retained (no old enrichment).
- Fixing helper-envelope/deferredseed/subscription-drain/quiet-window endpoint
- regressions. First15–30min finite profile, no network before root review.
- Profile256MiB/30minff814f0; defaultproductionlimits unchanged.2hbook-size/start-
- history limit remains separate; do not claim an unusable long profile.
--paper_mode_readiness: `/workspace/poe-reporting-file-delivery`, standardRSA-OAEP
- one-time file delivery for EXISTING reporting-only token, plus bundled deployed
- publisher. GitHubActionsSecrets API403 preserved; no permission bypass/change.
- PublicSPKI/ciphertext only onGitHub; private transport key staysEC2UID994, token
- onlyprivatefile. Tests use synthetictokens; NOactualkey/token transfer executed.
- Root mustreview before hostprepare. No wallet/provider credentials eligible.
--INGUS origin attempt completed:12physicalstarts,527measuredresponsebytes,
- HTTP429/Retry-After10s preserved; strict origin was NOT reached. No retry or
- fabricated migration age. Evidence6d8ad17 cherried856ac22. Global Cloud lease
- isfree; provider cooldown expired03:36:47.118UTC.
--Native runner root review found a silent60s retained-candidate reassessment
- delay, brittle2–4s audit slots, missing older-hint selection, and missing-proof
- selection-head recovery. All four are being corrected BEFORE a new live run;
- target remains each closed10s bucket with genuine full60s windows. Proposed
- first trial audit uses one bounded1000-row page, complete-or-unusable, preserving
- strict slot fences and timestamps. No six-pool live pass is claimed.
+## Reporting, actual state
 
-## Reporting / exact boundaries
+Existing Free Render URL/service unchanged. LIVE reporting commit
+`a40c75e7256ffdf4aff720cf79e53a0960252246`, deployment `dep-dbgn8u0ae00c73cugtfg`.
+Original account/channel preserved; dedicated reporting-only credential delivered
+privately through existing authenticated nonroot admin route, no secret in Git/logs.
+Publisher is independent read-only process; actual source facts have separate times.
 
-ExistingRenderFreeURL/service unchanged. Reporting LIVE9161d3849eae1ffa549a6afa2a1c263b6f3d1185,
-deploydep-dbgl96ugekts73889s40. Originalportfolio nevermerged. Dedicated Cloud
-publisher toolsession67306 reads onlystatus+reportingsecret; it is NOTpersistent
-EC2supervision. E69twoRUNNINGcycles matched exactly. Cf8oneRUNNING+actualSTOPPED
-cycle matched; TWO RUNNING cf8cycles were NOT verified, limitation preserved.
-Mobile,401,source/account/inception/stale/stopped behavior were verified earlier.
-Source files and screenshots under migration-age/reporting.
+Second run had28 accepted cycles/18 distinct source frames, max ACKgap15.147s,
+sourceAge24.711s. Two exact running browser matches were NOT retained for this run.
+After verified process-group death, a new **supervisor-generated STOPPED** report
+at05:12:07.539 preserved source counters/fact times and explicitly denied graceful
+shutdown/reconciliation. Original runtime file remains unchanged. Two exact public
+STOPPED cycles matched, mobile390/401/stale behavior verified. Current dashboard
+is STOPPED with old component facts, not a live experimental trader.
+Public sampler PID162309 runs bounded until~07:47, not a market process. Next run
+must compare actual retained source frames with at least two displayed cycles.
 
-No24/72hour acceptance clock has started. No production trading-runtime replacement,
-wallet/funding/signing/transaction simulation/submission/paid service/account reset.
-Persistent PAPER installation still needs a reviewed bundle/recovery route and
-available privileges; no repeated bootstrap or owner action is requested yet.
-Preserve unrelated docs/FUNDING.md,operator/funding/,all financial/history/evidence.
+## Next execution path
 
-Next: review native integrated runner+secure reporting delivery, complete start
-checks and bounded continuous forward trial via EXISTINGnonrootEC2adminroute.
-Continue actual work; don't repeat old captures for favorable samples. Update
-this checkpoint after each material outcome and before session interruption.
+Finish/review shadow mapping +2h packaging; preserve unchanged entry baseline.
+Run a useful source-pinned six-slot candidate interval with selected24h observation,
+strict provenance and separate shadow/baseline labels. Use latest WATCH/origins,
+finite CPU/RSS/disk/network controls and durable evidence. Keep Render truthful.
+Analyze A–I cohorts/unique tokens/unioned coverage; quote/outcome gaps prohibit
+claiming an economic age optimum. Do not start24h acceptance yet. Current candidate
+path has no financial writer; native-to-execution integration/persistent protected
+service access and supported protection capacity are separate remaining gates.
 
-## Actual native integration failure and current repair
-
-Existing nonrootEC2 admin run40631355108/job122628221094/admin8a80d5a ran
-canonical60b9392/bundle02f24f05…29bf for20.651s, then stoppedRPC_FATAL.
-No trade notification/window/assessment occurred. All36 completedHTTP calls
-were200; six valid pools were refreshed29times each, while zero logsSubscribe
-started. A stale loop-time comparison and deferred-service fall-through let
-origin-verification preparation repeatedly preempt required subscription setup.
-Reservation4684 expired after durable persistence but before invocation, and
-localDISPATCH_EXPIRED was incorrectly classified as globalfatal. Repairs are
-underway in separateworktree; this is not a provider-saturation result.
-
-41accountedunits/40provenphysicalstarts/601261measuredresponsebytes plus2MiB
-retaineduncertainty. Exact115-sourcechain linked once; no refunds/reset.
-Completepublicevidence.tar.gz +index/receipts retained under
-evidence/migration-age-20261028/native-setup-40631355108. Originalobserver
-identity/PID/restarts unchanged at04:16aftercheck. PrivatefinancialDB notread.
-
-Dedicatedreportingfile is installed privatelyUID994; one-time transportkey
-deleted after verifiedinstallation. Reporting-onlyRendera40c75e is LIVE via
-dep-dbgn8u0ae00c73cugtfg04:06:03UTC, sameFreeURL/service/originalaccount.
-Two actual running source ACKs occurred during failedsetup, followed by accepted
-actualSTOPPED snapshot04:16:30.220; no market-window pass is implied. New source
-fact times are separate from status/publisher heartbeat. OldCloudpublisher was
-stopped before receiverdeployment; current reporting comes from bounded EC2
-job only. It ended truthfully. Next correctedjob will retain actual source
-snapshot samples for exact runningcounter comparison. No24hourclock started.
+Preserve unrelated `docs/FUNDING.md`, `operator/funding/`, all ledger/history and
+concurrent work. Do not modify active pinned source during a measured segment.

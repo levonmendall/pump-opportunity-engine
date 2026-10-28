@@ -1,0 +1,139 @@
+{
+  "checkedAt": "2026-10-28T04:45:43.271Z",
+  "httpStatus": 200,
+  "receiver": {
+    "state": "reporting",
+    "snapshot": {
+      "schemaVersion": 1,
+      "kind": "experimental-pilot",
+      "authoritative": false,
+      "liveTrading": false,
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "native-candidates-20261028044424358",
+      "generatedAt": 1793162726631,
+      "source": {
+        "release": "bb6fd9fa899c6a4d07c19643e0cff86b42deb408",
+        "strategy": "persistent-buying-v0-unfrozen",
+        "sha256": "ccb42f1d629aeaaa6760872064e98936692584608b1dd01b60da590ebf2b916a"
+      },
+      "running": true,
+      "entriesEnabled": false,
+      "status": "candidate-only native observation; warming six closed buckets; no financial execution",
+      "mode": "candidate-evaluation",
+      "financialExecutionAuthorized": false,
+      "observationAgePolicy": {
+        "version": "observation-age-v1",
+        "minimumObservationAgeMs": 0,
+        "recentMaximumAgeMs": 7200000,
+        "selectedOlderMaximumAgeMs": 21600000
+      },
+      "sourceTimes": {
+        "lastMarketNotificationAt": 1793162724626,
+        "lastFreshSupportAt": 1793162715714,
+        "lastBankClockAt": 1793162715000,
+        "lastAuditAt": null,
+        "lastPredictiveAt": null,
+        "financialReconciliationAt": null
+      },
+      "portfolio": null,
+      "accounting": null,
+      "funnel": {
+        "discovered": 1,
+        "supported": null,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0,
+        "verifiedMigrationOrigins": 52,
+        "admitted": 424,
+        "usableWindows": 0
+      },
+      "metrics": {
+        "rpcRequests": 33,
+        "providerEvents": 34504,
+        "normalizedTrades": 51,
+        "eventLoopLagMs": 24.838143,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeMs": null,
+        "protectionBreaches": null,
+        "unavailableChecks": null,
+        "streamBytes": 54609779
+      },
+      "decisions": [],
+      "refusals": [
+        {
+          "reason": "migration-verification-unavailable",
+          "count": 1
+        },
+        {
+          "reason": "verification-queue-full",
+          "count": 0
+        },
+        {
+          "reason": "native-quality-gaps",
+          "count": 0
+        },
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 0
+        },
+        {
+          "reason": "independent-audit-unusable",
+          "count": 0
+        },
+        {
+          "reason": "predictive-window-deadline-missed",
+          "count": 0
+        }
+      ],
+      "watch": {
+        "known": 113,
+        "watch": 16,
+        "eligibleKnown": 5,
+        "deepActive": 6,
+        "maximumDeep": 6,
+        "queued": 0,
+        "promoted": 424,
+        "repromoted": 330,
+        "demoted": 418,
+        "expired": 102,
+        "capacityExclusions": 0,
+        "structuralExclusions": 13,
+        "completeWindows": 415,
+        "strategyRejections": 0,
+        "incompleteDataExclusions": 0,
+        "enrichmentDeadlineFailures": 0,
+        "predictiveAssessments": 0,
+        "predictiveFailures": 0,
+        "observationEligibleKnown": 21,
+        "observationQueued": 1,
+        "maximumOlderResearchIdentities": 24,
+        "ageCohorts": {
+          "preEntry": 1,
+          "entryEligible": 5,
+          "olderSelected": 15
+        },
+        "waitMs": {
+          "mean": 0,
+          "maximum": 0
+        },
+        "promotionWaitMs": {
+          "mean": 1100560.5340314137,
+          "maximum": 6515299
+        }
+      }
+    },
+    "receivedAt": 1793162727350,
+    "lastContactAt": 1793162742472,
+    "sourceAgeMs": 16601,
+    "receiverAgeMs": 15882,
+    "lastContactAgeMs": 760,
+    "sourceStale": false,
+    "publisherConnected": true
+  }
+}
