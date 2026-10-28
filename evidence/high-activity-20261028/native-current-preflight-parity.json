@@ -1,0 +1,126 @@
+{
+  "classification": "OFFLINE exact same retained preflight/current-selection transaction parity; not a matched forward-notification or completeness audit",
+  "networkRequests": 0,
+  "rows": [
+    {
+      "signature": "5q1H3DkPh3LfxUSEtVxRWUeg6UF6yYL6hgpnxamW3txksXzwKHKEuNwxqTCo8xkdiiwmfffjrrpVqpNnqNQoHCx3",
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "sourceDirectory": "pilot-native-prepare-20261028011313592",
+      "rpcAvailableAt": 1793149994011,
+      "logEvents": 1,
+      "fullEvents": 1,
+      "economicParity": true,
+      "transferChecks": [
+        {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        }
+      ],
+      "instructionLabels": [
+        "BuyExactQuoteIn"
+      ],
+      "availabilityNotBackdated": true
+    },
+    {
+      "signature": "2w5yA7qspRMm7Ah486pYXn37ZoJG3zM4MLqfFX9Kx5F4yvDcFqVpbpBnts97hTxcaJ9Uwmi8CrpH42eU5PMmioQk",
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "sourceDirectory": "pilot-native-prepare-20261028011313592",
+      "rpcAvailableAt": 1793149994274,
+      "logEvents": 1,
+      "fullEvents": 1,
+      "economicParity": true,
+      "transferChecks": [
+        {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        }
+      ],
+      "instructionLabels": [
+        "BuyExactQuoteIn"
+      ],
+      "availabilityNotBackdated": true
+    },
+    {
+      "signature": "rQmseiwPRTNomddP79Q9EQrLgBpVzkt3rwD6nyaGRe1jDcQ2QyQ2vA38GbDMkf9vHj5rocPqChibjLH9g8MTPVo",
+      "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+      "pool": "CztHycQsHC2BuYLFDDuveVAJGgJAjN74E2hUSQGFGcYY",
+      "sourceDirectory": "pilot-native-prepare-20261028011313592",
+      "rpcAvailableAt": 1793149995010,
+      "logEvents": 1,
+      "fullEvents": 1,
+      "economicParity": true,
+      "transferChecks": [
+        {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        }
+      ],
+      "instructionLabels": [
+        "Sell"
+      ],
+      "availabilityNotBackdated": true
+    },
+    {
+      "signature": "3kuKurM6toEyNPHiUwcByrnLMiFW112iLzzF6viDV9yVwzJ8rQ5S7Vqtrzr5LT62qL14wZ9Vqt5Ast1z5PQCvGqr",
+      "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+      "pool": "CztHycQsHC2BuYLFDDuveVAJGgJAjN74E2hUSQGFGcYY",
+      "sourceDirectory": "pilot-native-prepare-20261028011313592",
+      "rpcAvailableAt": 1793149995271,
+      "logEvents": 1,
+      "fullEvents": 1,
+      "economicParity": true,
+      "transferChecks": [
+        {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        }
+      ],
+      "instructionLabels": [
+        "SellV2"
+      ],
+      "availabilityNotBackdated": true
+    },
+    {
+      "signature": "2pmxz341oUKJ3EVm2Hcb3StFCtMoAu4PBAPCZLn7xnuFEevhuvJEnMEfGTX5Udbtifb1h4iRVzeMG9WqZ5GkdDfL",
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "sourceDirectory": "native-flow-20261028011331673",
+      "rpcAvailableAt": 1793150012849,
+      "logEvents": 1,
+      "fullEvents": 1,
+      "economicParity": true,
+      "transferChecks": [
+        {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        }
+      ],
+      "instructionLabels": [
+        "BuyExactQuoteIn"
+      ],
+      "availabilityNotBackdated": true
+    },
+    {
+      "signature": "fWjPkz7uVT5nWbb5wC8wkt8KSbha4fpAjwsn7vgngQN8PiR4mLUZyPEJ7HWsoGiGisPM65MkFFr9LxfVGF9c7Cv",
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "sourceDirectory": "native-flow-20261028012322144",
+      "rpcAvailableAt": 1793150603327,
+      "logEvents": 1,
+      "fullEvents": 1,
+      "economicParity": true,
+      "transferChecks": [
+        {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        }
+      ],
+      "instructionLabels": [
+        "BuyExactQuoteIn"
+      ],
+      "availabilityNotBackdated": true
+    }
+  ]
+}

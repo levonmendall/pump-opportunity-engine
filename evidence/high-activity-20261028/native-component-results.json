@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-28T01:18:34.589225+00:00",
+  "generatedAt": "2026-10-28T01:29:19.027017+00:00",
   "classification": "REUSABLE_V2_FIELD_MILESTONE; COMPLETE_FORWARD_WINDOW_NOT_ESTABLISHED",
   "phases": [
     {
@@ -61,12 +61,32 @@
       "failure": "COMPONENT_WS_TRANSPORT",
       "settled": true,
       "elapsedMs": 29441
+    },
+    {
+      "label": "separate-worker-XGO-current-preparation",
+      "path": "evidence/high-activity-20261028/pilot-xgo-prepare-20261028012145775/receipt.json",
+      "runId": "pilot-xgo-prepare-20261028012145775",
+      "units": 1,
+      "measuredBytes": 4544,
+      "failure": "XGO_NO_SUCCESSFUL_SUPPORTED_SWAP_WITHIN30S_NO_ORIGIN_SEARCH",
+      "settled": true,
+      "elapsedMs": 332
+    },
+    {
+      "label": "heartbeat-corrected-partial-invalid-close",
+      "path": "evidence/high-activity-20261028/native-flow-20261028012322144/receipt.json",
+      "runId": "pilot-native-flow-20261028012322144",
+      "units": 15,
+      "measuredBytes": 87929,
+      "failure": "COMPONENT_WS_TRANSPORT",
+      "settled": true,
+      "elapsedMs": 55965
     }
   ],
   "linkedUsage": {
-    "newPhysicalUnits": 39,
-    "measuredResponseBytes": 1410066,
-    "cumulativePhysicalUnits": 3664,
+    "newPhysicalUnits": 55,
+    "measuredResponseBytes": 1502539,
+    "cumulativePhysicalUnits": 3680,
     "historicalUncertaintyPreserved": true
   },
   "established": [
@@ -86,9 +106,34 @@
     "path": "evidence/high-activity-20261028/native-flow-20261028011331673/receipt.json",
     "defect": "Early-failure receipt features were computed at a future planned featureEnd, showing a meaningless future quiet-window placeholder. Result was correctly UNAVAILABLE/capture-ended-before-required-target. Original receipt unchanged; prospective harness now only computes at actual assessmentAt and clamps logical cutoff on close. Do not treat placeholder sufficientlyObserved as completed market evidence."
   },
-  "nextTechnicalQuestion": "Can a corrected heartbeat/diagnostic transport sustain a complete actual60-second v2 window with independently bounded signature coverage?",
+  "nextTechnicalQuestion": "Why does the authorized publicWS path emit malformed close frames despite successful ping/pong, and can a valid transport preserve a complete confirmed feature window?",
   "financialWriterOpened": false,
   "productionChanged": false,
   "apiFees": "Public read-only endpoints; no paid provider activated",
-  "infrastructureTransferCost": "Unverified, separate from API fees"
+  "infrastructureTransferCost": "Unverified, separate from API fees",
+  "latestTransportFinding": {
+    "actualErrorName": "RangeError",
+    "actualErrorCode": "WS_ERR_INVALID_CLOSE_CODE",
+    "abnormalClose": 1006,
+    "phaseElapsedMs": 55965,
+    "socketLifetimeMs": 54354,
+    "heartbeatRoundTripMs": [
+      40,
+      34,
+      30,
+      33,
+      36
+    ],
+    "conclusion": "Keepalive alone did not repair the public-WebSocket path. Malformed upstream close frame is observed; exact upstream node/proxy cause is not established. No rate-limit response occurred. No full60-second native window or continuous-protection claim is valid.",
+    "nextDecision": "Diagnose this specific transport-path incompatibility or validate the same targeted publicWS from already-authorized infrastructure; do not disable frame validation or repeatedly rerun until favorable."
+  },
+  "latestLiveTradeEvidence": {
+    "successfulNotifications": 5,
+    "failedTransactionsExcluded": 2,
+    "successfulParserGaps": 0,
+    "completeVerifiedWindows": 0,
+    "predictiveAssessment": "UNAVAILABLE/capture-ended-before-required-target",
+    "featuresAsOfActualWallClock": true,
+    "currentPreflightParity": "native-current-preflight-parity.json:6retained actual transaction samples,all exact economic/fullmapper and base/userQuote transfer parity; these are preflight/selection samples,not matched live notification completeness."
+  }
 }
