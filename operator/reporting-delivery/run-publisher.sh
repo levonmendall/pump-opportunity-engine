@@ -32,7 +32,7 @@ manifest=$script_dir/dist/manifest.json
 /usr/bin/env -i /usr/bin/prlimit --core=0:0 -- "$node_path" --permission --allow-fs-read="$bundle" --allow-fs-read="$manifest" --input-type=module -e '
 import {readFileSync} from "node:fs"; import {createHash} from "node:crypto";
 const [bundle,manifest]=process.argv.slice(1),m=JSON.parse(readFileSync(manifest,"utf8")),bytes=readFileSync(bundle),[major,minor]=process.versions.node.split(".").map(Number);
-if(major<24||major===24&&minor<19||m.schemaVersion!==1||m.sourceRelease!=="9161d3849eae1ffa549a6afa2a1c263b6f3d1185"||m.destination!=="https://meme-machine-dashboard-staging.onrender.com/api/pilot"||m.bundle.file!=="publisher.mjs"||m.bundle.bytes!==bytes.length||bytes.length>131072||m.bundle.sha256!==createHash("sha256").update(bytes).digest("hex"))process.exit(1);
+if(major<24||major===24&&minor<19||m.schemaVersion!==1||m.sourceRelease!=="a40c75e7256ffdf4aff720cf79e53a0960252246"||m.destination!=="https://meme-machine-dashboard-staging.onrender.com/api/pilot"||m.bundle.file!=="publisher.mjs"||m.bundle.bytes!==bytes.length||bytes.length>131072||m.bundle.sha256!==createHash("sha256").update(bytes).digest("hex"))process.exit(1);
 ' "$bundle" "$manifest" >/dev/null 2>&1 || fail
 permissions=(--permission --allow-fs-read="$bundle" --allow-fs-read="$status_file" --allow-fs-read="$secret_file" --max-old-space-size=64 --disable-proto=throw)
 # No HOME, NODE_OPTIONS, cloud credentials, wallet/provider variables, or inherited proxies.

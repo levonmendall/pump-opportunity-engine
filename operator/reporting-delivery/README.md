@@ -37,7 +37,7 @@ The context expires after30minutes from receiver preparation. Expiry, unexpected
 
 ## Exact deployed publisher bundle
 
-`build-publisher.mjs` pins the already deployed reporting commit `9161d3849eae1ffa549a6afa2a1c263b6f3d1185`. It bundles that existing publisher and projector/validator with esbuild0.27.7, producing only standard-library runtime imports, `dist/publisher.mjs` and a public source/hash manifest. No provider SDK, wallet code or ledger code is included. Build code verifies all exact deployed source bytes before bundling. Current bundle SHA256 is `687c6af1e55f44cd8836fb1c37b4f59af5167318c02c99f8688529f02fd852f2` (28,886bytes).
+`build-publisher.mjs` pins the already deployed reporting commit `a40c75e7256ffdf4aff720cf79e53a0960252246`. It bundles that existing publisher and projector/validator with esbuild0.27.7, producing only standard-library runtime imports, `dist/publisher.mjs` and a public source/hash manifest. No provider SDK, wallet code or ledger code is included. Build code requires an explicit exact reporting checkout and verifies its three source files against the pinned Git blobs before bundling. It does not read reporting source from the research checkout or require those files to be cherry-picked there. The standalone installed artifact needs neither checkout nor build dependencies. The prior9161bundle is preserved unchanged in commit `ef8e6491284d90e56a6803f96e0eb1408d643a1b`; this commit updates only operator artifacts. Current bundle SHA256 is `649f4cc27f74f3aa53fcc831a3437b7e3d9eb8eef63896782b5b451aba1427eb` (30,148bytes).
 
 `run-publisher.sh` requires explicit absolute Node24.19+ path, actual owner-private native status path, installed reporting-secret path, actual account ID and inception. It clears inherited environment/credentials and gives Node filesystem-read permission only for the reviewed bundle, that status file and that reporting file; no filesystem-write/child/worker permission. It preserves the fixed existing HTTPS receiver and validates account/source data through the existing projector. The publisher remains a separate process from market observation or financial management.
 
@@ -54,10 +54,12 @@ Use `--once` for one real authenticated report or `--watch` for the existing bou
 ## Offline validation
 
 ```bash
-node operator/reporting-delivery/build-publisher.mjs
+node operator/reporting-delivery/build-publisher.mjs --source-checkout /absolute/exact-reporting-checkout
 node --test operator/reporting-delivery/reporting-token-transfer.test.mjs
-node --import tsx --test operator/reporting-delivery/publisher-bundle.test.mjs
+POE_REPORTING_SOURCE_CHECKOUT=/absolute/exact-reporting-checkout node --import tsx --test operator/reporting-delivery/publisher-bundle.test.mjs
 bash -n operator/reporting-delivery/run-publisher.sh
 ```
+
+The public reporting checkout must contain exactly the a40release source and compiled `dist/src/pilot-telemetry.js` for independent parity tests; the builder reads the pinned TypeScript directly. The optional `native-projection-compatibility.test.mjs` tests use the explicitly identified `/workspace/poe-native-candidate-runner` checkout (projection source bytes pinned6b84c2e), not an assumed research-tree implementation. These four synthetic checks verify native source times pass through the new bundle, including null financial reconciliation. Legacy publishers without source times remain supported by the receiver.
 
 The synthetic tests prove roundtrip/context binding, bounds, owner/mode/link checks, immutable conflicting credentials, interrupted temporary-state preservation, publisher parity, no transport in verify-only, clean environment and restricted filesystem/process access. Workflow YAML and embedded Python/shell are compiled offline. These checks do not constitute an EC2 installation, successful credential delivery, uninterrupted operation, market coverage or trading evidence. Key generation, decryption and the publisher/preflight run with `prlimit --core=0:0` so credential-bearing processes cannot leave core files. No new provider/hosting expense or plan change is involved; existing infrastructure/transfer costs remain separate.

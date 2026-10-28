@@ -148,6 +148,7 @@ var stages = ["discovered", "supported", "sufficientlyObserved", "evaluated", "q
 var metricNames = ["rpcRequests", "providerEvents", "normalizedTrades", "eventLoopLagMs", "maximumCompletedGapMs", "maximumQuoteAgeMs", "protectionBreaches", "unavailableChecks", "streamBytes"];
 var watchCounts = ["known", "watch", "eligibleKnown", "deepActive", "maximumDeep", "queued", "promoted", "repromoted", "demoted", "expired", "capacityExclusions", "structuralExclusions", "completeWindows", "strategyRejections", "incompleteDataExclusions", "enrichmentDeadlineFailures"];
 var featureCounts = ["predictiveAssessments", "predictiveFailures"];
+var sourceTimeNames = ["lastMarketNotificationAt", "lastFreshSupportAt", "lastBankClockAt", "lastAuditAt", "lastPredictiveAt", "financialReconciliationAt"];
 var observationWatchCounts = ["observationEligibleKnown", "observationQueued", "maximumOlderResearchIdentities"];
 var ageCohortNames = ["preEntry", "entryEligible", "olderSelected"];
 function object2(x) {
@@ -249,6 +250,21 @@ function projectObservationAgePolicy(value) {
   const policy = object2(value);
   return validateObservationAgePolicy({ version: policy.version, minimumObservationAgeMs: policy.minimumObservationAgeMs, recentMaximumAgeMs: policy.recentMaximumAgeMs, selectedOlderMaximumAgeMs: policy.selectedOlderMaximumAgeMs });
 }
+function validateSourceTimes(value, generatedAt) {
+  const times = object2(value);
+  keys(times, [...sourceTimeNames]);
+  for (const key of sourceTimeNames) {
+    if (!Object.hasOwn(times, key)) throw Error("missing source fact timestamp");
+    const at = integer(times[key]);
+    if (at !== null && at > generatedAt) throw Error("source fact timestamp newer than generatedAt");
+  }
+  return times;
+}
+function projectSourceTimes(value, generatedAt) {
+  if (value === null) return null;
+  const times = object2(value);
+  return validateSourceTimes(Object.fromEntries(sourceTimeNames.map((key) => [key, integer(times[key])])), generatedAt);
+}
 function projectPilotStatus(value) {
   const p = object2(value);
   if (p.experimental !== true || p.authoritative !== false || p.liveTradingEnabled !== false) throw new Error("isolated PAPER pilot required");
@@ -268,6 +284,7 @@ function projectPilotStatus(value) {
     status: safeText(p.status),
     ...p.mode === void 0 ? {} : { mode: p.mode, financialExecutionAuthorized: bool2(p.financialExecutionAuthorized) },
     ...p.observationAgePolicy === void 0 ? {} : { observationAgePolicy: projectObservationAgePolicy(p.observationAgePolicy) },
+    ...p.sourceTimes === void 0 ? {} : { sourceTimes: projectSourceTimes(p.sourceTimes, integer(p.generatedAt, false)) },
     portfolio: p.mode === "paper" && p.financialExecutionAuthorized === true && p.experimentalPortfolio !== void 0 ? p.experimentalPortfolio : null,
     accounting: p.mode === "paper" && p.financialExecutionAuthorized === true && p.experimentalPortfolio && p.experimentalAccounting !== void 0 ? p.experimentalAccounting : null,
     funnel: Object.fromEntries(stages.map((k) => [k, integer(f[k])])),
@@ -280,7 +297,7 @@ function projectPilotStatus(value) {
 }
 function validatePilotTelemetry(input) {
   const p = object2(input);
-  keys(p, ["schemaVersion", "kind", "authoritative", "liveTrading", "accountId", "inceptionAt", "runId", "generatedAt", "source", "running", "entriesEnabled", "status", "funnel", "metrics", "decisions", "refusals", "watch", "mode", "financialExecutionAuthorized", "portfolio", "accounting", "observationAgePolicy"]);
+  keys(p, ["schemaVersion", "kind", "authoritative", "liveTrading", "accountId", "inceptionAt", "runId", "generatedAt", "source", "running", "entriesEnabled", "status", "funnel", "metrics", "decisions", "refusals", "watch", "mode", "financialExecutionAuthorized", "portfolio", "accounting", "observationAgePolicy", "sourceTimes"]);
   if (p.schemaVersion !== 1 || p.kind !== "experimental-pilot" || p.authoritative !== false || p.liveTrading !== false) throw new Error("invalid pilot identity");
   if (!/^poe-pilot-[a-z0-9-]+$/.test(text2(p.accountId, 100))) throw new Error("pilot account required");
   integer(p.inceptionAt, false);
@@ -324,10 +341,12 @@ function validatePilotTelemetry(input) {
   }
   if (p.watch !== void 0 && p.watch !== null) validateWatch(p.watch);
   if (p.observationAgePolicy !== void 0 && p.observationAgePolicy !== null) validateObservationAgePolicy(p.observationAgePolicy);
+  if (p.sourceTimes !== void 0 && p.sourceTimes !== null) validateSourceTimes(p.sourceTimes, p.generatedAt);
   if (p.mode !== void 0) {
     if (!["candidate-evaluation", "paper"].includes(p.mode)) throw Error("invalid pilot mode");
     bool2(p.financialExecutionAuthorized);
     if (p.mode === "candidate-evaluation" && (p.financialExecutionAuthorized || p.entriesEnabled)) throw Error("candidate mode cannot authorize financial execution");
+    if (p.mode === "candidate-evaluation" && p.sourceTimes !== void 0 && p.sourceTimes !== null && p.sourceTimes.financialReconciliationAt !== null) throw Error("candidate mode cannot claim financial reconciliation");
   } else if (p.financialExecutionAuthorized !== void 0) throw Error("financial mode required");
   if (p.portfolio !== void 0 && p.portfolio !== null) {
     if (p.mode !== "paper" || p.financialExecutionAuthorized !== true) throw Error("explicit PAPER financial mode required");
