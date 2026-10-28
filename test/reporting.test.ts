@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { Script, createContext } from 'node:vm';
 import { createDashboard, type DashboardConfig } from '../src/dashboard.js';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, SnapshotPublisher, validateSnapshot, type ReportingIdentity, type Snapshot } from '../src/reporting.js';
 
@@ -314,4 +315,73 @@ test('dashboard explains observer placeholders, supports mobile refresh, and has
   assert.equal(scripts.length,3);
   for(const match of scripts)assert.doesNotThrow(()=>new Function(match[1]!));
   assert.equal((await app.get('/healthz').then(r=>r.json())).connectivityDiagnostics,1);
+});
+
+
+test('candidate progression sorts counts descending, updates dynamically, and preserves observer stage masking', async t => {
+  const app = await serve(t, { ...config, viewerUser: '', viewerPassword: '', publicViewer: true });
+  const html = await (await app.get('/')).text();
+  const start = html.indexOf('function renderFunnel(f){');
+  const end = html.indexOf('\nfunction renderMetrics(m,source){', start);
+  const wrapperStart = html.indexOf('const originalFunnel=renderFunnel;');
+  const wrapperEnd = html.indexOf('\nrenderMetrics=function(m,source){', wrapperStart);
+  assert.ok(start >= 0 && end > start && wrapperStart > end && wrapperEnd > wrapperStart, 'real browser-rendering functions are present');
+  class Node {
+    textContent = '';
+    className = '';
+    dataset: Record<string,string> = {};
+    style = { width: '' };
+    children: Node[] = [];
+    readonly classes = new Set<string>();
+    readonly classList = { add: (name: string) => { this.classes.add(name); }, contains: (name: string) => this.classes.has(name) };
+    append(...items: Node[]) { this.children.push(...items); }
+    replaceChildren(...items: Node[]) { this.children = items; }
+    querySelectorAll(selector: string): Node[] {
+      const name = selector.replace(/^\./, '');
+      return this.children.flatMap(child => [...(child.className.split(' ').includes(name) ? [child] : []), ...child.querySelectorAll(selector)]);
+    }
+    querySelector(selector: string): Node | null { return this.querySelectorAll(selector)[0] ?? null; }
+  }
+  const root = new Node();
+  let pilotSelected = true;
+  const add = (parent: Node, _tag: string, value?: unknown, className?: string) => {
+    const node = new Node();
+    if (value !== undefined) node.textContent = String(value);
+    node.className = className ?? '';
+    parent.append(node);
+    return node;
+  };
+  const context = createContext({
+    byId: () => root, add, Number, Math, Intl,
+    document: { getElementById: () => root },
+    candidateIntelligenceUsesPilot: () => pilotSelected,
+    observer: () => true, latest: {}, note: () => {},
+  });
+  new Script(html.slice(start,end) + '\n' + html.slice(wrapperStart,wrapperEnd)).runInContext(context);
+  const render = (counts: Record<string,number|null>) =>
+    new Script('renderFunnel(' + JSON.stringify(counts) + ')').runInContext(context);
+  const rows = () => root.querySelectorAll('.funnel-line');
+  const labels = () => rows().map(node => node.querySelector('.funnel-name')!.textContent);
+  const count = (key: string) => rows().find(row => row.dataset.funnelStage === key)!.querySelector('.funnel-count')!.textContent;
+  const order = ['supported','reconciled','evaluated','paperFilled','exited','qualified','discovered','sufficientlyObserved','attempted'];
+  render({discovered:0,supported:15,sufficientlyObserved:null,evaluated:7,qualified:1,attempted:null,paperFilled:2,exited:2,reconciled:10});
+  assert.deepEqual(labels(), ['Supported','Reconciled','Evaluated','PAPER filled','Exited','Qualified','Discovered','Sufficiently observed','Attempted']);
+  assert.deepEqual(rows().map(row => row.dataset.funnelStage),order);
+  assert.equal(count('supported'),'15');
+  assert.equal(count('attempted'),'Not reported');
+  assert.equal(rows()[0]!.querySelector('.funnel-fill')!.style.width,'100.00%');
+  assert.equal(rows().at(-1)!.querySelector('.funnel-fill')!.style.width,'0%');
+  assert.equal(rows().some(row => row.classes.has('inactive-stage')),false,'pilot source never masked by observer logic');
+
+  render({discovered:100,supported:15,sufficientlyObserved:2,evaluated:7,qualified:1,attempted:0,paperFilled:2,exited:2,reconciled:10});
+  assert.equal(labels()[0],'Discovered','latest counts re-sort without refreshing the page');
+  assert.equal(count('attempted'),'0','zero remains distinct from unavailable');
+
+  pilotSelected = false;
+  render({discovered:0,supported:15,sufficientlyObserved:null,evaluated:7,qualified:1,attempted:null,paperFilled:2,exited:2,reconciled:10});
+  assert.equal(labels()[0],'Supported','observer masking does not assume discovered is first');
+  assert.equal(count('supported'),'NOT ACTIVE');
+  assert.equal(count('discovered'),'0');
+  assert.equal(rows().find(row => row.dataset.funnelStage === 'discovered')!.classes.has('inactive-stage'),false);
+  assert.ok(rows().filter(row => row.dataset.funnelStage !== 'discovered').every(row => row.classes.has('inactive-stage')));
 });

@@ -239,8 +239,11 @@ function renderTable(id,heads,rows,emptyTitle,emptyBody){
 function renderFunnel(f){
  const el=byId('funnel');el.replaceChildren();const outer=add(el,'div',undefined,'funnel-grid');
  const fields=[['discovered','Discovered'],['supported','Supported'],['sufficientlyObserved','Sufficiently observed'],['evaluated','Evaluated'],['qualified','Qualified'],['attempted','Attempted'],['paperFilled','PAPER filled'],['exited','Exited'],['reconciled','Reconciled']];
- const ceiling=Math.max(1,...fields.map(([k])=>f[k]));
- fields.forEach(([key,label])=>{const row=add(outer,'div',undefined,'funnel-line');add(row,'div',label,'funnel-name');const track=add(row,'div',undefined,'funnel-track');const fill=add(track,'div',undefined,'funnel-fill');fill.style.width=(100*f[key]/ceiling).toFixed(2)+'%';add(row,'div',f[key].toLocaleString('en-US'),'funnel-count')});
+ // Event frequency, not lifecycle sequence. Keep the original order for ties.
+ const ranked=fields.map(([key,label],index)=>({key,label,index,count:Number.isSafeInteger(f[key])&&f[key]>=0?f[key]:null}))
+  .sort((a,b)=>a.count===null?(b.count===null?a.index-b.index:1):b.count===null?-1:b.count-a.count||a.index-b.index);
+ const ceiling=Math.max(1,...ranked.map(item=>item.count??0));
+ ranked.forEach(({key,label,count})=>{const row=add(outer,'div',undefined,'funnel-line');row.dataset.funnelStage=key;add(row,'div',label,'funnel-name');const track=add(row,'div',undefined,'funnel-track');const fill=add(track,'div',undefined,'funnel-fill');fill.style.width=count===null?'0%':(100*count/ceiling).toFixed(2)+'%';add(row,'div',count===null?'Not reported':count.toLocaleString('en-US'),'funnel-count')});
 }
 function renderMetrics(m,source){
  const p=byId('metrics');p.replaceChildren();const grid=add(p,'div',undefined,'metric-grid');

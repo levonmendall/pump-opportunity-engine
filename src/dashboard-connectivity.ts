@@ -86,7 +86,7 @@ renderFunnel=function(f){
  originalFunnel(f);
  const p=document.getElementById('funnel'),pilotSelected=typeof candidateIntelligenceUsesPilot==='function'&&candidateIntelligenceUsesPilot(),isObserver=observer(latest)&&!pilotSelected;
  note('funnelCapability',p,pilotSelected?'Candidate progression is sourced from the separate experimental PAPER pilot. Portfolio balances, positions and P&L remain bound to the authoritative EC2 account.':isObserver?'Only migration discovery is connected in this runtime. Later zero-valued fields are placeholders; they do not mean tokens were evaluated and rejected.':'');
- if(isObserver)Array.from(p.querySelectorAll('.funnel-line')).slice(1).forEach(row=>{row.classList.add('inactive-stage');const n=row.querySelector('.funnel-count');if(n)n.textContent='NOT ACTIVE';const bar=row.querySelector('.funnel-fill');if(bar)bar.style.width='0%'});
+ if(isObserver)Array.from(p.querySelectorAll('.funnel-line')).filter(row=>row.dataset.funnelStage!=='discovered').forEach(row=>{row.classList.add('inactive-stage');const n=row.querySelector('.funnel-count');if(n)n.textContent='NOT ACTIVE';const bar=row.querySelector('.funnel-fill');if(bar)bar.style.width='0%'});
 };
 renderMetrics=function(m,source){
  const p=document.getElementById('metrics');p.replaceChildren();const grid=el(p,'div',undefined,'metric-grid'),isObserver=source.strategy==='UNIMPLEMENTED_FLOW_BLOCKED';
