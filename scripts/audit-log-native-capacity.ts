@@ -23,60 +23,8 @@ function need(value:unknown,reason:string):asserts value {if(!value)throw Error(
 const int=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
 function decimal(value:unknown){need(BN.isBN(value),'INTEGER_MISSING');const s=value.toString(10);need(/^(0|[1-9][0-9]*)$/.test(s),'INTEGER_RANGE');return s;}
 function key(value:any){need(value&&typeof value.toBase58==='function','EVENT_KEY');return value.toBase58() as string;}
-export type LogScope={mint:string;pool:string;supportedPoolEvidence:string};
-export type LogInput={signature:string;slot:number;err:unknown;logs:unknown;commitment:'confirmed'|'finalized';availableAt:number};
-export type LogNativeEvidence={
- version:'log-native-offline-v1-unadopted';normalizedForStrategy:false;
- identity:{namespace:'solana-program-log-v1';signature:string;program:string;logArrayIndex:number};identityKey:string;
- pool:string;mint:string;side:'buy'|'sell';trader:string;tokenUnits:string;curveQuoteLamports:string;userQuoteLamports:string;fees:Record<string,string>;
- invocationDepth:number;rootInvocationOrdinal:number;instructionLabel:string;eventIxName:string|null;eventBytesSha256:string;eventByteLength:number;
- slot:number;commitment:'confirmed'|'finalized';availableAt:number;programClockTimestamp:string;chainBlockTime:null;
- transferChecks:null;compiledInstructionIdentity:null;transactionCompleteness:'NOT_ESTABLISHED';
-};
-/** Parse only declared complete successful transaction log arrays, retaining actual
- * program-log positions. The result deliberately cannot satisfy the current
- * compiled-instruction/TransferChecked evidence contract. */
-export function parseLogNativeEvidence(input:LogInput,scopes:readonly LogScope[]):LogNativeEvidence[]{
- need(input.err===null,'TRANSACTION_NOT_SUCCESSFUL');need(input.commitment==='confirmed'||input.commitment==='finalized','REQUEST_COMMITMENT');
- need(int(input.slot)&&int(input.availableAt),'AVAILABILITY');
- need(typeof input.signature==='string'&&bs58.decode(input.signature).length===64,'SIGNATURE');
- need(Array.isArray(input.logs)&&input.logs.length<=4096&&input.logs.every(s=>typeof s==='string'&&Buffer.byteLength(s)<=32768)&&Buffer.byteLength(JSON.stringify(input.logs))<=512*1024,'LOG_ENVELOPE');
- need(scopes.length>0&&scopes.length<=20,'SCOPES');const scopeMap=new Map<string,LogScope>();
- for(const scope of scopes){need(canonicalPumpPoolPda(new PublicKey(scope.mint)).toBase58()===scope.pool&&typeof scope.supportedPoolEvidence==='string'&&scope.supportedPoolEvidence.length>0&&!scopeMap.has(scope.pool),'VERIFIED_SCOPE_BINDING');scopeMap.set(scope.pool,scope);}
- const stack:Array<{program:string;label:string|null;root:number}>=[],result:LogNativeEvidence[]=[];let rootOrdinal=-1;
- for(let logArrayIndex=0;logArrayIndex<input.logs.length;logArrayIndex++){
-  const line=input.logs[logArrayIndex] as string;
-  need(!/log.*truncat|truncat.*log/i.test(line),'TRUNCATED');
-  const invoke=/^Program ([1-9A-HJ-NP-Za-km-z]+) invoke \[(\d+)\]$/.exec(line);
-  const end=/^Program ([1-9A-HJ-NP-Za-km-z]+) (success|failed:.*)$/.exec(line);
-  if(invoke){const depth=Number(invoke[2]);need(depth===stack.length+1&&depth>=1&&depth<=16,'INVOCATION_STACK');if(depth===1)rootOrdinal++;stack.push({program:invoke[1]!,label:null,root:rootOrdinal});continue;}
-  if(end){need(stack.length>0&&stack.at(-1)!.program===end[1],'INVOCATION_END');need(end[2]==='success','FAILED_INVOCATION_UNSUPPORTED');stack.pop();continue;}
-  const frame=stack.at(-1);if(frame?.program!==PROGRAM)continue;
-  if(line.startsWith('Program log: Instruction: ')){need(frame.label===null,'DUPLICATE_INSTRUCTION_LABEL');frame.label=line.slice('Program log: Instruction: '.length);continue;}
-  if(!line.startsWith('Program data: '))continue;
-  const encoded=line.slice('Program data: '.length);need(/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)&&encoded.length%4===0,'EVENT_BASE64');
-  const bytes=Buffer.from(encoded,'base64'),event=coder.events.decode(encoded);need(event,'UNRECOGNIZED_PROGRAM_DATA');
-  need(coder.types.encode(event.name,event.data).equals(bytes.subarray(8)),'EVENT_LAYOUT');
-  if(!['BuyEvent','SellEvent'].includes(event.name))continue;
-  const e=event.data as any,pool=key(e.pool),scope=scopeMap.get(pool);if(!scope)continue;
-  const instruction=frame.label===null?undefined:LABELS[frame.label];need(instruction,'UNSUPPORTED_SWAP_LABEL');
-  const side=event.name==='BuyEvent'?'buy':'sell';need(side==='buy'?instruction.startsWith('buy'):instruction.startsWith('sell'),'DIRECTION_LABEL');
-  // Exact-quote Buy conventions were established using executed transfers. Field
-  // names alone suggest the reverse and must not silently select the convention.
-  const ixName=typeof e.ix_name==='string'?e.ix_name:null;
-  if(side==='buy')need(ixName===instruction,'BUY_VARIANT_AGREEMENT');
-  const exact=side==='buy'&&['buy_exact_quote_in','buy_exact_quote_in_v2'].includes(instruction);
-  const economics={tokenUnits:decimal(e[side==='buy'?'base_amount_out':'base_amount_in']),curveQuoteLamports:decimal(e[side==='buy'?(exact?'user_quote_amount_in':'quote_amount_in'):'quote_amount_out']),userQuoteLamports:decimal(e[side==='buy'?(exact?'quote_amount_in':'user_quote_amount_in'):'user_quote_amount_out']),fees:Object.fromEntries(FEES.map(n=>[n,decimal(e[n])]))};
-  need(BigInt(economics.tokenUnits)>0n&&BigInt(economics.curveQuoteLamports)>0n&&BigInt(economics.userQuoteLamports)>0n,'EMPTY_AMOUNTS');
-  const identity={namespace:'solana-program-log-v1' as const,signature:input.signature,program:PROGRAM,logArrayIndex};
-  result.push({version:'log-native-offline-v1-unadopted',normalizedForStrategy:false,identity,identityKey:[identity.namespace,input.signature,PROGRAM,logArrayIndex].join(':'),pool,mint:scope.mint,side,trader:key(e.user),...economics,invocationDepth:stack.length,rootInvocationOrdinal:frame.root,instructionLabel:frame.label!,eventIxName:ixName,eventBytesSha256:digest(bytes),eventByteLength:bytes.length,slot:input.slot,commitment:input.commitment,availableAt:input.availableAt,programClockTimestamp:e.timestamp.toString(10),chainBlockTime:null,transferChecks:null,compiledInstructionIdentity:null,transactionCompleteness:'NOT_ESTABLISHED'});
- }
- need(stack.length===0,'INCOMPLETE_LOG_STACK');return result;
-}
-export function compareLogToFull(log:LogNativeEvidence,full:MappedTradeEvidence){
- const fields=['pool','mint','side','trader','tokenUnits','curveQuoteLamports','userQuoteLamports'] as const;
- return fields.every(k=>log[k]===full[k])&&FEES.every(k=>log.fees[k]===full.fees[k]);
-}
+import {parseProgramLogEvidence as parseLogNativeEvidence,compareLogToFull,type ProgramLogScope as LogScope,type ProgramLogInput as LogInput,type ProgramLogEvidence as LogNativeEvidence} from '../src/program-log-mapping.js';
+export {parseLogNativeEvidence,compareLogToFull};export type {LogScope,LogInput,LogNativeEvidence};
 
 type Captured={signature:string;mint:string;pool:string;availableAt:number;tx:any;sourcePath:string;sourceLine:number;sourceLineSha256:string};
 async function loadCorpus(runs:string,max=100,frozen?:Array<{signature:string;mint:string}>){

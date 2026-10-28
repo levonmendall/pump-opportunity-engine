@@ -82,3 +82,11 @@ test('legacy24-byte Buy role/event/transfer corruption and unverified26-byte tai
  }
  const unverified26=baselineAudit.refusedTransactionFixtures.filter((r:any)=>baselineAudit.rows.find((row:any)=>row.signature===r.signature).unsupportedInstructions.some((i:any)=>i.actualByteLength===26));assert.equal(unverified26.length,3);for(const r of unverified26)assert.throws(()=>mapConfirmedPumpSwapEvidence(r.transaction,{...r,providerReceivedAt:null,availableAt:r.rpcAvailableAt}),/RELEVANT_AMM_INSTRUCTION_UNSUPPORTED/);
 });
+
+
+test('selected log compression preserves exact recorded bytes and first cutoff precedes settlement',async()=>{
+ const {encodeNativeRawLogs,decodeNativeRawLogs,nativeCutoff}=await import('../scripts/measure-native-flow.js');const logs=records[0].data.transaction.meta.logMessages,encoded=encodeNativeRawLogs(logs);assert.deepEqual(decodeNativeRawLogs(encoded),logs);assert.ok(Buffer.byteLength(encoded)<Buffer.byteLength(JSON.stringify(logs)));assert.throws(()=>decodeNativeRawLogs(encoded.slice(0,-8)));
+ const first=nativeCutoff(70000,null,40800),late=nativeCutoff(first.logicalCutoffAt,first.stopRequestedAt,40900);assert.deepEqual(first,{logicalCutoffAt:40800,stopRequestedAt:40800});assert.deepEqual(late,first,'later loop cleanup never overwrites the first logical stop');
+});
+
+test('native validated admission respects failure, early logical cutoff and exact boundary',async()=>{const{nativeValidatedAdmission}=await import('../scripts/measure-native-flow.js');assert.equal(nativeValidatedAdmission(99,200,100,null,null,false),true);for(const args of [[100,200,100,null,null,false],[99,200,100,'failure',null,false],[99,200,100,null,'soft-stop',false],[99,200,100,null,null,true]] as const)assert.equal(nativeValidatedAdmission(args[0],args[1],args[2],args[3],args[4],args[5]),false);});
