@@ -1,0 +1,70 @@
+{
+  "at": "2026-10-28T20:15:03.030284+00:00",
+  "verifiedSource": "4fb0a7a389fad965cc2202ff71def450a51e0284",
+  "sourceInputsUnchanged": true,
+  "sourceInputCount": 297,
+  "fullSerialSuite": {
+    "pass": 1492,
+    "fail": 0
+  },
+  "build": "PASS",
+  "compile": "PASS",
+  "networkRequests": 0,
+  "realFinancialFilesAccessed": false,
+  "files": [
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/source-identity.json",
+      "bytes": 42974,
+      "sha256": "3b7494c1a9a5cf1816663dcbac3e1c9346a0713b2a13f93d505652118b2e5c48"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/full-suite.txt",
+      "bytes": 176376,
+      "sha256": "383bba4f2429943d6ed801cc45dbb3a23b847719c6d5fb18dab12881f0800c72"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/full-suite-result.json",
+      "bytes": 67,
+      "sha256": "ae912eb43ffa1f9f739f8af2169fb92815bd724ae1cb90953f9a32f6b713b6c6"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/compile.txt",
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    }
+  ],
+  "operatorVerificationAfterReadbackOnlyChange": {
+    "sourceCommit": "073ba928de37815940c8147f4dda4209d28d9636",
+    "supervisorPassed": 27,
+    "readbackPassed": 24,
+    "publisherCompatibilityPassed": 2,
+    "incorrectFirstPublisherInvocation": "Retained failure; missing --import tsx, no source/runtime defect",
+    "files": [
+      {
+        "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/supervisor-tests.txt",
+        "bytes": 126,
+        "sha256": "14447ae08f4061aa8e94f1366c079421d33ec9e0ace434985c7196af6ef64157"
+      },
+      {
+        "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/readback-tests.txt",
+        "bytes": 123,
+        "sha256": "1261789ac399101b0a39c3d383abe05f8681b12da6fa235722b4ebb37b22a449"
+      },
+      {
+        "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/publisher-tests.txt",
+        "bytes": 1515,
+        "sha256": "30112ea030c86f6b7e0c3e9c1fafa28d43d8dd4c5f5443e34f717d0662aca8b6"
+      },
+      {
+        "path": "evidence/continuous-recovery-20261028/integrated-paper-reporting-02/publisher-tests-correct-invocation.txt",
+        "bytes": 358,
+        "sha256": "6918794b9b0a61e363d947efe467cfd6a48fe42f7e758f683032e7f43001ba73"
+      }
+    ]
+  }
+}
