@@ -18,7 +18,7 @@ const decoded=decodeMigrationIdentity(original,{signature:originalSignature,comm
 type FakeScope={mint:string;pool:string;minSlot?:number};
 type State={scope:FakeScope;openedAt:number|null;window:FlowWindow|null;gap:boolean;upper:{slot:number;availableAt:number;bankClockAt:number}|null;lastSyntheticAt:number;notes:NativeNotification[]};
 
-function fixture(config:{shadow?:boolean;maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean;auditRpcError?:string}={}){
+function fixture(config:{shadow?:boolean;maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean;auditRpcError?:string;firstAuditTimeout?:boolean}={}){
  let at=baseAt,allow=true,headroom=20000,stopped=false,supportRequested=false,heartbeatRequested=false,resolveCalls=0,auditCalls=0,physicalBusy=false,lastPhysicalStart=-Infinity,inFlight=0,maximumInFlight=0,syntheticId=100000;
  const states=new Map<string,State>(),retiring=new Set<string>(),records:Array<{kind:string;data:any}>=[],flowActions:string[]=[],rpcCalls:Array<{method:string;params:unknown[];at:number}>=[],added:string[]=[],removed:string[]=[],identities=new Map<string,MigrationIdentity>();
  let runner:NativeCandidateRunner;
@@ -30,7 +30,7 @@ function fixture(config:{shadow?:boolean;maximumDeep?:number;refuseVerification?
  const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,admission?:PilotRpcCallOptions):Promise<T>{
   signal?.throwIfAborted();advanceTo(Math.max(at,lastPhysicalStart+250));assert.ok(admission?.admissionOpen?.());assert.ok(admission?.latestStartAt===undefined||at<=admission.latestStartAt);assert.equal(inFlight,0);assert.equal(method,'getSignaturesForAddress','candidate-only runner makes no financial quote or execution request');
   inFlight++;maximumInFlight=Math.max(maximumInFlight,inFlight);lastPhysicalStart=at;rpcCalls.push({method,params:structuredClone(params),at});
-  try{advanceTo(at+(config.responseDelayMs??25));if(config.auditRpcError)throw Error(config.auditRpcError);const state=[...states.values()].find(s=>s.scope.pool===params[0]);assert.ok(state);const floor=(state.scope.minSlot??original.slot)+100;
+  try{if(config.firstAuditTimeout&&rpcCalls.length===1){assert.equal(admission?.queryTimeoutScope,'independent-history');advanceTo(at+1500);throw Error('PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT');}advanceTo(at+(config.responseDelayMs??25));if(config.auditRpcError)throw Error(config.auditRpcError);const state=[...states.values()].find(s=>s.scope.pool===params[0]);assert.ok(state);const floor=(state.scope.minSlot??original.slot)+100;
    let rows=[...state.notes].reverse().map(n=>({signature:n.signature,slot:n.slot,err:null,blockTime:Math.floor(n.availableAt/1000),confirmationStatus:'confirmed'}));
    if(config.missingAudit)rows.push({signature:sig(9999),slot:floor+50,err:null,blockTime:Math.floor(at/1000)-10,confirmationStatus:'confirmed'});
    rows.push({signature:originalSignature,slot:original.slot,err:null,blockTime:original.blockTime,confirmationStatus:'finalized'});rows.sort((a,b)=>b.slot-a.slot);
@@ -213,4 +213,12 @@ for(const failure of ['none','connection','closed-admission'] as const)test(`dia
  if(failure==='none'){assert.equal(audit.data.result.status,'verified',audit.data.result.reason);assert.equal(audit.data.result.postSnapshotTail.addedSignatures.length,1);assert.equal(audit.data.result.requiredSignatures.includes(sig(881199)),false);const assessment=f.records.find(r=>r.kind==='native-predictive-assessment');assert.ok(assessment);assert.equal(assessment.data.assessment.features.tradeCount,0,'post-target newly ingested buy remains in its actual later open bucket, never backdated into predictive features');assert.equal(f.runner.status().counters.auditedWindows,1);}
  else{assert.equal(audit.data.result.status,'unavailable');assert.equal(audit.data.result.reason,'NATIVE_AUDIT_SOURCE_GENERATION_CHANGED');assert.equal(f.records.some(r=>r.kind==='native-predictive-assessment'),false);assert.equal(f.runner.status().counters.auditedWindows,0);}
  assert.equal(f.runner.status().financialWriterOpened,false);assert.equal(f.runner.status().financialExecutionAuthorized,false);await f.runner.stop();
+});
+
+
+test('SYNTHETIC one pool timeout does not retry its unavailable target or starve five other ready audits',async()=>{
+ const f=fixture({maximumDeep:6,responseDelayMs:700,firstAuditTimeout:true});for(let i=1;i<=6;i++)f.seed(i);await f.steps(30);f.advance(70000);const target=Math.floor(f.now/10000)*10000;
+ for(let i=0;i<80&&f.runner.status().counters.predictiveAssessments<5;i++){await f.runner.step();f.advance(100);}
+ const s=f.runner.status(),results=f.records.filter(r=>r.kind==='native-candidate-window-audit'&&r.data.result.target.endAt===target),assessments=f.records.filter(r=>r.kind==='native-predictive-assessment'&&r.data.windowEndAt===target);
+ assert.equal(results.length,6);assert.equal(results.filter(r=>r.data.result.status==='unavailable').length,1);assert.equal(assessments.length,5);assert.equal(s.counters.auditUnavailable,1);assert.equal(s.counters.decisionDeadlineMisses,0);assert.equal(f.rpcCalls.length,6,'unavailable same-window evidence is not retried or manufactured complete');assert.ok(assessments.every(r=>r.data.at<target+10000));assert.equal(f.maximumInFlight,1);await f.runner.stop();
 });

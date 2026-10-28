@@ -15,7 +15,7 @@ export type PilotRpcProfile='candidate-native-research-v1'|NativeResearchProfile
  * Time/request/chapter and physical scheduling limits remain the legacy ones.
  * A two-hour profile needs separately validated cumulative-book capacity. */
 export const CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE=Object.freeze({version:'candidate-native-research-v1' as const,maximumDurationMs:1800000,maximumUnits:1500,maximumResponseBytes:256*MIB});
-export type PilotRpcCallOptions={latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean};
+export type PilotRpcCallOptions={latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean;/** Query-local timeout backoff for independently scheduled history audits only. Actual throttling/overload remains global. */queryTimeoutScope?:'independent-history'};
 export type PilotRpcOptions={profile?:PilotRpcProfile;directory:string;runId:string;baselinePaths:readonly string[];priorPhysicalSettled:true;priorCooldownUntil?:number;durationMs?:number;maxUnits?:number;maxResponseBytes?:number;chapterMs?:number;chapterUnits?:number;maxChapters?:number;/** Explicit isolated research control; default60, accepted60..90. Not provider entitlement. */maxStartsPerMinute?:number;/** Research-only local gate; default10 retains earlier behavior. */maxStartsPer10s?:number;/** Optional conservative experiment limit, not a provider entitlement. */maxGetTransactionStartsPer10s?:number;record?:(kind:string,data:unknown)=>void;now?:()=>number;monotonic?:()=>number;fetcher?:typeof fetch;sleep?:ComponentBudgetOptions['sleep']};
 export class PilotRpcUnavailable extends Error{
   constructor(readonly code:string,readonly retryAt:number|null=null){super('PILOT_RPC_'+code);this.name='PilotRpcUnavailable';}
@@ -38,7 +38,8 @@ export class PilotRpc{
   private readonly dir:string;private readonly paths:string[];private readonly now:()=>number;private readonly mono:()=>number;
   private readonly metadataBytes:number;private readonly componentProfile:NativeResearchProfile['version']|undefined;private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly units:number;private readonly responseBytes:number;private readonly chapterMs:number;private readonly chapterUnits:number;private readonly maximumChapters:number;private readonly startsPerMinute:number;private readonly startsPer10s:number;private readonly transactionStartsPer10s:number|undefined;
   private readonly initial:ComponentBaseline;private baseline:ComponentBaseline;private budget:ComponentBudget|undefined;private transport:ComponentTransport|undefined;
-  private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;private controlCooldownMono=0;
+  private chapter=0;private active=false;private closed=false;private fatal:string|null=null;private cooldown=0;private cooldownMono=0;private failures=0;private pendingRetryAfter:number|null=null;private pendingHttpStatus:number|null=null;private inheritedUncertainty:number;private controlFailure=false;private controlCooldown=0;private controlCooldownMono=0;
+  private readonly queryTimeouts=new Map<string,{failures:number;until:number;untilMono:number;failedAt:number}>();private recentQueryTimeouts:Array<{key:string;at:number}>=[];private isolatedQueryTimeouts=0;private queryTimeoutEscalations=0;
   private methodStarts:Array<{at:number;origin:'inherited-unknown'|'getTransaction'}>=[];private methodRefusals=0;
   private derivedTimer:ReturnType<typeof setTimeout>|null=null;private derivedDirtyAt:number|null=null;private derivedDirtyMono:number|null=null;private derivedGeneratedAt:number|null=null;private derivedGeneratedMono:number|null=null;
   private readonly derivedPersistence={maximumDelayMs:1000,passiveReceiptCalls:0,coalescedPassiveReceipts:0,timerFlushes:0,flushFailures:0,lastFailureAt:null as number|null,maximumObservedDirtyAgeMs:0};
@@ -134,21 +135,21 @@ export class PilotRpc{
     const path=join(this.dir,'chapter-'+String(index).padStart(3,'0')+'.json');this.controlFailure=false;
     this.budget=new ComponentBudget({...(this.componentProfile===undefined?{}:{profile:this.componentProfile}),statePath:path,grantId:this.options.runId+'-'+index,baseline:this.baseline,startedAt:at,totalMs:Math.min(this.chapterMs,Math.max(1,Math.floor(this.remainingMs()))),limits:{maxNewUnits:Math.min(this.chapterUnits,remainingUnits),maxCumulativeUnits:this.initial.calls+this.units,maxHttpBytes:remainingBytes,maxWsBytes:remainingBytes,maxCombinedBytes:remainingBytes,maxCumulativeBytes:this.initial.bytes+this.responseBytes,minSpacingMs:250,maxStartsPerMinute:this.startsPerMinute,maxStartsPer10s:this.startsPer10s},now:this.now,monotonic:this.mono,sleep:this.options.sleep,record:(kind,data)=>{
       this.trackMethodStart(kind,data);
-      if(kind==='http-headers'){const h=data as {status:number;retryAfter:unknown;at:number};if(h.status===429)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);}
+      if(kind==='http-headers'){const h=data as {status:number;retryAfter:unknown;at:number};this.observeHttpHeaders(h);}
       this.emit(kind,data);
     }});
     this.transport=new ComponentTransport(this.budget,(kind,data)=>{
-      if(kind==='http-headers'){const h=data as {status:number;retryAfter:unknown;at:number};if(h.status===429)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);}
+      if(kind==='http-headers'){const h=data as {status:number;retryAfter:unknown;at:number};this.observeHttpHeaders(h);}
       this.emit(kind,data);
     },()=>{},this.now,this.options.fetcher);this.persist();
   }
-  private async perform<T>(work:(options:PilotRpcCallOptions)=>Promise<T>,signal:AbortSignal|undefined,options:PilotRpcCallOptions,domain:'rpc'|'control'):Promise<T>{
+  private async perform<T>(work:(options:PilotRpcCallOptions)=>Promise<T>,signal:AbortSignal|undefined,options:PilotRpcCallOptions,domain:'rpc'|'control',queryKey?:string):Promise<T>{
     if(signal?.aborted)throw new PilotRpcUnavailable('ABORTED');
-    this.openChapter(domain);this.active=true;this.pendingRetryAfter=null;
+    this.openChapter(domain);this.active=true;this.pendingRetryAfter=null;this.pendingHttpStatus=null;
     try{
       const remaining=Math.floor(this.remainingMs()),timeout=options.timeoutMs??1000;if(!int(timeout)||timeout<1||timeout>1500)throw new PilotRpcUnavailable('INVALID_TIMEOUT');
       const result=await work({...options,timeoutMs:Math.max(1,Math.min(timeout,remaining)),admissionOpen:()=>this.remainingMs()>0&&(!options.admissionOpen||options.admissionOpen())});
-      if(domain==='rpc')this.failures=0;return result;
+      if(domain==='rpc')this.failures=0;if(queryKey)this.queryTimeouts.delete(queryKey);return result;
     }catch(error){
       const code=safe(error),u=this.current();
       const refusalReason=u?.haltedReason??code;
@@ -158,8 +159,11 @@ export class PilotRpc{
         const globalFailure=/^COMPONENT_(STORAGE|DIAGNOSTIC|CLOCK|MONOTONIC|RESPONSE_|INVALID_)/.test(u.haltedReason);
         if(domain==='control'&&!globalFailure){
           this.controlFailure=true;this.emit('pilot-data-control-unavailable',{at:this.now(),code:u.haltedReason,controlCooldownUntil:this.controlCooldown,publicRpcCooldownUnchanged:true,physicalSettled:u.inFlight===0,reservationsRetained:u.uncertainResponseBytes});
+        }else if(queryKey&&u.haltedReason==='COMPONENT_PHYSICAL_TIMEOUT'&&(this.pendingHttpStatus===null||this.pendingHttpStatus===200)&&this.isolateQueryTimeout(queryKey,u)){
+          // Failed candidate history is unavailable; this never clears actual
+          // physical occupancy, reservations, pacing or provider Retry-After.
         }else if(recoverable(u.haltedReason)){
-          this.failures++;const backoff=[2000,5000,10000,20000,40000,60000][Math.min(5,this.failures-1)]!,until=code==='COMPONENT_HTTP_429'||u.haltedReason==='COMPONENT_HTTP_429'?this.pendingRetryAfter??this.now()+65000:this.now()+backoff;
+          this.failures++;const backoff=[2000,5000,10000,20000,40000,60000][Math.min(5,this.failures-1)]!,until=code==='COMPONENT_HTTP_429'||u.haltedReason==='COMPONENT_HTTP_429'?this.pendingRetryAfter??this.now()+65000:Math.max(this.now()+backoff,this.pendingRetryAfter??0);
           this.cooldown=Math.max(this.cooldown,until);this.cooldownMono=Math.max(this.cooldownMono,this.mono()+Math.max(0,until-this.now()));
           this.emit('pilot-rpc-unavailable',{at:this.now(),code:u.haltedReason,cooldownUntil:this.cooldown,physicalSettled:u.inFlight===0,reservationsRetained:u.uncertainResponseBytes});
         }else if(!['COMPONENT_UNIT_CAP','COMPONENT_TIME_CAP'].includes(u.haltedReason))this.fatal=u.haltedReason;
@@ -167,11 +171,38 @@ export class PilotRpc{
       throw error instanceof PilotRpcUnavailable?error:new PilotRpcUnavailable(code,this.cooldown||null);
     }finally{this.active=false;try{this.persist();}catch{this.fatal='STORAGE_UNAVAILABLE';throw new PilotRpcUnavailable('STORAGE_UNAVAILABLE');}}
   }
+  private observeHttpHeaders(h:{status:number;retryAfter:unknown;at:number}){
+    this.pendingHttpStatus=h.status;
+    const throttle=h.status===429,unavailable=[502,503,504].includes(h.status);
+    if(!throttle&&!unavailable)return;
+    if(throttle||h.retryAfter!==null&&h.retryAfter!==undefined)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);
+    // Headers can arrive during late physical settlement after perform() has
+    // already returned its logical timeout. The original gate is still owned.
+    // Actual throttle/overload must take effect before that slot can be reused.
+    if(throttle||!this.active){
+      const delay=throttle?65000:[2000,5000,10000,20000,40000,60000][Math.min(5,this.failures++)]!,until=throttle?this.pendingRetryAfter??h.at+delay:Math.max(h.at+delay,this.pendingRetryAfter??0);
+      this.cooldown=Math.max(this.cooldown,until);this.cooldownMono=Math.max(this.cooldownMono,this.mono()+Math.max(0,until-this.now()));
+      this.emit('pilot-rpc-provider-backoff-observed',{at:h.at,status:h.status,cooldownUntil:this.cooldown,physicalGateUnchanged:true,observedAfterLogicalCompletion:!this.active});
+      if(!this.active){try{this.persist();}catch{this.fatal='STORAGE_UNAVAILABLE';throw new PilotRpcUnavailable('STORAGE_UNAVAILABLE');}}
+    }
+  }
+  private isolateQueryTimeout(key:string,u:ReturnType<ComponentBudget['usage']>){
+    const at=this.now();this.recentQueryTimeouts=this.recentQueryTimeouts.filter(r=>r.at>at-10000);for(const [k,row]of this.queryTimeouts)if(at-row.failedAt>60000&&this.mono()>=row.untilMono)this.queryTimeouts.delete(k);
+    this.recentQueryTimeouts.push({key,at});
+    // Three distinct query timeouts within10s indicate a possible broad outage,
+    // not permission to probe every candidate. Retain the existing global backoff.
+    if(new Set(this.recentQueryTimeouts.map(r=>r.key)).size>=3||this.queryTimeouts.size>=64&&!this.queryTimeouts.has(key)){this.queryTimeoutEscalations++;this.emit('pilot-query-timeout-escalated',{at,key,distinctTimedOutQueriesLast10s:new Set(this.recentQueryTimeouts.map(r=>r.key)).size,code:u.haltedReason,globalBackoffRequired:true,physicalSettled:u.inFlight===0});return false;}
+    const failures=(this.queryTimeouts.get(key)?.failures??0)+1,delay=[2000,5000,10000,20000,40000,60000][Math.min(5,failures-1)]!,until=at+delay;
+    this.queryTimeouts.set(key,{failures,until,untilMono:this.mono()+delay,failedAt:at});this.isolatedQueryTimeouts++;
+    this.emit('pilot-query-timeout-unavailable',{at,key,scope:'independent-history',code:u.haltedReason,httpStatus:this.pendingHttpStatus,queryCooldownUntil:until,queryFailures:failures,globalRpcCooldownUnchanged:true,physicalSettled:u.inFlight===0,reservationsRetained:u.uncertainResponseBytes,automaticRetry:false,meaning:'A timed-out query is not verified evidence or proof of provider saturation. Other jobs still require the shared physical/rate/byte gate.'});return true;
+  }
   async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:PilotRpcCallOptions={}):Promise<T>{
     validateRpc({method});if(Buffer.byteLength(JSON.stringify({method,params}))>64000)throw new PilotRpcUnavailable('REQUEST_SIZE');
     if(signal?.aborted)throw new PilotRpcUnavailable('ABORTED');
     if(method==='getTransaction'&&this.transactionStartsPer10s!==undefined){this.check();const at=this.now(),retryAt=this.methodReadyAtClock(method,1,at);if(retryAt>at){this.methodRefusals++;this.emit('pilot-method-capacity-refusal',{at,method,reserveStarts:1,retryAt,maximumStartsPer10s:this.transactionStartsPer10s,knownOrConservativelyInheritedStarts:this.recentMethodStarts(at).length,physicalRequestStarted:false,providerResponse:false});this.persist();throw new PilotRpcUnavailable('METHOD_PACING',retryAt);}}
-    return this.perform(o=>this.transport!.call<T>(method,params,signal,o),signal,options,'rpc');
+    let queryKey:string|undefined;
+    if(options.queryTimeoutScope!==undefined){if(options.queryTimeoutScope!=='independent-history'||method!=='getSignaturesForAddress'||typeof params[0]!=='string'||params[0].length<32||params[0].length>44||!/^[1-9A-HJ-NP-Za-km-z]+$/.test(params[0]))throw new PilotRpcUnavailable('INVALID_QUERY_TIMEOUT_SCOPE');queryKey=params[0];this.check();const row=this.queryTimeouts.get(queryKey);if(row&&(this.now()<row.until||this.mono()<row.untilMono))throw new PilotRpcUnavailable('QUERY_COOLDOWN',Math.max(row.until,this.now()+Math.ceil(Math.max(0,row.untilMono-this.mono()))));}
+    return this.perform(o=>this.transport!.call<T>(method,params,signal,o),signal,options,'rpc',queryKey);
   }
   async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,options:PilotRpcCallOptions={}):Promise<T>{
     if(!(kind.transport==='ws-upgrade'&&kind.method==='upgrade'||kind.transport==='ws'&&['subscribeMigration','logsSubscribe','logsUnsubscribe','ping','pong','close'].includes(kind.method)))throw new PilotRpcUnavailable('DATA_METHOD_DENIED');
@@ -212,7 +243,7 @@ export class PilotRpc{
   }
   usage(){
     const u=this.current(),dispatch=this.dispatchView(u),rpcDispatch=this.dispatchView(u,'rpc'),controlDispatch=this.dispatchView(u,'control'),calls=u?.cumulativeUnits??this.baseline.calls,bytes=u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes;
-    return {persistence:{...this.persistence},derivedStatus:{...this.derivedPersistence,lastGeneratedAt:this.derivedGeneratedAt,dirty:this.derivedDirtyAt!==null,pendingSinceAt:this.derivedDirtyAt,pendingAgeMs:this.derivedDirtyMono===null?0:Math.max(0,this.mono()-this.derivedDirtyMono),authority:'Derived metadata only; chapter counterbooks durably account every receipt. Not a market-data timestamp.',timing:'At most1s scheduled delay; actual flush can be late during event-loop stalls and remains source-timestamped.'},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:this.startsPerMinute,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,rawChapterDispatchWindow:dispatch.raw,dispatchWindow:dispatch.planned,rpcDispatchWindow:rpcDispatch.planned,controlDispatchWindow:controlDispatch.planned,automaticRequestRetries:0};
+    return {queryTimeoutIsolation:{scope:'opt-in independently scheduled history only',isolatedTimeouts:this.isolatedQueryTimeouts,globalEscalations:this.queryTimeoutEscalations,maximumQueries:64,rows:[...this.queryTimeouts].map(([key,row])=>({key,failures:row.failures,cooldownUntil:row.until,lastFailureAt:row.failedAt})),outagePolicy:'three distinct query timeouts within10s retain existing global backoff',restartMeaning:'Local research backoff only; actual provider cooldown remains separately persisted'},persistence:{...this.persistence},derivedStatus:{...this.derivedPersistence,lastGeneratedAt:this.derivedGeneratedAt,dirty:this.derivedDirtyAt!==null,pendingSinceAt:this.derivedDirtyAt,pendingAgeMs:this.derivedDirtyMono===null?0:Math.max(0,this.mono()-this.derivedDirtyMono),authority:'Derived metadata only; chapter counterbooks durably account every receipt. Not a market-data timestamp.',timing:'At most1s scheduled delay; actual flush can be late during event-loop stalls and remains source-timestamped.'},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:this.startsPerMinute,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,rawChapterDispatchWindow:dispatch.raw,dispatchWindow:dispatch.planned,rpcDispatchWindow:rpcDispatch.planned,controlDispatchWindow:controlDispatch.planned,automaticRequestRetries:0};
   }
   available(){try{this.check();return true;}catch{return false;}}
   cooldownUntil(){const remaining=this.cooldownMono-this.mono();return remaining>0?Math.max(this.cooldown,this.now()+Math.ceil(remaining)):this.cooldown;}

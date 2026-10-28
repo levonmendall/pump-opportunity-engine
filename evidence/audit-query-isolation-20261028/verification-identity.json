@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-28T17:05:02.208611+00:00",
+  "baseCommit": "fdf23ac65a23ed0793a0afadbc60bea2c7e272f8",
+  "files": {
+    "src/pilot-rpc.ts": "d518c1fcdb42fd4c3f96d2eed1c961518e1ad841482231aa6a8af4f8e1267396",
+    "src/native-candidate-runner.ts": "33066742e76e0fefd60492c702e11f664f51da93f6514957cec3fecdc053c6b9",
+    "test/pilot-rpc-query-timeout.test.ts": "1b6f200ab77a6848f4c5cceaffd31b3167c1c5db91312f04199e92ed77daf5ba",
+    "test/native-candidate-runner.test.ts": "864f7a291dd2bc1fe821c1b9db04f3f8480c37364a7dd69560e652af95946a5c"
+  },
+  "commands": [
+    "node --import tsx --test --test-concurrency=1 test/pilot-rpc-query-timeout.test.ts test/pilot-rpc.test.ts test/native-candidate-runner.test.ts",
+    "npm run build",
+    "node --import tsx --test --test-concurrency=4 test/*.test.ts"
+  ],
+  "marketRequests": 0,
+  "privateFinancialLedgerOpened": false
+}
