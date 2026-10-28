@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-10-28T23:55:02.588Z",
+  "source": {
+    "commit": "e05bddec841790b0d10a0848d67a1ced3f74a3e0",
+    "files": [
+      {
+        "file": "src/dashboard.ts",
+        "sha256": "b27fe578142df8986332694604c839337eadb7c7eee17bcccc65a42b5cf1dde7"
+      },
+      {
+        "file": "src/dashboard-holographic.ts",
+        "sha256": "dd0084e4569809f56adf0719d3925e9dcfbf4294a5e9f9527e95a90cca567803"
+      },
+      {
+        "file": "src/reporting.ts",
+        "sha256": "dd24f5a9135a04c089b0a132fbc0ee635d0b48b518c2283f4ca1bd928d9e16fe"
+      },
+      {
+        "file": "src/operating-intelligence.ts",
+        "sha256": "357a0f9e1906a1f013158cc2f727101e490fbe140c54ee17b5d3c915257c737c"
+      }
+    ]
+  },
+  "externalRequests": 0,
+  "financialFilesRead": false,
+  "ledgerCreated": false,
+  "publicDashboardModified": false,
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "documentWidth": 390,
+      "javaScriptErrors": [],
+      "onePortfolio": true,
+      "retiredPanelsPresent": false,
+      "classification": "OFFLINE_BROWSER_FIXTURE_NOT_FORWARD_PERFORMANCE"
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "documentWidth": 1280,
+      "javaScriptErrors": [],
+      "onePortfolio": true,
+      "retiredPanelsPresent": false,
+      "classification": "OFFLINE_BROWSER_FIXTURE_NOT_FORWARD_PERFORMANCE"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "fixture-390.png",
+      "bytes": 1454740,
+      "sha256": "568cc597e715b087fd68f75b6fbe02943f078aa78b72012cdb5d63fee33449d3",
+      "retainedLocally": true,
+      "committed": false
+    },
+    {
+      "file": "fixture-1280.png",
+      "bytes": 2473524,
+      "sha256": "684d1590dd0cc1084a265e2357321d888f959b8ca7e825d195b3673c0f8af5de",
+      "retainedLocally": true,
+      "committed": false
+    }
+  ]
+}

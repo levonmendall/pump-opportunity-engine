@@ -1,0 +1,106 @@
+{
+  "checkedAt": "2026-10-28T23:55:36.823809+00:00",
+  "sourceCommit": "e05bddec841790b0d10a0848d67a1ced3f74a3e0",
+  "trackedWorkingTree": "",
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "classification": "OFFLINE_VERIFICATION_NOT_HOST_CUTOVER_OR_RENDER_DEPLOYMENT",
+  "commands": [
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "tests": 211,
+      "pass": 211,
+      "fail": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run compile",
+      "exitCode": 0
+    },
+    {
+      "command": "node --import tsx --test test/reporting.test.ts test/dashboard-holographic.test.ts test/snapshot-file-publisher.test.ts",
+      "exitCode": 0,
+      "tests": 32,
+      "pass": 32,
+      "fail": 0
+    },
+    {
+      "command": "node --import tsx evidence/unified-render-issue11/browser-fixture.ts",
+      "exitCode": 0,
+      "externalRequests": 0
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "src/dashboard.ts",
+      "sha256": "b27fe578142df8986332694604c839337eadb7c7eee17bcccc65a42b5cf1dde7"
+    },
+    {
+      "file": "src/dashboard-holographic.ts",
+      "sha256": "dd0084e4569809f56adf0719d3925e9dcfbf4294a5e9f9527e95a90cca567803"
+    },
+    {
+      "file": "src/reporting.ts",
+      "sha256": "dd24f5a9135a04c089b0a132fbc0ee635d0b48b518c2283f4ca1bd928d9e16fe"
+    },
+    {
+      "file": "src/operating-intelligence.ts",
+      "sha256": "357a0f9e1906a1f013158cc2f727101e490fbe140c54ee17b5d3c915257c737c"
+    },
+    {
+      "file": "src/snapshot-publisher.ts",
+      "sha256": "41c42dc0dd2d9a04f3dbd971d5bea0c1a407c192ccaffe680300f757c60a0e6a"
+    },
+    {
+      "file": "test/reporting.test.ts",
+      "sha256": "ec3ae2fb93d1c695b0c770a04302d91a451344c7c3437731a0bdd3a77f2abf6c"
+    },
+    {
+      "file": "test/dashboard-holographic.test.ts",
+      "sha256": "171015f869b2616c9e3e651477f104de795fb31106e03971569c361943b38842"
+    },
+    {
+      "file": "test/snapshot-file-publisher.test.ts",
+      "sha256": "63acee988048bb3718a29478ebc338a05737f824130ffdb7d442f884f7403a9d"
+    },
+    {
+      "file": "package.json",
+      "sha256": "4a2422f4b9c09996ab26edfb77ca0fc910d41ff4b1aaf04907fb1da6972d427c"
+    }
+  ],
+  "logs": [
+    {
+      "file": "full-tests.txt",
+      "bytes": 23486,
+      "sha256": "4e493567bc0d17a941440a352d3d0c6c831fdcb608174905becc7c9b62e18200"
+    },
+    {
+      "file": "build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "compile.txt",
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    },
+    {
+      "file": "focused-reporting-tests.txt",
+      "bytes": 3612,
+      "sha256": "0cbd8add7ce8a3cf92de24f0c8f0abcfd4b3bd91f1968247bb834af0b5ac20f9"
+    },
+    {
+      "file": "browser-fixture-output.txt",
+      "bytes": 400,
+      "sha256": "2f40d4e66e75f7b9bf0166b4d41bdfa0e9fef6f5a97fb521ff0bd70ba5c933f8"
+    }
+  ],
+  "deploymentPerformed": false,
+  "financialFilesRead": false,
+  "ledgerCreated": false,
+  "providerRequests": 0
+}
