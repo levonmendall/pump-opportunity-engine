@@ -17,7 +17,7 @@ export type WatchRow={
   everHadWindow:boolean;lastWindowAt:number|null;history:WatchHistory[];capacityCoverage?:CapacityCoverage;
 };
 type Counters={discovered:number;duplicates:number;verified:number;promoted:number;repromoted:number;demoted:number;expired:number;capacityExclusions:number;structuralExclusions:number;completeWindows:number;evicted:number;activityHints:number;promotionWaitTotalMs:number;promotionWaitMaximumMs:number};
-export type WatchCheckpoint={schemaVersion:1;rows:WatchRow[];counters:Counters};
+export type WatchCheckpoint={schemaVersion:1;rows:WatchRow[];counters:Counters;capacityProbeAdmissions?:number[]};
 type Options={maximumIdentities?:number;maximumDeep:number;now?:()=>number;record:(kind:string,data:unknown)=>void;restored?:unknown};
 const STATES:WatchState[]=['DISCOVERED','VERIFYING','WATCH','DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING','HELD','DEFERRED','EXPIRED','PERMANENTLY_UNSUPPORTED'];
 const MIN_AGE=300000,MAX_AGE=7200000,UNVERIFIED_RETENTION=MAX_AGE+MIN_AGE;
@@ -48,7 +48,7 @@ export function capacityProbePolicy(demand:CapacityDemand|null,context:CapacityP
 
 export class PilotWatch {
   private readonly maximum:number;private readonly maximumDeep:number;private readonly clock:()=>number;
-  private readonly rows=new Map<string,WatchRow>();private counters=initialCounters();
+  private readonly rows=new Map<string,WatchRow>();private counters=initialCounters();private capacityProbeAdmissions:number[]=[];
   constructor(private readonly options:Options){
     this.maximum=options.maximumIdentities??150;this.maximumDeep=options.maximumDeep;this.clock=options.now??Date.now;
     need(integer(this.maximum)&&this.maximum>=1&&this.maximum<=512&&integer(this.maximumDeep)&&this.maximumDeep>=1&&this.maximumDeep<=20&&this.maximumDeep<=this.maximum,'PILOT_WATCH_LIMITS');
@@ -120,11 +120,11 @@ export class PilotWatch {
   reassessCapacity(context:CapacityProbeContext,excluded:ReadonlySet<string>=new Set()){
     const at=this.at(context.at);this.expire(at);capacityProbePolicy(null,context);
     const active=[...this.rows.values()].filter(r=>r.capacityCoverage?.status==='PROBE_READY'&&['WATCH','DEFERRED'].includes(r.state)&&this.eligible(r,at)&&!excluded.has(r.mint??''));if(active.length)return null;
-    const recentGlobal=[...this.rows.values()].flatMap(r=>r.capacityCoverage?.probeAdmissions??[]).filter(t=>t>at-10000);if(recentGlobal.length>=2)return null;
+    this.capacityProbeAdmissions=this.capacityProbeAdmissions.filter(t=>t>at-10000);if(this.capacityProbeAdmissions.length>=2||(this.capacityProbeAdmissions.at(-1)??0)>at)return null;
     const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&r.state==='DEFERRED'&&this.eligible(r,at)&&r.capacityCoverage?.status==='AWAITING_CAPACITY'&&r.capacityCoverage.reason===r.reason&&at>=r.capacityCoverage.reassessAt&&(r.capacityCoverage.probeAdmissions.filter(t=>t>at-60000).length<2));
     ready.sort((a,b)=>{const aa=a.lastActivityAt!==null&&a.lastActivityAt>(a.lastDemotedAt??0),bb=b.lastActivityAt!==null&&b.lastActivityAt>(b.lastDemotedAt??0);return Number(bb)-Number(aa)||(a.capacityCoverage!.probeAdmissions.at(-1)??0)-(b.capacityCoverage!.probeAdmissions.at(-1)??0)||a.waitingSince-b.waitingSince||a.signature.localeCompare(b.signature);});
     for(const r of ready){const c=r.capacityCoverage!,decision=capacityProbePolicy(c.lastDemand,context);if(decision.kind==='awaiting-capacity')continue;
-      c.probeAdmissions=[...c.probeAdmissions.filter(t=>t>at-60000),at];c.reassessAt=at+5000;
+      c.probeAdmissions=[...c.probeAdmissions.filter(t=>t>at-60000),at];this.capacityProbeAdmissions.push(at);c.reassessAt=at+5000;
       if(decision.kind==='deep-readmission-ready'){c.status='PROBE_READY';r.deferUntil=at;}
       this.emit('pilot-watch-capacity-reassessment',{mint:r.mint,at,...decision,capacityObservedAt:context.capacityObservedAt,demand:copy(c.lastDemand),probeAdmissionOnly:true,requestStarted:false,freshFullWindowRequired:true});return {kind:decision.kind,row:copy(r),reason:decision.reason,estimatedEnrichmentStarts:decision.estimatedEnrichmentStarts};
     }return null;
@@ -167,7 +167,7 @@ export class PilotWatch {
     this.at(at);this.expire(at);const rows=[...this.rows.values()],eligible=rows.filter(r=>this.eligible(r,at)&&r.state!=='PERMANENTLY_UNSUPPORTED'),waiting=eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil),waits=waiting.map(r=>Math.max(0,at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!))),covered=eligible.filter(r=>r.everHadWindow);
     return {rows:copy(rows),summary:{...copy(this.counters),known:rows.length,maximumIdentities:this.maximum,watch:rows.filter(r=>['WATCH','DEFERRED'].includes(r.state)).length,capacityAwaiting:eligible.filter(r=>r.state==='DEFERRED'&&r.capacityCoverage?.status==='AWAITING_CAPACITY').length,capacityProbeReady:eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status==='PROBE_READY').length,unverified:rows.filter(r=>r.verifiedAt===null).length,eligibleKnown:eligible.length,deepActive:rows.filter(deep).length,maximumDeep:this.maximumDeep,queued:waiting.length,waitMs:{mean:waits.length?waits.reduce((a,b)=>a+b,0)/waits.length:0,maximum:waits.length?Math.max(...waits):0},promotionWaitMs:{mean:this.counters.promoted?this.counters.promotionWaitTotalMs/this.counters.promoted:0,maximum:this.counters.promotionWaitMaximumMs},coverage:{denominator:'currently entry-age-eligible verified identities retained in this bounded registry; at least one audited window during this eligibility horizon',eligibleKnown:eligible.length,atLeastOneValidWindow:covered.length,percent:eligible.length?covered.length*100/eligible.length:null,wholeMarketPercent:null},states:Object.fromEntries(STATES.map(s=>[s,rows.filter(r=>r.state===s).length]))}};
   }
-  export():WatchCheckpoint{return {schemaVersion:1,rows:copy([...this.rows.values()]),counters:copy(this.counters)};}
+  export():WatchCheckpoint{return {schemaVersion:1,rows:copy([...this.rows.values()]),counters:copy(this.counters),capacityProbeAdmissions:copy(this.capacityProbeAdmissions)};}
   private restore(value:unknown){
     need(value&&typeof value==='object'&&!Array.isArray(value),'PILOT_WATCH_CHECKPOINT');const v=value as WatchCheckpoint;
     need(v.schemaVersion===1&&Array.isArray(v.rows)&&v.rows.length<=this.maximum&&v.counters&&typeof v.counters==='object'&&Object.keys(initialCounters()).every(k=>integer(v.counters[k as keyof Counters])),'PILOT_WATCH_CHECKPOINT');
@@ -178,6 +178,10 @@ export class PilotWatch {
       if(r.verifiedAt!==null)need(r.migrationAt!<=r.verifiedAt&&r.verifiedAt<=this.clock(),'PILOT_WATCH_CHECKPOINT_TIME');
       const restored=copy(r);if(['DEEP_OBSERVATION','QUALIFIED'].includes(restored.state)){this.history(restored,this.clock(),'DEFERRED','research process restarted; previous flow is unavailable; fresh full window required');restored.deepSince=null;restored.lastDemotedAt=this.clock();restored.waitingSince=this.clock();restored.deferUntil=this.clock();if(restored.capacityCoverage){restored.capacityCoverage.status='AWAITING_CAPACITY';restored.capacityCoverage.reason=restored.reason;restored.capacityCoverage.reassessAt=this.clock()+5000;}restored.demotions++;this.counters.demoted++;this.emit('pilot-watch-recovery-demotion',{mint:restored.mint,at:this.clock(),priorState:r.state,freshFullWindowRequired:true});}if(restored.state==='ENTRY_PENDING'){restored.deepSince=null;this.emit('pilot-watch-owned-recovery',{mint:restored.mint,at:this.clock(),state:'ENTRY_PENDING',freshFlowUnavailable:true,financialObligationRetained:true});}this.rows.set(r.signature,restored);
     }
+    // Global probe admissions outlive individual watch rows. Eviction cannot
+    // refund an admission; old checkpoints conservatively inherit row evidence.
+    if(v.capacityProbeAdmissions!==undefined)need(Array.isArray(v.capacityProbeAdmissions)&&v.capacityProbeAdmissions.length<=2&&v.capacityProbeAdmissions.every((at,i)=>integer(at)&&at<=this.clock()&&(i===0||at>=v.capacityProbeAdmissions![i-1]!)),'PILOT_WATCH_CHECKPOINT_GLOBAL_CAPACITY');
+    this.capacityProbeAdmissions=copy(v.capacityProbeAdmissions??[...this.rows.values()].flatMap(r=>r.capacityCoverage?.probeAdmissions??[]).filter(at=>at>this.clock()-10000).sort((a,b)=>a-b).slice(-2));
     need([...this.rows.values()].filter(deep).length<=this.maximumDeep,'PILOT_WATCH_CHECKPOINT_DEEP_CAPACITY');
   }
 }

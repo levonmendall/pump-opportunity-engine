@@ -217,3 +217,13 @@ test('awaiting capacity requires an explicit probe gate and future demand cannot
  const f=fixture();f.seed('blocked');f.registry.deferCapacity('mint-blocked','capacity loss',demand(f.now(),1));assert.throws(()=>f.registry.transition('mint-blocked','DEEP_OBSERVATION','skip resource reassessment'),/CAPACITY_PROBE_REQUIRED/);
  assert.equal(capacityProbePolicy(demand(f.now()+1,1),capacity(f.now())).kind,'awaiting-capacity');
 });
+
+
+test('watch eviction and restart cannot refund the global two-probe ten-second budget',()=>{
+ const f=fixture(2,1);for(const id of ['a','b']){f.seed(id);f.registry.deferCapacity('mint-'+id,'capacity loss',demand(f.now(),18));}f.at(f.now()+5000);const firstAt=f.now();f.registry.reassessCapacity(capacity(f.now()));f.registry.reassessCapacity(capacity(f.now()));
+ f.at(f.now()+1);f.seed('c');f.registry.deferCapacity('mint-c','capacity loss',demand(f.now(),18));assert.equal(f.registry.snapshot().rows.some(r=>r.mint==='mint-a'),false);
+ f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity(capacity(f.now())),null,'third probe within5001ms remains blocked after eviction');
+ const checkpoint=f.registry.export();assert.deepEqual(checkpoint.capacityProbeAdmissions,[firstAt,firstAt]);const restored=new PilotWatch({...f.options,restored:checkpoint});assert.equal(restored.reassessCapacity(capacity(f.now())),null,'restart preserves global budget independently of retained identities');
+ f.at(firstAt+10000);assert.equal(restored.reassessCapacity(capacity(f.now()))!.row.mint,'mint-c');
+ const malformed=structuredClone(checkpoint);malformed.capacityProbeAdmissions=[firstAt,firstAt-1];assert.throws(()=>new PilotWatch({...f.options,restored:malformed}),/CHECKPOINT_GLOBAL_CAPACITY/);
+});
