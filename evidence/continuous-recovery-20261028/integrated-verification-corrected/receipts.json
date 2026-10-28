@@ -1,0 +1,60 @@
+[
+  {
+    "name": "test",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "source": "be0b1a745a12f3eed126b7cd912699358c2ed19a",
+    "exitCode": 0,
+    "endedAt": "2026-10-28T16:20:30.962505+00:00",
+    "elapsedSeconds": 84.38223230299991,
+    "logBytes": 149171,
+    "sha256": "61c3b91ec3fd4efce51ee2a7167b505b0e08087805f4f6e18b30e5e453cd01cd"
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "source": "be0b1a745a12f3eed126b7cd912699358c2ed19a",
+    "exitCode": 0,
+    "endedAt": "2026-10-28T16:20:38.091789+00:00",
+    "elapsedSeconds": 7.128408392998608,
+    "logBytes": 55,
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  {
+    "name": "compile",
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "source": "be0b1a745a12f3eed126b7cd912699358c2ed19a",
+    "exitCode": 0,
+    "endedAt": "2026-10-28T16:20:46.368168+00:00",
+    "elapsedSeconds": 8.276169038001171,
+    "logBytes": 77,
+    "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+  },
+  {
+    "name": "packaging",
+    "command": [
+      "node",
+      "--test",
+      "operator/native-candidate-ec2/runtime-outcome.test.mjs",
+      "operator/native-candidate-ec2/long-package.test.mjs",
+      "operator/native-candidate-ec2/readback-public-evidence.test.mjs",
+      "operator/native-candidate-ec2/stage.test.mjs"
+    ],
+    "source": "be0b1a745a12f3eed126b7cd912699358c2ed19a",
+    "exitCode": 1,
+    "endedAt": "2026-10-28T16:20:46.410513+00:00",
+    "elapsedSeconds": 0.04174467999837361,
+    "logBytes": 236,
+    "sha256": "aa078fc123fa698ee46537cae4b51c53bd64ccb46e00a4b0146893f0cf7bebee"
+  }
+]

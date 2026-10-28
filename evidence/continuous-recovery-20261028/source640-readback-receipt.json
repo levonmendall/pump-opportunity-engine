@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "sourceRun": 40714364745,
+  "archiveBytes": 16291835,
+  "archiveSha256": "1e11cc2fbe94ffa81e1e0ff669b6b382a671acdb575b6822a1d9fa5147931c75",
+  "wholeArchiveHashVerified": true,
+  "allSelectedFilesVerified": true,
+  "files": 131,
+  "uncompressedBytes": 117366016,
+  "rawRemoteEvidenceDeleted": false,
+  "credentialsOrFinancialFilesRead": false,
+  "allSelectedSegmentsRetained": true,
+  "financialFilesRead": false,
+  "rawHostEvidenceDeletionPerformed": false,
+  "indexFileHashesVerified": 131,
+  "initialTransferReceipt": "readback-receipt-initial.json",
+  "initialTransferReceiptSha256": "4ce858a2d6cef29a5f5c855acf299965abc93b3b776bd7ae53a56b2fe147b495",
+  "verificationCompletedAt": 1793204689776
+}

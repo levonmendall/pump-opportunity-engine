@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "label": "native-640-recovery-20261028151700",
+  "administrationRun": 40714364745,
+  "source": {
+    "commit": "640143a5924a7ff7d98039967c2db17957f71f24",
+    "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+  },
+  "configurationSha256": "29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf",
+  "classification": "FAILED_FORWARD_DIAGNOSTIC_WITH_COMPLETE_RETAINED_EVIDENCE",
+  "runtimeStop": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_UNSCOPED_NOTIFICATION",
+  "actualElapsedMs": 2162431,
+  "applicationAndProcessGroupsSettled": true,
+  "wholeArchiveHashVerified": true,
+  "actualManagedStarts": 648,
+  "actualManagedSettlements": 648,
+  "extraObservedUnmanagedControls": 0,
+  "newAccountedUnits": 648,
+  "cumulativeAccountedUnits": 5681,
+  "cumulativeAccountedResponseBytes": 384878965,
+  "cumulativeUncertainResponseBytes": 148111360,
+  "cumulativeObservedResponseBytes": 236767605,
+  "newPaths": [
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-001.json",
+      "sha256": "39c2bb88f291696e3e4f38af8b7548d4cb6b77624812bba398ba9e9edf184186"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-002.json",
+      "sha256": "4dfd7ecbf986678ed751128ed82ffadf02414755d929084d5bb21aee6466b64c"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-003.json",
+      "sha256": "4a1b3e143737a9d1304fa5d52cef71bad96f42d64250b13b21025869c659d352"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-004.json",
+      "sha256": "f0c616f32b69c02753908942b70c88dadb8163e33028bb0e8391216585544f4b"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-005.json",
+      "sha256": "b78964756883fb5382604404efe3bca2676719a1578c5d58b46ab6c0e63f51f6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-006.json",
+      "sha256": "ed41f38cd34f6ff558c8cb04abd749beb3e3dfef2f55f68478312a527de0939a"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-007.json",
+      "sha256": "c6bc7c70d601e98a39b4122cdef0803038c85bc2b3b078d2c11963c43602385e"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-008.json",
+      "sha256": "00bdda3d6bf337d3d46f591f7b4381fef7b6a726095e1b0994fb0fad3075958f"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-009.json",
+      "sha256": "6d2412c8a1f6d221eb05e4bb103584cb74ad79ef84417fc27be0f06ab2734409"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-010.json",
+      "sha256": "1acae15550224b9d10f686d7817f8489a08e76ce8c395d6ca62fd8587c7c449d"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-011.json",
+      "sha256": "26183760325de34a61a751115186397b61668781b87d84a9bae3093d12a9d8ee"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-012.json",
+      "sha256": "ebc2985aaf6d306f743f709282cc1e8ce4df2f6d8f40b2ba44bb26930e4743ea"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-013.json",
+      "sha256": "3c63a516a173f6153c492ab02cc89dfe9b25181cd4f4bd0ff3f878e92f635766"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-014.json",
+      "sha256": "b9bebc4c0d7dbacbd7eb128cb01e0de0291cade274564a485cf194082b2e6555"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-015.json",
+      "sha256": "2a19f23650e793c284ef19c5c4928efdb011af0eb11f49d406b7d25717eff0e0"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-016.json",
+      "sha256": "548337525ad998ed4432ee67d4d33f945a0a44cdb373531d1fa8ad474813e8aa"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-017.json",
+      "sha256": "097233c82f8606ad5295f9c5f1e500d6e4e603cb20a0c26dab4076bf1e81d8f1"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-018.json",
+      "sha256": "3cb67a52565862973f1f8eae6ab0e98fccd035aad7aa1709566391c4f3b9e3e6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-019.json",
+      "sha256": "14bb955b3f47bb34ac9910ec6dd60d5cd1acec7a6aaf502599afa093f3f72d0f"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-020.json",
+      "sha256": "8fbbd3d19093b4aa9002a7d032c4a35b20149d093011c28903ea024cfe4aa5ee"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-021.json",
+      "sha256": "4fd2cdecb2bc39820f0a4cfeccda09ed87016a5d77d223f91ce2529781fe4bba"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-022.json",
+      "sha256": "c3daca8d150041aab6ba764c0f7cc4949ecacb35d0df88442d05877afda3b230"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-023.json",
+      "sha256": "3e0925672672fb926ce7a26f07bff8426f6dabcbe9f80269a0d9f884af21b61c"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-024.json",
+      "sha256": "9d6d951046b0f4db6b298415d3afd9a880af9c3c761d1fcd6479c6ef34d3bcb9"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-025.json",
+      "sha256": "c90f735c4c4e120116ed61ac7f6a4079b8648e69f566945494dafaccfca0d2a6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-026.json",
+      "sha256": "f8a6ba3d7ad1e315ecc2ad98bdb85cd0ea7b6985089e57b1e91ad4231b98e089"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-027.json",
+      "sha256": "fb221cac9201f49eee6e796ad280c656b5890867bf4500d5039c1c48e91390f5"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-028.json",
+      "sha256": "0fc44b0da3c557a65c257f3e52b12f31164d62d1f9fd00492c4de4c383ac02db"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-029.json",
+      "sha256": "572394302a9e6b2e201b6c98bb5d15b8b02ad4cc14299999885d2bf5588701db"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-030.json",
+      "sha256": "ae465d94543e7ffbc79ec2b49663011fa8bf6036d3a895259d9fd3ba295df22d"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-031.json",
+      "sha256": "ff35de9934c7e1166ed145149ad0ef44a467b8ba1419b257fd082d8cfebc14a0"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-032.json",
+      "sha256": "584525c0fcba4a0b6d82a1d72c7dea250f8ad07de9cec763e729e8f1a341a087"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-033.json",
+      "sha256": "0503b41d10f43ccf6aad140546e96ffcdfcf07b1493d36582c0a285f08ab2502"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-034.json",
+      "sha256": "de640e04f51bfc108f21d67416fe128688d89efca82d6b1ea630606fa18241b5"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-035.json",
+      "sha256": "5640276f883976c8569b2a3b1f075883745c773fe0ddfb1bc241c3e8d31fc884"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-036.json",
+      "sha256": "4098f2d79ff9b39cb246be1f4cfaa6e02feb3da3ddcfeb5b3c1cd1e20cf1d923"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-037.json",
+      "sha256": "ed119330ae5eb482b3539bc057fc58e5e0d26c5d48538c48b1ce3816d15a0ebb"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-038.json",
+      "sha256": "4a3ec953c76a0838881a901f023c24b70db768b951a27fa05a17de59cdc32b30"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-039.json",
+      "sha256": "3466d947de6e22da98026b56eda38b6fc03fd80745bddf3a34d7a54b6d7dd99c"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-040.json",
+      "sha256": "96f01261822eb0b8e4a763b6583a62221aa6a8c76bf0848a1ff005db60e65684"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-041.json",
+      "sha256": "0c5f7faf83aab6d9802892d2a0c97e25257a2a45d90fc6aff3f621a2e683c613"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-042.json",
+      "sha256": "1b5554539cb976f81fd89375919546be2dfffb4b64b3b1c5955ed67050b7c4ce"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-043.json",
+      "sha256": "11f8e0afcb3c486b1406c718a51d3b5160ba5f5f5563583efe5b2f6983566f61"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-044.json",
+      "sha256": "e235312bc489f479b375f8739e053d69594a77ec86ff8c3fd108604a33df6aa3"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-045.json",
+      "sha256": "fbdb65b31cf146ab518fbc1c4f6c6fc887c38dcc74ab43d0d41758617cfb4f51"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-046.json",
+      "sha256": "76b0e674cba16e0c18a80113975f881a7afda98d2ee3553aeeb9ed8919c9d6e8"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-047.json",
+      "sha256": "babb5ee2657a210b8a7dc62585b85316621b0d4921ec85387acced50f9fc548d"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-048.json",
+      "sha256": "478260b0bbcc8596dac1e5779aa7bdc126dc25cd241b2a5d0d0dfce84e175abe"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact/run/rpc/chapter-049.json",
+      "sha256": "630daccb9946a8d4b14bb07d197ac70f3d57dabcb0a17a894ea8d7c2b8ed86c4"
+    }
+  ],
+  "priorBooksRetainedUnchanged": true,
+  "financialLedgerOpened": false,
+  "settledAt": 1793202794375,
+  "verifiedAt": 1793204689775,
+  "archiveSha256": "1e11cc2fbe94ffa81e1e0ff669b6b382a671acdb575b6822a1d9fa5147931c75",
+  "recoveryEvidenceSha256": "616040641f1637582d7476cd2bf545ce01b85608b39e367dc80ff2d3f472b508"
+}

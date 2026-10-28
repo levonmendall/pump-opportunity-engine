@@ -55,6 +55,13 @@ def host_profile(name=None):
     return dict(TWO_HOUR_90_HOST_LIMITS if name == TWO_HOUR_90_PROFILE else TWO_HOUR_HOST_LIMITS if name == TWO_HOUR_PROFILE else DEFAULT_HOST_LIMITS)
 
 
+def observation_seconds(manifest, limits):
+    """Shorter observation only; resource/profile/export limits stay unchanged."""
+    seconds = manifest.get("observationSeconds", limits["durationSeconds"])
+    require(type(seconds) is int and 90 <= seconds <= limits["durationSeconds"], "REVIEWED_OBSERVATION_SECONDS_INVALID")
+    return seconds
+
+
 def observation_policy(version=None):
     require(version in [None, DEFAULT_OBSERVATION_POLICY, STUDY_OBSERVATION_POLICY], "UNKNOWN_OBSERVATION_POLICY")
     return version or DEFAULT_OBSERVATION_POLICY
@@ -510,6 +517,8 @@ def main():
     manifest = json.loads(manifest_raw)
     profile = manifest.get("researchProfile")
     limits = host_profile(profile)
+    observation = observation_seconds(manifest, limits)
+    runner_timeout = min(limits["runnerTimeoutSeconds"], observation + 15)
     age_policy = observation_policy(manifest.get("observationAgePolicy"))
     contract = data_contract(manifest.get("dataContract"))
     require(manifest["schemaVersion"] == 1 and manifest["limits"] == limits, "REVIEWED_LIMITS_MISMATCH")
@@ -539,7 +548,7 @@ def main():
         out.write("POE_NATIVE_RESEARCH_DIRECTORY=" + str(root) + "\nPOE_NATIVE_EVIDENCE_EXPORT_READY=false\nPOE_NATIVE_RESEARCH_PROFILE=" + (profile or "default-900s") + "\n")
     runner = publisher = None
     accepted_sources = []
-    outcome = {"startedAt": before["startedAt"], "packageSha256": args.manifest_sha256, "source": manifest["source"], "researchProfile": profile, "observationAgePolicy": age_policy, "dataContract": contract, "accountId": manifest["reportingBinding"]["accountId"], "inceptionAt": manifest["reportingBinding"]["inceptionAt"], "evidencePersistence": "private-durable-until-verified-backup" if profile else "RUNNER_TEMP-not-durable", "evidenceDirectory": str(root), "baselineByteRunway": manifest.get("baselineByteRunway"), "boundaries": {"candidateOnly": True, "financialWriter": False, "entriesEnabled": False, "liveTrading": False, "observerReplacement": False}, "runnerExit": None, "publisherStarted": False, "finalStoppedReportAccepted": False, "failure": None, "maximumRunnerRssBytes": 0, "maximumPublisherRssBytes": 0, "finalPublisherDrainSeconds": FINAL_REPORT_SECONDS}
+    outcome = {"startedAt": before["startedAt"], "packageSha256": args.manifest_sha256, "source": manifest["source"], "researchProfile": profile, "observationSeconds": observation, "runnerTimeoutSeconds": runner_timeout, "observationAgePolicy": age_policy, "dataContract": contract, "accountId": manifest["reportingBinding"]["accountId"], "inceptionAt": manifest["reportingBinding"]["inceptionAt"], "evidencePersistence": "private-durable-until-verified-backup" if profile else "RUNNER_TEMP-not-durable", "evidenceDirectory": str(root), "baselineByteRunway": manifest.get("baselineByteRunway"), "boundaries": {"candidateOnly": True, "financialWriter": False, "entriesEnabled": False, "liveTrading": False, "observerReplacement": False}, "runnerExit": None, "publisherStarted": False, "finalStoppedReportAccepted": False, "failure": None, "maximumRunnerRssBytes": 0, "maximumPublisherRssBytes": 0, "finalPublisherDrainSeconds": FINAL_REPORT_SECONDS}
     phase = "package-preparation"
     try:
         staged_bytes = 0
@@ -575,14 +584,14 @@ def main():
         binding = manifest["reportingBinding"]
         launcher = str(root / "reporting/run-publisher.sh")
         report_args = ["/bin/bash", launcher, "--node", node, "--status-file", str(root / "run/status.json"), "--secret-file", str(SECRET), "--account-id", binding["accountId"], "--inception-at", str(binding["inceptionAt"])]
-        source_args = [node, "--no-addons", "--max-old-space-size=" + str(limits["heapMiB"]), str(root / "native-candidates.mjs"), "--run", "--input", str(root / "input.json"), "--directory", str(root / "run"), "--duration-seconds", str(limits["durationSeconds"])]
+        source_args = [node, "--no-addons", "--max-old-space-size=" + str(limits["heapMiB"]), str(root / "native-candidates.mjs"), "--run", "--input", str(root / "input.json"), "--directory", str(root / "run"), "--duration-seconds", str(observation)]
         if profile:
             source_args += ["--profile", profile]
         if age_policy != DEFAULT_OBSERVATION_POLICY:
             source_args += ["--observation-age-policy", age_policy]
         if contract != "confirmed-program-events-v2":
             source_args += ["--data-contract", contract]
-        runner = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=4s", str(limits["runnerTimeoutSeconds"]) + "s"] + source_args, root / "runner.log", limits["runnerCpuSeconds"])
+        runner = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=4s", str(runner_timeout) + "s"] + source_args, root / "runner.log", limits["runnerCpuSeconds"])
         until_status = time.monotonic() + 25
         while runner.poll() is None:
             elapsed = time.monotonic() - started
@@ -601,6 +610,7 @@ def main():
                 require(source_check.get("researchProfile") == profile and (source_check.get("observationAgePolicy") or {}).get("version") == age_policy, "RUNNING_SOURCE_PROFILE_OR_AGE_POLICY_MISMATCH")
                 source_contract = source_check.get("dataContract") or (source_check.get("engine") or {}).get("dataContract")
                 require(source_contract == contract, "RUNNING_SOURCE_DATA_CONTRACT_MISMATCH")
+                require((source_check.get("limits") or {}).get("durationMs") == observation * 1000, "RUNNING_SOURCE_OBSERVATION_SECONDS_MISMATCH")
                 require(manifest.get("configurationSha256") is None or source_check.get("configurationSha256") == manifest["configurationSha256"], "RUNNING_SOURCE_CONFIGURATION_MISMATCH")
                 verify = subprocess.run(report_args + ["--verify-only"], env={"PATH": "/usr/bin:/bin"}, capture_output=True, text=True, timeout=5)
                 require(verify.returncode == 0, "REPORTING_PRIVATE_FILE_OR_IDENTITY_CHECK_FAILED")
@@ -688,7 +698,7 @@ def main():
         outcome["finishedAt"] = int(time.time() * 1000)
         outcome["aggregateElapsedSeconds"] = time.monotonic() - started
         outcome["actualRunElapsedMs"] = final_status.get("elapsedMs") if final_status else None
-        outcome["runtimeOutcome"] = runtime_outcome(final_status, limits["durationSeconds"] * 1000)
+        outcome["runtimeOutcome"] = runtime_outcome(final_status, observation * 1000)
         outcome["sourceStopReason"] = final_status.get("stopReason") if final_status else None
         if outcome["runtimeOutcome"]["failureReason"]:
             if outcome["failure"]:

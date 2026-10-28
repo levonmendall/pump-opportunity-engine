@@ -1,0 +1,16 @@
+{
+  "workflow": 40724174920,
+  "bytes": 34387,
+  "sha256": "32a118ed63ad243421aa67d6b4fbb671a72ced175dc405affbb02ef16a0a031f",
+  "archiveVerifiedCreated": true,
+  "historicalStoppedAck": {
+    "published": true,
+    "result": "accepted",
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "runId": "native-candidates-20261028151711944",
+    "sourceAt": 1793202794375,
+    "running": false,
+    "sourceAgeMs": 1040
+  },
+  "latestResendRefused": true
+}

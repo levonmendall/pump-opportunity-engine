@@ -56,6 +56,34 @@ class Profiles(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "UNKNOWN_HOST_RESEARCH_PROFILE"):
                 module.host_profile(invalid)
 
+    def test_short_observation_is_optional_and_cannot_change_the_resource_profile(self):
+        for profile in [None, module.TWO_HOUR_PROFILE, module.TWO_HOUR_90_PROFILE]:
+            limits = module.host_profile(profile)
+            before = dict(limits)
+            self.assertEqual(module.observation_seconds({}, limits), limits["durationSeconds"])
+            self.assertEqual(module.observation_seconds({"observationSeconds": 900}, limits), 900)
+            self.assertEqual(module.observation_seconds({"observationSeconds": 90}, limits), 90)
+            self.assertEqual(limits, before)
+            for invalid in [True, False, 89, limits["durationSeconds"] + 1, 900.0, "900", None, []]:
+                with self.subTest(profile=profile, invalid=invalid):
+                    with self.assertRaisesRegex(RuntimeError, "REVIEWED_OBSERVATION_SECONDS_INVALID"):
+                        module.observation_seconds({"observationSeconds": invalid}, limits)
+
+    def test_short_long_profile_outcome_uses_actual_observation_not_the_envelope_duration(self):
+        limits = module.host_profile(module.TWO_HOUR_90_PROFILE)
+        seconds = module.observation_seconds({"observationSeconds": 900}, limits)
+        source = {"running": False, "startedAt": 1000000, "generatedAt": 1890010, "elapsedMs": 890010, "stopRequestedAt": 1890000, "logicalObservationCutoffAt": 1890000, "stopReason": "logical observation cutoff reached; shutdown reserve begins", "engine": {"rpc": {"fatal": None}, "counters": {"auditedWindows": 0, "predictiveAssessments": 0}}}
+        result = module.runtime_outcome(source, seconds * 1000)
+        self.assertTrue(result["mechanicallyCompleted"])
+        self.assertEqual(result["plannedRunDurationMs"], 900000)
+        self.assertEqual(result["plannedAdmissionDurationMs"], 890000)
+        self.assertFalse(module.runtime_outcome(source, limits["durationSeconds"] * 1000)["mechanicallyCompleted"])
+        self.assertEqual(limits["durationSeconds"], 7200)
+        self.assertEqual(limits["runnerTimeoutSeconds"], 7215)
+        self.assertEqual(min(limits["runnerTimeoutSeconds"], seconds + 15), 915)
+        self.assertIn(module.TWO_HOUR_90_PROFILE, module.LONG_PROFILES)
+        self.assertEqual(result["candidateWindowEvidence"]["classification"], "no-audited-window-evidence")
+
     def test_two_hour_runtime_completion_is_not_a_candidate_window_pass(self):
         source = {"running": False, "startedAt": 1000000, "generatedAt": 8190010, "elapsedMs": 7190010, "stopRequestedAt": 8190000, "logicalObservationCutoffAt": 8190000, "stopReason": "logical observation cutoff reached; shutdown reserve begins", "engine": {"rpc": {"fatal": None}, "counters": {"auditedWindows": 0, "predictiveAssessments": 0}}}
         good = module.runtime_outcome(source, 7200000)
