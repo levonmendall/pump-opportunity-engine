@@ -163,6 +163,12 @@ class ObservationDiagnostics(unittest.TestCase):
   row=self.selected('http-lifecycle-timing',data);self.assertEqual(row['data']['responseBytes'],226575);self.assertIsNone(row['data']['bodyCompleteAt']);self.assertEqual(row['sourceSequence'],7);self.assertEqual(row['sourceMonotonicMs'],12.5);self.assertNotIn(SECRET,m.encode(row))
   physical=self.selected('component-physical-start',{'id':11,'at':1000,'enqueuedAt':999,'reservedAt':999,'kind':{'transport':'http','method':'getSignaturesForAddress','params':[SECRET.decode()]},'operationPurpose':'source'})
   self.assertEqual(physical['data']['kind'],{'transport':'http','method':'getSignaturesForAddress'});self.assertNotIn(SECRET,m.encode(physical))
+ def test_fixed_history_route_domain_and_ready_time_are_visible_without_exporting_arbitrary_urls(self):
+  data={'endpoint':'https://solana-rpc.publicnode.com','domain':'history','historyCooldownUntil':65000,'primaryRpcCooldownUntil':0,'providerDomain':'history','primaryRpcCooldownUnchanged':True}
+  self.assertEqual(self.selected('pilot-rpc-unavailable',data)['data'],data)
+  row=self.selected('native-audit-dispatch-state',{'reason':'rpc-gate-wait','nextAction':'await-next-dispatch','context':{'historyReadyAt':65000,'historyCooldownUntil':65000,'primaryRpcCooldownUntil':0}})
+  self.assertEqual(row['data']['context']['historyReadyAt'],65000)
+  self.assertNotIn('endpoint',self.selected('http-lifecycle-timing',{'endpoint':'https://private:'+SECRET.decode()+'@example.invalid'})['data'])
  def test_query_isolation_global_backoff_and_local_refusal_keep_distinct_failure_domains(self):
   cases=[('pilot-job-admission-refused',{'code':'COMPONENT_DISPATCH_EXPIRED','domain':'rpc','physicalSettled':True,'providerCooldownUnchanged':True}),('pilot-data-control-unavailable',{'code':'COMPONENT_PHYSICAL_TIMEOUT','controlCooldownUntil':12000,'publicRpcCooldownUnchanged':True}),('pilot-candidate-batch-unavailable',{'code':'COMPONENT_HISTORY_BATCH_ENVELOPE','httpStatus':200,'globalRpcCooldownUnchanged':True,'globalFailureStreakUnchanged':True}),('pilot-query-timeout-unavailable',{'key':'independent-history:'+'1'*44,'scope':'independent-history','queryCooldownUntil':12000,'queryFailures':2,'automaticRetry':False}),('pilot-query-timeout-escalated',{'distinctTimedOutQueriesLast10s':3,'globalBackoffRequired':True}),('pilot-rpc-provider-backoff-observed',{'status':503,'cooldownUntil':14000,'physicalGateUnchanged':True,'observedAfterLogicalCompletion':False})]
   for kind,data in cases:
