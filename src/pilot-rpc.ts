@@ -26,6 +26,7 @@ const safe=(e:unknown)=>e instanceof Error&&/^(COMPONENT_[A-Z0-9_:-]{1,100}|PAPE
 // written. It remains charged, but this is neither a provider refusal nor a
 // permanent failure of the shared gate. Existing settlement guards still apply.
 const localAdmissionRefusal=(code:string)=>['COMPONENT_DISPATCH_EXPIRED','COMPONENT_ADMISSION_CLOSED'].includes(code);
+const candidateBatchFault=(code:string)=>['COMPONENT_HISTORY_BATCH_RESPONSE_SIZE','COMPONENT_HISTORY_BATCH_ENVELOPE','COMPONENT_HISTORY_BATCH_MALFORMED_JSON'].includes(code);
 const recoverable=(code:string)=>['COMPONENT_HTTP_429','COMPONENT_RPC_OVERLOAD','COMPONENT_RPC_ERROR_-32016','COMPONENT_HISTORY_BATCH_RESPONSE_SIZE','COMPONENT_HISTORY_BATCH_ENVELOPE','COMPONENT_HISTORY_BATCH_MALFORMED_JSON','COMPONENT_PHYSICAL_TIMEOUT','COMPONENT_HTTP_TRANSPORT','COMPONENT_WS_TRANSPORT','COMPONENT_ABORTED','COMPONENT_HTTP_STATUS_502','COMPONENT_HTTP_STATUS_503','COMPONENT_HTTP_STATUS_504'].includes(code);
 function retryAfter(value:unknown,at:number){
   if(typeof value!=='string'||value.length>128)return at+65000;
@@ -161,8 +162,17 @@ export class PilotRpc{
         this.emit('pilot-job-admission-refused',{at:this.now(),code:refusalReason,domain,providerCooldownUnchanged:true,cooldownUntil:this.cooldown,physicalSettled:u?.inFlight===0,reservationsRetained:u?.uncertainResponseBytes??0,chapterHalted:u?.haltedReason!=null,nextAttemptRequiresExistingSettlementGuards:true,automaticRetry:false});
       }else if(u?.haltedReason){
         const globalFailure=/^COMPONENT_(STORAGE|DIAGNOSTIC|CLOCK|MONOTONIC|RESPONSE_|INVALID_)/.test(u.haltedReason);
-        if(domain==='control'&&!globalFailure){
+        if(u.storageFailed){this.fatal='STORAGE_UNAVAILABLE';
+        }else if(domain==='control'&&!globalFailure){
           this.controlFailure=true;this.emit('pilot-data-control-unavailable',{at:this.now(),code:u.haltedReason,controlCooldownUntil:this.controlCooldown,publicRpcCooldownUnchanged:true,physicalSettled:u.inFlight===0,reservationsRetained:u.uncertainResponseBytes});
+        }else if(domain==='rpc'&&candidateBatchFault(u.haltedReason)&&code===u.haltedReason&&this.pendingHttpStatus===200&&this.pendingRetryAfter===null&&u.inFlight===0&&!u.waitingOrOperating){
+          // A fully settled refusal of the optional candidate-batch shape/size
+          // does not establish a provider-wide outage. Its failed queries stay
+          // unavailable and batching is disabled by its owner below. Preserve
+          // the existing global incident streak/cooldown, physical starts and
+          // uncertain bytes; ordinary pricing still needs the SAME recovered
+          // chapter, rate/spacing and physical gate. No request is retried here.
+          try{this.emit('pilot-candidate-batch-unavailable',{at:this.now(),code:u.haltedReason,httpStatus:this.pendingHttpStatus,cooldownUntil:this.cooldown,globalRpcCooldownUnchanged:true,globalFailureStreakUnchanged:true,physicalSettled:true,reservationsRetained:u.uncertainResponseBytes,ordinaryRequestsRequireSharedGate:true,automaticRetry:false});}catch{this.fatal='DIAGNOSTIC_FAILURE';throw new PilotRpcUnavailable('DIAGNOSTIC_FAILURE');}
         }else if(queryKey&&u.haltedReason==='COMPONENT_PHYSICAL_TIMEOUT'&&(this.pendingHttpStatus===null||this.pendingHttpStatus===200)&&this.isolateQueryTimeout(queryKey,u)){
           // Failed candidate history is unavailable; this never clears actual
           // physical occupancy, reservations, pacing or provider Retry-After.
@@ -177,6 +187,10 @@ export class PilotRpc{
   }
   private observeHttpHeaders(h:{status:number;retryAfter:unknown;at:number}){
     this.pendingHttpStatus=h.status;
+    // A scoped candidate fault is excused only when no provider retry hint was
+    // received. Preserve even a200 response's explicit hint on its failure path;
+    // successful-response and actual429/503 handling otherwise stay unchanged.
+    if(h.retryAfter!==null&&h.retryAfter!==undefined)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);
     const throttle=h.status===429,unavailable=[502,503,504].includes(h.status);
     if(!throttle&&!unavailable)return;
     if(throttle||h.retryAfter!==null&&h.retryAfter!==undefined)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);

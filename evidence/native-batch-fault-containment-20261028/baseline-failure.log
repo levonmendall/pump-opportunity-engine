@@ -1,0 +1,70 @@
+✖ settled json candidate fault permits policy-safe holding SDK service without an artificial global cooldown (62.981599ms)
+✖ settled envelope candidate fault permits policy-safe holding SDK service without an artificial global cooldown (18.993356ms)
+✖ settled capped-body candidate fault permits policy-safe holding SDK service without an artificial global cooldown (28.269612ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 964.144614
+
+✖ failing tests:
+
+test at test/pilot-rpc-history-batch.test.ts:1:18736
+✖ settled json candidate fault permits policy-safe holding SDK service without an artificial global cooldown (62.981599ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 1793044339184
+  - 0
+  
+      at TestContext.<anonymous> (/tmp/poe-batch-containment-baseline-b9/test/pilot-rpc-history-batch.test.ts:111:504)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1793044339184,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/pilot-rpc-history-batch.test.ts:1:18736
+✖ settled envelope candidate fault permits policy-safe holding SDK service without an artificial global cooldown (18.993356ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 1793044339184
+  - 0
+  
+      at TestContext.<anonymous> (/tmp/poe-batch-containment-baseline-b9/test/pilot-rpc-history-batch.test.ts:111:504)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1793044339184,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/pilot-rpc-history-batch.test.ts:1:18736
+✖ settled capped-body candidate fault permits policy-safe holding SDK service without an artificial global cooldown (28.269612ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 1793044339184
+  - 0
+  
+      at TestContext.<anonymous> (/tmp/poe-batch-containment-baseline-b9/test/pilot-rpc-history-batch.test.ts:111:504)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1793044339184,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

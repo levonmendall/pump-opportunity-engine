@@ -1,0 +1,21 @@
+{
+  "classification": "EXPECTED_BASELINE_FAILURE_FROM_NEW_SDK_REGRESSION",
+  "baseCommit": "b9bba473de026ec630033a2c95167fa31c027c0d",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "--test-name-pattern=policy-safe holding",
+    "test/pilot-rpc-history-batch.test.ts"
+  ],
+  "startedAt": "2026-10-28T19:32:30.977428+00:00",
+  "finishedAt": "2026-10-28T19:32:31.981873+00:00",
+  "exitCode": 1,
+  "rawOutput": "evidence/native-batch-fault-containment-20261028/baseline-failure.log",
+  "sha256": "25d9cc897bd8fcc370d43fc175196ff0a66730eb39fcbd13d035d02913d31f9a",
+  "sourceSha256": "dfcbcdf7c8c88ed7337bed5a216b4a97dadb55e8b372c184b41cc9aefec580ca",
+  "testSha256": "806b1fef37263d6ed19b7b79f2ecab3fcf9ab16616f81fbc2b0b6bfc89fb7835",
+  "networkCalls": 0,
+  "financialLedgerOpened": false
+}

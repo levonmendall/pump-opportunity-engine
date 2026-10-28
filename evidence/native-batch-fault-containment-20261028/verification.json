@@ -1,0 +1,56 @@
+{
+  "baseCommit": "b9bba473de026ec630033a2c95167fa31c027c0d",
+  "classification": "OFFLINE_SETTLED_CANDIDATE_FAULT_CONTAINMENT_NOT_LIVE_PROTECTION_EVIDENCE",
+  "sourceFiles": [
+    {
+      "path": "src/pilot-rpc.ts",
+      "sha256": "e0612241beb8b7f9a58eded60a63902af6f16db51e1e60d68257887ddd50e215"
+    },
+    {
+      "path": "test/pilot-rpc-history-batch.test.ts",
+      "sha256": "806b1fef37263d6ed19b7b79f2ecab3fcf9ab16616f81fbc2b0b6bfc89fb7835"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-concurrency=2",
+        "test/pilot-rpc-history-batch.test.ts",
+        "test/pilot-rpc.test.ts",
+        "test/pilot-rpc-derived-status.test.ts",
+        "test/pilot-rpc-minute-research.test.ts",
+        "test/pilot-rpc-query-timeout.test.ts",
+        "test/native-paper-management-reserve.test.ts",
+        "test/research-clock-pricing.test.ts",
+        "test/component-history-batch.test.ts"
+      ],
+      "startedAt": "2026-10-28T19:32:48.453220+00:00",
+      "finishedAt": "2026-10-28T19:32:56.239963+00:00",
+      "exitCode": 0,
+      "rawOutput": "evidence/native-batch-fault-containment-20261028/focused.log",
+      "sha256": "63abcc4a74263eecc634891bd5912374067b3d383188ed199b9534e8d103ff37",
+      "bytes": 14783
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-28T19:32:56.240082+00:00",
+      "finishedAt": "2026-10-28T19:33:03.598235+00:00",
+      "exitCode": 0,
+      "rawOutput": "evidence/native-batch-fault-containment-20261028/build.log",
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "bytes": 55
+    }
+  ],
+  "independentReview": "GO; exact caught/halt reason, HTTP200/noRetryAfter, settled gate and unchanged incident streak reviewed; real SDK positive plus actual provider/backoff/cancel/resource negative fixtures.",
+  "networkCalls": 0,
+  "financialLedgerOpened": false,
+  "productionModified": false
+}
