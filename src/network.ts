@@ -1,6 +1,6 @@
 import { performance } from 'node:perf_hooks';
 
-const RPC_METHODS = Object.freeze(['getSlot','getMultipleAccounts','getTransaction','getSignaturesForAddress','getMinimumBalanceForRentExemption','getBlockTime','getGenesisHash']);
+const RPC_METHODS = Object.freeze(['getBlock','getSlot','getMultipleAccounts','getTransaction','getSignaturesForAddress','getMinimumBalanceForRentExemption','getBlockTime','getGenesisHash']);
 const DATA_METHODS = Object.freeze(['subscribeMigration','subscribeTokenTrade','unsubscribeTokenTrade']);
 export function validateRpc(body: unknown): asserts body is {method:string} {
   if (!body || typeof body !== 'object' || !('method' in body) || !RPC_METHODS.includes(String(body.method))) throw new Error('PAPER_RPC_METHOD_DENIED');
