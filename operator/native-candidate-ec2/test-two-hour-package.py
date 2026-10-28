@@ -26,7 +26,7 @@ class Profiles(unittest.TestCase):
         self.assertEqual([extended[k] for k in ["durationSeconds", "outerSeconds", "runnerTimeoutSeconds", "runnerCpuSeconds", "temporaryMiB", "artifactMiB", "evidenceMiB", "minimumAvailableDiskMiB"]], [7200, 7320, 7215, 1920, 1536, 1280, 1024, 2048])
         self.assertEqual(extended["runnerCpuSeconds"] + 5, 1925)
         self.assertEqual(extended["workflowTimeoutMinutes"], 125)
-        self.assertEqual(extended["maximumBaselinePaths"], 192)
+        self.assertEqual(extended["maximumBaselinePaths"], 448)
         self.assertEqual(extended["maximumComponentBookBytes"], 512 * 1024)
         self.assertEqual(extended["maximumBaselineBytes"], 32 * MIB)
         self.assertEqual(module.observation_policy(), "observation-age-v1")

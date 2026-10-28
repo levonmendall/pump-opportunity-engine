@@ -64,7 +64,7 @@ test('an explicitly larger bounded chapter list preserves default32-path behavio
 });
 
 
-test('explicit256-path history retains every hash, counter and uncertain debit while default32 remains bounded',t=>{
+test('explicit512-path history retains every hash, counter and uncertain debit while default32 remains bounded',t=>{
  const f=fixture(t),paths=[f.write('old.json',{...old(),pending:[{id:2,unobservedBytes:2000}]})];
  let base=readResearchBaseline({paths,now:2000,physicalSettled:true}).baseline;
  for(let i=1;i<RESEARCH_MAXIMUM_PATHS;i++){
@@ -74,8 +74,8 @@ test('explicit256-path history retains every hash, counter and uncertain debit w
  const before=paths.map(hash);
  assert.throws(()=>readResearchBaseline({paths,now:2000,physicalSettled:true}),/INVALID_OPTIONS/);
  const all=readResearchBaseline({paths,now:2000,physicalSettled:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});
- assert.equal(all.sources.length,256);assert.deepEqual(all.sources.map(s=>s.path),paths);assert.deepEqual(all.sources.map(s=>s.sha256),before);assert.deepEqual(all.baseline,base);
- assert.equal(all.observedBytes,100+255*3);assert.equal(all.uncertainResponseBytes,2000);assert.equal(all.pendingOperations,1);
+ assert.equal(all.sources.length,512);assert.deepEqual(all.sources.map(s=>s.path),paths);assert.deepEqual(all.sources.map(s=>s.sha256),before);assert.deepEqual(all.baseline,base);
+ assert.equal(all.observedBytes,100+511*3);assert.equal(all.uncertainResponseBytes,2000);assert.equal(all.pendingOperations,1);
  assert.throws(()=>readResearchBaseline({paths:[...paths,paths[0]!],now:2000,physicalSettled:true,maximumPaths:RESEARCH_MAXIMUM_PATHS}),/INVALID_OPTIONS/);
  assert.throws(()=>readResearchBaseline({paths:[...paths.slice(0,-1),paths[0]!],now:2000,physicalSettled:true,maximumPaths:RESEARCH_MAXIMUM_PATHS}),/DUPLICATE_PATH/);
  assert.throws(()=>readResearchBaseline({paths,now:2000,maximumPaths:RESEARCH_MAXIMUM_PATHS}),/PHYSICAL_UNCERTAINTY/);assert.deepEqual(paths.map(hash),before);

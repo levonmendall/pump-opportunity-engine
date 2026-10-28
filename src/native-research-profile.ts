@@ -7,7 +7,7 @@ export const NATIVE_TWO_HOUR_RESEARCH_PROFILE=Object.freeze({
  mode:'candidate-evaluation' as const,financialExecutionAuthorized:false as const,
  durationMs:7200000,maximumDurationMs:7200000,shutdownReserveMs:10000,
  statusSnapshotArchive:Object.freeze({initialFullSnapshots:4,minimumLaterIntervalMs:3600000}),
- maximumDeep:6,maximumUnits:7500,maximumChapters:64,maximumBaselinePaths:192,maximumTotalBaselinePaths:256,
+ maximumDeep:6,maximumUnits:7500,maximumChapters:64,maximumBaselinePaths:448,maximumTotalBaselinePaths:512,
  maximumComponentBookBytes:512*1024,maximumBaselineBytes:32*MIB,maximumRpcMetadataBytes:2*MIB,
  relatedResponseBytes:2304*MIB,nativeSocketBytes:2048*MIB,nativeRecordedBytes:896*MIB,
  broadWatchBytes:8192*MIB,discoveryBytes:40*MIB,feedRecordedBytes:64*MIB,

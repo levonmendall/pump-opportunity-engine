@@ -1,0 +1,51 @@
+✔ default staging keeps the900-second envelope and pins independently staged readback helper (310.272459ms)
+✔ two-hour source/profile/age/contract are explicit and Python and staged maps agree exactly (328.373535ms)
+✔ duration profile never opts into shadow data or selected24-hour observation implicitly (1813.967903ms)
+✖ staging bounds physical book size, aggregate bytes and initial path count before reading accounting (914.313484ms)
+✔ explicit90 package pins11500 units and same durable non-upload limits as old60 package (707.604131ms)
+✔ new90 staging refuses a bundle which resolves that name to old7500-unit settings (298.161819ms)
+✔ short900-second observation retains the explicit90 resource/export envelope and hashes its actual duration (750.265727ms)
+✔ observation duration is canonical, bounded and cannot be silently ignored by a bundle (2540.164551ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7752.252715
+
+✖ failing tests:
+
+test at operator/native-candidate-ec2/test-stage-package.mjs:38:1
+✖ staging bounds physical book size, aggregate bytes and initial path count before reading accounting (914.313484ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /PUBLIC_INPUT_CAPACITY/. Input:
+  
+  '/workspace/pump-opportunity-engine/src/research-baseline.ts:19\n' +
+    "function need(v:unknown,code:string):asserts v {if(!v)throw Error('RESEARCH_BASELINE_'+code);}\n" +
+    '                                                            ^\n' +
+    '\n' +
+    'Error: RESEARCH_BASELINE_DUPLICATE_PATH\n' +
+    '    at need (/workspace/pump-opportunity-engine/src/research-baseline.ts:19:61)\n' +
+    '    at readResearchBaseline (/workspace/pump-opportunity-engine/src/research-baseline.ts:51:3)\n' +
+    '    at <anonymous> (/workspace/pump-opportunity-engine/scripts/stage-native-candidate-ec2.mjs:37:16)\n' +
+    '    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n' +
+    '    at async node:internal/modules/esm/loader:643:26\n' +
+    '    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n' +
+    '\n' +
+    'Node.js v24.19.0\n'
+  
+      at TestContext.<anonymous> (file:///workspace/pump-opportunity-engine/operator/native-candidate-ec2/test-stage-package.mjs:41:108)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "/workspace/pump-opportunity-engine/src/research-baseline.ts:19\nfunction need(v:unknown,code:string):asserts v {if(!v)throw Error('RESEARCH_BASELINE_'+code);}\n                                                            ^\n\nError: RESEARCH_BASELINE_DUPLICATE_PATH\n    at need (/workspace/pump-opportunity-engine/src/research-baseline.ts:19:61)\n    at readResearchBaseline (/workspace/pump-opportunity-engine/src/research-baseline.ts:51:3)\n    at <anonymous> (/workspace/pump-opportunity-engine/scripts/stage-native-candidate-ec2.mjs:37:16)\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n",
+    expected: /PUBLIC_INPUT_CAPACITY/,
+    operator: 'match',
+    diff: 'simple'
+  }

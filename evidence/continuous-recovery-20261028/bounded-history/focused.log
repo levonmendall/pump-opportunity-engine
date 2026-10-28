@@ -1,0 +1,28 @@
+✔ candidate launcher public binding validation creates no account and refuses financial or credential input (2.197484ms)
+✔ candidate launcher remains finite and contains no financial implementation imports or transaction execution call (0.837965ms)
+✔ root execution refusal precedes reading private inputs or opening the network (0.186687ms)
+✔ one failed source stop cannot skip the other stop or report physical settlement (4.707853ms)
+✔ publisher-compatible status discloses lost broad awareness independently of native health and keeps unknown protection null (0.732808ms)
+✔ shadow source contract is explicit in public input and frozen configuration without changing strategy or financial permissions (0.737766ms)
+✔ two-hour resource envelope requires explicit version selection and remains candidate-only (1.81832ms)
+✔ larger finite allowances do not raise request rate, concurrency, freshness or strategy windows (1.757751ms)
+✔ two-hour append-only accounting and disk envelopes keep explicit bounded headroom (0.422737ms)
+✔ profile provenance matches retained actual observations and labels six-pool scaling as a projection (1.466668ms)
+✔ explicit90/minute research is a different closed profile; every other existing two-hour resource stays unchanged (0.407856ms)
+✔ two-hour90 profile requires the explicit matching rate and old two-hour profile cannot be relabeled90 (0.782583ms)
+✔ actual offline RPC/native/watch constructor composition keeps default, two-hour60 and explicit two-hour90 identities coherent (77.528786ms)
+✔ actual immutable books produce24 cumulative units and377058 bytes without double counting baseline20 (3.441874ms)
+✔ ordered chapters require exact preceding cumulative calls, bytes, starts and file hash (4.539933ms)
+✔ pending uncertainty blocks unless physical settlement is explicitly confirmed; debit carries once (1.390813ms)
+✔ future clocks, forged event identities, and cumulative overrun are rejected without writes (3.157133ms)
+✔ explicit standing mode crosses historical lifetime caps while retaining uncertainty and the exact linked history (2.93244ms)
+✔ an explicitly larger bounded chapter list preserves default32-path behavior and never scans directories (22.912631ms)
+✔ explicit512-path history retains every hash, counter and uncertain debit while default32 remains bounded (95.554079ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2268.996363

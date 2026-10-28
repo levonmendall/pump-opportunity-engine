@@ -50,7 +50,7 @@ function read(file,maximum){
 const git=(...args)=>{const result=spawnSync('git',args,{cwd:REPOSITORY,encoding:'utf8',timeout:5000,maxBuffer:2*MIB});need(result.status===0,'GIT_METADATA_UNAVAILABLE');return result.stdout.trim();};
 const manifestPath=PILOT+'/pilot.json',manifestRaw=read(manifestPath,2*MIB),manifest=JSON.parse(manifestRaw);
 need(manifest.schemaVersion===1&&manifest.experimental===true&&manifest.authoritative===false&&!manifest.unresolvedResearch,'UNSETTLED_OR_NONEXPERIMENTAL_RESEARCH');
-need(Array.isArray(manifest.baselinePaths)&&manifest.baselinePaths.length>0&&manifest.baselinePaths.length<=192,'EXPLICIT_BASELINE_PATHS_REQUIRED');
+need(Array.isArray(manifest.baselinePaths)&&manifest.baselinePaths.length>0&&manifest.baselinePaths.length<=448,'EXPLICIT_BASELINE_PATHS_REQUIRED');
 let discovery,watch,checkpoint,checkpointPath,expectedAccounting,handoff;
 if(!latestHandoff){
  const discoveryPath=PILOT+'/runs/discovery-cache-20261028070929965/receipt.json';discovery=JSON.parse(read(discoveryPath,4*MIB));
@@ -121,7 +121,7 @@ for(let index=0;index<checkpoint.origins.length;index++){
  if(!prior||finalized.availableAt<prior.proof.originFinalized.availableAt)origins.set(identity.baseMint,{identity,proof:structuredClone(source),ref:{path:checkpointPath,originIndex:index,kind:'latest-native-strict-proof'}});
 }
 need(origins.size<=174,'ORIGIN_IDENTITY_CAP');
-const linked=readResearchBaseline({paths:manifest.baselinePaths,now,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:192});
+const linked=readResearchBaseline({paths:manifest.baselinePaths,now,physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:448});
 need(linked.sources.length===expectedAccounting.sourceCount&&linked.baseline.calls===expectedAccounting.calls&&linked.baseline.bytes===expectedAccounting.bytes&&linked.uncertainResponseBytes===expectedAccounting.uncertain&&(expectedAccounting.observed===undefined||linked.observedBytes===expectedAccounting.observed),'SETTLED_ACCOUNTING_MISMATCH');
 const priorCooldownUntil=Math.max(manifest.cooldownUntil??0,manifest.controlCooldownUntil??0);
 need(Number.isSafeInteger(priorCooldownUntil)&&priorCooldownUntil>=0&&now>=priorCooldownUntil,'PROVIDER_COOLDOWN');

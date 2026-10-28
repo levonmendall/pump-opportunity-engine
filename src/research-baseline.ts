@@ -7,10 +7,10 @@ import {resolve} from 'node:path';
 import {COMPONENT_COUNTERBOOK_MAX_BYTES,type ComponentBaseline} from './component-budget.js';
 
 const MIB=1024*1024;
-/** Explicit finite history runway: at most256 books, each at most512KiB,
+/** Explicit finite history runway: at most512 books, each at most512KiB,
  * with an unchanged32MiB aggregate input bound.
  * Callers still default to32 paths; no directory scan, rewrite or refund. */
-export const RESEARCH_MAXIMUM_PATHS=256;
+export const RESEARCH_MAXIMUM_PATHS=512;
 export const RESEARCH_MAXIMUM_INPUT_BYTES=32*MIB;
 type Book=Record<string,unknown>;
 export type ResearchBaselineSource={path:string;sha256:string;incrementUnits:number;incrementObservedBytes:number;pendingReservedBytes:number};

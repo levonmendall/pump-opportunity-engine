@@ -24,7 +24,7 @@ function fixture(t,{wrong90=false,durationConfig=false,ignoreDuration=false}={})
  return {root,book,input,run};
 }
 test('default staging keeps the900-second envelope and pins independently staged readback helper',t=>{
- const f=fixture(t),r=f.run();assert.equal(r.status,0,r.stderr);const m=r.manifest();assert.equal(m.researchProfile,null);assert.equal(Object.hasOwn(m,'observationSeconds'),false);assert.equal(m.observationAgePolicy,'observation-age-v1');assert.equal(m.dataContract,'confirmed-program-events-v2');assert.equal(m.configurationSha256,'e'.repeat(64));assert.deepEqual([m.limits.durationSeconds,m.limits.temporaryMiB,m.limits.artifactMiB,m.limits.maximumBaselinePaths],[900,256,192,224]);assert.equal(m.limits.maximumComponentBookBytes,512*1024);assert.equal(m.limits.maximumBaselineBytes,32*MIB);assert.equal(m.costs.githubArtifactUpload,true);
+ const f=fixture(t),r=f.run();assert.equal(r.status,0,r.stderr);const m=r.manifest();assert.equal(m.researchProfile,null);assert.equal(Object.hasOwn(m,'observationSeconds'),false);assert.equal(m.observationAgePolicy,'observation-age-v1');assert.equal(m.dataContract,'confirmed-program-events-v2');assert.equal(m.configurationSha256,'e'.repeat(64));assert.deepEqual([m.limits.durationSeconds,m.limits.temporaryMiB,m.limits.artifactMiB,m.limits.maximumBaselinePaths],[900,256,192,480]);assert.equal(m.limits.maximumComponentBookBytes,512*1024);assert.equal(m.limits.maximumBaselineBytes,32*MIB);assert.equal(m.costs.githubArtifactUpload,true);
  const helper=readFileSync(join(r.output,'operator/native-candidate-ec2/readback-public-evidence.py'));assert.equal(sha(helper),m.publicEvidenceReadback.helperSha256);assert.match(readFileSync(join(r.output,'.github/workflows/poe-native-candidate-evidence-readback.yml'),'utf8'),new RegExp(m.publicEvidenceReadback.helperSha256));assert.doesNotMatch(readFileSync(join(r.output,'.github/workflows/poe-native-candidates-research.yml'),'utf8'),/__REVIEWED_/);
 });
 test('two-hour source/profile/age/contract are explicit and Python and staged maps agree exactly',t=>{
@@ -38,7 +38,7 @@ test('duration profile never opts into shadow data or selected24-hour observatio
 test('staging bounds physical book size, aggregate bytes and initial path count before reading accounting',t=>{
  const f=fixture(t),big=join(f.root,'oversize.json');writeFileSync(big,Buffer.alloc(512*1024+1,32));let r=f.run([],{baselinePaths:[big]});assert.notEqual(r.status,0);assert.match(r.stderr,/BOUNDED_REGULAR_PUBLIC_FILE_REQUIRED/);
  const paths=[];for(let i=0;i<65;i++){const path=join(f.root,'aggregate-'+i+'.json');writeFileSync(path,Buffer.alloc(512*1024,32));paths.push(path);}r=f.run([],{baselinePaths:paths});assert.notEqual(r.status,0);assert.match(r.stderr,/BASELINE_AGGREGATE_BYTE_CAP/);
- r=f.run(['--profile',profile],{baselinePaths:Array(193).fill(f.book)});assert.notEqual(r.status,0);assert.match(r.stderr,/PUBLIC_INPUT_CAPACITY/);
+ r=f.run(['--profile',profile],{baselinePaths:Array(449).fill(f.book)});assert.notEqual(r.status,0);assert.match(r.stderr,/PUBLIC_INPUT_CAPACITY/);
 });
 
 test('explicit90 package pins11500 units and same durable non-upload limits as old60 package',t=>{
