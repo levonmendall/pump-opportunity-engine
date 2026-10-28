@@ -83,6 +83,28 @@ The installed private code release and same-account import are prerequisites.
 This wrapper neither imports an account nor stages the code release. Those
 separate helpers must have completed their hash/identity/recovery checks first.
 
+## Same-account executable upgrades
+
+After the installed new main executable matches the reviewed run manifest, the
+same supervisor can resume the already imported account with a new source. It
+does not re-import, initialize, reseed or read SQLite. If `input.source` differs,
+it first acquires the existing financial-owner flock and verifies the fixed
+account/inception, a settled manifest without `unresolvedResearch`, stopped PAPER
+status matching the previous input source, absence of the prior runtime PID,
+and that exact prior run's physical-settlement receipt and ownership counts.
+Settled open positions and pending actions are preserved; they are not required
+to be flat. Unknown, active, conflicting or unsettled state refuses the update.
+
+Under that lease it privately retains the exact original input plus an
+append-only plan, then atomically changes only the input's source commit/hash.
+A successful transition adds a receipt with old/new sources and input hashes,
+the prior stopped timestamp and the actual gap at transition. Old status, market
+evidence, manifests and every financial file remain unchanged. Interrupted plans,
+backups or temporary replacements are retained; an existing operation directory
+is refused rather than overwritten. The runtime must then acquire its ordinary
+sole-writer lease and perform its established financial recovery. This is a new
+versioned segment, never uninterrupted operation or a24-hour acceptance claim.
+
 ## Manifest and commands
 
 Place a reviewed `operator/native-paper-ec2/run-package.json` in the existing

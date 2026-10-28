@@ -1,5 +1,6 @@
 """Offline supervisor mechanics only; every process/account/status is disposable."""
 import copy
+import fcntl
 import importlib.util
 import json
 import os
@@ -380,6 +381,205 @@ class Guards(unittest.TestCase):
             self.assertIsNone(r['positions'])
             self.assertIsNone(r['finalStoppedReportAccepted'])
             self.assertTrue((root/'segment-0.json').exists())
+
+
+
+
+class SourceUpgrade(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory(prefix='poe-OFFLINE-source-upgrade-')
+        self.root = pathlib.Path(self.temporary.name)
+        self.root.chmod(0o700)
+        self.owner = os.getuid()
+        dead = subprocess.Popen([sys.executable, '-c', 'pass'])
+        dead.wait(timeout=3)
+        self.old = {'commit': 'a'*40, 'sha256': 'b'*64}
+        self.manifest = manifest()
+        self.manifest['source'] = {'commit': 'c'*40, 'sha256': 'd'*64}
+        self.input = {'schemaVersion': 1, 'source': self.old, 'reportingBinding': {'accountId': m.ACCOUNT_ID, 'inceptionAt': m.INCEPTION}, 'baselinePaths': ['/OFFLINE/original-book.json'], 'priorPhysicalSettled': True, 'unchanged': {'nested': ['original', 7]}}
+        self.status = source(runtimePid=dead.pid)
+        self.pilot = {'schemaVersion': 1, 'experimental': True, 'authoritative': False, 'accountId': m.ACCOUNT_ID, 'inceptionAt': m.INCEPTION, 'runs': [self.status['runId']], 'baselinePaths': ['/OFFLINE/original-book.json']}
+        self.settlement = {'at': 1210, 'physicalSettlementConfirmed': True, 'positions': 0, 'pending': 0, 'financialHistoryPreserved': True}
+        self.run = self.root/'runs'/self.status['runId']
+        self.run.mkdir(parents=True, mode=0o700)
+        (self.root/'runs').chmod(0o700)
+        self.save('input.json', self.input)
+        self.save('pilot.json', self.pilot)
+        self.save('status.json', self.status)
+        self.save('runs/'+self.status['runId']+'/settlement.json', self.settlement)
+        self.lock = self.root/'ledger.sqlite.owner.lock'
+        self.lock.write_bytes(b'')
+        self.lock.chmod(0o600)
+        self.database = self.root/'ledger.sqlite'
+        self.database.write_bytes(b'OFFLINE sentinel: never open or reseed financial DB')
+        self.originals = {name: (self.root/name).read_bytes() for name in ['input.json', 'pilot.json', 'status.json', 'ledger.sqlite']}
+
+    def tearDown(self):
+        self.temporary.cleanup()
+
+    def save(self, path, value):
+        target = self.root/path
+        target.write_text(json.dumps(value)+'\n')
+        target.chmod(0o600)
+
+    def upgrade(self, operation='123-1'):
+        return m.prepare_input_source(self.root, self.manifest, operation, owner=self.owner, now=2000)
+
+    def unchanged(self):
+        for name, raw in self.originals.items():
+            self.assertEqual((self.root/name).read_bytes(), raw)
+
+    def test_settled_upgrade_changes_only_input_source_and_preserves_original_private_bytes(self):
+        original_replace, original_fsync = os.replace, os.fsync
+        observed_lock, synchronized = [], []
+        def fsync(fd):
+            synchronized.append(os.readlink('/proc/self/fd/'+str(fd)))
+            return original_fsync(fd)
+        def replace(*args, **kwargs):
+            fd = os.open(self.lock, os.O_RDONLY)
+            try:
+                with self.assertRaises(BlockingIOError):
+                    fcntl.flock(fd, fcntl.LOCK_EX|fcntl.LOCK_NB)
+                observed_lock.append(True)
+            finally:
+                os.close(fd)
+            for path in [self.root, self.root/'provenance', self.root/'provenance/source-transition-123-1']:
+                self.assertIn(str(path), synchronized, 'backup parent directory links must be durable before input replacement')
+            return original_replace(*args, **kwargs)
+        with patch.object(m.os, 'replace', side_effect=replace), patch.object(m.os, 'fsync', side_effect=fsync):
+            receipt = self.upgrade()
+        self.assertEqual(observed_lock, [True])
+        self.assertTrue(receipt['changed'])
+        self.assertEqual(receipt['previousSource'], self.old)
+        self.assertEqual(receipt['nextSource'], self.manifest['source'])
+        self.assertEqual(receipt['monitoringGapAtTransitionMs'], 800)
+        self.assertFalse(receipt['financialDatabaseOpened'])
+        self.assertFalse(receipt['financialStateModified'])
+        self.assertFalse(receipt['continuousOperationClaimed'])
+        current = json.loads((self.root/'input.json').read_bytes())
+        self.assertEqual(current, {**self.input, 'source': self.manifest['source']})
+        directory = self.root/'provenance/source-transition-123-1'
+        self.assertEqual((directory/'input-before.json').read_bytes(), self.originals['input.json'])
+        self.assertEqual(json.loads((directory/'transition.json').read_bytes()), receipt)
+        self.assertEqual(receipt['previousInputSha256'], m.digest(self.originals['input.json']))
+        self.assertEqual(receipt['nextInputSha256'], m.digest((self.root/'input.json').read_bytes()))
+        for name in ['pilot.json', 'status.json', 'ledger.sqlite']:
+            self.assertEqual((self.root/name).read_bytes(), self.originals[name])
+        fd = os.open(self.lock, os.O_RDONLY)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX|fcntl.LOCK_NB)
+        finally:
+            os.close(fd)
+
+    def test_nonflat_settled_exposure_and_pending_actions_are_retained(self):
+        self.status['positions'] = {'OFFLINE-held': {'units': '7'}}
+        self.status['pending'] = {'OFFLINE-exit': {'mint': 'OFFLINE-held', 'side': 'sell'}}
+        self.settlement.update(positions=1, pending=1)
+        self.save('status.json', self.status)
+        self.save('runs/'+self.status['runId']+'/settlement.json', self.settlement)
+        before = (self.root/'status.json').read_bytes()
+        receipt = self.upgrade()
+        self.assertEqual((receipt['positionsRetained'], receipt['pendingActionsRetained']), (1, 1))
+        self.assertEqual((self.root/'status.json').read_bytes(), before)
+        self.assertEqual(self.database.read_bytes(), self.originals['ledger.sqlite'])
+
+    def test_upgrade_preserves_the_same_six_pending_projection_bound_as_source_validation(self):
+        self.status['pending'] = {'OFFLINE-action-'+str(i): {'side': 'sell'} for i in range(6)}
+        self.settlement['pending'] = 6
+        self.save('status.json', self.status)
+        self.save('runs/'+self.status['runId']+'/settlement.json', self.settlement)
+        self.assertEqual(self.upgrade()['pendingActionsRetained'], 6)
+
+    def test_same_source_initial_import_needs_no_old_runtime_and_never_updates_input(self):
+        self.manifest['source'] = self.old
+        self.lock.unlink()
+        (self.root/'status.json').unlink()
+        receipt = self.upgrade()
+        self.assertFalse(receipt['changed'])
+        self.assertFalse((self.root/'provenance').exists())
+        self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
+
+    def test_active_owner_lock_or_runtime_pid_refuses_before_any_source_mutation(self):
+        fd = os.open(self.lock, os.O_RDONLY)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX|fcntl.LOCK_NB)
+            with self.assertRaisesRegex(m.Guard, 'PRIOR_FINANCIAL_WRITER_ACTIVE'):
+                self.upgrade()
+        finally:
+            os.close(fd)
+        self.unchanged()
+        self.status['runtimePid'] = os.getpid()
+        self.save('status.json', self.status)
+        with self.assertRaisesRegex(m.Guard, 'PRIOR_RUNTIME_PID_STILL_ALIVE'):
+            self.upgrade()
+        self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
+        self.assertFalse((self.root/'provenance').exists())
+
+    def test_unresolved_research_or_status_source_conflict_is_not_a_source_upgrade(self):
+        self.pilot['unresolvedResearch'] = {'retained': 'OFFLINE-unknown'}
+        self.save('pilot.json', self.pilot)
+        with self.assertRaisesRegex(m.Guard, 'SETTLED_SAME_ACCOUNT_MANIFEST_REQUIRED'):
+            self.upgrade()
+        del self.pilot['unresolvedResearch']
+        self.save('pilot.json', self.pilot)
+        self.status['source'] = {'commit': 'e'*40, 'sha256': 'f'*64}
+        self.save('status.json', self.status)
+        with self.assertRaisesRegex(m.Guard, 'PRIOR_STATUS_SOURCE_MISMATCH'):
+            self.upgrade()
+        self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
+        self.assertFalse((self.root/'provenance').exists())
+
+    def test_unsettled_transport_or_ownership_mismatch_preserves_input(self):
+        for changes in [{'physicalSettlementConfirmed': False}, {'positions': 1}, {'pending': True}, {'financialHistoryPreserved': False}]:
+            with self.subTest(changes=changes):
+                self.save('runs/'+self.status['runId']+'/settlement.json', {**self.settlement, **changes})
+                with self.assertRaisesRegex(m.Guard, 'PRIOR_PHYSICAL_SETTLEMENT_REQUIRED'):
+                    self.upgrade()
+                self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
+        self.assertFalse((self.root/'provenance').exists())
+
+    def test_running_unknown_or_wrong_account_source_never_becomes_quiescent(self):
+        for changes in [{'running': True}, {'mode': 'candidate-evaluation'}, {'liveTradingEnabled': True}, {'accountId': 'authoritative'}, {'inceptionAt': 1}]:
+            with self.subTest(changes=changes):
+                self.save('status.json', {**self.status, **changes})
+                with self.assertRaisesRegex(m.Guard, 'PRIOR_STOPPED_PAPER_SOURCE_REQUIRED'):
+                    self.upgrade()
+                self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
+        self.assertFalse((self.root/'provenance').exists())
+
+    def test_conflicting_partial_transition_is_preserved_without_overwrite(self):
+        target = self.root/'provenance/source-transition-123-1'
+        target.mkdir(parents=True, mode=0o700)
+        (self.root/'provenance').chmod(0o700)
+        (target/'partial').write_bytes(b'OFFLINE retained interrupted evidence')
+        with self.assertRaisesRegex(m.Guard, 'SOURCE_TRANSITION_PROVENANCE_EXISTS'):
+            self.upgrade()
+        self.assertEqual((target/'partial').read_bytes(), b'OFFLINE retained interrupted evidence')
+        self.unchanged()
+
+    def test_failed_atomic_update_retains_old_input_and_append_only_plan_and_backup(self):
+        with patch.object(m.os, 'replace', side_effect=OSError('OFFLINE interrupted before replace')):
+            with self.assertRaises(OSError):
+                self.upgrade()
+        self.unchanged()
+        target = self.root/'provenance/source-transition-123-1'
+        self.assertTrue((target/'transition-plan.json').exists())
+        self.assertEqual((target/'input-before.json').read_bytes(), self.originals['input.json'])
+        self.assertFalse((target/'transition.json').exists())
+        self.assertTrue((self.root/'.input-source-123-1.pending').exists())
+
+    def test_linked_input_or_owner_inode_is_refused_without_following_or_replacement(self):
+        os.link(self.root/'input.json', self.root/'input-hardlink')
+        with self.assertRaises(m.Guard):
+            self.upgrade()
+        self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
+        (self.root/'input-hardlink').unlink()
+        owner_copy = self.root/'owner-copy'
+        self.lock.rename(owner_copy)
+        self.lock.symlink_to(owner_copy)
+        with self.assertRaises(OSError):
+            self.upgrade()
+        self.assertEqual((self.root/'input.json').read_bytes(), self.originals['input.json'])
 
 
 if __name__ == '__main__':

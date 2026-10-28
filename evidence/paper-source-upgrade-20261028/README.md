@@ -1,0 +1,11 @@
+# Same-account executable source upgrade
+
+The existing supervisor strictly rejected a changed `input.source`, so it could not resume an already imported account on a reviewed new executable without a separate input change. A single pre-start helper now performs that change within the existing supervisor.
+
+The installed new main executable must already match the reviewed package hash. The helper validates the exact experimental account/inception/binding, settled manifest, stopped old-source PAPER status, dead prior runtime PID, existing financial-owner flock and matching prior-run physical-settlement/ownership counts. It holds the actual owner lease through validation, preservation, rechecks and atomic input publication. Nonflat settled exposure remains intact. The runtime subsequently acquires its ordinary financial-writer lease and validates the ledger normally.
+
+Only `input.source` changes semantically. Original exact private input, append-only plan and transition receipt remain in private source-transition provenance; parent links and file contents are fsynced before replacement. The receipt binds old/new source and input hashes, prior stopped time and actual gap at transition. Old status and all financial files remain untouched. Active, unknown, unsettled, linked or conflicting evidence refuses; interrupted plans/backups/replacements remain preserved rather than overwritten.
+
+Offline verification:27/27 supervisor tests, including the original16;18/18 readback tests; independent review GO and27/27 rerun; diff check PASS. Fixtures cover active owner/PID refusal, source mismatch, transport/ownership mismatch, held positions and pending actions, partial failure, no overwrite, exact non-source semantic preservation, owner-lock duration, and parent-directory durability before replacement. Six pending projection items match the existing supervisor bound; actual financial ledger limits are unchanged and still enforced by the runtime.
+
+No live account, host, provider, deployment or network was accessed. These fixtures do not prove an actual account transition, continuous management or24-hour acceptance. The lead must deploy the reviewed helper and verify the next versioned segment against the same actual account.

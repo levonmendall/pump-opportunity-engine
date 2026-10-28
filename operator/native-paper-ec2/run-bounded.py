@@ -6,6 +6,7 @@ and settlement can establish flatness. Unknown/nonflat state gets one immediate
 management-only segment after the previous process group is settled.
 """
 import ctypes
+import fcntl
 import hashlib
 import importlib.util
 import json
@@ -475,6 +476,139 @@ def supervise_segment(node, release, publisher_root, root, manifest, helpers, ma
     return result
 
 
+
+def prepare_input_source(account, manifest, operation, owner=UID, now=None):
+    """Rebind ONLY input.source after a settled same-account executable change.
+
+    The financial owner lease covers all checks, preservation and atomic update.
+    No SQLite file is opened and no prior status or financial fact is rewritten.
+    The ordinary runtime must acquire its own writer lease after this returns.
+    """
+    private_directory(account, owner)
+    original = regular(account/'input.json', 8*MIB, owner)
+    value = json.loads(original)
+    binding = value.get('reportingBinding') if type(value) is dict else None
+    need(type(value) is dict and value.get('schemaVersion') == 1 and type(binding) is dict and binding.get('accountId') == ACCOUNT_ID and binding.get('inceptionAt') == INCEPTION, 'IMPORTED_PAPER_INPUT_IDENTITY_REQUIRED')
+    old = value.get('source')
+    need(type(old) is dict and set(old) == {'commit', 'sha256'} and hashed(old['commit'], 40) and hashed(old['sha256']), 'PRIOR_INPUT_SOURCE_REQUIRED')
+    if old == manifest['source']:
+        return {'changed': False, 'source': old, 'inputSha256': digest(original), 'financialDatabaseOpened': False}
+    need(isinstance(operation, str) and operation.count('-') == 1 and all(part.isdigit() and 1 <= len(part) <= 24 for part in operation.split('-')), 'FIXED_OPERATION_ID_REQUIRED')
+    at = int(time.time()*1000) if now is None else now
+    need(integer(at), 'SOURCE_TRANSITION_CLOCK_REQUIRED')
+    owner_path = account/'ledger.sqlite.owner.lock'
+    lease = os.open(owner_path, os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+    try:
+        locked = os.fstat(lease)
+        need(stat.S_ISREG(locked.st_mode) and locked.st_uid == owner and locked.st_nlink == 1 and stat.S_IMODE(locked.st_mode) == 0o600, 'FINANCIAL_OWNER_LOCK_REQUIRED')
+        try:
+            fcntl.flock(lease, fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise Guard('PRIOR_FINANCIAL_WRITER_ACTIVE')
+        def unchanged_lock():
+            current = owner_path.lstat()
+            need(stat.S_ISREG(current.st_mode) and (current.st_dev, current.st_ino, current.st_uid, current.st_mode, current.st_nlink) == (locked.st_dev, locked.st_ino, locked.st_uid, locked.st_mode, locked.st_nlink), 'FINANCIAL_OWNER_LOCK_CHANGED')
+        unchanged_lock()
+        need(regular(account/'input.json', 8*MIB, owner) == original, 'SOURCE_INPUT_CHANGED_BEFORE_TRANSITION')
+        pilot_raw = regular(account/'pilot.json', 8*MIB, owner)
+        pilot = json.loads(pilot_raw)
+        need(type(pilot) is dict and pilot.get('schemaVersion') == 1 and pilot.get('experimental') is True and pilot.get('authoritative') is False and pilot.get('accountId') == ACCOUNT_ID and pilot.get('inceptionAt') == INCEPTION and 'unresolvedResearch' not in pilot and type(pilot.get('runs')) is list, 'SETTLED_SAME_ACCOUNT_MANIFEST_REQUIRED')
+        status_raw = regular(account/'status.json', 4*MIB, owner)
+        status = json.loads(status_raw)
+        need(type(status) is dict and status.get('accountId') == ACCOUNT_ID and status.get('inceptionAt') == INCEPTION and status.get('running') is False and status.get('mode') == 'paper' and status.get('financialExecutionAuthorized') is True and status.get('liveTradingEnabled') is False, 'PRIOR_STOPPED_PAPER_SOURCE_REQUIRED')
+        prior = status.get('source')
+        need(type(prior) is dict and prior.get('commit') == old['commit'] and prior.get('sha256') == old['sha256'], 'PRIOR_STATUS_SOURCE_MISMATCH')
+        run = status.get('runId')
+        need(isinstance(run, str) and run.startswith('native-paper-') and run[13:].isdigit() and len(run) <= 64 and run in pilot['runs'], 'PRIOR_PAPER_RUN_BINDING_REQUIRED')
+        need(integer(status.get('startedAt')) and integer(status.get('generatedAt')) and status['startedAt'] <= status['generatedAt'] <= at, 'PRIOR_STOPPED_SOURCE_TIME_REQUIRED')
+        pid = status.get('runtimePid')
+        need(integer(pid) and pid > 1, 'PRIOR_RUNTIME_PID_REQUIRED')
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            pass
+        except PermissionError:
+            raise Guard('PRIOR_RUNTIME_PID_UNVERIFIABLE')
+        else:
+            raise Guard('PRIOR_RUNTIME_PID_STILL_ALIVE')
+        need(type(status.get('positions')) is dict and len(status['positions']) <= 3 and type(status.get('pending')) is dict and len(status['pending']) <= 6, 'PRIOR_OWNERSHIP_PROJECTION_REQUIRED')
+        private_directory(account/'runs', owner)
+        private_directory(account/'runs'/run, owner)
+        settlement_path = account/'runs'/run/'settlement.json'
+        settlement_raw = regular(settlement_path, 16384, owner)
+        settled = json.loads(settlement_raw)
+        need(type(settled) is dict and settled.get('physicalSettlementConfirmed') is True and integer(settled.get('positions')) and integer(settled.get('pending')) and settled['positions'] == len(status['positions']) and settled['pending'] == len(status['pending']) and settled.get('financialHistoryPreserved') is True and integer(settled.get('at')) and status['startedAt'] <= settled['at'] <= at, 'PRIOR_PHYSICAL_SETTLEMENT_REQUIRED')
+        # Original exact private input is preserved before any replacement.
+        provenance = account/'provenance'
+        if not provenance.exists():
+            provenance.mkdir(mode=0o700)
+            parent = os.open(account, os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+            try:
+                os.fsync(parent)
+            finally:
+                os.close(parent)
+        private_directory(provenance, owner)
+        directory = provenance/('source-transition-'+operation)
+        try:
+            directory.mkdir(mode=0o700)  # Exclusive: preserve/refuse an earlier partial attempt.
+        except FileExistsError:
+            raise Guard('SOURCE_TRANSITION_PROVENANCE_EXISTS')
+        parent = os.open(provenance, os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+        try:
+            os.fsync(parent)
+        finally:
+            os.close(parent)
+        save(directory/'transition-plan.json', {'schemaVersion': 1, 'kind': 'poe-paper-source-transition-plan-v1', 'accountId': ACCOUNT_ID, 'inceptionAt': INCEPTION, 'previousSource': old, 'nextSource': manifest['source'], 'previousInputSha256': digest(original), 'priorRunId': run, 'priorStoppedAt': status['generatedAt'], 'plannedAt': at, 'financialDatabaseOpened': False, 'financialStateModified': False})
+        backup = directory/'input-before.json'
+        fd = os.open(backup, os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW, 0o600)
+        try:
+            offset = 0
+            while offset < len(original):
+                offset += os.write(fd, original[offset:])
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        value['source'] = dict(manifest['source'])
+        replacement = (json.dumps(value, separators=(',', ':'))+'\n').encode()
+        need(len(replacement) <= 8*MIB and {key: item for key, item in json.loads(replacement).items() if key != 'source'} == {key: item for key, item in json.loads(original).items() if key != 'source'}, 'ONLY_INPUT_SOURCE_MAY_CHANGE')
+        temporary = account/('.input-source-'+operation+'.pending')
+        fd = os.open(temporary, os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW, 0o600)
+        try:
+            offset = 0
+            while offset < len(replacement):
+                offset += os.write(fd, replacement[offset:])
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        # Retain the owner lease and recheck every input fact immediately before
+        # publication. Unknown or changing state is a refusal, not a migration.
+        need(regular(account/'input.json', 8*MIB, owner) == original and regular(account/'pilot.json', 8*MIB, owner) == pilot_raw and regular(account/'status.json', 4*MIB, owner) == status_raw and regular(settlement_path, 16384, owner) == settlement_raw, 'SOURCE_TRANSITION_INPUTS_CHANGED')
+        unchanged_lock()
+        parent = os.open(directory, os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+        try:
+            os.fsync(parent)
+        finally:
+            os.close(parent)
+        os.replace(temporary, account/'input.json')
+        parent = os.open(account, os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+        try:
+            os.fsync(parent)
+        finally:
+            os.close(parent)
+        need(regular(account/'input.json', 8*MIB, owner) == replacement, 'SOURCE_TRANSITION_UPDATE_UNVERIFIED')
+        applied_at = int(time.time()*1000) if now is None else now
+        need(applied_at >= at, 'SOURCE_TRANSITION_CLOCK_REGRESSION')
+        receipt = {'schemaVersion': 1, 'kind': 'poe-paper-settled-source-transition-v1', 'changed': True, 'accountId': ACCOUNT_ID, 'inceptionAt': INCEPTION, 'previousSource': old, 'nextSource': manifest['source'], 'previousInputSha256': digest(original), 'nextInputSha256': digest(replacement), 'priorRunId': run, 'priorStoppedAt': status['generatedAt'], 'transitionedAt': applied_at, 'monitoringGapAtTransitionMs': applied_at-status['generatedAt'], 'positionsRetained': len(status['positions']), 'pendingActionsRetained': len(status['pending']), 'physicalSettlementConfirmed': True, 'financialOwnerLeaseVerified': True, 'financialDatabaseOpened': False, 'financialStateModified': False, 'oldSourceStatusPreserved': True, 'continuousOperationClaimed': False}
+        save(directory/'transition.json', receipt)
+        parent = os.open(directory, os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+        try:
+            os.fsync(parent)
+        finally:
+            os.close(parent)
+        return receipt
+    finally:
+        os.close(lease)
+
 def main():
     need(len(sys.argv) == 1 and os.getuid() == UID and pwd.getpwuid(UID).pw_name == 'mm-ec2-runner' and os.environ.get('ACTUAL_RUNNER') == 'meme-machine-ec2-admin', 'FIXED_NONROOT_RUNNER_REQUIRED')
     os.umask(0o077)
@@ -493,9 +627,9 @@ def main():
     release = ROOT/'releases'/manifest['source']['sha256']
     private_directory(release)
     need(digest(regular(release/'native-paper.mjs', 8*MIB)) == manifest['source']['sha256'], 'IMMUTABLE_NATIVE_PAPER_EXECUTABLE_REQUIRED')
-    public_input = json.loads(regular(ACCOUNT/'input.json', 8*MIB))
-    binding = public_input.get('reportingBinding') if type(public_input) is dict else None
-    need(type(public_input) is dict and public_input.get('source') == manifest['source'] and type(binding) is dict and binding.get('accountId') == ACCOUNT_ID and binding.get('inceptionAt') == INCEPTION, 'IMPORTED_PAPER_INPUT_IDENTITY_REQUIRED')
+    operation = os.environ.get('GITHUB_RUN_ID', '')+'-'+os.environ.get('GITHUB_RUN_ATTEMPT', '')
+    need(all(x.isdigit() and 1 <= len(x) <= 24 for x in operation.split('-')) and operation.count('-') == 1, 'FIXED_OPERATION_ID_REQUIRED')
+    source_transition = prepare_input_source(ACCOUNT, manifest, operation)
     memory = available_memory()
     need(memory >= MIB*LIMITS['minimumAvailableRamMiB'] and shutil.disk_usage(ACCOUNT).free >= MIB*LIMITS['minimumDiskMiB'], 'HOST_INITIAL_HEADROOM_REQUIRED')
     node, node_version = helpers.existing_node(pathlib.Path(os.environ['RUNNER_TEMP']).resolve(strict=True))
@@ -564,7 +698,7 @@ def main():
     unchanged = after is not None and all(before['service'][k] == after['service'][k] for k in ['MainPID', 'NRestarts', 'User']) and all(before['publicStatus'][k] == after['publicStatus'][k] for k in ['accountId', 'inceptionAt', 'release'])
     save(root/'after.json', {**(after or {}), 'originalIdentityPidRestartsUnchanged': unchanged, 'checked': after is not None})
     complete = supervision_failure is None and bool(segments and segments[0]['initialTargetReached']) and final is not None and final['transition']['flatVerified'] and final_accepted and publisher_settled and unchanged
-    outcome = {'schemaVersion': 1, 'kind': 'POE_NATIVE_PAPER_BOUNDED_SUPERVISION', 'source': manifest['source'], 'packageSha256': digest(raw), 'accountId': ACCOUNT_ID, 'inceptionAt': INCEPTION, 'nodeVersion': node_version, 'host': host, 'metadataReads': 2, 'segments': segments, 'supervisionFailure': supervision_failure, 'flatVerifiedAtEnd': bool(final and final['transition']['flatVerified']), 'publisherGroupSettled': publisher_settled, 'finalStoppedReportAccepted': final_accepted, 'operationalAcceptance': False, 'continuous24HourOperation': False, 'originalObserverIdentityPidRestartsUnchanged': unchanged, 'financialDatabaseReadBySupervisor': False, 'realTradingEnabled': False, 'newServicePurchase': False, 'costMeaning': 'Existing compute, transfer and storage allowances/cost are unverified; no new purchase.', 'result': 'bounded-flat-and-reporting-complete' if complete else 'interrupted-or-unresolved; inspect retained financial state and supervision evidence'}
+    outcome = {'schemaVersion': 1, 'kind': 'POE_NATIVE_PAPER_BOUNDED_SUPERVISION', 'source': manifest['source'], 'packageSha256': digest(raw), 'accountId': ACCOUNT_ID, 'inceptionAt': INCEPTION, 'nodeVersion': node_version, 'host': host, 'metadataReads': 2, 'sourceTransition': source_transition, 'segments': segments, 'supervisionFailure': supervision_failure, 'flatVerifiedAtEnd': bool(final and final['transition']['flatVerified']), 'publisherGroupSettled': publisher_settled, 'finalStoppedReportAccepted': final_accepted, 'operationalAcceptance': False, 'continuous24HourOperation': False, 'originalObserverIdentityPidRestartsUnchanged': unchanged, 'financialDatabaseReadBySupervisor': False, 'realTradingEnabled': False, 'newServicePurchase': False, 'costMeaning': 'Existing compute, transfer and storage allowances/cost are unverified; no new purchase.', 'result': 'bounded-flat-and-reporting-complete' if complete else 'interrupted-or-unresolved; inspect retained financial state and supervision evidence'}
     save(root/'supervisor.json', outcome)
     print(json.dumps(outcome, separators=(',', ':')), flush=True)
     if not complete:

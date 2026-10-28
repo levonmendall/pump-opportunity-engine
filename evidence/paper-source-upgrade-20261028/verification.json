@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline-same-account-paper-source-upgrade",
+  "baseCommit": "62a57a49d30c1d552d432229769e31bc72486eaa",
+  "recordedAt": "2026-10-28T20:05:47.886761+00:00",
+  "sourceFiles": [
+    {
+      "path": "operator/native-paper-ec2/run-bounded.py",
+      "bytes": 45895,
+      "sha256": "e306ebd0bd85571c733237dfe3464ac96f4116d0e60f9ab9018dfbde10f27d39"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-run-bounded.py",
+      "bytes": 37253,
+      "sha256": "5640b06a9588da2ca1a9eaa4dcd3fcb979953428b488155b1d07410ee947c82c"
+    },
+    {
+      "path": "operator/native-paper-ec2/SUPERVISION.md",
+      "bytes": 9362,
+      "sha256": "d7c89e642aab733fed74c32ddb0f6c0737d67aaa749b7b97547fd79bb4626b10"
+    }
+  ],
+  "tests": {
+    "supervisor": {
+      "tests": 27,
+      "pass": 27
+    },
+    "readback": {
+      "tests": 18,
+      "pass": 18
+    },
+    "diffCheck": "PASS",
+    "independentReview": "GO;27/27 independently rerun after parent-fsync and pending-bound corrections"
+  },
+  "networkRequests": 0,
+  "actualLedgerAccess": false,
+  "financialDatabaseOpenedByUpgrade": false,
+  "actualHostTransitionPerformed": false,
+  "artifacts": [
+    {
+      "path": "evidence/paper-source-upgrade-20261028/readback-tests.txt",
+      "bytes": 117,
+      "sha256": "5dbfefa15fdec1de5e47f7ca62729c4a895ba51d52b291f51aac08850d126e1c"
+    },
+    {
+      "path": "evidence/paper-source-upgrade-20261028/supervisor-tests.txt",
+      "bytes": 126,
+      "sha256": "f25be517e4521a816239f4361bee1455331979f5eb9040e29ad92a88125b2bb1"
+    }
+  ]
+}
