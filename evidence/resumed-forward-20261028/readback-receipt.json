@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "sourceRun": 40704936322,
+  "archiveBytes": 6693572,
+  "archiveSha256": "94d60ed5e11a88e61eaae7c571c833285abfc09f0d304ec7c8026963873e6fc9",
+  "wholeArchiveHashVerified": true,
+  "indexFileHashesVerified": 35,
+  "uncompressedBytes": 57113257,
+  "allSelectedSegmentsRetained": true,
+  "chunks": [
+    {
+      "schemaVersion": 1,
+      "administrationRun": 40706469436,
+      "header": {
+        "schemaVersion": 1,
+        "kind": "header",
+        "classification": "candidate-only-public-evidence-readback",
+        "githubRunId": "40704936322",
+        "githubRunAttempt": "1",
+        "researchProfile": "candidate-native-two-hour-90-research-v1",
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "manifestSha256": "d561569edde8d0338de06dc1ff02313f680a90576f029451575ffcac9cb2702e",
+        "archive": {
+          "file": "selected-evidence.tar.gz",
+          "bytes": 6693572,
+          "sha256": "94d60ed5e11a88e61eaae7c571c833285abfc09f0d304ec7c8026963873e6fc9"
+        },
+        "chunk": {
+          "offset": 0,
+          "requestedLength": 4194304,
+          "actualLength": 4194304,
+          "sourceBlockMaximumBytes": 48896
+        },
+        "integrityMeaning": "Manifest creation SHA256 is supplied; this call hashes only its bounded chunk. Verify the entire archive SHA256 after reassembly. Complete archive/readback does not establish source runtime or market-window success."
+      },
+      "footer": {
+        "schemaVersion": 1,
+        "kind": "footer",
+        "complete": true,
+        "offset": 0,
+        "bytes": 4194304,
+        "dataRecords": 86,
+        "chunkSha256": "b7de54bf346d4683c4ed7f474ed8f666593a0488a1d853eafb3e2874a24a96da",
+        "archiveSha256": "94d60ed5e11a88e61eaae7c571c833285abfc09f0d304ec7c8026963873e6fc9",
+        "manifestSha256": "d561569edde8d0338de06dc1ff02313f680a90576f029451575ffcac9cb2702e",
+        "descriptorStatsStable": true,
+        "archiveWholeHashVerifiedByThisCall": false,
+        "credentialsRead": false,
+        "financialFilesRead": false
+      },
+      "logBytes": 5631790,
+      "logSha256": "f437dee362bf506055a9afdf532c9c5f400b16bc33835555cd96d5c1d0a9fc8b",
+      "retrievedAt": "2026-10-28T14:31:22.034971+00:00"
+    },
+    {
+      "schemaVersion": 1,
+      "administrationRun": 40706554963,
+      "header": {
+        "schemaVersion": 1,
+        "kind": "header",
+        "classification": "candidate-only-public-evidence-readback",
+        "githubRunId": "40704936322",
+        "githubRunAttempt": "1",
+        "researchProfile": "candidate-native-two-hour-90-research-v1",
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "manifestSha256": "d561569edde8d0338de06dc1ff02313f680a90576f029451575ffcac9cb2702e",
+        "archive": {
+          "file": "selected-evidence.tar.gz",
+          "bytes": 6693572,
+          "sha256": "94d60ed5e11a88e61eaae7c571c833285abfc09f0d304ec7c8026963873e6fc9"
+        },
+        "chunk": {
+          "offset": 4194304,
+          "requestedLength": 2499268,
+          "actualLength": 2499268,
+          "sourceBlockMaximumBytes": 48896
+        },
+        "integrityMeaning": "Manifest creation SHA256 is supplied; this call hashes only its bounded chunk. Verify the entire archive SHA256 after reassembly. Complete archive/readback does not establish source runtime or market-window success."
+      },
+      "footer": {
+        "schemaVersion": 1,
+        "kind": "footer",
+        "complete": true,
+        "offset": 4194304,
+        "bytes": 2499268,
+        "dataRecords": 52,
+        "chunkSha256": "eafd780281e168600e86ff834ad2ed0fcf24234d201663fc2687219bb734d319",
+        "archiveSha256": "94d60ed5e11a88e61eaae7c571c833285abfc09f0d304ec7c8026963873e6fc9",
+        "manifestSha256": "d561569edde8d0338de06dc1ff02313f680a90576f029451575ffcac9cb2702e",
+        "descriptorStatsStable": true,
+        "archiveWholeHashVerifiedByThisCall": false,
+        "credentialsRead": false,
+        "financialFilesRead": false
+      },
+      "logBytes": 3365552,
+      "logSha256": "52a3a5d022b6cf0fc98a335b505224c031543865db018d94316060cecdf510b8",
+      "retrievedAt": "2026-10-28T14:31:24.826524+00:00"
+    }
+  ],
+  "rawHostEvidenceDeletionPerformed": false,
+  "financialFilesRead": false
+}

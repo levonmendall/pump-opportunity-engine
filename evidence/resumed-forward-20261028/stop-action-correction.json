@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T14:28:47.357347+00:00",
+  "priorStopDecisionPreserved": true,
+  "actualAction": "Cancel requested but GitHub refused because run already completed; no cancellation took effect.",
+  "actualSourceStop": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 2, protocol effects 27. stopped: NATIVE_RESEARCH_UNMANAGED_CONTROL_REQUIRES_ACCOUNTING",
+  "sourceEndedAt": 1793197662292,
+  "classification": "SOURCE_SELF_STOP_ACCOUNTING_SAFETY_FAILURE_NOT_OPERATOR_CONTROLLED_STOP"
+}

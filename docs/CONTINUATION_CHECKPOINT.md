@@ -1,5 +1,30 @@
 # POE continuation checkpoint
 
+Updated after resumed forward failure, 2026-10-28 at 14:56 UTC. No market source is
+running. Sole development lease PID6822 remains; do not confuse it with a listener.
+Latest measured source63f4 stopped14:27:42.292 on unmanaged automatic close accounting;
+all207managedstarts settled plus1late-accounted actualframe.138books/5033units,
+209285767accountedB/53477376uncertainB; manifest unresolved marker cleared after
+verified application/process settlement and35file/wholearchive hashes.
+
+Busy source reached6scopes54.583s;5auditedtokens,4shadowfail/1shadowpass, nofinancial
+execution. Ordinarydata1766trades; protocol27effects separate. Actual peak43starts/min;
+90cap notbinding. No overflowafter5450notices/36.915s (old4096limit), but no natural
+8192overflow/compaction or multipagepass.31gaps remain actual failures/unsupported
+information. One initial auditwarming counter mustnotbemisreported as schedulerstarvation.
+
+Root has reviewed post-failure control containment/ACK diagnostics, classic-token
+protocol effect binding, warming classification and late-audit trader bucket repair.
+Combined final lead verification, exact next bundle/config and rerun are NEXT;
+isolated worktree tests are not combined forward proof. No24hacceptance clock.
+Latest WATCH/proofs are actualrun's checkpoint (119proofpairs/144WATCHrows), not
+oldlistener132. Exporter now requires explicit nativehandoff+settlementreceipt.
+Render reports actualsourceSTOPPED/stale. Original observer checked14:27:43UTC:
+activePID2333724/NRestarts0, originalaccount/inception/releaseunchanged; untouched.
+
+The sections below preserve the resumption and first freeze chronology.
+
+
 Resumed 2026-10-28 at 14:13 UTC. Lead branch `poe-free-data-evaluation-20261027`.
 Verified runtime source commit `5362e007280191dafeac7fe6dae717c288ecc57d`.
 No market research process was active at resumption. No production or financial

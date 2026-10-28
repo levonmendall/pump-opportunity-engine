@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "decisionAt": "2026-10-28T14:27:53.955070+00:00",
+  "administrationRun": 40704936322,
+  "source": {
+    "release": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+    "strategy": "persistent-buying-v0-unfrozen",
+    "sha256": "130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0"
+  },
+  "lastObservedSourceAt": 1793197662292,
+  "lastObservedRuntimeRunning": false,
+  "reason": "Repeated predictive-decision deadline misses and growing quality gaps demonstrate incomplete evaluation under actual workload; end diagnostic segment and inspect cause before longer run. No favorable-sample rerun.",
+  "lastPublicFrame": {
+    "requestedAt": 1793197667956,
+    "receivedAt": 1793197668184,
+    "httpStatus": 200,
+    "responseBytes": 3568,
+    "receiver": {
+      "state": "stopped",
+      "snapshot": {
+        "schemaVersion": 1,
+        "kind": "experimental-pilot",
+        "authoritative": false,
+        "liveTrading": false,
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "runId": "native-candidates-20261028142028669",
+        "generatedAt": 1793197662292,
+        "source": {
+          "release": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+          "strategy": "persistent-buying-v0-unfrozen",
+          "sha256": "130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0"
+        },
+        "running": false,
+        "entriesEnabled": false,
+        "status": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 2, protocol effects 27. stopped: NATIVE_RESEARCH_UNMANAGED_CONTROL_REQUIRES_ACCOUNTING",
+        "mode": "candidate-evaluation",
+        "financialExecutionAuthorized": false,
+        "observationAgePolicy": {
+          "version": "observation-age-selected-24h-study-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 86400000
+        },
+        "sourceTimes": {
+          "lastMarketNotificationAt": 1793197657119,
+          "lastFreshSupportAt": 1793197660254,
+          "lastBankClockAt": 1793197659000,
+          "lastAuditAt": 1793197615048,
+          "lastPredictiveAt": 1793197615048,
+          "financialReconciliationAt": null
+        },
+        "portfolio": null,
+        "accounting": null,
+        "funnel": {
+          "discovered": 12,
+          "supported": null,
+          "sufficientlyObserved": 5,
+          "evaluated": 5,
+          "qualified": 0,
+          "reserved": 0,
+          "attempted": 0,
+          "paperFilled": 0,
+          "exited": 0,
+          "reconciled": 0,
+          "verifiedMigrationOrigins": 119,
+          "admitted": 472,
+          "usableWindows": 5
+        },
+        "metrics": {
+          "rpcRequests": 207,
+          "providerEvents": 319435,
+          "normalizedTrades": 1766,
+          "eventLoopLagMs": 41.975807,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeMs": null,
+          "protectionBreaches": null,
+          "unavailableChecks": null,
+          "streamBytes": 512276178
+        },
+        "decisions": [
+          {
+            "at": 1793197372542,
+            "mint": "Ag9iUb3W88zngMy73qjvXar4VDPnkWdk12HK62ZFpump",
+            "stage": "shadow-predictive-failed",
+            "reason": "persistent-broad-buying-rule-not-met"
+          },
+          {
+            "at": 1793197374174,
+            "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+            "stage": "shadow-predictive-failed",
+            "reason": "persistent-broad-buying-rule-not-met"
+          },
+          {
+            "at": 1793197604194,
+            "mint": "mWTK7nLFCjcAWXH4tyCUSvLvdwjZ9sQ6NWbK72cpump",
+            "stage": "shadow-predictive-failed",
+            "reason": "persistent-broad-buying-rule-not-met"
+          },
+          {
+            "at": 1793197613532,
+            "mint": "HuUgLZGMAVqtUA5MVcBDDjQswzCKViH7i8CNxeKzpump",
+            "stage": "shadow-predictive-not-rejected",
+            "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+          },
+          {
+            "at": 1793197615048,
+            "mint": "evEidkshRzz55PovfPY8PaKGWvmxPjLHbKCWy2spump",
+            "stage": "shadow-predictive-failed",
+            "reason": "persistent-broad-buying-rule-not-met"
+          }
+        ],
+        "refusals": [
+          {
+            "reason": "migration-verification-unavailable",
+            "count": 4
+          },
+          {
+            "reason": "verification-queue-full",
+            "count": 0
+          },
+          {
+            "reason": "native-quality-gaps",
+            "count": 31
+          },
+          {
+            "reason": "independent-audit-unavailable",
+            "count": 1
+          },
+          {
+            "reason": "independent-audit-unusable",
+            "count": 1
+          },
+          {
+            "reason": "predictive-window-deadline-missed",
+            "count": 2
+          }
+        ],
+        "watch": {
+          "known": 144,
+          "watch": 34,
+          "eligibleKnown": 1,
+          "deepActive": 0,
+          "maximumDeep": 6,
+          "queued": 0,
+          "promoted": 472,
+          "repromoted": 365,
+          "demoted": 471,
+          "expired": 129,
+          "capacityExclusions": 0,
+          "structuralExclusions": 15,
+          "completeWindows": 424,
+          "strategyRejections": 0,
+          "incompleteDataExclusions": 31,
+          "enrichmentDeadlineFailures": 0,
+          "predictiveAssessments": 5,
+          "predictiveFailures": 4,
+          "observationEligibleKnown": 32,
+          "observationQueued": 25,
+          "maximumOlderResearchIdentities": 24,
+          "ageCohorts": {
+            "preEntry": 7,
+            "entryEligible": 1,
+            "olderSelected": 24
+          },
+          "waitMs": {
+            "mean": 0,
+            "maximum": 0
+          },
+          "promotionWaitMs": {
+            "mean": 1102187.616580311,
+            "maximum": 6515299
+          }
+        }
+      },
+      "receivedAt": 1793197662920,
+      "lastContactAt": 1793197662920,
+      "sourceAgeMs": 5858,
+      "receiverAgeMs": 5230,
+      "lastContactAgeMs": 5230,
+      "sourceStale": false,
+      "publisherConnected": true
+    }
+  },
+  "action": "Request cancellation through existing GitHub administration path; require actual source/transport/process settlement before accounting link",
+  "financialExposure": null,
+  "financialWriterOpened": false
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "scope": "OFFLINE_EXPLICIT_SYNTHETIC_ANALYZER_MECHANICS_NOT_MARKET_PERFORMANCE",
+  "command": [
+    "node",
+    "--test",
+    "evidence/resumed-forward-20261028/analyze-retention-audits.test.mjs"
+  ],
+  "completedAt": "2026-10-28T14:38:01.196966+00:00",
+  "elapsedSeconds": 0.15576068300015322,
+  "exitCode": 0,
+  "analyzerSha256": "7e5885322b5dbdc4eaf9cf4313d409a3bc2d0a7cf0e310a02f6a324797883de0",
+  "fixtureSha256": "aae02b6bb70237569e9c7b371912bb6acdf253851afa770c7c62bf9ab80bbaec",
+  "rawLogSha256": "c22c97d02c9373390202b6fa33c9146fb4166e4c1d521a2446aadcff1f21df1a",
+  "testsPassed": 4
+}

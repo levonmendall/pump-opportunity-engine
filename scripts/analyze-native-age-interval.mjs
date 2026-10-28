@@ -7,7 +7,7 @@ import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {decodeMigrationIdentity} from '../src/migration-identity.ts';
 import {unionPilotIntervals} from './summarize-pilot.ts';
-const MIB=1024*1024,MAX_FILE=12*MIB,MAX_TOTAL=64*MIB,MAX_ROWS=30000,MAX_OUTPUT=2*MIB;
+const MIB=1024*1024,MAX_FILE=12*MIB,MAX_TOTAL=64*MIB,MAX_ROWS=60000,MAX_OUTPUT=2*MIB;
 const args=process.argv.slice(2),arg=k=>{const n=args.indexOf(k);return n<0?null:args[n+1];};
 const artifact=resolve(arg('--artifact')??'/workspace/poe-pilot/runs/native-age-20261028061211/artifact'),reference=resolve(arg('--reference')??'/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328'),sourceEnd=resolve(arg('--source-end')??'/workspace/poe-pilot/runs/native-age-20261028061211/source-end.json'),out=resolve(arg('--out')??'evidence/migration-age-20261028/native-two-hour-40642437328-analysis/scorecard.json');
 const bins=[['A',0,1],['B',1,3],['C',3,5],['D',5,10],['E',10,30],['F',30,60],['G',60,120],['H',120,360],['I',360,1440]],hash=b=>createHash('sha256').update(b).digest('hex'),iso=t=>Number.isSafeInteger(t)?new Date(t).toISOString():null;

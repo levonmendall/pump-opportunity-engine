@@ -688,3 +688,30 @@ baseline. Economic age selection still requires complete audited candidate
 information and chronological, realistic $50 post-delay entry plus actual-size
 exit evidence; this run supplied neither an early/older economic comparison nor
 the independent outcomes needed to identify the strongest tradable opportunities.
+
+## Resumed six-scope interval40704936322 (failed, preserved)
+
+35 indexed file hashes and whole6,693,572-byte gzip verified. Raw57,108,175bytes
+plus index retained privately and in the lossless archive; no selected segment
+was sampled away or GitHub artifact uploaded. Original host files not deleted.
+
+
+Actual max6 scopes existed54.583s;15tokensallocated,5auditedassessments,4fails/1shadowpass.
+
+| Age band | Unique admitted at that age | Audited endpoints | Shadow pass / fail |
+|---|---:|---:|---:|
+| A | 7 | 0 | 0 / 0 |
+| B | 6 | 2 | 0 / 2 |
+| C | 3 | 1 | 1 / 0 |
+| D | 1 | 0 | 0 / 0 |
+| E | 0 | 0 | 0 / 0 |
+| F | 0 | 0 | 0 / 0 |
+| G | 0 | 0 | 0 / 0 |
+| H | 0 | 0 | 0 / 0 |
+| I | 8 | 2 | 0 / 2 |
+
+One HuUg non-rejection at3.625533minutes is protocol-effect shadow evidence; strict-v2
+baseline unavailable and no actual-size paired entry/exit quotes. No economic entry-age
+optimum, naturaltrade, or winner recall is proved. Complete causal/source/audit accounting:
+`evidence/resumed-forward-20261028/README.md` and `age-cohort-scorecard.json`.
+Earlier/older non-entry observation remains useful; baseline5–120entry unchanged.
