@@ -7,7 +7,7 @@ selected active 2–6-hour pools. Earlier and older observation do not authorize
 purchases. The known SI and FRONGUS moves already occurred inside the baseline
 entry interval, so widening entry age alone cannot repair those coverage losses.
 
-**Current offline assessment at `cd6ac47b526d607f01a2b88f1c5186247b86bf7a`:**
+**Offline assessment at `cd6ac47b526d607f01a2b88f1c5186247b86bf7a`, before the appended study interval:**
 observation and entry are separate in the native candidate runner. Immediate
 observation has actual source-ACK evidence; selected older observation has actual
 feature evidence. Neither establishes that earlier or older entries improve
@@ -20,6 +20,11 @@ are not included below because it has not supplied retained forward evidence.
 The current inventory and latest artifact assessment appear at the end of this
 report. Earlier plans, counters and implementation descriptions remain explicitly
 historical; new component request usage does not add age or economic evidence.
+
+**Latest appended interval:** the selected-24-hour study subsequently started
+but failed after202.026seconds on a notification-ledger limit. Its separate
+source-pinned scorecard and independent controls are reported in the final
+section; the prior pending-run description above remains historical.
 
 The initial retrospective analysis below uses unchanged retained evidence. Later
 sections identify subsequent implementation and actual live evidence separately.
@@ -553,3 +558,133 @@ evidence missing.** Keep the entry baseline; retain broader observation,
 complete the repaired native-window gate, and obtain paired executable evidence
 before choosing an earlier, extended or adaptive entry policy. No new source,
 network measurement, runtime change or financial action occurred in this review.
+
+## Selected-24-hour study: failed c5ce87b interval and independent controls
+
+The previously pending study **did run**, using
+`c5ce87b858a6655c4f5dd80e8887554b84717415`, source SHA256
+`c848f60362ad19f290bfcbde64b252bb5309a26fe56a19c37785b76e95274540`,
+configuration `8d1fe7e927d3253a5d98aae2bf5a3a2a3bb50e4070407aa16a20470c65aa81c8`.
+Run `native-candidates-20261028061222894` lasted **202.026 seconds**, from
+2026-10-28 06:12:22.894 to 06:15:44.920 UTC. It stopped with
+`NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT`, rather than
+completing its planned two hours. Source shutdown and physical settlement were
+recorded, but the supervisor correctly classified the interval as failed. This
+is not uninterrupted acceptance or proof of sustainable six-slot operation.
+
+The [bounded offline scorecard](../evidence/migration-age-20261028/native-two-hour-40642437328-analysis/scorecard.json)
+verifies all 24 indexed payload files against their original byte hashes,
+records the index hash (25 artifact files read), re-decodes the original confirmed/finalized migration transactions, and joins
+exact mint **and** pool. It obtains 111 strict origins without using indexed
+creation times. Repeated event sequence numbers reset per journal segment;
+source references use file, line and content hash rather than deduplicating by
+sequence alone. Earlier failures, decisions and reservations are unchanged.
+
+There were 11 allocation events over **7 distinct tokens**, 10 subscription ACKs,
+and a maximum of **5** simultaneous scopes against a six-slot configuration.
+The run recorded 65 feature views, 9 raw sufficiently-observed endpoints over
+4 tokens, 4 audit outcomes and 2 actual predictive assessments. Both assessments
+failed; no pass, financial qualification, order, position or economic outcome was
+created. The data contract was `confirmed-program-activity-v3-shadow`; its
+protocol-aware shadow scope is preserved rather than relabeled as executable
+baseline qualification. There were 591 normalized events and 10 separately
+recorded protocol pool effects, not 601 financial trades.
+
+| Age band | Unique admitted at that age | Unique ACKed at that age | Raw complete endpoints | Verified audit endpoints | Actual shadow pass / fail |
+|---|---:|---:|---:|---:|---|
+| A: 0–1 min | 3 | 3 | 0 | 0 | Unavailable |
+| B: 1–3 min | 1 | 2 | 1 | 0 | Unavailable |
+| C: 3–5 min | 0 | 0 | 0 | 0 | Unavailable |
+| D: 5–10 min | 0 | 0 | 0 | 0 | Unavailable |
+| E: 10–30 min | 0 | 0 | 0 | 0 | Unavailable |
+| F: 30–60 min | 0 | 0 | 0 | 0 | Unavailable |
+| G: 60–120 min | 1 | 1 | 4 | 1 | 0 / 1 |
+| H: 2–6 h | 1 | 1 | 3 | 1 | 0 / 1 |
+| I: 6–24 h | 2 | 2 | 1 | 0 | Unavailable |
+
+Each column uses its actual event time, so a token may appear in more than one
+age band and allocation can precede an ACK in the next band. Endpoint age is not
+the age of its entire lookback. The B endpoint includes **52 seconds in A and
+8 seconds in B**. After clipping each lookback at actual age boundaries and
+unioning by token, raw complete flags cover 290 token-seconds: A 52, B 8, G 90,
+H 80 and I 60. Their wall-time union is 150 seconds. The independently audited
+lookback union is only **120 token-seconds / 70 wall-seconds**, from the two G/H
+windows. Counts multiplied by 60 would inflate coverage. Neither union means
+continuous current decision availability or position protection.
+
+The H assessment (`7KbSWy…pump`) occurred at age **354.275 minutes**, with zero
+trades; the G assessment (`5Tdjfg…pump`) at **88.791667 minutes**, with one trade.
+Both preserve the unchanged buying-rule rejection. The source now requested
+`minContextSlot` at the upper fence on history reads; unlike the earlier bb6fd9f
+results, these are source-pinned context-floor requests. They remain bounded
+confirmed pool-address audits, not full-market or SPL-transfer equivalence.
+On matched available evidence, A/B both include the G rejection; C additionally
+includes the H rejection. There is no audited early B decision and no I decision.
+That is missing evidence, not economic parity or proof against early/older entries.
+
+Technical losses remain separate: five predictive-deadline misses, one
+boundary-ambiguous audit, one history-request physical timeout, four candidate
+gaps on `PILOT_RPC_COMPONENT_OPERATION_FAILED`, then five candidate gaps on the
+notification-ledger limit. All 42 retained HTTP headers were 200; this interval
+contains no observed HTTP throttling refusal. That does not prove provider
+headroom or assign every delay to the provider. The recorded deadline misses
+still need their lower-context/dispatch traces to determine avoidability; normal
+fresh-window and independent-fence warming is not itself a strategy failure. The run settled 79 physical
+operations, used 40.152153 CPU seconds and peaked at 325,103,616 bytes RSS. The
+retention repair belongs to a separate implementation segment; this scorecard
+does not turn the failed segment into a pass.
+
+The independent sampler completed six requests and froze **4 indexed-active
+leads plus 4 low-activity controls** at 06:14:29.508, before source shutdown. It
+started 66.463 seconds after the native run, froze 126.614 seconds after it, and
+had only 75.412 seconds remaining before actual source end. It was gracefully
+stopped after 217,470 measured body bytes; **no OHLC outcome request occurred**.
+The freeze came from120 independently indexed pool rows, with16 provisional
+canonical sample leads; these are index-selection counts, not verified eligible
+market counts. Its original receipt and actual-source-end attestation remain
+separate from the native receipt. Its cumulative index counts, including old uncertainty, are not
+refunded or interpreted as more market evidence.
+
+Exact-address joins find just one matching strict origin:
+
+- Mint `2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump`, pool
+  `Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq`, was verified at a genuine age
+  of **699.8418 minutes** at cohort freeze (I). POE imported it, selected older
+  research 14.804 seconds after startup, and recorded 13 coalesced WATCH activity
+  events. It remained WATCH with no deep allocation, ACK, audit or assessment,
+  waiting **187.222 seconds** from older selection to source end. This proves
+  awareness and an unserved older-research allocation, not discovery failure or
+  a missed baseline entry: it lies outside A, B and C, and has no outcome path.
+- The other seven exact sampled mint+pool pairs have no matching strict origin,
+  initial/final Watch row, deep scope or assessment in this retained source
+  population. Their indexed timestamps cannot supply the missing migration proof
+  or establish eligibility. The JSON lists every full address and join result.
+
+Display names were not join keys. In particular, these sampled labels must not
+be confused with the previously audited owner-nominated SI or original FRONGUS
+addresses. Quiet-control membership was frozen prospectively, but no winner,
+loser, executable-return ranking or winning-opportunity denominator was obtained.
+No whole-market recall percentage follows from the seven unmatched identities.
+
+Reproduce into a **new** output file using the existing nonfinancial artifacts:
+
+```sh
+node --import tsx scripts/analyze-native-age-interval.mjs \
+  --artifact /workspace/poe-pilot/runs/native-age-20261028061211/artifact \
+  --reference /workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328 \
+  --source-end /workspace/poe-pilot/runs/native-age-20261028061211/source-end.json \
+  --out /tmp/poe-native-age-c5ce-recheck.json
+```
+
+The tool reuses the existing union helper and strict migration decoder, limits
+inputs to 64 MiB and output to 2 MiB, refuses an existing output, and performs no
+network or financial-database operation. Independent offline recomputation
+matched the counts, age clipping and exact-address control join.
+
+**Decision remains NOT YET PROVEN.** The immediate obstacle is sustained valid
+observation, demonstrated here by a local notification-retention failure and
+unfinished audits. Repair and forward-test that path while retaining the frozen
+baseline. Economic age selection still requires complete audited candidate
+information and chronological, realistic $50 post-delay entry plus actual-size
+exit evidence; this run supplied neither an early/older economic comparison nor
+the independent outcomes needed to identify the strongest tradable opportunities.
