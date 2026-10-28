@@ -1,0 +1,2482 @@
+{
+  "requestedAt": 1793226875027,
+  "receivedAt": 1793226875250,
+  "httpStatus": 200,
+  "responseBytes": 37894,
+  "receiver": {
+    "state": "reporting",
+    "snapshot": {
+      "schemaVersion": 1,
+      "kind": "experimental-pilot",
+      "authoritative": false,
+      "liveTrading": false,
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "native-paper-20261028223428977",
+      "generatedAt": 1793226870929,
+      "source": {
+        "release": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+        "strategy": "persistent-buying-pilot-v1",
+        "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9"
+      },
+      "running": true,
+      "entriesEnabled": false,
+      "status": "experimental PAPER; execution startup: fresh reconciliation/readiness required",
+      "mode": "paper",
+      "financialExecutionAuthorized": true,
+      "observationAgePolicy": {
+        "version": "observation-age-selected-24h-study-v1",
+        "minimumObservationAgeMs": 0,
+        "recentMaximumAgeMs": 7200000,
+        "selectedOlderMaximumAgeMs": 86400000
+      },
+      "sourceTimes": {
+        "lastMarketNotificationAt": null,
+        "lastFreshSupportAt": null,
+        "lastBankClockAt": null,
+        "lastAuditAt": null,
+        "lastPredictiveAt": null,
+        "financialReconciliationAt": 1793223097158
+      },
+      "portfolio": {
+        "project": "pump-opportunity-engine",
+        "mode": "PAPER",
+        "liveTrading": false,
+        "schemaVersion": 1,
+        "account": {
+          "id": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+          "inceptionAt": "2026-10-27T17:56:13.252Z",
+          "initialUsd": 1000
+        },
+        "sequence": "384",
+        "source": {
+          "release": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "times": {
+          "generatedAt": "2026-10-28T22:34:30.929Z",
+          "marketAt": "2026-10-28T22:34:29.917Z",
+          "reconciledAt": "2026-10-28T21:31:37.158Z",
+          "usefulProgressAt": "2026-10-28T21:31:37.158Z"
+        },
+        "status": {
+          "runtime": "running",
+          "market": "unavailable",
+          "entries": "paused",
+          "reconciled": false,
+          "blocker": "execution startup: fresh reconciliation/readiness required"
+        },
+        "balances": {
+          "cashSol": "9.92014285",
+          "reservedSol": "0",
+          "equitySol": "9.92014285",
+          "equityUsd": 1018.253063,
+          "realizedUsd": null,
+          "unrealizedUsd": null,
+          "tradingPnlUsd": 18.253063,
+          "economicPnlUsd": null,
+          "positionCostUsd": 0,
+          "markedExposureUsd": 0,
+          "drawdownUsd": null,
+          "executionCostsUsd": 0,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 1018.253063,
+          "solPriceUsd": 102.645
+        },
+        "costLabels": {
+          "execution": "simulated",
+          "operating": "unavailable"
+        },
+        "positions": [],
+        "trades": [],
+        "decisions": [],
+        "pnl": [
+          {
+            "at": "2026-10-27T17:56:13.252Z",
+            "tradingUsd": 0,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-27T17:56:13.253Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:13:54.206Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:13:59.253Z",
+            "tradingUsd": 2.480036,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:04.266Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:09.291Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:14.325Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:20.125Z",
+            "tradingUsd": 2.628838,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:25.172Z",
+            "tradingUsd": 2.628838,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:30.185Z",
+            "tradingUsd": 2.628838,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:35.207Z",
+            "tradingUsd": 2.480036,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:40.238Z",
+            "tradingUsd": 2.480036,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:45.240Z",
+            "tradingUsd": 2.628838,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:50.264Z",
+            "tradingUsd": 2.628838,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:14:55.282Z",
+            "tradingUsd": 2.628838,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:00.290Z",
+            "tradingUsd": 2.827241,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:06.418Z",
+            "tradingUsd": 2.827241,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:11.420Z",
+            "tradingUsd": 2.827241,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:17.475Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:22.496Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:27.765Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:32.786Z",
+            "tradingUsd": 3.273648,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:38.279Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:43.303Z",
+            "tradingUsd": 3.273648,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:48.315Z",
+            "tradingUsd": 3.273648,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:53.330Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:15:58.368Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:03.414Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:08.456Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:13.510Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:18.543Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:23.591Z",
+            "tradingUsd": 3.025644,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:28.641Z",
+            "tradingUsd": 3.025644,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:33.658Z",
+            "tradingUsd": 3.025644,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:38.711Z",
+            "tradingUsd": 3.174446,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:43.762Z",
+            "tradingUsd": 3.174446,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:49.398Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:54.448Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:16:59.483Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:04.521Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:09.570Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:15.685Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:20.710Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:25.730Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:30.750Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:36.460Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:41.491Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:46.567Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:52.553Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:17:57.604Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:02.654Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:07.709Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:12.745Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:17.790Z",
+            "tradingUsd": 2.926443,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:22.830Z",
+            "tradingUsd": 2.926443,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:27.835Z",
+            "tradingUsd": 2.926443,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:32.847Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:37.899Z",
+            "tradingUsd": 2.926443,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:42.918Z",
+            "tradingUsd": 2.579238,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:47.928Z",
+            "tradingUsd": 2.579238,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:52.942Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:18:57.995Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:03.038Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:08.078Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:13.104Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:18.117Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:23.160Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:28.178Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:33.187Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:38.189Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:43.202Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:48.233Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:53.239Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:19:58.267Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:03.317Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:08.339Z",
+            "tradingUsd": 2.529637,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:13.358Z",
+            "tradingUsd": 2.678439,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:18.411Z",
+            "tradingUsd": 2.529637,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:23.453Z",
+            "tradingUsd": 2.529637,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:28.487Z",
+            "tradingUsd": 2.430435,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:33.522Z",
+            "tradingUsd": 2.430435,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:38.540Z",
+            "tradingUsd": 2.430435,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:43.561Z",
+            "tradingUsd": 2.430435,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:48.605Z",
+            "tradingUsd": 2.380835,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:53.683Z",
+            "tradingUsd": 2.380835,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:20:58.732Z",
+            "tradingUsd": 2.529637,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:03.760Z",
+            "tradingUsd": 2.529637,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:08.805Z",
+            "tradingUsd": 2.529637,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:13.858Z",
+            "tradingUsd": 2.579238,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:18.911Z",
+            "tradingUsd": 2.579238,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:23.926Z",
+            "tradingUsd": 2.579238,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:28.976Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:34.031Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:39.072Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:44.126Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:49.132Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:54.133Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:21:59.158Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:04.211Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:09.218Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:14.222Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:19.249Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:24.292Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:29.326Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:34.327Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:39.329Z",
+            "tradingUsd": 3.521651,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:44.380Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:49.397Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:54.449Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:22:59.488Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:04.549Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:09.551Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:14.593Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:19.630Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:24.657Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:29.664Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:34.711Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:39.739Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:44.793Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:49.849Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:54.892Z",
+            "tradingUsd": 3.670453,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:23:59.912Z",
+            "tradingUsd": 3.670453,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:04.944Z",
+            "tradingUsd": 3.670453,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:09.977Z",
+            "tradingUsd": 3.224047,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:15.028Z",
+            "tradingUsd": 3.224047,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:20.078Z",
+            "tradingUsd": 3.224047,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:25.101Z",
+            "tradingUsd": 3.42245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:30.135Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:35.178Z",
+            "tradingUsd": 3.521651,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:40.194Z",
+            "tradingUsd": 3.521651,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:45.208Z",
+            "tradingUsd": 3.521651,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:50.224Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:24:55.279Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:00.290Z",
+            "tradingUsd": 3.372849,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:05.328Z",
+            "tradingUsd": 3.372849,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:10.346Z",
+            "tradingUsd": 3.372849,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:15.358Z",
+            "tradingUsd": 3.620853,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:20.369Z",
+            "tradingUsd": 3.670453,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:25.392Z",
+            "tradingUsd": 3.670453,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:30.422Z",
+            "tradingUsd": 3.571252,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:35.447Z",
+            "tradingUsd": 3.571252,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:40.456Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:45.511Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:50.536Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:25:56.163Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:01.205Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:06.260Z",
+            "tradingUsd": 3.571252,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:11.300Z",
+            "tradingUsd": 3.571252,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:16.322Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:21.340Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:26.389Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:31.395Z",
+            "tradingUsd": 3.720054,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:36.441Z",
+            "tradingUsd": 3.47205,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:41.467Z",
+            "tradingUsd": 3.372849,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:46.501Z",
+            "tradingUsd": 3.372849,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:51.550Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:26:56.565Z",
+            "tradingUsd": 3.372849,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:01.621Z",
+            "tradingUsd": 3.273648,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:06.629Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:11.643Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:16.651Z",
+            "tradingUsd": 3.42245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:21.677Z",
+            "tradingUsd": 3.42245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:26.681Z",
+            "tradingUsd": 3.124845,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:31.719Z",
+            "tradingUsd": 3.42245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:36.739Z",
+            "tradingUsd": 3.075245,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:41.790Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:46.818Z",
+            "tradingUsd": 2.72804,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:51.866Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:27:56.881Z",
+            "tradingUsd": 2.827241,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:01.912Z",
+            "tradingUsd": 2.827241,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:06.925Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:11.942Z",
+            "tradingUsd": 2.827241,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:17.001Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:22.053Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:27.104Z",
+            "tradingUsd": 2.827241,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:32.122Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:37.140Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:42.228Z",
+            "tradingUsd": 2.926443,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:47.247Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:52.271Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:28:57.278Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:02.293Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:07.347Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:12.402Z",
+            "tradingUsd": 2.876842,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:17.432Z",
+            "tradingUsd": 2.77764,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:22.447Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:27.453Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:32.478Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:37.530Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:42.574Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:47.591Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:52.634Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:29:57.657Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:30:02.701Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:30:07.750Z",
+            "tradingUsd": 2.976043,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:30:12.782Z",
+            "tradingUsd": 3.124845,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:30:17.791Z",
+            "tradingUsd": 3.124845,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:30:22.833Z",
+            "tradingUsd": 3.124845,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:30:27.865Z",
+            "tradingUsd": 3.323248,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T00:30:29.851Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:52:49.335Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:53:04.355Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:53:19.358Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:53:34.393Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:53:49.406Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:54:04.442Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:54:19.475Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:54:34.818Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:54:49.860Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:55:04.876Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:55:19.899Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:55:35.009Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:55:50.012Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:56:05.013Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:56:20.029Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:56:35.103Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:56:50.128Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:57:05.128Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:57:20.181Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:57:35.199Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:57:50.212Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:58:05.224Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:58:20.261Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:58:35.287Z",
+            "tradingUsd": 20.385894,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:58:35.288Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:58:50.327Z",
+            "tradingUsd": 20.237092,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:58:50.328Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:05.341Z",
+            "tradingUsd": 19.989088,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:05.342Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:20.366Z",
+            "tradingUsd": 19.493081,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:20.367Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:35.399Z",
+            "tradingUsd": 20.286693,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:35.400Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:50.434Z",
+            "tradingUsd": 20.733099,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T19:59:50.435Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:05.486Z",
+            "tradingUsd": 20.931502,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:05.487Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:20.572Z",
+            "tradingUsd": 21.873915,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:20.573Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:35.609Z",
+            "tradingUsd": 23.411538,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:35.610Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:50.629Z",
+            "tradingUsd": 23.461138,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:00:50.630Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:05.643Z",
+            "tradingUsd": 23.262735,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:05.644Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:20.650Z",
+            "tradingUsd": 24.601955,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:20.651Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:35.654Z",
+            "tradingUsd": 26.089976,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:35.655Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:50.667Z",
+            "tradingUsd": 25.941174,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:01:50.668Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:05.709Z",
+            "tradingUsd": 26.685185,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:05.710Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:20.711Z",
+            "tradingUsd": 28.867616,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:20.712Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:35.753Z",
+            "tradingUsd": 28.619613,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:35.754Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:50.798Z",
+            "tradingUsd": 27.03239,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:02:50.799Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:05.844Z",
+            "tradingUsd": 26.933188,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:05.845Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:20.869Z",
+            "tradingUsd": 25.891573,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:20.870Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:35.910Z",
+            "tradingUsd": 25.64357,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:35.911Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:50.919Z",
+            "tradingUsd": 26.734785,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:03:50.920Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:04:05.946Z",
+            "tradingUsd": 26.437181,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:04:05.947Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:04:21.020Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:04:36.036Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:04:51.048Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:05:06.101Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:05:21.115Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:05:36.143Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:05:51.160Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:06:06.171Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:06:21.225Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:06:36.242Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:06:51.268Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:07:06.276Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:07:21.298Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:07:36.322Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:07:51.352Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:08:06.379Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:08:21.424Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:08:36.427Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:08:51.449Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:09:06.477Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:09:21.485Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:09:36.508Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:09:51.554Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:10:06.589Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:10:21.639Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:10:36.646Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:10:51.727Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:11:06.762Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:11:06.763Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:11:21.810Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:11:21.811Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:11:36.840Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:11:36.841Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:11:53.377Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:08.430Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:08.431Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:23.508Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:23.509Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:38.522Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:38.523Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:53.536Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:12:53.537Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:13:08.579Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:13:08.580Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:13:25.157Z",
+            "tradingUsd": 22.965131,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:13:25.158Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:13:40.194Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:13:55.216Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:14:10.305Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:14:25.590Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:14:28.376Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T20:14:28.523Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:08:07.045Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:08:22.085Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:08:37.125Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:08:52.156Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:09:07.171Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:09:23.403Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:09:38.451Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:09:53.493Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:10:08.501Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:10:23.516Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:10:38.564Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:10:53.580Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:11:08.582Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:11:23.608Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:11:38.632Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:11:53.657Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:12:08.709Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:12:23.746Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:12:38.750Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:12:54.756Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:13:09.759Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:13:24.765Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:13:39.783Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:13:55.731Z",
+            "tradingUsd": 16.864243,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:13:55.732Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:14:10.749Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:14:25.754Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:14:40.808Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:14:55.810Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:15:10.844Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:15:25.878Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:15:40.919Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:15:55.939Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:16:10.969Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:16:25.994Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:16:41.037Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:16:56.046Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:17:11.068Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:17:26.073Z",
+            "tradingUsd": 18.947473,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:17:26.074Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:17:41.119Z",
+            "tradingUsd": 19.245078,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:17:41.120Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:17:56.153Z",
+            "tradingUsd": 18.550668,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:17:56.154Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:11.155Z",
+            "tradingUsd": 18.451466,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:11.156Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:26.160Z",
+            "tradingUsd": 18.253063,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:26.161Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:41.183Z",
+            "tradingUsd": 18.352265,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:41.184Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:56.193Z",
+            "tradingUsd": 18.848272,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:18:56.194Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:11.244Z",
+            "tradingUsd": 18.848272,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:11.245Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:26.293Z",
+            "tradingUsd": 19.245078,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:26.294Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:41.306Z",
+            "tradingUsd": 18.897873,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:41.307Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:56.359Z",
+            "tradingUsd": 18.848272,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:19:56.360Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:11.370Z",
+            "tradingUsd": 18.74907,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:11.371Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:26.392Z",
+            "tradingUsd": 18.848272,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:26.393Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:41.417Z",
+            "tradingUsd": 19.046675,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:41.418Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:56.471Z",
+            "tradingUsd": 19.245078,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:20:56.472Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:11.502Z",
+            "tradingUsd": 20.13789,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:11.503Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:26.537Z",
+            "tradingUsd": 20.237092,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:26.538Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:41.584Z",
+            "tradingUsd": 20.534696,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:41.585Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:56.639Z",
+            "tradingUsd": 19.989088,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:21:56.640Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:11.724Z",
+            "tradingUsd": 19.741085,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:11.725Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:26.776Z",
+            "tradingUsd": 19.741085,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:26.777Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:41.823Z",
+            "tradingUsd": 19.840286,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:41.824Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:56.860Z",
+            "tradingUsd": 19.344279,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:22:56.861Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:11.879Z",
+            "tradingUsd": 19.493081,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:11.880Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:26.883Z",
+            "tradingUsd": 19.493081,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:26.884Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:41.897Z",
+            "tradingUsd": 19.44348,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:41.898Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:56.934Z",
+            "tradingUsd": 19.344279,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:23:56.935Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:12.775Z",
+            "tradingUsd": 19.344279,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:12.776Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:27.808Z",
+            "tradingUsd": 19.939488,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:27.809Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:42.836Z",
+            "tradingUsd": 19.790685,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:42.837Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:57.852Z",
+            "tradingUsd": 19.344279,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:24:57.853Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:25:12.869Z",
+            "tradingUsd": 19.195477,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:25:12.870Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:25:27.876Z",
+            "tradingUsd": 18.69947,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:25:27.877Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:25:43.433Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:25:58.486Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:26:13.525Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:26:28.580Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:26:43.629Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:26:58.673Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:27:13.691Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:27:28.706Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:27:43.706Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:27:58.724Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:28:13.777Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:28:28.782Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:28:43.836Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:28:58.889Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:29:13.922Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:29:28.971Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:29:43.990Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:29:59.026Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:30:14.179Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:30:29.191Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:30:44.193Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:30:59.200Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:31:14.200Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:31:29.239Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:31:39.222Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T21:31:39.379Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          },
+          {
+            "at": "2026-10-28T22:34:30.929Z",
+            "tradingUsd": null,
+            "economicUsd": null
+          }
+        ],
+        "history": {
+          "windowStartAt": "2026-10-27T17:56:13.252Z",
+          "downsampled": false,
+          "label": "Actual samples; >15s/stopped/unreconciled gaps; max720. Max50 durable fills cached; 0 recent fills lack order context. Historical USD P&L/gas unverified; portfolio change includes passive SOL/USD."
+        },
+        "funnel": {
+          "discovered": 0,
+          "supported": 0,
+          "sufficientlyObserved": 0,
+          "evaluated": 0,
+          "qualified": 0,
+          "attempted": 0,
+          "paperFilled": 0,
+          "exited": 0,
+          "reconciled": 0
+        },
+        "metrics": {
+          "processingLagMs": null,
+          "eventLoopLagMs": 34.275327,
+          "providerEvents": 0,
+          "rpcRequests": 3,
+          "projectedDailyDataSol": null,
+          "budgetRemainingSol": null,
+          "budgetStatus": "available",
+          "coverage": "Current-run counters; experimental admitted candidates only; raw feed messages and shared physical operation counts. No independent full-market denominator. Held actual-size marks require fresh coherent validated state.",
+          "latency": "Held market time is the oldest validated bank Clock, not getBlockTime. No real transaction landing claim."
+        }
+      },
+      "accounting": {
+        "schemaVersion": 1,
+        "at": 1793226870929,
+        "totalPnlLamports": "0",
+        "realizedLamports": "0",
+        "unrealizedLamports": "0",
+        "executionCostsLamports": "0",
+        "lockedDepositLamports": "0"
+      },
+      "funnel": {
+        "discovered": 0,
+        "supported": 0,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0,
+        "verifiedMigrationOrigins": 143,
+        "admitted": null,
+        "usableWindows": 0
+      },
+      "metrics": {
+        "rpcRequests": 3,
+        "providerEvents": 1,
+        "normalizedTrades": 0,
+        "eventLoopLagMs": 34.275327,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeMs": null,
+        "protectionBreaches": 0,
+        "unavailableChecks": 0,
+        "streamBytes": 486
+      },
+      "decisions": [],
+      "refusals": [
+        {
+          "reason": "native-quality-gaps",
+          "count": 0
+        },
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 0
+        },
+        {
+          "reason": "independent-audit-unusable",
+          "count": 0
+        },
+        {
+          "reason": "predictive-window-deadline-missed",
+          "count": 0
+        }
+      ],
+      "watch": {
+        "known": 174,
+        "watch": 29,
+        "eligibleKnown": 6,
+        "deepActive": 0,
+        "maximumDeep": 3,
+        "queued": 6,
+        "promoted": 974,
+        "repromoted": 808,
+        "demoted": 973,
+        "expired": 257,
+        "capacityExclusions": 0,
+        "structuralExclusions": 25,
+        "completeWindows": 628,
+        "strategyRejections": null,
+        "incompleteDataExclusions": 0,
+        "enrichmentDeadlineFailures": 0,
+        "predictiveAssessments": 0,
+        "predictiveFailures": 0,
+        "observationEligibleKnown": 26,
+        "observationQueued": 26,
+        "maximumOlderResearchIdentities": 24,
+        "ageCohorts": {
+          "preEntry": 0,
+          "entryEligible": 6,
+          "olderSelected": 20
+        },
+        "waitMs": {
+          "mean": 3926459,
+          "maximum": 4288710
+        },
+        "promotionWaitMs": {
+          "mean": 950921.0290055248,
+          "maximum": 6515299
+        }
+      }
+    },
+    "receivedAt": 1793226871995,
+    "lastContactAt": 1793226871995,
+    "sourceAgeMs": 4287,
+    "receiverAgeMs": 3221,
+    "lastContactAgeMs": 3221,
+    "sourceStale": false,
+    "publisherConnected": true
+  }
+}

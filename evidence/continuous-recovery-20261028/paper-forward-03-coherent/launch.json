@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-10-28T22:35:11.073492+00:00",
+  "workflowRunId": 40780989966,
+  "adminCommit": "e10847b0b1c39511341cc66544b21b7661a76b7a",
+  "runId": "native-paper-20261028223428977",
+  "source": {
+    "release": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+    "strategy": "persistent-buying-pilot-v1",
+    "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9"
+  },
+  "firstPublicSourceAt": 1793226870929,
+  "firstPublicReceivedAt": 1793226875250,
+  "independentSamplerAlreadyActive": true,
+  "firstState": "reporting",
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "originalObserverChangeAuthorized": false,
+  "acceptanceStarted": false
+}
