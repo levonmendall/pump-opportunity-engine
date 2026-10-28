@@ -5,7 +5,7 @@ import {parseNativePaperArgs,runNativePaper,nativePaperReportingAdmission} from 
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION} from '../src/native-paper-contract.js';
 const args=['--resume','--directory','/does-not-exist','--input','/must-not-be-read','--paper-contract',NATIVE_PAPER_DATA_CONTRACT_VERSION];
 test('native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0]',()=>{
- assert.deepEqual(parseNativePaperArgs(args),{directory:'/does-not-exist',inputPath:'/must-not-be-read',contract:NATIVE_PAPER_DATA_CONTRACT_VERSION,stage:'single',deepSlots:3,durationMs:1800000});
+ assert.deepEqual(parseNativePaperArgs(args),{directory:'/does-not-exist',inputPath:'/must-not-be-read',contract:NATIVE_PAPER_DATA_CONTRACT_VERSION,stage:'single',deepSlots:3,durationMs:1800000,managementOnly:false});
  const staged=parseNativePaperArgs([...args,'--stage','two','--deep-slots','6','--duration-seconds','1200']);assert.equal(staged.stage,'two');assert.equal(staged.deepSlots,6);assert.equal(staged.durationMs,1200000);
  for(const bad of [args.slice(1),[...args,'--resume'],[...args,'--stage'],[...args,'--stage','live'],[...args,'--wallet','never'],[...args,'--directory','/other']])assert.throws(()=>parseNativePaperArgs(bad),/NATIVE_PAPER_/);
 });
