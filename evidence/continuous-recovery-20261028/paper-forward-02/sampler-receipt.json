@@ -1,0 +1,46 @@
+{
+  "verifiedAt": "2026-10-28T21:47:12.505342+00:00",
+  "records": [
+    {
+      "file": "render-cycles.ndjson",
+      "samples": 3,
+      "retainedBytes": 7449,
+      "sha256": "bf4c2ba88c6e60a03029ec71579514471a246e5d33c311e0d58e5798a13dac0d",
+      "measuredResponseBytes": 7128,
+      "unavailableSamples": 0,
+      "firstPollAt": 1793221664995,
+      "lastPollAt": 1793221685673
+    },
+    {
+      "file": "render-cycles-supervised.ndjson",
+      "samples": 82,
+      "retainedBytes": 2715905,
+      "sha256": "336615b0147245621ca44c42ffa2f63d7d8283e4e8dbb7936fc9e0d81bf4c94b",
+      "measuredResponseBytes": 2707049,
+      "unavailableSamples": 0,
+      "firstPollAt": 1793221744960,
+      "lastPollAt": 1793222571820
+    },
+    {
+      "file": "render-cycles-recovered.ndjson",
+      "samples": 112,
+      "retainedBytes": 4718749,
+      "sha256": "1b4b9dcd4b2f630f52cd4a9c038161c8ae584b4c9fa034890046a04574757448",
+      "measuredResponseBytes": 4706653,
+      "unavailableSamples": 0,
+      "firstPollAt": 1793222633353,
+      "lastPollAt": 1793223766735
+    }
+  ],
+  "calls": 197,
+  "measuredResponseBytes": 7420830,
+  "unresolvedTransportReserveBytes": 1048576,
+  "lastSamplerStopped": true,
+  "lastSamplerCalls": 112,
+  "lastSamplerMeasuredBytes": 4706653,
+  "lastSamplerRetainedBytes": 4718749,
+  "lastSamplerElapsedMs": 1143390.103375,
+  "sourceRun": 40769349583,
+  "continuousCloudSupervision": false,
+  "hostPublisherIndependent": true
+}

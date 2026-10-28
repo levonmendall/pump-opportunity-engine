@@ -29,7 +29,15 @@
   "runId": "native-paper-20261028210805129",
   "sourceStartedAt": 1793221685129,
   "hostCodeProbeRun": 40769283702,
-  "status": "IN_PROGRESS",
+  "status": "SETTLED_RESOURCE_STOP_NOT_ACCEPTANCE",
   "startedEvidence": "independent public sampler accepted immutable c189 source/account/inception; source timestamp advances",
-  "accountReadbackAfterRun": "PENDING"
+  "accountReadbackAfterRun": "PASSrevision10014",
+  "sourceStoppedAt": 1793223099379,
+  "actualSpanMs": 1414250,
+  "flatVerifiedAtEnd": true,
+  "observationInterrupted": true,
+  "naturalQualifications": 0,
+  "orders": 0,
+  "positions": 0,
+  "netTradingPnlLamports": "0"
 }

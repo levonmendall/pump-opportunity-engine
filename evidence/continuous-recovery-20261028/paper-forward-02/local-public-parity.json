@@ -1,0 +1,59 @@
+{
+  "verifiedAt": "2026-10-28T21:42:32.316Z",
+  "source": "native-paper-20261028210805129",
+  "matchedCycles": 1,
+  "requiredTwoIndependentCyclesMet": false,
+  "limitation": "Initial accepted-source witnesses preceded recovered Cloud sampling; last running witness was not sampled before final stopped source. Exact public parity is demonstrated only for matching retained cycles; two-cycle requirement remains open until next run.",
+  "cycles": [
+    {
+      "sourceFile": "accepted-source-last-1.json",
+      "sourceAt": 1793223099379,
+      "running": false,
+      "publisherAcknowledgement": "accepted",
+      "matchingPublicSamples": 64,
+      "fullProjectedPayloadParity": true,
+      "localAccountingMatchesIndependentLedger": true,
+      "normalizedTrades": 771,
+      "usableWindows": 38
+    },
+    {
+      "sourceFile": "accepted-source-first-1.json",
+      "sourceAt": 1793221687045,
+      "running": true,
+      "publisherAcknowledgement": "accepted",
+      "matchingPublicSamples": 0,
+      "fullProjectedPayloadParity": null,
+      "localAccountingMatchesIndependentLedger": true,
+      "normalizedTrades": 0,
+      "usableWindows": 0
+    },
+    {
+      "sourceFile": "accepted-source-last-2.json",
+      "sourceAt": 1793223089239,
+      "running": true,
+      "publisherAcknowledgement": "accepted",
+      "matchingPublicSamples": 0,
+      "fullProjectedPayloadParity": null,
+      "localAccountingMatchesIndependentLedger": true,
+      "normalizedTrades": 706,
+      "usableWindows": 38
+    },
+    {
+      "sourceFile": "accepted-source-first-2.json",
+      "sourceAt": 1793221702085,
+      "running": true,
+      "publisherAcknowledgement": "accepted",
+      "matchingPublicSamples": 0,
+      "fullProjectedPayloadParity": null,
+      "localAccountingMatchesIndependentLedger": true,
+      "normalizedTrades": 0,
+      "usableWindows": 0
+    }
+  ],
+  "acceptedDistinctSourceAcknowledgements": 95,
+  "unmatchedAcknowledgements": 0,
+  "stoppedTruthfully": true,
+  "staleTruthfully": true,
+  "independentCloudSamplerContinuous": false,
+  "marketCoverageComplete": false
+}
