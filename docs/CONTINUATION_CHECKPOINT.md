@@ -1,6 +1,6 @@
-Updated 2026-10-28 21:01UTC — exact recovery checkpoint; no active experimental financial writer.
+Updated 2026-10-28 21:25UTC — c189 experimental host PAPER run is active; Cloud financial writer remains fenced.
 
-Lead branch poe-free-data-evaluation-20261027. Verified code source
+Lead branch poe-free-data-evaluation-20261027. Current lead also includes separately versioned, NOT deployed duplicate-reconciliation repair8b74a89 and WATCHattribution8859f7d;1503/1503tests/build/compile PASS with sourceinputs unchanged in integrated-paper-reconcile-ready-05. ActiveHOSTstillc189; doNOTsilentlyblendversions. Earlier verified code source
 0ecab10b2bd6b8d4fdedf2272bc8dfb55e6454c8; all recorded source inputs unchanged during
 1501/1501 full serial tests, build and compile. Raw/hash proof:
 evidence/continuous-recovery-20261028/integrated-paper-forward-ready-04/verification.json.
@@ -128,3 +128,27 @@ actualexecution/holding/recovery/accounting/reporting individuallyready.
 Cloudoriginalledgerremainsfenced; onlyHOSTledgeradvances.
 Isolated duplicate-reconciliation optimization underreview; NOT in c189 interval.
 Sustainablelongrunresource/accountingcontrols unfinished; no24hrunstarted.
+
+LATEST USER STEERING / COMPLETE MAP BEFORE NEXT REPAIR
+User requires one coherent deadline-critical-path correction, not another isolated
+audit-priority patch. Complete read-only maps are committed at
+evidence/deadline-critical-path-20261028/{MAP.md,RPC_AND_CAPTURE_BLOCKERS.md}
+and evidence/deadline-path-map-20261028/local-blockers.md. Cover futurefirstwindows,
+physicalpacing/settlement, mandatoryvsdiscretionarynativecontrols, multipagepeer
+auditcapacity, originmultiRPChelpers, candidatefinancialprep, synchronousreport/
+checkpoint/backupstart, capture/receiptaccounting andOS/eventloopcontenders.
+DoNOTblameallcurrentfailuresonthesemapfindingswithoutfinaltracecorrelation.
+Isolated coherent_deadline_repair agent ownsfuturecoreedits; nolead/adminchange
+untilcombinedtests/review. Independent critical_path_validation_review assigned.
+
+Cloud brieflydisconnected~21:23UTC. RuntimeGH40769349583remainedinprogress.
+SupervisedCloudsampler147581died; retained85totalpriorcycles/2714177responseB
+and1MiBuncertainheadroom via sampler-interruption-02.json. Recoveredforeground
+execsession71432/PID152923 writesrender-cycles-recovered.ndjson, boundedremaining
+335GET/29791679B/~49.9min. Historicalsamplergaps are real; no claimedcontinuous
+supervision. Actualhostpublisherindependent andfreshuponrecovery.
+By21:24source:27auditedpredictivefailures/530normalizedtrades,8auditunavailable,
+1unusable,5deadlinemisses,5qualitycallbacks, noorders/positions/PnL. Broadstream
+approachesexisting1GiBguard; loss of WATCHhints must notbeclaimedwholemarket
+continuity. Mobile390x844actualfinancialpanelPASS/nooverflow/JSerrors; original
+source/accountunchanged andunauthpilotPOST401 again21:13.
