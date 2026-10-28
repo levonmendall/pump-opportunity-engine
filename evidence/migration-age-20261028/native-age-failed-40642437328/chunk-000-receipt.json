@@ -1,0 +1,40 @@
+{
+  "header": {
+    "schemaVersion": 1,
+    "kind": "header",
+    "classification": "candidate-only-public-evidence-readback",
+    "githubRunId": "40642437328",
+    "githubRunAttempt": "1",
+    "researchProfile": "candidate-native-two-hour-research-v1",
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": 1793123773252,
+    "manifestSha256": "9a6ae3cbc15eb32ac8ddedab4a39bcbbd4701b8abe95349fa50471c41c5fa454",
+    "archive": {
+      "file": "selected-evidence.tar.gz",
+      "bytes": 4263398,
+      "sha256": "55bcb06ce588ab3b8ef8132f04e70c612d59a9850ad4ca23e330e8e3c8f6a3b1"
+    },
+    "chunk": {
+      "offset": 0,
+      "requestedLength": 4194304,
+      "actualLength": 4194304,
+      "sourceBlockMaximumBytes": 48896
+    },
+    "integrityMeaning": "Manifest creation SHA256 is supplied; this call hashes only its bounded chunk. Verify the entire archive SHA256 after reassembly. Complete archive/readback does not establish source runtime or market-window success."
+  },
+  "footer": {
+    "schemaVersion": 1,
+    "kind": "footer",
+    "complete": true,
+    "offset": 0,
+    "bytes": 4194304,
+    "dataRecords": 86,
+    "chunkSha256": "bd0608029dc3c4a0bf0f4eb511ea14c028355e8bd76bb312a0b0b30b37b95b45",
+    "archiveSha256": "55bcb06ce588ab3b8ef8132f04e70c612d59a9850ad4ca23e330e8e3c8f6a3b1",
+    "manifestSha256": "9a6ae3cbc15eb32ac8ddedab4a39bcbbd4701b8abe95349fa50471c41c5fa454",
+    "descriptorStatsStable": true,
+    "archiveWholeHashVerifiedByThisCall": false,
+    "credentialsRead": false,
+    "financialFilesRead": false
+  }
+}

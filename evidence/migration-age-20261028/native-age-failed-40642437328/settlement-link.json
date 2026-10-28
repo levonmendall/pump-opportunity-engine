@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "label": "native-age-20261028061211",
+  "administrationRun": 40642437328,
+  "administrationCommit": "573041a110e1cb947fdacd75bb94f34882dc17b8",
+  "source": {
+    "commit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+    "sha256": "c848f60362ad19f290bfcbde64b252bb5309a26fe56a19c37785b76e95274540"
+  },
+  "configurationSha256": "8d1fe7e927d3253a5d98aae2bf5a3a2a3bb50e4070407aa16a20470c65aa81c8",
+  "classification": "FAILED_LONG_PROFILE_LOCAL_NOTIFICATION_LEDGER_CAP_WITH_RETAINED_PARTIAL_DATA",
+  "runtimeOutcome": {
+    "classification": "interrupted-or-failed-source-stop",
+    "mechanicallyCompleted": false,
+    "failureReason": "NATIVE_RESEARCH_SOURCE_STOP_NOT_NORMAL",
+    "sourceStopReason": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+    "sourceRpcFatalState": null,
+    "plannedRunDurationMs": 7200000,
+    "shutdownReserveMs": 10000,
+    "plannedAdmissionDurationMs": 7190000,
+    "actualRunElapsedMs": 202026,
+    "actualWallSpanMs": 202026,
+    "logicalObservationCutoffAt": 1793175132894,
+    "expectedLogicalObservationCutoffAt": 1793175132894,
+    "stopRequestedAt": 1793168144730,
+    "plannedAdmissionCutoffReached": false,
+    "candidateWindowEvidence": {
+      "auditedWindows": 2,
+      "predictiveAssessments": 2,
+      "uniqueEvaluated": 2,
+      "classification": "audited-window-views-recorded-not-readiness",
+      "overlappingViewsAreNotIndependentCoverage": true,
+      "mechanicalCompletionIsNotWindowValidation": true
+    },
+    "reportingMeaning": "Receiver acceptance and physical settlement are evaluated separately; neither makes a fatal or premature source interval successful."
+  },
+  "sourceGeneratedAt": 1793168144920,
+  "stopRequestedAt": 1793168144730,
+  "applicationTransportSettlementConfirmed": true,
+  "ownedProcessGroupsSettled": true,
+  "actualPhysicalStarts": 79,
+  "allStartedOperationsSettled": true,
+  "priorUnits": 4744,
+  "newAccountedUnits": 79,
+  "cumulativeAccountedUnits": 4823,
+  "newMeasuredResponseBytes": 9909722,
+  "newUncertainResponseBytes": 2162688,
+  "cumulativeUncertainResponseBytes": 51052544,
+  "cumulativeAccountedResponseBytes": 180492879,
+  "books": [
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-001.json",
+      "sha256": "863955aa05ab21418955e2f1c192d49c3ff33178d19605a84b09f8700e99fd38"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-002.json",
+      "sha256": "892f6ff421151ef4257d9c79dccda5dbd3c87e735a22772986fdd1940be1da4e"
+    }
+  ],
+  "originalObserverUnchanged": true,
+  "historicalFailureEvidenceUnchanged": true,
+  "reservationsRefunded": false,
+  "financialDatabaseOpened": false,
+  "retention": "All original indexed files retained on host and verified lossless copy in Cloud. No raw evidence deleted.",
+  "at": 1793168740369
+}

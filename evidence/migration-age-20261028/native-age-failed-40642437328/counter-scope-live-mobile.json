@@ -1,0 +1,21 @@
+{
+  "title": "POE // Opportunity Command Center",
+  "href": "https://meme-machine-dashboard-staging.onrender.com/",
+  "viewport": 390,
+  "documentWidth": 390,
+  "bodyWidth": 390,
+  "agePolicy": "Observation 0–120 min; selected older research 120–1,440 min · observation-age-selected-24h-study-v1. Baseline entry comparison remains 5–120 minutes. Cohort counts describe observation allocation, not predictive quality or returns.",
+  "watchText": "Recent identities known129Baseline entry-age verified identities (5–120 min)1Watch candidates26Deep slots active / maximum0 / 6Ready deep-analysis queue0Current queue wait: average / maximum (s)0 / 0Completed admission wait (history): average / maximum (s)1,104.95 / 6,515.3Promotion events / re-promotions (history)437 / 339Demotion events (history)436Complete 60-second window events (history)419Independent predictive assessments (run)2Independent predictive failures (run)2Primary strategy rejections (run)0Capacity exclusion events (history)0Incomplete-data exclusions (run)9Enrichment deadline failures (run)0Structural exclusion events (history)13Expiry events (history)122Observation-eligible identities26Observation-ready queue21Pre-entry observation cohort (<5 min)3Baseline entry-age cohort (5–120 min)1Selected older research cohort22Selected older watch capacity24",
+  "funnelText": "Migration hints (run)3Supported candidates (run)Not reportedVerified origins known (retained + run)111Deep promotion events (watch history)437Audited windows (run)2Usable windows (run)2Independent predictive assessments (run)2Executable qualifications (run; financial gate)0Orders reserved (run)0PAPER attempts (run)0PAPER entries filled (run)0PAPER exits filled (run)0Accounting reconciliations (run)0",
+  "permission": "Pilot is stopped; no ongoing monitoring is implied. Candidate-only mode: financial execution is intentionally disabled. Independent predictive assessment is separate; disabled financial permission is not a predictive rejection. SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 0, protocol effects 10. stopped: NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+  "sourceTimesText": "Last market notification2026-10-28T06:15:43.898Z · 935.75s old · STALELast validated pool support2026-10-28T06:15:41.739Z · 937.91s old · STALEBANK_CLOCK source time2026-10-28T06:15:41.000Z · 938.65s old · STALELast independent audit2026-10-28T06:15:43.672Z · 935.97s old · STALELast predictive assessment2026-10-28T06:14:02.500Z · 1,037.15s old · STALEFinancial reconciliationUnavailable",
+  "portfolioCardCount": 0,
+  "portfolioPositionText": "No experimental position projection reported.",
+  "scriptTagCount": 0,
+  "pilotState": "STOPPED · SOURCE STALE",
+  "sourceText": "Account poe-pilot-8468add6-f916-48cf-a585-6cd008a81360 · inception 2026-10-27T17:56:13.252Z\nRun native-candidates-20261028061222894\nRuntime c5ce87b858a6655c4f5dd80e8887554b84717415 · strategy persistent-buying-v0-unfrozen · mode candidate-evaluation\nLocal source 2026-10-28T06:15:44.920Z (934.67s old) · first accepted 2026-10-28T06:30:22.304Z\nLast authenticated publisher contact 2026-10-28T06:30:52.684Z (26.9s ago). Receiver contact does not refresh source facts.",
+  "checkedAt": "2026-10-28T06:31:20.278Z",
+  "errors": [],
+  "horizontalOverflow": false,
+  "tlsVerificationEnabled": true
+}
