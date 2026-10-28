@@ -1,0 +1,52 @@
+{
+  "classification": "OFFLINE_FIXED_CLOCK_MICROBENCHMARK_NOT_EC2_CAPACITY_OR_SOLE_RUNTIME_CAUSE",
+  "sourceFile": "evidence/migration-age-20261028/selection-head-block/before.json",
+  "sourceSha256": "5e1880d55514e7a1423eea7139e6ca5734779fab0f16a6e482ad8f04e9dd20d2",
+  "rows": 98,
+  "at": 1793153001743,
+  "results": [
+    {
+      "name": "full-snapshot-for-single-row",
+      "calls": 2000,
+      "elapsedMs": 1867.7179680000002,
+      "cpuUserUs": 1878583,
+      "cpuSystemUs": 21288,
+      "cpuTotalUs": 1899871,
+      "checksum": 175519
+    },
+    {
+      "name": "lookupIdentity",
+      "calls": 2000,
+      "elapsedMs": 25.21096099999977,
+      "cpuUserUs": 28944,
+      "cpuSystemUs": 0,
+      "cpuTotalUs": 28944,
+      "checksum": 175519
+    },
+    {
+      "name": "full-snapshot-for-flat-metadata",
+      "calls": 2000,
+      "elapsedMs": 1760.6953629999998,
+      "cpuUserUs": 1732270,
+      "cpuSystemUs": 35344,
+      "cpuTotalUs": 1767614,
+      "checksum": 196000
+    },
+    {
+      "name": "listIdentities",
+      "calls": 2000,
+      "elapsedMs": 7.27448000000004,
+      "cpuUserUs": 8701,
+      "cpuSystemUs": 118,
+      "cpuTotalUs": 8819,
+      "checksum": 196000
+    }
+  ],
+  "maximumRssBytes": 98619392,
+  "limitations": [
+    "Fixed historical registry and clock; no provider requests or live financial state.",
+    "Sequential local CPU/wall measurements are sensitive to JIT, garbage collection and concurrent development processes.",
+    "This isolates repeated snapshot projection overhead, not total runtime CPU or protection latency.",
+    "No RPC, financial or profitability effect is measured."
+  ]
+}
