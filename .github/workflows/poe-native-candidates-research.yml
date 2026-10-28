@@ -1,0 +1,70 @@
+name: POE bounded six-scope native candidate research
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  native-candidates:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 20
+    steps:
+      - name: Read exact reviewed candidate package only
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            scripts/poe/native-candidates/
+            scripts/poe/native-candidate-run-bounded.py
+      - name: Verify exact supervisor and run bounded isolated observation
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+          POE_PACKAGE_SHA256: __REVIEWED_PACKAGE_MANIFEST_SHA256__
+          POE_SUPERVISOR_SHA256: __REVIEWED_SUPERVISOR_SHA256__
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" = 994
+          python3 -I - "$POE_SUPERVISOR_SHA256" <<'PY'
+          import hashlib,pathlib,sys
+          p=pathlib.Path('scripts/poe/native-candidate-run-bounded.py')
+          assert p.is_file() and not p.is_symlink()
+          data=p.read_bytes()
+          assert len(data)<=65536 and len(sys.argv[1])==64 and hashlib.sha256(data).hexdigest()==sys.argv[1], 'REVIEWED_SUPERVISOR_HASH_MISMATCH'
+          PY
+          /usr/bin/env -i PATH=/usr/bin:/bin ACTUAL_RUNNER="$ACTUAL_RUNNER" \
+            RUNNER_TEMP="$RUNNER_TEMP" GITHUB_ENV="$GITHUB_ENV" \
+            GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            /usr/bin/timeout --signal=TERM --kill-after=5s 1020s \
+            /usr/bin/python3 -I scripts/poe/native-candidate-run-bounded.py \
+            --package "$GITHUB_WORKSPACE/scripts/poe/native-candidates" \
+            --manifest-sha256 "$POE_PACKAGE_SHA256"
+      - name: Export bounded public research receipts and selected evidence
+        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: poe-native-candidates-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/export/index.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/before.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/after.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervisor.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/input.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/package.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/runner.log
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/publisher.log
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/publisher-final.log
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/status.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/receipt.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/watch-checkpoint.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/rpc/**/*.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/run/events/*.ndjson
+          if-no-files-found: warn
+          retention-days: 1
+          compression-level: 0
