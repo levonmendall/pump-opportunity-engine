@@ -484,3 +484,12 @@ test('one snapshot derives features once, preserves closed-bucket values and rea
   f.flow.invalidateCandidate(scope.mint);reference.invalidate(f.now,'feed-gap');const invalid=check();assert.equal(invalid.warm,false);assert.equal(invalid.features!.tradeCount,0);assert.equal(invalid.hasQualityLoss,true,'same bucket does not reuse pre-gap features');
  }finally{FlowWindow.prototype.features=original;await f.flow.stop();}
 });
+
+
+test('persistent native capture has no research lifetime, cumulative CPU, receive-byte or recorder-volume stop',async()=>{
+ const f=setup({persistent:true,durationMs:1000,maximumCpuMicros:1000,maximumReceivedBytes:1024*1024,maximumRecordedBytes:65536});
+ const socket=await f.open();
+ for(let i=1;i<=200;i++)f.notice(socket,{signature:bs58.encode(Buffer.alloc(64,i))});
+ socket._socket.bytesRead+=2*1024*1024;socket._socket.emit('data',Buffer.alloc(0));await f.advance(200);const u=f.flow.usage();assert.equal(u.persistent,true);assert.equal(u.lifetimeCapsEnabled,false);assert.equal(u.fatal,null);assert.equal(u.stopped,false);assert.ok(u.recordedBytes>65536,JSON.stringify({bytes:u.recordedBytes,trades:f.trades.length,gaps:f.gaps,records:f.records.map(r=>r.kind),fatal:u.fatal}));assert.ok(u.socketBytes>1024*1024);assert.ok(f.trades.length>0);assert.equal(f.gaps.length,0);assert.equal(u.rollingTraffic.pressure,false);await f.flow.stop();
+ const later=setup({persistent:true,durationMs:1000});later.elapseWithoutTimers(1800001);await later.flow.addCandidate(scope);await later.drive();assert.equal(later.supportCalls.length,1,'a new candidate receives a current support read after the old research lifetime');assert.equal(later.flow.usage().fatal,null);assert.equal(later.flow.usage().stopped,false);assert.equal(later.trades.length,0,'no stale historical trade was invented after the clock jump');await later.flow.stop();
+});

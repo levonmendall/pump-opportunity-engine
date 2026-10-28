@@ -354,3 +354,29 @@ test('history readiness freezes only the planning floor across advancing clocks,
   const planningAt=blocked.now();blocked.advance(5);assert.equal(blocked.client.historyQueryReadyAt(HISTORY_POOL,planningAt),215000);await assert.rejects(blocked.client.call('getSignaturesForAddress',[HISTORY_POOL]),/COOLDOWN/);assert.equal(blocked.client.usage().newUnits,0);assert.equal(await blocked.client.call('getMultipleAccounts'),123,'history planning cannot introduce a primary-provider cooldown');
  }finally{blocked.close();}
 });
+
+
+test('persistent RPC rotates bounded accounting epochs beyond research lifetime/chapter limits and preserves restart anchors',async()=>{
+ const f=fixture({persistent:true,maxUnits:1,maxChapters:1,chapterUnits:1,durationMs:1000});try{
+  for(let i=0;i<70;i++){f.advance(65000);assert.equal(await f.client.call('getSlot'),123);}
+  const u=f.client.usage();assert.equal(u.newUnits,70);assert.equal(u.cumulativeUnits,90);assert.equal(u.lifetimeCapsEnabled,false);assert.equal(u.deadlineAt,null);assert.equal(u.remainingMs,null);assert.ok(u.compactedAccountingEpochs>=2);assert.ok(u.recoveryBaselinePaths.length<32);assert.ok(u.recoveryBaselineCheckpointSha256);assert.ok(u.activeChapterPath);assert.ok(!u.recoveryBaselinePaths.includes(u.activeChapterPath));
+  const checkpoint=JSON.parse(readFileSync(u.recoveryBaselinePaths[0]!,'utf8'));assert.equal(checkpoint.schemaVersion,2);assert.equal(checkpoint.physicalSettlement.physicalTransportsSettled,false);assert.equal(checkpoint.physicalSettlement.passiveStreamsMayRemainOpen,true);assert.equal(u.uncertainResponseBytes,2*MIB);assert.ok(existsSync(join(f.directory,'run/chapter-001.json')),'original raw books stay retained');
+  f.client.close();const closed=f.client.usage();const linked=readResearchBaseline({paths:closed.recoveryBaselinePaths,checkpointSha256:closed.recoveryBaselineCheckpointSha256!,now:f.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});assert.equal(linked.baseline.calls,90);assert.equal(linked.uncertainResponseBytes,2*MIB);assert.equal(closed.activeChapterPath,null);
+ }finally{f.close();}
+});
+test('persistent control receipt rolls a full accounting byte epoch without stopping a healthy passive stream or changing provider cooldown',async()=>{
+ const f=fixture({persistent:true,maxResponseBytes:4*MIB,chapterUnits:1});try{
+  await f.client.call('getSlot');const first=f.client.usage().activeChapterPath!;
+  for(let i=0;i<90;i++)f.client.accountControlBytes(65536);
+  const u=f.client.usage();assert.ok(u.chapter>1);assert.equal(u.fatal,null);assert.equal(u.newUnits,1);assert.equal(u.cooldownUntil,0);assert.ok(u.newAccountedResponseBytes>=90*65536);assert.ok(existsSync(first));
+ }finally{f.close();}
+});
+
+
+test('persistent passive receipts may cross an accounting epoch during an HTTP request without aborting or hiding its real ownership',async()=>{
+ let resolveResponse!:(r:Response)=>void;let requestId:number|undefined;const f=fixture({persistent:true,maxResponseBytes:4*MIB,fetcher:(async(_url,init)=>{requestId=JSON.parse(String(init?.body)).id;return await new Promise<Response>(r=>{resolveResponse=r;});})as typeof fetch});try{
+  const running=f.client.call('getSlot');await turn();const occupied=f.client.usage();assert.equal(occupied.inFlight,1);
+  for(let i=0;i<90;i++)f.client.accountControlBytes(65536);const u=f.client.usage();assert.equal(u.inFlight,1);assert.equal(u.chapter,1);assert.equal(u.fatal,null);assert.equal(u.chapterUsage?.haltedReason,null);assert.ok(u.newAccountedResponseBytes>=90*65536);await assert.rejects(f.client.call('getMultipleAccounts'),/PHYSICAL_SLOT_OCCUPIED/);assert.equal(f.client.usage().newUnits,1,'an epoch rollover cannot create a parallel physical gate');
+  resolveResponse(new Response(JSON.stringify({jsonrpc:'2.0',id:requestId,result:123})));assert.equal(await running,123);assert.equal(f.client.usage().inFlight,0);assert.equal(f.client.usage().fatal,null);assert.equal(f.client.usage().chapterUsage?.continuousAccounting,true);
+ }finally{f.close();}
+});

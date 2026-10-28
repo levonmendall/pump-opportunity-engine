@@ -55,7 +55,7 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
   const sources:ResearchBaselineSource[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0,inputBytes=0,checkpointCreatedAt=0;
   for(let index=0;index<paths.length;index++){
     const path=paths[index]!,{book:b,sha256,inputBytes:bookBytes,stat}=readBook(path,RESEARCH_MAXIMUM_INPUT_BYTES-inputBytes);inputBytes+=bookBytes;need(inputBytes<=RESEARCH_MAXIMUM_INPUT_BYTES,'AGGREGATE_INPUT_BOUND');
-    need(b.schemaVersion===1&&int(b.lastObservedAt)&&b.lastObservedAt<=options.now&&b.lastObservedAt>=lastObservedAt,'INVALID_CLOCK');lastObservedAt=b.lastObservedAt;
+    need((b.schemaVersion===1||index===0&&b.kind===RESEARCH_CHECKPOINT_KIND&&b.schemaVersion===2)&&int(b.lastObservedAt)&&b.lastObservedAt<=options.now&&b.lastObservedAt>=lastObservedAt,'INVALID_CLOCK');lastObservedAt=b.lastObservedAt;
     if(index===0&&b.kind===RESEARCH_CHECKPOINT_KIND){
       need(stat.uid===process.getuid?.()&&(stat.mode&0o077)===0&&stat.nlink===1,'CHECKPOINT_PRIVATE_OWNER_FILE');need(options.checkpointSha256===sha256,'CHECKPOINT_HASH_MISMATCH');const checkpoint=checkedCheckpoint(b,options.now);checkpointCreatedAt=checkpoint.createdAt;observedBytes=checkpoint.accounted.observedBytes;uncertainResponseBytes=checkpoint.accounted.uncertainResponseBytes;pendingOperations=checkpoint.accounted.pendingOperations;
       baseline={calls:checkpoint.accounted.calls,bytes:checkpoint.accounted.bytes,starts:[...checkpoint.starts.times],startHistory:{schemaVersion:1,omittedStarts:checkpoint.starts.omittedCount,retainedSinceAt:checkpoint.starts.retainedSinceAt},refusal:'RPC_HTTP_429',refusalAt:checkpoint.refusal.at,sha256};
@@ -100,13 +100,13 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
 
 export const RESEARCH_CHECKPOINT_KIND='poe-research-baseline-checkpoint' as const;
 export type ResearchBaselineCheckpoint={
- schemaVersion:1;kind:typeof RESEARCH_CHECKPOINT_KIND;createdAt:number;lastObservedAt:number;sourceLastObservedAt:number;
+ schemaVersion:1|2;kind:typeof RESEARCH_CHECKPOINT_KIND;createdAt:number;lastObservedAt:number;sourceLastObservedAt:number;
  previousCheckpoint:{path:string;sha256:string}|null;
  sources:ResearchBaselineSource[];
  accounted:{calls:number;bytes:number;observedBytes:number;uncertainResponseBytes:number;pendingOperations:number};
  starts:{retainedSinceAt:number;omittedCount:number;conservativeUnknownAtSeal:number;times:number[]};
  refusal:{code:'RPC_HTTP_429';at:number};
- physicalSettlement:{verifiedAt:number;inFlight:0;waitingOrOperating:false;physicalTransportsSettled:true};
+ physicalSettlement:{verifiedAt:number;inFlight:0;waitingOrOperating:false;physicalTransportsSettled:boolean;passiveStreamsMayRemainOpen?:true};
  haltedReason:string|null;
 };
 /** Checkpoints are local integrity anchors, not provider allowance or financial
@@ -114,13 +114,13 @@ export type ResearchBaselineCheckpoint={
  * preceding checkpoint remain retained and independently auditable; startup
  * does not reread their ever-growing bytes. */
 function checkedCheckpoint(raw:Book,now:number):ResearchBaselineCheckpoint{
- need(exact(raw,['schemaVersion','kind','createdAt','lastObservedAt','sourceLastObservedAt','previousCheckpoint','sources','accounted','starts','refusal','physicalSettlement','haltedReason'])&&raw.schemaVersion===1&&raw.kind===RESEARCH_CHECKPOINT_KIND,'INVALID_CHECKPOINT');
+ need(exact(raw,['schemaVersion','kind','createdAt','lastObservedAt','sourceLastObservedAt','previousCheckpoint','sources','accounted','starts','refusal','physicalSettlement','haltedReason'])&&[1,2].includes(Number(raw.schemaVersion))&&raw.kind===RESEARCH_CHECKPOINT_KIND,'INVALID_CHECKPOINT');
  need(int(raw.createdAt)&&raw.createdAt<=now&&raw.lastObservedAt===raw.createdAt&&int(raw.sourceLastObservedAt)&&raw.sourceLastObservedAt<=raw.createdAt,'CHECKPOINT_CLOCK');
  const a=raw.accounted,s=raw.starts,r=raw.refusal,p=raw.physicalSettlement;
  need(plain(a)&&exact(a,['calls','bytes','observedBytes','uncertainResponseBytes','pendingOperations'])&&int(a.calls)&&int(a.bytes)&&int(a.observedBytes)&&int(a.uncertainResponseBytes)&&int(a.pendingOperations)&&a.observedBytes+a.uncertainResponseBytes===a.bytes&&a.pendingOperations<=a.calls,'CHECKPOINT_COUNTERS');
  need(plain(s)&&exact(s,['retainedSinceAt','omittedCount','conservativeUnknownAtSeal','times'])&&int(s.retainedSinceAt)&&s.retainedSinceAt===Math.max(0,raw.createdAt-60000)&&int(s.omittedCount)&&int(s.conservativeUnknownAtSeal),'CHECKPOINT_STARTS');const starts=times(s.times,raw.createdAt);need(starts.every(t=>t>=Number(s.retainedSinceAt))&&starts.length+Number(s.omittedCount)===a.calls&&Number(s.conservativeUnknownAtSeal)<=starts.length&&starts.filter(t=>t===raw.createdAt).length>=Number(s.conservativeUnknownAtSeal),'CHECKPOINT_STARTS');
  need(plain(r)&&exact(r,['code','at'])&&r.code==='RPC_HTTP_429'&&int(r.at)&&r.at<=raw.sourceLastObservedAt,'CHECKPOINT_REFUSAL');
- need(plain(p)&&exact(p,['verifiedAt','inFlight','waitingOrOperating','physicalTransportsSettled'])&&p.verifiedAt===raw.createdAt&&p.inFlight===0&&p.waitingOrOperating===false&&p.physicalTransportsSettled===true,'CHECKPOINT_PHYSICAL_UNSETTLED');
+ need(plain(p)&&exact(p,raw.schemaVersion===2?['verifiedAt','inFlight','waitingOrOperating','physicalTransportsSettled','passiveStreamsMayRemainOpen']:['verifiedAt','inFlight','waitingOrOperating','physicalTransportsSettled'])&&p.verifiedAt===raw.createdAt&&p.inFlight===0&&p.waitingOrOperating===false&&(raw.schemaVersion===2?p.physicalTransportsSettled===false&&p.passiveStreamsMayRemainOpen===true:p.physicalTransportsSettled===true),'CHECKPOINT_PHYSICAL_UNSETTLED');
  need(raw.haltedReason===null||typeof raw.haltedReason==='string'&&/^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(raw.haltedReason),'CHECKPOINT_HALT');
  const previous=raw.previousCheckpoint;need(previous===null||plain(previous)&&exact(previous,['path','sha256'])&&typeof previous.path==='string'&&previous.path===resolve(previous.path)&&previous.path.length<=4096&&hex(previous.sha256),'CHECKPOINT_PREVIOUS');
  need(Array.isArray(raw.sources)&&raw.sources.length>0&&raw.sources.length<=RESEARCH_MAXIMUM_PATHS,'CHECKPOINT_SOURCES');const paths=new Set<string>();let units=0,observed=0,uncertain=0,inputBytes=0;
@@ -130,13 +130,13 @@ function checkedCheckpoint(raw:Book,now:number):ResearchBaselineCheckpoint{
  if(previous!==null)need((raw.sources[0] as ResearchBaselineSource).path===(previous as Book).path&&(raw.sources[0] as ResearchBaselineSource).sha256===(previous as Book).sha256,'CHECKPOINT_PREVIOUS_CONFLICT');
  return raw as unknown as ResearchBaselineCheckpoint;
 }
-export type ResearchCheckpointOptions=ResearchBaselineOptions&{outputPath:string;physicalSettled:true;settlement:{inFlight:number;waitingOrOperating:boolean;physicalTransportsSettled:boolean}};
+export type ResearchCheckpointOptions=ResearchBaselineOptions&{outputPath:string;physicalSettled:true;settlement:{inFlight:number;waitingOrOperating:boolean;physicalTransportsSettled:boolean};/** Existing service owns the shared gate; synchronous seal has no physical operation, while passive streams may remain open. It never asserts socket closure. */liveAccountingBoundary?:true};
 /** Append-only quiescent seal. Caller must own the existing research/process
  * leases and independently establish transport settlement. This checks the
  * current explicit chain twice, retains every uncertain debit, and never edits
  * old books, receipts or a financial manifest. Partial failed output is kept. */
 export function createResearchBaselineCheckpoint(options:ResearchCheckpointOptions){
- need(options.physicalSettled===true&&plain(options.settlement)&&exact(options.settlement,['inFlight','waitingOrOperating','physicalTransportsSettled'])&&options.settlement.inFlight===0&&options.settlement.waitingOrOperating===false&&options.settlement.physicalTransportsSettled===true,'CHECKPOINT_PHYSICAL_UNSETTLED');
+ need(options.physicalSettled===true&&plain(options.settlement)&&exact(options.settlement,['inFlight','waitingOrOperating','physicalTransportsSettled'])&&options.settlement.inFlight===0&&options.settlement.waitingOrOperating===false&&(options.settlement.physicalTransportsSettled===true||options.liveAccountingBoundary===true&&options.settlement.physicalTransportsSettled===false),'CHECKPOINT_PHYSICAL_UNSETTLED');
  const linked=readResearchBaseline(options),at=options.now,first=readBook(resolve(options.paths[0]!),RESEARCH_MAXIMUM_INPUT_BYTES),last=readBook(resolve(options.paths.at(-1)!),RESEARCH_MAXIMUM_INPUT_BYTES);const previous=first.book.kind===RESEARCH_CHECKPOINT_KIND?{path:resolve(options.paths[0]!),sha256:first.sha256}:null;
  // Missing physical stamps must not be refunded from a rolling provider
  // window. A crash may occur after transport invocation but before persisting
@@ -144,7 +144,7 @@ export function createResearchBaselineCheckpoint(options:ResearchCheckpointOptio
  // independently verified physical-settlement/seal time. Existing anchors retain
  // their previous estimates without retiming them; actual stamps remain exact.
  let unknownAtSeal=0;const conservative:number[]=[];for(let index=0;index<linked.sources.length;index++){const source=linked.sources[index]!,book=readBook(source.path,RESEARCH_MAXIMUM_INPUT_BYTES);need(book.sha256===source.sha256,'CHECKPOINT_SOURCE_CHANGED');const b=book.book;if(index===0&&b.kind===RESEARCH_CHECKPOINT_KIND)conservative.push(...checkedCheckpoint(b,at).starts.times);else if(index===0)conservative.push(...times(b.starts,Number(b.lastObservedAt)).map(()=>{unknownAtSeal++;return at;}));else{const invoked=new Map<number,number>((b.actualInvocations as Array<{id:number;at:number}>|undefined)?.map(r=>[r.id,r.at])??[]),base=(b.baseline as ComponentBaseline).calls;conservative.push(...times(b.starts,Number(b.lastObservedAt)).map((_t,i)=>invoked.get(base+i+1)??(unknownAtSeal++,at)));}}
- const cutoff=Math.max(0,at-60000),retained=conservative.filter(t=>t>=cutoff).sort((a,z)=>a-z),value:ResearchBaselineCheckpoint={schemaVersion:1,kind:RESEARCH_CHECKPOINT_KIND,createdAt:at,lastObservedAt:at,sourceLastObservedAt:Number(last.book.lastObservedAt),previousCheckpoint:previous,sources:linked.sources.map(s=>({...s})),accounted:{calls:linked.baseline.calls,bytes:linked.baseline.bytes,observedBytes:linked.observedBytes,uncertainResponseBytes:linked.uncertainResponseBytes,pendingOperations:linked.pendingOperations},starts:{retainedSinceAt:cutoff,omittedCount:linked.baseline.calls-retained.length,conservativeUnknownAtSeal:unknownAtSeal,times:retained},refusal:{code:'RPC_HTTP_429',at:linked.baseline.refusalAt},physicalSettlement:{verifiedAt:at,inFlight:0,waitingOrOperating:false,physicalTransportsSettled:true},haltedReason:typeof last.book.haltedReason==='string'?last.book.haltedReason:null};
+ const cutoff=Math.max(0,at-60000),retained=conservative.filter(t=>t>=cutoff).sort((a,z)=>a-z),value:ResearchBaselineCheckpoint={schemaVersion:options.liveAccountingBoundary?2:1,kind:RESEARCH_CHECKPOINT_KIND,createdAt:at,lastObservedAt:at,sourceLastObservedAt:Number(last.book.lastObservedAt),previousCheckpoint:previous,sources:linked.sources.map(s=>({...s})),accounted:{calls:linked.baseline.calls,bytes:linked.baseline.bytes,observedBytes:linked.observedBytes,uncertainResponseBytes:linked.uncertainResponseBytes,pendingOperations:linked.pendingOperations},starts:{retainedSinceAt:cutoff,omittedCount:linked.baseline.calls-retained.length,conservativeUnknownAtSeal:unknownAtSeal,times:retained},refusal:{code:'RPC_HTTP_429',at:linked.baseline.refusalAt},physicalSettlement:{verifiedAt:at,inFlight:0,waitingOrOperating:false,physicalTransportsSettled:options.liveAccountingBoundary!==true,...(options.liveAccountingBoundary?{passiveStreamsMayRemainOpen:true as const}:{})},haltedReason:typeof last.book.haltedReason==='string'?last.book.haltedReason:null};
  checkedCheckpoint(value as unknown as Book,at);const check=readResearchBaseline(options);need(JSON.stringify(check)===JSON.stringify(linked),'CHECKPOINT_SOURCE_CHANGED');
  const path=resolve(options.outputPath),parent=lstatSync(dirname(path));need(parent.isDirectory()&&!parent.isSymbolicLink()&&parent.uid===process.getuid?.()&&(parent.mode&0o077)===0&&realpathSync(dirname(path))===dirname(path)&&!linked.sources.some(s=>s.path===path),'CHECKPOINT_UNSAFE_OUTPUT');
  const bytes=Buffer.from(JSON.stringify(value)+'\n');need(bytes.length<=COMPONENT_COUNTERBOOK_MAX_BYTES,'CHECKPOINT_SIZE');const fd=openSync(path,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);try{writeFileSync(fd,bytes);fsyncSync(fd);}finally{closeSync(fd);}const directory=openSync(dirname(path),constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(directory);}finally{closeSync(directory);}
