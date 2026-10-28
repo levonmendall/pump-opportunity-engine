@@ -1,0 +1,24 @@
+{
+  "source": {
+    "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+    "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9"
+  },
+  "configs": {
+    "normal": "68f64a68bfa756ef799a330b9b980f1d81195c93973a455ff0d524d3c762d74a",
+    "management": "cc023b9ebe65fbe82950bf30ea61765baf5efba7d097ef12fb035c5af0f6f390"
+  },
+  "packageSha256": "06344efb9bdcf4b2bbfe780583bf010b3c02a3739182e2ff960f9f1d27d42d44",
+  "runPackageSha256": "6c6d1e749da0a43884e2577d308f98ac5d5b90c56400495248add22325a29f92",
+  "supervisorSha256": "b2d3b0f2a7d0ad30983827125c9326baf81ba772b3bb4fbbbf0934ccfee305c5",
+  "readerSha256": "b23254292db971a84d0188fa3ca2afff8ca6bfa728540141587113675accc6a7",
+  "disposablePackageOnly": true,
+  "financialWrites": false,
+  "hostPackageCheckRun": 40780766423,
+  "adminCommit": "e10847b0b1c39511341cc66544b21b7661a76b7a",
+  "sourceFullSuiteTestsPassed": 1556,
+  "sourceFullSuiteVerifiedAt": "2026-10-28T22:34:02.519513+00:00",
+  "independentSampler": {
+    "pid": 177170,
+    "beganBeforeDispatch": true
+  }
+}

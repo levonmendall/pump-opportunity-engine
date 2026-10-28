@@ -1,0 +1,78 @@
+{
+  "runId": 40780766423,
+  "adminCommit": "e10847b0b1c39511341cc66544b21b7661a76b7a",
+  "logBytes": 29450,
+  "logSha256": "d5028d3cc25ad37cdb7000fa1538a37b84abc224675553a33d7cf58fe2cde996",
+  "records": [
+    {
+      "schemaVersion": 1,
+      "kind": "POE_NATIVE_PAPER_CODE_ONLY_PACKAGE_CHECK",
+      "source": {
+        "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+        "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9"
+      },
+      "packageManifestSha256": "06344efb9bdcf4b2bbfe780583bf010b3c02a3739182e2ff960f9f1d27d42d44",
+      "nodeSelectorSha256": "23a6a1573bca181041ea9db55164f05197ad929e5a53ace89613f64011b7dd6b",
+      "immutableReleaseCreated": true,
+      "immutableExistingReleaseVerified": false,
+      "files": [
+        {
+          "file": "native-paper.mjs",
+          "bytes": 4927156,
+          "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9"
+        },
+        {
+          "file": "backup-worker.mjs",
+          "bytes": 69467,
+          "sha256": "773157f208a3f5505efa308d7f37de7ce8e580138510dc0662d12aee9f56481c"
+        },
+        {
+          "file": "better_sqlite3.node",
+          "bytes": 2226168,
+          "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+        },
+        {
+          "file": "verify-native-paper-package.mjs",
+          "bytes": 124404,
+          "sha256": "e2c82af943909e4352f2f5551526a7efc051b17ec23b7911e86b2b26702fecb7"
+        },
+        {
+          "file": "metadata.json",
+          "bytes": 152356,
+          "sha256": "a9c4bdfc737dfa328f7e5912ba941d9b325b5c00d30ce4f5cfade92d9b73e588"
+        }
+      ],
+      "runtime": {
+        "node": "v24.21.0",
+        "nodeAbi": "137",
+        "platform": "linux",
+        "architecture": "x64",
+        "sqlite": {
+          "version": "3.53.4",
+          "source": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+        }
+      },
+      "disposable": {
+        "idempotency": true,
+        "backupWorker": true,
+        "reopen": true,
+        "closureVerified": true
+      },
+      "resources": {
+        "elapsedMs": 391,
+        "maximumCombinedRssBytes": 156225536,
+        "stdoutBytes": 861,
+        "stderrBytes": 0,
+        "physicalProcessSettled": true
+      },
+      "elapsedMs": 508,
+      "existingFinancialAccountRead": false,
+      "accountImported": false,
+      "liveMarketPaperTrading": false,
+      "providerRequests": 0,
+      "observerChanged": false,
+      "serviceChanges": false,
+      "newSoftwareInstalled": false
+    }
+  ]
+}
