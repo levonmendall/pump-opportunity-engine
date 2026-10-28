@@ -1,6 +1,7 @@
 /** Original-account operator control. Callbacks use the runtime's existing
  * financial owner; this listener never opens a ledger or a TCP endpoint. */
-import {chmodSync,existsSync,lstatSync,realpathSync,unlinkSync} from 'node:fs';
+import {chmodSync,existsSync,linkSync,lstatSync,realpathSync,unlinkSync} from 'node:fs';
+import {randomUUID} from 'node:crypto';
 import {createConnection,createServer,type Socket} from 'node:net';
 import {dirname,resolve} from 'node:path';
 
@@ -72,9 +73,27 @@ export async function serveNativeAccountControl(options:NativeAccountControlOpti
   return {close(){
     if(closing)return closing;
     for(const socket of clients)socket.destroy();
+    // libuv unlinks the bound pathname itself, before the close callback. A
+    // post-close inode check alone cannot protect a replacement at that path.
+    // Retain its inode first and restore without overwriting a newer pathname.
+    let retained:{path:string;identity:{dev:number;ino:number}}|null=null;
+    try{
+      const current=lstatSync(path);
+      if(!same(own,current)&&!current.isDirectory()){
+        const recovery=path+'.preserved-'+randomUUID();linkSync(path,recovery);
+        const saved=lstatSync(recovery);need(same(current,saved),'NATIVE_CONTROL_REPLACEMENT_CHANGED');
+        retained={path:recovery,identity:saved};warn('NATIVE_CONTROL_REPLACEMENT_RETAINED');
+      }
+    }catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
     closing=new Promise<void>((done,reject)=>server.close(error=>{
       if(error){reject(error);return;}
-      try{if(existsSync(path)){const current=lstatSync(path);if(current.isSocket()&&current.uid===uid&&same(own,current))unlinkSync(path);}done();}catch(failure){reject(failure);}
+      try{
+        if(retained){
+          try{linkSync(retained.path,path);}catch(failure){if((failure as NodeJS.ErrnoException).code!=='EEXIST')throw failure;}
+          const current=lstatSync(path);if(same(current,retained.identity))unlinkSync(retained.path);else warn('NATIVE_CONTROL_REPLACEMENT_RECOVERY_FILE_RETAINED');
+        }else if(existsSync(path)){const current=lstatSync(path);if(current.isSocket()&&current.uid===uid&&same(own,current))unlinkSync(path);}
+        done();
+      }catch(failure){reject(failure);}
     }));return closing;
   }};
 }

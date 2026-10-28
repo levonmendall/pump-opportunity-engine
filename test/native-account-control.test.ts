@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {chmodSync,existsSync,mkdtempSync,readFileSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
+import {chmodSync,existsSync,mkdtempSync,readFileSync,readdirSync,rmSync,symlinkSync,unlinkSync,writeFileSync} from 'node:fs';
 import {createConnection,createServer} from 'node:net';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -62,4 +62,14 @@ test('owner callback failures disclose neither secrets nor a successful operatio
  const server=await serveNativeAccountControl(f.options);
  try{const answer=await raw(f.path,'{"command":"pause"}\n');assert.equal(answer.includes(secret),false);assert.match(answer,/unavailable/);assert.equal(f.warnings.at(-1),'NATIVE_CONTROL_REQUEST_UNAVAILABLE');}
  finally{await server.close();f.remove();}
+});
+
+test('native socket close retains a file that replaced its pathname',async()=>{
+ const f=fixture(),server=await serveNativeAccountControl(f.options);
+ try{
+  unlinkSync(f.path);writeFileSync(f.path,'retained-replacement',{mode:0o600});
+  await server.close();assert.equal(readFileSync(f.path,'utf8'),'retained-replacement');
+  assert.deepEqual(readdirSync(f.directory),['control.sock']);
+  assert.ok(f.warnings.includes('NATIVE_CONTROL_REPLACEMENT_RETAINED'));
+ }finally{await server.close();f.remove();}
 });
