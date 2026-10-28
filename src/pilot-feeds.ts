@@ -16,6 +16,7 @@ import type {ComponentKind,ComponentOperation} from './component-budget.js';
 import type {PilotRpcCallOptions} from './pilot-rpc.js';
 
 const MIB=1024*1024,DISCOVERY='wss://pumpportal.fun/api/data',BACKOFF=[2000,5000,10000,20000,40000,60000],CANDIDATE_MS=180000;
+export const PILOT_FEED_MAXIMUM_RECORDED_BYTES=16*MIB;
 type FeedName='discovery'|'pumpapi';
 export type PilotFeedControl={operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>;accountControlBytes(bytes:number):void;noteThrottle(retryAfter:string|null,at?:number):number};
 export type PilotFeedRpc={call<T>(method:string,params:unknown[],signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>};
@@ -54,7 +55,7 @@ export class PilotFeeds {
   constructor(private readonly options:PilotFeedsOptions,private readonly dependencies:PilotFeedDependencies={}){
     this.now=dependencies.now??Date.now;this.mono=dependencies.monotonic??(()=>performance.now());this.timer=dependencies.setTimer??((cb,ms)=>setTimeout(cb,ms));this.cancel=dependencies.clearTimer??(id=>clearTimeout(id as ReturnType<typeof setTimeout>));this.startedAt=this.now();this.startedMono=this.mono();
     this.duration=options.durationMs??1800000;this.pumpLimit=options.maxPumpApiBytes??1024*MIB;this.discoveryLimit=options.maxDiscoveryBytes??5*MIB;this.recordLimit=options.maximumRecordedBytes??6*MIB;
-    need(Number.isSafeInteger(this.duration)&&this.duration>0&&this.duration<=1800000&&Number.isSafeInteger(this.pumpLimit)&&this.pumpLimit>=4*MIB&&this.pumpLimit<=1024*MIB&&Number.isSafeInteger(this.discoveryLimit)&&this.discoveryLimit>=256*1024&&this.discoveryLimit<=5*MIB&&Number.isSafeInteger(this.recordLimit)&&this.recordLimit>=64*1024&&this.recordLimit<=10*MIB&&Number.isSafeInteger(options.maximumCandidates??1)&&(options.maximumCandidates??1)>=1&&(options.maximumCandidates??1)<=20&&['curve','user'].includes(options.amountConvention),'PILOT_FEED_INVALID_LIMITS');
+    need(Number.isSafeInteger(this.duration)&&this.duration>0&&this.duration<=1800000&&Number.isSafeInteger(this.pumpLimit)&&this.pumpLimit>=4*MIB&&this.pumpLimit<=1024*MIB&&Number.isSafeInteger(this.discoveryLimit)&&this.discoveryLimit>=256*1024&&this.discoveryLimit<=5*MIB&&Number.isSafeInteger(this.recordLimit)&&this.recordLimit>=64*1024&&this.recordLimit<=PILOT_FEED_MAXIMUM_RECORDED_BYTES&&Number.isSafeInteger(options.maximumCandidates??1)&&(options.maximumCandidates??1)>=1&&(options.maximumCandidates??1)<=20&&['curve','user'].includes(options.amountConvention),'PILOT_FEED_INVALID_LIMITS');
     this.maximumCandidates=options.maximumCandidates??1;
     this.amountConvention=options.amountConvention;
     this.scheduleWatch();

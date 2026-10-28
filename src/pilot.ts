@@ -11,7 +11,7 @@ import {PilotMarket} from './pilot-market.js';
 import {SelectionRejections} from './selection-rejections.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';
 import {PilotRpc} from './pilot-rpc.js';
-import {PilotFeeds} from './pilot-feeds.js';
+import {PilotFeeds,PILOT_FEED_MAXIMUM_RECORDED_BYTES} from './pilot-feeds.js';
 import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256,PILOT_VERSION,CONCURRENT_PILOTS,type PilotBinding} from './pilot-contract.js';
 import {chooseProtectedResearchWork,type ResearchJob} from './research-dispatch.js';
 import {fetchPublicUsdPrice} from './valuation.js';
@@ -26,7 +26,7 @@ import type {Snapshot} from './reporting.js';
 import {OBSERVATION_AGE_POLICY,entryAgeEligible,observationAgeEligible,observationExpiryAt,observationRunway} from './observation-age.js';
 
 const MIB=1024*1024;
-export const PILOT_EVIDENCE_LIMITS=Object.freeze({eventHardBytes:32*MIB,eventSoftBytes:24*MIB,eventStopBytes:31*MIB,feedHardBytes:16*MIB,feedSoftBytes:12*MIB});
+export const PILOT_EVIDENCE_LIMITS=Object.freeze({eventHardBytes:32*MIB,eventSoftBytes:24*MIB,eventStopBytes:31*MIB,feedHardBytes:PILOT_FEED_MAXIMUM_RECORDED_BYTES,feedSoftBytes:12*MIB});
 /** Safe default: PAPER execution requires an explicit mode selection. */
 export const PILOT_RUN_MODE='candidate-evaluation' as const;
 export const PILOT_MODE_VERSION='isolated-paper-mode-v1' as const;
