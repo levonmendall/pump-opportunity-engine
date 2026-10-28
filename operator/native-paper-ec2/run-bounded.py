@@ -35,8 +35,8 @@ CONTRACT = 'confirmed-program-ordinary-flow-paper-v1'
 MIB = 1024 * 1024
 LIMITS = {'segmentSeconds': 1800, 'maximumSegments': 2, 'outerSeconds': 3840,
           'sourceHeapMiB': 192, 'sourceRssMiB': 512, 'sourceFileMiB': 40, 'sourceLogMiB': 8,
-          'sourceCpuSoftSeconds': 240, 'sourceCpuHardSeconds': 245,
-          'sourceEarlyStopCpuSeconds': 220, 'publisherRssMiB': 128,
+          'sourceCpuSoftSeconds': 480, 'sourceCpuHardSeconds': 485,
+          'sourceEarlyStopCpuSeconds': 420, 'publisherRssMiB': 128,
           'publisherCpuSeconds': 30, 'publisherMaximumRestarts': 2,
           'initialStatusSeconds': 30, 'initialReportingSeconds': 55, 'statusStaleSeconds': 90,
           'gracefulStopSeconds': 30, 'finalPublishSeconds': 12,
