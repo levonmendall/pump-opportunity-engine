@@ -1,0 +1,20 @@
+{
+  "baseCommit": "84cae65aa776b27f30814d61cfd0e66c716eb178",
+  "sourceSha256": "6aff1800b036670ad46cad15e1050ddbd8ca68ae3e2e23c97caaa7a352e28c8b",
+  "testSha256": "7b39451f216783413a3a3c828bd1ae95835217706f25f18b19ce095e948674b9",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/pilot-native-flow.test.ts",
+    "test/native-control-recovery.test.ts",
+    "test/native-candidate-runner.test.ts",
+    "test/native-research-profile.test.ts"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 4.867512872999669,
+  "endedAt": "2026-10-28T15:02:37.371788+00:00",
+  "logSha256": "547b8235fc8729e524304f879ed09d7e68a7b134d36346ed80172e0e9319adeb",
+  "classification": "OFFLINE_RETENTION_OBSERVABILITY_ONLY_NO_NETWORK_LEDGER_OR_PRODUCTION_ACCESS"
+}
