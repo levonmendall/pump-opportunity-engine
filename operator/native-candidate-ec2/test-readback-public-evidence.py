@@ -165,7 +165,7 @@ class ManifestAndIntegrity(unittest.TestCase):
 
     def test_closed_public_creator_extras_are_accepted_but_arbitrary_metadata_is_not(self):
         with fixture() as f:
-            f["manifest"].update({"source": {"commit": "f" * 40, "sha256": "e" * 64}, "runtimeOutcome": {"classification": "fatal-source-stop"}, "uncompressedSelectedBytes": 1000, "selectedEvidenceBytes": 500, "indexSha256": "a" * 64, "rawSelectedEvidenceRetained": True, "compressionLevel": 6, "costMeaning": "SYNTHETIC offline fixture only", "elapsedMs": 10, "cpuMs": 5})
+            f["manifest"].update({"source": {"commit": "f" * 40, "sha256": "e" * 64}, "runtimeOutcome": {"classification": "fatal-source-stop"}, "uncompressedSelectedBytes": 1000, "selectedEvidenceBytes": 500, "indexSha256": "a" * 64, "rawSelectedEvidenceRetained": True, "compressionLevel": 6, "costMeaning": "SYNTHETIC offline fixture only", "elapsedMs": 10, "cpuMs": 5, "resourceBounds": {"cpuSeconds": 120, "maximumRssMiB": 256, "nice": 10, "remainingOuterDeadlineIsBinding": True}})
             f["write_manifest"]()
             _, _, rows = stream(f)
             self.assertTrue(rows[-1]["complete"])
@@ -174,6 +174,14 @@ class ManifestAndIntegrity(unittest.TestCase):
             f["write_manifest"]()
             with self.assertRaisesRegex(module.EvidenceReadbackError, "MANIFEST_FIELDS"):
                 stream(f)
+
+    def test_public_resource_bounds_are_closed_finite_and_cannot_claim_unknown_controls(self):
+        for patch_bounds in [{"cpuSeconds": 121}, {"cpuSeconds": True}, {"maximumRssMiB": 257}, {"nice": 9}, {"nice": 20}, {"remainingOuterDeadlineIsBinding": False}, {"arbitraryPrivateField": "DO_NOT_PRINT"}]:
+            with self.subTest(bounds=patch_bounds), fixture() as f:
+                f["manifest"]["resourceBounds"] = {"cpuSeconds": 120, "maximumRssMiB": 256, "nice": 10, "remainingOuterDeadlineIsBinding": True, **patch_bounds}
+                f["write_manifest"]()
+                with self.assertRaisesRegex(module.EvidenceReadbackError, "RESOURCE_BOUNDS"):
+                    stream(f)
         for patch_archive in [{"file": "../PRIVATE"}, {"bytes": 256 * module.MIB + 1}, {"sha256": "not-a-hash"}, {"stat": {"device": 1}}]:
             with self.subTest(archive=patch_archive), fixture() as f:
                 f["manifest"]["archive"].update(patch_archive)
@@ -256,6 +264,9 @@ class ActualProducerConsumerComposition(unittest.TestCase):
             finally:
                 creator.regular = original_regular
             self.assertTrue(created["complete"])
+            self.assertEqual(created["resourceBounds"]["cpuSeconds"], 120)
+            self.assertEqual(created["resourceBounds"]["maximumRssMiB"], 256)
+            self.assertTrue(created["resourceBounds"]["remainingOuterDeadlineIsBinding"])
             self.assertEqual(created["runtimeOutcome"]["classification"], "fatal-source-stop")
             source = (root / "export/selected-evidence.tar.gz").read_bytes()
             self.assertEqual(hashlib.sha256(source).hexdigest(), created["archive"]["sha256"])

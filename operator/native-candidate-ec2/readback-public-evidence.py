@@ -118,7 +118,7 @@ def decode_manifest(raw, run_id, attempt):
     except (ValueError, UnicodeError):
         raise EvidenceReadbackError("READBACK_MANIFEST_INVALID") from None
     fields = {"schemaVersion", "classification", "complete", "format", "researchProfile", "githubRunId", "githubRunAttempt", "accountId", "inceptionAt", "archive", "credentialsIncluded", "financialFilesIncluded"}
-    public_extras = {"source", "runtimeOutcome", "uncompressedSelectedBytes", "selectedEvidenceBytes", "indexSha256", "rawSelectedEvidenceRetained", "compressionLevel", "costMeaning", "elapsedMs", "cpuMs"}
+    public_extras = {"source", "runtimeOutcome", "uncompressedSelectedBytes", "selectedEvidenceBytes", "indexSha256", "rawSelectedEvidenceRetained", "compressionLevel", "costMeaning", "elapsedMs", "cpuMs", "resourceBounds"}
     require(isinstance(value, dict) and fields <= set(value) and set(value) <= fields | public_extras, "READBACK_MANIFEST_FIELDS_INVALID")
     require(type(value["schemaVersion"]) is int and value["schemaVersion"] == 1 and value["classification"] == "candidate-only-public-evidence" and value["complete"] is True and value["format"] == "tar+gzip" and value["researchProfile"] == PROFILE, "READBACK_PUBLIC_CANDIDATE_ARCHIVE_REQUIRED")
     require(value["githubRunId"] == run_id and value["githubRunAttempt"] == attempt and value["accountId"] == ACCOUNT_ID and type(value["inceptionAt"]) is int and value["inceptionAt"] == INCEPTION_AT, "READBACK_SOURCE_BINDING_MISMATCH")
@@ -147,6 +147,9 @@ def decode_manifest(raw, run_id, attempt):
         require(type(value["compressionLevel"]) is int and 0 <= value["compressionLevel"] <= 9, "READBACK_PUBLIC_COMPRESSION_INVALID")
     if "costMeaning" in value:
         require(isinstance(value["costMeaning"], str) and len(value["costMeaning"]) <= 1024, "READBACK_PUBLIC_COST_MEANING_INVALID")
+    if "resourceBounds" in value:
+        bounds = value["resourceBounds"]
+        require(isinstance(bounds, dict) and set(bounds) == {"cpuSeconds", "maximumRssMiB", "nice", "remainingOuterDeadlineIsBinding"} and type(bounds["cpuSeconds"]) is int and bounds["cpuSeconds"] in [30, 120] and type(bounds["maximumRssMiB"]) is int and bounds["maximumRssMiB"] == 256 and type(bounds["nice"]) is int and 10 <= bounds["nice"] <= 19 and bounds["remainingOuterDeadlineIsBinding"] is True, "READBACK_PUBLIC_RESOURCE_BOUNDS_INVALID")
     return value
 
 
