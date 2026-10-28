@@ -399,23 +399,23 @@ test('compact command view keeps the original portfolio, permanent P&L chart and
   for(const id of ['experimental-portfolio','experimental-portfolio-cards','pilot-telemetry-panel','pilot-funnel','pilot-watch','pilot-decisions','pilotConnection']){
     assert.doesNotMatch(html,new RegExp('id="'+id+'"'),'separate experimental panel removed: '+id);
   }
-  assert.match(html,/function compactCommandView\\(\\)/);
-  assert.match(html,/panelFold\\('#reportingConnections'/);
-  assert.doesNotMatch(html,/panelFold\\('#performance'/,'P&L graph always visible');
-  assert.match(html,/panelFold\\('section\\[aria-labelledby="decisionsTitle"\\]'/);
-  assert.match(html,/document\\.createElement\\('details'\\)/);
-  assert.match(html,/document\\.createElement\\('summary'\\)/);
+  assert.match(html,/function compactCommandView\(\)/);
+  assert.match(html,/panelFold\('#reportingConnections'/);
+  assert.doesNotMatch(html,/panelFold\('#performance'/,'P&L graph always visible');
+  assert.match(html,/panelFold\('section\[aria-labelledby="decisionsTitle"\]'/);
+  assert.match(html,/document\.createElement\('details'\)/);
+  assert.match(html,/document\.createElement\('summary'\)/);
   assert.match(html,/aria-expanded/);
-  assert.match(html,/body\\.poe-compact-view #portfolio:not\\(\\.compact-expanded\\) #cards>\\.stat:nth-child\\(n\\+7\\)/);
+  assert.match(html,/body\.poe-compact-view #portfolio:not\(\.compact-expanded\) #cards>\.stat:nth-child\(n\+7\)/);
   assert.doesNotMatch(html,/#experimental-portfolio/);
-  assert.match(html,/artworkCaption\\?\\.classList\\.contains\\('holo-index'\\)/);
+  assert.match(html,/artworkCaption\?\.classList\.contains\('holo-index'\)/);
   assert.match(html,/A new dimension/);
   assert.match(html,/class="hero-visual holo-visual"/);
   assert.match(html,/class="holo-object"/);
   assert.match(html,/class="holo-index"/);
   assert.match(html,/LIVE EXECUTION DISABLED/);
   assert.match(html,/financial source|FINANCIAL SOURCE OF TRUTH/i);
-  const scripts=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];
+  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   assert.equal(scripts.length,2);
   for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
 });
