@@ -262,3 +262,54 @@ test('unsupported mint extensions keep the exact refusal and isolate the affecte
   assert.equal(result.unavailable[name],'UNMODELED_BASE_EXTENSION:TransferFeeConfig');assert.equal(Object.keys(result.quotes).length,2);
   await assert.rejects(p.quote(f.requests[0]!),/UNMODELED_BASE_EXTENSION:TransferFeeConfig/);
 }));
+
+/** Six real historical pool captures combined into an explicitly SYNTHETIC
+ * common bank/context/config/Clock. This proves decoder/batching behavior only. */
+function observationFixture(){
+  const sources=['evidence/integration-2026-10-26T19-42-16.130Z.ndjson','evidence/integration-2026-10-26T19-57-35.882Z.ndjson','evidence/integration-2026-10-26T23-32-41.255Z.ndjson','evidence/high-activity-20261028/native-flow-20261028004053347/events.ndjson','evidence/high-activity-20261028/native-flow-20261028012322144/events.ndjson','evidence/free-data-20261027/discovery/evidence/integration-2026-10-27T01-15-44.429Z.ndjson'];
+  const states=sources.map(path=>{const rows=readFileSync(path,'utf8').trim().split('\n').map(line=>JSON.parse(line));return copy(rows.find(r=>r.kind==='pool-state').data);});
+  const slot=Math.max(...states.map(s=>s.context.slot)),unix=Math.floor(Math.max(...states.map(s=>Date.parse(s.receivedAt)))/1000),accounts=new Map<string,PoolWireAccount|null>();
+  for(const s of states)for(let i=0;i<7;i++)if(!accounts.has(s.addresses[i]))accounts.set(s.addresses[i],copy(s.value[i]));
+  const raw=Buffer.alloc(40);raw.writeBigUInt64LE(BigInt(slot));raw.writeBigInt64LE(BigInt(unix),32);const clock:PoolWireAccount={owner:'Sysvar1111111111111111111111111111111111111',data:[raw.toString('base64'),'base64'],lamports:1169280,executable:false,rentEpoch:0};accounts.set(SYSVAR_CLOCK_PUBKEY.toBase58(),clock);
+  const requests=states.map(s=>({mint:new PublicKey(s.addresses[3]),minSlot:s.context.slot}));assert.equal(new Set(requests.map(r=>r.mint.toBase58())).size,6);
+  const context={slot},calls:Array<{method:string;params:unknown[]}>=[],records:Array<{kind:string;data:any}>=[],rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{calls.push({method,params:copy(params)});assert.equal(method,'getMultipleAccounts');const addresses=params[0] as string[];return {context:copy(context),value:addresses.map(a=>copy(accounts.get(a)??null))} as T;}},rec={record(kind:string,data:unknown){records.push({kind,data:copy(data)});}};
+  return {states,accounts,clock,context,requests,calls,records,rpc,rec,unix};
+}
+async function withObservationTime<T>(fn:(f:ReturnType<typeof observationFixture>)=>Promise<T>){const f=observationFixture(),realNow=Date.now;Date.now=()=>f.unix*1000+100;try{return await fn(f);}finally{Date.now=realNow;}}
+
+test('six distinct observation pools use2cold/1steady shared Clock reads without hypothetical trading quotes',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),cold=await p.validateMany(f.requests);assert.equal(f.calls.length,2);assert.equal((f.calls[0]!.params[0] as string[]).length,6);assert.equal((f.calls[1]!.params[0] as string[]).length,28);
+  const before=f.calls.length,steady=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal((f.calls.at(-1)!.params[0] as string[]).length,28);
+  for(const result of [cold,steady]){assert.deepEqual(result.unavailable,{});assert.equal(Object.keys(result.validations).length,6);for(const r of f.requests){const support=result.validations[r.mint.toBase58()]!;assert.equal(support.sourceSlot,f.context.slot);assert.equal(support.summary.clockSlot,f.context.slot);assert.equal(support.summary.receivedAt,result.context!.receivedAt);assert.equal(support.at,Date.now());assert.match(support.evidence,/^research-clock-observation-support:[a-f0-9]{64}$/);assert.equal(Object.hasOwn(support.summary,'sell'),false);assert.equal(Object.hasOwn(support.summary,'buy'),false);}}
+  assert.equal(f.records.some(r=>r.kind==='research-clock-position-sell-quote'),false);assert.equal(p.usage().cachePoolCapacity,9);assert.equal(p.usage().dependencyAccountCapacity,40);
+}));
+
+test('observation support does not depend on whether a one-base-unit hypothetical sell produces output',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await assert.rejects(p.quote({...f.request,fullBaseUnits:1n}),/ZERO_POSITION_SELL_OUTPUT/);const result=await p.validateMany([{mint:f.request.mint,minSlot:f.request.minSlot}]);assert.equal(Object.keys(result.validations).length,1);assert.deepEqual(result.unavailable,{});
+}));
+
+test('alternating six observation pools and three holdings preserves shared links without pruning other observation identities',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests);const holdings=f.requests.slice(0,3).map(r=>({...r,fullBaseUnits:1_000_000_000n}));let before=f.calls.length;const quoted=await p.quoteMany(holdings);assert.equal(f.calls.length-before,1);assert.equal(Object.keys(quoted.quotes).length,3);assert.equal(Object.keys(p.usage().cachedPoolSlots).length,6);
+  before=f.calls.length;const supported=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal(Object.keys(supported.validations).length,6);assert.equal(Object.keys(p.usage().highestHoldingSlots).length,3);assert.equal(Object.keys(p.usage().highestObservationSlots).length,6);
+  before=f.calls.length;await assert.rejects(p.quoteMany([...holdings,holdings[0]!] ),/POSITION_BATCH_CAPACITY/);assert.equal(f.calls.length,before);
+}));
+
+test('observation changed links and missing vaults isolate affected pools and rediscover links in one recovery batch',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests);const pool=f.states[0]!.addresses[0],original=copy(f.accounts.get(pool))!,changed=copy(original),data=Buffer.from(changed.data[0],'base64');data[175]=data[175]!^1;changed.data[0]=data.toString('base64');f.accounts.set(pool,changed);const vault=f.states[1]!.addresses[6],oldVault=copy(f.accounts.get(vault));f.accounts.set(vault,null);
+  let before=f.calls.length;const failed=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal(failed.unavailable[f.requests[0]!.mint.toBase58()],'POOL_LINKS_CHANGED');assert.equal(failed.unavailable[f.requests[1]!.mint.toBase58()],'MISSING_ACCOUNT');assert.equal(Object.keys(failed.validations).length,4);assert.equal(Object.keys(p.usage().cachedPoolSlots).length,4);
+  f.accounts.set(pool,original);f.accounts.set(vault,oldVault??null);before=f.calls.length;const recovered=await p.validateMany(f.requests);assert.equal(f.calls.length-before,2);assert.equal((f.calls[before]!.params[0] as string[]).length,2);assert.equal(Object.keys(recovered.validations).length,6);
+}));
+
+test('observation common Clock/source/slot faults and slow recording refuse the whole batch without refreshing timestamps',async()=>{
+  for(const fault of ['clock','slot','age','recording'])await withObservationTime(async f=>{let now=Date.now();Date.now=()=>now;const rec={record(kind:string,data:unknown){f.rec.record(kind,data);if(fault==='recording'&&kind==='research-clock-observation-support')now+=400;}};const p=new ResearchClockPositionPricer(f.rpc,rec);
+    if(fault==='recording'){await assert.rejects(p.validateMany(f.requests),/SUPPORT_AGE_AT_USE/);assert.deepEqual(p.usage().cachedPoolSlots,{});return;}
+    await p.validateMany(f.requests);const floors=copy(p.usage().highestObservationSlots),highest=p.usage().highestVerifiedSlot;if(fault==='clock')f.clock.owner=PublicKey.default.toBase58();if(fault==='slot')f.context.slot--;if(fault==='age')now+=31000;
+    await assert.rejects(p.validateMany(f.requests),/RESEARCH_CLOCK_/);assert.deepEqual(p.usage().cachedPoolSlots,{});assert.deepEqual(p.usage().highestObservationSlots,floors);assert.equal(p.usage().highestVerifiedSlot,highest);
+  });
+});
+
+test('observation invalid cardinality, duplicate identities, minimum slots, aborts and closed admission make no request',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await assert.rejects(p.validateMany([]),/OBSERVATION_BATCH_CAPACITY/);await assert.rejects(p.validateMany([...f.requests,f.requests[0]!] ),/OBSERVATION_BATCH_CAPACITY/);await assert.rejects(p.validateMany([f.requests[0]!,f.requests[0]!] ),/DUPLICATE_OBSERVATION_MINT/);await assert.rejects(p.validateMany([{...f.requests[0]!,minSlot:-1}]),/INVALID_MINIMUM_SLOT/);const aborted=new AbortController();aborted.abort();await assert.rejects(p.validateMany(f.requests,aborted.signal));await assert.rejects(p.validateMany(f.requests,undefined,{latestStartAt:Date.now()+1,admissionOpen:()=>false}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,0);
+}));
+
+test('an observation refusal before source admission does not evict validated held dependency links',async()=>withObservationTime(async f=>{const p=new ResearchClockPositionPricer(f.rpc,f.rec),held=f.requests.slice(0,3).map(r=>({...r,fullBaseUnits:1_000_000_000n}));await p.validateMany(f.requests);await p.quoteMany(held);const before=f.calls.length,cache=copy(p.usage().cachedPoolSlots);await assert.rejects(p.validateMany(f.requests,undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>false}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,before);assert.deepEqual(p.usage().cachedPoolSlots,cache);await p.quoteMany(held);assert.equal(f.calls.length-before,1);}));
