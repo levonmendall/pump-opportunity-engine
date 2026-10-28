@@ -1,0 +1,1909 @@
+{
+  "source": {
+    "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+    "sha256": "02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c",
+    "kind": "immutable-startup-native-paper-bundle-closure",
+    "metadataSha256": "eff3158aff0f77bf538e08ffc570774ee0baa245b081208bc7e98988cff41519",
+    "sqliteVersion": "13.0.3",
+    "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "backupWorkerSha256": "41ca5f1d72ea620f8079150a8508c22696ba08876c96cf7a6531f8dbd5c149f5",
+    "packageLockSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+  },
+  "archiveScope": "allowlisted metadata; no raw full market replay",
+  "unavailableAuditTargets": 20,
+  "expiredTargetsSubsetOfUnavailable": 14,
+  "additionalExpiredTargets": 0,
+  "selectedWithoutSessionExpiredTargets": 0,
+  "thirdFailureRetirementsWithoutLaterExpiredTarget": 6,
+  "failedPageNumbers": {
+    "1": 18,
+    "2": 2
+  },
+  "zeroCapturedNotificationTargets": 18,
+  "lastDispatchReadyCandidates": {
+    "1": 20
+  },
+  "failedHeadersAbsent": 20,
+  "failedResponseBytes": 0,
+  "firstReadyToFirstPhysicalMs": {
+    "count": 20,
+    "minimum": 1795,
+    "p50": 1836,
+    "p95": 2441,
+    "maximum": 2445
+  },
+  "failedPhysicalEnqueueToStartMs": {
+    "count": 20,
+    "minimum": 7,
+    "p50": 7,
+    "p95": 8,
+    "maximum": 9
+  },
+  "timeoutCallbackLatenessMs": {
+    "count": 20,
+    "minimum": 0,
+    "p50": 0.16172000009100884,
+    "p95": 0.8814799999963725,
+    "maximum": 1.2309510000050068
+  },
+  "settlementAfterTimeoutMs": {
+    "count": 20,
+    "minimum": 23,
+    "p50": 23,
+    "p95": 25,
+    "maximum": 25
+  },
+  "unusedDecisionRunwayAtFailureMs": {
+    "count": 20,
+    "minimum": 6012,
+    "p50": 6403,
+    "p95": 6655,
+    "maximum": 6664
+  },
+  "cases": [
+    {
+      "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+      "pool": "DS83fGxDTfGRKeZp4mW7tMVrzxgKGC8CLZJgNzyRqznB",
+      "windowEndAt": 1793221760000,
+      "windowEndUtc": "2026-10-28T21:09:20.000+00:00",
+      "decisionDeadlineAt": 1793221769999,
+      "firstReadyAt": 1793221760013,
+      "logicalSessionOpenedAt": 1793221761815,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793221763344,
+      "unusedDeadlineRunwayAtFailureMs": 6655,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8017,
+          "enqueuedAt": 1793221761816,
+          "physicalStartedAt": 1793221761824,
+          "physicalSettledAt": 1793221763349,
+          "enqueuedToStartMs": 8,
+          "httpRequestedAt": 1793221761824,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1507.1300559999945,
+          "timedOut": true,
+          "timeoutAt": 1793221763324,
+          "timeoutCallbackLatenessMs": 0.8814799999963725,
+          "settlementAfterTimeoutMs": 25,
+          "refs": {
+            "start": {
+              "file": "events-001.ndjson",
+              "line": 758,
+              "sha256": "c6baed9feadc7cf29b0cdba8dee46a6785b095d6f450792be49f61445169ce72"
+            },
+            "http": {
+              "file": "events-001.ndjson",
+              "line": 762,
+              "sha256": "39b3b487fbc802bbea75606d306d6f76461bed40b6665834a6c89984177ed301"
+            },
+            "settlement": {
+              "file": "events-001.ndjson",
+              "line": 765,
+              "sha256": "33f246000e53ba00a632772a0201c564c34f4d3ed702dc3be9887aa24ff4a3c2"
+            },
+            "timeout": {
+              "file": "events-001.ndjson",
+              "line": 761,
+              "sha256": "c4a2f68ec2a456bfb2e431ddd34e15c64671713b2c18cca1c9893b32838ebe4c"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 3,
+        "ceiling-backoff": 23,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-001.ndjson",
+          "line": 767,
+          "sha256": "f9ae4dfa6c77fc099e1cff71716b30c60380d8a2435210cff927d3e098bf9e22"
+        },
+        "summary": {
+          "file": "events-001.ndjson",
+          "line": 766,
+          "sha256": "9e9140978f0b5bdc05d71bb3afb770e904fd8ff9e751fa21e3ec0b056ac1aec1"
+        },
+        "expired": {
+          "file": "events-001.ndjson",
+          "line": 884,
+          "sha256": "e33ba0b8ffb88c045495f60089a5c5af24a4ee321ab911c79c6ebd440a5333d9"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+      "pool": "DS83fGxDTfGRKeZp4mW7tMVrzxgKGC8CLZJgNzyRqznB",
+      "windowEndAt": 1793221770000,
+      "windowEndUtc": "2026-10-28T21:09:30.000+00:00",
+      "decisionDeadlineAt": 1793221779999,
+      "firstReadyAt": 1793221770031,
+      "logicalSessionOpenedAt": 1793221771840,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793221773366,
+      "unusedDeadlineRunwayAtFailureMs": 6633,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8029,
+          "enqueuedAt": 1793221771841,
+          "physicalStartedAt": 1793221771848,
+          "physicalSettledAt": 1793221773371,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793221771848,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1506.0413289999997,
+          "timedOut": true,
+          "timeoutAt": 1793221773348,
+          "timeoutCallbackLatenessMs": 0.3256880000117235,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-001.ndjson",
+              "line": 922,
+              "sha256": "7ed9709fdb2d66201637e01d7f53e044b1241299c3732ad9dd5ae2ae0a2dc954"
+            },
+            "http": {
+              "file": "events-001.ndjson",
+              "line": 927,
+              "sha256": "4b7bd5c5d936a0b1143ade4588caae320aa7ea7d15a841cfa4c6432c77f42193"
+            },
+            "settlement": {
+              "file": "events-001.ndjson",
+              "line": 930,
+              "sha256": "80feff89d9db463ad57c6f20433e0c3480cad50541bf3a0e2df9bc02784eccb6"
+            },
+            "timeout": {
+              "file": "events-001.ndjson",
+              "line": 926,
+              "sha256": "ebf5597b70215030f0dfe7349e29575565793c86a39f1d447feb002aa00f1245"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 3,
+        "ceiling-backoff": 23,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-001.ndjson",
+          "line": 932,
+          "sha256": "a12c913e986d909867201448215789b307599fe40767e098db4a294216b7cc2d"
+        },
+        "summary": {
+          "file": "events-001.ndjson",
+          "line": 931,
+          "sha256": "3d1c9c5242eb238e21c531f9c63c216248790d553c3dd8c67e671a10310605ec"
+        },
+        "expired": {
+          "file": "events-001.ndjson",
+          "line": 950,
+          "sha256": "46b4824943cfedafcf27e1dccfbf8f388a15634c3a59c1008cfca0472f847182"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+      "pool": "DS83fGxDTfGRKeZp4mW7tMVrzxgKGC8CLZJgNzyRqznB",
+      "windowEndAt": 1793221780000,
+      "windowEndUtc": "2026-10-28T21:09:40.000+00:00",
+      "decisionDeadlineAt": 1793221789999,
+      "firstReadyAt": 1793221780044,
+      "logicalSessionOpenedAt": 1793221781852,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793221783378,
+      "unusedDeadlineRunwayAtFailureMs": 6621,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": false,
+      "retiredImmediatelyAfterThirdFailure": true,
+      "retiredAt": 1793221783384,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8033,
+          "enqueuedAt": 1793221781853,
+          "physicalStartedAt": 1793221781860,
+          "physicalSettledAt": 1793221783383,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793221781860,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1505.8327540000028,
+          "timedOut": true,
+          "timeoutAt": 1793221783360,
+          "timeoutCallbackLatenessMs": 0.407881000006455,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-001.ndjson",
+              "line": 986,
+              "sha256": "52e98704f1e011a8c1afdc033acddb1c5041b09139bf4368daca6a24e29ca328"
+            },
+            "http": {
+              "file": "events-001.ndjson",
+              "line": 990,
+              "sha256": "cd6556c8b5a388e86f04ef5af358f831e4253ce6c1f72732a6c4227ee5b2ecad"
+            },
+            "settlement": {
+              "file": "events-001.ndjson",
+              "line": 993,
+              "sha256": "f3c875c6535825ea472a88fed145b9ccfd1989e0aaa1ca0678d5eb435c04d822"
+            },
+            "timeout": {
+              "file": "events-001.ndjson",
+              "line": 989,
+              "sha256": "49fd502b3229ca476894b4b0d692bc71c9aab4cf52eaceaa327122c830a3ccd3"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 3,
+        "ceiling-backoff": 23,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-001.ndjson",
+          "line": 995,
+          "sha256": "eef6b0c3ba1784a23ccae1999f217b550d7656e008ea64da89a07f74110ca7e4"
+        },
+        "summary": {
+          "file": "events-001.ndjson",
+          "line": 994,
+          "sha256": "11856fdeaaef348d1b91a3850cd664251dae362d98fbefdab4fb419719aac172"
+        },
+        "expired": null,
+        "retired": {
+          "file": "events-001.ndjson",
+          "line": 999,
+          "sha256": "bc4bf3575dc031fad8e78db08efee83d4ae1e91afe6a8b5d208e31a8e537878c"
+        }
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "windowEndAt": 1793222220000,
+      "windowEndUtc": "2026-10-28T21:17:00.000+00:00",
+      "decisionDeadlineAt": 1793222229999,
+      "firstReadyAt": 1793222220022,
+      "logicalSessionOpenedAt": 1793222221820,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222223345,
+      "unusedDeadlineRunwayAtFailureMs": 6654,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8183,
+          "enqueuedAt": 1793222221821,
+          "physicalStartedAt": 1793222221828,
+          "physicalSettledAt": 1793222223350,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222221828,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1505.3234339999035,
+          "timedOut": true,
+          "timeoutAt": 1793222223327,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 607,
+              "sha256": "ab07ab2aa4bc69dc6a59f73f268118d195f83de9a825902851c4ae28f35048b9"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 613,
+              "sha256": "0b9af304072db6718417e4ee8843805fa147248a71f3a53989a22b65421307e4"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 616,
+              "sha256": "41c0ad12658f94525a95089ec9863e5a27d0fd1066594c8d8c9573de42efdfec"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 612,
+              "sha256": "4af1b66d51010b8c415c94f0b522aa86eaea1e8db91fc5b1bdad829f300d868f"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 3,
+        "ceiling-backoff": 22,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 618,
+          "sha256": "266e553a07b807d333bfcd7d8dd797a7d4912adbac356edf4d04e682ef2e5281"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 617,
+          "sha256": "0d7e3214d5267b9883f659ed91b6eb7831afc7a85f33cb75e2ca4a1effc93cae"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 686,
+          "sha256": "ae304507adf7f26e65a45a02e1e53bc5d2c26ad5a4c9f60e92e18605a52c0414"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "windowEndAt": 1793222230000,
+      "windowEndUtc": "2026-10-28T21:17:10.000+00:00",
+      "decisionDeadlineAt": 1793222239999,
+      "firstReadyAt": 1793222230016,
+      "logicalSessionOpenedAt": 1793222232418,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222233942,
+      "unusedDeadlineRunwayAtFailureMs": 6057,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8193,
+          "enqueuedAt": 1793222232419,
+          "physicalStartedAt": 1793222232426,
+          "physicalSettledAt": 1793222233948,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222232426,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1504.7582180000609,
+          "timedOut": true,
+          "timeoutAt": 1793222233924,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 24,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 762,
+              "sha256": "08c9c195bb6db941c78839cee942bf209cd5e2a5d43368778f6240a7c40dc021"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 766,
+              "sha256": "88ea5554f1d0a48d9293433f6572e04e9dcd9e0326c5793e76a76bddf97d2e23"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 769,
+              "sha256": "d5951b95b46bbb632f6eafd97b571accc0b859a641743879ae7110e84d941e63"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 765,
+              "sha256": "87da4d4182ad71cd5ca9facc157102901a11faeaa235f1ff55b6b2597dec800d"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 5,
+        "ceiling-backoff": 21,
+        "peer-selected": 1,
+        "native-service-wait": 2,
+        "native-service-dispatch": 1,
+        "native-service-return": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 771,
+          "sha256": "bd04cb509fd8eda051eb55268e0e8c8ce0de481100bdb2f382445ec8f8c1471e"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 770,
+          "sha256": "2f28a785595157173aa4b64f85b25fe8b317f198815ea68417022906cde57ef6"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 812,
+          "sha256": "43118080a91772f3587ce3192173e5d8b5ec710c7a22f7b877ef7c1268798378"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "windowEndAt": 1793222240000,
+      "windowEndUtc": "2026-10-28T21:17:20.000+00:00",
+      "decisionDeadlineAt": 1793222249999,
+      "firstReadyAt": 1793222240047,
+      "logicalSessionOpenedAt": 1793222241852,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222243377,
+      "unusedDeadlineRunwayAtFailureMs": 6622,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": false,
+      "retiredImmediatelyAfterThirdFailure": true,
+      "retiredAt": 1793222243383,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8199,
+          "enqueuedAt": 1793222241853,
+          "physicalStartedAt": 1793222241860,
+          "physicalSettledAt": 1793222243383,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222241860,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1506.1357210000278,
+          "timedOut": true,
+          "timeoutAt": 1793222243359,
+          "timeoutCallbackLatenessMs": 0.32463299995288253,
+          "settlementAfterTimeoutMs": 24,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 850,
+              "sha256": "06d5a7b4c0a471dfac31289e6ce7f15ffbebced96875a6a66c3e223ff37200c0"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 852,
+              "sha256": "9c965306288272d4f58a385309cf67cc535b17a51ca91399f6feeebe9eccf9ab"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 855,
+              "sha256": "7b9e81c2ccb9693e36391ccc156421428d14c9b2c5128307fb07a2df2393df18"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 851,
+              "sha256": "c16b88263dc3557191072440bb955b0b074d315bdaa18e7d01ce3e7d92e2b913"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "ceiling-backoff": 23,
+        "rpc-gate-wait": 2,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 857,
+          "sha256": "9346bc6afe66d7356e05d65aa08b579b90119445d3376886c4bd04d447650dbb"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 856,
+          "sha256": "d054258f648733e69ee496ee9c7d55b42faef0dc55ddaf9402ae1d73f1d1661d"
+        },
+        "expired": null,
+        "retired": {
+          "file": "events-003.ndjson",
+          "line": 861,
+          "sha256": "8b6b82f2b4a3df1823cfe97cb201f5c9fe9563a864de023c0612460508e54c95"
+        }
+      }
+    },
+    {
+      "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+      "pool": "BL12FRAyNik2gu3n4iNCQzwLKHMn622BQbYtMjmT4mpS",
+      "windowEndAt": 1793222620000,
+      "windowEndUtc": "2026-10-28T21:23:40.000+00:00",
+      "decisionDeadlineAt": 1793222629999,
+      "firstReadyAt": 1793222620048,
+      "logicalSessionOpenedAt": 1793222622307,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222623833,
+      "unusedDeadlineRunwayAtFailureMs": 6166,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8338,
+          "enqueuedAt": 1793222622307,
+          "physicalStartedAt": 1793222622315,
+          "physicalSettledAt": 1793222623838,
+          "enqueuedToStartMs": 8,
+          "httpRequestedAt": 1793222622315,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1506.262566999998,
+          "timedOut": true,
+          "timeoutAt": 1793222623815,
+          "timeoutCallbackLatenessMs": 0.594941999996081,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 4428,
+              "sha256": "530ebcb6cb3584de075237a698c4fc5929b7f1aa15d08910b5db103daa2f7071"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 4496,
+              "sha256": "e1c9ca592a90c5b8838fe10533028f843709e974de3e96ee6ef5a46762586d75"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 4499,
+              "sha256": "31ca94f3f9f62167c53ac5698bc1f3d4d209385ba61262ccce712811bf1d013a"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 4495,
+              "sha256": "311bcb5a3f370e9493a35d07505a8aa0d4caae1048da6bb4ee3cae65e821b2f2"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "ceiling-backoff": 20,
+        "rpc-gate-wait": 4,
+        "prepare-native-runway": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 4501,
+          "sha256": "d4a435806ece717efa4dde27704ded0726916cc1cfaec0139d4019a77730c1a2"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 4500,
+          "sha256": "2b43857588dba66567e68dab8236f934f8b943c3bee32d1161f5a2615cf78b7c"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 4657,
+          "sha256": "ce8daf7ecd906a155dca104cb7cabbb5ef9d397c67490fa7d6774f816a013681"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+      "pool": "BL12FRAyNik2gu3n4iNCQzwLKHMn622BQbYtMjmT4mpS",
+      "windowEndAt": 1793222630000,
+      "windowEndUtc": "2026-10-28T21:23:50.000+00:00",
+      "decisionDeadlineAt": 1793222639999,
+      "firstReadyAt": 1793222630033,
+      "logicalSessionOpenedAt": 1793222632198,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222633723,
+      "unusedDeadlineRunwayAtFailureMs": 6276,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8342,
+          "enqueuedAt": 1793222632199,
+          "physicalStartedAt": 1793222632206,
+          "physicalSettledAt": 1793222633729,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222632206,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1505.849019000074,
+          "timedOut": true,
+          "timeoutAt": 1793222633706,
+          "timeoutCallbackLatenessMs": 0.2565239999676123,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 4727,
+              "sha256": "f3140ce9305e95bd2f352334bbf404843137850ffcd66b5fa4c2aac4a203d025"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 4757,
+              "sha256": "1d0e4c29016fcb9ece66561811b439c253252e546dfe8f824aca9aea3ab80a9f"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 4760,
+              "sha256": "eaf10b0127c7f3b747cbe8cb5fbe14ce479926237c8aae84219fa7980c1acc16"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 4756,
+              "sha256": "4a68a4335dbdc9e2ed96e240a7fe6567283962a443a0ab116a158cfa2dbf6efc"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "ceiling-backoff": 22,
+        "rpc-gate-wait": 5,
+        "prepare-native-runway": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 4762,
+          "sha256": "f83929eebc9a20a22ae043a37a33a480b766f39a94978c3f418751ae5ad35c6b"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 4761,
+          "sha256": "43a0f98818101fae9200664294c597c94b28c498c1b0e669f2440211946c7176"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 4925,
+          "sha256": "ec2e38e39d90bcd75bee1632a71bb525a414196f83cd2b559325c7e5e9044862"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+      "pool": "BL12FRAyNik2gu3n4iNCQzwLKHMn622BQbYtMjmT4mpS",
+      "windowEndAt": 1793222640000,
+      "windowEndUtc": "2026-10-28T21:24:00.000+00:00",
+      "decisionDeadlineAt": 1793222649999,
+      "firstReadyAt": 1793222640049,
+      "logicalSessionOpenedAt": 1793222642142,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222643667,
+      "unusedDeadlineRunwayAtFailureMs": 6332,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": false,
+      "retiredImmediatelyAfterThirdFailure": true,
+      "retiredAt": 1793222643673,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8346,
+          "enqueuedAt": 1793222642143,
+          "physicalStartedAt": 1793222642150,
+          "physicalSettledAt": 1793222643672,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222642150,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1505.5503439999884,
+          "timedOut": true,
+          "timeoutAt": 1793222643649,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 5015,
+              "sha256": "ec4d96e18992514a75c86ede9300f1a5e96be7d3c07ef1b79ed592e2153aa7a9"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 5033,
+              "sha256": "dd1ad9593b8f1492c2ce05571264add18cd5b1d1dda90d12bbc002ab28b6e40e"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 5036,
+              "sha256": "5a865dae97fa2ecf89a820699c6f6f0e1b455f8c465866aea327227d7a1ac486"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 5032,
+              "sha256": "4eb805f3b25d5272c6bb5d3da1ac8c67457baddad558ed693b37eec4abbcb0bc"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 5,
+        "ceiling-backoff": 21,
+        "prepare-native-runway": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 5038,
+          "sha256": "adfc9431afbe854133e8939297fd72309339c5eb0cd5c1a42c5af53b02cf03b3"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 5037,
+          "sha256": "d2e931446e479969e02d904ddd4cd14c22bf2d2e3be9634e6a3616378b1e7bf5"
+        },
+        "expired": null,
+        "retired": {
+          "file": "events-003.ndjson",
+          "line": 5042,
+          "sha256": "4f9293f4fbd6439cb21a219308e1786f7af0c6d50fd7e24ce252cf3a997f4ff9"
+        }
+      }
+    },
+    {
+      "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "windowEndAt": 1793222730000,
+      "windowEndUtc": "2026-10-28T21:25:30.000+00:00",
+      "decisionDeadlineAt": 1793222739999,
+      "firstReadyAt": 1793222730033,
+      "logicalSessionOpenedAt": 1793222732107,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222733633,
+      "unusedDeadlineRunwayAtFailureMs": 6366,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8386,
+          "enqueuedAt": 1793222732107,
+          "physicalStartedAt": 1793222732115,
+          "physicalSettledAt": 1793222733638,
+          "enqueuedToStartMs": 8,
+          "httpRequestedAt": 1793222732115,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1506.1693119999254,
+          "timedOut": true,
+          "timeoutAt": 1793222733614,
+          "timeoutCallbackLatenessMs": 0.16172000009100884,
+          "settlementAfterTimeoutMs": 24,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 5736,
+              "sha256": "6be211db79a2ee3b384ed5d45f46c30bbf9cdcde888a467f93266657255bf678"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 5738,
+              "sha256": "e33b8d2140f17d1b1bf77f54f33b7dec1b92580fd4a9217988ec447ebe4fe369"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 5741,
+              "sha256": "c699660401c8a0723610fe131fafba317f9f2baabed5cec4669e95d84ef60432"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 5737,
+              "sha256": "ce0d8acbd8d4bb79ba9306de98827a83b0ac825ea7f07a1feb6f11863b73b097"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 5,
+        "ceiling-backoff": 23,
+        "prepare-native-runway": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 5743,
+          "sha256": "47bd326050100e3459d7430f93aca5978af7a5d7073e7fa89085fccb75bdfe1a"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 5742,
+          "sha256": "a2567ec4e8651e3aa8065f86cca288451755c6e93b0e98d9af9abb3adf2897de"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 5781,
+          "sha256": "3073024230112f75c04c8410c81f31bce9862aaf5fa086756acae3061a8aa1c6"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "windowEndAt": 1793222740000,
+      "windowEndUtc": "2026-10-28T21:25:40.000+00:00",
+      "decisionDeadlineAt": 1793222749999,
+      "firstReadyAt": 1793222740007,
+      "logicalSessionOpenedAt": 1793222741851,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222743376,
+      "unusedDeadlineRunwayAtFailureMs": 6623,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8392,
+          "enqueuedAt": 1793222741852,
+          "physicalStartedAt": 1793222741859,
+          "physicalSettledAt": 1793222743382,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222741859,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1504.7634310000576,
+          "timedOut": true,
+          "timeoutAt": 1793222743358,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 24,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 5818,
+              "sha256": "f2eba74a8c58a8daefcfc0988786b283c4f15d1541e33a41b35088a3db893556"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 5820,
+              "sha256": "481c902db7f2ce4f04e9ef50bfeb860fac711e512e5cc76556601980ad548d8c"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 5823,
+              "sha256": "1c67425fae095b657e94b67f889cb0d0c50d4d6113d07fa3c8675491fc9070be"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 5819,
+              "sha256": "f384bd40a0e850c592fd6097e58cadb4ad0e68f59c9112e494f82bd864bda114"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 5,
+        "ceiling-backoff": 23,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 5825,
+          "sha256": "41c80b8c535898280605dd81ecbe9d898eb496732f6a9d5def3bf4ed6647e2d5"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 5824,
+          "sha256": "2cf44dacb2b753ae5cb4ea172b8504a164e5d45a9dd0804d60c89595b48b3f17"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 5837,
+          "sha256": "8a64c6684ac5bacd1fcaf308d324e477bc69c0d02f84a78aadbaaa538483b833"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "windowEndAt": 1793222750000,
+      "windowEndUtc": "2026-10-28T21:25:50.000+00:00",
+      "decisionDeadlineAt": 1793222759999,
+      "firstReadyAt": 1793222750019,
+      "logicalSessionOpenedAt": 1793222752456,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222753981,
+      "unusedDeadlineRunwayAtFailureMs": 6018,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": false,
+      "retiredImmediatelyAfterThirdFailure": true,
+      "retiredAt": 1793222753986,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8398,
+          "enqueuedAt": 1793222752457,
+          "physicalStartedAt": 1793222752464,
+          "physicalSettledAt": 1793222753986,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222752464,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1504.9919059998356,
+          "timedOut": true,
+          "timeoutAt": 1793222753963,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 5911,
+              "sha256": "4858328fe7dc5da82cc5956323e6ec77cb0c43a14d75bb547dfb463d81fed8ad"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 5913,
+              "sha256": "3bc9c01506ef1ce4b00347fa2776ee9d1cf179ac042ac9d7284a9af1bc1e1912"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 5916,
+              "sha256": "1393549a520f964ce2a429f149c3c3f15d0bba44aaf534fa89cffafd232b29a6"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 5912,
+              "sha256": "d737441185326cd003ea561b91437b8ecabc0e7565fd6f3d2ce621a9faad4133"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 6,
+        "ceiling-backoff": 23,
+        "peer-selected": 1,
+        "native-service-wait": 2,
+        "native-service-dispatch": 1,
+        "native-service-return": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 5918,
+          "sha256": "f1fac90fa80f070f376a3f71ee2cb877f7ab1ca0908a7c8d2df51fb69c9a46ce"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 5917,
+          "sha256": "b360e8d44f5d23464d8adf20fda4be6621b51710383df780d4248c109bf4901e"
+        },
+        "expired": null,
+        "retired": {
+          "file": "events-003.ndjson",
+          "line": 5922,
+          "sha256": "da3e57bb1c8deb168c0688a1ae3f913046f7241706a940904b4da8ee6b8704b5"
+        }
+      }
+    },
+    {
+      "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+      "pool": "7zYgdF5RVu6NEUEkKtxViT3AAG61tz7Yr2Ykdz6YU6bJ",
+      "windowEndAt": 1793222840000,
+      "windowEndUtc": "2026-10-28T21:27:20.000+00:00",
+      "decisionDeadlineAt": 1793222849999,
+      "firstReadyAt": 1793222840243,
+      "logicalSessionOpenedAt": 1793222842070,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222843596,
+      "unusedDeadlineRunwayAtFailureMs": 6403,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8427,
+          "enqueuedAt": 1793222842071,
+          "physicalStartedAt": 1793222842079,
+          "physicalSettledAt": 1793222843601,
+          "enqueuedToStartMs": 8,
+          "httpRequestedAt": 1793222842079,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1503.873905000044,
+          "timedOut": true,
+          "timeoutAt": 1793222843576,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 25,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 6475,
+              "sha256": "334eabe70c8db0a08e47ce01b3838014314a89ac7990df7affb2de73ee901141"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 6480,
+              "sha256": "5c4fc2b32a98881fd5379c6a760466d95f76dbbae81fc1b4ebfe9f738e4a107c"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 6483,
+              "sha256": "34cd42f24d15c91842a5bbf7cf138e5bc6cce785a92957600a15ad85c206a360"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 6479,
+              "sha256": "b8ad281e6f30873c32e3884c568a05b7a8c59c61f4b64c3d23299cd9377d7607"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "rpc-gate-wait": 5,
+        "ceiling-backoff": 22,
+        "ceiling-refresh": 1,
+        "prepare-native-runway": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 6485,
+          "sha256": "0d1bea9400b1f2eb5e769d007483a0f47492a262784a8eaefe833c92e7647389"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 6484,
+          "sha256": "fced7d88453ab2242d71adc74308ab9d5c24d2d49c1ae93c8a26bbf811e001b3"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 6562,
+          "sha256": "47028d67a6d2e5c8f1282b0b45c08b77ba99c5903234b4812095bf065b3ab336"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+      "pool": "7zYgdF5RVu6NEUEkKtxViT3AAG61tz7Yr2Ykdz6YU6bJ",
+      "windowEndAt": 1793222850000,
+      "windowEndUtc": "2026-10-28T21:27:30.000+00:00",
+      "decisionDeadlineAt": 1793222859999,
+      "firstReadyAt": 1793222850043,
+      "logicalSessionOpenedAt": 1793222851871,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222853398,
+      "unusedDeadlineRunwayAtFailureMs": 6601,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8437,
+          "enqueuedAt": 1793222851872,
+          "physicalStartedAt": 1793222851879,
+          "physicalSettledAt": 1793222853403,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222851879,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1506.9382970000152,
+          "timedOut": true,
+          "timeoutAt": 1793222853380,
+          "timeoutCallbackLatenessMs": 1.2309510000050068,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 6598,
+              "sha256": "4d39b4fb5198e4a21ecf4f2641c14e60ba2a37f7c4fe680d27f693252c31600f"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 6604,
+              "sha256": "ca888b626985832aac503c355a7961067f5326d55075c766616aab44be237ba0"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 6607,
+              "sha256": "953dcf8a0e69370f098d525037b9139b669e246b25a0aa428f39a2d4b5a89987"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 6603,
+              "sha256": "8d49c55195834ced9533efbd994a22d136e3e922d1d2a054e6556e62d0f8cc0c"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 4,
+        "ceiling-backoff": 22,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 6609,
+          "sha256": "0258512f3c0afe47c3a1e2cda85d4ec16983188bae342b81815eec30c0aa4580"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 6608,
+          "sha256": "53137896b617e2683b0a04c8cc7582d9738f10fbca3cd1d1cc79e3e446a812ec"
+        },
+        "expired": {
+          "file": "events-003.ndjson",
+          "line": 6621,
+          "sha256": "ff0722f8b3ff468da233233eeca3fec31302a96e10c75a633cc386381a12c40e"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+      "pool": "7zYgdF5RVu6NEUEkKtxViT3AAG61tz7Yr2Ykdz6YU6bJ",
+      "windowEndAt": 1793222860000,
+      "windowEndUtc": "2026-10-28T21:27:40.000+00:00",
+      "decisionDeadlineAt": 1793222869999,
+      "firstReadyAt": 1793222860044,
+      "logicalSessionOpenedAt": 1793222861859,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222863384,
+      "unusedDeadlineRunwayAtFailureMs": 6615,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": false,
+      "retiredImmediatelyAfterThirdFailure": true,
+      "retiredAt": 1793222863390,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8441,
+          "enqueuedAt": 1793222861859,
+          "physicalStartedAt": 1793222861868,
+          "physicalSettledAt": 1793222863390,
+          "enqueuedToStartMs": 9,
+          "httpRequestedAt": 1793222861868,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1505.0817309999838,
+          "timedOut": true,
+          "timeoutAt": 1793222863366,
+          "timeoutCallbackLatenessMs": 0.0838089999742806,
+          "settlementAfterTimeoutMs": 24,
+          "refs": {
+            "start": {
+              "file": "events-003.ndjson",
+              "line": 6657,
+              "sha256": "d68dda1780e97b3b98dc141711be49601de991500f27f89cefaa7d032e9aa228"
+            },
+            "http": {
+              "file": "events-003.ndjson",
+              "line": 6659,
+              "sha256": "79cbefb5a6b7e8828dd4a89ed2c60c46466661730d1d5f7cd56b5e26272a075b"
+            },
+            "settlement": {
+              "file": "events-003.ndjson",
+              "line": 6662,
+              "sha256": "dd5c6deffdac3ffc90b3c1fdefdd8223ac59d38f06477601f59dc0ea303e9af1"
+            },
+            "timeout": {
+              "file": "events-003.ndjson",
+              "line": 6658,
+              "sha256": "9d031be834ea74b6ac8c6a85010eb9d80bd6c6efed316997ddfb5af35584a9d8"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 3,
+        "ceiling-backoff": 22,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-003.ndjson",
+          "line": 6664,
+          "sha256": "a9136682214d0fe5c02cd327bb70655c40a16bc083bca10f45af4a75336efaec"
+        },
+        "summary": {
+          "file": "events-003.ndjson",
+          "line": 6663,
+          "sha256": "1a7b3f198522ce5b54183ddb7884095d7bee9da7da9c7f55eb8239b73d771a22"
+        },
+        "expired": null,
+        "retired": {
+          "file": "events-003.ndjson",
+          "line": 6668,
+          "sha256": "c0e508c82d42df3ae9be14d730631620a5a73c7d9e91d999456584ab101b98db"
+        }
+      }
+    },
+    {
+      "mint": "F9qsJG7LBQg3TT1QAVZFZP9QCd5BozojNdYxwyxpump",
+      "pool": "GWt2ZoNUXuNHsHzyEeLiTSUBf7vDoVW9rXkCacLz47yg",
+      "windowEndAt": 1793222890000,
+      "windowEndUtc": "2026-10-28T21:28:10.000+00:00",
+      "decisionDeadlineAt": 1793222899999,
+      "firstReadyAt": 1793222890051,
+      "logicalSessionOpenedAt": 1793222891850,
+      "capturedNotificationRows": 87,
+      "requiredNotificationRows": 84,
+      "historyRowsBeforeFailure": 100,
+      "auditUnavailableAt": 1793222893665,
+      "unusedDeadlineRunwayAtFailureMs": 6334,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8451,
+          "enqueuedAt": 1793222891852,
+          "physicalStartedAt": 1793222891859,
+          "physicalSettledAt": 1793222892019,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222891859,
+          "headersAt": 1793222891959,
+          "responseBytes": 23089,
+          "bodyCompleteAt": 1793222892009,
+          "jsonDecodedAt": 1793222892009,
+          "elapsedHttpMs": 149.6688340001274,
+          "timedOut": false,
+          "timeoutAt": null,
+          "timeoutCallbackLatenessMs": null,
+          "settlementAfterTimeoutMs": null,
+          "refs": {
+            "start": {
+              "file": "events-004.ndjson",
+              "line": 471,
+              "sha256": "a2e615797d394886fad96ec852ea8185b072d2d3b30431e84f702ddd3f729726"
+            },
+            "http": {
+              "file": "events-004.ndjson",
+              "line": 474,
+              "sha256": "aafddc4580f10a114d3ab3c025499ea34949313dd28fe369a6b0259f1ea772b9"
+            },
+            "settlement": {
+              "file": "events-004.ndjson",
+              "line": 475,
+              "sha256": "0da709d8abe1b0c95d37309be36ab2ab423c060b5bd12535c66d8de7f3c0db4b"
+            },
+            "timeout": null
+          }
+        },
+        {
+          "page": 2,
+          "operationId": 8452,
+          "enqueuedAt": 1793222892139,
+          "physicalStartedAt": 1793222892146,
+          "physicalSettledAt": 1793222893670,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222892146,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1506.2417999999598,
+          "timedOut": true,
+          "timeoutAt": 1793222893646,
+          "timeoutCallbackLatenessMs": 0.4185530000831932,
+          "settlementAfterTimeoutMs": 24,
+          "refs": {
+            "start": {
+              "file": "events-004.ndjson",
+              "line": 482,
+              "sha256": "d525bab9fcfa5bc08b9caabaaec5d6a82fb11644842fe501d45494a45d818c6e"
+            },
+            "http": {
+              "file": "events-004.ndjson",
+              "line": 492,
+              "sha256": "9f93f22ed1391930a8d1d73ddb9936ef64607ec0c340a7d689c0dcfb4501f082"
+            },
+            "settlement": {
+              "file": "events-004.ndjson",
+              "line": 495,
+              "sha256": "12254163fc5affdf7916f8f4b8ee2540e52924f131681024f3534c68e58382f5"
+            },
+            "timeout": {
+              "file": "events-004.ndjson",
+              "line": 491,
+              "sha256": "4fa9587ebc96e081bacfb83dfbf160d232e86e8aece5317e94bcf20e91d8985d"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 5,
+        "ceiling-backoff": 22,
+        "audit-selected": 2,
+        "page-admission": 2,
+        "page-response": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-004.ndjson",
+          "line": 497,
+          "sha256": "21be5245c50a7d4786955d8196c9872f4b43bca5fe788757941630abc820c2c3"
+        },
+        "summary": {
+          "file": "events-004.ndjson",
+          "line": 496,
+          "sha256": "e75cb595b5c3b96455c534fdc1fcef1d477fd28e4be24802487a857c4acb781f"
+        },
+        "expired": {
+          "file": "events-004.ndjson",
+          "line": 551,
+          "sha256": "70c8325d37aa1b7e85c29e7b638cde47f8aff9ed6103e1e1728af717b613def0"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "DZYkvNnuL3GanzVw6h1ZhN9NMs2DQFAaXjHrYtUDpump",
+      "pool": "NwcrCZgQk8P5JceYjTFoL8KM28FmQ9xzwPUZdyKfp4P",
+      "windowEndAt": 1793222930000,
+      "windowEndUtc": "2026-10-28T21:28:50.000+00:00",
+      "decisionDeadlineAt": 1793222939999,
+      "firstReadyAt": 1793222930019,
+      "logicalSessionOpenedAt": 1793222932130,
+      "capturedNotificationRows": 80,
+      "requiredNotificationRows": 78,
+      "historyRowsBeforeFailure": 100,
+      "auditUnavailableAt": 1793222933950,
+      "unusedDeadlineRunwayAtFailureMs": 6049,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8477,
+          "enqueuedAt": 1793222932132,
+          "physicalStartedAt": 1793222932139,
+          "physicalSettledAt": 1793222932248,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222932139,
+          "headersAt": 1793222932189,
+          "responseBytes": 23445,
+          "bodyCompleteAt": 1793222932238,
+          "jsonDecodedAt": 1793222932238,
+          "elapsedHttpMs": 98.30140699981712,
+          "timedOut": false,
+          "timeoutAt": null,
+          "timeoutCallbackLatenessMs": null,
+          "settlementAfterTimeoutMs": null,
+          "refs": {
+            "start": {
+              "file": "events-004.ndjson",
+              "line": 864,
+              "sha256": "1d2910ceccb67d3cd81a539e9c640d66ceba47b9bcb6de9762fb90dd99ab2212"
+            },
+            "http": {
+              "file": "events-004.ndjson",
+              "line": 867,
+              "sha256": "4e1873f2e9046439f28e38bb94e57d43da19713f1f2e750f53a81e2df9bfa51d"
+            },
+            "settlement": {
+              "file": "events-004.ndjson",
+              "line": 868,
+              "sha256": "7c2580c8e85005993b3ea5dc1cb534a51687a6e4a135cfe475ef74fca4752978"
+            },
+            "timeout": null
+          }
+        },
+        {
+          "page": 2,
+          "operationId": 8478,
+          "enqueuedAt": 1793222932425,
+          "physicalStartedAt": 1793222932432,
+          "physicalSettledAt": 1793222933955,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793222932432,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1505.6595270000398,
+          "timedOut": true,
+          "timeoutAt": 1793222933932,
+          "timeoutCallbackLatenessMs": 0.19302599993534386,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-004.ndjson",
+              "line": 875,
+              "sha256": "cd0217dab6fa6b89c8fd12bab614a29dd594537092ab17967edbd779db2c4db4"
+            },
+            "http": {
+              "file": "events-004.ndjson",
+              "line": 877,
+              "sha256": "6ee363bb75573b1e3d9e1ae73571979930cc2b2f69c37e27f54d5274d1c90633"
+            },
+            "settlement": {
+              "file": "events-004.ndjson",
+              "line": 880,
+              "sha256": "f6bf6ba7ea4a0f2fe114c4d80179d3e8aa93810ea51f5aeed20832424a85f0ba"
+            },
+            "timeout": {
+              "file": "events-004.ndjson",
+              "line": 876,
+              "sha256": "4d47e93d8f4e0fe4acf900a3d32ed71e130a7c130c0c27beb186ea7a981053e5"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 8,
+        "ceiling-backoff": 22,
+        "prepare-native-runway": 1,
+        "audit-selected": 2,
+        "page-admission": 2,
+        "page-response": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-004.ndjson",
+          "line": 882,
+          "sha256": "d25c572c37a5e9df36a476d68eabba386b9d673794e938c5ac5f194b44158bf5"
+        },
+        "summary": {
+          "file": "events-004.ndjson",
+          "line": 881,
+          "sha256": "d135a4c7b846e07d0cf07c95f451efc24c78c4443bb46334091ff09025ecbaf5"
+        },
+        "expired": {
+          "file": "events-004.ndjson",
+          "line": 890,
+          "sha256": "2a9eaf17006318fb1fb18027034f6f30cbb7f92923ea4362670280eb95452d6c"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "windowEndAt": 1793222990000,
+      "windowEndUtc": "2026-10-28T21:29:50.000+00:00",
+      "decisionDeadlineAt": 1793222999999,
+      "firstReadyAt": 1793222990023,
+      "logicalSessionOpenedAt": 1793222991809,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793222993335,
+      "unusedDeadlineRunwayAtFailureMs": 6664,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8498,
+          "enqueuedAt": 1793222991810,
+          "physicalStartedAt": 1793222991818,
+          "physicalSettledAt": 1793222993340,
+          "enqueuedToStartMs": 8,
+          "httpRequestedAt": 1793222991818,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1505.2859050000552,
+          "timedOut": true,
+          "timeoutAt": 1793222993317,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-004.ndjson",
+              "line": 1138,
+              "sha256": "b26d74485f2160adff701e87cd376619f07e1027db21f11356e2dd6052a839fb"
+            },
+            "http": {
+              "file": "events-004.ndjson",
+              "line": 1140,
+              "sha256": "ad891ab24aac6f1d4b6f02da828d1e105e9167ff56628f0e07a39e20f4700d6e"
+            },
+            "settlement": {
+              "file": "events-004.ndjson",
+              "line": 1143,
+              "sha256": "184781a1432882b51590091c549e1987fcaf98b0e402ceaed525141527fdce5c"
+            },
+            "timeout": {
+              "file": "events-004.ndjson",
+              "line": 1139,
+              "sha256": "8251559f530cb5dfb3048c760c5234bc36dc0333da847fefcc4042a7fa04780e"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 4,
+        "ceiling-backoff": 22,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-004.ndjson",
+          "line": 1145,
+          "sha256": "73d7b9180808f14bc495eb90e0fda3d408191599a411611a6919933b3100a245"
+        },
+        "summary": {
+          "file": "events-004.ndjson",
+          "line": 1144,
+          "sha256": "2932471c7d9460d8f93d3ab3d8a4cb0552cd74c626c6fa7c607a588b8a2b0f20"
+        },
+        "expired": {
+          "file": "events-004.ndjson",
+          "line": 1154,
+          "sha256": "3becdeaa02c3afe6d74b4fe7235ea8b6b800237c568aa4d763a49e7e043c679b"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "windowEndAt": 1793223000000,
+      "windowEndUtc": "2026-10-28T21:30:00.000+00:00",
+      "decisionDeadlineAt": 1793223009999,
+      "firstReadyAt": 1793223000028,
+      "logicalSessionOpenedAt": 1793223002461,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793223003987,
+      "unusedDeadlineRunwayAtFailureMs": 6012,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": true,
+      "retiredImmediatelyAfterThirdFailure": false,
+      "retiredAt": null,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8504,
+          "enqueuedAt": 1793223002462,
+          "physicalStartedAt": 1793223002469,
+          "physicalSettledAt": 1793223003992,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793223002469,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1506.1066290000454,
+          "timedOut": true,
+          "timeoutAt": 1793223003969,
+          "timeoutCallbackLatenessMs": 0.5071179999504238,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-004.ndjson",
+              "line": 1231,
+              "sha256": "6106c6654d03054f9d7faaea1c0827863db6e8c5b478dc40fadeca00654ef509"
+            },
+            "http": {
+              "file": "events-004.ndjson",
+              "line": 1233,
+              "sha256": "7465ebf65c6a071d712eb6544156832fad1c6189886dc5312fcaad57202a7aa8"
+            },
+            "settlement": {
+              "file": "events-004.ndjson",
+              "line": 1236,
+              "sha256": "c774037b960637849e7487e2ead8662042d0a09571db827cfc643d8179eb2d61"
+            },
+            "timeout": {
+              "file": "events-004.ndjson",
+              "line": 1232,
+              "sha256": "ef94c9ce9cc6e5f47deb4decd48a93c829972de0fdb57838f304bf0e44cc9fdf"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 6,
+        "ceiling-backoff": 22,
+        "peer-selected": 1,
+        "native-service-wait": 2,
+        "native-service-dispatch": 1,
+        "native-service-return": 1,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-004.ndjson",
+          "line": 1238,
+          "sha256": "2cde2ac0946d9e99a93b525f0c74f05835f15e29fc4ff19f95a33c91f8a8b221"
+        },
+        "summary": {
+          "file": "events-004.ndjson",
+          "line": 1237,
+          "sha256": "b2e8c67320e85931164487645dde5ae9fdc0e15222325192c55fd7c33206e42a"
+        },
+        "expired": {
+          "file": "events-004.ndjson",
+          "line": 1270,
+          "sha256": "07cad965f81b1ff306244e3adc89e40385dcaff2a9ea909a8f38e03ab4932a4d"
+        },
+        "retired": null
+      }
+    },
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "windowEndAt": 1793223010000,
+      "windowEndUtc": "2026-10-28T21:30:10.000+00:00",
+      "decisionDeadlineAt": 1793223019999,
+      "firstReadyAt": 1793223010047,
+      "logicalSessionOpenedAt": 1793223011851,
+      "capturedNotificationRows": 0,
+      "requiredNotificationRows": 0,
+      "historyRowsBeforeFailure": 0,
+      "auditUnavailableAt": 1793223013375,
+      "unusedDeadlineRunwayAtFailureMs": 6624,
+      "outcome": "physical-http-response-unavailable",
+      "windowExpiredAlsoRecorded": false,
+      "retiredImmediatelyAfterThirdFailure": true,
+      "retiredAt": 1793223013380,
+      "pages": [
+        {
+          "page": 1,
+          "operationId": 8510,
+          "enqueuedAt": 1793223011851,
+          "physicalStartedAt": 1793223011858,
+          "physicalSettledAt": 1793223013380,
+          "enqueuedToStartMs": 7,
+          "httpRequestedAt": 1793223011858,
+          "headersAt": null,
+          "responseBytes": 0,
+          "bodyCompleteAt": null,
+          "jsonDecodedAt": null,
+          "elapsedHttpMs": 1504.8756649999414,
+          "timedOut": true,
+          "timeoutAt": 1793223013357,
+          "timeoutCallbackLatenessMs": 0,
+          "settlementAfterTimeoutMs": 23,
+          "refs": {
+            "start": {
+              "file": "events-004.ndjson",
+              "line": 1310,
+              "sha256": "95ae17871c413482e1ffee936a70284a68efef98ca21f85add9fb209392065c5"
+            },
+            "http": {
+              "file": "events-004.ndjson",
+              "line": 1312,
+              "sha256": "ce053e90bf8bf2a747040bfdb60e568b154ad184fd18da37a262945a7134d7fd"
+            },
+            "settlement": {
+              "file": "events-004.ndjson",
+              "line": 1315,
+              "sha256": "1b1f5ec7d10021b4d98dbc790e19259361f0862c5b2d5ee47f818daf19701001"
+            },
+            "timeout": {
+              "file": "events-004.ndjson",
+              "line": 1311,
+              "sha256": "8efea84dc14803ef711f3b988e18c6a39e8f40978e906d3533f5e009f5ebe8f9"
+            }
+          }
+        }
+      ],
+      "dispatchReasonCounts": {
+        "eligible": 1,
+        "ceiling-refresh": 2,
+        "rpc-gate-wait": 3,
+        "ceiling-backoff": 22,
+        "audit-selected": 1,
+        "page-admission": 1,
+        "page-refusal": 1
+      },
+      "evidence": {
+        "audit": {
+          "file": "events-004.ndjson",
+          "line": 1317,
+          "sha256": "f770df847e3be6290167139a5babb21f43d6443d001c70326b146396e3593423"
+        },
+        "summary": {
+          "file": "events-004.ndjson",
+          "line": 1316,
+          "sha256": "7cbd8f1abbb71c27f5ee6efba7df1ba37ff3b0826bf3c9c19ab52813c6fd87e2"
+        },
+        "expired": null,
+        "retired": {
+          "file": "events-004.ndjson",
+          "line": 1321,
+          "sha256": "04d39fec1759c6704a5c0c31bd19984c8784a55ade0e28e10318b6fd4c7ab350"
+        }
+      }
+    }
+  ],
+  "interpretation": [
+    "Every expiration correctly means no validated decision by the current bucket cutoff. It is not an additional failure beyond the matched unavailable target.",
+    "These requests were dispatched with substantial target runway and failed before the original decision deadline; no audit dispatch starvation or selected-without-session miss was demonstrated here.",
+    "All20 failed history requests lacked headers and response bytes. Provider/backend, network, dispatcher/connection behavior and latency beyond the1.5s cutoff remain unresolved; this does not establish provider rate saturation.",
+    "Six pools each accumulated three consecutive page1 failures then immediate recoverable retirement. Two other failed targets completed page1 and then timed out on page2.",
+    "Successful evidence was unavailable, not optional diagnostics proven irrelevant. No observation window can be certified merely by renaming these misses."
+  ],
+  "input": {
+    "file": "segments/0/selected-events.ndjson",
+    "bytes": 2772513,
+    "sha256": "f3132c145ef06b63d5463923aaa1cc1b8ba6f757579d600a319617e65bf2c9de"
+  }
+}
