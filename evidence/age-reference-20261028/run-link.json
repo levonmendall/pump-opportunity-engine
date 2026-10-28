@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-28T01:59:58.777Z",
+  "frozenRun": {
+    "id": "pilot-20261028015809342-f9514585",
+    "startedAt": "2026-10-28T01:58:09.342Z",
+    "durationSeconds": 900,
+    "deepSlots": 6,
+    "mode": "CANDIDATE_ONLY",
+    "sourceCommit": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+    "configurationHash": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d"
+  },
+  "referenceReceipt": {
+    "file": "receipt.json",
+    "sha256": "6895ae10d8565371c741ec62354705be41dcb891782a8cb7b5414cb3a241b7f5"
+  },
+  "result": "NO_REFERENCE_POPULATION_LOCAL_TRANSPORT_SETUP_FAILURE",
+  "networkReads": "ONE attempted independent indexed HTTPS request; no Solana RPC; no pilot-state or financial reads",
+  "originalPlanUnchanged": true
+}

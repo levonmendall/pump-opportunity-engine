@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "type": "APPEND_ONLY_UNCERTAINTY_CORRECTION_NO_NEW_REQUEST",
+  "createdAt": "2026-10-28T01:59:58.778Z",
+  "previous": {
+    "file": "index-usage-append.json",
+    "sha256": "0c74874851fd4f6ab22136466e95f50cf28a1206c7a4b9fc61750667c49a1642"
+  },
+  "reason": "Fetch rejected before HTTP headers. Original receipt measured zero delivered body bytes but did not reserve unknown underlying transport receipt; retain the entire 256 KiB per-response allowance conservatively. No assertion that these bytes were actually consumed.",
+  "additionalActualRequests": 0,
+  "additionalMeasuredBodyBytes": 0,
+  "uncertainResponseBytesAdded": 262144,
+  "cumulative": {
+    "requestStarts": 36,
+    "measuredBodyBytes": 895373,
+    "uncertainBodyBytes": 262416
+  },
+  "failedRequestPreserved": true,
+  "automaticRetry": false,
+  "diagnosis": {
+    "observedNode": "v24.19.0",
+    "HTTPS_PROXYConfigured": true,
+    "nodeUseEnvProxy": false,
+    "nodeUseEnvProxyArgumentPresent": false,
+    "knownLocalDefect": "Invocation omitted --use-env-proxy; the inherited sidecar route was not selected by Node fetch.",
+    "errorCauseCaptured": false,
+    "providerFailureProven": false
+  },
+  "solanaResearchBook": "NOT_READ_OR_MODIFIED"
+}

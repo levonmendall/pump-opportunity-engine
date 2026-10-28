@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "classification": "INDEPENDENT_CURRENT_INDEXED_PRE_OUTCOME_REFERENCE_NOT_MARKET_CENSUS",
+  "startedAt": "2026-10-28T01:58:55.751Z",
+  "completedAt": "2026-10-28T01:59:00.820Z",
+  "limits": {
+    "maximumRequests": 5,
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "minimumPhysicalStartSpacingMs": 12000,
+    "maximumElapsedMs": 100000,
+    "shutdownReserveMs": 5000,
+    "requestTimeoutMs": 8000,
+    "perResponseBytes": 262144,
+    "totalResponseBytes": 2097152,
+    "applicationStopBytes": 1835008,
+    "retainedBytes": 1048576,
+    "maximumRssBytes": 268435456,
+    "oneInFlight": true,
+    "noAutomaticRetries": true
+  },
+  "selection": {
+    "universe": "All rows on independent current PumpSwap DEX pages 1–5, sorted by documented h24_volume_usd_desc. Not a historical or exhaustive census.",
+    "leadRule": "Valid public addresses; canonical PumpSwap SOL-quoted PDA address consistency; index-created age >=0 and <=6h at that page receipt. Index time remains UNVERIFIED, not an on-chain migration proof or current support validation.",
+    "activityFilter": "NONE: retain every qualifying lead, including zero-activity and weak controls.",
+    "outcomeSelection": "NONE: population frozen at completion, before any later outcome retrieval.",
+    "marketRecallDenominator": false
+  },
+  "source": {
+    "tool": "scripts/capture-age-reference.ts",
+    "sha256": "6d545f76f168608d909ff75f182e5d2face99a383d48c9d04a33efbbee6cb952",
+    "basedOn": "scripts/capture-forward-reference.ts",
+    "basedOnSha256": "6713a511f2d994f3454d0c86d8c829c51af7b2aaafbb278326cdde2fe0e6b021"
+  },
+  "prior": {
+    "path": "/workspace/poe-overload-repair/evidence/high-activity-20261028/forward-reference-20261028T002814493Z-expand-receipt.json",
+    "sha256": "9301c7a01731613a599c9d98be388810a84a8e1a29c9f7caceb73dbd51a7605f",
+    "completedAt": "2026-10-28T00:29:02.996Z",
+    "cumulative": {
+      "requestStarts": 35,
+      "measuredBodyBytes": 895373,
+      "uncertainBodyBytes": 272
+    }
+  },
+  "requests": [
+    {
+      "ordinal": 1,
+      "page": 1,
+      "url": "https://api.geckoterminal.com/api/v2/networks/solana/dexes/pumpswap/pools?page=1&sort=h24_volume_usd_desc&include=base_token%2Cquote_token",
+      "startedAt": "2026-10-28T01:58:55.751Z",
+      "startedUnixMs": 1793152735751,
+      "startedMonotonicMs": 437.698435,
+      "bodyBytes": 0,
+      "error": "fetch failed",
+      "finishedAt": "2026-10-28T01:59:00.820Z",
+      "elapsedMs": 5068.2966209999995
+    }
+  ],
+  "rows": [],
+  "duplicates": [],
+  "leads": [],
+  "cohortFrozenAt": "2026-10-28T01:59:00.820Z",
+  "newUsage": {
+    "requestStarts": 1,
+    "measuredBodyBytes": 0,
+    "uncertainBodyBytes": 0,
+    "rawRetainedBytes": 0,
+    "elapsedMs": 5069.326617000001
+  },
+  "cumulative": {
+    "requestStarts": 36,
+    "measuredBodyBytes": 895373,
+    "uncertainBodyBytes": 272
+  },
+  "limitations": [
+    "Population is current-indexed and bounded by five h24-volume-ranked pages; it is biased and nonexhaustive.",
+    "Index-created timestamps do not establish genuine migration times. Future matching must use actual on-chain origin proof.",
+    "Canonical address consistency does not prove current mint, pool, fee or vault support.",
+    "Reported transactions, volume, price changes and liquidity are provider claims, not confirmed trade flow or actual-size executable prices.",
+    "No top-winner or opportunity-recall percentage is supported. Weak controls remain in the frozen lead population.",
+    "Only HTTP response body bytes are measured. Packet/TLS overhead, request bytes and infrastructure transfer allocations remain unverified.",
+    "Zero additional public API subscription/key cost does not mean zero infrastructure cost."
+  ],
+  "stopReason": "fetch failed",
+  "physicalStartGapsMs": []
+}
