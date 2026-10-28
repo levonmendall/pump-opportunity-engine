@@ -27,8 +27,9 @@ test('history identifies bounded unknown activity without treating it as a swap 
 test('ready verified origins cannot starve behind a continuously nonempty discovery queue',()=>{
   const proof=(mint:string,second:number)=>({identity:{baseMint:mint,signature:mint+'-origin',chainBlockTime:second},evidence:'fixture'});
   const proofs={young:proof('young',570),ready:proof('ready',100)} as any;
-  assert.equal(nextPreparedPilotSeed(proofs,new Set(),600000)?.feedMint,'ready');
-  assert.equal(nextPreparedPilotSeed(proofs,new Set(['ready']),600000),null);
+  assert.equal(nextPreparedPilotSeed(proofs,new Set(),600000)?.feedMint,'young','fresh observation is independent of the five-minute entry gate');
+  assert.equal(nextPreparedPilotSeed(proofs,new Set(['young']),600000)?.feedMint,'ready');
+  assert.equal(nextPreparedPilotSeed(proofs,new Set(['ready','young']),600000),null);
   assert.equal(nextPreparedPilotSeed(proofs,new Set(),7800000),null);
 });
 

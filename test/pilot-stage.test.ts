@@ -248,7 +248,7 @@ test('new pending evidence stops remaining support reads even after phase admiss
 });
 
 test('evidence expansion remains finite with candidate and shutdown reserves separately visible',()=>{
- assert.equal(PILOT_EVIDENCE_LIMITS.feedHardBytes,10*1024*1024);
- assert.equal(PILOT_EVIDENCE_LIMITS.eventHardBytes-PILOT_EVIDENCE_LIMITS.eventSoftBytes,4*1024*1024);
+ assert.equal(PILOT_EVIDENCE_LIMITS.feedHardBytes,16*1024*1024);
+ assert.equal(PILOT_EVIDENCE_LIMITS.eventHardBytes-PILOT_EVIDENCE_LIMITS.eventSoftBytes,8*1024*1024);
  assert.ok(PILOT_EVIDENCE_LIMITS.eventSoftBytes<PILOT_EVIDENCE_LIMITS.eventStopBytes);
 });
