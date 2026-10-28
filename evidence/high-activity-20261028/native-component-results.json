@@ -17,10 +17,10 @@
       "path": "evidence/high-activity-20261028/native-flow-20261028004053347/post-capture-audit-receipt.json",
       "runId": "pilot-native-audit-20261028004404407",
       "units": 7,
-      "measuredBytes": 0,
+      "measuredBytes": 105320,
       "failure": null,
       "settled": true,
-      "elapsedMs": null
+      "elapsedMs": 1725
     },
     {
       "label": "anchored-history-audit",
@@ -65,7 +65,7 @@
   ],
   "linkedUsage": {
     "newPhysicalUnits": 39,
-    "measuredResponseBytes": 1304746,
+    "measuredResponseBytes": 1410066,
     "cumulativePhysicalUnits": 3664,
     "historicalUncertaintyPreserved": true
   },
