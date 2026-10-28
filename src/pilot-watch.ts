@@ -2,6 +2,11 @@
  * evidence, quotes, financial state, or authority to enter a position. */
 export type WatchState='DISCOVERED'|'VERIFYING'|'WATCH'|'DEEP_OBSERVATION'|'QUALIFIED'|'ENTRY_PENDING'|'HELD'|'DEFERRED'|'EXPIRED'|'PERMANENTLY_UNSUPPORTED';
 export type WatchSeed={signature:string;feedMint?:string;receivedAt:number};
+export type CapacityDemand={requests:number;windowMs:number;observedAt:number;complete:boolean;source:'confirmed-pool-signatures'|'complete-selected-hints'};
+export type CapacityCoverage={status:'AWAITING_CAPACITY'|'PROBE_READY'|'OBSERVING'|'VALID_WINDOW'|'OTHER_UNAVAILABLE';reason:string;lostAt:number;lastDemand:CapacityDemand|null;reassessAt:number;probeAdmissions:number[]};
+/** Free starts are caller-verified remaining shared/method capacity AFTER
+ * protection, pending actions, current candidates and audit reservations. */
+export type CapacityProbeContext={at:number;capacityObservedAt:number;windowMs:number;freeEnrichmentStarts:number;freeSharedStarts:number;globalCooldownUntil:number;protectionPending:boolean};
 export type WatchHistory={at:number;state:WatchState;reason:string};
 export type WatchRow={
   signature:string;feedMint:string|null;mint:string|null;pool:string|null;
@@ -9,7 +14,7 @@ export type WatchRow={
   state:WatchState;reason:string;lastActivityAt:number|null;lastActivityEvidence:string|null;
   lastDemotedAt:number|null;deepSince:number|null;deferUntil:number;waitingSince:number;
   promotions:number;repromotions:number;demotions:number;completeWindows:number;
-  everHadWindow:boolean;lastWindowAt:number|null;history:WatchHistory[];
+  everHadWindow:boolean;lastWindowAt:number|null;history:WatchHistory[];capacityCoverage?:CapacityCoverage;
 };
 type Counters={discovered:number;duplicates:number;verified:number;promoted:number;repromoted:number;demoted:number;expired:number;capacityExclusions:number;structuralExclusions:number;completeWindows:number;evicted:number;activityHints:number;promotionWaitTotalMs:number;promotionWaitMaximumMs:number};
 export type WatchCheckpoint={schemaVersion:1;rows:WatchRow[];counters:Counters};
@@ -23,6 +28,23 @@ const initialCounters=():Counters=>({discovered:0,duplicates:0,verified:0,promot
 const deep=(r:WatchRow)=>r.deepSince!==null&&['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(r.state);
 const protectedRow=(r:WatchRow)=>deep(r)||r.state==='HELD'||r.state==='ENTRY_PENDING';
 const copy=<T>(v:T):T=>structuredClone(v);
+
+function validDemand(value:unknown):value is CapacityDemand {const d=value as CapacityDemand;return !!d&&typeof d==='object'&&!Array.isArray(d)&&Object.keys(d).sort().join(',')==='complete,observedAt,requests,source,windowMs'&&integer(d.requests)&&d.requests<=10000&&integer(d.windowMs)&&d.windowMs>=1000&&d.windowMs<=60000&&integer(d.observedAt)&&typeof d.complete==='boolean'&&['confirmed-pool-signatures','complete-selected-hints'].includes(d.source);}
+/** Necessary admission estimate only. A probe is not a complete flow window or
+ * proof of future provider capacity; every physical start still needs its gate. */
+export function capacityProbePolicy(demand:CapacityDemand|null,context:CapacityProbeContext){
+  need(integer(context.at)&&integer(context.capacityObservedAt)&&integer(context.windowMs)&&context.windowMs>=1000&&context.windowMs<=60000&&integer(context.freeEnrichmentStarts)&&context.freeEnrichmentStarts<=10000&&integer(context.freeSharedStarts)&&context.freeSharedStarts<=10000&&integer(context.globalCooldownUntil)&&typeof context.protectionPending==='boolean'&&(demand===null||validDemand(demand)),'PILOT_WATCH_CAPACITY_CONTEXT');
+  const unavailable=(reason:string)=>({kind:'awaiting-capacity' as const,reason,estimatedEnrichmentStarts:null as number|null});
+  if(context.protectionPending)return unavailable('existing protection or pending financial work has priority');
+  if(context.at<context.globalCooldownUntil)return unavailable('global provider cooldown remains in force');
+  if(context.capacityObservedAt>context.at||context.at-context.capacityObservedAt>1000)return unavailable('current shared capacity is not verified');
+  if(context.freeSharedStarts<1)return unavailable('no verified shared request capacity for a bounded probe');
+  if(demand!==null&&demand.observedAt>context.at)return unavailable('demand information is not available at this timestamp');
+  const recent=demand!==null&&demand.observedAt<=context.at&&context.at-demand.observedAt<=30000;
+  const estimate=demand&&recent&&demand.complete?Math.ceil(demand.requests*context.windowMs/demand.windowMs):null;
+  if(estimate!==null&&estimate<=context.freeEnrichmentStarts&&estimate<=context.freeSharedStarts)return {kind:'deep-readmission-ready' as const,reason:'recent complete demand estimate fits current reserved shared enrichment capacity; fresh observation still required',estimatedEnrichmentStarts:estimate};
+  return {kind:'activity-feasibility-probe' as const,reason:estimate===null?'demand is missing, stale or incomplete; one bounded activity measurement only':'observed demand exceeds current enrichment capacity; one bounded activity measurement only',estimatedEnrichmentStarts:estimate};
+}
 
 export class PilotWatch {
   private readonly maximum:number;private readonly maximumDeep:number;private readonly clock:()=>number;
@@ -69,7 +91,7 @@ export class PilotWatch {
     if(r.state===state&&r.reason===reason&&r.deferUntil===(options.deferUntil??0))return copy(r);
     if(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING','HELD'].includes(state))need(r.mint!==null&&r.pool!==null&&r.verifiedAt!==null,'PILOT_WATCH_UNVERIFIED_PROMOTION');
     if(state==='DEEP_OBSERVATION'&&!deep(r)){
-      need(this.eligible(r,at),'PILOT_WATCH_ENTRY_AGE');need([...this.rows.values()].filter(deep).length<this.maximumDeep,'PILOT_WATCH_DEEP_CAPACITY');
+      need(this.eligible(r,at),'PILOT_WATCH_ENTRY_AGE');need(r.capacityCoverage?.status!=='AWAITING_CAPACITY','PILOT_WATCH_CAPACITY_PROBE_REQUIRED');need([...this.rows.values()].filter(deep).length<this.maximumDeep,'PILOT_WATCH_DEEP_CAPACITY');
       const again=r.promotions>0;r.promotions++;this.counters.promoted++;if(again){r.repromotions++;this.counters.repromoted++;}
       const waitMs=Math.max(0,at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!));this.counters.promotionWaitTotalMs+=waitMs;this.counters.promotionWaitMaximumMs=Math.max(this.counters.promotionWaitMaximumMs,waitMs);
       r.deepSince=at;this.emit('pilot-watch-promotion',{mint:r.mint,at,reason,repromotion:again,waitMs,freshFullWindowRequired:true});
@@ -78,7 +100,34 @@ export class PilotWatch {
     if(!['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(state))r.deepSince=null;
     if(state==='EXPIRED'&&r.state!=='EXPIRED')this.counters.expired++;
     if(state==='PERMANENTLY_UNSUPPORTED'&&r.state!=='PERMANENTLY_UNSUPPORTED')this.counters.structuralExclusions++;
+    if(r.capacityCoverage){if(state==='DEEP_OBSERVATION')r.capacityCoverage.status='OBSERVING';else if(['WATCH','DEFERRED'].includes(state)&&reason!==r.capacityCoverage.reason&&r.capacityCoverage.status!=='VALID_WINDOW')r.capacityCoverage.status='OTHER_UNAVAILABLE';}
     r.deferUntil=options.deferUntil??0;this.history(r,at,state,reason);this.emit('pilot-watch-transition',{mint:r.mint,signature:r.signature,at,state,reason,deferUntil:r.deferUntil,deepAllocated:deep(r)});return copy(r);
+  }
+  /** Technical loss, never a predictive rejection. Short reassessment replaces
+   * the old escalating full-read cooldown; this does not itself retry anything. */
+  deferCapacity(mint:string,reason:string,demand:CapacityDemand|null,at=this.clock()):WatchRow{
+    this.at(at);need(text(reason)&&(demand===null||validDemand(demand)&&demand.observedAt<=at),'PILOT_WATCH_CAPACITY_DEMAND');const r=this.row(mint);need(r&&r.mint!==null&&r.verifiedAt!==null,'PILOT_WATCH_CAPACITY_VERIFIED_IDENTITY');
+    need(!['HELD','ENTRY_PENDING','EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state),'PILOT_WATCH_CAPACITY_PROTECTED_IDENTITY');
+    const previous=r.capacityCoverage,probeAdmissions=(previous?.probeAdmissions??[]).filter(t=>t>at-60000),lastDemand=demand??previous?.lastDemand??null;
+    this.transition(mint,'DEFERRED',reason,at,{deferUntil:at+5000});r.capacityCoverage={status:'AWAITING_CAPACITY',reason,lostAt:at,lastDemand,reassessAt:at+5000,probeAdmissions};
+    this.emit('pilot-watch-capacity-deferred',{mint:r.mint,at,coverage:copy(r.capacityCoverage),awarenessRetained:true,predictiveAssessment:'unavailable; technical gap',freshFullWindowRequired:true});return copy(r);
+  }
+  recordCapacityDemand(mint:string,demand:CapacityDemand,at=this.clock()):WatchRow{
+    this.at(at);need(validDemand(demand)&&demand.observedAt<=at,'PILOT_WATCH_CAPACITY_DEMAND');const r=this.row(mint);need(r?.capacityCoverage,'PILOT_WATCH_CAPACITY_IDENTITY');
+    need(r.capacityCoverage.lastDemand===null||demand.observedAt>=r.capacityCoverage.lastDemand.observedAt,'PILOT_WATCH_CAPACITY_DEMAND_REGRESSION');r.capacityCoverage.lastDemand=copy(demand);
+    this.emit('pilot-watch-capacity-demand',{mint:r.mint,at,demand:copy(demand),meaning:'resource estimate only; no strategy features, qualification or window completeness supplied'});return copy(r);
+  }
+  reassessCapacity(context:CapacityProbeContext,excluded:ReadonlySet<string>=new Set()){
+    const at=this.at(context.at);this.expire(at);capacityProbePolicy(null,context);
+    const active=[...this.rows.values()].filter(r=>r.capacityCoverage?.status==='PROBE_READY'&&['WATCH','DEFERRED'].includes(r.state)&&this.eligible(r,at)&&!excluded.has(r.mint??''));if(active.length)return null;
+    const recentGlobal=[...this.rows.values()].flatMap(r=>r.capacityCoverage?.probeAdmissions??[]).filter(t=>t>at-10000);if(recentGlobal.length>=2)return null;
+    const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&r.state==='DEFERRED'&&this.eligible(r,at)&&r.capacityCoverage?.status==='AWAITING_CAPACITY'&&r.capacityCoverage.reason===r.reason&&at>=r.capacityCoverage.reassessAt&&(r.capacityCoverage.probeAdmissions.filter(t=>t>at-60000).length<2));
+    ready.sort((a,b)=>{const aa=a.lastActivityAt!==null&&a.lastActivityAt>(a.lastDemotedAt??0),bb=b.lastActivityAt!==null&&b.lastActivityAt>(b.lastDemotedAt??0);return Number(bb)-Number(aa)||(a.capacityCoverage!.probeAdmissions.at(-1)??0)-(b.capacityCoverage!.probeAdmissions.at(-1)??0)||a.waitingSince-b.waitingSince||a.signature.localeCompare(b.signature);});
+    for(const r of ready){const c=r.capacityCoverage!,decision=capacityProbePolicy(c.lastDemand,context);if(decision.kind==='awaiting-capacity')continue;
+      c.probeAdmissions=[...c.probeAdmissions.filter(t=>t>at-60000),at];c.reassessAt=at+5000;
+      if(decision.kind==='deep-readmission-ready'){c.status='PROBE_READY';r.deferUntil=at;}
+      this.emit('pilot-watch-capacity-reassessment',{mint:r.mint,at,...decision,capacityObservedAt:context.capacityObservedAt,demand:copy(c.lastDemand),probeAdmissionOnly:true,requestStarted:false,freshFullWindowRequired:true});return {kind:decision.kind,row:copy(r),reason:decision.reason,estimatedEnrichmentStarts:decision.estimatedEnrichmentStarts};
+    }return null;
   }
   deferVerification(signature:string,reason:string,at=this.clock()):WatchRow{
     this.at(at);need(text(signature,100)&&text(reason),'PILOT_WATCH_VERIFICATION_DEFERRAL');this.expire(at);
@@ -103,19 +152,20 @@ export class PilotWatch {
   }
   noteWindow(mint:string,at:number){
     this.at(at);const r=this.row(mint);need(r&&deep(r)&&r.verifiedAt!==null,'PILOT_WATCH_WINDOW_REQUIRES_DEEP');if(r.lastWindowAt!==null&&at<=r.lastWindowAt)return;
-    r.completeWindows++;r.everHadWindow=true;r.lastWindowAt=at;this.counters.completeWindows++;this.emit('pilot-watch-complete-window',{mint:r.mint,at,completeWindows:r.completeWindows,deepSince:r.deepSince});
+    if(r.capacityCoverage)r.capacityCoverage.status='VALID_WINDOW';r.completeWindows++;r.everHadWindow=true;r.lastWindowAt=at;this.counters.completeWindows++;this.emit('pilot-watch-complete-window',{mint:r.mint,at,completeWindows:r.completeWindows,deepSince:r.deepSince});
   }
   next(at:number,excluded:ReadonlySet<string>):WatchRow|null{
     this.at(at);this.expire(at);
-    const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&['WATCH','DEFERRED'].includes(r.state)&&at>=r.deferUntil&&this.eligible(r,at));
+    const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil&&this.eligible(r,at));
     // New evidence receives bounded preference, but a waiting identity older
     // than five minutes goes first so busy hints cannot monopolize re-promotion.
     const rank=(r:WatchRow)=>at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!)>=300000?0:r.lastDemotedAt!==null&&(r.lastActivityAt??0)>r.lastDemotedAt?1:2;
-    ready.sort((a,b)=>rank(a)-rank(b)||a.waitingSince-b.waitingSince||a.firstSeenAt-b.firstSeenAt||a.signature.localeCompare(b.signature));return ready[0]?copy(ready[0]):null;
+    const freshReady=ready.some(r=>r.promotions===0&&r.capacityCoverage?.status!=='PROBE_READY');
+    ready.sort((a,b)=>(freshReady?Number(a.capacityCoverage?.status==='PROBE_READY')-Number(b.capacityCoverage?.status==='PROBE_READY'):0)||rank(a)-rank(b)||a.waitingSince-b.waitingSince||a.firstSeenAt-b.firstSeenAt||a.signature.localeCompare(b.signature));return ready[0]?copy(ready[0]):null;
   }
   snapshot(at=this.clock()){
-    this.at(at);this.expire(at);const rows=[...this.rows.values()],eligible=rows.filter(r=>this.eligible(r,at)&&r.state!=='PERMANENTLY_UNSUPPORTED'),waiting=eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&at>=r.deferUntil),waits=waiting.map(r=>Math.max(0,at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!))),covered=eligible.filter(r=>r.everHadWindow);
-    return {rows:copy(rows),summary:{...copy(this.counters),known:rows.length,maximumIdentities:this.maximum,watch:rows.filter(r=>['WATCH','DEFERRED'].includes(r.state)).length,unverified:rows.filter(r=>r.verifiedAt===null).length,eligibleKnown:eligible.length,deepActive:rows.filter(deep).length,maximumDeep:this.maximumDeep,queued:waiting.length,waitMs:{mean:waits.length?waits.reduce((a,b)=>a+b,0)/waits.length:0,maximum:waits.length?Math.max(...waits):0},promotionWaitMs:{mean:this.counters.promoted?this.counters.promotionWaitTotalMs/this.counters.promoted:0,maximum:this.counters.promotionWaitMaximumMs},coverage:{denominator:'currently entry-age-eligible verified identities retained in this bounded registry; at least one audited window during this eligibility horizon',eligibleKnown:eligible.length,atLeastOneValidWindow:covered.length,percent:eligible.length?covered.length*100/eligible.length:null,wholeMarketPercent:null},states:Object.fromEntries(STATES.map(s=>[s,rows.filter(r=>r.state===s).length]))}};
+    this.at(at);this.expire(at);const rows=[...this.rows.values()],eligible=rows.filter(r=>this.eligible(r,at)&&r.state!=='PERMANENTLY_UNSUPPORTED'),waiting=eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil),waits=waiting.map(r=>Math.max(0,at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!))),covered=eligible.filter(r=>r.everHadWindow);
+    return {rows:copy(rows),summary:{...copy(this.counters),known:rows.length,maximumIdentities:this.maximum,watch:rows.filter(r=>['WATCH','DEFERRED'].includes(r.state)).length,capacityAwaiting:eligible.filter(r=>r.state==='DEFERRED'&&r.capacityCoverage?.status==='AWAITING_CAPACITY').length,capacityProbeReady:eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status==='PROBE_READY').length,unverified:rows.filter(r=>r.verifiedAt===null).length,eligibleKnown:eligible.length,deepActive:rows.filter(deep).length,maximumDeep:this.maximumDeep,queued:waiting.length,waitMs:{mean:waits.length?waits.reduce((a,b)=>a+b,0)/waits.length:0,maximum:waits.length?Math.max(...waits):0},promotionWaitMs:{mean:this.counters.promoted?this.counters.promotionWaitTotalMs/this.counters.promoted:0,maximum:this.counters.promotionWaitMaximumMs},coverage:{denominator:'currently entry-age-eligible verified identities retained in this bounded registry; at least one audited window during this eligibility horizon',eligibleKnown:eligible.length,atLeastOneValidWindow:covered.length,percent:eligible.length?covered.length*100/eligible.length:null,wholeMarketPercent:null},states:Object.fromEntries(STATES.map(s=>[s,rows.filter(r=>r.state===s).length]))}};
   }
   export():WatchCheckpoint{return {schemaVersion:1,rows:copy([...this.rows.values()]),counters:copy(this.counters)};}
   private restore(value:unknown){
@@ -123,9 +173,10 @@ export class PilotWatch {
     need(v.schemaVersion===1&&Array.isArray(v.rows)&&v.rows.length<=this.maximum&&v.counters&&typeof v.counters==='object'&&Object.keys(initialCounters()).every(k=>integer(v.counters[k as keyof Counters])),'PILOT_WATCH_CHECKPOINT');
     this.counters=copy(v.counters);const mints=new Set<string>();for(const r of v.rows){
       need(r&&text(r.signature,100)&&!this.rows.has(r.signature)&&(r.feedMint===null||text(r.feedMint,96))&&(r.mint===null||text(r.mint,96))&&(r.pool===null||text(r.pool,96))&&STATES.includes(r.state)&&text(r.reason)&&integer(r.firstSeenAt)&&integer(r.deferUntil)&&integer(r.waitingSince)&&[r.migrationAt,r.verifiedAt,r.lastActivityAt,r.lastDemotedAt,r.deepSince,r.lastWindowAt].every(n=>n===null||integer(n))&&[r.promotions,r.repromotions,r.demotions,r.completeWindows].every(integer)&&typeof r.everHadWindow==='boolean'&&(r.lastActivityEvidence===null||text(r.lastActivityEvidence,256))&&Array.isArray(r.history)&&r.history.length<=16&&r.history.every(h=>integer(h.at)&&STATES.includes(h.state)&&text(h.reason)),'PILOT_WATCH_CHECKPOINT_ROW');
+      if(r.capacityCoverage!==undefined){const c=r.capacityCoverage;need(c&&typeof c==='object'&&!Array.isArray(c)&&Object.keys(c).sort().join(',')==='lastDemand,lostAt,probeAdmissions,reason,reassessAt,status'&&['AWAITING_CAPACITY','PROBE_READY','OBSERVING','VALID_WINDOW','OTHER_UNAVAILABLE'].includes(c.status)&&text(c.reason)&&integer(c.lostAt)&&integer(c.reassessAt)&&c.reassessAt>=c.lostAt&&(c.lastDemand===null||validDemand(c.lastDemand)&&c.lastDemand.observedAt<=this.clock())&&Array.isArray(c.probeAdmissions)&&c.probeAdmissions.length<=2&&c.probeAdmissions.every((at,i)=>integer(at)&&at<=this.clock()&&(i===0||at>c.probeAdmissions[i-1]!))&&r.verifiedAt!==null,'PILOT_WATCH_CHECKPOINT_CAPACITY');}
       need((r.verifiedAt===null)===(r.migrationAt===null)&&(r.verifiedAt===null)===(r.mint===null)&&(r.verifiedAt===null)===(r.pool===null)&&(!r.mint||!mints.has(r.mint)),'PILOT_WATCH_CHECKPOINT_IDENTITY');if(r.mint)mints.add(r.mint);
       if(r.verifiedAt!==null)need(r.migrationAt!<=r.verifiedAt&&r.verifiedAt<=this.clock(),'PILOT_WATCH_CHECKPOINT_TIME');
-      const restored=copy(r);if(['DEEP_OBSERVATION','QUALIFIED'].includes(restored.state)){this.history(restored,this.clock(),'DEFERRED','research process restarted; previous flow is unavailable; fresh full window required');restored.deepSince=null;restored.lastDemotedAt=this.clock();restored.waitingSince=this.clock();restored.deferUntil=this.clock();restored.demotions++;this.counters.demoted++;this.emit('pilot-watch-recovery-demotion',{mint:restored.mint,at:this.clock(),priorState:r.state,freshFullWindowRequired:true});}if(restored.state==='ENTRY_PENDING'){restored.deepSince=null;this.emit('pilot-watch-owned-recovery',{mint:restored.mint,at:this.clock(),state:'ENTRY_PENDING',freshFlowUnavailable:true,financialObligationRetained:true});}this.rows.set(r.signature,restored);
+      const restored=copy(r);if(['DEEP_OBSERVATION','QUALIFIED'].includes(restored.state)){this.history(restored,this.clock(),'DEFERRED','research process restarted; previous flow is unavailable; fresh full window required');restored.deepSince=null;restored.lastDemotedAt=this.clock();restored.waitingSince=this.clock();restored.deferUntil=this.clock();if(restored.capacityCoverage){restored.capacityCoverage.status='AWAITING_CAPACITY';restored.capacityCoverage.reason=restored.reason;restored.capacityCoverage.reassessAt=this.clock()+5000;}restored.demotions++;this.counters.demoted++;this.emit('pilot-watch-recovery-demotion',{mint:restored.mint,at:this.clock(),priorState:r.state,freshFullWindowRequired:true});}if(restored.state==='ENTRY_PENDING'){restored.deepSince=null;this.emit('pilot-watch-owned-recovery',{mint:restored.mint,at:this.clock(),state:'ENTRY_PENDING',freshFlowUnavailable:true,financialObligationRetained:true});}this.rows.set(r.signature,restored);
     }
     need([...this.rows.values()].filter(deep).length<=this.maximumDeep,'PILOT_WATCH_CHECKPOINT_DEEP_CAPACITY');
   }

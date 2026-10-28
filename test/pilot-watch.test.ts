@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {PilotWatch} from '../src/pilot-watch.js';
+import {PilotWatch,capacityProbePolicy,type CapacityDemand,type CapacityProbeContext} from '../src/pilot-watch.js';
 
 function fixture(maximumIdentities=150,maximumDeep=3){
   let now=1000000;const records:Array<{kind:string;data:any}>=[];
@@ -143,4 +143,77 @@ test('rebroadcast discovery and unverified activity cannot clear persisted verif
   f.at(f.now()+1);const duplicate=f.registry.discover({signature,feedMint:'hint',receivedAt:f.now()})!;
   assert.equal(duplicate.deferUntil,deferred.deferUntil);assert.equal(f.registry.noteActivity(signature,f.now(),'untrusted hint only'),false);
   assert.equal(f.registry.snapshot().rows.find(r=>r.signature===signature)!.deferUntil,deferred.deferUntil);
+});
+
+
+const demand=(at:number,requests:number,complete=true):CapacityDemand=>({requests,windowMs:10000,observedAt:at,complete,source:'confirmed-pool-signatures'});
+const capacity=(at:number,freeEnrichmentStarts=8):CapacityProbeContext=>({at,capacityObservedAt:at,windowMs:10000,freeEnrichmentStarts,freeSharedStarts:20,globalCooldownUntil:0,protectionPending:false});
+
+test('17/18hint bursts remain capacity-unavailable but permit a bounded cheap activity reassessment',()=>{
+ for(const count of [17,18]){const f=fixture();f.seed('busy');f.registry.transition('mint-busy','DEEP_OBSERVATION','fresh flow');const deferred=f.registry.deferCapacity('mint-busy','required enrichment cannot fit current method capacity',demand(f.now(),count));
+  assert.equal(deferred.capacityCoverage!.status,'AWAITING_CAPACITY');assert.equal(deferred.state,'DEFERRED');assert.equal(deferred.completeWindows,0);assert.equal(f.registry.next(f.now()+600000,new Set()),null,'timer alone never readmits an incomplete busy scope');
+  f.at(f.now()+5000);const probe=f.registry.reassessCapacity(capacity(f.now()))!;assert.equal(probe.kind,'activity-feasibility-probe');assert.equal(probe.estimatedEnrichmentStarts,count);assert.equal(probe.row.capacityCoverage!.status,'AWAITING_CAPACITY');assert.equal(f.registry.snapshot().summary.queued,0);assert.equal(f.registry.snapshot().summary.capacityAwaiting,1);assert.equal(f.registry.next(f.now(),new Set()),null);
+  assert.equal(f.records.filter(r=>r.kind==='pilot-watch-capacity-reassessment').at(-1)!.data.requestStarted,false);
+ }
+});
+
+test('new observed capacity can reconsider a busy identity after five seconds rather than a fixed ten-minute abandonment',()=>{
+ const f=fixture();f.seed('capacity-growth');f.registry.transition('mint-capacity-growth','DEEP_OBSERVATION','first');f.registry.transition('mint-capacity-growth','DEFERRED','old fixed capacity backoff',f.now(),{deferUntil:f.now()+600000});
+ f.registry.deferCapacity('mint-capacity-growth','measured enrichment capacity loss',demand(f.now(),17));f.at(f.now()+5000);const reconsidered=f.registry.reassessCapacity(capacity(f.now(),18))!;
+ assert.equal(reconsidered.kind,'deep-readmission-ready');assert.equal(reconsidered.row.deferUntil,f.now());assert.equal(reconsidered.row.capacityCoverage!.status,'PROBE_READY');assert.equal(reconsidered.row.completeWindows,0);assert.equal(f.registry.next(f.now(),new Set())!.mint,'mint-capacity-growth');
+ f.registry.transition('mint-capacity-growth','DEEP_OBSERVATION','fresh support and new flow required');assert.equal(f.registry.snapshot().rows[0]!.capacityCoverage!.status,'OBSERVING');assert.equal(f.records.filter(r=>r.kind==='pilot-watch-promotion').at(-1)!.data.freshFullWindowRequired,true);
+ f.at(f.now()+60000);f.registry.noteWindow('mint-capacity-growth',f.now());assert.equal(f.registry.snapshot().rows[0]!.capacityCoverage!.status,'VALID_WINDOW');
+});
+
+test('a cheap current complete demand sample can release an old overloaded estimate without fabricating a window',()=>{
+ const f=fixture();f.seed('changing');f.registry.deferCapacity('mint-changing','capacity loss',demand(f.now(),18));f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.kind,'activity-feasibility-probe');
+ f.at(f.now()+100);f.registry.recordCapacityDemand('mint-changing',demand(f.now(),3));assert.equal(f.registry.next(f.now(),new Set()),null);assert.equal(f.registry.snapshot().rows[0]!.capacityCoverage!.status,'AWAITING_CAPACITY');
+ f.at(f.now()+4900);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.kind,'deep-readmission-ready');assert.equal(f.registry.snapshot().rows[0]!.everHadWindow,false);
+});
+
+test('stale or incomplete demand never authorizes deep allocation, and an activity hint cannot clear the gate',()=>{
+ const f=fixture();f.seed('stale');f.registry.deferCapacity('mint-stale','capacity loss',demand(f.now()-31000,1));f.at(f.now()+5000);const before=f.registry.snapshot().rows[0]!.deferUntil;
+ f.registry.noteActivity('mint-stale',f.now(),'unverified broad-feed hint only');assert.equal(f.registry.snapshot().rows[0]!.deferUntil,before);assert.equal(f.registry.next(f.now(),new Set()),null);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.kind,'activity-feasibility-probe');
+ assert.equal(capacityProbePolicy(demand(f.now(),1,false),capacity(f.now())).kind,'activity-feasibility-probe');assert.equal(capacityProbePolicy(null,capacity(f.now())).kind,'activity-feasibility-probe');
+});
+
+test('shared provider cooldown, protection, occupied capacity and stale capacity evidence block every reassessment',()=>{
+ for(const change of [{globalCooldownUntil:10000000},{protectionPending:true},{freeSharedStarts:0},{capacityObservedAt:1}]){const f=fixture();f.seed('blocked');f.registry.deferCapacity('mint-blocked','capacity loss',demand(f.now(),1));f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity({...capacity(f.now()),...change}),null);assert.equal(f.registry.snapshot().rows[0]!.capacityCoverage!.probeAdmissions.length,0);}
+});
+
+test('simultaneous busy scopes get bounded global probe service and fresh candidates beat a probe-ready revisit',()=>{
+ const f=fixture();for(const id of ['a','b','c']){f.seed(id);f.registry.deferCapacity('mint-'+id,'capacity loss',demand(f.now(),18));}f.at(f.now()+5000);
+ assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.row.mint,'mint-a');assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.row.mint,'mint-b');assert.equal(f.registry.reassessCapacity(capacity(f.now())),null,'global two admissions/ten seconds');
+ f.at(f.now()+10000);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.row.mint,'mint-c','least recently probed peer receives the next service opportunity');
+ const g=fixture();g.seed('revisit');g.registry.transition('mint-revisit','DEEP_OBSERVATION','earlier');g.registry.deferCapacity('mint-revisit','capacity loss',demand(g.now(),2));g.at(g.now()+5000);g.registry.reassessCapacity(capacity(g.now()));g.seed('fresh');assert.equal(g.registry.next(g.now(),new Set())!.mint,'mint-fresh');assert.equal(g.registry.next(g.now(),new Set(['mint-fresh']))!.mint,'mint-revisit');
+});
+
+test('repetitive overload cannot hot-loop, and restart preserves pending reassessment and probe budget',()=>{
+ const f=fixture();f.seed('repeat');f.registry.deferCapacity('mint-repeat','capacity loss',demand(f.now(),18));f.at(f.now()+5000);f.registry.reassessCapacity(capacity(f.now()));assert.equal(f.registry.reassessCapacity(capacity(f.now())),null);
+ f.at(f.now()+5000);f.registry.reassessCapacity(capacity(f.now()));const state=f.registry.export(),resumed=new PilotWatch({...f.options,restored:state});f.at(f.now()+5000);assert.equal(resumed.reassessCapacity(capacity(f.now())),null,'per-pool two probe admissions per minute persist');assert.equal(resumed.next(f.now(),new Set()),null);
+ f.at(1065000);assert.equal(resumed.reassessCapacity(capacity(f.now()))!.kind,'activity-feasibility-probe','old high demand gets a bounded new sample after budget recovery');
+});
+
+test('weak predictive rejections and provider outages are not reclassified as capacity shortages',()=>{
+ const f=fixture();f.seed('weak');f.seed('provider');f.registry.transition('mint-weak','DEFERRED','valid-window-predictive-assessment-failed',f.now(),{deferUntil:f.now()+60000});f.registry.transition('mint-provider','DEFERRED','HTTP429 provider cooldown',f.now(),{deferUntil:f.now()+65000});f.at(f.now()+5000);
+ assert.equal(f.registry.reassessCapacity(capacity(f.now())),null);assert.ok(f.registry.snapshot().rows.every(r=>r.capacityCoverage===undefined));assert.equal(f.registry.next(f.now(),new Set()),null);
+ f.seed('prior-capacity');f.registry.deferCapacity('mint-prior-capacity','capacity loss',demand(f.now(),18));f.registry.transition('mint-prior-capacity','DEFERRED','HTTP503 provider failure',f.now(),{deferUntil:f.now()+65000});assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-prior-capacity')!.capacityCoverage!.status,'OTHER_UNAVAILABLE');assert.equal(f.registry.reassessCapacity(capacity(f.now()+5000)),null);
+});
+
+test('capacity metadata is optional for old checkpoints and rejects impossible new evidence without touching obligations',()=>{
+ const f=fixture();f.seed('a');f.seed('held');f.registry.transition('mint-held','HELD','existing ledger exposure');assert.throws(()=>f.registry.deferCapacity('mint-held','capacity loss',demand(f.now(),18)),/PROTECTED_IDENTITY/);assert.equal(new PilotWatch({...f.options,restored:f.registry.export()}).snapshot().summary.known,2);
+ f.registry.deferCapacity('mint-a','capacity loss',demand(f.now(),18));const state=f.registry.export();state.rows.find(r=>r.mint==='mint-a')!.capacityCoverage!.probeAdmissions=[f.now(),f.now()];assert.throws(()=>new PilotWatch({...f.options,restored:state}),/CHECKPOINT_CAPACITY/);
+ assert.throws(()=>f.registry.recordCapacityDemand('mint-a',demand(f.now()-1,1)),/DEMAND_REGRESSION/);
+});
+
+
+test('an expired or terminal probe-ready identity cannot starve another capacity reassessment',()=>{
+ const f=fixture();f.at(10000000);f.seed('nearly-expired',f.now()-7194000);f.registry.deferCapacity('mint-nearly-expired','capacity loss',demand(f.now(),1));f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.kind,'deep-readmission-ready');
+ f.at(f.now()+1000);f.seed('still-eligible');f.registry.deferCapacity('mint-still-eligible','capacity loss',demand(f.now(),1));f.at(f.now()+5000);assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-nearly-expired')!.state,'EXPIRED');assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.row.mint,'mint-still-eligible');
+ const g=fixture();g.seed('terminal');g.registry.deferCapacity('mint-terminal','capacity loss',demand(g.now(),1));g.at(g.now()+5000);g.registry.reassessCapacity(capacity(g.now()));g.registry.transition('mint-terminal','PERMANENTLY_UNSUPPORTED','new structural evidence');g.seed('other');g.registry.deferCapacity('mint-other','capacity loss',demand(g.now(),1));g.at(g.now()+5000);assert.equal(g.registry.reassessCapacity(capacity(g.now()))!.row.mint,'mint-other');
+});
+
+test('awaiting capacity requires an explicit probe gate and future demand cannot authorize a request',()=>{
+ const f=fixture();f.seed('blocked');f.registry.deferCapacity('mint-blocked','capacity loss',demand(f.now(),1));assert.throws(()=>f.registry.transition('mint-blocked','DEEP_OBSERVATION','skip resource reassessment'),/CAPACITY_PROBE_REQUIRED/);
+ assert.equal(capacityProbePolicy(demand(f.now()+1,1),capacity(f.now())).kind,'awaiting-capacity');
 });
