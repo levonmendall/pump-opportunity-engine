@@ -1,0 +1,84 @@
+{"kind":"ingus-origin-purpose","at":1793158589196,"data":{"seed":{"mint":"2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump","pool":"GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt","indexedCreatedAt":1793138709000,"receivedAt":1793152864856},"source":{"commit":"50e62c8ec0e16a14839e24cb6921f00303fc6c97","scriptSha256":"5f63acbde3252ca8a9280d38608aa71defea9e5f575e09441ac2f2787ac58524","helperSha256":"d2855025cf0656f9a729dbde203e9c04e3950bda406a685e7f56322e766f29f4","reference":{"path":"evidence/age-reference-20261028/continuation-001/receipt.json","sha256":"4ed13e139e6f00a1c57b3e51965cfe7ac90e2590e10445bc07044f7e9bc5f4f6","frozenAt":"2026-10-28T02:01:29.051Z"}},"indexedTimeAuthority":false,"scope":"Identity recovery only; no activity, quote, support or financial execution claim","limits":{"reads":24,"elapsedMs":20000,"responseBytes":4194304,"historyRows":1000,"originCandidates":3,"anchorAfterHintSeconds":2,"maximumLookbackSlots":262144},"globalLeaseHolder":125671}}
+{"kind":"component-job-enqueued","at":1793158589272,"data":{"at":1793158589272,"kind":{"transport":"http","method":"getSlot"},"latestStartAt":1793158607756}}
+{"kind":"component-physical-start","at":1793158589285,"data":{"id":4632,"at":1793158589275,"enqueuedAt":1793158589272,"reservedAt":1793158589273,"kind":{"transport":"http","method":"getSlot"}}}
+{"kind":"http-headers","at":1793158589430,"data":{"id":4632,"method":"getSlot","status":200,"retryAfter":null,"at":1793158589430,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158589442,"data":{"id":4632,"method":"getSlot","requestedAt":1793158589275,"availableAt":1793158589442,"responseBytes":47,"status":200}}
+{"kind":"component-physical-settled","at":1793158589445,"data":{"id":4632,"at":1793158589445,"responseComplete":true,"kind":{"transport":"http","method":"getSlot"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158589448,"data":{"method":"getSlot","params":[{"commitment":"finalized"}],"requestedAt":1793158589259,"availableAt":1793158589448,"value":462326408}}
+{"kind":"component-job-enqueued","at":1793158589454,"data":{"at":1793158589454,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158589454,"data":{"at":1793158589454,"waitMs":72,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158589532,"data":{"id":4633,"at":1793158589530,"enqueuedAt":1793158589454,"reservedAt":1793158589527,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158589599,"data":{"id":4633,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158589599,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158589605,"data":{"id":4633,"method":"getBlockTime","requestedAt":1793158589530,"availableAt":1793158589605,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158589607,"data":{"id":4633,"at":1793158589607,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158589610,"data":{"method":"getBlockTime","params":[462326408],"requestedAt":1793158589451,"availableAt":1793158589610,"value":1793158588}}
+{"kind":"component-job-enqueued","at":1793158589613,"data":{"at":1793158589613,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158589614,"data":{"at":1793158589614,"waitMs":166,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158589786,"data":{"id":4634,"at":1793158589783,"enqueuedAt":1793158589613,"reservedAt":1793158589781,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158589835,"data":{"id":4634,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158589835,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158589837,"data":{"id":4634,"method":"getBlockTime","requestedAt":1793158589783,"availableAt":1793158589837,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158589840,"data":{"id":4634,"at":1793158589840,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158589842,"data":{"method":"getBlockTime","params":[462266747],"requestedAt":1793158589611,"availableAt":1793158589842,"value":1793145875}}
+{"kind":"component-job-enqueued","at":1793158589845,"data":{"at":1793158589845,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158589845,"data":{"at":1793158589845,"waitMs":188,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158590041,"data":{"id":4635,"at":1793158590039,"enqueuedAt":1793158589845,"reservedAt":1793158590035,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158590243,"data":{"id":4635,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158590243,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158590245,"data":{"id":4635,"method":"getBlockTime","requestedAt":1793158590039,"availableAt":1793158590245,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158590248,"data":{"id":4635,"at":1793158590248,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158590251,"data":{"method":"getBlockTime","params":[462207086],"requestedAt":1793158589843,"availableAt":1793158590251,"value":1793133169}}
+{"kind":"component-job-enqueued","at":1793158590254,"data":{"at":1793158590254,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158590254,"data":{"at":1793158590254,"waitMs":35,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158590294,"data":{"id":4636,"at":1793158590291,"enqueuedAt":1793158590254,"reservedAt":1793158590289,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158590373,"data":{"id":4636,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158590373,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158590376,"data":{"id":4636,"method":"getBlockTime","requestedAt":1793158590291,"availableAt":1793158590376,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158590379,"data":{"id":4636,"at":1793158590379,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158590383,"data":{"method":"getBlockTime","params":[462236916],"requestedAt":1793158590252,"availableAt":1793158590383,"value":1793139536}}
+{"kind":"component-job-enqueued","at":1793158590387,"data":{"at":1793158590387,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158590387,"data":{"at":1793158590387,"waitMs":155,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158590548,"data":{"id":4637,"at":1793158590545,"enqueuedAt":1793158590387,"reservedAt":1793158590542,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158590747,"data":{"id":4637,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158590747,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158590750,"data":{"id":4637,"method":"getBlockTime","requestedAt":1793158590545,"availableAt":1793158590750,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158590752,"data":{"id":4637,"at":1793158590752,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158590755,"data":{"method":"getBlockTime","params":[462222001],"requestedAt":1793158590385,"availableAt":1793158590755,"value":1793136358}}
+{"kind":"component-job-enqueued","at":1793158590759,"data":{"at":1793158590759,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158590759,"data":{"at":1793158590759,"waitMs":36,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158590802,"data":{"id":4638,"at":1793158590800,"enqueuedAt":1793158590759,"reservedAt":1793158590798,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158590870,"data":{"id":4638,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158590870,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158590872,"data":{"id":4638,"method":"getBlockTime","requestedAt":1793158590800,"availableAt":1793158590872,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158590875,"data":{"id":4638,"at":1793158590875,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158590877,"data":{"method":"getBlockTime","params":[462229458],"requestedAt":1793158590757,"availableAt":1793158590877,"value":1793137945}}
+{"kind":"component-job-enqueued","at":1793158590881,"data":{"at":1793158590881,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158590881,"data":{"at":1793158590881,"waitMs":169,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158591054,"data":{"id":4639,"at":1793158591052,"enqueuedAt":1793158590881,"reservedAt":1793158591050,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158591107,"data":{"id":4639,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158591107,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158591109,"data":{"id":4639,"method":"getBlockTime","requestedAt":1793158591052,"availableAt":1793158591109,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158591112,"data":{"id":4639,"at":1793158591112,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158591114,"data":{"method":"getBlockTime","params":[462233187],"requestedAt":1793158590878,"availableAt":1793158591114,"value":1793138741}}
+{"kind":"component-job-enqueued","at":1793158591117,"data":{"at":1793158591117,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158591117,"data":{"at":1793158591117,"waitMs":185,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158591307,"data":{"id":4640,"at":1793158591305,"enqueuedAt":1793158591117,"reservedAt":1793158591303,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158591353,"data":{"id":4640,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158591353,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158591355,"data":{"id":4640,"method":"getBlockTime","requestedAt":1793158591305,"availableAt":1793158591355,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158591358,"data":{"id":4640,"at":1793158591358,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158591360,"data":{"method":"getBlockTime","params":[462231322],"requestedAt":1793158591115,"availableAt":1793158591360,"value":1793138343}}
+{"kind":"component-job-enqueued","at":1793158591363,"data":{"at":1793158591363,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158591363,"data":{"at":1793158591363,"waitMs":192,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158591559,"data":{"id":4641,"at":1793158591557,"enqueuedAt":1793158591363,"reservedAt":1793158591555,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158591600,"data":{"id":4641,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158591600,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158591602,"data":{"id":4641,"method":"getBlockTime","requestedAt":1793158591557,"availableAt":1793158591602,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158591604,"data":{"id":4641,"at":1793158591604,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158591607,"data":{"method":"getBlockTime","params":[462232254],"requestedAt":1793158591361,"availableAt":1793158591607,"value":1793138540}}
+{"kind":"component-job-enqueued","at":1793158591610,"data":{"at":1793158591610,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158591610,"data":{"at":1793158591610,"waitMs":197,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158591815,"data":{"id":4642,"at":1793158591814,"enqueuedAt":1793158591610,"reservedAt":1793158591808,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158591857,"data":{"id":4642,"method":"getBlockTime","status":200,"retryAfter":null,"at":1793158591857,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793158591860,"data":{"id":4642,"method":"getBlockTime","requestedAt":1793158591814,"availableAt":1793158591860,"responseBytes":48,"status":200}}
+{"kind":"component-physical-settled","at":1793158591863,"data":{"id":4642,"at":1793158591863,"responseComplete":true,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":0}}
+{"kind":"ingus-rpc-evidence","at":1793158591865,"data":{"method":"getBlockTime","params":[462232720],"requestedAt":1793158591608,"availableAt":1793158591865,"value":1793138642}}
+{"kind":"component-job-enqueued","at":1793158591869,"data":{"at":1793158591869,"kind":{"transport":"http","method":"getBlockTime"},"latestStartAt":1793158607756}}
+{"kind":"component-pacing-wait","at":1793158591870,"data":{"at":1793158591869,"waitMs":195,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"component-physical-start","at":1793158592072,"data":{"id":4643,"at":1793158592069,"enqueuedAt":1793158591869,"reservedAt":1793158592065,"kind":{"transport":"http","method":"getBlockTime"}}}
+{"kind":"http-headers","at":1793158592119,"data":{"id":4643,"method":"getBlockTime","status":429,"retryAfter":"10","at":1793158592118,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"component-physical-settled","at":1793158592127,"data":{"id":4643,"at":1793158592127,"responseComplete":false,"kind":{"transport":"http","method":"getBlockTime"},"uncertainReservedBytes":2097152}}
+{"kind":"pilot-rpc-unavailable","at":1793158592129,"data":{"at":1793158592129,"code":"COMPONENT_HTTP_429","cooldownUntil":1793158607118,"physicalSettled":true,"reservationsRetained":2097152}}
+{"kind":"ingus-origin-result","at":1793158592134,"data":{"ok":false,"reason":"PILOT_RPC_COMPONENT_HTTP_429","usage":{"attemptedReads":12,"elapsedMs":2876.10777,"responseBytes":2097679,"physicalSettlementAuthority":"existing shared RPC transport","limits":{"reads":24,"elapsedMs":20000,"responseBytes":4194304,"historyRows":1000,"originCandidates":3,"anchorAfterHintSeconds":2,"maximumLookbackSlots":262144}}}}
