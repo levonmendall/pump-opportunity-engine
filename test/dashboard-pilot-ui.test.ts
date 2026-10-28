@@ -54,10 +54,10 @@ test('dynamic watch capacity stays separate from portfolio and unavailable field
  const s={...snapshot(),watch:{known:120,watch:90,eligibleKnown:100,deepActive:3,maximumDeep:6,queued:7,waitMs:{mean:1250,maximum:5000},promotionWaitMs:{mean:2000,maximum:4000},promoted:18,repromoted:2,demoted:9,completeWindows:12,predictiveAssessments:12,predictiveFailures:10,strategyRejections:2,capacityExclusions:1,incompleteDataExclusions:null,enrichmentDeadlineFailures:null,structuralExclusions:3,expired:4}};
  const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});
  const cards=b.nodes.get('pilot-watch')!.children;const text=cards.map(c=>c.children.map(v=>v.textContent).join(': ')).join('\n');
- assert.match(text,/Deep slots active \/ maximum: 3 \/ 6/);assert.match(text,/Promotions \/ re-promotions: 18 \/ 2/);
- assert.match(text,/Current queue wait: average \/ maximum \(s\): 1.25 \/ 5/);assert.match(text,/Completed admission wait: average \/ maximum \(s\): 2 \/ 4/);
- assert.match(text,/Feature-only assessments: 12/);assert.match(text,/Feature-only failures: 10/);assert.match(text,/Primary strategy rejections: 2/);
- assert.match(text,/Incomplete-data exclusions: Not reported/);assert.doesNotMatch(text,/%|cash|equity|P&L/i);
+ assert.match(text,/Deep slots active \/ maximum: 3 \/ 6/);assert.match(text,/Promotion events \/ re-promotions \(history\): 18 \/ 2/);
+ assert.match(text,/Current queue wait: average \/ maximum \(s\): 1.25 \/ 5/);assert.match(text,/Completed admission wait \(history\): average \/ maximum \(s\): 2 \/ 4/);
+ assert.match(text,/Independent predictive assessments \(run\): 12/);assert.match(text,/Independent predictive failures \(run\): 10/);assert.match(text,/Primary strategy rejections \(run\): 2/);
+ assert.match(text,/Incomplete-data exclusions \(run\): Not reported/);assert.doesNotMatch(text,/%|cash|equity|P&L/i);
  await b.poll({state:'awaiting-data',snapshot:null});assert.equal(b.nodes.get('pilot-watch')!.children.length,0);
 });
 test('older pilot report makes watch unavailability explicit',async()=>{
@@ -95,4 +95,16 @@ test('read failure retains independently aging market facts and cache loss clear
  const s={...snapshot(),generatedAt:now,sourceTimes:{lastMarketNotificationAt:now-1000,lastFreshSupportAt:null,lastBankClockAt:null,lastAuditAt:null,lastPredictiveAt:null,financialReconciliationAt:null}};const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:0,receiverAgeMs:0});assert.match(sourceTimeCards(b),/1s old · RECENT/);
  await b.poll(null,true);b.advance(100000);assert.match(sourceTimeCards(b),/101s old · STALE/);assert.match(b.nodes.get('pilot-link-state')!.textContent,/DASHBOARD READ FAILED/);
  await b.poll({state:'awaiting-data',snapshot:null});assert.equal(b.nodes.get('pilot-source-times')!.children.length,0);assert.equal(b.nodes.get('pilot-source-detail')!.textContent,'');b.advance(1000);assert.equal(b.nodes.get('pilot-source-times')!.children.length,0);
+});
+
+
+test('candidate-only run results cannot be mistaken for imported watch history or financial permission',async()=>{
+ const s={...snapshot(),running:true,generatedAt:now,mode:'candidate-evaluation',financialExecutionAuthorized:false,entriesEnabled:false,funnel:{discovered:10,admitted:434,sufficientlyObserved:2,usableWindows:2,evaluated:2,qualified:0},watch:{known:120,deepActive:6,maximumDeep:6,promoted:434,repromoted:104,demoted:428,completeWindows:417,predictiveAssessments:2,predictiveFailures:1},decisions:[{at:now-1000,mint:'fixture-token',stage:'shadow-predictive-not-rejected',reason:'independent predictive rules not rejected; no financial qualification'}]};
+ const original=JSON.stringify(s),b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:0,receiverAgeMs:0});
+ const text=(name:string)=>b.nodes.get(name)!.children.map(card=>card.children.map(v=>v.textContent).join(': ')).join('\n');
+ assert.match(text('pilot-funnel'),/Deep promotion events \(watch history\): 434/);assert.match(text('pilot-funnel'),/Audited windows \(run\): 2/);assert.match(text('pilot-funnel'),/Independent predictive assessments \(run\): 2/);
+ assert.match(text('pilot-watch'),/Complete 60-second window events \(history\): 417/);assert.match(text('pilot-watch'),/Promotion events \/ re-promotions \(history\): 434 \/ 104/);assert.match(text('pilot-watch'),/Independent predictive failures \(run\): 1/);
+ assert.match(b.nodes.get('pilot-link-detail')!.textContent,/Candidate-only mode: financial execution is intentionally disabled/);assert.match(b.nodes.get('pilot-link-detail')!.textContent,/disabled financial permission is not a predictive rejection/);assert.match(b.nodes.get('pilot-decisions')!.children[0]!.textContent,/shadow-predictive-not-rejected/);assert.equal(JSON.stringify(s),original,'labels do not reset, recompute or mutate source counters');
+ assert.match(CONNECTIONS_HTML,/imported watch state/);assert.match(CONNECTIONS_HTML,/count events, not unique tokens/);assert.match(CONNECTIONS_HTML,/overlapping 60-second windows/);
+ await b.poll({snapshot:{...s,running:false},receivedAt:now,sourceAgeMs:0,receiverAgeMs:0});assert.match(b.nodes.get('pilot-link-detail')!.textContent,/Pilot is stopped; no ongoing monitoring is implied/);assert.match(b.nodes.get('pilot-link-detail')!.textContent,/Candidate-only mode/);
 });
