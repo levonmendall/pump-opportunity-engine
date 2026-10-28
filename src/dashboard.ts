@@ -131,19 +131,12 @@ main{max-width:1480px;margin:0 auto}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
 
 /* Compact command view: full source data and details remain accessible. */
-body.poe-compact-view .hero{min-height:0!important;display:block!important;margin:14px 0 10px!important}
-body.poe-compact-view .hero-copy{padding:21px 24px!important}
-body.poe-compact-view .hero h1{font-size:clamp(27px,3.1vw,43px)!important;line-height:1.1!important;letter-spacing:-.04em!important;margin:7px 0 8px!important}
-body.poe-compact-view .hero-description{font-size:11px!important;line-height:1.5!important;margin:4px 0 11px!important;max-width:700px!important}
-body.poe-compact-view .hero-visual,body.poe-compact-view .holo-index{display:none!important}
-body.poe-compact-view .hero-chips{gap:6px!important}
-body.poe-compact-view .hero-chip{padding:5px 7px!important}
 body.poe-compact-view .status-strip{margin:6px 0 10px!important}
 body.poe-compact-view .compact-quick-links{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 17px}
 body.poe-compact-view .compact-quick-links a{display:inline-flex;align-items:center;min-height:37px;border:1px solid rgba(151,177,223,.24);background:rgba(30,41,71,.42);padding:7px 12px;border-radius:8px;font:600 10px var(--mono);color:#c8daec;white-space:nowrap}
 body.poe-compact-view .compact-quick-links a:focus-visible,body.poe-compact-view .compact-toggle:focus-visible,body.poe-compact-view summary:focus-visible{outline:2px solid #96ffec;outline-offset:3px}
 body.poe-compact-view .compact-quick-links a:hover{border-color:rgba(140,255,225,.55);color:#caffef}
-body.poe-compact-view main>.panel,body.poe-compact-view main>.section-heading,body.poe-compact-view main>section{margin-top:12px;margin-bottom:12px}
+body.poe-compact-view main>.panel,body.poe-compact-view main>.section-heading,body.poe-compact-view main>section:not(.hero){margin-top:12px;margin-bottom:12px}
 body.poe-compact-view .panel{padding:20px!important}
 body.poe-compact-view .panel-heading{margin-bottom:10px}
 body.poe-compact-view .compact-folded>.panel-heading{margin-bottom:0}
@@ -173,9 +166,6 @@ body.poe-compact-view .compact-folded{min-height:0}
 body.poe-compact-view #pilot-telemetry-panel .pilot-note{font-size:11px}
 @media(max-width:640px){
  body.poe-compact-view .topbar{height:64px!important}
- body.poe-compact-view .hero-copy{padding:14px 16px!important}
- body.poe-compact-view .hero h1{font-size:27px!important}
- body.poe-compact-view .hero-description{display:none!important}
  body.poe-compact-view .panel{padding:15px!important}
  body.poe-compact-view .compact-quick-links{gap:5px;margin:7px 0 12px}
  body.poe-compact-view .compact-quick-links a{flex:1 1 auto;justify-content:center;font-size:9px;padding:6px 8px;min-height:35px}
@@ -405,7 +395,7 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
   grid.after(button);update();
  };
  const status=one('section.status-strip'),hero=one('section.hero');
- if(status&&hero)hero.after(status);
+ if(status&&hero){const artworkCaption=hero.nextElementSibling;if(artworkCaption?.classList.contains('holo-index'))artworkCaption.after(status);else hero.after(status);}
  const portfolio=document.getElementById('portfolio'),experimental=document.getElementById('experimental-portfolio');
  if(portfolio&&experimental)portfolio.after(experimental);
  if(status){

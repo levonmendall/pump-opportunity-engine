@@ -409,7 +409,15 @@ test('compact command view keeps critical summary visible and all secondary deta
   assert.match(html,/body\.poe-compact-view #portfolio:not\(\.compact-expanded\) #cards>\.stat:nth-child\(n\+7\)/);
   assert.match(html,/body\.poe-compact-view #experimental-portfolio:not\(\.compact-expanded\)/);
   assert.match(html,/if\(portfolio&&experimental\)portfolio\.after\(experimental\)/);
-  assert.match(html,/if\(status&&hero\)hero\.after\(status\)/);
+  assert.match(html,/artworkCaption\?\.classList\.contains\('holo-index'\)/);
+  assert.match(html,/A new dimension/);
+  assert.match(html,/class="hero-visual holo-visual"/);
+  assert.match(html,/class="holo-object"/);
+  assert.match(html,/class="holo-index"/);
+  assert.doesNotMatch(html,/body\.poe-compact-view \.hero\{min-height:0!important/);
+  assert.doesNotMatch(html,/body\.poe-compact-view \.hero-visual,body\.poe-compact-view \.holo-index\{display:none!important/);
+  assert.doesNotMatch(html,/body\.poe-compact-view \.hero-description\{display:none!important/);
+  assert.match(html,/main>section:not\(\.hero\)\{margin-top:12px;margin-bottom:12px\}/);
   assert.match(html,/Account identity, freshness and source notes/);
   assert.match(html,/Trade attempts, execution history and P&L chart/);
   assert.match(html,/Full pilot funnel, market watch and failure diagnostics/);
