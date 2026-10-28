@@ -223,7 +223,18 @@ test('watch eviction and restart cannot refund the global two-probe ten-second b
  const f=fixture(2,1);for(const id of ['a','b']){f.seed(id);f.registry.deferCapacity('mint-'+id,'capacity loss',demand(f.now(),18));}f.at(f.now()+5000);const firstAt=f.now();f.registry.reassessCapacity(capacity(f.now()));f.registry.reassessCapacity(capacity(f.now()));
  f.at(f.now()+1);f.seed('c');f.registry.deferCapacity('mint-c','capacity loss',demand(f.now(),18));assert.equal(f.registry.snapshot().rows.some(r=>r.mint==='mint-a'),false);
  f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity(capacity(f.now())),null,'third probe within5001ms remains blocked after eviction');
- const checkpoint=f.registry.export();assert.deepEqual(checkpoint.capacityProbeAdmissions,[firstAt,firstAt]);const restored=new PilotWatch({...f.options,restored:checkpoint});assert.equal(restored.reassessCapacity(capacity(f.now())),null,'restart preserves global budget independently of retained identities');
+ const checkpoint=f.registry.export();assert.deepEqual(checkpoint.capacityProbeAdmissions,[{mint:'mint-a',at:firstAt},{mint:'mint-b',at:firstAt}]);const restored=new PilotWatch({...f.options,restored:checkpoint});assert.equal(restored.reassessCapacity(capacity(f.now())),null,'restart preserves global budget independently of retained identities');
  f.at(firstAt+10000);assert.equal(restored.reassessCapacity(capacity(f.now()))!.row.mint,'mint-c');
- const malformed=structuredClone(checkpoint);malformed.capacityProbeAdmissions=[firstAt,firstAt-1];assert.throws(()=>new PilotWatch({...f.options,restored:malformed}),/CHECKPOINT_GLOBAL_CAPACITY/);
+ const malformed=structuredClone(checkpoint);malformed.capacityProbeAdmissions=[{mint:'mint-a',at:firstAt},{mint:'mint-b',at:firstAt-1}];assert.throws(()=>new PilotWatch({...f.options,restored:malformed}),/CHECKPOINT_GLOBAL_CAPACITY/);
+});
+
+
+test('eviction and reintroduction of the same pool cannot refund its two-admission minute budget',()=>{
+ const f=fixture(2,1),origin=f.now()-300000;for(const id of ['a','b']){f.seed(id,origin);f.registry.deferCapacity('mint-'+id,'capacity loss',demand(f.now(),18));}f.at(f.now()+5000);const firstAt=f.now();f.registry.reassessCapacity(capacity(f.now()));f.registry.reassessCapacity(capacity(f.now()));
+ f.at(f.now()+1);f.seed('c',origin);f.registry.deferCapacity('mint-c','capacity loss',demand(f.now(),18));f.at(f.now()+1);f.seed('a',origin);f.registry.deferCapacity('mint-a','capacity loss',demand(f.now(),18));
+ f.at(firstAt+10000);const served=[f.registry.reassessCapacity(capacity(f.now()))!.row.mint,f.registry.reassessCapacity(capacity(f.now()))!.row.mint];assert.deepEqual(new Set(served),new Set(['mint-a','mint-c']));
+ f.at(f.now()+1);f.seed('d',origin);f.at(f.now()+1);f.seed('e',origin);assert.equal(f.registry.snapshot().rows.some(r=>r.mint==='mint-a'),false);f.at(f.now()+1);f.seed('a',origin);f.registry.deferCapacity('mint-a','capacity loss',demand(f.now(),18));f.at(firstAt+20000);
+ assert.equal(f.registry.reassessCapacity(capacity(f.now())),null,'same pool retains two recent admissions after its row was evicted');
+ const restored=new PilotWatch({...f.options,restored:f.registry.export()});assert.equal(restored.reassessCapacity(capacity(f.now())),null);
+ f.at(firstAt+60000);assert.equal(restored.reassessCapacity(capacity(f.now()))!.row.mint,'mint-a');
 });

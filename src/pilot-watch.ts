@@ -17,7 +17,7 @@ export type WatchRow={
   everHadWindow:boolean;lastWindowAt:number|null;history:WatchHistory[];capacityCoverage?:CapacityCoverage;
 };
 type Counters={discovered:number;duplicates:number;verified:number;promoted:number;repromoted:number;demoted:number;expired:number;capacityExclusions:number;structuralExclusions:number;completeWindows:number;evicted:number;activityHints:number;promotionWaitTotalMs:number;promotionWaitMaximumMs:number};
-export type WatchCheckpoint={schemaVersion:1;rows:WatchRow[];counters:Counters;capacityProbeAdmissions?:number[]};
+export type WatchCheckpoint={schemaVersion:1;rows:WatchRow[];counters:Counters;capacityProbeAdmissions?:Array<{mint:string;at:number}>};
 type Options={maximumIdentities?:number;maximumDeep:number;now?:()=>number;record:(kind:string,data:unknown)=>void;restored?:unknown};
 const STATES:WatchState[]=['DISCOVERED','VERIFYING','WATCH','DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING','HELD','DEFERRED','EXPIRED','PERMANENTLY_UNSUPPORTED'];
 const MIN_AGE=300000,MAX_AGE=7200000,UNVERIFIED_RETENTION=MAX_AGE+MIN_AGE;
@@ -48,7 +48,7 @@ export function capacityProbePolicy(demand:CapacityDemand|null,context:CapacityP
 
 export class PilotWatch {
   private readonly maximum:number;private readonly maximumDeep:number;private readonly clock:()=>number;
-  private readonly rows=new Map<string,WatchRow>();private counters=initialCounters();private capacityProbeAdmissions:number[]=[];
+  private readonly rows=new Map<string,WatchRow>();private counters=initialCounters();private capacityProbeAdmissions:Array<{mint:string;at:number}>=[];
   constructor(private readonly options:Options){
     this.maximum=options.maximumIdentities??150;this.maximumDeep=options.maximumDeep;this.clock=options.now??Date.now;
     need(integer(this.maximum)&&this.maximum>=1&&this.maximum<=512&&integer(this.maximumDeep)&&this.maximumDeep>=1&&this.maximumDeep<=20&&this.maximumDeep<=this.maximum,'PILOT_WATCH_LIMITS');
@@ -120,11 +120,11 @@ export class PilotWatch {
   reassessCapacity(context:CapacityProbeContext,excluded:ReadonlySet<string>=new Set()){
     const at=this.at(context.at);this.expire(at);capacityProbePolicy(null,context);
     const active=[...this.rows.values()].filter(r=>r.capacityCoverage?.status==='PROBE_READY'&&['WATCH','DEFERRED'].includes(r.state)&&this.eligible(r,at)&&!excluded.has(r.mint??''));if(active.length)return null;
-    this.capacityProbeAdmissions=this.capacityProbeAdmissions.filter(t=>t>at-10000);if(this.capacityProbeAdmissions.length>=2||(this.capacityProbeAdmissions.at(-1)??0)>at)return null;
-    const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&r.state==='DEFERRED'&&this.eligible(r,at)&&r.capacityCoverage?.status==='AWAITING_CAPACITY'&&r.capacityCoverage.reason===r.reason&&at>=r.capacityCoverage.reassessAt&&(r.capacityCoverage.probeAdmissions.filter(t=>t>at-60000).length<2));
+    this.capacityProbeAdmissions=this.capacityProbeAdmissions.filter(t=>t.at>at-60000);if(this.capacityProbeAdmissions.filter(t=>t.at>at-10000).length>=2||this.capacityProbeAdmissions.length>=12||(this.capacityProbeAdmissions.at(-1)?.at??0)>at)return null;
+    const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&r.state==='DEFERRED'&&this.eligible(r,at)&&r.capacityCoverage?.status==='AWAITING_CAPACITY'&&r.capacityCoverage.reason===r.reason&&at>=r.capacityCoverage.reassessAt&&(r.capacityCoverage.probeAdmissions.filter(t=>t>at-60000).length<2)&&this.capacityProbeAdmissions.filter(t=>t.mint===r.mint).length<2);
     ready.sort((a,b)=>{const aa=a.lastActivityAt!==null&&a.lastActivityAt>(a.lastDemotedAt??0),bb=b.lastActivityAt!==null&&b.lastActivityAt>(b.lastDemotedAt??0);return Number(bb)-Number(aa)||(a.capacityCoverage!.probeAdmissions.at(-1)??0)-(b.capacityCoverage!.probeAdmissions.at(-1)??0)||a.waitingSince-b.waitingSince||a.signature.localeCompare(b.signature);});
     for(const r of ready){const c=r.capacityCoverage!,decision=capacityProbePolicy(c.lastDemand,context);if(decision.kind==='awaiting-capacity')continue;
-      c.probeAdmissions=[...c.probeAdmissions.filter(t=>t>at-60000),at];this.capacityProbeAdmissions.push(at);c.reassessAt=at+5000;
+      c.probeAdmissions=[...c.probeAdmissions.filter(t=>t>at-60000),at];this.capacityProbeAdmissions.push({mint:r.mint!,at});c.reassessAt=at+5000;
       if(decision.kind==='deep-readmission-ready'){c.status='PROBE_READY';r.deferUntil=at;}
       this.emit('pilot-watch-capacity-reassessment',{mint:r.mint,at,...decision,capacityObservedAt:context.capacityObservedAt,demand:copy(c.lastDemand),probeAdmissionOnly:true,requestStarted:false,freshFullWindowRequired:true});return {kind:decision.kind,row:copy(r),reason:decision.reason,estimatedEnrichmentStarts:decision.estimatedEnrichmentStarts};
     }return null;
@@ -180,8 +180,8 @@ export class PilotWatch {
     }
     // Global probe admissions outlive individual watch rows. Eviction cannot
     // refund an admission; old checkpoints conservatively inherit row evidence.
-    if(v.capacityProbeAdmissions!==undefined)need(Array.isArray(v.capacityProbeAdmissions)&&v.capacityProbeAdmissions.length<=2&&v.capacityProbeAdmissions.every((at,i)=>integer(at)&&at<=this.clock()&&(i===0||at>=v.capacityProbeAdmissions![i-1]!)),'PILOT_WATCH_CHECKPOINT_GLOBAL_CAPACITY');
-    this.capacityProbeAdmissions=copy(v.capacityProbeAdmissions??[...this.rows.values()].flatMap(r=>r.capacityCoverage?.probeAdmissions??[]).filter(at=>at>this.clock()-10000).sort((a,b)=>a-b).slice(-2));
+    if(v.capacityProbeAdmissions!==undefined)need(Array.isArray(v.capacityProbeAdmissions)&&v.capacityProbeAdmissions.length<=12&&v.capacityProbeAdmissions.every((entry,i)=>entry&&typeof entry==='object'&&Object.keys(entry).sort().join(',')==='at,mint'&&text(entry.mint,96)&&integer(entry.at)&&entry.at<=this.clock()&&(i===0||entry.at>=v.capacityProbeAdmissions![i-1]!.at)),'PILOT_WATCH_CHECKPOINT_GLOBAL_CAPACITY');
+    this.capacityProbeAdmissions=copy(v.capacityProbeAdmissions??[...this.rows.values()].flatMap(r=>(r.capacityCoverage?.probeAdmissions??[]).map(at=>({mint:r.mint!,at}))).filter(entry=>entry.at>this.clock()-60000).sort((a,b)=>a.at-b.at).slice(-12));
     need([...this.rows.values()].filter(deep).length<=this.maximumDeep,'PILOT_WATCH_CHECKPOINT_DEEP_CAPACITY');
   }
 }
