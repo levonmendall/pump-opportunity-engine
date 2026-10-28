@@ -77,13 +77,13 @@ test('audit duplicates are harmless but transfer quality corrections invalidate 
   core.audit(hint,changed,base+60_200);const s=core.snapshot(base+60_201);assert.equal(s.corrections,1);assert.equal(s.historicalWindowInvalidated,true);assert.equal(s.qualityGaps.at(-1)!.reason,'confirmed-executed-evidence-correction');
 });
 
-test('three-minute20Hz snapshot polling keeps feature emission paced after100rows and preserves executed trade evidence',()=>{
+test('three-minute20Hz polling records changed closed buckets while current features and executed evidence remain intact',()=>{
   const {core,records,set}=fixture();core.observe(payload(),base+100);const hint=core.nextHint(base+1100)!;set(base+1500);core.completeHint(hint,raw.transaction,base+1500);
   for(let elapsed=1500;elapsed<=180000;elapsed+=50){set(base+elapsed);core.snapshot(base+elapsed);}
   const s=core.snapshot(base+180000),views=records.filter(r=>r.kind==='research-feature-view');
-  assert.ok(views.length<=181,`one-second emission cursor exceeded: ${views.length}`);assert.ok(views.length>=179);
+  assert.equal(views.length,21,'initial state, two pending transitions and eighteen closed buckets; clock-only snapshots add no rows');
   for(let i=1;i<views.length;i++)assert.ok(views[i]!.data.at-views[i-1]!.data.at>=1000,'retention cannot defeat pacing');
-  assert.equal(s.featureRows.length,100);assert.equal(s.featureRows.at(-1)!.at,views.at(-1)!.data.at);assert.ok(base+180000-s.featureRows.at(-1)!.at<1000);
+  assert.equal(s.featureRows.length,21);assert.equal(s.featureRows.at(-1)!.at,views.at(-1)!.data.at);assert.ok(base+180000-s.featureRows.at(-1)!.at<1000);
   assert.equal(s.latestFeature!.at,base+180000);assert.equal(s.latestFeature!.curve.windowEndAt,base+180000);
   assert.equal(s.normalizedDuringObservation,1);assert.equal(s.executedEvidence.length,1);assert.equal(s.pending,0);assert.equal(s.qualityGaps.length,0);
   assert.equal(views.find(r=>r.data.at>=base+60000)!.data.curve.tradeCount,1,'the confirmed trade survives its proper window');
@@ -94,16 +94,40 @@ test('three-minute20Hz snapshot polling keeps feature emission paced after100row
 test('feature emission cursor advances before a recorder callback can reenter snapshot',()=>{
   let core:ActivePipeline,now=base,count=0;
   core=new ActivePipeline({scope,now:()=>now,record(kind){if(kind==='research-feature-view'){count++;assert.ok(count<=2,'recursive emission');core.snapshot(now);}}});
-  core.open(now);core.snapshot(now);assert.equal(count,1);now+=1000;core.tick(now);assert.equal(count,2);
+  core.open(now);core.snapshot(now);assert.equal(count,1);now+=10000;core.tick(now);assert.equal(count,2);
   const s=core.snapshot(now,{recordFeatures:false});assert.equal(s.featureRows.length,2);assert.equal(s.latestFeature!.at,now);
 });
 
 test('read-only feature snapshots remain current after recorder exhaustion without invoking it or appending history',()=>{
   let now=base,exhausted=false,featureCalls=0;
   const core=new ActivePipeline({scope,now:()=>now,record(kind){if(kind==='research-feature-view'){featureCalls++;if(exhausted)throw Error('EXHAUSTED_FIXTURE_RECORDER');}}});
-  core.open(now);core.tick(now);exhausted=true;now+=1000;assert.throws(()=>core.tick(now),/EXHAUSTED_FIXTURE_RECORDER/);assert.equal(featureCalls,2);
+  core.open(now);core.tick(now);exhausted=true;now+=10000;assert.throws(()=>core.tick(now),/EXHAUSTED_FIXTURE_RECORDER/);assert.equal(featureCalls,2);
   const before=core.snapshot(now,{recordFeatures:false}).featureRows.length;
-  for(let i=1;i<=400;i++){now=base+1000+i*50;const s=core.snapshot(now,{recordFeatures:false});assert.equal(s.latestFeature!.at,now);assert.equal(s.featureRows.length,before);}
+  for(let i=1;i<=400;i++){now=base+10000+i*50;const s=core.snapshot(now,{recordFeatures:false});assert.equal(s.latestFeature!.at,now);assert.equal(s.featureRows.length,before);}
   assert.equal(featureCalls,2,'reporting does not call an exhausted recorder');
   const s=core.snapshot(now,{recordFeatures:false});assert.equal(s.latestFeature!.curve.windowEndAt,Math.floor(now/10000)*10000);assert.equal(s.pending,0);
+});
+
+
+test('diagnostic coalescing preserves pending-count changes and quality transitions with one-second emission pacing',()=>{
+ const {core,records,set}=fixture();core.snapshot(base);
+ core.observe(payload(),base+100);set(base+1000);let s=core.snapshot(base+1000);assert.equal(s.latestFeature!.pending,1);
+ core.observe(payload(bs58.encode(Buffer.alloc(64,45))),base+1100);set(base+2000);s=core.snapshot(base+2000);assert.equal(s.latestFeature!.pending,2);
+ const views=()=>records.filter(r=>r.kind==='research-feature-view');assert.deepEqual(views().map(r=>r.data.pending),[0,1,2]);
+ for(let at=base+2001;at<base+3000;at+=50){set(at);core.snapshot(at);}
+ assert.equal(views().length,3,'asOf and availability alone do not produce new rows');
+ core.gap('explicit-retained-gap',base+3000);set(base+4000);s=core.snapshot(base+4000);
+ assert.equal(s.latestFeature!.curve.qualityReason,'feed-gap');assert.equal(views().at(-1)!.data.curve.qualityReason,'feed-gap');
+ assert.equal(records.filter(r=>r.kind==='research-selected-hint').length,2);assert.equal(records.filter(r=>r.kind==='research-quality-gap').length,1);
+ for(let i=1;i<views().length;i++)assert.ok(views()[i]!.data.at-views()[i-1]!.data.at>=1000);
+});
+
+test('hundred changed-view retention is independent of current snapshot clock and feature duration integration',()=>{
+ const {core,records,set}=fixture();
+ for(let bucket=0;bucket<=112;bucket++){set(base+bucket*10000);core.tick(base+bucket*10000);}
+ set(base+1120500);const s=core.snapshot(base+1120500);
+ assert.equal(records.filter(r=>r.kind==='research-feature-view').length,113);assert.equal(s.featureRows.length,100);
+ assert.equal(s.featureRows[0]!.curve.windowEndAt,base+130000);assert.equal(s.featureRows.at(-1)!.curve.windowEndAt,base+1120000);
+ assert.equal(s.latestFeature!.at,base+1120500);assert.equal(s.latestFeature!.curve.asOf,base+1120500);assert.equal(s.latestFeature!.curve.sufficientlyObserved,true);
+ assert.equal(s.enrichedFeatureWarmSeconds,0,'quiet windows do not invent enriched-trade warm duration');
 });

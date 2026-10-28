@@ -8,7 +8,7 @@ type InformationKind='hint'|'trade'|'price'|'feature';
 type PipelineOptions={scope:ActiveScope;now?:()=>number;record?:(kind:string,data:unknown)=>void;/** Optional research-only exclusive observation boundary. */admitInformation?:(at:number,kind:InformationKind)=>boolean};
 type QuoteFields={mint:string;slot:number;commitment:string;receivedAt:string;sell:{inputBaseUnits:string;outputLamports:string}};
 type SizedQuote=QuoteFields&({marketBlockTime:number;timeEvidence?:never}|{timeEvidence:'confirmed-bank-clock';clockSlot:number;marketClockUnixSeconds:number});
-type FeatureRow={at:number;curve:FlowFeatures;user:FlowFeatures;fullyEnriched:boolean;researchOnly:true};
+type FeatureRow={at:number;curve:FlowFeatures;user:FlowFeatures;fullyEnriched:boolean;pending:number;researchOnly:true};
 const MAX_HINTS=16,MAX_SIGNATURES=64,MAX_EVENTS=128,MAX_ROWS=100,ENRICH_DELAY_MS=1000,ENRICH_DEADLINE_MS=5000,GAS=7000n;
 const integer=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const unsigned=(v:unknown):v is string=>typeof v==='string'&&/^(0|[1-9][0-9]{0,38})$/.test(v);
@@ -26,7 +26,7 @@ export class ActivePipeline {
   private selectedMessages=0;private duplicateHints=0;private uniqueAttempts=0;private completedTransactions=0;private failedTransactions=0;private nonTradeTransactions=0;
   private normalizedDuring=0;private normalizedAfter=0;private normalizedBuys=0;private normalizedSells=0;private routedEvents=0;private multipleSwapTransactions=0;private duplicateEvents=0;private corrections=0;
   private firstNormalizedAt:number|null=null;private lastNormalizedAt:number|null=null;private queueHighWater=0;private queueAges:number[]=[];private completionAges:number[]=[];private qualityGaps:Array<{at:number;reason:string}>=[];
-  private featureRows:FeatureRow[]=[];private latestFeature:FeatureRow|null=null;private lastFeatureEmissionAt:number|null=null;private lastFeatureAt:number|null=null;private lastFeatureWarm=false;private lastNoPendingWarm=false;private enrichedWarmMs=0;private noPendingWarmMs=0;
+  private featureRows:FeatureRow[]=[];private latestFeature:FeatureRow|null=null;private lastFeatureEmissionAt:number|null=null;private lastRecordedFeatureKey:string|null=null;private lastFeatureAt:number|null=null;private lastFeatureWarm=false;private lastNoPendingWarm=false;private enrichedWarmMs=0;private noPendingWarmMs=0;
   private quoteRows:Array<Record<string,unknown>>=[];private rejectedQuotes=0;private acceptedQuotes=0;private priceChanges=0;private firstQuoteSeen=false;
   private latestMark:{at:number;availableAt:number;netLamports:string;pricedBaseUnits:string;evidence:string}|null=null;private baseline:{at:number;cost:string}|null=null;private lastNet:string|null=null;private lastExitAction:string|null=null;
   private markIntegratedAt:number|null=null;private freshMarkMs=0;private triggerEvents:Array<Record<string,unknown>>=[];
@@ -178,11 +178,19 @@ export class ActivePipeline {
     const previous=this.lastFeatureAt??at,span=Math.max(0,at-previous);if(this.lastFeatureWarm)this.enrichedWarmMs+=span;if(this.lastNoPendingWarm)this.noPendingWarmMs+=span;
     const curve=this.windows.curve.features(at),user=this.windows.user.features(at),warm=curve.sufficientlyObserved&&user.sufficientlyObserved&&this.normalizedDuring>0,fullyEnriched=this.queue.length===0&&!this.active;
     this.lastFeatureWarm=warm;this.lastNoPendingWarm=warm&&fullyEnriched;this.lastFeatureAt=at;
-    const row:FeatureRow={at,curve,user,fullyEnriched,researchOnly:true};this.latestFeature=row;
+    const row:FeatureRow={at,curve,user,fullyEnriched,pending:this.queue.length+(this.active?1:0),researchOnly:true};this.latestFeature=row;
     if(recordFeatures&&(this.lastFeatureEmissionAt===null||at-this.lastFeatureEmissionAt>=1000)){
-      // Retention is not a clock. Advance independently BEFORE the callback so
-      // full history, callback failure or a reentrant read cannot remove pacing.
-      this.lastFeatureEmissionAt=at;this.featureRows.push(row);if(this.featureRows.length>MAX_ROWS)this.featureRows.shift();this.emit('research-feature-view',row);
+      // Record changed diagnostic content only. Availability/asOf still advance
+      // in latestFeature and duration integration on every read; all required
+      // trade/gap/decision records use their independent paths unchanged.
+      const {asOf:curveAsOf,...curveContent}=curve,{asOf:userAsOf,...userContent}=user;
+      const contentKey=JSON.stringify({curve:curveContent,user:userContent,fullyEnriched,pending:row.pending});
+      if(contentKey!==this.lastRecordedFeatureKey){
+        // Retention is not a clock. Advance both guards BEFORE the callback so
+        // full history, callback failure or reentrant reads cannot emit twice.
+        this.lastFeatureEmissionAt=at;this.lastRecordedFeatureKey=contentKey;
+        this.featureRows.push(row);if(this.featureRows.length>MAX_ROWS)this.featureRows.shift();this.emit('research-feature-view',row);
+      }
     }
   }
   price(quote:SizedQuote|null,availableAt=this.now()){

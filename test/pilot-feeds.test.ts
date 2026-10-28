@@ -69,9 +69,9 @@ test('upgrade-refusal accounting failure stays inside the handler, while feed429
   const limited=setup({refuseUpgrade:true});await assert.rejects(limited.feeds.selectCandidate(scope),/COMPONENT_HTTP_429/);assert.equal(limited.feeds.usage().candidateRetryAt,limited.now+15000);await limited.advance(5000);await assert.rejects(limited.feeds.selectCandidate(scope),/RECONNECT_BACKOFF/);assert.equal(limited.sockets.length,1);await limited.feeds.stop();
 });
 
-test('current feature projection advances beyond the bounded hundred-row diagnostic history',async()=>{
+test('current feature projection advances without adding duplicate quiet feature history',async()=>{
   const f=setup();await f.feeds.selectCandidate(scope);let s=f.feeds.snapshot();for(let i=0;i<112;i++){await f.advance(1000);f.sockets[0]!.frame('irrelevant heartbeat');s=f.feeds.snapshot();}
-  assert.equal(s!.featureRows.length,100);assert.equal(s!.windowEndAt,Math.floor(f.now/10000)*10000);assert.ok(s!.latestFeature!.at>s!.featureRows.at(-1)!.at);assert.equal(s!.failedCandidate,false);await f.feeds.stop();
+  assert.ok(s!.featureRows.length<=13);assert.equal(s!.windowEndAt,Math.floor(f.now/10000)*10000);assert.ok(s!.latestFeature!.at>s!.featureRows.at(-1)!.at);assert.equal(s!.failedCandidate,false);await f.feeds.stop();
 });
 
 test('background duration shutdown reports an unsettled transport without an unhandled promise rejection',async()=>{
@@ -173,7 +173,7 @@ test('two long-lived scopes keep bounded feature evidence while frequent status 
  const migration=JSON.parse(readFileSync('evidence/integration-proof-2026-10-26T19-57-35.882Z.json','utf8'));
  other.mint=migration.quote.mint;other.pool=migration.quote.pool;await f.feeds.addCandidate(other);
  for(let i=0;i<1600;i++){f.sockets[0]!.frame({fixture:'irrelevant broad stream heartbeat'},64);await f.advance(100);for(let j=0;j<5;j++){f.feeds.snapshot(scope.mint);f.feeds.snapshot(other.mint);}}
- const rows=f.records.filter(r=>r.kind==='research-feature-view');assert.ok(rows.length<=324,rows.length+' redundant feature emissions');assert.equal(f.feeds.usage().failedCandidate,false);assert.ok(f.feeds.usage().recordedBytes<512*1024);
+ const rows=f.records.filter(r=>r.kind==='research-feature-view');assert.ok(rows.length<=36,rows.length+' redundant feature emissions');assert.equal(f.feeds.usage().failedCandidate,false);assert.ok(f.feeds.usage().recordedBytes<512*1024);
  const before=f.feeds.usage().recordedBytes;for(let i=0;i<1000;i++)f.feeds.snapshots();assert.equal(f.feeds.usage().recordedBytes,before);
  assert.ok(f.feeds.snapshot(scope.mint)!.latestFeature!.at>=f.now-1000);assert.equal(f.feeds.snapshot(scope.mint)!.warm,true);await f.feeds.stop();
 });
