@@ -250,3 +250,8 @@ test('unsafe backup directories and symlink targets are refused without deleting
   const bad=join(f.store.directory,'poe-financial-00000000000000000001.sqlite');symlinkSync(f.path,bad);
   await assert.rejects(f.store.create(f.ledger),/private bounded/);assert.equal(lstatSync(bad).isSymbolicLink(),true);assert.equal(f.ledger.state().lamports,'10000000000');
 });
+
+test('COHERENT runtime backup lease startup yields before reading financial state and preserves sole-writer backup correctness',async t=>{
+ const f=setup(t);let stateReads=0;const before=f.ledger.state(),pending=f.store.create({state:()=>{stateReads++;return f.ledger.state();},backup:path=>f.ledger.backup(path)});
+ await Promise.resolve();assert.equal(stateReads,0,'bounded local flock child is asynchronous; its five-second timeout cannot synchronously occupy the trading event loop');const result=await pending;assert.equal(stateReads,1);assert.equal(result.accountId,before.accountId);assert.equal(result.inceptionAt,before.inceptionAt);assert.equal(result.revision,before.revision);assert.deepEqual(readState(result.path),f.ledger.state());
+});

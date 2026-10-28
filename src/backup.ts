@@ -3,7 +3,7 @@ import {isDeepStrictEqual} from 'node:util';
 import {validateReportingTradeCache,reportingFilledTrade} from './reporting.js';
 import {chmodSync,closeSync,constants,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,unlinkSync,type Stats} from 'node:fs';
 import {basename,dirname,join,resolve} from 'node:path';
-import {spawnSync} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {Worker} from 'node:worker_threads';
 import {validateFinancialState,type LedgerMode,type LedgerState,type PaperLedger,type ReportingHistory} from './ledger.js';
 import {validateOperatingCosts,type OperatingCostState} from './costs.js';
@@ -191,6 +191,16 @@ export class FinancialBackupStore{
       return fd;
     }catch(error){closeSync(fd);throw error;}
   }
+  /** Runtime backup startup must not synchronously wait up to five seconds
+   * for a local lock child. The same open-file-description lease is retained
+   * by this sole writer after flock exits; errors close it only after settlement. */
+  private async acquireOperationAsync(){
+    this.checkDirectory();const path=join(this.directory,OPERATION_LOCK),fd=openSync(path,constants.O_CREAT|constants.O_RDWR|constants.O_NOFOLLOW,0o600);
+    try{this.privateFile(path);await new Promise<void>((resolve,reject)=>{
+      const child=spawn('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',fd]});let failed=false;const timer=setTimeout(()=>{failed=true;child.kill('SIGKILL');},5000);
+      child.once('error',()=>{failed=true;});child.once('close',code=>{clearTimeout(timer);if(failed||code!==0)reject(Error('backup operation already active or standard Linux flock unavailable'));else resolve();});
+    });return fd;}catch(error){closeSync(fd);throw error;}
+  }
   private promote(valid:FinancialBackup,completed:FinancialBackup[]):FinancialBackup{
     const completedFd=openSync(valid.path,constants.O_RDONLY|constants.O_NOFOLLOW);try{fsyncSync(completedFd);}finally{closeSync(completedFd);}
     const newest=completed.at(-1);
@@ -204,7 +214,7 @@ export class FinancialBackupStore{
     renameSync(valid.path,target);this.syncDirectory();return {...valid,path:target,generation:next};
   }
   async create(source:Source):Promise<FinancialBackup>{
-    const operation=this.acquireOperation();
+    const operation=await this.acquireOperationAsync();
     let worker:ArtifactWorker|undefined;
     try{
       const before=source.state();if(before.accountId!==this.identity.accountId||before.mode!==this.identity.mode||before.inceptionAt!==this.identity.inceptionAt)throw new Error('backup source identity mismatch');
@@ -221,7 +231,7 @@ export class FinancialBackupStore{
   private artifactWorker(){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.maxBytes});}
   /** Runtime-safe pending maintenance; all SQLite artifact work runs off-thread. */
   async maintainPending():Promise<FinancialBackup|null>{
-    const operation=this.acquireOperation();let worker:ArtifactWorker|undefined;
+    const operation=await this.acquireOperationAsync();let worker:ArtifactWorker|undefined;
     try{worker=this.artifactWorker();return await worker.request({task:'recover'});}
     finally{try{await worker?.close();}finally{closeSync(operation);}}
   }

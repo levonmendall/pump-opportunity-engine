@@ -312,3 +312,42 @@ for(const responseDelayMs of [667,1500])test(`SYNTHETIC one busy pool and five q
 test('a disabled quiet-batch optimization falls back to separately paced complete audits without losing candidate evidence',async()=>{
  const f=fixture({maximumDeep:6,quietBatch:true});for(let i=1;i<=6;i++)f.seed(i);await f.steps(30);f.advance(70000);f.refresh();const usage=f.rpc.usage.bind(f.rpc);f.rpc.usage=()=>({...usage(),signatureHistoryBatch:{disabledReason:'SYNTHETIC_BATCH_DISABLED'}});for(let i=0;i<30&&f.runner.status().counters.predictiveAssessments<6;i++){await f.runner.step();f.advance(250);}assert.equal(f.batchCalls.length,0);assert.equal(f.rpcCalls.length,6);assert.equal(f.runner.status().counters.predictiveAssessments,6);assert.equal(f.runner.status().counters.auditUnavailable,0);await f.runner.stop();
 });
+
+test('COHERENT future first window reserves discretionary runway before any predictive assessment exists',async()=>{
+ const f=fixture({forcePredictiveFeatures:true});const mint=f.importActual();await f.runner.step();const opened=f.states.get(mint)!.openedAt!,firstEnd=Math.ceil(opened/10000)*10000+60000;f.advance(firstEnd-f.now-1000);f.refresh();
+ const view=f.runner.deadlineView();assert.equal(view.readyCount,0);assert.equal(view.targets[0]!.eligibleAt,firstEnd);assert.equal(view.targets[0]!.deadlineAt,firstEnd+9999);assert.equal(f.runner.status().counters.predictiveAssessments,0);assert.equal(f.runner.discretionaryAdmission(1500).admitted,false,'a first-window commitment exists without lastAssessmentEnd');
+ const before=f.resolveCalls;f.seed(2);await f.runner.step();assert.equal(f.resolveCalls,before,'new multi-read identity work must not cross first-window eligibility');f.advance(1000);f.refresh();for(let n=0;n<8&&!f.runner.status().counters.predictiveAssessments;n++)await f.runner.step();assert.equal(f.runner.status().counters.predictiveAssessments,1);assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);await f.runner.stop();
+});
+
+test('COHERENT one origin coroutine yields after every physical read and progresses between rolling audits',async()=>{
+ const f=fixture({forcePredictiveFeatures:true});f.importActual();await f.runner.step();f.advance(70000);f.refresh();await f.steps(4);assert.ok(f.runner.status().counters.predictiveAssessments>=1);
+ const originalResolve=(f.runner as any).resolve,call=f.rpc.call.bind(f.rpc);let reads=0;const readAt:number[]=[];
+ (f.runner as any).resolve=async(seed:any,rpc:any,signal:AbortSignal)=>{for(let n=0;n<3;n++)await rpc.call('getTransaction',[seed.signature,{commitment:n===2?'finalized':'confirmed'}],signal);return originalResolve(seed);};
+ f.rpc.call=async<T>(method:string,params:unknown[]=[],signal?:AbortSignal,admission?:PilotRpcCallOptions):Promise<T>=>{if(method!=='getTransaction')return call<T>(method,params,signal,admission);signal?.throwIfAborted();assert.equal(admission?.admissionOpen?.(),true);assert.ok(admission?.latestStartAt===undefined||f.now<=admission.latestStartAt);reads++;readAt.push(f.now);f.advance(300);return {} as T;};
+ const added=f.seed(2),before=f.runner.status().counters.verifiedOrigins;
+ for(let n=0;n<20&&f.runner.status().counters.verifiedOrigins===before;n++){const count=reads;await f.runner.step();assert.ok(reads-count<=1,'one scheduler turn cannot hide a multi-read chain');if(reads<3)assert.equal(f.runner.status().watch.rows.find(r=>r.mint===added)?.verifiedAt??null,null,'partial proof is never an eligible origin');f.advance(100);}
+ assert.equal(reads,3);assert.equal(f.runner.status().counters.verifiedOrigins,before+1);assert.ok(readAt[2]!-readAt[0]!>=600);assert.equal(f.records.filter(r=>r.kind==='native-origin-read-dispatch').length,3);assert.ok(f.records.some(r=>r.kind==='native-origin-workflow-settled'&&r.data.reads===3&&r.data.result==='verified'));await f.runner.stop();
+});
+
+test('COHERENT six declared two-second page obligations are disclosed as infeasible, without dropping scopes or evidence',async()=>{
+ const f=fixture({maximumDeep:6,forcePredictiveFeatures:true});for(let n=1;n<=6;n++)f.seed(n);await f.steps(25);f.advance(70000);f.refresh();f.setPhysicalBusy(true);await f.runner.step();f.setPhysicalBusy(false);const before=f.runner.deadlineView();assert.equal(before.readyCount,6);assert.equal(before.minimumReadyWorkMs,12750);assert.equal(before.conservativeReadyEnvelopeFits,false);assert.equal(f.runner.discretionaryAdmission(250).admitted,false);assert.equal(f.runner.status().candidates.length,6,'calendar pressure does not erase required observations');
+ for(let n=0;n<30&&f.runner.status().counters.predictiveAssessments<6;n++){await f.runner.step();f.advance(50);}assert.equal(f.runner.status().counters.predictiveAssessments,6,'actual fast responses may fit opportunistically; no permanent three-slot ceiling');assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);await f.runner.stop();
+});
+
+test('COHERENT paused origin continuation cancels on stop without dispatching its pending read or admitting partial proof',async()=>{
+ const f=fixture();const base=(f.runner as any).resolve;let reads=0;
+ (f.runner as any).resolve=async(seed:any,rpc:any,signal:AbortSignal)=>{await rpc.call('getTransaction',[seed.signature],signal);await rpc.call('getTransaction',[seed.signature],signal);return base(seed);};
+ const call=f.rpc.call.bind(f.rpc);f.rpc.call=async<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>=>{if(method!=='getTransaction')return call(method,params,signal,options);signal?.throwIfAborted();reads++;return {} as T;};
+ f.seed(2);await f.runner.step();assert.equal(reads,1);assert.equal(f.runner.status().counters.verifiedOrigins,0);await f.runner.stop();assert.equal(reads,1);assert.equal(f.runner.status().counters.verifiedOrigins,0);assert.equal(f.runner.status().running,false);assert.ok(f.records.some(r=>r.kind==='native-origin-workflow-settled'&&r.data.result!=='verified'));
+});
+
+test('COHERENT stale support during HTTP cooldown does not indefinitely suppress local degraded reporting',async()=>{
+ const f=fixture();const mint=f.importActual();await f.runner.step();f.advance(70000);const snapshot=f.flow.snapshot.bind(f.flow),usage=f.rpc.usage.bind(f.rpc);f.flow.snapshot=(m,at)=>{const s=snapshot(m,at);return s?{...s,warm:false,sourceSupportFresh:false}:s;};f.rpc.usage=()=>{const u=usage();return {...u,rpcDispatchWindow:{...u.dispatchWindow,readyAt:f.now+65000,waitMs:65000}};};
+ await f.runner.step();const view=f.runner.deadlineView();assert.equal(view.readyCount,0);assert.equal(view.targets[0]!.eligibleAt,Math.floor(f.now/10000)*10000+10000);assert.equal(f.runner.discretionaryAdmission(250).admitted,true,'an unavailable historical target is not an eternal local-work lock');const before=f.rpcCalls.length;await f.runner.step();assert.equal(f.rpcCalls.length,before,'HTTP cooldown still blocks physical requests');assert.equal(f.runner.status().counters.predictiveAssessments,0);assert.equal(f.runner.status().candidates[0]!.mint,mint);await f.runner.stop();
+});
+
+test('COHERENT deadline admission reads bounded readiness scalars without repeating feature or notification-ledger work',async()=>{
+ const f=fixture();f.importActual();await f.runner.step();let snapshots=0,ledgers=0;const snapshot=f.flow.snapshot.bind(f.flow),ledger=f.flow.notificationLedger.bind(f.flow);f.flow.snapshot=(...args)=>{snapshots++;return snapshot(...args);};f.flow.notificationLedger=(...args)=>{ledgers++;return ledger(...args);};
+ for(let n=0;n<100;n++){f.runner.deadlineView();f.runner.discretionaryAdmission(250);}
+ assert.equal(snapshots,0);assert.equal(ledgers,0,'report/request guards do not clone an8192-row ledger or regenerate its predictive features');await f.runner.stop();
+});

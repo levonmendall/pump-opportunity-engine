@@ -17,7 +17,7 @@ test('unbound public source and mutable/mismatched startup provenance cannot ope
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-native-paper-launch-')),path=join(directory,'input.json');t.after(()=>rmSync(directory,{recursive:true,force:true}));const input={schemaVersion:1,baselinePaths:['/must-not-be-read.json'],priorPhysicalSettled:true,priorCooldownUntil:0,origins:[],dataContract:'confirmed-program-activity-v3-shadow',source:{commit:'0'.repeat(40),sha256:'1'.repeat(64)}};writeFileSync(path,JSON.stringify(input),{mode:0o600});
  const options={...parseNativePaperArgs(args),inputPath:path};await assert.rejects(runNativePaper(options),/EXPLICIT_SOURCE_IDENTITY/);
  writeFileSync(path,JSON.stringify({...input,reportingBinding:{accountId:'poe-pilot-fixture-launch',inceptionAt:1,sourceStatusSha256:'2'.repeat(64)}}),{mode:0o600});await assert.rejects(runNativePaper(options),/FROZEN_SOURCE_REQUIRED/);
- const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.doesNotMatch(source,/\.initialize\(|sendRawTransaction|sendTransaction\(|simulateTransaction\(|privateKey/);assert.match(source,/return verifyNativePaperBundleSource\(path,input\)/);assert.match(source,/checkpoint\(\);work='candidate'/,'pool/origin recovery metadata is durable before any candidate reservation');
+ const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.doesNotMatch(source,/\.initialize\(|sendRawTransaction|sendTransaction\(|simulateTransaction\(|privateKey/);assert.match(source,/return verifyNativePaperBundleSource\(path,input\)/);assert.match(source,/localPhase\('entry-checkpoint',250,checkpoint\);work='candidate'/,'pool/origin recovery metadata is durable before any candidate reservation');
 });
 
 // Explicit orchestration simulation; not market or filesystem latency evidence.
@@ -34,4 +34,13 @@ test('750ms holding reads retain reporting service opportunities without moving 
 
 test('financial reporting admission is versioned and only gates new risk, never native capture or owned work',()=>{
  const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.match(source,/financialProjectionReady=false/);assert.match(source,/return financialProjectionReady&&sourceAdmission\(\)/);assert.match(source,/experimentalAccounting=pilotExperimentalAccounting\(valuation\);financialProjectionReady=true/);const capture=source.slice(source.indexOf('const sourceAdmission='),source.indexOf('const lowerView='));assert.doesNotMatch(capture,/financialProjectionReady/);assert.match(source,/financialReportingPolicy:NATIVE_PAPER_FINANCIAL_REPORTING_POLICY/);assert.match(source,/entriesEnabled:projection.entriesEnabled&&financialProjectionReady/);
+});
+
+test('COHERENT report and checkpoint service obey committed candidate latest-start alongside owned financial priority',()=>{
+ const due={at:20000,lastReportAt:0,held:0,nextProtectionAt:null,nextPendingAt:null};
+ assert.equal(nativePaperReportingAdmission({...due,candidateLatestStartAt:19999}).reason,'committed-candidate-deadline-reserved');
+ assert.equal(nativePaperReportingAdmission({...due,candidateLatestStartAt:20000}).admitted,true,'a bounded nonzero service opportunity is inclusive, not exact-start-only');
+ assert.equal(nativePaperReportingAdmission({...due,at:20001,candidateLatestStartAt:20010}).admitted,true,'small dispatch jitter within the advertised latest start is allowed');
+ assert.equal(nativePaperReportingAdmission({...due,held:2,nextProtectionAt:20100,candidateLatestStartAt:25000}).reason,'next-protection-start-reserved');
+ assert.equal(nativePaperReportingAdmission({...due,nextPendingAt:20100,candidateLatestStartAt:19999}).reason,'pending-financial-action-has-priority');
 });
