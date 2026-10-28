@@ -31,3 +31,12 @@ Every received byte is charged before filtering. A real rolling excess pauses on
 The expanded component/RPC/native/feed/checkpoint/window regression completed212 tests. A final RPC-only run completed50 tests after adding the assertion that an accounting-boundary crossing cannot create a parallel physical gate. TypeScript build passes. The retained initial negative fixtures include an intentionally planned disconnect (which must remain visible) and a real stale-program-clock rejection after a synthetic time jump. The corrected test does not admit stale historical trades: it checks live receipt/volume handling at the original valid time and later verifies that a new candidate receives a new support read after the research lifetime.
 
 No forward provider, actual EC2 long-run, PAPER fill/exit, financial recovery or persistent host-start claim follows from these offline results. The combined lead source still needs full regression, original-account-preserving integration, persistent host supervision and real sustained validation.
+
+
+## Final review closure
+
+Final runtime source is `ca0fca0cb0b122969d5a590727b376ca4bf5c0ca`, following code3755b13 and77798fc. Independent review found two real startup boundary defects before deployment: accepting512 closed input paths and then appending a513th before compaction, and retiming unknown legacy starts at seal without updating the per-getTransaction window. Both are corrected. Startup compacts a populated closed chain before creating a new chapter. Method pacing rebases from sealed recent starts, preserving this process's actually known methods and treating all other starts conservatively; timestamp collisions use multiset consumption.
+
+The final214-test matrix and build passed. The reviewer independently reran214 tests/build, verified the runtime source files unchanged, and reproduced both512-path and conservative-method boundary cases successfully. Original uncertainty and every raw input hash survive first/second requests and close/restart. No provider, financial account or host operation was performed.
+
+The lead must run the combined full repository suite after integration and measure actual service continuity, synchronous accounting-seal cost, provider behavior, financial priority and resource trends on EC2. This review is not operational acceptance. A genuine storage/diagnostic/integrity fatal remains latched rather than being blindly cleared; integrated supervision must recover safely after physical settlement and durable financial preservation when the fault is resolved.
