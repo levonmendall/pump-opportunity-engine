@@ -1,0 +1,15 @@
+[
+  {
+    "name": "test",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "source": "0113b51ee8d9f350b4e0eae04af296b6cc37f9c0",
+    "exitCode": 1,
+    "endedAt": "2026-10-28T16:15:17.509004+00:00",
+    "elapsedSeconds": 75.57251294000162,
+    "logBytes": 149871,
+    "sha256": "90f022c51949ee65ebfc63920173f3f88e3c52cd137369dc3014474b90a9a996"
+  }
+]

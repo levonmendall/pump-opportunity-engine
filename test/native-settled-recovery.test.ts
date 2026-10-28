@@ -68,12 +68,15 @@ test('settled chapter recovery preserves cooldown readiness, raw history, and he
   f.settle();await turn();await turn();const until=f.rpc.cooldownUntil(),units=f.rpc.usage().newUnits;
   const plan=()=>{const u=f.rpc.usage();return chooseProtectedResearchWork({now:f.at,readyAt:u.dispatchWindow!.readyAt,physicalBusy:u.dispatchWindow!.physicalBusy,nextProtectionAt:f.at,otherStartSinceProtection:false,lastUsableEvaluationAt:f.at,observingSince:f.at-1000,candidateWindowActive:true,recoveryActive:true,capacityAvailable:true,startSpacingMs:250,jobs:[]});};
   assert.equal(f.rpc.usage().dispatchWindow!.readyAt,until);assert.equal(f.rpc.usage().dispatchWindow!.physicalBusy,false);assert.equal(plan().decision.kind,'wait');
-  assert.equal(await f.runner.step(),'wait');assert.equal(f.sockets.length,0);assert.equal(f.rpc.usage().newUnits,units);
-  f.advance(1999);assert.equal(await f.runner.step(),'wait');f.advance(1);
+  const oldChapter=f.rpc.usage().activeChapterPath!,oldChapterBytes=readFileSync(oldChapter),httpStarts=f.fetches.length;
+  f.advance(250);assert.ok(f.at<until,'HTTP cooldown remains active after mandatory shared spacing');
+  assert.equal(await f.runner.step(),'connect','settled HTTP failure does not block an independent native control');assert.equal(f.sockets.length,1);assert.equal(f.rpc.usage().newUnits,units+1);assert.equal(f.rpc.cooldownUntil(),until);assert.deepEqual(readFileSync(oldChapter),oldChapterBytes);
+  await assert.rejects(f.rpc.call('getSlot'),/COOLDOWN/);assert.equal(f.fetches.length,httpStarts,'HTTP retry stays blocked even after the same gate recovers for control');
+  f.advance(until-f.at);
   const protection=plan();assert.equal(protection.decision.kind,'protection');assert.equal(protection.candidateDisposition,'suspend');
   const u=f.rpc.usage(),pending=chooseProtectedResearchWork({now:f.at,readyAt:u.dispatchWindow!.readyAt,physicalBusy:u.dispatchWindow!.physicalBusy,nextProtectionAt:f.at+2000,otherStartSinceProtection:false,lastUsableEvaluationAt:f.at,observingSince:f.at-1000,candidateWindowActive:true,recoveryActive:false,capacityAvailable:true,startSpacingMs:250,jobs:[{id:'unresolved-exit',kind:'pending',enqueuedAt:f.at,eligibleAt:f.at,deadlineAt:f.at+1800,operationBoundMs:500}]});
   assert.equal(pending.decision.kind,'job');if(pending.decision.kind==='job')assert.equal(pending.decision.job.id,'unresolved-exit');assert.equal(pending.candidateDisposition,'suspend');
-  assert.equal(await f.runner.step(),'connect');assert.equal(f.rpc.usage().chapter,2);assert.equal(f.rpc.usage().uncertainResponseBytes,2*MIB);
+  assert.equal(f.rpc.usage().chapter,2);assert.equal(f.rpc.usage().uncertainResponseBytes,2*MIB);assert.deepEqual(readFileSync(oldChapter),oldChapterBytes);
  }finally{await f.close();}
 });
 
@@ -95,6 +98,6 @@ test('native planner defers a settled context-floor cooldown without disconnecti
   f.contextLagOnce();await assert.rejects(f.rpc.call('getSignaturesForAddress'),/COMPONENT_RPC_ERROR_-32016/);await turn();f.flow.requestHeartbeat();
   const before=f.rpc.usage(),gaps=f.flow.usage().gaps;assert.equal(before.inFlight,0);assert.equal(before.currentChapterUncertainResponseBytes,0);assert.equal(before.fatal,null);assert.equal(before.dispatchWindow!.readyAt,f.at+2000);
   assert.equal(await f.runner.step(),'wait');assert.equal(f.flow.snapshot(mint)!.connected,true);assert.equal(f.flow.usage().gaps,gaps);assert.equal(f.sockets[0]!.controls.filter(x=>x==='ping').length,0);
-  f.advance(2000);assert.equal(await f.runner.step(),'ping');assert.equal(f.flow.snapshot(mint)!.connected,true);assert.equal(f.flow.usage().gaps,gaps);assert.equal(f.rpc.usage().chapter,2);
+  f.advance(250);assert.equal(await f.runner.step(),'ping','shared spacing elapses before HTTP cooldown; independent liveness may proceed');assert.ok(f.rpc.cooldownUntil()>f.at);await assert.rejects(f.rpc.call('getSlot'),/COOLDOWN/);assert.equal(f.flow.snapshot(mint)!.connected,true);assert.equal(f.flow.usage().gaps,gaps);assert.equal(f.rpc.usage().chapter,2);
  }finally{await f.close();}
 });
