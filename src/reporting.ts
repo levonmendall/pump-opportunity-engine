@@ -134,6 +134,8 @@ function canonical(value: unknown): string {
   return JSON.stringify(value);
 }
 const hash = (s: Snapshot) => createHash('sha256').update(canonical(s)).digest('hex');
+export const snapshotFingerprint=hash;
+export type SnapshotAcknowledgement={published:true;result:'accepted'|'duplicate';accountId:string;inceptionAt:string;release:string;sequence:string;sourceAtMs:number;fingerprint:string;acknowledgedAtMs:number};
 
 export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
@@ -180,6 +182,7 @@ export class SnapshotPublisher {
   constructor(private readonly options: {
     url: string; secret: string; identity: ReportingIdentity; intervalMs?: number; timeoutMs?: number;
     maxBackoffMs?: number; fetch?: typeof fetch;
+    onAcknowledgement?:(ack:SnapshotAcknowledgement)=>void;
   }) {
     const u = new URL(options.url);
     if (u.protocol !== 'https:' || u.username || u.password || u.search || u.hash || options.secret.length < 24) throw new Error('HTTPS endpoint and dedicated ingestion secret required');
@@ -207,9 +210,15 @@ export class SnapshotPublisher {
         method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${this.options.secret}` },
         body: current.body, signal: this.active.signal, redirect: 'error',
       });
-      // Bound response consumption: no dependency on remote text/log content.
-      await response.body?.cancel();
-      if (!response.ok) throw new Error(`http_${response.status}`);
+      if (!response.ok) {await response.body?.cancel();throw new Error(`http_${response.status}`);}
+      if(this.options.onAcknowledgement){
+        if(response.headers.get('content-type')?.split(';')[0]!=='application/json'||!response.body)throw Error('invalid_acknowledgement');
+        const reader=response.body.getReader();let size=0;const chunks:Uint8Array[]=[];
+        try{for(;;){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>2048){await reader.cancel();throw Error('invalid_acknowledgement');}chunks.push(part.value);}}finally{reader.releaseLock();}
+        const ack=JSON.parse(Buffer.concat(chunks).toString('utf8')) as {result?:unknown};
+        if(!ack||typeof ack!=='object'||Array.isArray(ack)||Object.keys(ack).join('|')!=='result'||!['accepted','duplicate'].includes(ack.result as string))throw Error('invalid_acknowledgement');
+        this.options.onAcknowledgement({published:true,result:ack.result as 'accepted'|'duplicate',accountId:current.snapshot.account.id,inceptionAt:current.snapshot.account.inceptionAt,release:current.snapshot.source.release,sequence:current.snapshot.sequence,sourceAtMs:Date.parse(current.snapshot.times.generatedAt),fingerprint:current.fingerprint,acknowledgedAtMs:Date.now()});
+      }else await response.body?.cancel();
       this.metrics.successes++; this.metrics.consecutiveFailures = 0; this.metrics.lastSuccessAt = new Date().toISOString(); this.metrics.lastError = null;
       if (this.latest?.fingerprint === current.fingerprint) this.latest = null;
     } catch (e) {
