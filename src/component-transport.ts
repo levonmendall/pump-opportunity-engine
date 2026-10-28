@@ -4,7 +4,65 @@ import {HttpsProxyAgent} from 'https-proxy-agent';
 import {ComponentBudget,type ComponentOperation} from './component-budget.js';
 import {validateRpc} from './network.js';
 import {createHash} from 'node:crypto';
+import {channel} from 'node:diagnostics_channel';
+import {AsyncLocalStorage} from 'node:async_hooks';
 const HTTP='https://api.mainnet.solana.com',WS='wss://api.mainnet.solana.com';
+const httpDispatchContext=new AsyncLocalStorage<object>();
+const HTTP_DISPATCH_ERROR_CODES=new Set(['ABORT_ERR','UND_ERR_ABORTED','UND_ERR_HEADERS_TIMEOUT','UND_ERR_BODY_TIMEOUT','UND_ERR_CONNECT_TIMEOUT','UND_ERR_SOCKET','UND_ERR_DESTROYED','UND_ERR_CLOSED','UND_ERR_INVALID_ARG','UND_ERR_REQUEST_CONTENT_LENGTH_MISMATCH','ECONNRESET','ECONNREFUSED','EHOSTUNREACH','ENETUNREACH','EPIPE','ETIMEDOUT','EAI_AGAIN','ENOTFOUND','ERR_TLS_CERT_ALTNAME_INVALID','DEPTH_ZERO_SELF_SIGNED_CERT','CERT_HAS_EXPIRED','UNABLE_TO_VERIFY_LEAF_SIGNATURE']);
+const observedHttpSockets=new WeakMap<object,{id:number;token:object;lastObservedAt:number|null}>();let nextHttpSocket=0;
+/** Observation only: never dispatches, changes an endpoint/agent, reads headers,
+ * or claims physical settlement. The endpoint argument permits loopback tests. */
+export function observeComponentHttpDispatch(now:()=>number,expectedEndpoint=HTTP){
+ const target=new URL(expectedEndpoint),token={},started=performance.now();
+ let request:object|null=null,createdAt:number|null=null,sentAt:number|null=null,responseAt:number|null=null,errorAt:number|null=null,
+  createdMono:number|null=null,sentMono:number|null=null,responseMono:number|null=null,socketId:number|null=null,previousAt:number|null=null,
+  socketPreviouslyObserved:boolean|null=null,responseStatus:number|null=null,errorCode:string|null=null,createdCount=0,sentCount=0,events=0,
+  failed=false,ambiguous=false,closed=false;
+ const subscriptions:Array<{name:string;listener:(value:unknown)=>void}>=[];
+ const stamp=()=>{const at=now();if(!Number.isSafeInteger(at)||at<0)throw Error();return at;};
+ const listen=(name:string,accept:(message:any)=>void)=>{const listener=(value:unknown)=>{if(closed)return;try{accept(value);}catch{failed=true;}};subscriptions.push({name,listener});try{channel(name).subscribe(listener);}catch{failed=true;}};
+ const counted=()=>{events=Math.min(1024,events+1);if(events===1024)ambiguous=true;};
+ listen('undici:request:create',message=>{
+  if(httpDispatchContext.getStore()!==token||!message||typeof message!=='object')return;
+  const candidate=message.request;if(!candidate||typeof candidate!=='object'||candidate.method!=='POST'||candidate.path!==target.pathname+target.search)return;
+  const origin=candidate.origin;let normalized:string;
+  if(origin instanceof URL)normalized=origin.origin;else if(typeof origin==='string'&&origin.length<=2048)normalized=new URL(origin).origin;else return;
+  if(normalized!==target.origin)return;counted();if(request===candidate)return;createdCount=Math.min(2,createdCount+1);
+  if(request!==null){ambiguous=true;return;}
+  request=candidate;createdAt=stamp();createdMono=performance.now()-started;
+ });
+ listen('undici:client:sendHeaders',message=>{
+  if(!message||typeof message!=='object'||message.request!==request||request===null)return;counted();sentCount=Math.min(2,sentCount+1);
+  if(sentCount>1){ambiguous=true;return;}sentAt=stamp();sentMono=performance.now()-started;
+  const socket=message.socket;if(!socket||typeof socket!=='object')return;
+  const previous=observedHttpSockets.get(socket);
+  if(previous){socketId=previous.id;socketPreviouslyObserved=previous.token!==token;previousAt=previous.lastObservedAt;}
+  else if(nextHttpSocket<Number.MAX_SAFE_INTEGER){socketId=++nextHttpSocket;socketPreviouslyObserved=false;}
+  else{failed=true;return;}
+  observedHttpSockets.set(socket,{id:socketId!,token,lastObservedAt:sentAt});
+ });
+ listen('undici:request:headers',message=>{
+  if(!message||typeof message!=='object'||message.request!==request||request===null)return;
+  const status=message.response?.statusCode;if(!Number.isSafeInteger(status)||status<200||status>599)return;counted();
+  if(responseAt!==null){ambiguous=true;return;}responseAt=stamp();responseMono=performance.now()-started;responseStatus=status;
+ });
+ listen('undici:request:error',message=>{
+  if(!message||typeof message!=='object'||message.request!==request||request===null)return;counted();if(errorAt!==null)return;errorAt=stamp();
+  const code=message.error?.code;errorCode=typeof code==='string'&&HTTP_DISPATCH_ERROR_CODES.has(code)?code:'UNAVAILABLE';
+ });
+ const finish=()=>{
+  closed=true;for(const {name,listener}of subscriptions)try{channel(name).unsubscribe(listener);}catch{failed=true;}
+  const usable=!failed&&!ambiguous,delta=(a:number|null,b:number|null)=>a!==null&&b!==null&&b>=a?b-a:null;
+  return {undiciObservation:failed?'unavailable-listener-observation':ambiguous?'ambiguous-multiple-request-or-send':request===null?'unavailable-no-matched-events':'observed',
+   undiciRequestCreatedAt:usable?createdAt:null,undiciSendHeadersHookAt:usable?sentAt:null,undiciResponseHeadersAt:usable?responseAt:null,undiciRequestErrorAt:usable?errorAt:null,
+   undiciRequestCreatedDelayMs:usable?createdMono:null,undiciHeadersDispatchDelayMs:usable?delta(createdMono,sentMono):null,undiciResponseHeadersDelayMs:usable?delta(sentMono,responseMono):null,
+   undiciSocketId:usable?socketId:null,undiciSocketPreviouslyObserved:usable?socketPreviouslyObserved:null,undiciSocketPreviousRequestAt:usable?previousAt:null,
+   undiciResponseStatus:usable?responseStatus:null,undiciRequestErrorCode:usable?errorCode:null,undiciMatchedRequestCount:createdCount,undiciSendHeadersHookCount:sentCount,undiciObservedEvents:events,
+   connectionReuse:!usable||socketPreviouslyObserved===null?'not-instrumented; inherited fetch dispatcher retained':socketPreviouslyObserved?'same-socket-observed-at-prior-request-hook':'first-observation-of-socket; prior-use-unavailable',
+   undiciMeaning:'Local Undici lifecycle only; sendHeaders is a pre-write hook, not proof bytes were transmitted. Not provider origin time or physical settlement; first socket observation does not prove a new connection.'};
+ };
+ return {run:<T>(work:()=>T):T=>httpDispatchContext.run(token,work),finish};
+}
 export type SignatureHistoryBatchRequest={key:string;params:readonly unknown[]};
 export type SignatureHistoryBatchItem<T=unknown>={key:string;id:string;status:'result'|'rpc-error';result?:T;errorCode?:number;requestedAt:number;responseReceivedAt:number;validatedAt:number};
 export type SignatureHistoryBatchResponse<T=unknown>={physicalRequestId:number;requestedAt:number;responseReceivedAt:number;validatedAt:number;responseBytes:number;physicalHttpStarts:1;logicalQueries:number;overloaded:boolean;items:SignatureHistoryBatchItem<T>[]};
@@ -30,10 +88,10 @@ export class ComponentTransport {
   }
   sampleSocket(){return this.activeConnection?this.sampleConnection(this.activeConnection):undefined;}
   private async httpJson(op:ComponentOperation,method:string,envelope:unknown,onHttpInvoked?:()=>void,maximumResponseBytes=2*1024*1024,historyBatch=false){
-    const requestedAt=this.now(),startedMono=performance.now();onHttpInvoked?.();
+    const requestedAt=this.now(),startedMono=performance.now();onHttpInvoked?.();const dispatchTiming=observeComponentHttpDispatch(this.now);
     let res:Response|undefined,headersAt:number|null=null,firstBodyAt:number|null=null,lastBodyAt:number|null=null,bodyCompleteAt:number|null=null,jsonDecodedAt:number|null=null,decodeMs:number|null=null,size=0,chunksReceived=0,outcome='not-completed';
     try{
-      try{res=await this.fetcher(HTTP,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(envelope),signal:op.signal,redirect:'error'});}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
+      try{res=await dispatchTiming.run(()=>this.fetcher(HTTP,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(envelope),signal:op.signal,redirect:'error'}));}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
       headersAt=this.now();const retryAfter=res.headers.get('retry-after');this.record('http-headers',{id:op.id,method,status:res.status,retryAfter:retryAfter?.slice(0,128)??null,at:headersAt,byteAccounting:'measured-body; response-header-and-wire-overhead-unmeasured'});
       // Stop at throttle headers; the unread body remains reserved uncertainty.
       if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
@@ -54,7 +112,7 @@ export class ComponentTransport {
     finally{
       // Bounded metadata also survives partial bodies. No payload, headers,
       // provider text, inferred TTFB origin or fabricated connection reuse.
-      const httpWorkEndedAt=this.now();this.record('http-lifecycle-timing',{id:op.id,method,requestedAt,headersAt,firstBodyAt,lastBodyAt,bodyCompleteAt,jsonDecodedAt,httpWorkEndedAt,status:res?.status??null,responseBytes:size,chunksReceived,outcome,aborted:op.signal.aborted,headersDelayMs:headersAt===null?null:headersAt-requestedAt,bodyAfterHeadersMs:bodyCompleteAt===null||headersAt===null?null:bodyCompleteAt-headersAt,jsonDecodeMonotonicMs:decodeMs,elapsedMonotonicMs:performance.now()-startedMono,connectionReuse:'not-instrumented; inherited fetch dispatcher retained',validationScope:'HTTP body/JSON only; caller owns envelope/domain validation and physical settlement'});
+      const dispatch=dispatchTiming.finish(),httpWorkEndedAt=this.now();this.record('http-lifecycle-timing',{id:op.id,method,requestedAt,headersAt,firstBodyAt,lastBodyAt,bodyCompleteAt,jsonDecodedAt,httpWorkEndedAt,status:res?.status??null,responseBytes:size,chunksReceived,outcome,aborted:op.signal.aborted,headersDelayMs:headersAt===null?null:headersAt-requestedAt,bodyAfterHeadersMs:bodyCompleteAt===null||headersAt===null?null:bodyCompleteAt-headersAt,jsonDecodeMonotonicMs:decodeMs,elapsedMonotonicMs:performance.now()-startedMono,...dispatch,validationScope:'HTTP body/JSON only; caller owns envelope/domain validation and physical settlement'});
     }
   }
   async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<T>{

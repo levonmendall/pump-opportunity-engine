@@ -1,0 +1,13 @@
+{
+  "node": "v24.19.0",
+  "internalUndiciSourceSha256": "19e00833036e7d25f20da1bc70dd4b19dd3081c051bfc9eea8f70d026534cad4",
+  "inspectedChannelPublishShapes": [
+    "channels.create.publish({ request: this })",
+    "channels.sendHeaders.publish({ request, headers: header, socket })",
+    "channels.headers.publish({ request: this, response: { statusCode, headers, statusText } })",
+    "channels.error.publish({ request: this, error })"
+  ],
+  "externalProviderRequests": 0,
+  "loopbackFixtureOnly": true,
+  "sourceFileSha256": "cfc8b2b00553931bc26493ec6547948cbcc6dcd783de5f23c5a0886f72c5da9d"
+}
