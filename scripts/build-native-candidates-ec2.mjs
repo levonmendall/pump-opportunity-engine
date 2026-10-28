@@ -11,10 +11,13 @@ import * as esbuild from 'esbuild';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const require=createRequire(import.meta.url);
-const output='/tmp/poe-native-candidate-output';
+const cli=process.argv.slice(2);
+const output=cli.length===2&&cli[0]==='--output-directory'?resolve(cli[1]):'/tmp/poe-native-candidate-output';
 const entry=join(root,'src/run-native-candidates.ts');
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const need=(condition,reason)=>{if(!condition)throw Error(reason);};
+need(cli.length===0||cli.length===2&&cli[0]==='--output-directory','BUNDLE_ARGUMENTS');
+need(/^\/tmp\/poe-native-candidate-output(?:-[a-z0-9-]+)?$/.test(output),'BUNDLE_OUTPUT_SCOPE');
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8',timeout:5000,maxBuffer:2*1024*1024}).trim();
 need(/^v24\./.test(process.version),'BUNDLE_REQUIRES_NODE24');

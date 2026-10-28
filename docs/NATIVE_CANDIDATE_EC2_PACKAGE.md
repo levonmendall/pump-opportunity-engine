@@ -8,6 +8,8 @@ node scripts/build-native-candidates-ec2.mjs
 
 The output is `/tmp/poe-native-candidate-output/{native-candidates.mjs,metadata.json}`. The build checks exact SDK/IDL transforms, pinned dependencies, pure-JS bigint handling, absence of ledger/native-addon inputs, and inert import from a directory without npm modules. This is an offline packaging check, not evidence of forward operation.
 
+For a corrected measurement, pass `--output-directory /tmp/poe-native-candidate-output-NAME` to retain prior builds and receipts unchanged.
+
 Root prepares the actual public input: unchanged explicit counterbooks, actual confirmed/finalized migration transactions, optional watch export, original pilot reporting identity and provenance hash. Set `source.commit` to the reviewed runner commit and `source.sha256` to the executable bundle SHA256. No credential belongs in the input.
 
 ```sh
