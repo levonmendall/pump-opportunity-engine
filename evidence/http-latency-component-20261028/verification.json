@@ -1,0 +1,64 @@
+{
+  "verifiedAt": "2026-10-28T21:57:42.343110+00:00",
+  "basedOn": "03953491cecb2e9ae07dbfadd34185fc6712adf6",
+  "sourceInspected": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+  "sourceRuntimeModified": false,
+  "marketRequests": 0,
+  "financialStateWrites": 0,
+  "focusedNodeTests": 13,
+  "embeddedPythonHostCases": 5,
+  "build": "PASS",
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/http-latency-probe.mjs",
+      "bytes": 15190,
+      "sha256": "e5cccf131586233029d1fba0a26e5b8586c9953c75f70a4c7edcda8de1aea8b0"
+    },
+    {
+      "path": "operator/native-paper-ec2/http-latency-plan.json",
+      "bytes": 1446,
+      "sha256": "0ae112efc0b428671e8f0f2070376a72291dbdb26a71b277389f9d23891ba4bb"
+    },
+    {
+      "path": "operator/native-paper-ec2/http-latency-run.py",
+      "bytes": 9174,
+      "sha256": "9f3befc3a691fb3d5f82e46e79d8359378e58219cce19454989fa5348098a946"
+    },
+    {
+      "path": "operator/native-paper-ec2/proposed-http-latency-workflow.yml",
+      "bytes": 2686,
+      "sha256": "85b912f0e60ca07ed24ed5c5477cb29de9d932d53318eb4a1f24a7d48e5005b4"
+    },
+    {
+      "path": "test/http-latency-component.test.ts",
+      "bytes": 9589,
+      "sha256": "dd53c985bac4967524736441500f69ebd369df7c6635133e6f0c982605d231d2"
+    },
+    {
+      "path": "test/http_latency_host_test.py",
+      "bytes": 4280,
+      "sha256": "bcc385e2a7aef8033940b2bccc0f298f40fbaf9d047dbf30ff3f78b06fe7cd04"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/source-cases.json",
+      "bytes": 5291,
+      "sha256": "1bc1d641fb48f41ed358c506d1d9da6e72eb2a2a28b46afbc18caa071a61ac74"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/focused-tests.txt",
+      "bytes": 1588,
+      "sha256": "0561de4d707fce4ae8cf4d9e3d8a7c5b769e4b29bea2bb113569bac1a60850bf"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/host-tests.txt",
+      "bytes": 103,
+      "sha256": "f5b0975bbc76eebbbbfbd9ff17140ccc843d8aa8dd46d365fb85c9b5f5446e84"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ],
+  "independentReview": "GO after actual-invocation pacing/reader-cancellation/parent-death/lease/cooldown fixes; final workflow pins regenerated"
+}

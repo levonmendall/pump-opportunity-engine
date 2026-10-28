@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "classification": "post-c189-historical-v-fresh-floor-latency-v1",
+  "endpoint": "https://api.mainnet.solana.com",
+  "pools": [
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "role": "repeated-timeout",
+      "contextFloor": 462628791,
+      "evidence": "c189 run40769349583:3/3 first-page no-header timeouts for21:29:50/21:30:00/21:30:10 targets; snapshotRows0 proves no before anchor; historical upper available1793223011670. Not current pricing state."
+    },
+    {
+      "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "role": "repeated-timeout",
+      "contextFloor": 462627573,
+      "evidence": "c189 run40769349583:3/3 first-page no-header timeouts for21:25:30/40/50 targets; snapshotRows0 proves no before anchor; historical upper available1793222751640. Not current pricing state."
+    },
+    {
+      "mint": "DgxHupiXCbjkqXAwijJDURbDnbvpf5UMPaLFcmMpump",
+      "pool": "oMwGi1ntDawN9qJBhCjBXWaE8Je171DEzKn1rwJTMJp",
+      "role": "successful-control",
+      "contextFloor": 462629120,
+      "evidence": "c189 run40769349583:verified target1793223080000; snapshotRows0/no before anchor; upper available1793223081624. events-004 line1613 sha256f2de118d4a4910a5914cd156c684afd2c93501ca2aa87de8f204dd6b19341cf7. Historical state only."
+    }
+  ]
+}
