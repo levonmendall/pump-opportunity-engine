@@ -1,0 +1,53 @@
+{
+  "reviewedAt": "2026-10-28T18:17:34.563980+00:00",
+  "baseCommit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+  "priorRepairCommit": "c5824e5c9e63a29d2c0b0905c4af780a0f9d87df",
+  "classification": "OFFLINE_JOB_CANCELLATION_CONTAINMENT_NOT_FORWARD_ACCEPTANCE",
+  "sourceFiles": [
+    {
+      "path": "src/pilot-native-flow.ts",
+      "sha256": "8dcd18372b109ee0360a713b4dcade304460ca73861eab2c51790bdffe25fab2"
+    },
+    {
+      "path": "test/pilot-native-flow.test.ts",
+      "sha256": "2b504c4a61ea1b25821af96013b8a90b242777e981e5f2e4217fa2e45ae8bd49"
+    },
+    {
+      "path": "test/native-settled-recovery.test.ts",
+      "sha256": "74251133f586d6fc63a32a3cab48823f936463bf6355d44efd6147122456335c"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-concurrency=2",
+        "test/pilot-native-flow.test.ts",
+        "test/native-settled-recovery.test.ts"
+      ],
+      "exitCode": 0,
+      "rawOutput": "evidence/native-support-containment-20261028/cancellation-review-focused.log",
+      "bytes": 10189,
+      "sha256": "647fad18862fadc517480b737007a9c4f5b33a0992154763034943bd938f935f"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "rawOutput": "evidence/native-support-containment-20261028/cancellation-review-build.log",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ],
+  "focusedTests": 84,
+  "networkCalls": 0,
+  "originalLedgerOpened": false,
+  "callerFinding": "Current NativeCandidateRunner passes the global run-controller signal; its3-second service admission has no separately timed job abort signal. The originally observed1.249-second support settlement is already covered by prior repair. This regression additionally covers a caller job cancellation without cancelling the independent source owner.",
+  "ownerShutdown": "Source.stop aborts the source-owned signal and makes live false; actual information cutoff prevents the recoverable-defer branch. No automatic retry is dispatched."
+}

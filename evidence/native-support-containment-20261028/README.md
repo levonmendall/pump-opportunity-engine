@@ -20,3 +20,9 @@ npm run build
 ```
 
 `verification.json` records exact source hashes, commands, timestamps, exit codes and raw output hashes.
+
+## Caller-cancellation review
+
+The current candidate runner passes its global run-controller signal to native service; the3-second support service admission does not create a separate job AbortSignal. The retained1.249-second request settlement is therefore covered by the original repair. A further offline regression covers an independently cancelled1.2-second caller job: the failed HTTP operation may settle at1.249seconds while source-owned capture and prior support remain valid. Job cancellation now leaves capture intact without dispatching an automatic retry. Source stop and the actual information cutoff still prevent deferred recovery; existing source expiry and all accounting/physical-settlement rules remain unchanged.
+
+The revised exact source passed84 focused tests and the TypeScript build. Three added tests exercise job cancellation, actual owner cutoff, and owner stop while HTTP is pending. Original81-test evidence remains unchanged; revised raw logs and hashes are in `cancellation-review-verification.json`. These are offline mechanics, not a new live interval.
