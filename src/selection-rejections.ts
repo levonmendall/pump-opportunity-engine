@@ -10,20 +10,34 @@ export type SelectionRejection={
   policyVersion:string;evidenceRef:string;
   releaseCondition:'cooldown-elapsed-and-fresh-revalidation'|'support-policy-version-change-and-fresh-revalidation';
 };
-export type SelectionRejectionLookup={blocked:boolean;record:SelectionRejection|null;releaseReason:'no-prior-rejection'|'cooldown-active'|'support-policy-unchanged'|'cooldown-expired-revalidate'|'support-policy-changed-revalidate'};
+export type TechnicalCapacityReassessment={
+  kind:'technical-observation-capacity';reassessAt:number;recordedExpiresAt:number;
+  releaseScope:'bounded-capacity-probe-only';predictiveRejection:false;entryPermission:false;
+};
+export type SelectionRejectionLookup={blocked:boolean;record:SelectionRejection|null;technicalCapacity?:TechnicalCapacityReassessment;releaseReason:'no-prior-rejection'|'cooldown-active'|'support-policy-unchanged'|'cooldown-expired-revalidate'|'support-policy-changed-revalidate'};
 export type SelectionRejectionStore={lookup(scope:RejectionScope,at?:number):SelectionRejectionLookup;reject(scope:RejectionScope,reason:string,evidenceRef:string,at?:number):SelectionRejection};
 const MAX_RECORDS=128,MAX_BYTES=64*1024;
+const TECHNICAL_REASONS=new Set(['POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN','SELECTED_ENRICHMENT_WOULD_EXCEED_RESERVED_CAPACITY']),CAPACITY_REASSESS_MS=30000,LEGACY_CAPACITY_MS=24*60*60*1000;
 const integer=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 function text(value:unknown,max:number):value is string {return typeof value==='string'&&value.length>0&&value.length<=max&&!/[\u0000-\u001f]/.test(value);}
 function scopeValid(scope:RejectionScope){for(const key of [scope.mint,scope.pool]){need(text(key,44),'INVALID_REJECTION_SCOPE');try{need(new PublicKey(key).toBase58()===key,'INVALID_REJECTION_SCOPE');}catch{throw Error('INVALID_REJECTION_SCOPE');}}}
 /** Global throttles/aborts/budget faults must never become per-pool cooldowns. */
-export function isPoolRejection(reason:string){return /^[A-Z][A-Z0-9_]{0,96}(?::[A-Za-z][A-Za-z0-9_]{0,48})?$/.test(reason)&&!reason.startsWith('RESEARCH_')&&!reason.startsWith('PREFLIGHT_')&&!reason.startsWith('SELECTION_REJECTIONS_')&&reason!=='TRANSACTION_SIGNATURE_MISMATCH'&&reason!=='TRANSACTION_HISTORY_CONTEXT_MISMATCH';}
+export function isPoolRejection(reason:string){return /^[A-Z][A-Z0-9_]{0,96}(?::[A-Za-z][A-Za-z0-9_]{0,48})?$/.test(reason)&&!reason.startsWith('RESEARCH_')&&!reason.startsWith('PREFLIGHT_')&&!reason.startsWith('SELECTION_REJECTIONS_')&&!reason.startsWith('PILOT_RPC_')&&!reason.startsWith('COMPONENT_')&&reason!=='TRANSACTION_SIGNATURE_MISMATCH'&&reason!=='TRANSACTION_HISTORY_CONTEXT_MISMATCH';}
 function expiry(reason:string,at:number):number|null {
-  if(reason==='POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN'||reason==='SELECTED_ENRICHMENT_WOULD_EXCEED_RESERVED_CAPACITY')return at+24*60*60*1000;
+  if(TECHNICAL_REASONS.has(reason))return at+CAPACITY_REASSESS_MS;
   if(reason==='INSUFFICIENT_RECENT_POOL_ACTIVITY'||reason==='FEWER_THAN_TWO_VERIFIED_RECENT_SWAP_TRANSACTIONS'||reason==='POOL_ACTIVITY_BASELINE_TOO_SHORT')return at+10*60*1000;
   if(reason==='POOL_HISTORY_HAS_UNKNOWN_BLOCK_TIME'||reason==='VERIFIED_POOL_ACTIVITY_IS_NO_LONGER_CURRENT'||reason==='VERIFIED_POOL_ACTIVITY_AGED_DURING_SUPPORT_CHECK'||reason==='SUPPORTED_QUOTE_STALE'||reason==='POOL_STATE_NOT_CURRENT_WITHIN_30_SECONDS'||reason==='MISSING_ACCOUNT'||reason==='MISSING_POOL_STATE'||reason==='POOL_LINKS_CHANGED')return at+60*1000;
   return null;
+}
+
+/** Legacy technical records remain immutable evidence. Only their current
+ * reassessment gate is capped; expiry never proves capacity or entry safety. */
+function effectiveExpiry(row:SelectionRejection):number|null {
+  return TECHNICAL_REASONS.has(row.reason)?Math.min(row.expiresAt!,row.observedAt+CAPACITY_REASSESS_MS):row.expiresAt;
+}
+function technicalCapacity(row:SelectionRejection):TechnicalCapacityReassessment|undefined {
+  return TECHNICAL_REASONS.has(row.reason)?{kind:'technical-observation-capacity',reassessAt:effectiveExpiry(row)!,recordedExpiresAt:row.expiresAt!,releaseScope:'bounded-capacity-probe-only',predictiveRejection:false,entryPermission:false}:undefined;
 }
 
 /** One standard flock lease, atomic replacement, fixed-size append history.
@@ -54,7 +68,7 @@ export class SelectionRejections implements SelectionRejectionStore {
     need(row&&Object.keys(row).sort().join('|')==='evidenceRef|expiresAt|mint|observedAt|policyVersion|pool|reason|releaseCondition','SELECTION_REJECTIONS_CORRUPT');
     try{scopeValid(row);}catch{throw Error('SELECTION_REJECTIONS_CORRUPT');}
     need(integer(row.observedAt)&&isPoolRejection(row.reason)&&text(row.evidenceRef,192)&&text(row.policyVersion,96),'SELECTION_REJECTIONS_CORRUPT');
-    need(row.expiresAt===null?row.releaseCondition==='support-policy-version-change-and-fresh-revalidation':integer(row.expiresAt)&&row.expiresAt>row.observedAt&&row.expiresAt===expiry(row.reason,row.observedAt)&&row.releaseCondition==='cooldown-elapsed-and-fresh-revalidation','SELECTION_REJECTIONS_CORRUPT');
+    need(row.expiresAt===null?row.releaseCondition==='support-policy-version-change-and-fresh-revalidation':integer(row.expiresAt)&&row.expiresAt>row.observedAt&&(row.expiresAt===expiry(row.reason,row.observedAt)||TECHNICAL_REASONS.has(row.reason)&&row.expiresAt===row.observedAt+LEGACY_CAPACITY_MS)&&row.releaseCondition==='cooldown-elapsed-and-fresh-revalidation','SELECTION_REJECTIONS_CORRUPT');
     // A timed rejection must not be forged into a policy-change-only record.
     need((expiry(row.reason,row.observedAt)===null)===(row.expiresAt===null),'SELECTION_REJECTIONS_CORRUPT');
   }
@@ -72,8 +86,8 @@ export class SelectionRejections implements SelectionRejectionStore {
     if(!latest)return {blocked:false,record:null,releaseReason:'no-prior-rejection'};
     need(at>=latest.observedAt,'SELECTION_REJECTIONS_CLOCK_REGRESSION');
     // A newer, shorter-lived refusal cannot erase an older active guard.
-    const active=matching.findLast(r=>r.expiresAt!==null?at<r.expiresAt:r.policyVersion===this.options.policyVersion),row=active??latest;
-    if(row.expiresAt!==null)return {blocked:at<row.expiresAt,record:structuredClone(row),releaseReason:at<row.expiresAt?'cooldown-active':'cooldown-expired-revalidate'};
+    const active=matching.findLast(r=>r.expiresAt!==null?at<effectiveExpiry(r)!:r.policyVersion===this.options.policyVersion),row=active??latest;
+    if(row.expiresAt!==null){const blocked=at<effectiveExpiry(row)!,capacity=technicalCapacity(row);return {blocked,record:structuredClone(row),...(capacity?{technicalCapacity:capacity}:{}),releaseReason:blocked?'cooldown-active':'cooldown-expired-revalidate'};}
     const same=row.policyVersion===this.options.policyVersion;
     return {blocked:same,record:structuredClone(row),releaseReason:same?'support-policy-unchanged':'support-policy-changed-revalidate'};
   }
