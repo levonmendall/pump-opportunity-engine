@@ -9,7 +9,7 @@ import{FlowWindow}from'../src/strategy.js';import{canonicalPumpPoolPda,PUMP_AMM_
 import type{NativeNotification}from'../src/pilot-native-flow.js';
 import{decodeMigrationIdentity,type MigrationIdentity}from'../src/migration-identity.js';
 import{auditNativeFlowWindow}from'../src/native-flow-audit.js';
-import type{PilotRpcCallOptions}from'../src/pilot-rpc.js';
+import{PilotRpc,type PilotRpcCallOptions}from'../src/pilot-rpc.js';
 const original=readFileSync('evidence/integration-2026-10-26T23-32-41.255Z.ndjson','utf8').trim().split('\n').map(x=>JSON.parse(x)).find(x=>x.kind==='migration-transaction')!.data;
 const originalSignature=original.transaction.signatures[0] as string;
 const sig=(n:number)=>{const b=Buffer.alloc(64);b.writeUInt32LE(n);return bs58.encode(b);};
@@ -366,4 +366,19 @@ test('HISTORY ROUTE primary cooldown permits separately ready audits only with a
 
 test('HISTORY ROUTE six ready targets blocked past deadline remain unusable while bounded degraded reporting retains service',async()=>{
  const f=fixture({maximumDeep:6});for(let i=1;i<=6;i++)f.seed(i);await f.steps(25);f.advance(70000);f.refresh();const getReady=f.rpc.historyQueryReadyAt;f.rpc.historyQueryReadyAt=()=>f.now+65000;const usage=f.rpc.usage.bind(f.rpc);f.rpc.usage=()=>{const u=usage();return {...u,historyRoute:{version:'publicnode-history-only-v1',endpoint:'https://solana-rpc.publicnode.com',method:'getSignaturesForAddress'},historyDispatchWindow:{...u.dispatchWindow,readyAt:f.now+65000}};};await f.runner.step();const view=f.runner.deadlineView();assert.equal(view.readyCount,6);assert.equal(view.unavailableReadyCount,6);assert.equal(view.conservativeReadyEnvelopeFits,false);assert.equal(f.runner.discretionaryAdmission(250).admitted,true,'known-unavailable audits must not silence degraded local status/backup');assert.equal(f.rpcCalls.length,0);assert.equal(f.runner.status().counters.predictiveAssessments,0);f.advance(10001);await f.runner.step();assert.equal(f.runner.status().counters.decisionDeadlineMisses,6,'unavailable targets remain explicitly lost, not completed');assert.equal(f.runner.status().counters.qualityGaps,0,'HTTP refusal is not a healthy WS capture gap');f.rpc.historyQueryReadyAt=getReady;await f.runner.stop();
+});
+
+
+for(const jitterMs of [1,5,50])test(`PLANNING CLOCK actual readiness helper serves three peers with ${jitterMs}ms computation jitter`,async()=>{
+ const f=fixture({maximumDeep:3});for(let i=1;i<=3;i++)f.seed(i);await f.steps(20);f.advance(70000);f.refresh();const target=Math.floor(f.now/10000)*10000,planningCalls:Array<{at:number|undefined;observedAt:number}>=[];
+ const query=Object.assign(Object.create(PilotRpc.prototype),{now:()=>{f.advance(jitterMs);return f.now;},mono:()=>f.now,options:{historyRoute:'publicnode-history-only-v1'},queryTimeouts:new Map(),historyCooldown:0,historyCooldownMono:0});
+ f.rpc.historyQueryReadyAt=(pool:string,planningAt?:number)=>{const readyAt=query.historyQueryReadyAt(pool,planningAt);planningCalls.push({at:planningAt,observedAt:f.now});return readyAt;};
+ for(let n=0;n<12&&f.runner.status().counters.predictiveAssessments<3;n++){await f.runner.step();f.advance(250);}
+ const assessments=f.records.filter(r=>r.kind==='native-predictive-assessment'&&r.data.windowEndAt===target);assert.equal(assessments.length,3);assert.ok(assessments.every(r=>r.data.at<target+10000));assert.ok(planningCalls.length>3);assert.ok(planningCalls.every(c=>c.at!==undefined&&c.observedAt>c.at),'deadline calendar, individual dispatch and quiet planning pass a stable decision clock');assert.equal(f.rpcCalls.length,3);assert.equal(f.maximumInFlight,1);assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);assert.equal(f.records.filter(r=>r.kind==='native-audit-dispatch-state'&&r.data.nextAction==='await-history-provider-or-query-cooldown').length,0,'elapsed computation alone is not a provider/query incident');await f.runner.stop();
+});
+
+test('PLANNING CLOCK real future query cooling still yields to healthy peers under advancing time',async()=>{
+ const f=fixture({maximumDeep:3});for(let i=1;i<=3;i++)f.seed(i);await f.steps(20);f.advance(70000);f.refresh();const first=[...f.states.values()][0]!,until=f.now+5000;
+ const query=Object.assign(Object.create(PilotRpc.prototype),{now:()=>{f.advance(1);return f.now;},mono:()=>f.now,options:{historyRoute:'publicnode-history-only-v1'},queryTimeouts:new Map([[first.scope.pool,{until,untilMono:until,failedAt:f.now,failures:1}]]),historyCooldown:0,historyCooldownMono:0});
+ f.rpc.historyQueryReadyAt=(pool:string,planningAt?:number)=>query.historyQueryReadyAt(pool,planningAt);for(let n=0;n<6&&f.runner.status().counters.predictiveAssessments<2;n++){await f.runner.step();f.advance(250);}assert.equal(f.runner.status().counters.predictiveAssessments,2);assert.ok(f.rpcCalls.every(r=>r.params[0]!==first.scope.pool));assert.ok(f.runner.status().candidates.some(c=>c.mint===first.scope.mint));assert.equal(f.runner.status().counters.qualityGaps,0);assert.equal(f.maximumInFlight,1);await f.runner.stop();
 });

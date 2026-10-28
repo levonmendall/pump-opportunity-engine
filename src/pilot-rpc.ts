@@ -232,11 +232,15 @@ export class PilotRpc{
     this.historyBatchCounts.physicalHttpStarts+=after.physicalHttpStarts-before.physicalHttpStarts;this.historyBatchCounts.logicalQueriesInvoked+=after.logicalQueriesStarted-before.logicalQueriesStarted;this.historyBatchCounts.logicalQueriesValidated+=success+errors;this.historyBatchCounts.successfulLogicalQueries+=success;this.historyBatchCounts.rpcErrorResponses+=errors;this.historyBatchCounts.providerBackoffBatches+=after.providerBackoffBatches-before.providerBackoffBatches;this.activeHistoryBatch.before=after;
   }
   signatureHistoryBatchUsage(){this.collectHistoryBatchCounts();return {scope:'THIS_PILOT_RUN',...this.historyBatchCounts,logicalQueriesWithoutValidatedResponse:this.historyBatchCounts.logicalQueriesInvoked-this.historyBatchCounts.logicalQueriesValidated,maximumResponseBytes:512*1024,disabledReason:this.historyBatchDisabledReason,meaning:'Validated counts describe JSON-RPC envelopes, not audited pool windows. One physical HTTP envelope contains multiple provider queries; provider batch eligibility and metering remain unverified.'};}
-  /** Query-local planning only; the shared physical gate remains authoritative. */
-  historyQueryReadyAt(pool:string):number{
+  /** Query-local planning only. A caller may freeze its decision clock so a
+   * healthy query does not become future work merely while readiness is read.
+   * Real cooldowns retain current wall/monotonic evidence; call()/perform() still
+   * recheck actual clocks, physical settlement and the single shared budget. */
+  historyQueryReadyAt(pool:string,planningAt?:number):number{
     if(typeof pool!=='string'||pool.length<32||pool.length>44||!/^[1-9A-HJ-NP-Za-km-z]+$/.test(pool))throw new PilotRpcUnavailable('INVALID_HISTORY_POOL');
-    const at=this.now(),mono=this.mono(),row=this.queryTimeouts.get(pool);if(!int(at)||!Number.isFinite(mono)||mono<0)throw new PilotRpcUnavailable('METHOD_CLOCK');
-    const provider=this.options.historyRoute===PUBLICNODE_HISTORY_ROUTE.version?Math.max(this.historyCooldown,at+Math.ceil(Math.max(0,this.historyCooldownMono-mono))):Math.max(this.cooldown,at+Math.ceil(Math.max(0,this.cooldownMono-mono)));return row?Math.max(at,provider,row.until,at+Math.ceil(Math.max(0,row.untilMono-mono))):Math.max(at,provider);
+    const observedAt=this.now(),at=planningAt??observedAt,mono=this.mono(),row=this.queryTimeouts.get(pool);if(!int(at)||!int(observedAt)||!Number.isFinite(mono)||mono<0)throw new PilotRpcUnavailable('METHOD_CLOCK');
+    const monoUntil=(until:number)=>until>mono?observedAt+Math.ceil(until-mono):0;
+    const provider=this.options.historyRoute===PUBLICNODE_HISTORY_ROUTE.version?Math.max(this.historyCooldown,monoUntil(this.historyCooldownMono)):Math.max(this.cooldown,monoUntil(this.cooldownMono));return row?Math.max(at,provider,row.until,monoUntil(row.untilMono)):Math.max(at,provider);
   }
   /** Native quiet first pages only. The shared perform/gate retains all existing
    * physical quotas and uncertainty; a shared failure cannot identify one pool. */

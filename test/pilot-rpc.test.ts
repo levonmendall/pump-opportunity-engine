@@ -344,3 +344,13 @@ test('late history429 headers retain their provider cooldown without changing pr
 test('a linked HTTP429 book requires an explicit history cooldown receipt when enabling the separate history route',()=>{
  const f=fixture();try{const prior=JSON.parse(readFileSync(f.old,'utf8'));prior.haltedReason='COMPONENT_HTTP_429';writeFileSync(f.old,JSON.stringify(prior));const before=readFileSync(f.old);assert.throws(()=>new PilotRpc({directory:join(f.directory,'missing-history'),runId:'missing-history',baselinePaths:[f.old],priorPhysicalSettled:true,priorCooldownUntil:215000,historyRoute:'publicnode-history-only-v1'}),/PRIOR_HISTORY_THROTTLE_RECEIPT_REQUIRED/);assert.equal(existsSync(join(f.directory,'missing-history')),false);writeFileSync(f.old,f.before);}finally{f.close();}
 });
+
+test('history readiness freezes only the planning floor across advancing clocks, never provider admission',async()=>{
+ const f=fixture({historyRoute:'publicnode-history-only-v1'},false,true);try{
+  const planningAt=f.now();f.advance(5);assert.equal(f.client.historyQueryReadyAt(HISTORY_POOL,planningAt),planningAt,'reading a healthy query cannot push it one millisecond into its own future');assert.ok(f.client.historyQueryReadyAt(HISTORY_POOL)>planningAt,'legacy no-argument planning still describes the current clock');assert.equal(f.client.usage().newUnits,0);
+  for(const invalid of [-1,0.5,NaN,Infinity])assert.throws(()=>f.client.historyQueryReadyAt(HISTORY_POOL,invalid),/METHOD_CLOCK/);
+ }finally{f.close();}
+ const blocked=fixture({historyRoute:'publicnode-history-only-v1',priorHistoryCooldownUntil:215000},false,true);try{
+  const planningAt=blocked.now();blocked.advance(5);assert.equal(blocked.client.historyQueryReadyAt(HISTORY_POOL,planningAt),215000);await assert.rejects(blocked.client.call('getSignaturesForAddress',[HISTORY_POOL]),/COOLDOWN/);assert.equal(blocked.client.usage().newUnits,0);assert.equal(await blocked.client.call('getMultipleAccounts'),123,'history planning cannot introduce a primary-provider cooldown');
+ }finally{blocked.close();}
+});

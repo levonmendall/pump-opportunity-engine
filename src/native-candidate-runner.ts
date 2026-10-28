@@ -127,7 +127,7 @@ export class NativeCandidateRunner{
    // first/current boundary reserves the next engine service turn; a checked
    // unavailable target forecasts the next bucket instead of locking reports.
    if(!ready&&!prospective&&end<=at)end=Math.floor(at/bucket)*bucket+bucket;
-   const minimumPageWorkMs=NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+NATIVE_DEADLINE_POLICY.postValidationMs,historyReadyAt=this.options.rpc.historyQueryReadyAt?.(c.identity.pool)??at,deadlineAt=end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs;
+   const minimumPageWorkMs=NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+NATIVE_DEADLINE_POLICY.postValidationMs,historyReadyAt=this.options.rpc.historyQueryReadyAt?.(c.identity.pool,at)??at,deadlineAt=end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs;
    targets.push({mint:c.identity.baseMint,eligibleAt:end,deadlineAt,ready,prospective,continuing:!!c.auditSession,minimumPageWorkMs,historyReadyAt,serviceableBeforeDeadline:Math.max(at,historyReadyAt)+minimumPageWorkMs<=deadlineAt});
   }
   targets.sort((a,b)=>a.deadlineAt-b.deadlineAt||a.mint.localeCompare(b.mint));
@@ -228,10 +228,10 @@ export class NativeCandidateRunner{
   * Busy continuations remain individual and never enter this batch. */
  private async evaluateQuietBatch(ready:readonly Candidate[],deadlineAt:number,signal?:AbortSignal){
   const callBatch=this.options.rpc.callSignatureHistoryBatch;if(!callBatch||ready.length<2||this.options.rpc.usage().signatureHistoryBatch?.disabledReason)return false;
-  const oldest=ready[0]!,target=oldest.auditSession?.windowEndAt??oldest.lastReadyWindowEnd;
-  if((this.options.rpc.historyQueryReadyAt?.(oldest.identity.pool)??this.now())>this.now())return false;
+  const oldest=ready[0]!,target=oldest.auditSession?.windowEndAt??oldest.lastReadyWindowEnd,planningAt=this.now();
+  if((this.options.rpc.historyQueryReadyAt?.(oldest.identity.pool,planningAt)??planningAt)>planningAt)return false;
   for(const c of ready){if(!this.open()||this.now()+NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+125>deadlineAt)break;if(this.candidates.get(c.identity.baseMint)!==c||c.auditSession&&c.auditSession.windowEndAt!==target||!c.auditSession&&c.lastReadyWindowEnd!==target)continue;if(!c.auditSession)await this.beginAudit(c,signal);await this.finishAudit(c);}
-  const selected=ready.flatMap(c=>{if(this.candidates.get(c.identity.baseMint)!==c)return [];const active=c.auditSession,page=active?.session.pending();if(!active||active.windowEndAt!==target||!page||page.page!==1||page.requestedLimit!==100||(this.options.rpc.historyQueryReadyAt?.(c.identity.pool)??this.now())>this.now())return [];return [{c,active,page}];});
+  const selectedAt=this.now(),selected=ready.flatMap(c=>{if(this.candidates.get(c.identity.baseMint)!==c)return [];const active=c.auditSession,page=active?.session.pending();if(!active||active.windowEndAt!==target||!page||page.page!==1||page.requestedLimit!==100||(this.options.rpc.historyQueryReadyAt?.(c.identity.pool,selectedAt)??selectedAt)>selectedAt)return [];return [{c,active,page}];});
   if(selected.length<2||selected[0]!.c!==oldest)return false;
   const dispatchedAt=this.now(),cutoff=Math.min(deadlineAt,...selected.map(s=>s.active.deadlineAt)),latestStartAt=cutoff-NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs;
   if(dispatchedAt+NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+125>cutoff)return false;
@@ -279,7 +279,7 @@ export class NativeCandidateRunner{
    // gate still admits valid WebSocket liveness/retirement controls above.
    if(!(pendingAudits.length&&usage.historyRoute&&!rpcGate?.physicalBusy&&usage.inFlight===0&&!usage.waitingOrOperating)&&rpcGate&&(rpcGate.physicalBusy||rpcGate.readyAt>at)){this.traceAuditDispatch(pendingAudits,at,'rpc-gate-wait',this.auditGateWaitAction(usage,rpcGate,'await-shared-pacing-or-http-cooldown'),this.auditDispatchContext(at,usage,flow));this.lastOutcome='native-rpc-shared-pacing';return 'wait';}
    const jobs:ResearchJob[]=[],serviceDeadline=servicePlan?Math.min(...(observedFlow as typeof observedFlow&{nativeServiceDeadlines?:Array<{deadlineAt:number}>}).nativeServiceDeadlines?.map(v=>v.deadlineAt-1500)??[Infinity]):flow.nextServiceAt-200;
-   const ready=this.readyAudits(at),dispatchable=ready.filter(c=>(this.options.rpc.historyQueryReadyAt?.(c.identity.pool)??at)<=at);
+   const ready=this.readyAudits(at),dispatchable=ready.filter(c=>(this.options.rpc.historyQueryReadyAt?.(c.identity.pool,at)??at)<=at);
    if(pendingAudits.length&&!dispatchable.length)this.traceAuditDispatch(pendingAudits,at,'rpc-gate-wait','await-history-provider-or-query-cooldown',this.auditDispatchContext(at,usage,flow));
    if(ready.length&&ready.some(c=>{if(c.auditSession)return false;const v=this.options.flow.snapshot(c.identity.baseMint,at);return !v?.supportContext||v.supportContext.bankClockAt<(v.features?.windowEndAt??Infinity);})){if(rpcGate&&(rpcGate.physicalBusy||rpcGate.readyAt>at)){this.traceAuditDispatch(ready,at,'rpc-gate-wait','await-primary-support-ceiling',this.auditDispatchContext(at,usage,flow));return 'wait';}if(at<this.nextCeilingRefreshAt){this.traceAuditDispatch(ready,at,'ceiling-backoff','await-bounded-ceiling-refresh',{...this.auditDispatchContext(at,usage,flow),nextCeilingRefreshAt:this.nextCeilingRefreshAt});return 'audit-ceiling-warming';}this.traceAuditDispatch(ready,at,'ceiling-refresh','refresh-confirmed-bank-ceiling',this.auditDispatchContext(at,usage,flow));this.nextCeilingRefreshAt=at+1500;this.options.flow.requestSupportRefresh();this.record('native-shared-audit-ceiling-requested',{at,mints:ready.map(c=>c.identity.baseMint),meaning:'coherent fresh confirmed SDK/Clock context; not a block timestamp or trade'});await this.options.flow.service(signal,this.admission(at+3000),servicePolicy);return 'audit-ceiling-support';}
    if(ready.length&&serviceDeadline-at<NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+125){
