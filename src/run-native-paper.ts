@@ -24,6 +24,7 @@ import {FinancialBackupStore} from './backup.js';
 import {fetchPublicUsdPrice} from './valuation.js';
 import {buildPilotPortfolio,pilotReportingPoints,pilotPortfolioReconciled,projectPilotFilledTrades,pilotExperimentalAccounting} from './pilot-reporting.js';
 import {readSourceVersion} from './source-version.js';
+import {verifyNativePaperBundleSource} from './native-paper-bundle.js';
 import {CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW} from './program-log-mapping.js';
 const MIB=1024*1024;
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
@@ -33,9 +34,9 @@ function directory(path:string){const s=lstatSync(path);need(s.isDirectory()&&!s
 function file(path:string,maximum:number){const s=lstatSync(path);need(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&s.nlink===1&&s.size<=maximum,'NATIVE_PAPER_PRIVATE_BOUNDED_FILE');return readFileSync(path);}
 function lease(path:string){const fd=openSync(path,constants.O_RDWR|constants.O_CREAT|constants.O_NOFOLLOW,0o600),s=lstatSync(path);need(s.isFile()&&s.uid===process.getuid?.()&&s.nlink===1&&(s.mode&0o077)===0,'NATIVE_PAPER_LEASE_OWNER');if(spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',fd],timeout:5000}).status!==0){closeSync(fd);throw Error('NATIVE_PAPER_RESEARCH_OWNER_EXISTS');}return fd;}
 /** Captured once, before opening the financial writer. Reporting never queries
- * mutable git. Unbundled compiled JS is refused; staged bundle closure needs
- * its separate reviewed packaging implementation before EC2 use. */
-function startupSource(input:{commit:string;sha256:string}){const path=fileURLToPath(import.meta.url);if(path.endsWith('.ts')){const version=readSourceVersion(dirname(path));need(version.commit===input.commit&&!version.dirty,'NATIVE_PAPER_FROZEN_SOURCE_REQUIRED');const root=dirname(path),files=[...readdirSync(root).filter(f=>f.endsWith('.ts')).sort(),'../package.json','../package-lock.json'],sha256=hash(JSON.stringify(Object.fromEntries(files.map(name=>[name,hash(readFileSync(join(root,name)))]))));return Object.freeze({commit:version.commit!,sha256,kind:'immutable-startup-typescript-source-tree',inputSha256:input.sha256});}throw Error('NATIVE_PAPER_VERIFIED_BUNDLE_CLOSURE_REQUIRED');}
+ * mutable git. Compiled JS is accepted only through the separately verified
+ * executable/worker/addon closure; arbitrary tsc output remains refused. */
+function startupSource(input:{commit:string;sha256:string}){const path=fileURLToPath(import.meta.url);if(path.endsWith('.ts')){const version=readSourceVersion(dirname(path));need(version.commit===input.commit&&!version.dirty,'NATIVE_PAPER_FROZEN_SOURCE_REQUIRED');const root=dirname(path),files=[...readdirSync(root).filter(f=>f.endsWith('.ts')).sort(),'../package.json','../package-lock.json'],sha256=hash(JSON.stringify(Object.fromEntries(files.map(name=>[name,hash(readFileSync(join(root,name)))]))));return Object.freeze({commit:version.commit!,sha256,kind:'immutable-startup-typescript-source-tree',inputSha256:input.sha256});}return verifyNativePaperBundleSource(path,input);}
 /** Reporting is discretionary local projection work. Its proposed budget is
  * measured, not a provider or disk-latency guarantee; overruns close new risk.
  * In particular a >500ms holding request must not permanently erase its next

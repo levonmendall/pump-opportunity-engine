@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "580337c660f638739ac1ee6171b4c2c2f9c5237d",
+  "scope": "OFFLINE_CLOUD_BUILD_AND_DISPOSABLE_PACKAGE_VALIDATION",
+  "providerRequests": 0,
+  "existingFinancialAccountRead": false,
+  "ec2FinancialRuntimeVerified": false,
+  "nativePaperTradingStarted": false,
+  "fullSuitePassed": false,
+  "focusedGuardChecksPassed": 6,
+  "typecheckPassed": true,
+  "files": {
+    "full.txt": {
+      "bytes": 177149,
+      "sha256": "b84b877cbc2bb3ec9ffed294cc2a5b160553f3fee8c9f568f8c9afa5b9b3aceb"
+    },
+    "build-fourth.txt": {
+      "bytes": 520,
+      "sha256": "3e5f637714611ba21911bf922c20c735fa0095a3b85c2a5f6f030101b07178cb"
+    },
+    "direct-disposable-probe-final.txt": {
+      "bytes": 1059,
+      "sha256": "b261556c377886ac2744ca190e56168a8159ccc2c104aa669ada84e278c22d20"
+    },
+    "build-types-final.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "direct-probe-without-authorization.txt": {
+      "bytes": 686,
+      "sha256": "f91195358c88140bb2b4786e5f5006264c68a2050ab028042031e822c058c10f"
+    },
+    "independent-review.md": {
+      "bytes": 3041,
+      "sha256": "9bb60b2fd5fa16bdfe271c39696fa692b1d80b269b483cab3387a93fe68f516a"
+    },
+    "build-types-host-ready.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "build-host-ready.txt": {
+      "bytes": 608,
+      "sha256": "60831e859c1bd978ee1543eea036a0b73b212659657f7ad6e1428753fa9be06b"
+    },
+    "direct-disposable-probe.txt": {
+      "bytes": 1059,
+      "sha256": "1abe5778ec565b070846306d62f683bde00d9e65e6101b1b7db03c92f822d96a"
+    },
+    "build-final.txt": {
+      "bytes": 603,
+      "sha256": "093835fa80ba6701d05be63db2ceb4a0343405bb6404137c6441819807e8e16b"
+    },
+    "reviewed-metadata.json": {
+      "bytes": 164840,
+      "sha256": "b6f6e3c3bc8bd76833b0ef39fba5cbb8fb23ac4e05f74be253e02c21b4acb267"
+    },
+    "build-release-review.txt": {
+      "bytes": 612,
+      "sha256": "4eb8a5ec7415622106f49cba54d55d3aae614941ce22335ed85662de792743e8"
+    },
+    "focused-final-release.txt": {
+      "bytes": 784,
+      "sha256": "bdd4975428ffcfd9ffbadd43b157cdf7063a9d16583844bafb6e66113539db74"
+    },
+    "build-reviewed.txt": {
+      "bytes": 606,
+      "sha256": "31b9db89536c81c809e887508028c6fda4753cc6e9f67fde40cd61fbb13f8297"
+    },
+    "build-types.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "compile.txt": {
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    },
+    "build-types-final-release.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "focused-final.txt": {
+      "bytes": 785,
+      "sha256": "44cbc70fc84de5cdb6528d7147fa724727e2ac0d28dbd360e1f44b3bc3489a54"
+    },
+    "README.md": {
+      "bytes": 5065,
+      "sha256": "48c21945fa2bf5b77783bfbd07e901bc58eef055e1bfbfc52b90180e3bb5622c"
+    },
+    "closure-focused-initial.txt": {
+      "bytes": 313,
+      "sha256": "5501eeb8e0fc8167d1abdfe7d940d18b9e4148dca7ee0d6cfd70332f7368480c"
+    },
+    "build-second.txt": {
+      "bytes": 1686,
+      "sha256": "92e2f585e719500e677d1f6ee35ac0d5ece52050744bbf466b43a1d3eee6723d"
+    },
+    "build-third.txt": {
+      "bytes": 519,
+      "sha256": "cf5dcfde8f15c25bcebb59c3d88870eb85fabfa000d0cb55e3c865c106ef3718"
+    }
+  }
+}

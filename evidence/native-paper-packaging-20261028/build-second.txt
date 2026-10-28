@@ -1,0 +1,27 @@
+file:///workspace/poe-native-paper-packaging/scripts/build-native-paper-ec2.mjs:18
+const need=(condition,reason)=>{if(!condition)throw Error(reason);};
+                                                    ^
+
+Error: BUNDLE_FINANCIAL_IMPORT_SMOKE_FAILED:file:///tmp/poe-native-paper-import-vGF8pe/probe.mjs:699
+    exports.getBinding = function(nativeBinding) {
+    ^
+
+ReferenceError: Cannot determine intended module format because both 'exports' and top-level await are present. If the code is intended to be CommonJS, wrap await in an async function. If the code is intended to be an ES module, use export instead of module.exports/exports.
+    at ../pump-opportunity-engine/node_modules/better-sqlite3/lib/binding.js (file:///tmp/poe-native-paper-import-vGF8pe/probe.mjs:699:5)
+    at __init (file:///tmp/poe-native-paper-import-vGF8pe/probe.mjs:15:56)
+    at ../pump-opportunity-engine/node_modules/better-sqlite3/lib/index.js (file:///tmp/poe-native-paper-import-vGF8pe/probe.mjs:723:43)
+    at __require2 (file:///tmp/poe-native-paper-import-vGF8pe/probe.mjs:18:50)
+    at file:///tmp/poe-native-paper-import-vGF8pe/probe.mjs:733:37
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async file:///tmp/poe-native-paper-import-vGF8pe/smoke.mjs:1:444 {
+  code: 'ERR_AMBIGUOUS_MODULE_SYNTAX'
+}
+
+Node.js v24.19.0
+
+    at need (file:///workspace/poe-native-paper-packaging/scripts/build-native-paper-ec2.mjs:18:53)
+    at file:///workspace/poe-native-paper-packaging/scripts/build-native-paper-ec2.mjs:137:290
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+Node.js v24.19.0
