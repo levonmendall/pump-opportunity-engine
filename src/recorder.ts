@@ -16,3 +16,5 @@ export class Recorder {
   }
   close(){if(this.closed)return;this.closed=true;try{fsyncSync(this.fd);}finally{closeSync(this.fd);}}
 }
+
+export {BoundedRotatingRecorder} from "./retained-recorder.js";

@@ -1,0 +1,4 @@
+{"case":"hardlink-state-pending","accepted":true,"outsideBytes":22,"outsideValue":"IRREPLACEABLE_ORIGINAL"}
+{"case":"concurrent-writer","code":"Error: ROTATING_EVIDENCE_WRITER_EXISTS","firstStillWrites":true}
+{"case":"maintenance-starts-before-pin","removedWhilePinPending":[],"pinComplete":true}
+{"accepted":6,"refusedAt":1000050,"recordAccepted":false,"newAccepted":true,"refusedRecords":2,"refusalReceipts":[1000000],"pin":{"complete":false,"proofId":"actual-refusal-inside","files":[],"bytes":0,"manifestSha256":null,"reason":"RANGE_CONTAINS_REFUSAL"}}
