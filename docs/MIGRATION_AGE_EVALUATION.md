@@ -224,8 +224,8 @@ The corrected frozen six-slot interval
 configuration is
 `4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d`.
 This is candidate-only operation with no financial entries or ledger resets.
-Its final scorecard must be read after natural settlement; an interim concurrency
-peak is not proof of sustained six-pool capacity. All 939 repository tests,
+Its settled results are reported below; an interim concurrency peak was not
+proof of sustained six-pool capacity. All 939 repository tests,
 build and compile passed before this interval.
 
 Separately, the existing EC2 administration route completed a read-only native
@@ -298,14 +298,17 @@ simultaneous scopes. It had 51 retrospectively audit-covered endpoints, but only
 assessment occurred at age **4.464 minutes** (`3B2Kz…`), with quiet buying features.
 That observation is useful scope evidence, not an estimate of early-market returns.
 
-| Migration age | Unique tokens observed in band | Raw complete feature endpoints | Timely audited assessments |
-|---|---:|---:|---:|
-| 0–1 minute | See source scorecard | 0 | Unavailable |
-| 1–3 minutes | See source scorecard | See source scorecard | Unavailable |
-| 3–5 minutes | See source scorecard | See source scorecard | 1, failed |
-| 5–120 minutes | Multiple bands, separated in source | See source scorecard | Valid failures; no passes |
-| 2–6 hours | Selected research only | See source scorecard | Valid failures; no passes |
-| 6–24 hours | Unobserved | Unavailable | Unavailable |
+| Migration age | Unique tokens observed in band | Raw complete endpoints | Audit-covered endpoints | Actual predictive pass / fail |
+|---|---:|---:|---:|---|
+| A: 0–1 minutes | 5 | 0 | 0 | Unavailable |
+| B: 1–3 minutes | 4 | 3 | 0 | Unavailable |
+| C: 3–5 minutes | 3 | 1 | 1 | 0 / 1 |
+| D: 5–10 minutes | 3 | 4 | 1 | 0 / 1 |
+| E: 10–30 minutes | 7 | 13 | 13 | 0 / 13 |
+| F: 30–60 minutes | 8 | 24 | 24 | 0 / 23 |
+| G: 60–120 minutes | 0 | 0 | 0 | Unavailable |
+| H: 2–6 hours | 12 | 12 | 12 | 0 / 12 |
+| I: 6–24 hours | 0 | 0 | 0 | Unavailable |
 
 This compact table does not merge overlapping windows or unique-token counts.
 The full A–I matrix and exact token timelines are in
@@ -331,3 +334,15 @@ bounded subscriptions, exact emitted-event mapping, support batching, reconnect
 invalidation and an independent-audit notification ledger. It is not yet the
 active integrated source. Its component result cannot be used to mark multi-pool
 or unattended acceptance complete. No 24-hour test has started.
+
+## Current independent-origin limitation
+
+The bounded INGUS origin search on 2026-10-28 made12physical starts, measured
+527response-body bytes and receivedHTTP429 withRetry-After10s before obtaining
+the creation transaction. The attempt stopped and settled; its old evidence and
+2MiB uncertainty remain linked, with no automatic retry or invented age. Indexed
+creation time remains a search hint, not cohort evidence. This limitation does
+not invalidate the independently verified SI/FRONGUS/WANSULEK origin times or
+the native FRONGUS window. It prevents assigning INGUS economic outcomes to an
+age cohort. Current cumulative actual units4643 are visibility/accounting, not
+an exhausted lifetime development grant. See age-origin-20261028 evidence.

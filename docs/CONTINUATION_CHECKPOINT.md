@@ -1,6 +1,6 @@
 # POE continuation checkpoint
 
-Updated 2026-10-28T03:35:29+00:00. Lead review branch `poe-free-data-evaluation-20261027`.
+Updated 2026-10-28T03:59:00+00:00. Lead review branch `poe-free-data-evaluation-20261027`.
 No forward runtime is currently running. Do not confuse a build or publisher
 heartbeat with a live observer/trader. All real-money operations remain disabled.
 
@@ -25,9 +25,9 @@ Three immutable intervals, same frozen baseline/config4f159a554019e1d9c52af7df82
 
 Read `evidence/age-forward-20261028/cpu-forward-three-intervals/` and exact
 per-token/audit-availability traces. Overlapping lookbacks are unioned; no market
-recall or profit percentage is supported. Current settled remote units4631 before
-the announced INGUS identity attempt; read actual books again before network.
-37,748,736 historical uncertain bytes remain preserved; no counter refund/reset.
+recall or profit percentage is supported. Current settled remote units4643 after the bounded INGUS identity attempt;
+read actual books again before network. Historical uncertainty44,040,192bytes is
+retained separately from measured response bytes; no counter refund/reset.
 
 ## Implemented changes / current lead
 
@@ -88,9 +88,16 @@ not a private financial-DB audit or a guarantee of present uptime.
  PublicSPKI/ciphertext only onGitHub; private transport key staysEC2UID994, token
  onlyprivatefile. Tests use synthetictokens; NOactualkey/token transfer executed.
  Root mustreview before hostprepare. No wallet/provider credentials eligible.
--market_report: one bounded INGUS origin attempt using EXISTINGrecoverPilotOrigin
- helper(24reads/20s/4MiB), indexedtime onlysearchhint, strictc/fproofrequired;
- announce/holdgloballease, preserve anyrefusal/no automatic widenedsearch.
+-INGUS origin attempt completed:12physicalstarts,527measuredresponsebytes,
+ HTTP429/Retry-After10s preserved; strict origin was NOT reached. No retry or
+ fabricated migration age. Evidence6d8ad17 cherried856ac22. Global Cloud lease
+ isfree; provider cooldown expired03:36:47.118UTC.
+-Native runner root review found a silent60s retained-candidate reassessment
+ delay, brittle2–4s audit slots, missing older-hint selection, and missing-proof
+ selection-head recovery. All four are being corrected BEFORE a new live run;
+ target remains each closed10s bucket with genuine full60s windows. Proposed
+ first trial audit uses one bounded1000-row page, complete-or-unusable, preserving
+ strict slot fences and timestamps. No six-pool live pass is claimed.
 
 ## Reporting / exact boundaries
 
