@@ -1,5 +1,5 @@
 import hashlib,importlib.util,json,pathlib,tempfile,unittest
-spec=importlib.util.spec_from_file_location('resources','/tmp/poe-analyze-sustained-resources.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+spec=importlib.util.spec_from_file_location('resources',pathlib.Path(__file__).with_name('analyze-sustained-resources.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 class Tests(unittest.TestCase):
  def fixture(self):
   index={'classification':'paper-public-projection-evidence','source':{'commit':'a'*40,'sha256':'b'*64},'accountId':'fixture','inceptionAt':1};rows=[]
