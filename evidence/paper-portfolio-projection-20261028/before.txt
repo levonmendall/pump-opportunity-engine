@@ -1,0 +1,35 @@
+✔ experimental portfolio uses exact account/source/outer timestamp and explicit unknown USD decomposition (31.975084ms)
+✔ reservations remain part of cash and do not create another asset or double debit (8.598688ms)
+✔ actual-size fresh liquidation includes locked rent once and stale/source-expired marks become unknown (11.981056ms)
+✔ only durable filled actions become trades; a real USD-unknown SOL exit remains visible with null costs (7.871405ms)
+✔ source projections whitelist decision and journal fields and reject unbounded history (9.083937ms)
+✔ reporting history starts with actual inception and a genuine unknown interval, and restart sequences remain durable (9.818641ms)
+✔ durable recent fills survive more than50 reconciliation rows and same-account restart without changing balances (25.056416ms)
+✔ a corrupted recent-fill projection is refused by source and backup recovery (423.016783ms)
+✔ history admission and portfolio use the same source bounds while fresh SOL marks survive unknownUSD (9.090567ms)
+✖ actual PaperTrader funnel extra diagnostic counters do not enter the strict financial snapshot (6.458134ms)
+✔ both limited-history labels fit the receiver bound without dropping limitation meanings (4.822339ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 862.596904
+
+✖ failing tests:
+
+test at test/pilot-reporting.test.ts:1:12965
+✖ actual PaperTrader funnel extra diagnostic counters do not enter the strict financial snapshot (6.458134ms)
+  Error: unexpected/missing fields
+      at object (/workspace/poe-paper-portfolio-projection/src/reporting.ts:30:77)
+      at validateSnapshot (/workspace/poe-paper-portfolio-projection/src/reporting.ts:99:13)
+      at buildPilotPortfolio (/workspace/poe-paper-portfolio-projection/src/pilot-reporting.ts:81:9)
+      at TestContext.<anonymous> (/workspace/poe-paper-portfolio-projection/test/pilot-reporting.test.ts:89:57)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)

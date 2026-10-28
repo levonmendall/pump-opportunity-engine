@@ -7,7 +7,8 @@ import {FinancialBackupStore} from '../src/backup.js';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PaperLedger,type Mark,type UsdPrice} from '../src/ledger.js';
-import {buildPilotPortfolio,pilotReportingPoints,pilotPortfolioReconciled,pilotExperimentalAccounting,projectPilotFilledTrades,type PilotPortfolioInput} from '../src/pilot-reporting.js';
+import {PaperTrader} from '../src/trader.js';
+import {buildPilotPortfolio,pilotReportingPoints,pilotPortfolioReconciled,pilotExperimentalAccounting,projectPilotFilledTrades,pilotPortfolioProjectionFailure,type PilotPortfolioInput} from '../src/pilot-reporting.js';
 import {validateSnapshot} from '../src/reporting.js';
 const T=Date.parse('2026-10-27T12:00:00Z'),MINT='fixture-reporting-mint';
 const price=(at:number,value='100000000'):UsdPrice=>({at,microUsdPerSol:value,source:'ISOLATED timestamped USD fixture'});
@@ -78,4 +79,32 @@ test('history admission and portfolio use the same source bounds while fresh SOL
  assert.equal(pilotPortfolioReconciled(future),false);assert.equal(buildPilotPortfolio(future).status.reconciled,false);assert.equal(pilotReportingPoints(input.history,{at,inceptionAt:T,running:true,reconciled:pilotPortfolioReconciled(future),tradingMicroUsd:input.projection.totalPnlMicroUsd,economicMicroUsd:null}).at(-1)!.tradingMicroUsd,null);
  const noUsd=f.input(at,marks,null),s=buildPilotPortfolio(noUsd);assert.equal(s.times.marketAt,new Date(at).toISOString());assert.equal(s.status.market,'observing');assert.equal(s.balances.equityUsd,null);assert.equal(s.balances.equitySol,'9.972');
  const accounting=pilotExperimentalAccounting(noUsd);assert.equal(accounting.at,at);assert.equal(accounting.totalPnlLamports,'-28000000');assert.equal(accounting.realizedLamports,'0');assert.equal(accounting.unrealizedLamports,'-28000000');assert.equal(accounting.executionCostsLamports,'7000');assert.equal(accounting.lockedDepositLamports,'2000000');assert.equal(pilotExperimentalAccounting(future).totalPnlLamports,null);assert.equal(pilotExperimentalAccounting(future).unrealizedLamports,null);
+});
+
+
+test('actual PaperTrader funnel extra diagnostic counters do not enter the strict financial snapshot',t=>{
+ const f=fixture(t),input=f.input();
+ const trader=new PaperTrader({ledger:f.ledger,now:()=>T,context:async()=>({price:price(T),marks:{}}),quote:async()=>null,costs:{gasLamports:'7000',depositLamports:'0',slippageBps:100,evidence:'ISOLATED reporting integration only'},recorder:{record:()=>{}}});
+ trader.funnel.discovered=5;trader.funnel.evaluated=2;trader.funnel.reserved=1;
+ const original=structuredClone(trader.funnel),snapshot=buildPilotPortfolio({...input,funnel:trader.funnel});
+ assert.deepEqual(Object.keys(snapshot.funnel).sort(),['discovered','supported','sufficientlyObserved','evaluated','qualified','attempted','paperFilled','exited','reconciled'].sort());
+ assert.equal(snapshot.funnel.discovered,5);assert.equal(snapshot.funnel.evaluated,2);assert.equal('reserved' in snapshot.funnel,false);
+ assert.equal(trader.funnel.reserved,1,'reserved remains a real operating diagnostic');assert.deepEqual(trader.funnel,original,'projection does not mutate the trader');
+ assert.equal(validateSnapshot(snapshot,input.identity,T),snapshot);
+ assert.throws(()=>buildPilotPortfolio({...input,funnel:{...trader.funnel,evaluated:-1}}),/nonnegative counter required/,'essential financial counters retain strict validation');
+});
+
+test('both limited-history labels fit the receiver bound without dropping limitation meanings',t=>{
+ const f=fixture(t),input=f.input(),journal=Array.from({length:50},(_,i)=>({revision:i,action_id:'fixture-attempt-'+i,at:T,kind:'attempt',detail:JSON.stringify({orderId:'unavailable-order-'+i})})),actionResults=new Map(journal.map(row=>[row.action_id,{status:'filled'}]));
+ const snapshot=buildPilotPortfolio({...input,journal,actionResults,history:{...input.history,windowLimited:true},tradeCache:{schemaVersion:1,accountId:input.state.accountId,inceptionAt:T,windowLimited:true,trades:[]}});
+ assert.ok(snapshot.history.label.length<=256);assert.match(snapshot.history.label,/WINDOW LIMITED/);assert.match(snapshot.history.label,/TRADE WINDOW LIMITED/);assert.match(snapshot.history.label,/passive SOL\/USD/);assert.match(snapshot.history.label,/50 recent fills lack order context/);assert.equal(validateSnapshot(snapshot,input.identity,T),snapshot);
+});
+
+
+test('projection failures expose their bounded stage and known reason without exporting arbitrary exceptions',()=>{
+ assert.deepEqual(pilotPortfolioProjectionFailure('portfolio',Error('unexpected/missing fields')),{stage:'portfolio',code:'snapshot-schema-mismatch'});
+ assert.deepEqual(pilotPortfolioProjectionFailure('history',Error('PILOT_REPORTING_TIME_REGRESSION')),{stage:'history',code:'reporting-time-regression'});
+ for(const error of [Error('SECRET_PROVIDER_KEY /private/ledger.sqlite payload=DO_NOT_EXPORT'),{message:'unexpected/missing fields'},null]){
+  const diagnostic=pilotPortfolioProjectionFailure('trades',error);assert.deepEqual(diagnostic,{stage:'trades',code:'projection-unavailable'});assert.ok(!JSON.stringify(diagnostic).includes('DO_NOT_EXPORT'));
+ }
 });

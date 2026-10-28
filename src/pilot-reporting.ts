@@ -77,6 +77,29 @@ export function buildPilotPortfolio(input:PilotPortfolioInput):Snapshot {
   positions:Object.values(s.positions).map(position=>({mint:position.mint,label:position.mint,quantity:position.units,enteredAt:iso(position.enteredAt),entryCostUsd:micro(position.costMicroUsd)!,netLiquidationUsd:currentPrice!==null&&validMark(position.mint)?usd(input.marks[position.mint]!.netLamports,currentPrice):null,executionCostsUsd:Number(BigInt(position.costMicroUsd)*BigInt(position.entryGas)/(BigInt(position.entryGas)+BigInt(position.entryLamports)))/1e6,status:'PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)'})),
   trades,decisions:input.decisions.slice(-50).map(d=>({id:shortId('decision',JSON.stringify([d.at,d.mint,d.stage,d.reason])),mint:d.mint,at:iso(d.at),stage:d.stage,reason:d.reason})),pnl:history,
   history:{windowStartAt:history[0]?.at??null,downsampled:input.history.downsampled,label:`${input.history.windowLimited?'WINDOW LIMITED. ':''}${input.tradeCache?.windowLimited?'TRADE WINDOW LIMITED. ':''}Actual samples; >15s/stopped/unreconciled gaps; max720. Max50 durable fills cached; ${unresolvedFilledRows} recent fills lack order context. Historical USD P&L/gas unverified; portfolio change includes passive SOL/USD.`},
-  funnel:{...input.funnel},metrics:{processingLagMs:input.metrics.processingLagMs,eventLoopLagMs:input.metrics.eventLoopLagMs,providerEvents:input.metrics.providerEvents,rpcRequests:input.metrics.rpcRequests,projectedDailyDataSol:null,budgetRemainingSol:null,budgetStatus:input.metrics.rpcAvailable?'available':'degraded',coverage:'Current-run counters; experimental admitted candidates only; raw feed messages and shared physical operation counts. No independent full-market denominator. Held actual-size marks require fresh coherent validated state.',latency:'Held market time is the oldest validated bank Clock, not getBlockTime. No real transaction landing claim.'}};
+  // Operational funnels may also contain reservation and diagnostic counters.
+  // The authenticated financial snapshot has an exact nine-counter schema.
+  funnel:{discovered:input.funnel.discovered,supported:input.funnel.supported,sufficientlyObserved:input.funnel.sufficientlyObserved,evaluated:input.funnel.evaluated,qualified:input.funnel.qualified,attempted:input.funnel.attempted,paperFilled:input.funnel.paperFilled,exited:input.funnel.exited,reconciled:input.funnel.reconciled},metrics:{processingLagMs:input.metrics.processingLagMs,eventLoopLagMs:input.metrics.eventLoopLagMs,providerEvents:input.metrics.providerEvents,rpcRequests:input.metrics.rpcRequests,projectedDailyDataSol:null,budgetRemainingSol:null,budgetStatus:input.metrics.rpcAvailable?'available':'degraded',coverage:'Current-run counters; experimental admitted candidates only; raw feed messages and shared physical operation counts. No independent full-market denominator. Held actual-size marks require fresh coherent validated state.',latency:'Held market time is the oldest validated bank Clock, not getBlockTime. No real transaction landing claim.'}};
  return validateSnapshot(snapshot,identity,at);
+}
+
+
+export type PilotPortfolioProjectionStage='valuation'|'history'|'trades'|'portfolio'|'accounting';
+/** Static bounded diagnostics only. Provider payloads, paths, ledger details and
+ * arbitrary exception messages never become reporting fields. */
+export function pilotPortfolioProjectionFailure(stage:PilotPortfolioProjectionStage,error:unknown){
+ const known:Readonly<Record<string,string>>={
+  'PILOT_REPORTING_IDENTITY':'account-identity',
+  'PILOT_REPORTING_TIME':'reporting-time',
+  'PILOT_REPORTING_TIME_REGRESSION':'reporting-time-regression',
+  'PILOT_REPORTING_JOURNAL_BOUND':'journal-bound',
+  'PILOT_REPORTING_JOURNAL':'journal-shape',
+  'unexpected/missing fields':'snapshot-schema-mismatch',
+  'bounded text required':'snapshot-text-bound',
+  'nonnegative counter required':'snapshot-counter-invalid',
+  'snapshot payload limit':'snapshot-payload-bound',
+  'history chronology/account mismatch':'snapshot-history-chronology',
+  'reporting trade durable evidence mismatch':'trade-evidence-mismatch',
+ };
+ return {stage,code:error instanceof Error&&Object.hasOwn(known,error.message)?known[error.message]!:'projection-unavailable'};
 }
