@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "preparedAt": "2026-10-28T02:00:52.706Z",
+  "scope": "Explicitly reviewed four-request continuation after local proxy-invocation defect; original failed request, zero measured bytes and full uncertain reservation preserved; no automatic retries",
+  "limits": {
+    "maximumRequests": 4,
+    "pages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "aggregateOriginalAndContinuationMaximumStarts": 5,
+    "minimumPhysicalStartSpacingMs": 12000,
+    "maximumElapsedMs": 100000,
+    "shutdownReserveMs": 5000,
+    "requestTimeoutMs": 8000,
+    "perResponseBytes": 262144,
+    "totalResponseBytes": 2097152,
+    "applicationStopBytes": 1835008,
+    "retainedBytes": 1048576,
+    "maximumRssBytes": 268435456,
+    "oneInFlight": true,
+    "noAutomaticRetries": true
+  },
+  "selection": {
+    "universe": "All rows on independent current PumpSwap DEX pages 1–4, sorted by documented h24_volume_usd_desc. Not a historical or exhaustive census.",
+    "leadRule": "Valid public addresses; canonical PumpSwap SOL-quoted PDA address consistency; index-created age >=0 and <=6h at that page receipt. Index time remains UNVERIFIED, not an on-chain migration proof or current support validation.",
+    "activityFilter": "NONE: retain every qualifying lead, including zero-activity and weak controls.",
+    "outcomeSelection": "NONE: population frozen at completion, before any later outcome retrieval.",
+    "marketRecallDenominator": false
+  },
+  "source": {
+    "tool": "scripts/capture-age-reference.ts",
+    "sha256": "fe70c6fe21d9075fa81d93523efb06948018ed5a2563c8624ecbdf3b321e4ca0",
+    "basedOn": "scripts/capture-forward-reference.ts",
+    "basedOnSha256": "6713a511f2d994f3454d0c86d8c829c51af7b2aaafbb278326cdde2fe0e6b021"
+  },
+  "prior": {
+    "path": "/workspace/poe-overload-repair/evidence/age-reference-20261028/index-usage-correction-001.json",
+    "sha256": "e83a39faf54007de0c8175f2b89d0a5e966d3515f6b78ee1e0fb80b8835fa556",
+    "completedAt": "2026-10-28T01:59:58.778Z",
+    "cumulative": {
+      "requestStarts": 36,
+      "measuredBodyBytes": 895373,
+      "uncertainBodyBytes": 262416
+    }
+  },
+  "terms": {
+    "path": "/workspace/poe-overload-repair/evidence/opportunity-coverage-20261027/reference-raw/official-public-api.html",
+    "sha256": "703809713750f9873b6ef4375ff796ed7ace492294940551fbc20bf3f2ef17c9",
+    "claim": "Public keyless API documented 10 calls/min; own >=12s physical start spacing. Documentation is historical cached evidence; actual responses determine this test."
+  }
+}
