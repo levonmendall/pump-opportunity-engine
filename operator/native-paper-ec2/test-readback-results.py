@@ -157,4 +157,24 @@ class ObservationDiagnostics(unittest.TestCase):
   with fixture()as f:
    raw=(f['run']/'events-001.ndjson').read_bytes();raw+=m.encode({'kind':'native-candidate-quality-gap','sequence':3,'receivedAt':'2026-10-28T12:34:56.789Z','data':{'mint':'1'*44,'at':1000,'reason':'NATIVE_FLOW_SUPPORT_EXPIRED','rawProviderPayload':SECRET.decode()}});raw+=m.encode({'kind':'http-headers','data':{'id':4,'at':1001,'status':429,'retryAfter':'2','authorization':SECRET.decode()}});put(f['run']/'events-001.ndjson',raw);prepare(f);entries=archive_entries(f);events=[json.loads(v)for v in entries['segments/0/selected-events.ndjson'].splitlines()];kinds=[v['kind']for v in events];self.assertIn('native-candidate-quality-gap',kinds);self.assertIn('http-headers',kinds);summary=json.loads(entries['event-summary.json'])[0];self.assertFalse(summary['completeMarketEvidenceIncluded']);self.assertIn('metadata only',summary['observationDiagnostics']);self.assertFalse(any(SECRET in v for v in entries.values()))
 
+
+class PackageIdentity(unittest.TestCase):
+ def reviewed(self):
+  raw=(pathlib.Path(__file__).parents[2]/'evidence/paper-observation-readback-20261028/package-identity/reviewed-run-package-255a4ab.json').read_bytes();self.assertEqual(m.digest(raw),'6fc4cddff7e7c53489c8bcdf643d6ee7415868d9fd370281a0a9fa510dec5260');value=m.parse(raw);return raw,value,value['source']
+ def test_actual_reviewed_git_blob_and_its_known_compact_save_are_both_exactly_hash_bound(self):
+  raw,value,source=self.reviewed();expected=m.digest(raw);direct=m.verify_package_identity(raw,expected,source);compact=m.encode(value);legacy=m.verify_package_identity(compact,expected,source)
+  self.assertEqual(direct['representation'],'exact-reviewed-bytes');self.assertEqual(legacy['representation'],'legacy-compact-save-of-exact-reviewed-two-space-json');self.assertEqual(legacy['savedPackageSha256'],m.digest(compact));self.assertEqual(legacy['reviewedPackageSha256'],expected);self.assertNotEqual(m.digest(compact),expected);self.assertTrue(legacy['exactReviewedRepresentationHashVerified']);self.assertFalse(legacy['historicalPackageRewritten']);self.assertFalse(legacy['semanticEquivalenceAloneAccepted'])
+ def test_semantic_mutations_key_order_arbitrary_spacing_wrong_hash_and_duplicates_refuse(self):
+  raw,value,source=self.reviewed();expected=m.digest(raw);changed=copy.deepcopy(value);changed['limits']['segmentSeconds']+=1;reordered=dict(reversed(list(value.items())))
+  for candidate in [m.encode(changed),m.encode(reordered),m.encode(value)+b'\n',json.dumps(value,indent=1).encode()+b'\n']:
+   with self.subTest(candidate=candidate[:30]),self.assertRaisesRegex(m.Guard,'SUPERVISION_PACKAGE_HASH_MISMATCH'):m.verify_package_identity(candidate,expected,source)
+  for wrong in ['f'*64,'bad',None]:
+   with self.assertRaisesRegex(m.Guard,'SUPERVISION_PACKAGE_HASH_MISMATCH'):m.verify_package_identity(m.encode(value),wrong,source)
+  duplicate=raw.replace(b'"schemaVersion": 1,',b'"schemaVersion": 1, "schemaVersion": 1,',1)
+  with self.assertRaisesRegex(m.Guard,'DUPLICATE_JSON_FIELD'):m.verify_package_identity(duplicate,m.digest(duplicate),source)
+  with self.assertRaisesRegex(m.Guard,'SUPERVISION_PACKAGE_HASH_MISMATCH'):m.verify_package_identity(raw,expected,{'commit':'f'*40,'sha256':'e'*64})
+ def test_legacy_private_files_stay_unchanged_and_append_only_identity_proof_is_archived(self):
+  with fixture()as f:
+   value={'schemaVersion':1,'source':SOURCE,'limits':{'synthetic':True}};reviewed=(json.dumps(value,indent=2)+'\n').encode();saved=put(f['root']/'package.json',m.encode(value));f['supervisor']['packageSha256']=m.digest(reviewed);supervisor=put(f['root']/'supervisor.json',f['supervisor']);prepare(f);entries=archive_entries(f);proof=m.parse(entries['package-identity-verification.json']);self.assertEqual(entries['package.json'],saved);self.assertEqual((f['root']/'package.json').read_bytes(),saved);self.assertEqual((f['root']/'supervisor.json').read_bytes(),supervisor);self.assertEqual(proof['reviewedPackageSha256'],m.digest(reviewed));self.assertEqual(proof['savedPackageSha256'],m.digest(saved));self.assertFalse(proof['historicalSupervisorRewritten'])
+
 if __name__=='__main__':unittest.main()

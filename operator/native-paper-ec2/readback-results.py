@@ -228,6 +228,20 @@ def write_new(fd,name,raw):
   while at<len(raw):at+=os.write(f,raw[at:])
   os.fsync(f)
  finally:os.close(f)
+def verify_package_identity(raw,reviewed_sha,expected_source):
+ # The first supervisor saved a compact reserialization while retaining the
+ # SHA of the exact reviewed two-space JSON. Do not rewrite either old file or
+ # accept arbitrary semantic equivalence: reconstruct that one exact byte form.
+ need(sha(reviewed_sha),'SUPERVISION_PACKAGE_HASH_MISMATCH')
+ value=parse(raw);need(type(value)is dict and value.get('source')==expected_source,'SUPERVISION_PACKAGE_HASH_MISMATCH')
+ actual=digest(raw);mode='exact-reviewed-bytes'
+ if actual!=reviewed_sha:
+  need(raw==encode(value),'SUPERVISION_PACKAGE_HASH_MISMATCH')
+  reconstructed=(json.dumps(value,indent=2,ensure_ascii=True)+'\n').encode('ascii')
+  need(len(reconstructed)<=128*1024 and digest(reconstructed)==reviewed_sha,'SUPERVISION_PACKAGE_HASH_MISMATCH')
+  mode='legacy-compact-save-of-exact-reviewed-two-space-json'
+ return {'schemaVersion':1,'kind':'poe-supervision-package-identity-verification-v1','savedPackageSha256':actual,'reviewedPackageSha256':reviewed_sha,'representation':mode,'source':expected_source,'exactReviewedRepresentationHashVerified':True,'historicalPackageRewritten':False,'historicalSupervisorRewritten':False,'semanticEquivalenceAloneAccepted':False}
+
 def prepare_from_base_fd(base_fd,uid,run_id,attempt):
  number(run_id,(1<<64)-1,True);number(attempt,(1<<64)-1,True);h.private_directory(base_fd,uid)
  with contextlib.ExitStack()as stack:
@@ -242,8 +256,8 @@ def prepare_from_base_fd(base_fd,uid,run_id,attempt):
    except ProcessLookupError:pass
   need(supervisor.get('publisherGroupSettled')is True,'PUBLISHER_NOT_SETTLED')
   account_fd=directory(base_fd,'account',uid);stack.callback(os.close,account_fd);runs_fd=directory(account_fd,'runs',uid);stack.callback(os.close,runs_fd)
-  package_raw=read(root,'package.json',uid,128*1024);need(digest(package_raw)==supervisor.get('packageSha256')and parse(package_raw).get('source')==expected,'SUPERVISION_PACKAGE_HASH_MISMATCH')
-  entries={'supervisor.json':supervisor_raw,'package.json':package_raw};summaries=[];last=None
+  package_raw=read(root,'package.json',uid,128*1024);package_identity=verify_package_identity(package_raw,supervisor.get('packageSha256'),expected)
+  entries={'supervisor.json':supervisor_raw,'package.json':package_raw,'package-identity-verification.json':encode(package_identity)};summaries=[];last=None
   for i,segment in enumerate(segments):
    run=segment.get('sourceRunId');need(isinstance(run,str)and re.fullmatch('native-paper-[0-9]{14,20}',run),'SEGMENT_RUN_ID_REQUIRED');r=directory(runs_fd,run,uid);stack.callback(os.close,r)
    raw=read(r,'result.json',uid,4*MIB);last=source(parse(raw),expected);need(last['runId']==run and last.get('running')is False,'STOPPED_RESULT_REQUIRED')

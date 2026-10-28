@@ -104,3 +104,14 @@ successful/unconfirmed/status-disagreement lists have explicitly labelled first
 independent market denominators. Complete original events remain private.
 The existing4MiB projected-event ceiling still fails before export on pressure;
 it never silently discards selected diagnostic records or changes qualification.
+
+The first bounded supervisor retained a compact serialization of its package,
+while its receipt correctly pinned the original reviewed two-space JSON. Old
+private files and the failed readback remain unchanged. The readback now accepts
+that historical representation only when the saved bytes equal its exact compact
+encoder and reconstructing two-space ASCII JSON plus one newline hashes to the
+original reviewed package SHA256. Parsed key order is preserved; semantic field
+similarity alone is never accepted. Exact-byte packages retain the direct hash
+path. The archive adds `package-identity-verification.json`, naming the actual
+saved hash, reviewed hash and representation. This is a readback compatibility
+proof, not a financial-state repair or a new runtime result.
