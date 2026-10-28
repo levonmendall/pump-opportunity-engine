@@ -46,12 +46,13 @@ jobs:
             --package "$GITHUB_WORKSPACE/scripts/poe/native-candidates" \
             --manifest-sha256 "$POE_PACKAGE_SHA256"
       - name: Export bounded public research receipts and selected evidence
-        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_EVIDENCE_EXPORT_READY == 'true'
+        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE != 'candidate-native-two-hour-research-v1' && env.POE_NATIVE_EVIDENCE_EXPORT_READY == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: poe-native-candidates-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/export/index.json
+            ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/export/archive.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/before.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/after.json
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/supervisor.json
@@ -70,9 +71,9 @@ jobs:
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/reporting-evidence/*.json
           if-no-files-found: warn
           retention-days: 1
-          compression-level: 0
+          compression-level: 6
       - name: Preserve bounded failure summaries when full evidence export was not verified
-        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_EVIDENCE_EXPORT_READY != 'true'
+        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE != 'candidate-native-two-hour-research-v1' && env.POE_NATIVE_EVIDENCE_EXPORT_READY != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: poe-native-candidates-INCOMPLETE-EVIDENCE-${{ github.run_id }}-${{ github.run_attempt }}
@@ -89,4 +90,22 @@ jobs:
             ${{ env.POE_NATIVE_RESEARCH_DIRECTORY }}/reporting-evidence/*.json
           if-no-files-found: warn
           retention-days: 1
-          compression-level: 0
+          compression-level: 6
+      - name: Record bounded durable archive receipt without uploading an artifact
+        if: always() && env.POE_NATIVE_RESEARCH_DIRECTORY != '' && env.POE_NATIVE_RESEARCH_PROFILE == 'candidate-native-two-hour-research-v1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -I - <<'PY'
+          import json,os,pathlib,stat
+          root=pathlib.Path(os.environ['POE_NATIVE_RESEARCH_DIRECTORY'])
+          expected=pathlib.Path('/home/mm-ec2-runner/.local/share/poe-native-research')
+          assert root.parent==expected and root.resolve()==root and os.getuid()==994
+          path=root/'export/archive.json'
+          if not path.exists():
+              print(json.dumps({'archiveComplete':False,'rawEvidenceRetained':True,'evidenceDirectory':str(root),'meaning':'No completed archive receipt; do not infer export success.'}))
+          else:
+              s=path.lstat();assert stat.S_ISREG(s.st_mode) and not path.is_symlink() and s.st_uid==994 and s.st_size<=131072
+              value=json.loads(path.read_text())
+              print(json.dumps({'archiveComplete':value.get('complete') is True,'archive':value.get('archive'),'uncompressedSelectedBytes':value.get('uncompressedSelectedBytes'),'selectedEvidenceBytes':value.get('selectedEvidenceBytes'),'rawEvidenceRetained':True,'evidenceDirectory':str(root),'failure':value.get('failure'),'apiPurchase':False,'infrastructureTransferCost':'Existing allowance/cost remains unverified; no artifact storage upload.'},sort_keys=True))
+          PY

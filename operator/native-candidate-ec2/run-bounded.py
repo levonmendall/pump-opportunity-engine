@@ -13,10 +13,12 @@ import json
 import os
 import pathlib
 import pwd
+import resource
 import shutil
 import signal
 import stat
 import subprocess
+import tarfile
 import time
 import urllib.request
 
@@ -24,6 +26,11 @@ MIB = 1024 * 1024
 OUTER_SECONDS = 1020
 OBSERVATION_SECONDS = 900
 FINAL_REPORT_SECONDS = 45
+TWO_HOUR_PROFILE = "candidate-native-two-hour-research-v1"
+DEFAULT_OBSERVATION_POLICY = "observation-age-v1"
+STUDY_OBSERVATION_POLICY = "observation-age-selected-24h-study-v1"
+DEFAULT_HOST_LIMITS = {"durationSeconds": 900, "outerSeconds": 1020, "finalPublisherDrainSeconds": 45, "runnerTimeoutSeconds": 915, "workflowTimeoutMinutes": 20, "candidateSlots": 6, "heapMiB": 256, "runnerRssMiB": 384, "runnerCpuSeconds": 240, "publisherCpuSeconds": 15, "archiveCpuSeconds": 30, "archiveRssMiB": 256, "temporaryMiB": 256, "artifactMiB": 192, "compressedArchiveMiB": 32, "evidenceMiB": 128, "evidenceSegmentMiB": 8, "minimumAvailableRamMiB": 1024, "minimumAvailableDiskMiB": 1024, "minimumOngoingDiskMiB": 256, "maximumBaselinePaths": 224, "maximumComponentBookBytes": 512 * 1024, "maximumBaselineBytes": 32 * MIB, "maximumRpcMetadataBytes": 256 * 1024, "maximumChapters": 32, "maximumPackageMiB": 48, "maximumUnits": 1500}
+TWO_HOUR_HOST_LIMITS = {**DEFAULT_HOST_LIMITS, "durationSeconds": 7200, "outerSeconds": 7320, "runnerTimeoutSeconds": 7215, "workflowTimeoutMinutes": 125, "runnerCpuSeconds": 1920, "publisherCpuSeconds": 120, "archiveCpuSeconds": 120, "temporaryMiB": 1536, "artifactMiB": 1280, "compressedArchiveMiB": 256, "evidenceMiB": 1024, "minimumAvailableDiskMiB": 2048, "maximumBaselinePaths": 192, "maximumRpcMetadataBytes": 2 * MIB, "maximumChapters": 64, "maximumUnits": 7500}
 INSTANCE = ("133857166104", "us-west-2", "i-00044d4ea1471b957")
 SECRET = pathlib.Path("/home/mm-ec2-runner/.local/share/poe-reporting/pilot-ingest.secret")
 PUBLIC = pathlib.Path("/var/lib/poe-public/status.json")
@@ -40,6 +47,21 @@ def require(condition, reason):
         raise SupervisorGuardError(reason)
 
 
+def host_profile(name=None):
+    require(name in [None, TWO_HOUR_PROFILE], "UNKNOWN_HOST_RESEARCH_PROFILE")
+    return dict(TWO_HOUR_HOST_LIMITS if name == TWO_HOUR_PROFILE else DEFAULT_HOST_LIMITS)
+
+
+def observation_policy(version=None):
+    require(version in [None, DEFAULT_OBSERVATION_POLICY, STUDY_OBSERVATION_POLICY], "UNKNOWN_OBSERVATION_POLICY")
+    return version or DEFAULT_OBSERVATION_POLICY
+
+
+def data_contract(version=None):
+    require(version in [None, "confirmed-program-events-v2", "confirmed-program-activity-v3-shadow"], "UNKNOWN_DATA_CONTRACT")
+    return version or "confirmed-program-events-v2"
+
+
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -54,11 +76,23 @@ def safe_exception(error, phase):
 
 
 def regular(path, maximum, owner=None, private=False):
-    s = path.lstat()
-    require(stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode) and s.st_nlink == 1 and 0 <= s.st_size <= maximum, "BOUNDED_REGULAR_FILE_REQUIRED")
-    require(owner is None or s.st_uid == owner, "UNEXPECTED_FILE_OWNER")
-    require(not private or not stat.S_IMODE(s.st_mode) & 0o077, "PRIVATE_FILE_REQUIRED")
-    return path.read_bytes()
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    try:
+        s = os.fstat(fd)
+        require(stat.S_ISREG(s.st_mode) and s.st_nlink == 1 and 0 <= s.st_size <= maximum, "BOUNDED_REGULAR_FILE_REQUIRED")
+        require(owner is None or s.st_uid == owner, "UNEXPECTED_FILE_OWNER")
+        require(not private or not stat.S_IMODE(s.st_mode) & 0o077, "PRIVATE_FILE_REQUIRED")
+        data = bytearray()
+        while len(data) <= s.st_size:
+            chunk = os.read(fd, min(65536, s.st_size + 1 - len(data)))
+            if not chunk:
+                break
+            data.extend(chunk)
+        after = os.fstat(fd)
+        require(len(data) == s.st_size and (after.st_size, after.st_mtime_ns, after.st_ctime_ns) == (s.st_size, s.st_mtime_ns, s.st_ctime_ns), "PUBLIC_FILE_CHANGED_DURING_READ")
+        return bytes(data)
+    finally:
+        os.close(fd)
 
 
 def save(path, value):
@@ -232,7 +266,7 @@ def runtime_outcome(source, planned_duration_ms=OBSERVATION_SECONDS * 1000):
     engine = (source or {}).get("engine") or {}
     counters = engine.get("counters") or {}
     stop_reason = (source or {}).get("stopReason")
-    fatal = (engine.get("rpc") or {}).get("fatal")
+    fatal = (engine.get("rpc") or ((source or {}).get("usage") or {}).get("rpc") or {}).get("fatal")
     started_at = (source or {}).get("startedAt")
     generated_at = (source or {}).get("generatedAt")
     elapsed = (source or {}).get("elapsedMs")
@@ -262,8 +296,9 @@ def runtime_outcome(source, planned_duration_ms=OBSERVATION_SECONDS * 1000):
         classification, failure = "premature-source-stop", "NATIVE_RESEARCH_SOURCE_STOPPED_BEFORE_PLANNED_CUTOFF"
     elif source:
         classification, failure = "mechanically-completed", None
-    audited = counters.get("auditedWindows")
-    assessments = counters.get("predictiveAssessments")
+    funnel = (source or {}).get("funnel") or {}
+    audited = counters.get("auditedWindows", funnel.get("usableWindows"))
+    assessments = counters.get("predictiveAssessments", funnel.get("evaluated"))
     unique = counters.get("uniqueEvaluated")
     return {"classification": classification, "mechanicallyCompleted": classification == "mechanically-completed", "failureReason": failure, "sourceStopReason": stop_reason, "sourceRpcFatalState": fatal, "plannedRunDurationMs": planned_duration_ms, "shutdownReserveMs": reserve, "plannedAdmissionDurationMs": planned_duration_ms - reserve, "actualRunElapsedMs": elapsed, "actualWallSpanMs": wall_span, "logicalObservationCutoffAt": reported_cutoff, "expectedLogicalObservationCutoffAt": expected_cutoff, "stopRequestedAt": stopped_at, "plannedAdmissionCutoffReached": bool(reached_cutoff), "candidateWindowEvidence": {"auditedWindows": audited, "predictiveAssessments": assessments, "uniqueEvaluated": unique, "classification": "audited-window-views-recorded-not-readiness" if type(audited) is int and audited > 0 else "no-audited-window-evidence", "overlappingViewsAreNotIndependentCoverage": True, "mechanicalCompletionIsNotWindowValidation": True}, "reportingMeaning": "Receiver acceptance and physical settlement are evaluated separately; neither makes a fatal or premature source interval successful."}
 
@@ -314,17 +349,19 @@ def supervised_stopped_projection(source, binding, source_sha256, observed_at, r
     result.update({"running": False, "entriesEnabled": False, "financialExecutionAuthorized": False, "financialWriterOpened": False, "liveTradingEnabled": False, "generatedAt": observed_at, "lastRuntimeGeneratedAt": last_generated, "stopReason": "Supervisor observed process termination; source final checkpoint unavailable: " + reason, "physicalSettlementConfirmed": False, "supervision": {"schemaVersion": 1, "kind": "supervisor-observed-stop", "receiptId": receipt_id, "observedAt": observed_at, "lastRuntimeGeneratedAt": last_generated, "originalStatusSha256": source_sha256, "reason": reason, "ownedProcessGroupsSettled": True, "runtimeGracefulShutdownVerified": False, "applicationTransportAccountingSettled": False, "financialReconciliationVerified": False, "preservesHistoricalMarketFactTimes": True, "nestedRuntimeSnapshotMeaning": "Last runtime snapshot only; nested running/connected facts were not refreshed by the supervisor."}})
     result["status"] = "SUPERVISOR-GENERATED STOPPED; receipt " + receipt_id + "; last runtime " + str(last_generated) + "; reason " + reason[:48] + "; no graceful shutdown/reconciliation claim."
     require(len(result["status"]) <= 256, "SUPERVISED_STOP_LABEL_BOUND")
-    require(len(json.dumps(result).encode()) <= 4 * MIB, "SUPERVISED_STOP_PUBLISHER_SIZE_BOUND")
+    require(len((json.dumps(result, separators=(",", ":")) + "\n").encode()) <= 4 * MIB, "SUPERVISED_STOP_PUBLISHER_SIZE_BOUND")
     return result
 
 
-def export_artifact(root, package_manifest):
+def export_artifact(root, package_manifest, limits=None):
     """Index ALL retained selected-flow evidence and mandatory summaries/books.
 
-    The workflow streams the allowlisted original files to its artifact. There
-    is no duplicate local archive, lossy segment selection or RUNNER_TEMP
-    durability claim. Broad irrelevant market payloads were never retained.
+    The default workflow may upload this allowlist. The explicit long profile
+    instead retains private durable raw files and creates one lossless bounded
+    gzip/tar for targeted public-evidence readback; it uploads no artifact.
+    Indexing alone is not verified backup. No segment is silently sampled away.
     """
+    limits = limits or host_profile()
     output = root / "export"
     output.mkdir(mode=0o700)
     included, evidence_bytes, total = [], 0, 0
@@ -339,16 +376,17 @@ def export_artifact(root, package_manifest):
         size = p.stat().st_size
         require(size <= 8 * MIB, "ARTIFACT_FILE_BOUND")
         row = {"path": name, "bytes": size, "sha256": digest(p.read_bytes())}
-        require(not name.startswith("run/events/") or evidence_bytes + size <= 128 * MIB, "EVENT_EVIDENCE_ARTIFACT_CAP")
-        require(total + size <= 192 * MIB, "COMPLETE_ARTIFACT_CAP")
+        require(not name.startswith("run/events/") or evidence_bytes + size <= limits["evidenceMiB"] * MIB, "EVENT_EVIDENCE_ARTIFACT_CAP")
+        require(total + size <= limits["artifactMiB"] * MIB, "COMPLETE_ARTIFACT_CAP")
         included.append(row)
         total += size
         if name.startswith("run/events/"):
             evidence_bytes += size
-    index = {"schemaVersion": 1, "included": included, "omittedSelectedEvidence": [], "uncompressedSelectedBytes": total, "packageSha256": package_manifest, "credentialsIncluded": False, "financialFilesIncluded": False, "retention": "All indexed original files are uploaded directly by the workflow; RUNNER_TEMP is not durable storage."}
+    extended = limits["durationSeconds"] == 7200
+    index = {"schemaVersion": 1, "included": included, "omittedSelectedEvidence": [], "uncompressedSelectedBytes": total, "selectedEvidenceBytes": evidence_bytes, "compressedArchiveBytes": None, "compressedSizeMeaning": "Measured separately by the bounded local archive creator; never inferred from uncompressed bytes.", "packageSha256": package_manifest, "credentialsIncluded": False, "financialFilesIncluded": False, "retention": "No artifact upload. Raw selected evidence remains in the private durable directory until verified download/hash backup; a completed local gzip is not yet verified remote backup." if extended else "Default allowlisted artifact upload remains available. Local archive is separately bounded; RUNNER_TEMP is not durable storage."}
     save(output / "index.json", index)
-    require(tree_size(root) <= 256 * MIB, "TEMPORARY_STORAGE_CAP")
-    return {"index": str(output / "index.json"), "indexSha256": digest((output / "index.json").read_bytes()), "uncompressedBytes": total, "selectedEvidenceBytes": evidence_bytes, "omittedSegments": 0, "localArchiveCopies": 0}
+    require(tree_size(root) <= limits["temporaryMiB"] * MIB, "TEMPORARY_STORAGE_CAP")
+    return {"index": str(output / "index.json"), "indexSha256": digest((output / "index.json").read_bytes()), "uncompressedBytes": total, "selectedEvidenceBytes": evidence_bytes, "omittedSegments": 0, "localArchiveCopiesAtIndexing": 0}
 
 
 def export_failure_manifest(root, error, outcome):
@@ -368,11 +406,87 @@ def export_failure_manifest(root, error, outcome):
         if row["sha256"] is None:
             row["hashLimitation"] = "File exceeds the declared per-file bound; complete hash not verified."
         (included if fallback else omitted).append(row)
-    value = {"schemaVersion": 1, "fullEvidenceExportVerified": False, "reason": str(error) if str(error).replace("_", "").isalnum() and len(str(error)) <= 160 else "FULL_EVIDENCE_INDEXING_FAILED", "fallbackIncludedFiles": included, "omittedSelectedEvidence": omitted, "outcome": outcome, "meaning": "Failure summaries/counterbooks/source snapshots only. Full selected evidence is incomplete; RUNNER_TEMP is not durable and no full-window reproducibility/readiness claim is made."}
+    value = {"schemaVersion": 1, "fullEvidenceExportVerified": False, "reason": str(error) if str(error).replace("_", "").isalnum() and len(str(error)) <= 160 else "FULL_EVIDENCE_INDEXING_FAILED", "fallbackIncludedFiles": included, "omittedSelectedEvidence": omitted, "outcome": outcome, "meaning": "Failure summaries/counterbooks/source snapshots only. Full selected evidence export is incomplete; the configured raw-evidence directory has not been verified as remote backup. RUNNER_TEMP is not durable. No full-window reproducibility/readiness claim is made."}
     directory = root / "export"
     directory.mkdir(exist_ok=True, mode=0o700)
     save(directory / "failure.json", value)
     return {"fullEvidenceExportVerified": False, "failureManifest": str(directory / "failure.json"), "omittedSelectedSegments": len(omitted)}
+
+
+def archive_public_evidence(root, limits, deadline, profile, outcome, github_run_id, github_run_attempt):
+    """One bounded lossless gzip/tar over the verified allowlist; raw stays put."""
+    started, cpu_started = time.monotonic(), time.process_time()
+    directory = root / "export"
+    index_bytes = regular(directory / "index.json", 8 * MIB, 994, True)
+    index = json.loads(index_bytes)
+    pending = directory / "selected-evidence.tar.gz.pending"
+    final = directory / "selected-evidence.tar.gz"
+    initial_bytes = tree_size(root)
+    maximum = limits["compressedArchiveMiB"] * MIB
+    written, compressed_hash = 0, hashlib.sha256()
+    priority = os.getpriority(os.PRIO_PROCESS, 0)
+    if priority < 10:
+        os.nice(10 - priority)
+    def archive_guard():
+        require(time.monotonic() < deadline, "ARCHIVE_DEADLINE")
+        require(time.process_time() - cpu_started <= limits["archiveCpuSeconds"], "ARCHIVE_CPU_CAP")
+        require(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024 <= limits["archiveRssMiB"] * MIB, "ARCHIVE_RSS_CAP")
+    class BoundedWriter:
+        def __init__(self, stream):
+            self.stream = stream
+        def write(self, data):
+            nonlocal written
+            archive_guard()
+            require(written + len(data) <= maximum, "COMPRESSED_ARCHIVE_CAP")
+            require(initial_bytes + written + len(data) + 65536 <= limits["temporaryMiB"] * MIB, "ARCHIVE_STORAGE_CAP")
+            require(shutil.disk_usage(root).free >= limits["minimumOngoingDiskMiB"] * MIB + len(data), "ARCHIVE_DISK_HEADROOM")
+            self.stream.write(data)
+            compressed_hash.update(data)
+            written += len(data)
+            return len(data)
+        def flush(self):
+            self.stream.flush()
+    result = {"schemaVersion": 1, "classification": "candidate-only-public-evidence", "complete": False, "format": "tar+gzip", "researchProfile": profile, "githubRunId": github_run_id, "githubRunAttempt": github_run_attempt, "accountId": outcome.get("accountId"), "inceptionAt": outcome.get("inceptionAt"), "source": outcome["source"], "runtimeOutcome": outcome.get("runtimeOutcome"), "uncompressedSelectedBytes": index["uncompressedSelectedBytes"], "selectedEvidenceBytes": index.get("selectedEvidenceBytes"), "indexSha256": digest(index_bytes), "rawSelectedEvidenceRetained": True, "credentialsIncluded": False, "financialFilesIncluded": False, "compressionLevel": 6, "costMeaning": "Existing compute/disk/transfer allowance is not verified free; no artifact-storage purchase or overage is authorized."}
+    try:
+        with pending.open("xb") as raw:
+            pending.chmod(0o600)
+            with gzip.GzipFile(fileobj=BoundedWriter(raw), mode="wb", compresslevel=6, mtime=0) as zipped:
+                with tarfile.open(fileobj=zipped, mode="w|") as archive:
+                    header = tarfile.TarInfo("index.json")
+                    header.size, header.mode, header.uid, header.gid, header.mtime = len(index_bytes), 0o600, 994, 994, 0
+                    archive.addfile(header, io.BytesIO(index_bytes))
+                    for row in index["included"]:
+                        archive_guard()
+                        name = pathlib.PurePosixPath(row["path"])
+                        require(not name.is_absolute() and ".." not in name.parts, "ARCHIVE_INDEX_PATH")
+                        data = regular(root / name, 8 * MIB, 994, True)
+                        require(len(data) == row["bytes"] and digest(data) == row["sha256"], "ARCHIVE_SOURCE_CHANGED_AFTER_INDEX")
+                        # Each item is emitted immediately; never retain a full
+                        # market archive or source evidence set in memory.
+                        header = tarfile.TarInfo(str(name))
+                        header.size, header.mode, header.uid, header.gid, header.mtime = len(data), 0o600, 994, 994, 0
+                        archive.addfile(header, io.BytesIO(data))
+            raw.flush()
+            os.fsync(raw.fileno())
+        pending.rename(final)
+        parent_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            os.fsync(parent_fd)
+        finally:
+            os.close(parent_fd)
+        s = final.lstat()
+        result["complete"] = True
+        result["archive"] = {"file": final.name, "bytes": written, "sha256": compressed_hash.hexdigest(), "stat": {"device": s.st_dev, "inode": s.st_ino, "size": s.st_size, "mtimeNs": s.st_mtime_ns, "ctimeNs": s.st_ctime_ns}}
+    except Exception as error:
+        result["failure"] = safe_exception(error, "lossless-archive")
+        result["partialCompressedBytes"] = written
+        result["partialCompressedSha256"] = compressed_hash.hexdigest()
+        result["meaning"] = "Compressed export incomplete; all original selected evidence is retained. No readback-ready archive or successful export is claimed."
+    result["elapsedMs"] = round((time.monotonic() - started) * 1000)
+    result["cpuMs"] = round((time.process_time() - cpu_started) * 1000)
+    result["resourceBounds"] = {"cpuSeconds": limits["archiveCpuSeconds"], "maximumRssMiB": limits["archiveRssMiB"], "nice": os.getpriority(os.PRIO_PROCESS, 0), "remainingOuterDeadlineIsBinding": True}
+    save(directory / "archive.json", result)
+    return result
 
 
 def main():
@@ -387,14 +501,25 @@ def main():
     signal.signal(signal.SIGTERM, interrupted)
     signal.signal(signal.SIGINT, interrupted)
     started = time.monotonic()
-    outer_deadline = started + OUTER_SECONDS
     base = pathlib.Path(args.package).resolve(strict=True)
     manifest_raw = regular(base / "package.json", 2 * MIB)
     require(digest(manifest_raw) == args.manifest_sha256, "REVIEWED_PACKAGE_HASH_MISMATCH")
     manifest = json.loads(manifest_raw)
-    require(manifest["schemaVersion"] == 1 and manifest["limits"]["durationSeconds"] == OBSERVATION_SECONDS and manifest["limits"]["outerSeconds"] == OUTER_SECONDS and manifest["limits"]["finalPublisherDrainSeconds"] == FINAL_REPORT_SECONDS, "REVIEWED_LIMITS_MISMATCH")
+    profile = manifest.get("researchProfile")
+    limits = host_profile(profile)
+    age_policy = observation_policy(manifest.get("observationAgePolicy"))
+    contract = data_contract(manifest.get("dataContract"))
+    require(manifest["schemaVersion"] == 1 and manifest["limits"] == limits, "REVIEWED_LIMITS_MISMATCH")
+    outer_deadline = started + limits["outerSeconds"]
     temp = pathlib.Path(os.environ["RUNNER_TEMP"]).resolve(strict=True)
-    root = temp / ("poe-native-candidates-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"])
+    require(os.environ["GITHUB_RUN_ID"].isdigit() and os.environ["GITHUB_RUN_ATTEMPT"].isdigit(), "RESEARCH_RUN_ID")
+    evidence_parent = temp
+    if profile == TWO_HOUR_PROFILE:
+        evidence_parent = pathlib.Path("/home/mm-ec2-runner/.local/share/poe-native-research")
+        evidence_parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        s = evidence_parent.lstat()
+        require(stat.S_ISDIR(s.st_mode) and not stat.S_ISLNK(s.st_mode) and evidence_parent.resolve() == evidence_parent and s.st_uid == 994 and stat.S_IMODE(s.st_mode) == 0o700, "PRIVATE_DURABLE_RESEARCH_PARENT_REQUIRED")
+    root = evidence_parent / ("poe-native-candidates-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"])
     root.mkdir(mode=0o700)
     for program in ["prlimit", "timeout", "nice", "flock"]:
         require(shutil.which(program), "REQUIRED_LOCAL_TOOL_UNAVAILABLE")
@@ -402,16 +527,16 @@ def main():
     memory = dict(line.split(":", 1) for line in pathlib.Path("/proc/meminfo").read_text().splitlines())
     available = int(memory["MemAvailable"].split()[0]) * 1024
     disk_available = shutil.disk_usage(root).free
-    require(available >= 1024 ** 3 and disk_available >= 1024 ** 3, "INSUFFICIENT_RESEARCH_HOST_HEADROOM")
+    require(available >= limits["minimumAvailableRamMiB"] * MIB and disk_available >= limits["minimumAvailableDiskMiB"] * MIB, "INSUFFICIENT_RESEARCH_HOST_HEADROOM")
     node, node_version = existing_node(temp)
     before = {"startedAt": int(time.time() * 1000), "uid": 994, "host": host, "observer": observer(), "availableMemoryBytes": available, "availableDiskBytes": disk_available, "node": node, "nodeVersion": node_version, "metadataReads": 2, "protectedServiceMutations": False, "financialFilesRead": False}
     save(root / "before.json", before)
     save(root / "package.json", manifest)
     with open(os.environ["GITHUB_ENV"], "a") as out:
-        out.write("POE_NATIVE_RESEARCH_DIRECTORY=" + str(root) + "\nPOE_NATIVE_EVIDENCE_EXPORT_READY=false\n")
+        out.write("POE_NATIVE_RESEARCH_DIRECTORY=" + str(root) + "\nPOE_NATIVE_EVIDENCE_EXPORT_READY=false\nPOE_NATIVE_RESEARCH_PROFILE=" + (profile or "default-900s") + "\n")
     runner = publisher = None
     accepted_sources = []
-    outcome = {"startedAt": before["startedAt"], "packageSha256": args.manifest_sha256, "source": manifest["source"], "boundaries": {"candidateOnly": True, "financialWriter": False, "entriesEnabled": False, "liveTrading": False, "observerReplacement": False}, "runnerExit": None, "publisherStarted": False, "finalStoppedReportAccepted": False, "failure": None, "maximumRunnerRssBytes": 0, "maximumPublisherRssBytes": 0, "finalPublisherDrainSeconds": FINAL_REPORT_SECONDS}
+    outcome = {"startedAt": before["startedAt"], "packageSha256": args.manifest_sha256, "source": manifest["source"], "researchProfile": profile, "observationAgePolicy": age_policy, "dataContract": contract, "accountId": manifest["reportingBinding"]["accountId"], "inceptionAt": manifest["reportingBinding"]["inceptionAt"], "evidencePersistence": "private-durable-until-verified-backup" if profile else "RUNNER_TEMP-not-durable", "evidenceDirectory": str(root), "baselineByteRunway": manifest.get("baselineByteRunway"), "boundaries": {"candidateOnly": True, "financialWriter": False, "entriesEnabled": False, "liveTrading": False, "observerReplacement": False}, "runnerExit": None, "publisherStarted": False, "finalStoppedReportAccepted": False, "failure": None, "maximumRunnerRssBytes": 0, "maximumPublisherRssBytes": 0, "finalPublisherDrainSeconds": FINAL_REPORT_SECONDS}
     phase = "package-preparation"
     try:
         staged_bytes = 0
@@ -426,7 +551,7 @@ def main():
                 out.write(data)
             target.chmod(0o600)
             staged_bytes += len(data)
-        require(staged_bytes <= 48 * MIB, "PACKAGE_STAGING_BYTE_CAP")
+        require(staged_bytes <= limits["maximumPackageMiB"] * MIB, "PACKAGE_STAGING_BYTE_CAP")
         with gzip.GzipFile(fileobj=io.BytesIO(regular(root / "native-candidates.mjs.gz", 8 * MIB, 994, True))) as stream:
             bundle = stream.read(8 * MIB + 1)
         require(len(bundle) == manifest["bundle"]["bytes"] and digest(bundle) == manifest["bundle"]["sha256"], "EXECUTABLE_BUNDLE_HASH_MISMATCH")
@@ -435,6 +560,8 @@ def main():
         (root / "native-candidates.mjs").chmod(0o600)
         template = json.loads(regular(root / "input-template.json", 8 * MIB, 994, True))
         require(template["source"] == manifest["source"] and template.get("reportingBinding") == manifest["reportingBinding"] and template["source"]["sha256"] == manifest["bundle"]["sha256"] and template["priorPhysicalSettled"] is True, "EXACT_SOURCE_OR_REPORTING_BINDING_MISMATCH")
+        require(observation_policy(template.get("observationAgePolicy")) == age_policy, "SOURCE_OBSERVATION_POLICY_MISMATCH")
+        require(data_contract(template.get("dataContract")) == contract, "SOURCE_DATA_CONTRACT_MISMATCH")
         require(len(template["baselinePaths"]) == len(manifest["baselineBooks"]), "BASELINE_LIST_MISMATCH")
         template["baselinePaths"] = [str(root / row["path"]) for row in manifest["baselineBooks"]]
         require(int(time.time() * 1000) >= template["priorCooldownUntil"], "PRIOR_PROVIDER_COOLDOWN")
@@ -445,25 +572,37 @@ def main():
         binding = manifest["reportingBinding"]
         launcher = str(root / "reporting/run-publisher.sh")
         report_args = ["/bin/bash", launcher, "--node", node, "--status-file", str(root / "run/status.json"), "--secret-file", str(SECRET), "--account-id", binding["accountId"], "--inception-at", str(binding["inceptionAt"])]
-        runner = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=4s", "915s", node, "--no-addons", "--max-old-space-size=256", str(root / "native-candidates.mjs"), "--run", "--input", str(root / "input.json"), "--directory", str(root / "run"), "--duration-seconds", "900"], root / "runner.log", 240)
+        source_args = [node, "--no-addons", "--max-old-space-size=" + str(limits["heapMiB"]), str(root / "native-candidates.mjs"), "--run", "--input", str(root / "input.json"), "--directory", str(root / "run"), "--duration-seconds", str(limits["durationSeconds"])]
+        if profile:
+            source_args += ["--profile", profile]
+        if age_policy != DEFAULT_OBSERVATION_POLICY:
+            source_args += ["--observation-age-policy", age_policy]
+        if contract != "confirmed-program-events-v2":
+            source_args += ["--data-contract", contract]
+        runner = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=4s", str(limits["runnerTimeoutSeconds"]) + "s"] + source_args, root / "runner.log", limits["runnerCpuSeconds"])
         until_status = time.monotonic() + 25
         while runner.poll() is None:
             elapsed = time.monotonic() - started
             phase = "runner-rss-scan"
             runner_rss = group_rss(runner.pid)
             outcome["maximumRunnerRssBytes"] = max(outcome["maximumRunnerRssBytes"], runner_rss)
-            require(runner_rss <= 384 * MIB, "RUNNER_RSS_BOUND")
+            require(runner_rss <= limits["runnerRssMiB"] * MIB, "RUNNER_RSS_BOUND")
             phase = "storage-scan"
-            require(tree_size(root) <= 256 * MIB and shutil.disk_usage(root).free >= 256 * MIB, "RESEARCH_STORAGE_BOUND")
+            require(tree_size(root) <= limits["temporaryMiB"] * MIB and shutil.disk_usage(root).free >= limits["minimumOngoingDiskMiB"] * MIB, "RESEARCH_STORAGE_BOUND")
             phase = "outer-deadline-check"
             require(time.monotonic() < outer_deadline - FINAL_REPORT_SECONDS - 5, "OUTER_RESEARCH_DEADLINE")
             source_path = root / "run/status.json"
             if publisher is None and source_path.exists():
                 phase = "reporting-start"
+                source_check = json.loads(regular(source_path, 4 * MIB, 994, True))
+                require(source_check.get("researchProfile") == profile and (source_check.get("observationAgePolicy") or {}).get("version") == age_policy, "RUNNING_SOURCE_PROFILE_OR_AGE_POLICY_MISMATCH")
+                source_contract = source_check.get("dataContract") or (source_check.get("engine") or {}).get("dataContract")
+                require(source_contract == contract, "RUNNING_SOURCE_DATA_CONTRACT_MISMATCH")
+                require(manifest.get("configurationSha256") is None or source_check.get("configurationSha256") == manifest["configurationSha256"], "RUNNING_SOURCE_CONFIGURATION_MISMATCH")
                 verify = subprocess.run(report_args + ["--verify-only"], env={"PATH": "/usr/bin:/bin"}, capture_output=True, text=True, timeout=5)
                 require(verify.returncode == 0, "REPORTING_PRIVATE_FILE_OR_IDENTITY_CHECK_FAILED")
-                publisher_seconds = max(1, min(960, int(outer_deadline - time.monotonic() - 3)))
-                publisher = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=3s", str(publisher_seconds) + "s"] + report_args + ["--watch"], root / "publisher.log", 15, file_size_mib=1)
+                publisher_seconds = max(1, min(limits["outerSeconds"] - 60, int(outer_deadline - time.monotonic() - 3)))
+                publisher = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=3s", str(publisher_seconds) + "s"] + report_args + ["--watch"], root / "publisher.log", limits["publisherCpuSeconds"], file_size_mib=1)
                 outcome["publisherStarted"] = True
             require(publisher is not None or time.monotonic() < until_status, "INITIAL_RUNTIME_STATUS_NOT_AVAILABLE")
             if publisher is not None:
@@ -546,7 +685,7 @@ def main():
         outcome["finishedAt"] = int(time.time() * 1000)
         outcome["aggregateElapsedSeconds"] = time.monotonic() - started
         outcome["actualRunElapsedMs"] = final_status.get("elapsedMs") if final_status else None
-        outcome["runtimeOutcome"] = runtime_outcome(final_status, OBSERVATION_SECONDS * 1000)
+        outcome["runtimeOutcome"] = runtime_outcome(final_status, limits["durationSeconds"] * 1000)
         outcome["sourceStopReason"] = final_status.get("stopReason") if final_status else None
         if outcome["runtimeOutcome"]["failureReason"]:
             if outcome["failure"]:
@@ -563,9 +702,15 @@ def main():
             outcome["failure"] = outcome["failure"] or "TWO_ACCEPTED_SOURCE_SNAPSHOTS_NOT_RETAINED"
         save(root / "supervisor.json", outcome)
         try:
-            artifact = export_artifact(root, args.manifest_sha256)
+            artifact = export_artifact(root, args.manifest_sha256, limits)
+            archive = archive_public_evidence(root, limits, outer_deadline - 5, profile, outcome, os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"])
+            artifact["losslessArchive"] = archive
+            artifact["localArchiveCopies"] = 1 if archive["complete"] else 0
+            artifact["partialLocalArchiveRetained"] = (root / "export/selected-evidence.tar.gz.pending").exists()
+            if profile and not archive["complete"]:
+                outcome["failure"] = outcome["failure"] or "LOSSLESS_EVIDENCE_ARCHIVE_INCOMPLETE"
             with open(os.environ["GITHUB_ENV"], "a") as out:
-                out.write("POE_NATIVE_EVIDENCE_EXPORT_READY=true\n")
+                out.write("POE_NATIVE_EVIDENCE_EXPORT_READY=" + ("true" if not profile or archive["complete"] else "false") + "\n")
         except Exception as error:
             outcome["failure"] = outcome["failure"] or "FULL_EVIDENCE_EXPORT_NOT_VERIFIED"
             artifact = export_failure_manifest(root, error, outcome)

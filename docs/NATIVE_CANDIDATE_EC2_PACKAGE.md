@@ -13,7 +13,7 @@ For a corrected measurement, pass `--output-directory /tmp/poe-native-candidate-
 Root prepares the actual public input: unchanged explicit counterbooks, actual confirmed/finalized migration transactions, optional watch export, original pilot reporting identity and provenance hash. Set `source.commit` to the reviewed runner commit and `source.sha256` to the executable bundle SHA256. No credential belongs in the input.
 
 ```sh
-node scripts/stage-native-candidate-ec2.mjs \
+node --import tsx scripts/stage-native-candidate-ec2.mjs \
   --bundle-directory /tmp/poe-native-candidate-output \
   --input /ABS/verified-native-input.json \
   --publisher-directory /ABS/reviewed-reporting-delivery \
@@ -26,12 +26,27 @@ The job verifies UID994, the exact existing instance, available1GiB RAM/disk, ex
 
 The separate publisher uses the existing dedicated private reporting file through its permission-restricted launcher. After stopping the watch publisher, the supervisor makes one bounded attempt to publish the real stopped snapshot. A missing accepted acknowledgement remains unverified delivery. No heartbeat is substituted for source timestamps.
 
-Before/after receipts, actual source versions, final status/checkpoint, new append-only counterbooks, and all retained selected-flow evidence (at most128MiB) are uploaded directly within a192MiB uncompressed artifact ceiling. No duplicate local archive is created, no selected segment is sampled away, and RUNNER_TEMP is not treated as durable storage. No credential or financial file is exported. Existing compute, transfer, and GitHub storage allowances remain separate from documented zero API purchases.
+The default900-second job preserves before/after receipts, actual source versions, final status/checkpoint, new append-only counterbooks, and every retained selected-flow segment (at most128MiB) in a192MiB uncompressed allowlist. Its artifact upload uses compression level6 and one-day retention. A separate local lossless gzip is capped at32MiB; if that gzip cannot fit, raw default artifact export still remains available. No segment is sampled away and RUNNER_TEMP is not durable storage. No credential or financial file is exported. Existing compute, transfer, and GitHub storage allowances remain separate from zero API purchases.
+
+The opt-in two-hour profile is selected only by `--profile candidate-native-two-hour-research-v1`. It admits candidate information for the source's7,200-second interval including its10-second shutdown reserve; the outer supervisor is bounded to7,320seconds. It retains six observation slots, heap256MiB/RSS384MiB and source CPU1,920seconds (hard1,925). The host must have at least1GiB available RAM and2GiB free disk at startup; ongoing free disk must remain at least256MiB. Local storage is bounded to1,536MiB, selected event evidence to1GiB in8MiB segments, and the complete public export to1,280MiB. These controls are research bounds, not measured provider capacity.
+
+The long profile writes only to its UID994-private directory beneath `/home/mm-ec2-runner/.local/share/poe-native-research/`; it does **not** upload a GitHub artifact. Once owned processes settle, a lossless gzip/tar is capped at256MiB. Archiving runs at nice10 or lower priority with explicit120CPU-second,256MiB peak-RSS and remaining outer-deadline checks (default archive CPU budget30seconds). Any failure preserves raw evidence and marks export incomplete. A completed local gzip is not a verified remote backup; raw evidence remains until download and whole-archive hash verification are confirmed. The fixed-path readback workflow emits at most4MiB of compressed bytes per invocation through bounded log records, with per-chunk hashes. It accepts no arbitrary paths. Root must reassemble and verify the complete archive SHA256. No new storage or paid transfer commitment is authorized.
+
+Both profiles use the shared512KiB counterbook format and32MiB aggregate reader bound. The default initial list remains at most224books; the long profile allows192 to leave64path positions. The manifest reports actual byte runway separately: available path positions do not guarantee64full-size books will fit. No consumed bytes, uncertain reservations or historical refusals are rewritten.
+
+Observation age and data contracts are independent opt-ins. Passing `--observation-age-policy observation-age-selected-24h-study-v1` requires that exact public-input value; otherwise the existing observation-age-v1 policy remains. Passing `--data-contract confirmed-program-activity-v3-shadow` likewise requires the exact input value; otherwise confirmed-program-events-v2 remains. The manifest pins both and the configuration hash computed by the exact executable bundle. Duration alone changes neither policy. The supervisor checks the runtime's actual profile, policy, data contract and configuration hash before starting reporting. This package never enables financial execution.
 
 Successful workflow execution alone does not establish opportunity recall, valid candidate assessments, financial execution, profitability, or continuous operation. Review the actual candidate/audit/provider outcomes and source-to-Render agreement.
 
 The supervisor classifies the source's actual stop reason and lifecycle duration separately from process exit, transport settlement, and reporting. A fatal source stop or premature interval fails the job even when the receiver accepted its stopped report. A normal quiet interval can be mechanically complete with no audited-window evidence. The first two distinct accepted running cycles retain their exact matching source files and ACK/hash metadata for counter and timestamp comparison; later snapshots are never reconstructed as earlier evidence.
 
-Full artifact upload is admitted only after size-checked indexing succeeds. If that check fails, the job fails and uploads separately labeled failure summaries, source snapshots and new counterbooks; it does not claim that full selected-flow evidence was exported or that RUNNER_TEMP is durable. Publisher logs have a1MiB per-file OS ceiling, independently of the runner's8MiB segmented evidence limit.
+Default artifact upload is admitted only after size-checked indexing succeeds. If that check fails, the default job fails and uploads separately labeled failure summaries, source snapshots and new counterbooks. The long profile instead preserves its raw private directory and a failure receipt without uploading an artifact. Neither case claims that full selected-flow evidence was exported. Publisher logs have a1MiB per-file OS ceiling, independently of the runner's8MiB segmented evidence limit.
 
-Offline supervisor regressions: `python3 -B operator/native-candidate-ec2/test-runtime-outcomes.py`.
+Offline checks:
+
+```sh
+python3 -B operator/native-candidate-ec2/test-runtime-outcomes.py
+python3 -B operator/native-candidate-ec2/test-two-hour-package.py
+python3 -B operator/native-candidate-ec2/test-readback-public-evidence.py
+node --test operator/native-candidate-ec2/test-stage-package.mjs
+```
