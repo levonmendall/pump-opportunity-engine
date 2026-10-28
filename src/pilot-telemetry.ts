@@ -13,6 +13,8 @@ type Metric = typeof metricNames[number];
 const watchCounts = ['known','watch','eligibleKnown','deepActive','maximumDeep','queued','promoted','repromoted','demoted','expired','capacityExclusions','structuralExclusions','completeWindows','strategyRejections','incompleteDataExclusions','enrichmentDeadlineFailures'] as const;
 const featureCounts = ['predictiveAssessments','predictiveFailures'] as const;
 type WatchCount = typeof watchCounts[number];
+const sourceTimeNames=['lastMarketNotificationAt','lastFreshSupportAt','lastBankClockAt','lastAuditAt','lastPredictiveAt','financialReconciliationAt'] as const;
+export type PilotSourceTimes=Record<typeof sourceTimeNames[number],number|null>;
 const observationWatchCounts=['observationEligibleKnown','observationQueued','maximumOlderResearchIdentities'] as const;
 const ageCohortNames=['preEntry','entryEligible','olderSelected'] as const;
 export type PilotObservationAgePolicy={version:string;minimumObservationAgeMs:number;recentMaximumAgeMs:number;selectedOlderMaximumAgeMs:number};
@@ -28,6 +30,8 @@ export type PilotTelemetry = {
   mode?: 'candidate-evaluation'|'paper'; financialExecutionAuthorized?: boolean;
   /** Source observation scope only; baseline entry eligibility is unchanged. */
   observationAgePolicy?:PilotObservationAgePolicy|null;
+  /** Actual source facts; generatedAt/receiver contacts cannot refresh them. */
+  sourceTimes?:PilotSourceTimes|null;
   /** A complete source-calculated experimental portfolio; never the original account. */
   portfolio?: Snapshot | null;
   /** Exact SOL accounting calculated by the same experimental source. */
@@ -90,6 +94,13 @@ function projectObservationAgePolicy(value:unknown):PilotObservationAgePolicy|nu
  if(value===null)return null;const policy=object(value);return validateObservationAgePolicy({version:policy.version,minimumObservationAgeMs:policy.minimumObservationAgeMs,recentMaximumAgeMs:policy.recentMaximumAgeMs,selectedOlderMaximumAgeMs:policy.selectedOlderMaximumAgeMs});
 }
 
+function validateSourceTimes(value:unknown,generatedAt:number):PilotSourceTimes {
+ const times=object(value);keys(times,[...sourceTimeNames]);for(const key of sourceTimeNames){if(!Object.hasOwn(times,key))throw Error('missing source fact timestamp');const at=integer(times[key]);if(at!==null&&at>generatedAt)throw Error('source fact timestamp newer than generatedAt');}return times as PilotSourceTimes;
+}
+function projectSourceTimes(value:unknown,generatedAt:number):PilotSourceTimes|null {
+ if(value===null)return null;const times=object(value);return validateSourceTimes(Object.fromEntries(sourceTimeNames.map(key=>[key,integer(times[key])])),generatedAt);
+}
+
 /** Explicit allowlist. No journal, financial balances, credential/config objects or arbitrary logs. */
 export function projectPilotStatus(value: unknown): PilotTelemetry {
   const p=object(value);
@@ -102,6 +113,7 @@ export function projectPilotStatus(value: unknown): PilotTelemetry {
     running:bool(p.running),entriesEnabled:bool(p.entriesEnabled),status:safeText(p.status),
     ...(p.mode===undefined?{}:{mode:p.mode,financialExecutionAuthorized:bool(p.financialExecutionAuthorized)}),
     ...(p.observationAgePolicy===undefined?{}:{observationAgePolicy:projectObservationAgePolicy(p.observationAgePolicy)}),
+    ...(p.sourceTimes===undefined?{}:{sourceTimes:projectSourceTimes(p.sourceTimes,integer(p.generatedAt,false)!)}),
     portfolio:p.mode==='paper'&&p.financialExecutionAuthorized===true&&p.experimentalPortfolio!==undefined?p.experimentalPortfolio:null,
     accounting:p.mode==='paper'&&p.financialExecutionAuthorized===true&&p.experimentalPortfolio&&p.experimentalAccounting!==undefined?p.experimentalAccounting:null,
     funnel:Object.fromEntries(stages.map(k=>[k,integer(f[k])])) as Record<Stage,number|null>,
@@ -114,7 +126,7 @@ export function projectPilotStatus(value: unknown): PilotTelemetry {
 }
 export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   const p=object(input);
-  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals','watch','mode','financialExecutionAuthorized','portfolio','accounting','observationAgePolicy']);
+  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals','watch','mode','financialExecutionAuthorized','portfolio','accounting','observationAgePolicy','sourceTimes']);
   if(p.schemaVersion!==1||p.kind!=='experimental-pilot'||p.authoritative!==false||p.liveTrading!==false) throw new Error('invalid pilot identity');
   if(!/^poe-pilot-[a-z0-9-]+$/.test(text(p.accountId,100))) throw new Error('pilot account required');
   integer(p.inceptionAt,false);integer(p.generatedAt,false);if(p.generatedAt<p.inceptionAt)throw new Error('invalid source time');
@@ -127,10 +139,12 @@ export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   for(const r of p.refusals){keys(object(r),['reason','count']);text(r.reason,256);integer(r.count,false);}
   if(p.watch!==undefined&&p.watch!==null)validateWatch(p.watch);
   if(p.observationAgePolicy!==undefined&&p.observationAgePolicy!==null)validateObservationAgePolicy(p.observationAgePolicy);
+  if(p.sourceTimes!==undefined&&p.sourceTimes!==null)validateSourceTimes(p.sourceTimes,p.generatedAt);
   if(p.mode!==undefined){
     if(!['candidate-evaluation','paper'].includes(p.mode))throw Error('invalid pilot mode');
     bool(p.financialExecutionAuthorized);
     if(p.mode==='candidate-evaluation'&&(p.financialExecutionAuthorized||p.entriesEnabled))throw Error('candidate mode cannot authorize financial execution');
+    if(p.mode==='candidate-evaluation'&&p.sourceTimes!==undefined&&p.sourceTimes!==null&&p.sourceTimes.financialReconciliationAt!==null)throw Error('candidate mode cannot claim financial reconciliation');
   }else if(p.financialExecutionAuthorized!==undefined)throw Error('financial mode required');
   if(p.portfolio!==undefined&&p.portfolio!==null){
     if(p.mode!=='paper'||p.financialExecutionAuthorized!==true)throw Error('explicit PAPER financial mode required');

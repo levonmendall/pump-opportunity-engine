@@ -83,3 +83,26 @@ test('age cohort validation rejects contradictions and preserves unknown values 
  for(const change of [{observationEligibleKnown:513},{observationQueued:117},{maximumOlderResearchIdentities:25},{ageCohorts:{preEntry:19,entryEligible:90,olderSelected:6}},{ageCohorts:{preEntry:20,entryEligible:91,olderSelected:5}},{ageCohorts:{preEntry:1,entryEligible:90,olderSelected:25}}]){const p=ageSource();Object.assign(p.watch.summary,change);assert.throws(()=>projectPilotStatus(p));}
  const p=projectPilotStatus(ageSource());p.watch.ageCohorts.secret='forbidden';assert.throws(()=>validatePilotTelemetry(p),/unexpected/);const q=ageSource();q.watch.summary.ageCohorts={preEntry:null,entryEligible:90,olderSelected:null};q.watch.summary.observationEligibleKnown=null;const projected=projectPilotStatus(q);assert.equal(projected.watch.ageCohorts.preEntry,null);assert.equal(projected.watch.ageCohorts.olderSelected,null);assert.equal(projected.watch.observationEligibleKnown,null);
 });
+
+
+const sourceTimes=at=>({lastMarketNotificationAt:at-900,lastFreshSupportAt:at-800,lastBankClockAt:at-700,lastAuditAt:at-600,lastPredictiveAt:at-500,financialReconciliationAt:null});
+test('actual source timestamps survive projection independently of reporting generation and exclude private fields',()=>{
+ const source=raw();source.sourceTimes={...sourceTimes(source.generatedAt),privateCredential:'NEVER_PUBLISH'};const p=projectPilotStatus(source);assert.deepEqual(p.sourceTimes,sourceTimes(source.generatedAt));assert.equal(p.generatedAt,source.generatedAt);assert.equal(p.sourceTimes.financialReconciliationAt,null);assert.ok(!JSON.stringify(p).includes('NEVER_PUBLISH'));
+ const legacy=projectPilotStatus(raw());assert.equal(legacy.sourceTimes,undefined);const explicit=raw();explicit.sourceTimes=null;assert.equal(projectPilotStatus(explicit).sourceTimes,null);const partial=raw();partial.sourceTimes={lastAuditAt:partial.generatedAt-1};assert.equal(projectPilotStatus(partial).sourceTimes.lastMarketNotificationAt,null);assert.equal(projectPilotStatus(partial).sourceTimes.lastAuditAt,partial.generatedAt-1);
+});
+test('source timestamps are bounded integer facts and receiver rejects unknown or missing fields',()=>{
+ for(const name of Object.keys(sourceTimes(origin+1000)))for(const bad of [-1,1.5,Infinity,NaN,'1000',origin+1001]){const source=raw();source.sourceTimes={...sourceTimes(source.generatedAt),[name]:bad};assert.throws(()=>projectPilotStatus(source));}
+ for(const bad of [[],false,'invalid']){const source=raw();source.sourceTimes=bad;assert.throws(()=>projectPilotStatus(source));}
+ const p=projectPilotStatus({...raw(),sourceTimes:sourceTimes(origin+1000)});p.sourceTimes.privateCredential='not-permitted';assert.throws(()=>validatePilotTelemetry(p),/unexpected/);delete p.sourceTimes.privateCredential;delete p.sourceTimes.lastAuditAt;assert.throws(()=>validatePilotTelemetry(p),/missing source fact/);
+ const future=projectPilotStatus({...raw(),sourceTimes:sourceTimes(origin+1000)});future.sourceTimes.lastBankClockAt=future.generatedAt+1;assert.throws(()=>validatePilotTelemetry(future),/newer than generatedAt/);
+});
+test('fresh source heartbeat cannot manufacture fresh market, audit, predictive or financial facts',()=>{
+ let now=origin+2000;const channel=createPilotTelemetryChannel(config,()=>now),source=raw();source.sourceTimes=sourceTimes(source.generatedAt);const before=projectPilotStatus(source);channel.accept(before);now+=120000;source.generatedAt=now;channel.accept(projectPilotStatus(source));const current=channel.read();assert.equal(current.state,'reporting');assert.equal(current.sourceAgeMs,0);assert.deepEqual(current.snapshot.sourceTimes,before.sourceTimes);assert.ok(now-current.snapshot.sourceTimes.lastMarketNotificationAt>90000);assert.ok(now-current.snapshot.sourceTimes.lastAuditAt>90000);assert.ok(now-current.snapshot.sourceTimes.lastPredictiveAt>90000);assert.equal(current.snapshot.sourceTimes.financialReconciliationAt,null);
+});
+
+
+test('candidate-only reporting cannot claim financial reconciliation and legacy payloads remain accepted',()=>{
+ const source=raw();source.mode='candidate-evaluation';source.financialExecutionAuthorized=false;source.sourceTimes=sourceTimes(source.generatedAt);assert.doesNotThrow(()=>projectPilotStatus(source));source.sourceTimes.financialReconciliationAt=source.generatedAt;assert.throws(()=>projectPilotStatus(source),/cannot claim financial reconciliation/);
+ const wire=projectPilotStatus({...raw(),mode:'candidate-evaluation',financialExecutionAuthorized:false,sourceTimes:sourceTimes(origin+1000)});wire.sourceTimes.financialReconciliationAt=wire.generatedAt;assert.throws(()=>validatePilotTelemetry(wire),/cannot claim financial reconciliation/);
+ delete source.sourceTimes;assert.doesNotThrow(()=>projectPilotStatus(source));assert.doesNotThrow(()=>projectPilotStatus(raw()));const paper={...source,mode:'paper',financialExecutionAuthorized:true,sourceTimes:{...sourceTimes(source.generatedAt),financialReconciliationAt:source.generatedAt}};assert.equal(projectPilotStatus(paper).sourceTimes.financialReconciliationAt,paper.generatedAt);
+});

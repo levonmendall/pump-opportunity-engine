@@ -14,11 +14,12 @@ class Element {
 const now=Date.now();
 function snapshot(){return {kind:'experimental-pilot',authoritative:false,liveTrading:false,accountId:'poe-pilot-ui-fixture',inceptionAt:now-600000,runId:'ui-fixture',generatedAt:now-180000,source:{release:'abc123',strategy:'pilot-v1'},running:false,entriesEnabled:false,status:'graceful stop',funnel:{evaluated:3,reconciled:20},metrics:{rpcRequests:4},decisions:[{at:now-190000,mint:'<img src=x>',stage:'strategy-rejection',reason:'<script>alert(1)</script>'}],refusals:[]};}
 async function browser(first:unknown){
-  const nodes=new Map<string,Element>();for(const id of ['pilot-link-state','pilot-link-detail','pilot-source-detail','pilot-funnel','pilot-watch','pilot-age-policy','pilot-metrics','pilot-decisions','pilot-refusals'])nodes.set(id,new Element());
-  let response=first,mono=0,fail=false;const paths:string[]=[],timeouts:Array<()=>Promise<void>>=[],intervals:Array<()=>void>=[],primary:Array<{snapshot:unknown;state:unknown}|null>=[];
-  const context=createContext({document:{getElementById:(id:string)=>nodes.get(id),createElement:()=>new Element(),addEventListener:()=>{},hidden:false},performance:{now:()=>mono},Date,Intl,Number,JSON,Array,Object,String,Error,AbortSignal:{timeout:()=>undefined},setPilotIntelligence:(snapshot:unknown,state:unknown)=>primary.push({snapshot,state}),clearPilotIntelligence:()=>primary.push(null),fetch:async(path:string)=>{paths.push(path);if(fail)throw Error('Disconnected');return {ok:true,text:async()=>JSON.stringify(response)};},setTimeout:(fn:()=>Promise<void>)=>{timeouts.push(fn);return 1;},clearTimeout:()=>{},setInterval:(fn:()=>void)=>{intervals.push(fn);return 1;}});
+  const nodes=new Map<string,Element>();for(const id of ['pilot-link-state','pilot-link-detail','pilot-source-detail','pilot-funnel','pilot-watch','pilot-age-policy','pilot-metrics','pilot-source-times','pilot-decisions','pilot-refusals'])nodes.set(id,new Element());
+  let response=first,mono=0,wall=now,fail=false;
+  class BrowserDate extends Date {static override now(){return wall;}}const paths:string[]=[],timeouts:Array<()=>Promise<void>>=[],intervals:Array<()=>void>=[],primary:Array<{snapshot:unknown;state:unknown}|null>=[];
+  const context=createContext({document:{getElementById:(id:string)=>nodes.get(id),createElement:()=>new Element(),addEventListener:()=>{},hidden:false},performance:{now:()=>mono},Date:BrowserDate,Intl,Number,JSON,Array,Object,String,Error,AbortSignal:{timeout:()=>undefined},setPilotIntelligence:(snapshot:unknown,state:unknown)=>primary.push({snapshot,state}),clearPilotIntelligence:()=>primary.push(null),fetch:async(path:string)=>{paths.push(path);if(fail)throw Error('Disconnected');return {ok:true,text:async()=>JSON.stringify(response)};},setTimeout:(fn:()=>Promise<void>)=>{timeouts.push(fn);return 1;},clearTimeout:()=>{},setInterval:(fn:()=>void)=>{intervals.push(fn);return 1;}});
   const code=CONNECTIONS_SCRIPT.replace(/^<script>\s*/,'').replace(/\s*<\/script>$/,'');new Script(code).runInContext(context);await new Promise(setImmediate);
-  return {nodes,paths,primary,advance:(ms:number)=>{mono+=ms;for(const fn of intervals)fn();},poll:async(next:unknown,failed=false)=>{response=next;fail=failed;await timeouts.pop()!();await new Promise(setImmediate);}};
+  return {nodes,paths,primary,advance:(ms:number)=>{mono+=ms;wall+=ms;for(const fn of intervals)fn();},poll:async(next:unknown,failed=false)=>{response=next;fail=failed;await timeouts.pop()!();await new Promise(setImmediate);}};
 }
 test('pilot extension updates candidate intelligence only, never authoritative financial portfolio data',()=>{
   assert.match(CONNECTIONS_HTML,/EXPERIMENTAL PAPER/);assert.match(CONNECTIONS_HTML,/No pilot balances or results are merged/);
@@ -70,4 +71,28 @@ test('observation-age cohorts are shown separately from unchanged baseline entry
  const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});assert.match(b.nodes.get('pilot-age-policy')!.textContent,/Observation 0–120 min; selected older research 120–360 min/);assert.match(b.nodes.get('pilot-age-policy')!.textContent,/Baseline entry comparison remains 5–120 minutes/);assert.match(b.nodes.get('pilot-age-policy')!.textContent,/not predictive quality or returns/);
  const values=b.nodes.get('pilot-watch')!.children.map(c=>c.children.map(v=>v.textContent).join(': ')).join('\n');assert.match(values,/Observation-eligible identities: 116/);assert.match(values,/Observation-ready queue: 8/);assert.match(values,/Pre-entry observation cohort \(<5 min\): 20/);assert.match(values,/Baseline entry-age cohort \(5–120 min\): 90/);assert.match(values,/Selected older research cohort: 6/);assert.match(values,/Selected older watch capacity: 24/);assert.doesNotMatch(values,/%|return|profit/i);
  await b.poll({state:'awaiting-data',snapshot:null});assert.match(b.nodes.get('pilot-age-policy')!.textContent,/not reported/);
+});
+
+
+const sourceTimeCards=(b:Awaited<ReturnType<typeof browser>>)=>b.nodes.get('pilot-source-times')!.children.map(card=>card.children.map(value=>value.textContent).join(': ')).join('\n');
+test('market, support, audit and predictive ages use their own facts rather than a renewed status heartbeat',async()=>{
+ const sourceTimes={lastMarketNotificationAt:now-180000,lastFreshSupportAt:now-40000,lastBankClockAt:now-1000,lastAuditAt:now-7000,lastPredictiveAt:now-10000,financialReconciliationAt:null};
+ const s={...snapshot(),generatedAt:now,running:true,mode:'candidate-evaluation',status:'validated candidate observation',sourceTimes};const original=JSON.stringify(s);
+ const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:0,receiverAgeMs:0});let cards=sourceTimeCards(b);
+ assert.match(cards,/Last market notification: .*180s old · STALE/);assert.match(cards,/Last validated pool support: .*40s old · RECENT/);assert.match(cards,/BANK_CLOCK source time: .*1s old · RECENT/);assert.match(cards,/Last independent audit: .*7s old · RECENT/);assert.match(cards,/Last predictive assessment: .*10s old · RECENT/);assert.match(cards,/Financial reconciliation: Unavailable/);assert.equal(JSON.stringify(s),original);
+ b.advance(10000);await b.poll({snapshot:{...s,generatedAt:now+10000},receivedAt:now+10000,sourceAgeMs:0,receiverAgeMs:0});cards=sourceTimeCards(b);assert.match(cards,/Last market notification: .*190s old · STALE/);assert.match(cards,/Last independent audit: .*17s old · RECENT/);assert.doesNotMatch(b.nodes.get('pilot-link-state')!.textContent,/SOURCE STALE/,'the status heartbeat is fresh while market evidence remains old');
+ b.advance(100000);cards=sourceTimeCards(b);assert.match(cards,/Last market notification: .*290s old · STALE/);assert.match(cards,/Last independent audit: .*117s old · STALE/);assert.match(CONNECTIONS_HTML,/over 90 seconds is STALE/);assert.match(CONNECTIONS_HTML,/not validate quotes or prove continuous protection/);assert.match(CONNECTIONS_HTML,/not an independently retrieved block time/);
+});
+
+test('legacy, null, future and invalid market facts remain unavailable and candidate-only never claims reconciliation',async()=>{
+ const b=await browser({snapshot:snapshot(),receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});assert.equal(b.nodes.get('pilot-source-times')!.children.length,6);assert.equal(sourceTimeCards(b).match(/Unavailable/g)?.length,6);
+ const s={...snapshot(),generatedAt:now,mode:'candidate-evaluation',sourceTimes:{lastMarketNotificationAt:null,lastFreshSupportAt:now+1,lastBankClockAt:-1,lastAuditAt:'<script>alert(1)</script>',lastPredictiveAt:NaN,financialReconciliationAt:now}};
+ await b.poll({snapshot:s,receivedAt:now,sourceAgeMs:0,receiverAgeMs:0});assert.equal(sourceTimeCards(b).match(/Unavailable/g)?.length,6);assert.doesNotMatch(sourceTimeCards(b),/<script>/);
+ await b.poll({snapshot:{...s,generatedAt:now-1000,sourceTimes:{...s.sourceTimes,lastAuditAt:now-500}},receivedAt:now,sourceAgeMs:1000,receiverAgeMs:0});assert.match(sourceTimeCards(b),/Last independent audit: Unavailable/,'a fact newer than its snapshot cannot appear fresh');
+});
+
+test('read failure retains independently aging market facts and cache loss clears all evidence cards',async()=>{
+ const s={...snapshot(),generatedAt:now,sourceTimes:{lastMarketNotificationAt:now-1000,lastFreshSupportAt:null,lastBankClockAt:null,lastAuditAt:null,lastPredictiveAt:null,financialReconciliationAt:null}};const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:0,receiverAgeMs:0});assert.match(sourceTimeCards(b),/1s old · RECENT/);
+ await b.poll(null,true);b.advance(100000);assert.match(sourceTimeCards(b),/101s old · STALE/);assert.match(b.nodes.get('pilot-link-state')!.textContent,/DASHBOARD READ FAILED/);
+ await b.poll({state:'awaiting-data',snapshot:null});assert.equal(b.nodes.get('pilot-source-times')!.children.length,0);assert.equal(b.nodes.get('pilot-source-detail')!.textContent,'');b.advance(1000);assert.equal(b.nodes.get('pilot-source-times')!.children.length,0);
 });

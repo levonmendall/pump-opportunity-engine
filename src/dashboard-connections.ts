@@ -1,7 +1,7 @@
 /** Separate experimental diagnostics. May drive candidate/decision panels only; never alters authoritative financial portfolio data. */
 export const CONNECTIONS_HTML=String.raw`
 <style>
-#pilot-telemetry-panel{margin:18px 0}#pilot-telemetry-panel .panel-heading{gap:12px;flex-wrap:wrap}#pilot-link-state{white-space:normal;max-width:100%;line-height:1.5}#pilot-telemetry-panel p,#pilot-telemetry-panel .metric-value{overflow-wrap:anywhere}#pilot-telemetry-panel .metric{min-width:0}#pilot-telemetry-panel .metric-name{white-space:normal;line-height:1.45}#pilot-telemetry-panel .metric-value{font-size:15px}#pilot-telemetry-panel h3{font-size:13px;margin:22px 0 9px}#pilot-telemetry-panel .pilot-note{color:#a8bdd4;font-size:12px;line-height:1.7}#pilot-source-detail{white-space:pre-line;font:10px/1.8 var(--mono);color:#8ca0ba}#pilot-decisions p,#pilot-refusals p{font:10px/1.7 var(--mono);padding:9px 0;margin:0;border-bottom:1px solid rgba(116,157,203,.1)}#pilot-telemetry-panel .pilot-grids{margin-top:14px}#pilot-telemetry-panel .pilot-warning{color:#ffd196}@media(max-width:360px){#pilot-telemetry-panel .metric-grid{grid-template-columns:1fr}}
+#pilot-telemetry-panel{margin:18px 0}#pilot-telemetry-panel .panel-heading{gap:12px;flex-wrap:wrap}#pilot-link-state{white-space:normal;max-width:100%;line-height:1.5}#pilot-telemetry-panel p,#pilot-telemetry-panel .metric-value{overflow-wrap:anywhere}#pilot-telemetry-panel .metric{min-width:0}#pilot-telemetry-panel .metric-name{white-space:normal;line-height:1.45}#pilot-telemetry-panel .metric-value{font-size:15px}#pilot-telemetry-panel h3{font-size:13px;margin:22px 0 9px}#pilot-telemetry-panel .pilot-note{color:#a8bdd4;font-size:12px;line-height:1.7}#pilot-source-times .metric-value{font-size:11px;line-height:1.6}#pilot-source-detail{white-space:pre-line;font:10px/1.8 var(--mono);color:#8ca0ba}#pilot-decisions p,#pilot-refusals p{font:10px/1.7 var(--mono);padding:9px 0;margin:0;border-bottom:1px solid rgba(116,157,203,.1)}#pilot-telemetry-panel .pilot-grids{margin-top:14px}#pilot-telemetry-panel .pilot-warning{color:#ffd196}@media(max-width:360px){#pilot-telemetry-panel .metric-grid{grid-template-columns:1fr}}
 </style>
 <section class="panel full-panel" id="pilot-telemetry-panel" aria-labelledby="pilot-telemetry-title">
 <div class="panel-heading"><div><div class="section-index">EXPERIMENTAL PAPER · SEPARATE SOURCE</div><h2 id="pilot-telemetry-title">Pilot diagnostics</h2></div><div class="panel-tag" id="pilot-link-state" role="status" aria-live="polite">CHECKING CHANNEL</div></div>
@@ -11,6 +11,8 @@ export const CONNECTIONS_HTML=String.raw`
 <div id="pilot-funnel" class="metric-grid"></div>
 <h3>Market watch and deep analysis</h3><p id="pilot-age-policy" class="pilot-note">Observation age policy is not reported by this source. Baseline entry comparison remains 5–120 minutes.</p><div id="pilot-watch" class="metric-grid"></div>
 <p class="pilot-note">Watch identities are lightweight market awareness, separate from deep observation and held positions. The ready queue excludes cooldown and backoff; deferred identities remain in the watch total. Registry promotion and complete-window totals persist across research runs; feature-only, primary strategy rejection, incomplete-data and enrichment-deadline counts describe the current run. Feature-only assessments inform slot allocation; they do not qualify an entry or grant risk permission. Queue and completed-admission waits measure elapsed wall time, including stopped intervals—not provider latency or delay caused solely by capacity. Counts describe received and verified evidence, not the entire market. No market-coverage percentage is inferred.</p>
+<h3>Market evidence times</h3><div id="pilot-source-times" class="metric-grid"></div>
+<p class="pilot-note">Display age labels use the browser clock: over 90 seconds is STALE. These labels do not validate quotes or prove continuous protection. BANK_CLOCK is a bank source timestamp, not an independently retrieved block time. Candidate-only operation has no financial reconciliation.</p>
 <div id="pilot-metrics" class="metric-grid pilot-grids"></div>
 <p class="pilot-note">Funnel, swap and accounting counters describe the identified pilot run. Validated swap events are market observations; PAPER fills and exits are simulated portfolio actions. Accounting reconciliations include zero-trade checks. Source age describes the local status file, not complete market coverage or continuous position protection.</p>
 <h3>Recent pilot decisions</h3><div id="pilot-decisions" class="identity-line">No pilot report received.</div>
@@ -35,9 +37,26 @@ function ages(){
  const publisher=typeof pilot.lastContactAgeMs==='number'?pilot.lastContactAgeMs+elapsed:typeof pilot.receiverAgeMs==='number'?pilot.receiverAgeMs+elapsed:Number.isFinite(contact)?Math.max(0,Date.now()-contact):null;
  return {source,publisher};
 }
+function sourceTimeValue(value,s){
+ const now=Date.now();
+ if(!Number.isSafeInteger(value)||value<=0||value>s.generatedAt||value>now)return 'Unavailable';
+ const elapsed=now-value;
+ return time(value)+' · '+age(elapsed)+' old · '+(elapsed>sourceStaleMs?'STALE':'RECENT');
+}
+function sourceTimeTick(s){
+ const facts=s.sourceTimes&&typeof s.sourceTimes==='object'&&!Array.isArray(s.sourceTimes)?s.sourceTimes:{};
+ grid('pilot-source-times',[
+  ['Last market notification',sourceTimeValue(facts.lastMarketNotificationAt,s)],
+  ['Last validated pool support',sourceTimeValue(facts.lastFreshSupportAt,s)],
+  ['BANK_CLOCK source time',sourceTimeValue(facts.lastBankClockAt,s)],
+  ['Last independent audit',sourceTimeValue(facts.lastAuditAt,s)],
+  ['Last predictive assessment',sourceTimeValue(facts.lastPredictiveAt,s)],
+  ['Financial reconciliation',sourceTimeValue(s.mode==='candidate-evaluation'?null:facts.financialReconciliationAt,s)]
+ ]);
+}
 function ageTick(){
  if(!pilot||!pilot.snapshot)return;
- const s=pilot.snapshot,a=ages(),sourceStale=a.source===null||a.source>sourceStaleMs,publisherStale=a.publisher===null||a.publisher>sourceStaleMs;
+ const s=pilot.snapshot;sourceTimeTick(s);const a=ages(),sourceStale=a.source===null||a.source>sourceStaleMs,publisherStale=a.publisher===null||a.publisher>sourceStaleMs;
  const state=[];
  if(!transportOk)state.push('DASHBOARD READ FAILED');
  if(publisherStale)state.push('PUBLISHER DISCONNECTED');
@@ -50,7 +69,7 @@ function ageTick(){
  id('pilot-source-detail').textContent='Account '+s.accountId+' · inception '+time(s.inceptionAt)+'\nRun '+s.runId+'\nRuntime '+s.source.release+' · strategy '+s.source.strategy+' · mode '+(s.mode||'legacy diagnostics')+'\nLocal source '+time(s.generatedAt)+' ('+age(a.source)+' old) · first accepted '+time(pilot.receivedAt)+'\nLast authenticated publisher contact '+time(pilot.lastContactAt??pilot.receivedAt)+' ('+age(a.publisher)+' ago). Receiver contact does not refresh source facts.';
 }
 function grid(target,entries){const root=id(target);root.replaceChildren();entries.forEach(([label,value])=>{const m=el('div',undefined,'metric');m.append(el('div',label,'metric-name'),el('div',typeof value==='string'?value:pretty(value),'metric-value'));root.append(m);});}
-function clearData(message){if(typeof renderExperimentalPortfolio==='function')renderExperimentalPortfolio(null);id('pilot-funnel').replaceChildren();id('pilot-watch').replaceChildren();id('pilot-metrics').replaceChildren();id('pilot-source-detail').textContent='';id('pilot-age-policy').textContent='Observation age policy is not reported by this source. Baseline entry comparison remains 5–120 minutes.';id('pilot-decisions').replaceChildren(el('p',message));id('pilot-refusals').replaceChildren(el('p',message));}
+function clearData(message){if(typeof renderExperimentalPortfolio==='function')renderExperimentalPortfolio(null);id('pilot-funnel').replaceChildren();id('pilot-watch').replaceChildren();id('pilot-metrics').replaceChildren();id('pilot-source-times').replaceChildren();id('pilot-source-detail').textContent='';id('pilot-age-policy').textContent='Observation age policy is not reported by this source. Baseline entry comparison remains 5–120 minutes.';id('pilot-decisions').replaceChildren(el('p',message));id('pilot-refusals').replaceChildren(el('p',message));}
 function showPilot(p){
  if(!p||typeof p!=='object'||Array.isArray(p))throw Error('invalid diagnostic response');
  if(p.snapshot){const s=p.snapshot;if(s.kind!=='experimental-pilot'||s.authoritative!==false||s.liveTrading!==false||typeof s.running!=='boolean'||!s.source||typeof s.source.release!=='string'||typeof s.source.strategy!=='string'||!s.funnel||!s.metrics||!Number.isSafeInteger(s.generatedAt)||!Number.isSafeInteger(s.inceptionAt)||typeof s.accountId!=='string'||!/^poe-pilot-[a-z0-9-]+$/.test(s.accountId))throw Error('invalid diagnostic identity');}
