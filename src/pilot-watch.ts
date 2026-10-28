@@ -17,6 +17,7 @@ export type WatchRow={
   promotions:number;repromotions:number;demotions:number;completeWindows:number;
   everHadWindow:boolean;lastWindowAt:number|null;history:WatchHistory[];capacityCoverage?:CapacityCoverage;olderResearch?:{selectedAt:number;activityAt:number;evidence:string};
 };
+export type WatchIdentityMetadata=Pick<WatchRow,'mint'|'pool'|'signature'|'migrationAt'|'verifiedAt'|'state'>&{olderResearch:boolean};
 type Counters={discovered:number;duplicates:number;verified:number;promoted:number;repromoted:number;demoted:number;expired:number;capacityExclusions:number;structuralExclusions:number;completeWindows:number;evicted:number;activityHints:number;promotionWaitTotalMs:number;promotionWaitMaximumMs:number};
 export type WatchCheckpoint={schemaVersion:1;rows:WatchRow[];counters:Counters;capacityProbeAdmissions?:Array<{mint:string;at:number}>;entryAgePromotionCount?:number};
 type Options={maximumIdentities?:number;maximumOlderResearch?:number;maximumDeep:number;now?:()=>number;record:(kind:string,data:unknown)=>void;restored?:unknown};
@@ -60,7 +61,7 @@ export class PilotWatch {
   }
   private emit(kind:string,data:unknown){this.options.record(kind,data);}
   private at(at=this.clock()){need(integer(at),'PILOT_WATCH_TIME');return at;}
-  private row(id:string){return [...this.rows.values()].find(r=>r.mint===id||r.signature===id);}
+  private row(id:string){for(const r of this.rows.values())if(r.mint===id||r.signature===id)return r;return undefined;}
   private verified(r:WatchRow){return r.migrationAt!==null&&r.verifiedAt!==null&&r.mint!==null&&r.pool!==null;}
   private entryEligible(r:WatchRow,at:number){return !['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state)&&this.verified(r)&&entryAgeEligible(r.migrationAt!,at);}
   private observable(r:WatchRow,at:number){return !['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state)&&this.verified(r)&&observationAgeEligible(r.migrationAt!,at,r.olderResearch!==undefined);}
@@ -209,6 +210,17 @@ export class PilotWatch {
     const fresh=ready.filter(r=>r.promotions===0),inactive=ready.filter(r=>r.promotions>0&&!activeIds.has(r.signature)),phase=this.counters.promoted%4;
     const order=phase===3?[inactive,active,fresh]:phase===1?[fresh,active,inactive]:[active,fresh,inactive];
     const selected=order.find(rows=>rows.length)??[];selected.sort((a,b)=>a.waitingSince-b.waitingSince||a.firstSeenAt-b.firstSeenAt||a.signature.localeCompare(b.signature));return selected[0]?copy(selected[0]):null;
+  }
+  /** Same expiry/readiness semantics as snapshot, without cloning unrelated
+   * identities or calculating reporting summaries. No flow or financial data. */
+  lookupIdentity(id:string,at=this.clock()):WatchRow|undefined{
+    this.at(at);this.expire(at);this.refreshProbeReadiness(at);const r=this.row(id);return r?copy(r):undefined;
+  }
+  /** Fresh bounded allocation metadata only. All fields are primitive copies;
+   * history, capacity details and mutable older-selection evidence stay private. */
+  listIdentities(at=this.clock()):WatchIdentityMetadata[]{
+    this.at(at);this.expire(at);this.refreshProbeReadiness(at);
+    return [...this.rows.values()].map(r=>({mint:r.mint,pool:r.pool,signature:r.signature,migrationAt:r.migrationAt,verifiedAt:r.verifiedAt,state:r.state,olderResearch:r.olderResearch!==undefined}));
   }
   snapshot(at=this.clock()){
     this.at(at);this.expire(at);this.refreshProbeReadiness(at);const rows=[...this.rows.values()],eligible=rows.filter(r=>this.entryEligible(r,at)),observable=rows.filter(r=>this.observable(r,at)),waiting=eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil),waits=waiting.map(r=>Math.max(0,at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!))),covered=eligible.filter(r=>r.everHadWindow&&r.lastWindowAt!==null&&r.lastWindowAt<=at&&entryAgeEligible(r.migrationAt!,r.lastWindowAt));
