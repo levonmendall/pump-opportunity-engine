@@ -1,0 +1,543 @@
+{
+  "scope": "ACTUAL IMMUTABLE FORWARD FAILURE FORENSICS + SEPARATELY LABELED OFFLINE RETENTION ARITHMETIC",
+  "runId": "native-candidates-20261028061222894",
+  "source": {
+    "commit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+    "sha256": "c848f60362ad19f290bfcbde64b252bb5309a26fe56a19c37785b76e95274540"
+  },
+  "configurationSha256": "8d1fe7e927d3253a5d98aae2bf5a3a2a3bb50e4070407aa16a20470c65aa81c8",
+  "archiveSha256": "55bcb06ce588ab3b8ef8132f04e70c612d59a9850ad4ca23e330e8e3c8f6a3b1",
+  "artifactSources": [
+    {
+      "path": "run/events/events-001.ndjson",
+      "bytes": 8333128,
+      "sha256": "92b67a0df9eccd89a5efd5d4adbcadb958daa937693230884461c09d56922ec4"
+    },
+    {
+      "path": "run/events/events-002.ndjson",
+      "bytes": 7462081,
+      "sha256": "3d85aeebd7d9ef154721ab8582cc42d7ee52fc617235e4445bc9ce45d51a4a74"
+    },
+    {
+      "path": "run/events/events-003.ndjson",
+      "bytes": 7408011,
+      "sha256": "a15ebd64303ee9800dbda258f01a4d6c667477c05d9d16115e63c06fa067792f"
+    }
+  ],
+  "actualElapsedMs": 202026,
+  "stopReason": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+  "firstLedgerLimitGap": {
+    "data": {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "at": 1793168144696,
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false
+    },
+    "location": {
+      "path": "run/events/events-003.ndjson",
+      "line": 8270,
+      "lineSha256": "31aa473398483efee95027e4e4678a7f8cec58f377c9f57b9e0544ab613ad829"
+    }
+  },
+  "actualCompactNotifications": 6353,
+  "completedInformationAdmissions": 6352,
+  "lastParsedButNotAdmitted": {
+    "signature": "5XUNuKs328Ud7RhPwoSuGtV9cWytjUXyG9FJQwAvmb7AJTjf3qJfuwoWGgmFH6i75YtJBMNseqLZa2nyAaAYcaom",
+    "slot": 462371336,
+    "receivedAt": 1793168143898,
+    "availableAt": 1793168144695,
+    "success": false,
+    "rawHash": "52b1a6058d7fa69e2bbb33462ddfc2ade6bde9e1cc4a1817c9e9c96b027bf821",
+    "parsedEvents": 0,
+    "eventsAccepted": 0,
+    "duplicate": false,
+    "correction": false,
+    "classification": "failed-transaction",
+    "reason": null,
+    "chainBlockTime": null,
+    "protocolEffects": 0,
+    "protocolFramesObserved": 0,
+    "strictV2Unavailable": false
+  },
+  "uniqueSignatures": 6353,
+  "duplicates": 0,
+  "corrections": 0,
+  "actualNormalizedTrades": 591,
+  "actualProtocolEffects": 10,
+  "globalSeenCardinalityAtFailure": {
+    "exact": 6353,
+    "maximum": 8192,
+    "basis": "Every unique compact notification enters seen before ledger admission; no correction/duplicate flags, earliest recorded availability174369ms before failure, so no180s expiry occurred."
+  },
+  "globalPeakRollingNotifications": {
+    "5": 615,
+    "10": 1058,
+    "60": 4341,
+    "90": 5953,
+    "120": 6349,
+    "180": 6353
+  },
+  "actualAvailabilityMinusReceiptMs": {
+    "p50": 864,
+    "p95": 1680,
+    "maximum": 2551,
+    "meaning": "All6353 compact notification receipt/availability pairs, not provider network response latency; last parsed record never completed admission."
+  },
+  "serializedNotificationStorage": {
+    "totalBytes": 3088902,
+    "meanBytes": 486.21155359672593,
+    "maximumBytes": 491,
+    "meaning": "Exact compact JSON encoding length excluding information record normalizedAt, not a JavaScript heap or RSS measurement."
+  },
+  "actualResources": {
+    "maximumRssBytes": 325103616,
+    "cpu": {
+      "user": 38070593,
+      "system": 2081560
+    },
+    "eventLoopDelayP95Ms": 61.767679,
+    "eventLoopDelayMaximumMs": 648.019967,
+    "retainedEvidenceBytes": 23843425,
+    "evidenceSegments": 3
+  },
+  "actualTraffic": {
+    "frames": 108383,
+    "normalizedTrades": 591,
+    "totalSocketBytes": 164330207,
+    "nativeSocketBytes": 8927974,
+    "broadWatchSocketBytes": 155401385,
+    "discoverySocketBytes": 848
+  },
+  "perScopeAttribution": [
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "synchronousDirectActivityBindings": 2704,
+      "sourceOrderReconstructionBounds": {
+        "minimum": 4047,
+        "maximum": 4153
+      },
+      "targetWindowSourceOrderBounds": {
+        "minimum": 3637,
+        "maximum": 3731
+      },
+      "targetWindowDirectlyBoundMinimum": 2402,
+      "firstPossibleAvailableAt": 1793168077967,
+      "lastPossibleAvailableAt": 1793168144695,
+      "peakRollingNotificationCountBounds": {
+        "5": {
+          "minimum": 592,
+          "maximum": 592
+        },
+        "10": {
+          "minimum": 887,
+          "maximum": 887
+        },
+        "60": {
+          "minimum": 3769,
+          "maximum": 3875
+        },
+        "90": {
+          "minimum": 4047,
+          "maximum": 4153
+        },
+        "120": {
+          "minimum": 4047,
+          "maximum": 4153
+        },
+        "180": {
+          "minimum": 4047,
+          "maximum": 4153
+        }
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "synchronousDirectActivityBindings": 5,
+      "sourceOrderReconstructionBounds": {
+        "minimum": 5,
+        "maximum": 6
+      },
+      "targetWindowSourceOrderBounds": {
+        "minimum": 1,
+        "maximum": 2
+      },
+      "targetWindowDirectlyBoundMinimum": 1,
+      "firstPossibleAvailableAt": 1793167970327,
+      "lastPossibleAvailableAt": 1793168116714,
+      "peakRollingNotificationCountBounds": {
+        "5": {
+          "minimum": 3,
+          "maximum": 3
+        },
+        "10": {
+          "minimum": 3,
+          "maximum": 3
+        },
+        "60": {
+          "minimum": 4,
+          "maximum": 4
+        },
+        "90": {
+          "minimum": 4,
+          "maximum": 4
+        },
+        "120": {
+          "minimum": 4,
+          "maximum": 4
+        },
+        "180": {
+          "minimum": 5,
+          "maximum": 6
+        }
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "synchronousDirectActivityBindings": 0,
+      "sourceOrderReconstructionBounds": {
+        "minimum": 0,
+        "maximum": 0
+      },
+      "targetWindowSourceOrderBounds": {
+        "minimum": 0,
+        "maximum": 0
+      },
+      "targetWindowDirectlyBoundMinimum": 0,
+      "firstPossibleAvailableAt": null,
+      "lastPossibleAvailableAt": null,
+      "peakRollingNotificationCountBounds": {
+        "5": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "10": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "60": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "90": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "120": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "180": {
+          "minimum": 0,
+          "maximum": 0
+        }
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "synchronousDirectActivityBindings": 1391,
+      "sourceOrderReconstructionBounds": {
+        "minimum": 1538,
+        "maximum": 1587
+      },
+      "targetWindowSourceOrderBounds": {
+        "minimum": 92,
+        "maximum": 104
+      },
+      "targetWindowDirectlyBoundMinimum": 92,
+      "firstPossibleAvailableAt": 1793168047907,
+      "lastPossibleAvailableAt": 1793168113097,
+      "peakRollingNotificationCountBounds": {
+        "5": {
+          "minimum": 559,
+          "maximum": 564
+        },
+        "10": {
+          "minimum": 970,
+          "maximum": 980
+        },
+        "60": {
+          "minimum": 1487,
+          "maximum": 1529
+        },
+        "90": {
+          "minimum": 1538,
+          "maximum": 1587
+        },
+        "120": {
+          "minimum": 1538,
+          "maximum": 1587
+        },
+        "180": {
+          "minimum": 1538,
+          "maximum": 1587
+        }
+      }
+    },
+    {
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "synchronousDirectActivityBindings": 0,
+      "sourceOrderReconstructionBounds": {
+        "minimum": 0,
+        "maximum": 0
+      },
+      "targetWindowSourceOrderBounds": {
+        "minimum": 0,
+        "maximum": 0
+      },
+      "targetWindowDirectlyBoundMinimum": 0,
+      "firstPossibleAvailableAt": null,
+      "lastPossibleAvailableAt": null,
+      "peakRollingNotificationCountBounds": {
+        "5": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "10": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "60": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "90": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "120": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "180": {
+          "minimum": 0,
+          "maximum": 0
+        }
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "synchronousDirectActivityBindings": 0,
+      "sourceOrderReconstructionBounds": {
+        "minimum": 0,
+        "maximum": 0
+      },
+      "targetWindowSourceOrderBounds": {
+        "minimum": 0,
+        "maximum": 0
+      },
+      "targetWindowDirectlyBoundMinimum": 0,
+      "firstPossibleAvailableAt": null,
+      "lastPossibleAvailableAt": null,
+      "peakRollingNotificationCountBounds": {
+        "5": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "10": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "60": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "90": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "120": {
+          "minimum": 0,
+          "maximum": 0
+        },
+        "180": {
+          "minimum": 0,
+          "maximum": 0
+        }
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "synchronousDirectActivityBindings": 471,
+      "sourceOrderReconstructionBounds": {
+        "minimum": 611,
+        "maximum": 760
+      },
+      "targetWindowSourceOrderBounds": {
+        "minimum": 330,
+        "maximum": 430
+      },
+      "targetWindowDirectlyBoundMinimum": 240,
+      "firstPossibleAvailableAt": 1793168044860,
+      "lastPossibleAvailableAt": 1793168143753,
+      "peakRollingNotificationCountBounds": {
+        "5": {
+          "minimum": 64,
+          "maximum": 79
+        },
+        "10": {
+          "minimum": 113,
+          "maximum": 141
+        },
+        "60": {
+          "minimum": 378,
+          "maximum": 490
+        },
+        "90": {
+          "minimum": 527,
+          "maximum": 655
+        },
+        "120": {
+          "minimum": 611,
+          "maximum": 760
+        },
+        "180": {
+          "minimum": 611,
+          "maximum": 760
+        }
+      }
+    }
+  ],
+  "attributionLimits": {
+    "directlyBoundRows": 4571,
+    "sourceOrderAmbiguousRows": 152,
+    "explanation": "Compact headers omit observedForMint/subscription. Direct callback rows prove association. Other bounds use known active subscriptions and synchronous noteActivity behavior: absence of a new activity row constrains scope to one whose last activity was already at that availability time. Multiple candidates in one millisecond remain ambiguous. These bounds do not invent on-chain amounts or whole-pool completeness.",
+    "recommendedEvidenceOnlyFix": "Record actual observedForMint or pool/subscription on every compact notification, including failed/nontrade packets."
+  },
+  "hotPool": {
+    "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+    "pool": "7VBYqqMz3tKLKUUfsvGQ1hHBpfWWieDbw2DNW7GuKvaH",
+    "ack": {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "pool": "7VBYqqMz3tKLKUUfsvGQ1hHBpfWWieDbw2DNW7GuKvaH",
+      "at": 1793168077803,
+      "subscription": 98282164,
+      "connection": 2,
+      "dataContract": "confirmed-program-activity-v3-shadow"
+    },
+    "elapsedSinceAckAtFailureMs": 66893,
+    "selectedAttemptsAtFailure": 4097,
+    "acceptedLedgerLengthAtOverflow": 4096,
+    "exactCountBasis": "First ledger-limit gap names hot scope; its ledger reset at ACK and lifespan66.893s is shorter than180s, so current4096cap was filled and this6353rd global packet was the4097th hot attempt. No duplicate/correction/coalescing branch ran.",
+    "target": {
+      "startAt": 1793168080000,
+      "endAt": 1793168140000
+    },
+    "targetRequiredCountBoundsFromCapAndSourceOrder": {
+      "minimum": 3675,
+      "maximum": 3687
+    },
+    "onePageAuditCapacityProvenInsufficient": {
+      "pageLimit": 1000,
+      "maximumPages": 1,
+      "directlyBoundRequiredMinimum": 2402,
+      "conclusion": "At least2402 distinct hot required signatures exist in the exact60s target, so one1000-row page cannot possibly verify that denominator. No new history query was made."
+    },
+    "preWindowExactlyAttributedCount": 80,
+    "genuineLowerFence": {
+      "signature": "4Mkv5F48NZGktneEF7dmMCPEpA7y2xjPsGp7TWMqC72beaswd6Hg5d6SYsZvUd4ADtJHbRGSpzoH7BMuufQ6psBm",
+      "slot": 462371039,
+      "receivedAt": 1793168079523,
+      "availableAt": 1793168079774,
+      "success": true,
+      "rawHash": "311d8054eeceab252835826598676f4f9a6abfdb81c90ebc37cffdcffa43bda0",
+      "parsedEvents": 0,
+      "eventsAccepted": 0,
+      "duplicate": false,
+      "correction": false,
+      "classification": "nontrade",
+      "reason": null,
+      "chainBlockTime": null,
+      "protocolEffects": 0,
+      "protocolFramesObserved": 0,
+      "strictV2Unavailable": false,
+      "normalizedAt": 1793168079774
+    },
+    "minimumPossibleRequiredSlot": 462371040,
+    "preWindowRowsStrictlyAboveFence": 2,
+    "offlineSafeCompactionAtThisFailure": {
+      "attempts": 4097,
+      "dropPreWindowRows": 80,
+      "keepAllPreWindowRowsStrictlyAboveFence": 2,
+      "keepActualLowerFence": 1,
+      "retainedAttemptRows": 4020,
+      "existingCap": 4096,
+      "formula": "4097\u221280+2+1=4020",
+      "classification": "SOURCE-ORDER RETENTION ARITHMETIC ONLY; NOT A CORRECTED FORWARD WINDOW OR INDEPENDENT AUDIT PASS",
+      "requirements": [
+        "Keep every required/current signature above actual lower fence, including prewindow arrivals above fence.",
+        "Keep real lower witness and separate source/context availability.",
+        "Never prune corrections/unusable information from a target or treat missing retained signatures as complete.",
+        "No90/120s time-only reduction fixes this66.893s source; no duplicate coalescing saving exists here."
+      ]
+    },
+    "freshSupportContexts": [
+      {
+        "at": 1793168077433,
+        "sourceSlot": 462371032,
+        "location": {
+          "path": "run/events/events-002.ndjson",
+          "line": 5253,
+          "lineSha256": "b05ca3497d56f75a929f99ab7a991323fb7363cebbb6cc2e58be09e6282c88af"
+        }
+      },
+      {
+        "at": 1793168103022,
+        "sourceSlot": 462371149,
+        "location": {
+          "path": "run/events/events-003.ndjson",
+          "line": 701,
+          "lineSha256": "e46c483363b3c5ac0091e96547fe536c3fdff13165e885cac3e2e99fb28272b0"
+        }
+      },
+      {
+        "at": 1793168104096,
+        "sourceSlot": 462371155,
+        "location": {
+          "path": "run/events/events-003.ndjson",
+          "line": 1079,
+          "lineSha256": "b52415938acd899b16f9542e8e367673c682e6af912132a70b3a14453cc111b1"
+        }
+      },
+      {
+        "at": 1793168128235,
+        "sourceSlot": 462371265,
+        "location": {
+          "path": "run/events/events-003.ndjson",
+          "line": 5298,
+          "lineSha256": "4268c7044ec4163ac928ff0aeb4a67ee10883f4bb2e65fb9465a79dd1ee0f1f0"
+        }
+      },
+      {
+        "at": 1793168140503,
+        "sourceSlot": 462371320,
+        "location": {
+          "path": "run/events/events-003.ndjson",
+          "line": 7349,
+          "lineSha256": "16e16210fa223ba709543489b4624a1b06a07b6aa2a31dcbcb93526918ac9ef9"
+        }
+      },
+      {
+        "at": 1793168141731,
+        "sourceSlot": 462371327,
+        "location": {
+          "path": "run/events/events-003.ndjson",
+          "line": 7806,
+          "lineSha256": "48e21eca937f10e5092a2f1174ff8ece89c43eeaba6aee88ea32f1b5826b022c"
+        }
+      }
+    ]
+  },
+  "failureIsolationDefect": {
+    "sourceFile": "src/pilot-native-flow.ts",
+    "sourceFileSha256": "473e0ecb2bc4fe6003843611125b1fac3a9004fdba2ab89106541dc99ad07ec5",
+    "mechanism": "First ledger overflow invalidates hot candidate; the exception handler then appends the same unusable notification to its still-full ledger. This second guaranteed overflow enters fault() and terminates all other scopes.",
+    "actualSequence": "First hot-scope gap1793168144696; other four scope gaps1793168144697; disconnected1793168144699.",
+    "classification": "The actual local cap failure and source catch path establish this global-escalation chain. It does not attribute the preceding independent physical timeout or all earlier window losses.",
+    "futureCorrectionBoundary": "Preserve received-byte accounting and durable selected/refusal evidence; a genuine per-candidate current-window capacity failure should invalidate that scope, not require appending beyond its full live ledger or assert completeness."
+  },
+  "networkOperationsFromThisForensicTask": 0,
+  "financialLedgerOpened": false,
+  "originalFailurePreserved": true
+}
