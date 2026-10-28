@@ -27,7 +27,37 @@ def prepare(f):return m.prepare_from_base_fd(f['fd'],f['uid'],RUN,ATTEMPT)
 def archive_entries(f):
  with tarfile.open(f['root']/'export'/m.ARCHIVE,'r:gz')as archive:return {row.name:archive.extractfile(row).read()for row in archive}
 
+def add_resources(f,change=None):
+ at=f['source']['generatedAt'];process={'liveProcesses':1,'membershipSha256':'1'*64,'cpuSeconds':1.5,'cpuDeltaSeconds':None,'oneCoreFraction':None,'rssBytes':4096}
+ row={'schemaVersion':1,'kind':'poe-paper-resource-sample-v1','source':SOURCE,'accountId':m.ACCOUNT,'inceptionAt':m.INCEPTION,'ordinal':0,'managementOnly':False,'at':at,'elapsedMs':5000,'intervalMs':None,'collectionMs':0,'collectionCpuMicros':0,'reason':'periodic','sourceRunId':RID,'sourceSnapshotAt':at-100,'processes':{'source':process,'publisher':None,'supervisor':None},'availableDiskBytes':1000000,'availableMemoryBytes':2000000,'sourceReportedUsage':{'rpc':{'newUnits':5,'newAccountedResponseBytes':200},'native':{'socketBytes':80,'normalizedEvents':1},'feeds':{'pumpApiSocketBytes':1000},'eventBytes':2000}}
+ if change:change(row)
+ raw=put(f['root']/'resource-samples-0.ndjson',m.encode(row));summary={'version':'paper-supervisor-resource-timeline-v1','file':'resource-samples-0.ndjson','bytes':len(raw),'sha256':m.digest(raw),'samples':1,'intervalSeconds':15,'maximumBytes':256*1024,'disabledReason':None,'lastElapsedMs':5000,'meaning':'OFFLINE explicitly limited resource fixture'};f['segment'].update(startedAt=at-5000,managementOnly=False,resourceTimeline=summary);put(f['root']/'segment-0.json',f['segment']);put(f['root']/'supervisor.json',f['supervisor']);return raw
+
 class Results(unittest.TestCase):
+ def test_bounded_resource_samples_are_exactly_hash_bound_and_keep_usage_and_observation_times_separate(self):
+  with fixture()as f:
+   raw=add_resources(f);before=(f['account']/'ledger.sqlite').read_bytes();prepare(f);entries=archive_entries(f);name='segments/0/resource-samples.ndjson';self.assertEqual(entries[name],raw);row=m.parse(raw);self.assertLess(row['sourceSnapshotAt'],row['at']);self.assertIsNone(row['processes']['source']['oneCoreFraction']);self.assertIsNone(row['processes']['publisher']);self.assertEqual(before,(f['account']/'ledger.sqlite').read_bytes());index=m.parse(entries['index.json']);self.assertEqual(next(v['sha256']for v in index['files']if v['file']==name),m.digest(raw));self.assertFalse(any(SECRET in v for v in entries.values()))
+ def test_resource_tampering_unexpected_fields_foreign_identity_or_invalid_cpu_are_rejected(self):
+  with fixture()as f:
+   add_resources(f);put(f['root']/'resource-samples-0.ndjson',b'CHANGED')
+   with self.assertRaisesRegex(m.Guard,'RESOURCE_SAMPLE_HASH_MISMATCH'):prepare(f)
+  for change,reason in [(lambda r:r.update(accountId='FOREIGN'),'RESOURCE_SAMPLE_PROVENANCE'),(lambda r:r.update(unexpectedPrivate=SECRET.decode()),'RESOURCE_SAMPLE_SCHEMA'),(lambda r:r['processes']['source'].update(cpuSeconds=-1),'RESOURCE_SAMPLE_CPU_VALUE'),(lambda r:r['sourceReportedUsage']['rpc'].update(private=SECRET.decode()),'RESOURCE_SAMPLE_USAGE_SCHEMA')]:
+   with fixture()as f:
+    add_resources(f,change)
+    with self.assertRaisesRegex(m.Guard,reason):prepare(f)
+ def test_resource_future_wall_time_after_settlement_is_rejected_without_fake_wall_monotonicity(self):
+  with fixture()as f:
+   add_resources(f,lambda r:r.update(at=f['source']['generatedAt']+5001));f['segment']['stoppedAt']=f['source']['generatedAt'];put(f['root']/'segment-0.json',f['segment']);put(f['root']/'supervisor.json',f['supervisor'])
+   with self.assertRaisesRegex(m.Guard,'RESOURCE_SAMPLE_TIME'):prepare(f)
+ def test_resource_sampling_unavailable_is_explicit_without_exporting_an_empty_file(self):
+  with fixture()as f:
+   add_resources(f);summary=f['segment']['resourceTimeline'];summary.update(bytes=0,sha256=m.digest(b''),samples=0,disabledReason='RESOURCE_SAMPLE_NO_LIVE_OBSERVATION');put(f['root']/'resource-samples-0.ndjson',b'');put(f['root']/'segment-0.json',f['segment']);put(f['root']/'supervisor.json',f['supervisor']);prepare(f);entries=archive_entries(f);self.assertNotIn('segments/0/resource-samples.ndjson',entries);self.assertEqual(m.parse(entries['segments/0/supervision.json'])['resourceTimeline']['disabledReason'],'RESOURCE_SAMPLE_NO_LIVE_OBSERVATION');self.assertIn('ledger-projection-audit.json',entries)
+ def test_coherent_deadline_metadata_keeps_only_explicit_fields_and_bounded_mints(self):
+  mint='A'*32
+  cases={'native-flow-service-selected':{'at':1,'action':'heartbeat','domain':'control','required':True,'deadlineAt':100,'allowSetup':False,'allowRetirement':False,'selectedMints':[mint]},'native-paper-local-phase':{'kind':'report','at':1,'completedAt':2,'elapsedMs':1.5,'cpuMicros':42,'declaredBoundMs':250,'overrun':False,'earliestCandidateDeadlineAt':100,'readyCandidates':3,'cpuMeaning':'Includes concurrent callbacks','financialPriorityUnchanged':True,'physicalSettlementClaimed':False},'native-origin-read-dispatch':{'at':1,'signature':'A'*64,'read':2,'method':'getTransaction','workflowDeadlineAt':100,'physicalLatestStartAt':50,'committedTargets':3,'partialProofAdmitted':False},'native-origin-workflow-settled':{'at':1,'signature':'A'*64,'startedAt':0,'elapsedMs':1,'reads':2,'result':'verified','partialProofAdmitted':False},'native-paper-backup-preparation-deferred':{'at':1,'nextAttemptAt':50,'reason':'shared deadline changed while local lease acquisition yielded','financialFailure':False,'financialExposureRetained':True}}
+  cases['http-lifecycle-timing']={'at':1,'undiciObservation':'observed','undiciRequestCreatedAt':2,'undiciHeadersSentAt':3,'undiciResponseHeadersAt':4,'undiciRequestErrorAt':None,'undiciRequestCreatedDelayMs':1.1,'undiciHeadersDispatchDelayMs':2.2,'undiciResponseHeadersDelayMs':3.3,'undiciSocketId':7,'undiciSocketPreviouslyObserved':True,'undiciSocketPreviousRequestAt':0,'undiciResponseStatus':200,'undiciRequestErrorCode':None,'undiciMatchedRequestCount':1,'undiciHeadersSentCount':1,'undiciObservedEvents':3,'undiciMeaning':'Actual process-local observation; no address or header values'}
+  for kind,data in cases.items():
+   self.assertIn(kind,m.DIAGNOSTIC_KINDS);value=m.observation_projection(kind,{**data,'private':SECRET.decode()});self.assertEqual(value,data);self.assertNotIn(SECRET,m.encode(value))
  def test_complete_projection_and_four_exact_witnesses_export_no_database_or_private_metadata(self):
   with fixture()as f:
    before=(f['account']/'ledger.sqlite').read_bytes();manifest=prepare(f);entries=archive_entries(f);audit=json.loads(entries['ledger-projection-audit.json']);index=json.loads(entries['index.json']);self.assertTrue(audit['allComparableSourceFieldsMatch']);self.assertTrue(audit['sourceOwnershipMatchesLedger']);self.assertTrue(audit['databaseUnchangedDuringRead']);self.assertEqual(audit['fields']['totalPnlLamports'],'-7000');self.assertFalse(audit['usdPnlIndependentlyVerified']);self.assertGreater(audit['ledgerAuditedAt'],0);self.assertEqual(audit['databaseSha256'],m.digest(before));self.assertEqual(before,(f['account']/'ledger.sqlite').read_bytes());self.assertFalse(any('sqlite'in name or 'secret'in name.lower()for name in entries));self.assertFalse(any(SECRET in raw for raw in entries.values()));self.assertEqual(len([n for n in entries if n.startswith('witness/accepted-source-')and n!='witness/accepted-source-witness.json']),4)

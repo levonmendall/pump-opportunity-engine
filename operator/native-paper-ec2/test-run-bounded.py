@@ -605,5 +605,71 @@ class ExactReviewedPackageTest(unittest.TestCase):
             self.assertEqual((root/'receipt.json').read_bytes(), b'{"a":1}\n')
 
 
+class ResourceTimelineTest(unittest.TestCase):
+    def view(self, cpu=1, membership='1'*64):
+        return {'liveProcesses': 1, 'membershipSha256': membership, 'cpuSeconds': cpu, 'rssBytes': 4096}
+
+    def test_real_owned_process_group_counters_are_observed_without_command_or_environment_reads(self):
+        child = subprocess.Popen([sys.executable, '-c', "import time; x=sum(range(2000000)); print('ready',flush=True); time.sleep(5)"], stdout=subprocess.PIPE, text=True, start_new_session=True)
+        try:
+            self.assertEqual(child.stdout.readline().strip(), 'ready')
+            views = m.resource_process_views(child.pid, None)
+            self.assertGreater(views['source']['cpuSeconds'], 0)
+            self.assertGreater(views['source']['rssBytes'], 0)
+            self.assertEqual(views['source']['liveProcesses'], 1)
+            self.assertIsNone(views['publisher'])
+            self.assertEqual(set(views['supervisor']), {'liveProcesses', 'membershipSha256', 'cpuSeconds', 'rssBytes'})
+        finally:
+            terminate(child)
+            child.stdout.close()
+
+    def test_interval_cpu_requires_stable_membership_and_source_time_stays_separate(self):
+        with tempfile.TemporaryDirectory(prefix='poe-OFFLINE-resources-') as tmp:
+            root = pathlib.Path(tmp)
+            clock = [100.0]
+            views = {'source': self.view(), 'publisher': None, 'supervisor': self.view(2)}
+            with patch.object(m.time, 'monotonic', side_effect=lambda: clock[0]), patch.object(m, 'resource_process_views', side_effect=lambda *_: copy.deepcopy(views)):
+                timeline = m.ResourceTimeline(root, manifest(), False, 0, 100)
+                s = source(generatedAt=1100, usage={'rpc': {'newUnits': 7, 'newAccountedResponseBytes': 80}, 'native': {'socketBytes': 90, 'normalizedEvents': 2}, 'feeds': {'pumpApiSocketBytes': 100}, 'eventBytes': 120, 'privateSentinel': 'MUST_NOT_EXPORT'})
+                timeline.sample(1, None, s, 10000, 20000)
+                clock[0] = 110;timeline.sample(1, None, s, 10000, 20000)
+                clock[0] = 115;views['source'] = self.view(2.5);timeline.sample(1, None, s, 10000, 20000)
+                clock[0] = 130;views['source'] = self.view(3, '2'*64);timeline.sample(1, None, s, 10000, 20000)
+                clock[0] = 145;views['source'] = None;timeline.sample(1, None, s, 10000, 20000)
+                summary = timeline.close()
+            raw = (root/summary['file']).read_bytes();rows = [json.loads(x) for x in raw.splitlines()]
+            self.assertEqual(summary['samples'], 4)
+            self.assertEqual(summary['sha256'], m.digest(raw))
+            self.assertEqual(summary['bytes'], len(raw))
+            self.assertEqual((root/summary['file']).stat().st_mode & 0o777, 0o600)
+            self.assertEqual(rows[0]['source'], manifest()['source'])
+            self.assertEqual(rows[1]['processes']['source']['cpuDeltaSeconds'], 1.5)
+            self.assertEqual(rows[1]['processes']['source']['oneCoreFraction'], 0.1)
+            self.assertIsNone(rows[2]['processes']['source']['cpuDeltaSeconds'])
+            self.assertIsNone(rows[3]['processes']['source'])
+            self.assertTrue(all(row['sourceSnapshotAt'] == 1100 for row in rows))
+            self.assertNotIn(b'MUST_NOT_EXPORT', raw)
+
+    def test_diagnostic_capacity_and_write_failure_do_not_throw_or_overwrite_prior_evidence(self):
+        with tempfile.TemporaryDirectory(prefix='poe-OFFLINE-resources-') as tmp:
+            root = pathlib.Path(tmp)
+            with patch.object(m, 'resource_process_views', return_value={'source': None, 'publisher': None, 'supervisor': None}):
+                timeline = m.ResourceTimeline(root, manifest(), False, 0, time.monotonic())
+                timeline.sample(1, None, None, 1, 2)
+                before = (root/timeline.name).read_bytes()
+                with patch.object(m, 'RESOURCE_SAMPLES_MAX_BYTES', len(before)):
+                    timeline.sample(1, None, None, 1, 2, force=True)
+                summary = timeline.close()
+                self.assertEqual(summary['disabledReason'], 'RESOURCE_SAMPLE_BYTES_BOUND')
+                self.assertEqual((root/timeline.name).read_bytes(), before)
+                duplicate = m.ResourceTimeline(root, manifest(), False, 0, time.monotonic())
+                self.assertEqual(duplicate.close()['disabledReason'], 'RESOURCE_SAMPLE_CREATE_FAILED')
+                self.assertEqual((root/timeline.name).read_bytes(), before)
+                failed = m.ResourceTimeline(root, manifest(), True, 1, time.monotonic())
+                with patch.object(m.os, 'write', side_effect=OSError('OFFLINE controlled failure')):
+                    failed.sample(1, None, None, 1, 2)
+                self.assertEqual(failed.close()['disabledReason'], 'RESOURCE_SAMPLE_UNAVAILABLE')
+
+
 if __name__ == '__main__':
     unittest.main()

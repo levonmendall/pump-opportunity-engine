@@ -207,6 +207,124 @@ def self_rss():
     return int(pathlib.Path('/proc/self/statm').read_text().split()[1])*os.sysconf('SC_PAGE_SIZE')
 
 
+RESOURCE_SAMPLES_MAX_BYTES = 256*1024
+RESOURCE_SAMPLES_INTERVAL = 15
+
+
+def resource_process_views(source_group, publisher_group):
+    """Live own-UID /proc counters only, including Node's worker threads.
+
+    Group sums omit already exited members. A changed membership cannot produce
+    a valid interval delta; the sampler reports that interval as unknown.
+    """
+    wanted = {'source': source_group, 'publisher': publisher_group}
+    members = {name: [] for name in wanted}
+    parent = None
+    scanned = 0
+    try:
+        for path in pathlib.Path('/proc').iterdir():
+            if not path.name.isdigit():
+                continue
+            scanned += 1
+            if scanned > 4096:
+                raise ValueError('PROCESS_CENSUS_BOUND')
+            try:
+                if path.stat().st_uid != os.getuid():
+                    continue
+                fields = (path/'stat').read_text().rsplit(')', 1)[1].split()
+                pid, group = int(path.name), int(fields[2])
+                if pid != os.getpid() and group not in wanted.values():
+                    continue
+                if path.stat().st_uid != os.getuid():
+                    continue
+                item = (pid, int(fields[19]), (int(fields[11])+int(fields[12]))/os.sysconf('SC_CLK_TCK'), int(fields[21])*os.sysconf('SC_PAGE_SIZE'))
+                if pid == os.getpid():
+                    parent = item
+                for name, wanted_group in wanted.items():
+                    if wanted_group is not None and group == wanted_group:
+                        members[name].append(item)
+            except (OSError, ValueError, IndexError):
+                # A process may exit during the census. No inaccessible values
+                # are invented and no command line/environment is read.
+                continue
+    except (OSError, ValueError):
+        return {name: None for name in ['source', 'publisher', 'supervisor']}
+    def view(rows):
+        if not rows or len(rows) > 64:
+            return None
+        rows.sort()
+        return {'liveProcesses': len(rows), 'membershipSha256': digest(json.dumps([(r[0], r[1]) for r in rows]).encode()), 'cpuSeconds': sum(r[2] for r in rows), 'rssBytes': sum(r[3] for r in rows)}
+    return {**{name: view(rows) for name, rows in members.items()}, 'supervisor': view([parent]) if parent is not None else None}
+
+
+class ResourceTimeline:
+    """Bounded diagnostic sink, never a financial/control prerequisite."""
+    def __init__(self, root, manifest, management, ordinal, began):
+        self.name = 'resource-samples-'+str(ordinal)+'.ndjson'
+        self.source, self.management, self.ordinal, self.began = manifest['source'], management, ordinal, began
+        self.fd, self.disabled, self.last, self.previous = None, None, None, {}
+        self.bytes = self.rows = 0
+        self.maximum_sample_ms = self.sampling_cpu_micros = 0
+        self.hasher = hashlib.sha256()
+        try:
+            self.fd = os.open(root/self.name, os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW, 0o600)
+        except OSError:
+            self.disabled = 'RESOURCE_SAMPLE_CREATE_FAILED'
+
+    def sample(self, source_pid, publisher_pid, source, disk_free, memory_free, reason='periodic', force=False):
+        now = time.monotonic()
+        if self.disabled or self.fd is None or not force and self.last is not None and now-self.last < RESOURCE_SAMPLES_INTERVAL:
+            return
+        cpu_began = time.process_time()
+        try:
+            processes = resource_process_views(source_pid, publisher_pid)
+            interval = None if self.last is None else max(0, now-self.last)
+            for name, value in processes.items():
+                if value is None:
+                    continue
+                prior = self.previous.get(name)
+                delta = value['cpuSeconds']-prior['cpuSeconds'] if prior and prior['membershipSha256'] == value['membershipSha256'] and value['cpuSeconds'] >= prior['cpuSeconds'] else None
+                value.update(cpuDeltaSeconds=delta, oneCoreFraction=delta/interval if delta is not None and interval is not None and interval > 0 else None)
+            usage = source.get('usage') if type(source) is dict else None
+            usage = usage if type(usage) is dict else {}
+            counters = {}
+            for section, names in {'rpc': ['newUnits', 'newAccountedResponseBytes'], 'native': ['socketBytes', 'normalizedEvents'], 'feeds': ['pumpApiSocketBytes']}.items():
+                value = usage.get(section)
+                if type(value) is dict:
+                    counters[section] = {name: value[name] for name in names if integer(value.get(name))}
+            if integer(usage.get('eventBytes')):
+                counters['eventBytes'] = usage['eventBytes']
+            row = {'schemaVersion': 1, 'kind': 'poe-paper-resource-sample-v1', 'source': self.source, 'accountId': ACCOUNT_ID, 'inceptionAt': INCEPTION, 'ordinal': self.ordinal, 'managementOnly': self.management, 'at': int(time.time()*1000), 'elapsedMs': round((now-self.began)*1000), 'intervalMs': None if interval is None else round(interval*1000), 'collectionMs': max(0, (time.monotonic()-now)*1000), 'collectionCpuMicros': max(0, round((time.process_time()-cpu_began)*1000000)), 'reason': reason, 'sourceRunId': source.get('runId') if type(source) is dict else None, 'sourceSnapshotAt': source.get('generatedAt') if type(source) is dict else None, 'processes': processes, 'availableDiskBytes': disk_free, 'availableMemoryBytes': memory_free, 'sourceReportedUsage': counters}
+            body = (json.dumps(row, separators=(',', ':'), allow_nan=False)+'\n').encode()
+            if len(body) > 8192 or self.bytes+len(body) > RESOURCE_SAMPLES_MAX_BYTES:
+                self.disabled = 'RESOURCE_SAMPLE_BYTES_BOUND'
+                return
+            offset = 0
+            while offset < len(body):
+                written = os.write(self.fd, body[offset:])
+                if written <= 0:
+                    raise OSError('resource write did not progress')
+                self.hasher.update(body[offset:offset+written]);self.bytes += written;offset += written
+            self.rows += 1
+            self.previous, self.last = processes, now
+        except Exception:
+            self.disabled = 'RESOURCE_SAMPLE_UNAVAILABLE'
+        finally:
+            self.maximum_sample_ms = max(self.maximum_sample_ms, (time.monotonic()-now)*1000)
+            self.sampling_cpu_micros += max(0, round((time.process_time()-cpu_began)*1000000))
+
+    def close(self):
+        if self.fd is not None:
+            try:
+                os.close(self.fd)
+            except OSError:
+                self.disabled = 'RESOURCE_SAMPLE_CLOSE_FAILED'
+            self.fd = None
+        if self.rows == 0 and self.disabled is None:
+            self.disabled = 'RESOURCE_SAMPLE_NO_LIVE_OBSERVATION'
+        return {'version': 'paper-supervisor-resource-timeline-v1', 'file': self.name, 'bytes': self.bytes, 'sha256': self.hasher.hexdigest(), 'samples': self.rows, 'intervalSeconds': RESOURCE_SAMPLES_INTERVAL, 'maximumBytes': RESOURCE_SAMPLES_MAX_BYTES, 'disabledReason': self.disabled, 'lastElapsedMs': None if self.last is None else round((self.last-self.began)*1000), 'maximumSampleMs': self.maximum_sample_ms, 'totalSamplingCpuMicros': self.sampling_cpu_micros, 'meaning': 'Own live process groups; Linux CPU includes threads, not exited members. Membership changes/missing processes yield unknown interval CPU. Fractions are observed CPU per one core, not host utilization; summed RSS does not deduplicate shared pages. Source-reported usage retains its own snapshot timestamp. Diagnostic writes are not separately fsynced; no profile/heap/credentials or financial records are read.'}
+
+
 def load_reviewed_helpers(expected):
     body = regular(SELECTOR, 65536, private=False)
     need(digest(body) == expected, 'NODE_PROCESS_HELPER_HASH_MISMATCH')
@@ -366,6 +484,7 @@ def supervise_segment(node, release, publisher_root, root, manifest, helpers, ma
     first_recovery_completed_at = None
     maximum_source_rss = maximum_publisher_rss = maximum_parent_rss = 0
     reason = None
+    resources = ResourceTimeline(root, manifest, management, ordinal, began)
     result = {'ordinal': ordinal, 'managementOnly': management, 'startedAt': wall, 'previousSourceGroupSettledBeforeStart': True}
     try:
         source = launch(source_args(node, release, management), root/('source-'+str(ordinal)+'.log'), 240, 245, 40)
@@ -392,6 +511,7 @@ def supervise_segment(node, release, publisher_root, root, manifest, helpers, ma
             ]
             triggered = [name for name, failed in failures if failed]
             if triggered:
+                resources.sample(source.pid, publisher.pid if publisher is not None else None, final_source, disk_free, memory_free, reason='before-source-stop', force=True)
                 reason = triggered[0]
                 result['boundedStopEvidence'] = {'causes': triggered, 'sourceRssBytes': source_rss, 'parentRssBytes': parent_rss, 'sourceCpuSeconds': cpu_used, 'availableDiskBytes': disk_free, 'availableMemoryBytes': memory_free, 'sourceStdoutBytes': log_bytes, 'elapsedSeconds': at-began}
                 break
@@ -447,6 +567,7 @@ def supervise_segment(node, release, publisher_root, root, manifest, helpers, ma
                     created = suspend_admissions(ACCOUNT, final_source, last_accepted_source, reporting_now, 'reporting-startup-unverified-before-qualification' if startup_unverified else 'reporting-unavailable-for90s')
                     result['admissionSuspendedForReporting'] = True
                     result['admissionSuspensionCreated'] = result.get('admissionSuspensionCreated', False) or created
+            resources.sample(source.pid, publisher.pid if publisher is not None else None, final_source, disk_free, memory_free)
             time.sleep(0.25)
     except Exception as error:
         reason = str(error) if isinstance(error, Guard) else 'bounded-source-supervision-failed'
@@ -475,6 +596,9 @@ def supervise_segment(node, release, publisher_root, root, manifest, helpers, ma
         initial_target_reached = not management and source_span is not None and source_span >= (LIMITS['segmentSeconds']-5)*1000 and source is not None and source.returncode == 0 and reason is None and final_source.get('status') == 'bounded interval completed; monitoring interruption checkpointed'
         result.update({'sourceSpanMs': source_span, 'initialTargetReached': initial_target_reached, 'sourceStopReason': final_source.get('status') if final_source else None, 'stoppedAt': int(time.time()*1000), 'elapsedSeconds': time.monotonic()-began, 'sourceExit': source.returncode if source is not None else None, 'sourcePid': source.pid if source is not None else None, 'sourceGroupSettled': group_settled, 'publisherGroupSettled': publisher_settled, 'publisherKeptAcrossFinancialTransition': publisher is not None and publisher.poll() is None, 'reason': reason, 'transition': decision, 'sourceRunId': final_source.get('runId') if final_source else None, 'lastSourceAt': final_source.get('generatedAt') if final_source else None, 'positions': len(final_source['positions']) if final_source else None, 'pending': len(final_source['pending']) if final_source else None, 'finalStoppedReportAccepted': accepted, 'finalStatusSha256': digest(final_raw) if final_source is not None and final_raw is not None else None, 'privateStatusPath': str(ACCOUNT/'status.json'), 'funnelCounters': {key: (final_source.get('funnel') or {}).get(key) for key in ['discovered', 'evaluated', 'qualified', 'reserved', 'attempted', 'paperFilled', 'exited', 'reconciled', 'usableWindows']} if final_source else None, 'protectionTiming': {key: (final_source.get('timing') or {}).get(key) for key in ['firstCompletedProtectionAt', 'lastCompletedProtectionAt', 'maximumCompletedGapMs', 'maximumQuoteAgeAtUseMs', 'protectionBreaches', 'unavailableChecks']} if final_source else None, 'publisherRestarts': publisher_restarts, 'lastAcceptedSourceAt': last_accepted_source, 'maximumSourceGroupRssBytes': maximum_source_rss, 'maximumPublisherGroupRssBytes': maximum_publisher_rss, 'maximumParentRssBytes': maximum_parent_rss, 'financialDatabaseReadBySupervisor': False, 'financialHistoryRewritten': False, 'lastCompletedProtectionAt': (final_source.get('timing') or {}).get('lastCompletedProtectionAt') if final_source else None, 'priorCompletedProtectionAt': prior_protection_at, 'firstRecoveryCompletedProtectionAt': first_recovery_completed_at, 'crossSegmentProtectionGapMs': first_recovery_completed_at-prior_protection_at if integer(first_recovery_completed_at) and integer(prior_protection_at) and first_recovery_completed_at>=prior_protection_at else None})
         result['acceptedSourceWitness'] = witness.summary()
+        # No final /proc/file hash pass delays a retained-exposure handoff. The
+        # last live sample and source settlement are separate observations.
+        result['resourceTimeline'] = resources.close()
         save(root/('segment-'+str(ordinal)+'.json'), result)
     return result
 

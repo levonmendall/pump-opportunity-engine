@@ -1,0 +1,23 @@
+{
+  "version": "paper-supervisor-resource-timeline-v1",
+  "file": "resource-samples-0.ndjson",
+  "bytes": 130904,
+  "sha256": "26422443695c10ecfdfb08301ce34c8ec081cb7e180da42e05652ddcb4832d21",
+  "samples": 122,
+  "intervalSeconds": 15,
+  "maximumBytes": 262144,
+  "disabledReason": null,
+  "lastElapsedMs": 4642,
+  "maximumSampleMs": 51.32780300118611,
+  "totalSamplingCpuMicros": 4674451,
+  "meaning": "Own live process groups; Linux CPU includes threads, not exited members. Membership changes/missing processes yield unknown interval CPU. Source-reported usage retains its own snapshot timestamp. Diagnostic writes are not separately fsynced; no profile/heap/credentials or financial records are read.",
+  "classification": "OFFLINE compressed sampler-overhead fixture; NOT 30-minute operating capacity",
+  "samplesCollectedBackToBack": 122,
+  "actualElapsedMs": 4677.584177999961,
+  "actualCpuMs": 4676.731777000001,
+  "financialAccountsRead": false,
+  "marketRequests": 0,
+  "existingRecordsModified": false,
+  "maximumRowBytes": 1075,
+  "helpersSha256": "7d22576c3df5e87ba8506a57c0306ff08d8edfc732301a61e72e52aabbbc9106"
+}
