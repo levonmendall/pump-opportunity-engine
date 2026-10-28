@@ -13,6 +13,7 @@ import BN from 'bn.js';
 import {PublicKey} from '@solana/web3.js';
 import {BorshCoder,type Idl} from '@coral-xyz/anchor';
 import {auditNativeFlowWindow} from '../src/native-flow-audit.js';
+import {FlowWindow} from '../src/strategy.js';
 import {PilotNativeFlow} from '../src/pilot-native-flow.js';
 import type {PilotFeedControl} from '../src/pilot-feeds.js';
 import type {ComponentKind,ComponentOperation} from '../src/component-budget.js';
@@ -465,4 +466,21 @@ test('a fresh ACK resets only generation diagnostics while exact failed correcti
 
 test('executed-flow diagnostic reduction never suppresses unsupported successful instructions or unusable failed packets',async()=>{
  const unsupported=setup({dataContract:CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW}),a=await unsupported.open(),logs=['Program pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA invoke [1]','Program log: Instruction: FutureUnsupportedSwap','Program pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA success'];unsupported.notice(a,{logs});assert.equal(unsupported.flow.snapshot(scope.mint)!.hasQualityLoss,true);assert.equal(unsupported.flow.notificationLedger(scope.mint).at(-1)!.classification,'unusable');await unsupported.flow.stop();const overrun=setup({dataContract:CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW}),b=await overrun.open();overrun.delayNextRecord(300);overrun.notice(b,{err:{InstructionError:[1,{Custom:1}]},logs:[]});assert.equal(overrun.flow.snapshot(scope.mint)!.hasQualityLoss,true);assert.equal(overrun.flow.notificationLedger(scope.mint).at(-1)!.classification,'unusable');assert.equal(overrun.flow.usage().failedPacketDiagnostics.sourceReportedPackets,0);await overrun.flow.stop();
+});
+
+
+test('one snapshot derives features once, preserves closed-bucket values and reads the next mutation freshly',async()=>{
+ const original=FlowWindow.prototype.features;let nativeWindow:FlowWindow|undefined,calls=0;
+ FlowWindow.prototype.features=function(at:number){nativeWindow??=this;if(this===nativeWindow)calls++;return original.call(this,at);};
+ const f=setup();
+ try{
+  await f.flow.addCandidate(scope);calls=0;const unopened=f.flow.snapshot(scope.mint)!;assert.equal(calls,0);assert.equal(unopened.features,null);assert.equal(unopened.warm,false);assert.equal(unopened.windowStartAt,null);assert.equal(unopened.windowEndAt,null);
+  const socket=await f.open(),openedAt=f.flow.snapshot(scope.mint)!.openedAt!,reference=new FlowWindow(scope.mint,openedAt);
+  f.notice(socket);reference.ingest(f.trades.at(-1)!.trade);await f.advance(10001);await f.drive();
+  const check=()=>{const expected=reference.features(f.now);calls=0;const actual=f.flow.snapshot(scope.mint)!;assert.equal(calls,1,'same explicit at needs one aggregate projection');assert.deepEqual(actual.features,expected);assert.equal(actual.windowStartAt,expected.windowStartAt);assert.equal(actual.windowEndAt,expected.windowEndAt);assert.equal(actual.warm,expected.sufficientlyObserved&&!actual.hasQualityLoss&&actual.sourceSupportFresh);return actual;};
+  const first=check();assert.equal(first.features!.tradeCount,1);const operations=f.operations.length,supportReads=f.supportCalls.length;
+  await f.advance(1);f.notice(socket,{signature:bs58.encode(Buffer.alloc(64,219))});reference.ingest(f.trades.at(-1)!.trade);assert.equal(check().features!.tradeCount,1,'new pending trade cannot enter an earlier closed bucket');
+  await f.advance(10000);const updated=check();assert.equal(updated.features!.tradeCount,2);assert.ok(updated.features!.asOf>first.features!.asOf);assert.equal(f.operations.length,operations,'snapshot never starts provider work');assert.equal(f.supportCalls.length,supportReads);
+  f.flow.invalidateCandidate(scope.mint);reference.invalidate(f.now,'feed-gap');const invalid=check();assert.equal(invalid.warm,false);assert.equal(invalid.features!.tradeCount,0);assert.equal(invalid.hasQualityLoss,true,'same bucket does not reuse pre-gap features');
+ }finally{FlowWindow.prototype.features=original;await f.flow.stop();}
 });
