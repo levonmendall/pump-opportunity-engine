@@ -1,0 +1,56 @@
+{
+  "classification": "OFFLINE_NATIVE_RUNWAY_DOMAIN_REGRESSION",
+  "baseCommit": "4e140598cc68e745b3d84ded93917537cc210fb3",
+  "networkRequests": 0,
+  "financialWriterOpened": false,
+  "runtimeDeployment": false,
+  "scope": [
+    "src/native-candidate-runner.ts",
+    "test/native-candidate-runner.test.ts"
+  ],
+  "change": "Prepare the actual blocking service domain: support refresh for RPC; heartbeat only for explicit heartbeat control action; other future controls wait for due service. Honor control gate for early heartbeat.",
+  "baselineReproduction": {
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "--test-name-pattern",
+      "absolute support-refresh runway deadline",
+      "test/native-candidate-runner.test.ts"
+    ],
+    "exitCode": 1,
+    "expected": "audit-preparation-support",
+    "observed": "audit-preparation-ping",
+    "fixture": "Separate absolute support deadline at now+1000ms and heartbeat at now+9000ms; PING changes heartbeat only."
+  },
+  "verification": [
+    {
+      "command": "node --import tsx --test test/native-candidate-runner.test.ts",
+      "exitCode": 0,
+      "tests": 43,
+      "passed": 43,
+      "failed": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "newRegressions": [
+    "RPC support deadline moves only after support refresh; next step audits with no ping.",
+    "Control heartbeat deadline moves only after heartbeat; support absolute deadline unchanged.",
+    "Peer PONG future blocker waits without manufactured heartbeat.",
+    "Unsubscribe future blocker waits without manufactured heartbeat.",
+    "Control gate cooldown prevents early heartbeat request/service."
+  ],
+  "integrationDependency": "Flow owner separately exposes readonly usage.nextServiceAction; absent control action conservatively waits for due service. No flow file changed here.",
+  "sourceSha256": {
+    "src/native-candidate-runner.ts": "176d5d4ee605475288e6a3d14309eef6196afb232246bef728cb1e23ea1f782a",
+    "test/native-candidate-runner.test.ts": "6a7e22fc2543be90b3573f560d6477ea8cb99c7987b6236dd1acc935832b8bae"
+  }
+}
