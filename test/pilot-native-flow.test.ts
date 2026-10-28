@@ -1,0 +1,119 @@
+/** Isolated native-flow mechanics. Retained real logs retain their original
+ * program clock/availability; explicitly changed bytes below are synthetic
+ * correction/failure fixtures, never natural trading or financial results. */
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {EventEmitter} from 'node:events';
+import {readFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
+import {dirname,join} from 'node:path';
+import WebSocket from 'ws';
+import bs58 from 'bs58';
+import {PublicKey} from '@solana/web3.js';
+import {BorshCoder,type Idl} from '@coral-xyz/anchor';
+import {PilotNativeFlow} from '../src/pilot-native-flow.js';
+import type {PilotFeedControl} from '../src/pilot-feeds.js';
+import type {ComponentKind,ComponentOperation} from '../src/component-budget.js';
+import type {PilotRpcCallOptions} from '../src/pilot-rpc.js';
+import {canonicalPumpPoolPda} from '../src/sdk.js';
+import {parseProgramLogEvidence,CONFIRMED_PROGRAM_EVENTS_V2} from '../src/program-log-mapping.js';
+
+const retained=JSON.parse(readFileSync('evidence/dynamic-funnel-20261027/retained-log-events.ndjson','utf8').split('\n')[0]!);
+const tx=retained.data.transaction,signature=retained.data.hint.signature,scope={mint:retained.data.selectedHints[0].mint as string,pool:'FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt',minSlot:tx.slot};
+const require=createRequire(import.meta.url),coder=new BorshCoder(JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl);
+const clone=<T>(value:T):T=>structuredClone(value);
+const settle=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
+
+class Socket extends EventEmitter {
+  readonly _socket=Object.assign(new EventEmitter(),{bytesRead:200});
+  readonly sent:Array<{jsonrpc:string;id:number;method:string;params:any[]}>=[];
+  readonly controls:string[]=[];
+  readonly _sender={sendFrame:(_parts:Buffer[],callback?:()=>void)=>callback?.()};
+  readyState:number=WebSocket.CONNECTING;autoClose=true;private subscription=100;
+  constructor(readonly endpoint:string){super();}
+  open(){this.readyState=WebSocket.OPEN;this.emit('open');}
+  frame(value:unknown,declaredBytes?:number){if(this.readyState!==WebSocket.OPEN)return;const raw=Buffer.from(typeof value==='string'?value:JSON.stringify(value));this._socket.bytesRead+=declaredBytes??raw.length+4;this._socket.emit('data',raw);this.emit('message',raw);}
+  send(data:string,callback?:(error?:Error)=>void){const request=JSON.parse(data);assert.equal(request.jsonrpc,'2.0');assert.ok(['logsSubscribe','logsUnsubscribe'].includes(request.method),'only filtered read-only logs management');this.sent.push(request);callback?.();queueMicrotask(()=>this.frame({jsonrpc:'2.0',id:request.id,result:request.method==='logsSubscribe'?++this.subscription:true}));}
+  ping(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this.controls.push('ping');this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',Buffer.alloc(0));this.emit('pong',Buffer.from(payload));});}
+  pong(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this.controls.push('pong');this._sender.sendFrame([Buffer.from([0x8a]),payload]);callback?.();}
+  close(code=1000){this.controls.push('close');this._sender.sendFrame([Buffer.from([0x88])]);this.readyState=WebSocket.CLOSING;if(this.autoClose)queueMicrotask(()=>this.drop(code));}
+  terminate(){if(this.readyState===WebSocket.CLOSED)return;this.readyState=WebSocket.CLOSING;if(this.autoClose)queueMicrotask(()=>this.drop(1006));}
+  drop(code=1006){if(this.readyState===WebSocket.CLOSED)return;this.readyState=WebSocket.CLOSED;this.emit('close',code);}
+}
+
+function setup(config:{maximumCandidates?:number;maximumProcessingMs?:number;maximumReceivedBytes?:number;maximumRecordedBytes?:number;hangOpen?:boolean}={}){
+  let at=retained.data.rpcAvailableAt as number,mono=0,sequence=0,active=0,id=0,controlBytes=0,recordDelay=0;
+  const timers=new Map<number,{at:number;fn:()=>void}>(),sockets:Socket[]=[],operations:ComponentKind[]=[],supportCalls:any[]=[],records:Array<{kind:string;data:any}>=[],trades:any[]=[],gaps:any[]=[],opens:any[]=[];
+  const control:PilotFeedControl={async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,admission?:PilotRpcCallOptions){assert.equal(active,0,'one shared physical control gate');signal?.throwIfAborted();if(admission?.admissionOpen&&!admission.admissionOpen())throw Error('COMPONENT_ADMISSION_CLOSED');if(admission?.latestStartAt!==undefined&&at>admission.latestStartAt)throw Error('COMPONENT_DISPATCH_EXPIRED');operations.push(clone(kind));active++;try{return await work({id:++id,signal:signal??new AbortController().signal,chargeHttp(){throw Error('unexpected HTTP through WS control');},completeResponse(){}});}finally{active--;}},accountControlBytes(bytes){assert.ok(Number.isSafeInteger(bytes)&&bytes>=0);controlBytes+=bytes;},noteThrottle(_value,when=at){return when+65000;}};
+  const support={async validateMany(requests:any[],signal?:AbortSignal,admission?:{latestStartAt:number;admissionOpen:()=>boolean}){signal?.throwIfAborted();if(admission&&(!admission.admissionOpen()||at>admission.latestStartAt))throw Error('RESEARCH_CLOCK_ADMISSION_CLOSED');supportCalls.push(clone(requests));return {validations:Object.fromEntries(requests.map(r=>{const mint=r.mint.toBase58();return [mint,{mint,pool:canonicalPumpPoolPda(r.mint).toBase58(),at,sourceSlot:tx.slot,evidence:'OFFLINE_CURRENT_SUPPORT:'+mint,summary:{marketClockUnixSeconds:Math.floor(at/1000)}}];})),unavailable:{},context:{slot:tx.slot,requestedAt:new Date(at).toISOString(),receivedAt:new Date(at).toISOString(),marketClockUnixSeconds:Math.floor(at/1000)}};} };
+  const flow=new PilotNativeFlow({control,support:support as any,maximumCandidates:config.maximumCandidates??1,maximumProcessingMs:config.maximumProcessingMs,maximumReceivedBytes:config.maximumReceivedBytes,maximumRecordedBytes:config.maximumRecordedBytes,durationMs:300000,record(kind,data){records.push({kind,data:clone(data)});if(recordDelay){at+=recordDelay;mono+=recordDelay;recordDelay=0;}},onFlowOpen:row=>opens.push(clone(row)),onTrade:row=>trades.push(clone(row)),onGap:row=>gaps.push(clone(row))},{now:()=>at,monotonic:()=>mono,setTimer(fn,ms){const key=++sequence;timers.set(key,{at:mono+ms,fn});return key;},clearTimer(timer){timers.delete(timer as number);},makeSocket(endpoint,options){assert.equal(endpoint,'wss://api.mainnet.solana.com');assert.equal(options.autoPong,false);assert.equal(options.followRedirects,false);assert.equal(options.maxPayload,512*1024);const socket=new Socket(endpoint);sockets.push(socket);if(!config.hangOpen)queueMicrotask(()=>socket.open());return socket as unknown as WebSocket;}});
+  const advance=async(ms:number)=>{const end=mono+ms;for(let steps=0;steps<10000;steps++){const next=[...timers].filter(([,t])=>t.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;at+=next[1].at-mono;mono=next[1].at;timers.delete(next[0]);next[1].fn();await settle();}at+=end-mono;mono=end;await settle();};
+  const drive=async(count=1)=>{for(let i=0;i<count;i++){await flow.service();await settle();}};
+  const open=async(candidate=scope)=>{await flow.addCandidate(candidate);for(let i=0;i<12&&!flow.snapshot(candidate.mint)?.connected;i++)await drive();assert.equal(flow.snapshot(candidate.mint)?.connected,true,JSON.stringify({usage:flow.usage(),gaps,operations}));return sockets.at(-1)!;};
+  const notice=(socket:Socket,payload:{signature?:string;err?:unknown;logs?:unknown}={})=>{const current=flow.snapshot(scope.mint);assert.ok(current?.subscription!==null&&current?.subscription!==undefined);socket.frame({jsonrpc:'2.0',method:'logsNotification',params:{subscription:current.subscription,result:{context:{slot:tx.slot},value:{signature:payload.signature??signature,err:payload.err??null,logs:payload.logs??clone(tx.meta.logMessages)}}}});};
+  return {flow,control,advance,drive,open,notice,sockets,operations,supportCalls,records,trades,gaps,opens,timers,get now(){return at;},get active(){return active;},get controlBytes(){return controlBytes;},delayNextRecord(ms:number){recordDelay=ms;}};
+}
+
+test('native registration is local; fresh support, shared upgrade and actual confirmed ACK precede flow opening',async()=>{
+  const f=setup();await f.flow.addCandidate(scope);assert.equal(f.operations.length,0);assert.equal(f.supportCalls.length,0);assert.equal(f.flow.snapshot(scope.mint)?.connected,false);
+  await f.drive();assert.equal(f.supportCalls.length,1);assert.equal(f.operations.length,0,'support is one due service action');const socket=await f.open();
+  assert.deepEqual(f.operations.map(x=>x.method),['upgrade','logsSubscribe']);assert.equal(socket.sent.length,1);assert.deepEqual(socket.sent[0]!.params,[{mentions:[scope.pool]},{commitment:'confirmed'}]);assert.equal(f.opens.length,1);assert.equal(f.opens[0].dataContract,CONFIRMED_PROGRAM_EVENTS_V2);assert.equal(f.flow.snapshot(scope.mint)?.auditVerified,false);assert.equal(f.flow.snapshot(scope.mint)?.warm,false);await f.flow.stop();
+});
+
+test('retained actual program events preserve economics, true log identities and availability without claiming SPL checks',async()=>{
+  const f=setup(),socket=await f.open();f.notice(socket);const truth=parseProgramLogEvidence({signature,slot:tx.slot,err:null,logs:tx.meta.logMessages,commitment:'confirmed',availableAt:f.now},[{...scope,supportedPoolEvidence:'retained raw fixture'}]);assert.equal(f.trades.length,truth.length);const row=f.trades[0],e=truth[0]!;
+  assert.equal(row.dataContract,CONFIRMED_PROGRAM_EVENTS_V2);assert.equal(row.transferCrossCheck,'UNAVAILABLE');assert.deepEqual(row.trade.identity,{kind:'program-log',signature,program:e.identity.program,logIndex:e.identity.logArrayIndex,frameOrdinal:e.frameOrdinal});assert.equal(row.trade.wallet,e.trader);assert.equal(row.trade.quoteLamports,e.curveQuoteLamports);assert.equal(row.trade.tokenUnits,e.tokenUnits);assert.equal(row.trade.receivedAt,row.validatedAt);assert.ok(row.validatedAt>=f.now);assert.equal(Object.hasOwn(row.trade.identity,'instructionIndex'),false);assert.equal(Object.hasOwn(row.trade.identity,'eventIndex'),false);assert.equal(f.flow.snapshot(scope.mint)?.auditVerified,false);assert.equal(f.controlBytes,socket._socket.bytesRead);await f.flow.stop();
+});
+
+test('confirmed failed and non-swap notifications remain auditable without inventing trades or a data gap',async()=>{
+  const f=setup(),socket=await f.open();f.notice(socket,{signature:bs58.encode(Buffer.alloc(64,31)),err:{InstructionError:[1,{Custom:1}]}});f.notice(socket,{signature:bs58.encode(Buffer.alloc(64,32)),logs:['Program 11111111111111111111111111111111 invoke [1]','Program 11111111111111111111111111111111 success']});assert.equal(f.trades.length,0);assert.equal(f.gaps.length,0);assert.equal(f.flow.notificationLedger(scope.mint).length,2);assert.equal(f.flow.snapshot(scope.mint)?.suspended,false);await f.flow.stop();
+});
+
+test('duplicate actual event identity is not re-admitted; synthetic changed amounts invalidate the candidate as a correction',async()=>{
+  const f=setup(),socket=await f.open(),firstReceivedAt=f.now;f.notice(socket);const count=f.trades.length;await f.advance(5);f.notice(socket);assert.equal(f.trades.length,count);const duplicateLedger=f.flow.notificationLedger(scope.mint);assert.equal(duplicateLedger[0]!.receivedAt,firstReceivedAt);assert.equal(duplicateLedger[1]!.duplicate,true);assert.equal(duplicateLedger[1]!.availableAt,f.now);assert.equal(duplicateLedger[0]!.chainBlockTime,null);const changed=clone(tx.meta.logMessages) as string[];
+  for(let i=0;i<changed.length;i++){const line=changed[i]!;if(!line.startsWith('Program data: '))continue;const encoded=line.slice(14),event=coder.events.decode(encoded);if(!event||!['BuyEvent','SellEvent'].includes(event.name))continue;const data=event.data as any,field=event.name==='BuyEvent'?'base_amount_out':'base_amount_in';data[field]=data[field].addn(1);changed[i]='Program data: '+Buffer.concat([Buffer.from(encoded,'base64').subarray(0,8),coder.types.encode(event.name,data)]).toString('base64');break;}
+  f.notice(socket,{logs:changed});assert.equal(f.trades.length,count);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.flow.snapshot(scope.mint)?.suspended,true);assert.ok(f.gaps.some(g=>/CORRECT/i.test(g.reason)));await f.flow.stop();
+});
+
+test('unsupported whole AMM frame suspends only its candidate and requires an explicit fresh rearm',async()=>{
+  const f=setup(),socket=await f.open(),logs=clone(tx.meta.logMessages);logs.push('Program pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA invoke [1]','Program log: Instruction: FutureUnsupportedSwap','Program pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA success');f.notice(socket,{logs});assert.equal(f.trades.length,0);assert.equal(f.flow.snapshot(scope.mint)?.suspended,true);const before=f.operations.length;await f.advance(10000);assert.equal(f.operations.length,before,'timers never dispatch replacement RPC');await f.flow.addCandidate(scope);await f.drive(8);assert.equal(f.flow.snapshot(scope.mint)?.warm,false);await f.flow.stop();
+});
+
+test('disconnect invalidates market context; bounded service-driven reconnect requires fresh ACK and warming',async()=>{
+  const f=setup(),socket=await f.open();f.notice(socket);socket.drop();await settle();assert.ok(f.gaps.length);assert.equal(f.flow.snapshot(scope.mint)?.connected,false);assert.equal(f.flow.snapshot(scope.mint)?.warm,false);const controls=f.operations.length;await f.advance(1999);await f.drive();assert.equal(f.operations.length,controls);await f.advance(101);await f.drive(8);assert.ok(f.sockets.length>=2);assert.equal(f.flow.snapshot(scope.mint)?.connected,true);assert.equal(f.flow.snapshot(scope.mint)?.warm,false);assert.equal(f.flow.snapshot(scope.mint)?.auditVerified,false);assert.ok(f.opens.length>=2);await f.flow.stop();
+});
+
+test('stale support and delayed recording cannot turn old program information into valid fresh evidence',async()=>{
+  const stale=setup(),socket=await stale.open();await stale.advance(30001);stale.notice(socket);assert.equal(stale.trades.length,0);assert.ok(stale.gaps.length);await stale.flow.stop();
+  const slow=setup({maximumProcessingMs:25}),other=await slow.open();slow.delayNextRecord(6000);slow.notice(other);assert.equal(slow.trades.length,0);assert.ok(slow.gaps.length);assert.equal(slow.flow.snapshot(scope.mint)?.hasQualityLoss,true);await slow.flow.stop();
+});
+
+test('six distinct candidates share one socket and filtered subscriptions; capacity refusal starts no seventh work',async()=>{
+  const f=setup({maximumCandidates:6}),scopes=Array.from({length:7},(_,i)=>{const mint=new PublicKey(Buffer.alloc(32,i+1));return {mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};});for(const s of scopes.slice(0,6))await f.flow.addCandidate(s);assert.equal(f.operations.length,0);await f.drive(12);assert.equal(f.sockets.length,1);assert.equal(f.sockets[0]!.sent.filter(x=>x.method==='logsSubscribe').length,6);assert.equal(f.supportCalls[0]!.length,6);assert.equal(scopes.slice(0,6).filter(s=>f.flow.snapshot(s.mint)?.connected).length,6);const before=f.operations.length;await assert.rejects(async()=>f.flow.addCandidate(scopes[6]!),/CAPACITY|LIMIT/);assert.equal(f.operations.length,before);await f.flow.stop();
+});
+
+test('closed financial-priority admission starts no native control, and stop waits for actual transport settlement',async()=>{
+  const f=setup();await f.flow.addCandidate(scope);await f.flow.service(undefined,{admissionOpen:()=>false,latestStartAt:f.now+1000});assert.equal(f.operations.length,0);assert.equal(f.supportCalls.length,0);const socket=await f.open();socket.autoClose=false;let stopped=false;const pending=f.flow.stop('OFFLINE_GRACEFUL_BOUNDARY');void pending.then(()=>{stopped=true;});await settle();assert.equal(stopped,false);assert.notEqual(socket.readyState,WebSocket.CLOSED);socket.drop();await pending;assert.equal(stopped,true);assert.equal(f.active,0);
+});
+
+test('transport receipt beyond its finite allowance is counted and invalidates admission before trade decoding',async()=>{
+  const f=setup({maximumReceivedBytes:4*1024*1024}),socket=await f.open(),subscription=f.flow.snapshot(scope.mint)!.subscription;socket.frame({jsonrpc:'2.0',method:'logsNotification',params:{subscription,result:{context:{slot:tx.slot},value:{signature,err:null,logs:clone(tx.meta.logMessages)}}}},5*1024*1024);assert.equal(f.trades.length,0);assert.ok(f.gaps.length);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.controlBytes,socket._socket.bytesRead,'already received bytes remain charged');await f.flow.stop();
+});
+
+test('synthetic same transaction delivered after a second pool ACK admits its unseen pool event without duplicating the first pool',async()=>{
+  const f=setup({maximumCandidates:2}),socket=await f.open(),mint=new PublicKey(Buffer.alloc(32,11)),second={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0},other=clone(tx.meta.logMessages) as string[];
+  // Synthetic multi-pool notification: copied exact known event layouts use a
+  // different canonical pool. This tests scoped dedup only, not natural routes.
+  for(let i=0;i<other.length;i++){if(!other[i]!.startsWith('Program data: '))continue;const encoded=other[i]!.slice(14),event=coder.events.decode(encoded);if(!event||!['BuyEvent','SellEvent'].includes(event.name))continue;const data=event.data as any;data.pool=new PublicKey(second.pool);other[i]='Program data: '+Buffer.concat([Buffer.from(encoded,'base64').subarray(0,8),coder.types.encode(event.name,data)]).toString('base64');}
+  const logs=[...clone(tx.meta.logMessages),...other];f.notice(socket,{logs});assert.equal(f.trades.filter(t=>t.trade.mint===scope.mint).length,1);assert.equal(f.trades.filter(t=>t.trade.mint===second.mint).length,0);
+  await f.flow.addCandidate(second);await f.drive(5);const subscription=f.flow.snapshot(second.mint)!.subscription;assert.ok(subscription!==null);socket.frame({jsonrpc:'2.0',method:'logsNotification',params:{subscription,result:{context:{slot:tx.slot},value:{signature,err:null,logs}}}});
+  assert.equal(f.trades.filter(t=>t.trade.mint===scope.mint).length,1,'first pool event must stay deduplicated');assert.equal(f.trades.filter(t=>t.trade.mint===second.mint).length,1,'newly ACK-admitted pool must receive its actually supplied event');assert.equal(f.flow.snapshot(second.mint)?.hasQualityLoss,false);await f.flow.stop();
+});
+
+test('peer pongs and liveness pings require explicit service and use the same physical control gate',async()=>{
+  const f=setup(),socket=await f.open();let before=f.operations.length;socket.emit('ping',Buffer.from('provider-ping'));assert.equal(f.operations.length,before,'event handlers do not dispatch provider operations');await f.drive();assert.equal(f.operations.at(-1)!.method,'pong');assert.equal(socket.controls.at(-1),'pong');before=f.operations.length;await f.advance(10001);assert.equal(f.operations.length,before,'clock advancement does not launch background RPC');await f.drive();assert.equal(f.operations.at(-1)!.method,'ping');assert.equal(f.active,0);assert.equal(f.opens.length,1);await f.flow.stop();
+});
+
+test('stop during an unfinished upgrade settles its physical operation before another service can run',async()=>{
+  const f=setup({hangOpen:true});await f.flow.addCandidate(scope);await f.drive();const connecting=f.flow.service();await settle();assert.equal(f.active,1);assert.equal(f.operations.length,1);await f.flow.service();assert.equal(f.operations.length,1,'busy service cannot launch competing controls');await f.flow.stop('OFFLINE_STOP_DURING_UPGRADE');await connecting;assert.equal(f.active,0);assert.equal(f.sockets[0]!.readyState,WebSocket.CLOSED);assert.equal(f.flow.usage().physicalTransportsSettled,true);
+});
