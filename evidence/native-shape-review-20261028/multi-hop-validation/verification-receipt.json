@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_OBSERVED_MULTIHOP_AND_COMPILED_BOOST_PROOF",
+  "sourceCommit": "c76fb9508cece02735745977506ba232f19ef075",
+  "verifiedAt": "2026-10-28T19:49:24.645277+00:00",
+  "focusedTests": {
+    "passed": 123,
+    "failed": 0,
+    "rawOutput": "evidence/native-shape-review-20261028/multi-hop-validation/focused-tests-final.txt"
+  },
+  "buildPassed": true,
+  "independentReview": "GO after SDK rounding correction; exact compiled-role/event/transfer negative cases passed",
+  "newNetworkRequests": 0,
+  "originalHistoricalWindowsUnchanged": true,
+  "historicalMultihopRpcAvailableAt": 1793215281860,
+  "compiledBoostWiredIntoNativeFlow": false,
+  "liveForwardCoverageVerified": false,
+  "financialOperations": 0,
+  "files": [
+    {
+      "path": "src/program-log-mapping.ts",
+      "bytes": 29789,
+      "sha256": "3afa6a27c60e96673a4476fbf143e4fa816803933d2c0e4ed49bdd36a7c0b7b1"
+    },
+    {
+      "path": "src/pumpapi-mapping.ts",
+      "bytes": 35661,
+      "sha256": "4d422c70b6a8305ede4a8e61541cd2e313d4dbef1e879d506d049fedbfa72ffd"
+    },
+    {
+      "path": "src/protocol-pool-effects.ts",
+      "bytes": 13888,
+      "sha256": "9a5c7dd68ade007d8233f21016934e5bc1c98fcb3a09dd922f4f4d5df19b0172"
+    },
+    {
+      "path": "test/observed-multi-hop.test.ts",
+      "bytes": 11470,
+      "sha256": "e941a2389668139ddb7a511d7ce17072d6890d565c483a0c57c6bc415d449221"
+    },
+    {
+      "path": "test/protocol-cleanup-proof.test.ts",
+      "bytes": 7021,
+      "sha256": "de79174a5c7d178f96efcc653370e1fc087509e457688f06612bb5be8026cad6"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/multi-hop-actual.json",
+      "bytes": 21475,
+      "sha256": "35230ba1673b68d2fc24ef47e1dbb04d3dfc59cf5367912e568e93de0b0a5684"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/compiled-cleanup/boost-close-actual.json",
+      "bytes": 10296,
+      "sha256": "9701cc3c6e6c3f52dfb0ca3acfd8b53920d2e2d96edd4f2f172d883ac8043aba"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/multi-hop-validation/focused-tests-final.txt",
+      "bytes": 11679,
+      "sha256": "6882fb4ce06dc903961305183b65a30b641381acc0feabaa3b465ec4774ad254"
+    },
+    {
+      "path": "evidence/native-shape-review-20261028/multi-hop-validation/build-final.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ]
+}
