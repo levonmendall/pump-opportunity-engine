@@ -93,7 +93,7 @@ test('queue wait starts after verified eligibility, not the five-minute initial 
 
 test('explicit terminal exclusions cannot enter a coverage denominator or be re-promoted while timestamps remain within age',()=>{
   const f=fixture();f.seed('expired-early');f.seed('unsupported');f.registry.transition('mint-expired-early','EXPIRED','remaining horizon cannot fit a complete required window');f.registry.transition('mint-unsupported','PERMANENTLY_UNSUPPORTED','verified unsupported structural token behavior');
-  const s=f.registry.snapshot();assert.equal(s.summary.eligibleKnown,0);assert.equal(s.summary.structuralExclusions,1);assert.equal(f.registry.next(f.now(),new Set()),null);assert.throws(()=>f.registry.transition('mint-expired-early','DEEP_OBSERVATION','try again'),/ENTRY_AGE/);assert.throws(()=>f.registry.transition('mint-unsupported','DEEP_OBSERVATION','try again'),/ENTRY_AGE/);
+  const s=f.registry.snapshot();assert.equal(s.summary.eligibleKnown,0);assert.equal(s.summary.structuralExclusions,1);assert.equal(f.registry.next(f.now(),new Set()),null);assert.throws(()=>f.registry.transition('mint-expired-early','DEEP_OBSERVATION','try again'),/OBSERVATION_AGE/);assert.throws(()=>f.registry.transition('mint-unsupported','DEEP_OBSERVATION','try again'),/OBSERVATION_AGE/);
 });
 
 
@@ -283,4 +283,46 @@ test('all three continuously ready groups receive the declared durable four-prom
  const selected:string[]=[];
  for(let i=0;i<4;i++){f.at(f.now()+70000);f.registry.noteActivity('mint-active',f.now(),'new unverified scheduling hint after demotion');f.seed('fresh-'+i);const pick=f.registry.next(f.now(),new Set())!;selected.push(pick.promotions===0?'fresh':pick.mint==='mint-active'?'active':'inactive');f.registry.transition(pick.mint!,'DEEP_OBSERVATION','new complete flow collection required');f.registry.transition(pick.mint!,'DEFERRED','valid-window-predictive-assessment-failed');}
  assert.deepEqual(selected,['active','inactive','active','fresh']);
+});
+
+test('verified newborn observations begin immediately without entering the five-minute financial coverage denominator',()=>{
+ const f=fixture();const migration=f.now();f.seed('newborn',migration);assert.equal(f.registry.next(f.now(),new Set())!.mint,'mint-newborn');f.registry.transition('mint-newborn','DEEP_OBSERVATION','actual new supported flow');let s=f.registry.snapshot();assert.equal(s.summary.ageCohorts.preEntry,1);assert.equal(s.summary.eligibleKnown,0);assert.equal(s.summary.observationEligibleKnown,1);assert.equal(s.summary.promotionWaitMs.entryAgePromotions,0);
+ f.at(migration+70000);f.registry.noteWindow('mint-newborn',f.now());f.registry.transition('mint-newborn','DEFERRED','valid-window-predictive-assessment-failed',f.now(),{deferUntil:f.now()+60000});f.at(migration+300000);s=f.registry.snapshot();assert.equal(s.summary.eligibleKnown,1);assert.equal(s.summary.coverage.atLeastOneValidWindow,0,'a pre-entry observed window is not baseline entry-age coverage');
+ const resumed=new PilotWatch({...f.options,restored:f.registry.export()});assert.equal(resumed.snapshot().summary.coverage.atLeastOneValidWindow,0);resumed.transition('mint-newborn','DEEP_OBSERVATION','fresh entry-age observation');f.at(migration+360000);resumed.noteWindow('mint-newborn',f.now());assert.equal(resumed.snapshot().summary.coverage.atLeastOneValidWindow,1);assert.equal(resumed.snapshot().summary.promotionWaitMs.entryAgePromotions,1);
+});
+
+test('selected two-to-six-hour research reopens only age expiry and allows at most one older deep slot',()=>{
+ const f=fixture();f.at(100000000);const migration=f.now()-7200001;f.seed('old-a',migration);f.seed('old-b',migration);assert.equal(f.registry.next(f.now(),new Set()),null);assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-old-a')!.state,'EXPIRED');
+ const activity={observedAt:f.now(),evidence:'current observed pool activity; research allocation only'};const a=f.registry.selectOlderResearch('mint-old-a',activity);f.registry.selectOlderResearch('mint-old-b',activity);assert.equal(a.state,'WATCH');assert.equal(f.registry.snapshot().summary.eligibleKnown,0);assert.equal(f.registry.snapshot().summary.ageCohorts.olderSelected,2);
+ f.registry.transition('mint-old-a','DEEP_OBSERVATION','fresh older research flow');assert.equal(f.registry.next(f.now(),new Set()),null,'a second older allocation cannot consume another deep slot');assert.throws(()=>f.registry.transition('mint-old-b','DEEP_OBSERVATION','bypass older cap'),/OLDER_DEEP_CAPACITY/);
+ f.seed('new-primary',f.now());assert.equal(f.registry.next(f.now(),new Set())!.mint,'mint-new-primary','older deep work cannot block verified new primary awareness');f.registry.transition('mint-old-a','DEFERRED','older research allocation released');assert.equal(f.registry.next(f.now(),new Set(['mint-new-primary']))!.mint,'mint-old-b');
+ f.at(migration+21600000);assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-old-a')!.state,'EXPIRED');assert.throws(()=>f.registry.selectOlderResearch('mint-old-a',{observedAt:f.now(),evidence:'later hint'}),/OLDER_VERIFIED_IDENTITY/);
+});
+
+test('older selection cannot revive structural exclusions, unknown origins, manual expiry or owned obligations',()=>{
+ const f=fixture();f.at(100000000);for(const id of ['unsupported','held','pending','manual'])f.seed(id,f.now()-7200001);f.registry.transition('mint-unsupported','PERMANENTLY_UNSUPPORTED','structural proof');f.registry.transition('mint-held','HELD','existing ledger position');f.registry.transition('mint-pending','ENTRY_PENDING','unresolved ledger action');f.registry.transition('mint-manual','EXPIRED','manual archival cause, not age');f.registry.discover({signature:'unverified-old',receivedAt:f.now()});
+ const activity={observedAt:f.now(),evidence:'new hint does not override structural or financial state'};
+ for(const id of ['unsupported','held','pending'])assert.throws(()=>f.registry.selectOlderResearch('mint-'+id,activity),/OLDER_PROTECTED_IDENTITY/);assert.throws(()=>f.registry.selectOlderResearch('mint-manual',activity),/OLDER_EXPIRY_CAUSE/);assert.throws(()=>f.registry.selectOlderResearch('unverified-old',activity),/OLDER_VERIFIED_IDENTITY/);
+ f.seed('current-old',f.now()-7200001);for(const observedAt of [f.now()-60001,f.now()+1])assert.throws(()=>f.registry.selectOlderResearch('mint-current-old',{observedAt,evidence:'unusable activity time'}),/OLDER_ACTIVITY/);
+ assert.ok(f.registry.snapshot().rows.filter(r=>['HELD','ENTRY_PENDING'].includes(r.state)).every(r=>r.olderResearch===undefined));
+});
+
+test('older reactivation preserves technical capacity gates, provider defer times and fresh-window requirements',()=>{
+ const f=fixture();f.at(100000000);f.seed('capacity',f.now()-7199000);f.registry.transition('mint-capacity','DEEP_OBSERVATION','prior fresh observation');f.registry.deferCapacity('mint-capacity','enrichment exceeds current capacity',demand(f.now(),18));f.at(f.now()+1000);const old=f.registry.selectOlderResearch('mint-capacity',{observedAt:f.now(),evidence:'changed market activity only'});assert.equal(old.capacityCoverage!.status,'AWAITING_CAPACITY');assert.equal(old.state,'DEFERRED');assert.equal(f.registry.next(f.now(),new Set()),null);
+ f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.kind,'activity-feasibility-probe');assert.equal(f.registry.next(f.now(),new Set()),null);
+ f.seed('provider',f.now()-7199000);f.registry.transition('mint-provider','DEFERRED','HTTP429 global/provider recovery remains required',f.now(),{deferUntil:f.now()+65000});const deadline=f.now()+65000;f.at(f.now()+1000);f.registry.selectOlderResearch('mint-provider',{observedAt:f.now(),evidence:'a hint never clears cooldown'});assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-provider')!.deferUntil,deadline);assert.equal(f.registry.next(f.now(),new Set()),null);
+});
+
+test('twenty-four older identities do not consume the hundred-fifty primary identity reserve',()=>{
+ let now=100000000;const records:any[]=[],watch=new PilotWatch({maximumDeep:3,now:()=>now,record:(kind,data)=>records.push({kind,data})});
+ const old=(i:number)=>{const signature='old-'+i,mint='old-mint-'+i;watch.discover({signature,receivedAt:now});watch.verify(signature,{mint,pool:'old-pool-'+i,migrationAt:now-7200001,verifiedAt:now});return mint;};
+ for(let i=0;i<24;i++)watch.selectOlderResearch(old(i),{observedAt:now,evidence:'bounded current activity sample'});const extra=old(24);assert.throws(()=>watch.selectOlderResearch(extra,{observedAt:now,evidence:'another bounded activity sample'}),/OLDER_CAPACITY/);
+ for(let i=0;i<150;i++)watch.discover({signature:'new-primary-'+i,receivedAt:now});let s=watch.snapshot();assert.equal(s.summary.known,174);assert.equal(s.summary.maximumIdentities,174);assert.equal(s.summary.minimumPrimaryIdentityCapacity,150);assert.equal(s.summary.ageCohorts.olderSelected,24);assert.equal(s.summary.unverified,150);
+ now++;watch.discover({signature:'one-more-primary',receivedAt:now});s=watch.snapshot();assert.equal(s.summary.known,174);assert.equal(s.summary.unverified,151);assert.equal(s.summary.ageCohorts.olderSelected,23,'older research is reclaimed before recent primary awareness');assert.ok(records.some(r=>r.kind==='pilot-watch-evicted'&&r.data.mint==='old-mint-0'));
+});
+
+test('old checkpoints retain valid entry-age coverage and unverified retention stays two hours five minutes',()=>{
+ const f=fixture();f.seed('baseline');f.registry.transition('mint-baseline','DEEP_OBSERVATION','old entry-age window');f.registry.noteWindow('mint-baseline',f.now());const checkpoint=f.registry.export();delete checkpoint.entryAgePromotionCount;const restored=new PilotWatch({...f.options,restored:checkpoint});assert.equal(restored.snapshot().summary.coverage.atLeastOneValidWindow,1);assert.equal(restored.snapshot().summary.promotionWaitMs.entryAgePromotions,checkpoint.counters.promoted);
+ const g=fixture();g.registry.discover({signature:'unknown-origin',receivedAt:g.now()});g.at(g.now()+7500000);assert.equal(g.registry.snapshot().rows[0]!.state,'EXPIRED');assert.throws(()=>g.registry.selectOlderResearch('unknown-origin',{observedAt:g.now(),evidence:'no verified migration'}),/OLDER_VERIFIED_IDENTITY/);
+ const h=fixture();h.at(100000000);h.seed('selected',h.now()-7200001);h.registry.selectOlderResearch('mint-selected',{observedAt:h.now(),evidence:'actual current selection hint'});const saved=h.registry.export();saved.rows[0]!.olderResearch!.selectedAt=saved.rows[0]!.migrationAt!+1000;assert.throws(()=>new PilotWatch({...h.options,restored:saved}),/CHECKPOINT_OLDER_RESEARCH/);
 });
