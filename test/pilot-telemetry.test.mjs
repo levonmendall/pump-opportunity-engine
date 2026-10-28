@@ -67,3 +67,19 @@ test('feature-only diagnostics remain distinct from primary decisions and option
  delete p.watch.summary.predictiveAssessments;delete p.watch.summary.predictiveFailures;assert.equal(projectPilotStatus(p).watch.predictiveAssessments,null);assert.equal(projectPilotStatus(p).watch.predictiveFailures,null);
  for(const value of [-1,1.5,NaN,Infinity]){const q=projectPilotStatus(p);q.watch.predictiveAssessments=value;assert.throws(()=>validatePilotTelemetry(q));}
 });
+
+
+const agePolicy=()=>({version:'observation-age-v1',minimumObservationAgeMs:0,recentMaximumAgeMs:7200000,selectedOlderMaximumAgeMs:21600000});
+function ageSource(){const p=raw();p.observationAgePolicy={...agePolicy(),totalWatchCapacity:174,private:'NEVER_PUBLISH'};p.watch={summary:{known:174,watch:120,eligibleKnown:90,deepActive:6,maximumDeep:6,queued:3,waitMs:{mean:0,maximum:0},observationEligibleKnown:116,observationQueued:8,maximumOlderResearchIdentities:24,ageCohorts:{preEntry:20,entryEligible:90,olderSelected:6,private:'NEVER_PUBLISH'}}};return p;}
+test('observation policy and age cohorts are bounded allowlisted source facts separate from entry eligibility',()=>{
+ const source=ageSource(),p=projectPilotStatus(source);assert.deepEqual(p.observationAgePolicy,agePolicy());assert.deepEqual(p.watch.ageCohorts,{preEntry:20,entryEligible:90,olderSelected:6});assert.equal(p.watch.eligibleKnown,90);assert.equal(p.watch.observationEligibleKnown,116);assert.equal(p.watch.observationQueued,8);assert.equal(p.watch.maximumOlderResearchIdentities,24);assert.equal(p.generatedAt,source.generatedAt);assert.equal(p.entriesEnabled,false);assert.ok(!JSON.stringify(p).includes('NEVER_PUBLISH'));
+ const legacy=projectPilotStatus(raw());assert.equal(legacy.observationAgePolicy,undefined);const explicit=raw();explicit.observationAgePolicy=null;assert.equal(projectPilotStatus(explicit).observationAgePolicy,null);
+});
+test('observation policy rejects partial, malformed, nonfinite, out-of-order and unbounded values',()=>{
+ for(const change of [{minimumObservationAgeMs:-1},{recentMaximumAgeMs:Infinity},{selectedOlderMaximumAgeMs:86400001},{selectedOlderMaximumAgeMs:1},{minimumObservationAgeMs:7200000},{version:'https://example.com/private'},{minimumObservationAgeMs:0.1}]){const p=ageSource();p.observationAgePolicy={...agePolicy(),...change};assert.throws(()=>projectPilotStatus(p));}
+ const p=ageSource();delete p.observationAgePolicy.minimumObservationAgeMs;assert.throws(()=>projectPilotStatus(p));const q=projectPilotStatus(ageSource());q.observationAgePolicy.secret='forbidden';assert.throws(()=>validatePilotTelemetry(q),/unexpected/);
+});
+test('age cohort validation rejects contradictions and preserves unknown values instead of inventing zeros',()=>{
+ for(const change of [{observationEligibleKnown:513},{observationQueued:117},{maximumOlderResearchIdentities:25},{ageCohorts:{preEntry:19,entryEligible:90,olderSelected:6}},{ageCohorts:{preEntry:20,entryEligible:91,olderSelected:5}},{ageCohorts:{preEntry:1,entryEligible:90,olderSelected:25}}]){const p=ageSource();Object.assign(p.watch.summary,change);assert.throws(()=>projectPilotStatus(p));}
+ const p=projectPilotStatus(ageSource());p.watch.ageCohorts.secret='forbidden';assert.throws(()=>validatePilotTelemetry(p),/unexpected/);const q=ageSource();q.watch.summary.ageCohorts={preEntry:null,entryEligible:90,olderSelected:null};q.watch.summary.observationEligibleKnown=null;const projected=projectPilotStatus(q);assert.equal(projected.watch.ageCohorts.preEntry,null);assert.equal(projected.watch.ageCohorts.olderSelected,null);assert.equal(projected.watch.observationEligibleKnown,null);
+});

@@ -14,7 +14,7 @@ class Element {
 const now=Date.now();
 function snapshot(){return {kind:'experimental-pilot',authoritative:false,liveTrading:false,accountId:'poe-pilot-ui-fixture',inceptionAt:now-600000,runId:'ui-fixture',generatedAt:now-180000,source:{release:'abc123',strategy:'pilot-v1'},running:false,entriesEnabled:false,status:'graceful stop',funnel:{evaluated:3,reconciled:20},metrics:{rpcRequests:4},decisions:[{at:now-190000,mint:'<img src=x>',stage:'strategy-rejection',reason:'<script>alert(1)</script>'}],refusals:[]};}
 async function browser(first:unknown){
-  const nodes=new Map<string,Element>();for(const id of ['pilot-link-state','pilot-link-detail','pilot-source-detail','pilot-funnel','pilot-watch','pilot-metrics','pilot-decisions','pilot-refusals'])nodes.set(id,new Element());
+  const nodes=new Map<string,Element>();for(const id of ['pilot-link-state','pilot-link-detail','pilot-source-detail','pilot-funnel','pilot-watch','pilot-age-policy','pilot-metrics','pilot-decisions','pilot-refusals'])nodes.set(id,new Element());
   let response=first,mono=0,fail=false;const paths:string[]=[],timeouts:Array<()=>Promise<void>>=[],intervals:Array<()=>void>=[],primary:Array<{snapshot:unknown;state:unknown}|null>=[];
   const context=createContext({document:{getElementById:(id:string)=>nodes.get(id),createElement:()=>new Element(),addEventListener:()=>{},hidden:false},performance:{now:()=>mono},Date,Intl,Number,JSON,Array,Object,String,Error,AbortSignal:{timeout:()=>undefined},setPilotIntelligence:(snapshot:unknown,state:unknown)=>primary.push({snapshot,state}),clearPilotIntelligence:()=>primary.push(null),fetch:async(path:string)=>{paths.push(path);if(fail)throw Error('Disconnected');return {ok:true,text:async()=>JSON.stringify(response)};},setTimeout:(fn:()=>Promise<void>)=>{timeouts.push(fn);return 1;},clearTimeout:()=>{},setInterval:(fn:()=>void)=>{intervals.push(fn);return 1;}});
   const code=CONNECTIONS_SCRIPT.replace(/^<script>\s*/,'').replace(/\s*<\/script>$/,'');new Script(code).runInContext(context);await new Promise(setImmediate);
@@ -62,4 +62,12 @@ test('dynamic watch capacity stays separate from portfolio and unavailable field
 test('older pilot report makes watch unavailability explicit',async()=>{
  const b=await browser({snapshot:snapshot(),receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});
  assert.match(b.nodes.get('pilot-watch')!.children[0]!.textContent,/not reported/);
+});
+
+
+test('observation-age cohorts are shown separately from unchanged baseline entry and do not imply performance',async()=>{
+ const s={...snapshot(),observationAgePolicy:{version:'observation-age-v1',minimumObservationAgeMs:0,recentMaximumAgeMs:7200000,selectedOlderMaximumAgeMs:21600000},watch:{known:174,watch:120,eligibleKnown:90,deepActive:6,maximumDeep:6,queued:3,waitMs:{mean:0,maximum:0},observationEligibleKnown:116,observationQueued:8,maximumOlderResearchIdentities:24,ageCohorts:{preEntry:20,entryEligible:90,olderSelected:6}}};
+ const b=await browser({snapshot:s,receivedAt:now,sourceAgeMs:180000,receiverAgeMs:0});assert.match(b.nodes.get('pilot-age-policy')!.textContent,/Observation 0–120 min; selected older research 120–360 min/);assert.match(b.nodes.get('pilot-age-policy')!.textContent,/Baseline entry comparison remains 5–120 minutes/);assert.match(b.nodes.get('pilot-age-policy')!.textContent,/not predictive quality or returns/);
+ const values=b.nodes.get('pilot-watch')!.children.map(c=>c.children.map(v=>v.textContent).join(': ')).join('\n');assert.match(values,/Observation-eligible identities: 116/);assert.match(values,/Observation-ready queue: 8/);assert.match(values,/Pre-entry observation cohort \(<5 min\): 20/);assert.match(values,/Baseline entry-age cohort \(5–120 min\): 90/);assert.match(values,/Selected older research cohort: 6/);assert.match(values,/Selected older watch capacity: 24/);assert.doesNotMatch(values,/%|return|profit/i);
+ await b.poll({state:'awaiting-data',snapshot:null});assert.match(b.nodes.get('pilot-age-policy')!.textContent,/not reported/);
 });

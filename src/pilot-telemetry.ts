@@ -13,8 +13,11 @@ type Metric = typeof metricNames[number];
 const watchCounts = ['known','watch','eligibleKnown','deepActive','maximumDeep','queued','promoted','repromoted','demoted','expired','capacityExclusions','structuralExclusions','completeWindows','strategyRejections','incompleteDataExclusions','enrichmentDeadlineFailures'] as const;
 const featureCounts = ['predictiveAssessments','predictiveFailures'] as const;
 type WatchCount = typeof watchCounts[number];
+const observationWatchCounts=['observationEligibleKnown','observationQueued','maximumOlderResearchIdentities'] as const;
+const ageCohortNames=['preEntry','entryEligible','olderSelected'] as const;
+export type PilotObservationAgePolicy={version:string;minimumObservationAgeMs:number;recentMaximumAgeMs:number;selectedOlderMaximumAgeMs:number};
 type WatchWait = { mean: number | null; maximum: number | null };
-export type PilotWatchTelemetry = Record<WatchCount, number | null> & Partial<Record<typeof featureCounts[number],number|null>> & { waitMs: WatchWait; promotionWaitMs?: WatchWait | null };
+export type PilotWatchTelemetry = Record<WatchCount, number | null> & Partial<Record<typeof featureCounts[number],number|null>> & Partial<Record<typeof observationWatchCounts[number],number|null>> & {ageCohorts?:Record<typeof ageCohortNames[number],number|null>|null;waitMs: WatchWait; promotionWaitMs?: WatchWait | null };
 export type PilotAccounting = {schemaVersion:1;at:number;totalPnlLamports:string|null;realizedLamports:string;unrealizedLamports:string|null;executionCostsLamports:string;lockedDepositLamports:string};
 export type PilotTelemetry = {
   schemaVersion: 1; kind: 'experimental-pilot'; authoritative: false; liveTrading: false;
@@ -23,6 +26,8 @@ export type PilotTelemetry = {
   running: boolean; entriesEnabled: boolean; status: string;
   /** Optional for legacy diagnostics; explicit mode is mandatory for a financial report. */
   mode?: 'candidate-evaluation'|'paper'; financialExecutionAuthorized?: boolean;
+  /** Source observation scope only; baseline entry eligibility is unchanged. */
+  observationAgePolicy?:PilotObservationAgePolicy|null;
   /** A complete source-calculated experimental portfolio; never the original account. */
   portfolio?: Snapshot | null;
   /** Exact SOL accounting calculated by the same experimental source. */
@@ -41,9 +46,18 @@ function bool(x: unknown): boolean { if (typeof x !== 'boolean') throw new Error
 const safeText = (x: unknown, max=256) => String(x ?? 'unreported').replace(/https?:\/\/\S+/gi,'[endpoint]').replace(/Bearer\s+\S+/gi,'[credential]').replace(/[\u0000-\u001f]/g,' ').slice(0,max) || 'unreported';
 function keys(o: Record<string,any>, allowed: string[]) { if (Object.keys(o).some(k=>!allowed.includes(k))) throw new Error('unexpected telemetry field'); }
 function validateWatch(value:unknown):PilotWatchTelemetry {
-  const w=object(value);keys(w,[...watchCounts,...featureCounts,'waitMs','promotionWaitMs']);
+  const w=object(value);keys(w,[...watchCounts,...featureCounts,...observationWatchCounts,'ageCohorts','waitMs','promotionWaitMs']);
   for(const k of watchCounts){if(!Object.hasOwn(w,k))throw Error('missing watch field');integer(w[k]);}
   for(const k of featureCounts)integer(w[k]);
+  for(const key of observationWatchCounts)if(Object.hasOwn(w,key)){integer(w[key]);if(w[key]!==null&&w[key]>512)throw Error('observation watch identity limit');}
+  if(w.maximumOlderResearchIdentities!==undefined&&w.maximumOlderResearchIdentities!==null&&w.maximumOlderResearchIdentities>24)throw Error('older research identity limit');
+  for(const key of ['observationEligibleKnown','observationQueued'])if(w[key]!==undefined&&w[key]!==null&&w.known!==null&&w[key]>w.known)throw Error('observation watch count inconsistent');
+  if(w.observationQueued!==undefined&&w.observationQueued!==null&&w.observationEligibleKnown!==undefined&&w.observationEligibleKnown!==null&&w.observationQueued>w.observationEligibleKnown)throw Error('observation queue count inconsistent');
+  if(w.ageCohorts!==undefined&&w.ageCohorts!==null){const cohorts=object(w.ageCohorts);keys(cohorts,[...ageCohortNames]);for(const key of ageCohortNames){if(!Object.hasOwn(cohorts,key))throw Error('missing age cohort');integer(cohorts[key]);if(cohorts[key]!==null&&(cohorts[key]>512||w.known!==null&&cohorts[key]>w.known))throw Error('age cohort identity limit');}
+    if(cohorts.entryEligible!==null&&w.eligibleKnown!==null&&cohorts.entryEligible!==w.eligibleKnown)throw Error('entry age cohort inconsistent');
+    if(cohorts.olderSelected!==null&&w.maximumOlderResearchIdentities!==undefined&&w.maximumOlderResearchIdentities!==null&&cohorts.olderSelected>w.maximumOlderResearchIdentities)throw Error('older research capacity inconsistent');
+    if(ageCohortNames.every(key=>cohorts[key]!==null)){const sum=ageCohortNames.reduce((n,key)=>n+cohorts[key],0);if(w.known!==null&&sum>w.known||w.observationEligibleKnown!==undefined&&w.observationEligibleKnown!==null&&sum!==w.observationEligibleKnown)throw Error('observation age cohorts inconsistent');}
+  }
   const wait=object(w.waitMs);keys(wait,['mean','maximum']);
   if(!Object.hasOwn(wait,'mean')||!Object.hasOwn(wait,'maximum'))throw Error('missing watch wait');
   number(wait.mean);number(wait.maximum);
@@ -63,7 +77,17 @@ function validateWatch(value:unknown):PilotWatchTelemetry {
 function projectWatch(value:unknown):PilotWatchTelemetry|null {
   if(value===undefined||value===null)return null;
   const w=object(object(value).summary),wait=w.waitMs===undefined?{}:object(w.waitMs),completed=w.promotionWaitMs===undefined||w.promotionWaitMs===null?{}:object(w.promotionWaitMs);
-  return validateWatch({...Object.fromEntries([...watchCounts,...featureCounts].map(k=>[k,integer(w[k])])),waitMs:{mean:number(wait.mean),maximum:number(wait.maximum)},promotionWaitMs:{mean:number(completed.mean),maximum:number(completed.maximum)}});
+  return validateWatch({...Object.fromEntries([...watchCounts,...featureCounts].map(k=>[k,integer(w[k])])),...Object.fromEntries(observationWatchCounts.filter(k=>Object.hasOwn(w,k)).map(k=>[k,integer(w[k])])),...(w.ageCohorts===undefined?{}:{ageCohorts:w.ageCohorts===null?null:Object.fromEntries(ageCohortNames.map(k=>[k,integer(object(w.ageCohorts)[k])]))}),waitMs:{mean:number(wait.mean),maximum:number(wait.maximum)},promotionWaitMs:{mean:number(completed.mean),maximum:number(completed.maximum)}});
+}
+
+function validateObservationAgePolicy(value:unknown):PilotObservationAgePolicy {
+ const policy=object(value),fields=['version','minimumObservationAgeMs','recentMaximumAgeMs','selectedOlderMaximumAgeMs'];keys(policy,fields);if(fields.some(k=>!Object.hasOwn(policy,k)))throw Error('missing observation age policy field');
+ const version=text(policy.version,96);if(!/^[a-z0-9][a-z0-9._-]{0,95}$/.test(version))throw Error('invalid observation policy version');
+ for(const key of fields.slice(1)){integer(policy[key],false);if(policy[key]>86400000)throw Error('observation age policy bound');}
+ if(policy.minimumObservationAgeMs>=policy.recentMaximumAgeMs||policy.recentMaximumAgeMs<60000||policy.selectedOlderMaximumAgeMs<policy.recentMaximumAgeMs)throw Error('observation age policy order');return structuredClone(policy) as PilotObservationAgePolicy;
+}
+function projectObservationAgePolicy(value:unknown):PilotObservationAgePolicy|null {
+ if(value===null)return null;const policy=object(value);return validateObservationAgePolicy({version:policy.version,minimumObservationAgeMs:policy.minimumObservationAgeMs,recentMaximumAgeMs:policy.recentMaximumAgeMs,selectedOlderMaximumAgeMs:policy.selectedOlderMaximumAgeMs});
 }
 
 /** Explicit allowlist. No journal, financial balances, credential/config objects or arbitrary logs. */
@@ -77,6 +101,7 @@ export function projectPilotStatus(value: unknown): PilotTelemetry {
     source:{release:text(source.commit,64),strategy:text(p.strategyVersion,100),sha256:typeof source.sha256==='string'&&/^[a-f0-9]{64}$/.test(source.sha256)?source.sha256:null},
     running:bool(p.running),entriesEnabled:bool(p.entriesEnabled),status:safeText(p.status),
     ...(p.mode===undefined?{}:{mode:p.mode,financialExecutionAuthorized:bool(p.financialExecutionAuthorized)}),
+    ...(p.observationAgePolicy===undefined?{}:{observationAgePolicy:projectObservationAgePolicy(p.observationAgePolicy)}),
     portfolio:p.mode==='paper'&&p.financialExecutionAuthorized===true&&p.experimentalPortfolio!==undefined?p.experimentalPortfolio:null,
     accounting:p.mode==='paper'&&p.financialExecutionAuthorized===true&&p.experimentalPortfolio&&p.experimentalAccounting!==undefined?p.experimentalAccounting:null,
     funnel:Object.fromEntries(stages.map(k=>[k,integer(f[k])])) as Record<Stage,number|null>,
@@ -89,7 +114,7 @@ export function projectPilotStatus(value: unknown): PilotTelemetry {
 }
 export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   const p=object(input);
-  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals','watch','mode','financialExecutionAuthorized','portfolio','accounting']);
+  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals','watch','mode','financialExecutionAuthorized','portfolio','accounting','observationAgePolicy']);
   if(p.schemaVersion!==1||p.kind!=='experimental-pilot'||p.authoritative!==false||p.liveTrading!==false) throw new Error('invalid pilot identity');
   if(!/^poe-pilot-[a-z0-9-]+$/.test(text(p.accountId,100))) throw new Error('pilot account required');
   integer(p.inceptionAt,false);integer(p.generatedAt,false);if(p.generatedAt<p.inceptionAt)throw new Error('invalid source time');
@@ -101,6 +126,7 @@ export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   for(const d of p.decisions){keys(object(d),['at','mint','stage','reason']);integer(d.at,false);if(d.at>p.generatedAt)throw new Error('future decision');text(d.mint,100);text(d.stage,100);text(d.reason,256);}
   for(const r of p.refusals){keys(object(r),['reason','count']);text(r.reason,256);integer(r.count,false);}
   if(p.watch!==undefined&&p.watch!==null)validateWatch(p.watch);
+  if(p.observationAgePolicy!==undefined&&p.observationAgePolicy!==null)validateObservationAgePolicy(p.observationAgePolicy);
   if(p.mode!==undefined){
     if(!['candidate-evaluation','paper'].includes(p.mode))throw Error('invalid pilot mode');
     bool(p.financialExecutionAuthorized);
