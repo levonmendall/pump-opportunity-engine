@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline-fixed-paper-result-readback-verification",
+  "baseCommit": "aecd6c7c5ba3c9361e2d3a17f0345f1dfa8c22aa",
+  "at": "2026-10-28T18:39:42.135601+00:00",
+  "providerRequests": 0,
+  "realFinancialAccountsRead": 0,
+  "generatedFixtureChecks": 18,
+  "independentReview": "GO; final source reviewed,17checks rerun independently before extra4MiBchunk regression",
+  "files": [
+    {
+      "file": "operator/native-paper-ec2/readback-results.py",
+      "bytes": 25571,
+      "sha256": "c88fda5c181c093983f01a3959bf31a4d85109817c06634b3add0a04bfea2c86"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-readback-results.py",
+      "bytes": 14936,
+      "sha256": "ecb7b6bc8bc89663158c98025ab861303c21c9c28dfe9b2e8cd33358a71bded6"
+    },
+    {
+      "file": "operator/native-paper-ec2/RESULT_READBACK.md",
+      "bytes": 4970,
+      "sha256": "ec44a35f44f4649faca94ea5d5660602ce7771aba76244017511e42929b272e6"
+    },
+    {
+      "file": ".github/workflows/poe-native-paper-results-readback.yml",
+      "bytes": 3733,
+      "sha256": "5cb500e462024d4e9720173e26ad52c1d1afa10e32873123dfcc26e6bdd9bfcd"
+    },
+    {
+      "file": "evidence/native-paper-result-readback-20261028/offline.txt",
+      "bytes": 117,
+      "sha256": "af4f7730cbf59bf4ca79a95c30274781b28ae7a776b6e526e070cc7374d4857e"
+    },
+    {
+      "file": "evidence/native-paper-result-readback-20261028/independent-review.md",
+      "bytes": 2958,
+      "sha256": "46b76627d5de2eaf82074e3f83cf9e3ed15a4eaf1c8ccc432f55e7b5e3374318"
+    }
+  ],
+  "deploymentPerformed": false
+}
