@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "classification": "OFFLINE_SHADOW_RUNTIME_INTEGRATION_NOT_FORWARD_ACCEPTANCE",
-  "baseCommit": "cd6ac47b526d607f01a2b88f1c2e2f4ceb2540a8d67d909",
+  "baseCommit": "cd6ac47b526d607f01a2b88f1c5186247b86bf7a",
   "pureDecoderCommit": "c02ab60da773c69109f668fa57b5aa80e687f619",
   "strictDefault": "confirmed-program-events-v2",
   "explicitShadow": "confirmed-program-activity-v3-shadow",
