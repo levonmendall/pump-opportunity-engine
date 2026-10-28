@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+  "startedAt": "2026-10-28T14:57:41.730679+00:00",
+  "sourceTree": "5d67cd76873172330122d3efdda0bdd2306b48c4",
+  "scriptsTree": "c10fab2b028ea6296b0413cf2ddfa9fce75f6e7e",
+  "testsTree": "f929b48a6c0901ad2201ee7ff38a711807a24f66",
+  "trackedStatus": " M docs/FUNDING.md\n",
+  "scope": "Combined lead after actual forward failures and independent reviewed repairs; offline only"
+}
