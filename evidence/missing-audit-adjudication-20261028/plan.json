@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "classification": "missing-successful-pool-history-adjudication-v1",
+  "endpoint": "https://api.mainnet.solana.com",
+  "selection": "Two retained c189 failures plus four purposeful current cases: two midwindow, one end-boundary, one multipage. This is failure diagnosis, not a winner or whole-market sample.",
+  "originalWindowStatus": "UNUSABLE; later diagnostics never backdate evidence or authorize an earlier decision",
+  "sourceReadbackSha256": "f3132c145ef06b63d5463923aaa1cc1b8ba6f757579d600a319617e65bf2c9de",
+  "cases": [
+    {
+      "signature": "4Fd2XpfRKAd81nnYpeDw5MnKf9tERyqpYv31QHykesfk7j6wqaRZorm7hjmudtK3Eub694CP9TXsR5hptFrdkdBP",
+      "mint": "Fy9czFKSJg68mD8dJ3kePwNgFCKfKtKu6srdRja4pump",
+      "pool": "BnfH2sf9E6JEqsnCLfGqbWVnGBvsRGrWxmLWkw2eewnC",
+      "slot": 462623316,
+      "blockTime": 1793221840,
+      "historyStatus": "finalized",
+      "source": {
+        "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+        "runId": "native-paper-20261028210805129",
+        "sourceFile": "events-001.ndjson",
+        "sourceLine": 1326,
+        "sourceLineSha256": "09dbe27fece0c43d860842dd08db7ebed34091d791640111fc9948ae94ca4384",
+        "windowStartAt": 1793221780000,
+        "windowEndAt": 1793221840000,
+        "auditAvailableAt": 1793221842528
+      }
+    },
+    {
+      "signature": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU",
+      "mint": "DZYkvNnuL3GanzVw6h1ZhN9NMs2DQFAaXjHrYtUDpump",
+      "pool": "NwcrCZgQk8P5JceYjTFoL8KM28FmQ9xzwPUZdyKfp4P",
+      "slot": 462628210,
+      "blockTime": 1793222888,
+      "historyStatus": "finalized",
+      "source": {
+        "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+        "runId": "native-paper-20261028210805129",
+        "sourceFile": "events-004.ndjson",
+        "sourceLine": 946,
+        "sourceLineSha256": "824764051c32638d59058e0575fb3ee188900c112769b1bc15cded5bfa193042",
+        "windowStartAt": 1793222880000,
+        "windowEndAt": 1793222940000,
+        "auditAvailableAt": 1793222942186
+      }
+    },
+    {
+      "signature": "2Wm8dw2yBFbgp2WqJm91jC3A6ouq1BG6YGq17SXUe4X1ELUQo7bjQkkQULm5e6DmT9fBbhVA9KDVvcS5Ww7sJZcB",
+      "mint": "AfPhjrZx3oyh38G28ZVViP4p7h53N5kTxEeg5tzhpump",
+      "pool": "2qvq4k9MGpySbyA1AmoKjm1kDXCtWfodaW7kyvuRJihL",
+      "slot": 462647346,
+      "blockTime": 1793226975,
+      "historyStatus": "finalized",
+      "source": {
+        "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+        "runId": "native-paper-20261028223428977",
+        "sourceFile": "events-002.ndjson",
+        "sourceLine": 862,
+        "sourceLineSha256": "a3f86d24afb589f222bbdd87b781a0ca4c8864f5358f2c0160fcc7e52bf1a464",
+        "windowStartAt": 1793226950000,
+        "windowEndAt": 1793227010000,
+        "auditAvailableAt": 1793227013123
+      }
+    },
+    {
+      "signature": "5qPAXjWbLsnwMxxb1nVaqF1Fx56X7cJi5wmUe1rP2Gj5TRNPdWqFqdiiqexNE5u1ZvcrKfkGfqULaiHnscbxAKjc",
+      "mint": "CurpZpXsvhKKcLjJv215hNkBRKAENoYnVSLMju7rpump",
+      "pool": "BzCwV1kZda1QCt6odfBVNchb8tHxfLch31fjfFa8pyjo",
+      "slot": 462648404,
+      "blockTime": 1793227200,
+      "historyStatus": "finalized",
+      "source": {
+        "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+        "runId": "native-paper-20261028223428977",
+        "sourceFile": "events-002.ndjson",
+        "sourceLine": 5705,
+        "sourceLineSha256": "a3b7867af31690f126967fefed7f5ee7cc10c7d6a255893863379f13e2fa4d85",
+        "windowStartAt": 1793227140000,
+        "windowEndAt": 1793227200000,
+        "auditAvailableAt": 1793227203409
+      }
+    },
+    {
+      "signature": "4YPhc2XfgLysfZWh8UGNetPufP75acK9TtRQ5UvQR5QiWnDsumFbs5PH5EDtXSSF5wLLz1eJUzCHETaQ5LuqTNWy",
+      "mint": "3XNUKu5K6353Y3r13ZbPpw5pbPc9tSxzvhS9NcYQpump",
+      "pool": "7DopHx5TjHWRX9AZsY523AWY7SYwz4QGNdsKpmSiPYCA",
+      "slot": 462649662,
+      "blockTime": 1793227469,
+      "historyStatus": "finalized",
+      "source": {
+        "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+        "runId": "native-paper-20261028223428977",
+        "sourceFile": "events-004.ndjson",
+        "sourceLine": 2473,
+        "sourceLineSha256": "9f24283e635f41ba5263aa88eb3771038c92419210b505231d2c39e6e3e9fb5b",
+        "windowStartAt": 1793227460000,
+        "windowEndAt": 1793227520000,
+        "auditAvailableAt": 1793227522894
+      }
+    },
+    {
+      "signature": "5HTeKjkVPLF95nxR7c36fC7Bvsx7MwEHGzf24cf58UZMwhjpaHBnYQwGqV2GoyszgQa9AnsF2Dz6bZZHr6Bq4vKC",
+      "mint": "5VTin7qaK9auBrvC54dkCuEXVw3SbBNcnb8XD497pump",
+      "pool": "Bxh8mWHK9xcPLM7J7zuuuVVgQp4Q6JFKJioD2uSL2nm1",
+      "slot": 462650718,
+      "blockTime": 1793227693,
+      "historyStatus": "finalized",
+      "source": {
+        "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+        "runId": "native-paper-20261028223428977",
+        "sourceFile": "events-004.ndjson",
+        "sourceLine": 7333,
+        "sourceLineSha256": "2324ccfc3b93b1c6a316beb540d18df36c7e1cf2dfcaf55a4f59f87471f113ed",
+        "windowStartAt": 1793227680000,
+        "windowEndAt": 1793227740000,
+        "auditAvailableAt": 1793227743597
+      }
+    }
+  ],
+  "currentEvidence": {
+    "indexSha256": "e9d96cfa7d0dc89637f11b104820bfaf597ce504d725a060ea95cc397a6aa624",
+    "selectedEventsSha256": "3b39df49bc6a16b8f8c506581034e89477571ab966a541b1bd28737c27ffadfa",
+    "allSelectedFileHashesVerifiedByLead": true,
+    "indexedFiles": 16
+  }
+}

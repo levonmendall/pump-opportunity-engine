@@ -1,0 +1,32 @@
+✔ actual executed trade classification preserves amounts/roles/transfers and never admits the historical window (8.61949ms)
+✔ exact known non-swap fixture is distinguishable from unknown/missing trade data (2.484454ms)
+✔ unknown instruction, missing event, mismatched slot and absent transaction cannot be excused as nontrades (3.799273ms)
+✔ fixed two-case diagnostic uses only finalized getTransaction with one physical operation and actual750ms pacing (19.830682ms)
+✔ plan refuses duplicate/unbounded identities, endpoint changes and fabricated source roles before network (0.524337ms)
+✔ provider429 stops after one request, records Retry-After and retains unknown response reservation without retry (1.820088ms)
+✔ physical timeout with unsettled injected fetch stops every further request and retains uncertainty (7.807365ms)
+✔ pre-start durable admission overrun sends no request and cannot fabricate uncertainty or an earlier availability (0.492941ms)
+✔ offline adjudication verifies raw response hash and actual response availability (10.495422ms)
+✔ actual CLI refuses privileged execution before touching paths or providers (0.257421ms)
+✔ actual hook row endpoint is wired and error/socket settlement precedes the next physical case (3.385019ms)
+✔ any explicit Retry-After stops further cases and survives a successful response without fabricating HTTPstatus (1.24104ms)
+✔ unparseable or negative retry hints remain unresolved with conservative recovery headroom (1.394157ms)
+✔ prepared six-case population retains actual source provenance and historical windows (0.307336ms)
+✔ actual retained confirmed direct Sell maps executed integer amounts and full CPI identity (11.150533ms)
+✔ constraint minima and transaction fee are never mapped as executed notional (3.758443ms)
+✔ signature hints ignore UI numbers and txSigner, requiring RPC enrichment (0.313334ms)
+✔ logs and event CPI are one evidence source; repeated bytes preserve identity and availability is not backdated (6.27248ms)
+✔ failed, mismatched, unresolved-stack and noncanonical transactions cannot supply flow (9.226459ms)
+✔ conflicting event contents remain identifiable, while role/transfer disagreement is visible (8.554673ms)
+✔ changed transfer quality invalidates an unchanged event instead of being classified as a duplicate (5.039692ms)
+✔ explicit curve/user research views preserve true CPI position and RPC availability without choosing a primary convention (2.606214ms)
+✔ synthetic fee-payer separation uses event user and instruction role rather than key zero (3.065805ms)
+✔ current actual custom-quote Sell and program-address mentions cannot establish a supported pool sample (4.433313ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 911.274514
