@@ -137,3 +137,25 @@ test('SYNTHETIC gap after page one cancels its generation and cannot qualify usi
 test('SYNTHETIC graceful stop preserves a between-page audit diagnostic without dispatching more history',async()=>{
  const f=fixture({forcePredictiveFeatures:true,responseDelayMs:680}),mint=f.importActual();await f.runner.step();f.advance(70000);addBusyHistory(f,mint);await f.runner.step();assert.equal(f.rpcCalls.length,1);await f.runner.stop();const cancelled=f.records.find(r=>r.kind==='native-candidate-audit-cancelled-diagnostic')!.data;assert.equal(cancelled.diagnosticResult.pages.length,1);assert.equal(cancelled.admitted,false);assert.equal(cancelled.physicalSettlementClaimed,false);assert.equal(f.rpcCalls.length,1);assert.equal(f.runner.status().counters.predictiveAssessments,0);assert.equal(f.runner.status().running,false);
 });
+
+/** SYNTHETIC replay of the actual Ag9 timing shape: ACK138ms before an aligned
+ * start, with no independent lower fence until after that start. */
+test('independent lower-fence warming is not a scheduler deadline miss; the next complete target can still be assessed',async()=>{
+ const f=fixture();const mint=f.importActual();f.advance(Math.floor(f.now/10000)*10000+9862-f.now);await f.runner.step();const ack=f.now,firstEnd=Math.ceil(ack/10000)*10000+60000;
+ const snapshot=f.flow.snapshot.bind(f.flow);let lower:State['upper']=null;
+ f.flow.snapshot=(key,when=f.now)=>{const v=snapshot(key,when);if(!v)return null;const initial=v.openingSupportContext?{...v.openingSupportContext,availableAt:ack-500}:null;return {...v,openingSupportContext:initial,supportContexts:[...(lower?[lower]:[]),...(v.supportContext&&v.supportContext.availableAt>ack?[v.supportContext]:[])]};};
+ f.advance(500);f.refresh();lower={...f.states.get(mint)!.upper!};f.advance(firstEnd+100-f.now);await f.steps(3);assert.equal(f.rpcCalls.length,0);assert.ok(f.records.some(r=>r.kind==='native-independent-audit-warming'&&r.data.windowStartAt===firstEnd-60000));
+ f.advance(firstEnd+10100-f.now);await f.steps(3);assert.equal(f.runner.status().counters.decisionDeadlineMisses,0,'a target without an independent lower fence was never dispatch-ready');assert.equal(f.runner.status().counters.auditFenceWarmingWindows,1);assert.equal(f.records.some(r=>r.kind==='native-predictive-window-expired'&&r.data.windowEndAt===firstEnd),false);assert.equal(f.runner.status().counters.predictiveAssessments,1);assert.equal(f.runner.status().financialExecutionAuthorized,false);await f.runner.stop();
+});
+
+test('independently fence-ready work still misses its deadline when the shared physical gate prevents every dispatch',async()=>{
+ const f=fixture();f.importActual();await f.runner.step();f.advance(70000);f.refresh();const target=Math.floor(f.now/10000)*10000;f.setPhysicalBusy(true);await f.runner.step();assert.equal(f.rpcCalls.length,0);f.advance(target+10001-f.now);await f.runner.step();assert.equal(f.rpcCalls.length,0);assert.equal(f.auditCalls,0);assert.equal(f.runner.status().counters.decisionDeadlineMisses,1);assert.equal(f.runner.status().counters.auditFenceWarmingWindows,0);assert.ok(f.records.some(r=>r.kind==='native-predictive-window-expired'&&r.data.windowEndAt===target));assert.equal(f.runner.status().counters.predictiveAssessments,0);await f.runner.stop();
+});
+
+test('a partial physical history timeout remains an unavailable evaluation and a true deadline miss',async()=>{
+ const f=fixture({auditRpcError:'PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT'});f.importActual();await f.runner.step();f.advance(70000);const target=Math.floor(f.now/10000)*10000;await f.steps(3);assert.equal(f.rpcCalls.length,1);assert.equal(f.runner.status().counters.auditUnavailable,1);assert.equal(f.runner.status().counters.predictiveAssessments,0);f.setPhysicalBusy(true);f.advance(target+10001-f.now);await f.runner.step();assert.equal(f.runner.status().counters.decisionDeadlineMisses,1);assert.equal(f.runner.status().counters.auditFenceWarmingWindows,0);assert.ok(f.records.some(r=>r.kind==='native-candidate-window-audit'&&r.data.result.reason==='PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT'));await f.runner.stop();
+});
+
+test('a known independent lower context does not copy a busy notification ledger merely to classify dispatch readiness',async()=>{
+ const f=fixture({forcePredictiveFeatures:true});const mint=f.importActual();await f.runner.step();f.advance(70000);f.refresh();const original=f.flow.notificationLedger.bind(f.flow);let reads=0;f.flow.notificationLedger=key=>{reads++;return original(key);};f.setPhysicalBusy(true);await f.runner.step();assert.equal(reads,0,'the immutable lower context already proves this classification prerequisite');assert.equal(f.rpcCalls.length,0);f.setPhysicalBusy(false);await f.runner.step();assert.equal(reads,1,'one exact ledger capture is reused by audit lower-fence validation');assert.equal(f.runner.status().counters.predictiveNotRejected,1);assert.equal(f.runner.status().counters.auditFenceWarmingWindows,0);assert.equal(f.runner.status().candidates[0]!.mint,mint);await f.runner.stop();
+});

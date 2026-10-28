@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "at": "2026-10-28T14:50:17.465342+00:00",
+  "sourceStatus": " M src/native-candidate-runner.ts\n M test/native-candidate-runner.test.ts\n",
+  "files": [
+    {
+      "path": "src/native-candidate-runner.ts",
+      "bytes": 35576,
+      "sha256": "1bc2e8ef8091a416073311803a64603a3f660c27bfd43898d261c11c35de9d24"
+    },
+    {
+      "path": "test/native-candidate-runner.test.ts",
+      "bytes": 32059,
+      "sha256": "17cc3e600fc409c873d637640f207acecfd9bc666bc0fec501efdd269d951338"
+    }
+  ],
+  "originalRunnerSha256": "b840df02683f4a9fc2825a24b470c8883753894606c35626c40d4a1e9e518e5c",
+  "scope": "Offline diagnostic classification repair, synthetic fixtures only; no provider/financial/production actions"
+}
