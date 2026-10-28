@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "completedAt": 1793207374693,
+  "sourceUnchangedSinceVerificationIdentity": true,
+  "focused": {
+    "tests": 99,
+    "pass": 99,
+    "fail": 0,
+    "log": "focused.log"
+  },
+  "build": "PASS",
+  "compile": "PASS",
+  "fullNpmTest": {
+    "tests": 1278,
+    "pass": 1276,
+    "fail": 2,
+    "log": "full.log",
+    "failures": "Two existing CLI child-tsc commands exceeded their20-second test timeout under parallel load; retained verbatim"
+  },
+  "fullBoundedConcurrency4": {
+    "tests": 1278,
+    "pass": 1277,
+    "fail": 1,
+    "log": "full-bounded-concurrency.log",
+    "failure": "Existing accountCLI child-tsc20-second timeout; releaseCLI passed"
+  },
+  "isolatedCliRegression": {
+    "tests": 2,
+    "pass": 2,
+    "fail": 0,
+    "log": "cli-serial.log",
+    "childCompileAndCliElapsedMs": [
+      8874.027466,
+      9415.613098
+    ]
+  },
+  "verificationInterpretation": "All changed mechanics and both previouslytimedoutCLIcases pass. No single all-green fullsuite is claimed; lead will run combined serial fullsuite after source integration. No test timeout or safety rule changed.",
+  "providerRequests": 0,
+  "financialLedgerOpened": false,
+  "logs": {
+    "intermediate56.log": {
+      "bytes": 6793,
+      "sha256": "14a97528f68fdc23499160f30f89cb055ca8df794da867acb6d6dbbe855b91c2"
+    },
+    "initial50.log": {
+      "bytes": 6107,
+      "sha256": "e1016bb8be58d93aad736c5ca40902ad2da85e8cda0c26b2f013a4ee58e77b39"
+    },
+    "cli-serial.log": {
+      "bytes": 351,
+      "sha256": "77a5bf2c7ae388d7ea8bee83456986e30e581dcc15d88a682c4fc72ee4d0b0ba"
+    },
+    "focused.log": {
+      "bytes": 12139,
+      "sha256": "03e2d2b99858f65933cd336064f84de7c66d06fb4658715030b7210d1ec7e13c"
+    },
+    "full.log": {
+      "bytes": 154710,
+      "sha256": "65d0dc74870c2f568fd6b25de9171dccb63cfa1bac0f3f3dfed808c47913d008"
+    },
+    "compile.log": {
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    },
+    "initial-new-test-assertion-failure.log": {
+      "bytes": 7303,
+      "sha256": "81ee2f08ddb53342bb03046a53f26cc3b8f3a05563cec439bc3d172cc0205139"
+    },
+    "full-bounded-concurrency.log": {
+      "bytes": 153431,
+      "sha256": "2a32d2965a2dd3ee0d07a44be61dead900696624d47faa660d1b94716cf4132f"
+    },
+    "build.log": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  }
+}
