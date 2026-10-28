@@ -304,7 +304,7 @@ test('dashboard explains observer placeholders, supports mobile refresh, and has
   const app=await serve(t,{...config,publicViewer:true});
   const html=await app.get('/').then(r=>r.text());
   assert.match(html,/Source &amp; pipeline status/);
-  assert.match(html,/Not connected to this dashboard/);
+  assert.doesNotMatch(html,/id="pilot-telemetry-panel"/);assert.doesNotMatch(html,/id="experimental-portfolio"/);
   assert.match(html,/NOT ACTIVE/);
   assert.match(html,/EVALUATION ENGINE NOT CONNECTED/);
   assert.match(html,/visibilitychange/);
@@ -312,7 +312,7 @@ test('dashboard explains observer placeholders, supports mobile refresh, and has
   assert.match(html,/refreshInFlight/);
   assert.match(html,/maximumFractionDigits:decimals/);
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length,4);
+  assert.equal(scripts.length,2);
   for(const match of scripts)assert.doesNotThrow(()=>new Function(match[1]!));
   assert.equal((await app.get('/healthz').then(r=>r.json())).connectivityDiagnostics,1);
 });
@@ -343,7 +343,7 @@ test('candidate progression sorts counts descending, updates dynamically, and pr
     querySelector(selector: string): Node | null { return this.querySelectorAll(selector)[0] ?? null; }
   }
   const root = new Node();
-  let pilotSelected = true;
+  let observerActive = false;
   const add = (parent: Node, _tag: string, value?: unknown, className?: string) => {
     const node = new Node();
     if (value !== undefined) node.textContent = String(value);
@@ -354,8 +354,7 @@ test('candidate progression sorts counts descending, updates dynamically, and pr
   const context = createContext({
     byId: () => root, add, Number, Math, Intl,
     document: { getElementById: () => root },
-    candidateIntelligenceUsesPilot: () => pilotSelected,
-    observer: () => true, latest: {}, note: () => {},
+    observer: () => observerActive, latest: {}, note: () => {},
   });
   new Script(html.slice(start,end) + '\n' + html.slice(wrapperStart,wrapperEnd)).runInContext(context);
   const render = (counts: Record<string,number|null>) =>
@@ -371,13 +370,13 @@ test('candidate progression sorts counts descending, updates dynamically, and pr
   assert.equal(count('attempted'),'Not reported');
   assert.equal(rows()[0]!.querySelector('.funnel-fill')!.style.width,'100.00%');
   assert.equal(rows().at(-1)!.querySelector('.funnel-fill')!.style.width,'0%');
-  assert.equal(rows().some(row => row.classes.has('inactive-stage')),false,'pilot source never masked by observer logic');
+  assert.equal(rows().some(row => row.classes.has('inactive-stage')),false,'candidate counts remain unmasked for non-observer source');
 
   render({discovered:100,supported:15,sufficientlyObserved:2,evaluated:7,qualified:1,attempted:0,paperFilled:2,exited:2,reconciled:10});
   assert.equal(labels()[0],'Discovered','latest counts re-sort without refreshing the page');
   assert.equal(count('attempted'),'0','zero remains distinct from unavailable');
 
-  pilotSelected = false;
+  observerActive = true;
   render({discovered:0,supported:15,sufficientlyObserved:null,evaluated:7,qualified:1,attempted:null,paperFilled:2,exited:2,reconciled:10});
   assert.equal(labels()[0],'Supported','observer masking does not assume discovered is first');
   assert.equal(count('supported'),'NOT ACTIVE');
@@ -387,43 +386,36 @@ test('candidate progression sorts counts descending, updates dynamically, and pr
 });
 
 
-test('compact command view keeps critical summary visible and all secondary details accessible', async t => {
+test('compact command view keeps the original portfolio, permanent P&L chart and source diagnostics', async t => {
   const app = await serve(t, { ...config, publicViewer: true, viewerUser: '', viewerPassword: '' });
   const html = await app.get('/').then(r=>r.text());
-  // No financial or market source is replaced by the layout; the same endpoints remain.
   const sampleReport=sample();
   assert.equal((await app.post(sampleReport)).status,200);
   const snapshot=await app.get('/api/snapshot').then(r=>r.json());
   assert.deepEqual(snapshot.snapshot,sampleReport);
-  for(const id of ['portfolio','cards','experimental-portfolio','experimental-portfolio-state','experimental-portfolio-cards','experimental-portfolio-positions','experimental-portfolio-trades','experimental-portfolio-chart','performance','chart','positions','trades','funnel','reportingConnections','pilot-telemetry-panel','pilot-funnel','pilot-watch','pilot-decisions','pilot-refusals','sourceConnection','pilotConnection','refreshNow','metrics','decisions','sourceLabel','stateTitle']){
-    assert.equal((html.match(new RegExp('id="'+id+'"','g'))??[]).length,1,'source node is retained: '+id);
+  for(const id of ['portfolio','cards','performance','chart','positions','trades','funnel','reportingConnections','sourceConnection','refreshNow','metrics','decisions','sourceLabel','stateTitle']){
+    assert.equal((html.match(new RegExp('id="'+id+'"','g'))??[]).length,1,'original source node retained: '+id);
+  }
+  for(const id of ['experimental-portfolio','experimental-portfolio-cards','pilot-telemetry-panel','pilot-funnel','pilot-watch','pilot-decisions','pilotConnection']){
+    assert.doesNotMatch(html,new RegExp('id="'+id+'"'),'separate experimental panel removed: '+id);
   }
   assert.match(html,/function compactCommandView\(\)/);
-  assert.match(html,/panelFold\('#pilot-telemetry-panel'/);
   assert.match(html,/panelFold\('#reportingConnections'/);
-  assert.match(html,/panelFold\('#performance'/);
+  assert.doesNotMatch(html,/panelFold\('#performance'/,'P&L graph always visible');
   assert.match(html,/panelFold\('section\[aria-labelledby="decisionsTitle"\]'/);
   assert.match(html,/document\.createElement\('details'\)/);
   assert.match(html,/document\.createElement\('summary'\)/);
   assert.match(html,/aria-expanded/);
   assert.match(html,/body\.poe-compact-view #portfolio:not\(\.compact-expanded\) #cards>\.stat:nth-child\(n\+7\)/);
-  assert.match(html,/body\.poe-compact-view #experimental-portfolio:not\(\.compact-expanded\)/);
-  assert.match(html,/if\(portfolio&&experimental\)portfolio\.after\(experimental\)/);
+  assert.doesNotMatch(html,/#experimental-portfolio/);
   assert.match(html,/artworkCaption\?\.classList\.contains\('holo-index'\)/);
   assert.match(html,/A new dimension/);
   assert.match(html,/class="hero-visual holo-visual"/);
   assert.match(html,/class="holo-object"/);
   assert.match(html,/class="holo-index"/);
-  assert.doesNotMatch(html,/body\.poe-compact-view \.hero\{min-height:0!important/);
-  assert.doesNotMatch(html,/body\.poe-compact-view \.hero-visual,body\.poe-compact-view \.holo-index\{display:none!important/);
-  assert.doesNotMatch(html,/body\.poe-compact-view \.hero-description\{display:none!important/);
-  assert.match(html,/main>section:not\(\.hero\)\{margin-top:12px;margin-bottom:12px\}/);
-  assert.match(html,/Account identity, freshness and source notes/);
-  assert.match(html,/Trade attempts, execution history and P&L chart/);
-  assert.match(html,/Full pilot funnel, market watch and failure diagnostics/);
   assert.match(html,/LIVE EXECUTION DISABLED/);
   assert.match(html,/financial source|FINANCIAL SOURCE OF TRUTH/i);
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length,4);
+  assert.equal(scripts.length,2);
   for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
 });
