@@ -231,3 +231,10 @@ test('persistent broad WATCH rolling pressure pauses only its transport and auto
  await f.advance(1);assert.equal(f.feeds.usage().pumpApiDesired,true);assert.equal(f.feeds.usage().pumpApiConnected,false);assert.equal(f.feeds.usage().discoveryConnected,true);assert.ok(f.gaps.some(g=>g.reason==='PILOT_PUMPAPI_ROLLING_TRAFFIC_PRESSURE'));assert.ok(f.feeds.usage().rollingTraffic.pumpapi.pressure);
  await f.advance(62000);assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.feeds.usage().rollingTraffic.pumpapi.pressure,false);assert.ok(f.feeds.usage().pumpApiSocketBytes>128*1024*1024);assert.equal(f.feeds.usage().stopped,false);await f.feeds.stop();
 });
+
+
+test('persistent legacy candidate collection is not retired merely by the old three-minute research timer',async()=>{
+ const f=setup({persistent:true});await f.feeds.selectCandidate(scope);
+ for(let i=0;i<19;i++){f.sockets.at(-1)!.frame('unrelated transport traffic');await f.advance(10000);}
+ assert.equal(f.feeds.usage().failedCandidate,false);assert.equal(f.feeds.usage().stopped,false);assert.equal(f.feeds.usage().candidates.length,1);assert.ok(!f.gaps.some(g=>g.reason==='PILOT_CANDIDATE_OBSERVATION_LIMIT'));assert.equal(f.trades.length,0);await f.feeds.stop();
+});

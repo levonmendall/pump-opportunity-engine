@@ -70,7 +70,7 @@ export class PilotFeeds {
   private scheduleWatch(){this.watch=this.timer(()=>{try{
     if(!this.live()){this.gap('PILOT_FEED_DURATION_LIMIT');this.backgroundStop();return;}
     for(const c of this.activeCandidates()){
-      if(this.mono()-c.selectedMono>=CANDIDATE_MS)this.invalidate(c,'PILOT_CANDIDATE_OBSERVATION_LIMIT');
+      if(!this.options.persistent&&this.mono()-c.selectedMono>=CANDIDATE_MS)this.invalidate(c,'PILOT_CANDIDATE_OBSERVATION_LIMIT');
       else{c.pipeline.tick(this.now());const head=c.pipeline.peekHint();if(head&&this.now()>head.deadlineAt){c.pipeline.refuseHint(head.hint.signature,'PILOT_SELECTED_ENRICHMENT_QUEUE_EXPIRED',this.now());}}
     }
     const p=this.legs.pumpapi;if(p.connected&&p.connection&&this.mono()-p.connection.lastTrafficMono>15000)this.closeLeg(p,'PILOT_PUMPAPI_NO_TRANSPORT_RECEIPT',false);
