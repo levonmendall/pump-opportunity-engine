@@ -1,0 +1,42 @@
+{
+  "verifiedSource": "2b3405b42d278347e26948521375c5a3825ae85f",
+  "sourceIdentityMatchesCommittedInputBlobs": true,
+  "fullSerialSuite": {
+    "pass": 1493,
+    "fail": 0
+  },
+  "build": "PASS",
+  "compile": "PASS",
+  "laterUncommittedHistoryTransportPolicyExcluded": true,
+  "sourceResult": {
+    "exitCode": 0,
+    "completedAt": "2026-10-28T20:38:59.503870+00:00"
+  },
+  "files": [
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-settlement-03/full-suite.txt",
+      "bytes": 176486,
+      "sha256": "e31c9bc6775332138dd16672284c8b7229ebe0c4e683df6906c616f9d4109070"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-settlement-03/full-suite-result.json",
+      "bytes": 67,
+      "sha256": "a541bbbd434d311ac0495602a213e2bd2cfd76295db2c297fecb550507593bf7"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-settlement-03/source-identity.json",
+      "bytes": 42961,
+      "sha256": "c2a950c21c09a80870ccc3880b80453204fae63ed8d776fbc57594e5c8d9638b"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-settlement-03/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/integrated-paper-settlement-03/compile.txt",
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    }
+  ]
+}

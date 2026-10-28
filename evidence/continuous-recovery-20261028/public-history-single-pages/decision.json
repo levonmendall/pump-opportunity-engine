@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "policy": "public-rpc-single-history-pages-v1",
+  "batchEnabled": false,
+  "basisSource": "6d894c1262b93d22f288e214016bfb314799e0ae",
+  "observedEnvelopes": 17,
+  "timedOutEnvelopes": 12,
+  "logicalQueries": 37,
+  "validatedLogicalQueries": 10,
+  "timedOutLogicalQueries": 27,
+  "completedEnvelopeMs": {
+    "minimum": 171,
+    "maximum": 209
+  },
+  "timeouts": "HTTP200 and early partial bodies; noEOF within unchanged1.5s deadline",
+  "providerBandwidthSaturationEstablished": false,
+  "connectionReuseMeasured": false,
+  "strategyThresholdsChanged": false,
+  "auditCompletenessChanged": false,
+  "timeoutsIncreased": false,
+  "plannedExtraPhysicalStartsComparedWithBatchSample": 20,
+  "projection": "At the same21m41s demand,20extra physical starts is approximately0.92/min; not a reliability guarantee",
+  "currentRunRemainsUnchanged": true
+}
