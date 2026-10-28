@@ -29,7 +29,15 @@ def sudo_metadata(text):
  nopass=[line.strip() for line in text.splitlines()if 'NOPASSWD:'in line]
  all_commands=any(re.search(r'NOPASSWD:\s*ALL\s*$',line)is not None for line in nopass)
  allowed_start=all_commands or any(re.search(r'NOPASSWD:.*(?:/usr/bin/)?systemctl\s+(?:start|restart|enable(?:\s+--now)?)\s+poe-native-paper(?:-reporting)?\.service(?:\s|$)',line)is not None for line in nopass)
- return {'passwordlessAllCommandsExplicit':all_commands,'passwordlessPoeNativePaperStartExplicit':allowed_start,'policyTextExported':False,'permissionsChanged':False}
+ commands=[]
+ for line in nopass:
+  # Paths are command identities only. Arguments that could contain data,
+  # credentials, unrelated resource names or shell text are never exported.
+  for path in re.findall(r'(?:^|[ ,:])(/(?:usr|bin|sbin)/[A-Za-z0-9_./-]{1,200})',line):
+   if any(word in path.lower()for word in['secret','credential','password','wallet']):continue
+   tail=line.split(path,1)[1].split(',',1)[0];poe=re.findall(r'(?<![A-Za-z0-9_])(?:poe-[A-Za-z0-9_.-]+|/opt/poe(?:/[A-Za-z0-9_./-]+)?|/var/lib/poe(?:/[A-Za-z0-9_./-]+)?)(?![A-Za-z0-9_])',tail)
+   commands.append({'commandPath':path,'literalPoeArguments':poe[:8],'containsWildcard':'*'in tail,'otherArgumentsExported':False})
+ return {'passwordlessAllCommandsExplicit':all_commands,'passwordlessPoeNativePaperStartExplicit':allowed_start,'passwordlessCommandMetadata':commands[:16],'policyTextExported':False,'permissionsChanged':False}
 def inspect():
  need(os.getuid()==UID and pwd.getpwuid(UID).pw_name=='mm-ec2-runner'and os.environ.get('ACTUAL_RUNNER')=='meme-machine-ec2-admin','FIXED_NONROOT_RUNNER_REQUIRED')
  began=time.monotonic();units={};receipts=[]
