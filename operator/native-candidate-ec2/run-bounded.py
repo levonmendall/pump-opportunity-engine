@@ -156,8 +156,9 @@ def terminate(process, grace=4):
     return not live_group()
 
 
-def launch(args, log, cpu, heap=None):
-    command = ["/usr/bin/nice", "-n", "10", "/usr/bin/prlimit", f"--cpu={cpu}:{cpu + 5}", "--nofile=128:128", "--fsize=8388608:8388608", "--core=0:0", "--"] + args
+def launch(args, log, cpu, file_size_mib=8):
+    file_size = file_size_mib * MIB
+    command = ["/usr/bin/nice", "-n", "10", "/usr/bin/prlimit", f"--cpu={cpu}:{cpu + 5}", "--nofile=128:128", f"--fsize={file_size}:{file_size}", "--core=0:0", "--"] + args
     handle = log.open("xb")
     log.chmod(0o600)
     p = subprocess.Popen(command, env={"PATH": "/usr/bin:/bin"}, stdin=subprocess.DEVNULL, stdout=handle, stderr=subprocess.STDOUT, start_new_session=True)
@@ -198,6 +199,80 @@ def reporting_summary(acks, started_at, stopped_at):
     return {"runningAcknowledgements": len(running), "distinctRunningSourceTimestamps": len(distinct), "firstAcceptedSourceAt": distinct[0] if distinct else None, "lastAcceptedSourceAt": distinct[-1] if distinct else None, "maximumObservedAcknowledgementGapMs": maximum_gap, "maximumAcknowledgedSourceAgeMs": max(ages) if ages else None, "targetCadenceMs": 15000, "staleBoundaryMs": 90000, "continuityVerifiedForInterval": len(distinct) >= 2 and maximum_gap <= 90000 and max(ages) <= 90000, "timingMeaning": "Publisher local acknowledgement times reconstructed from sourceAt+sourceAgeMs; not independent Render receipt timestamps."}
 
 
+def runtime_outcome(source, planned_duration_ms=OBSERVATION_SECONDS * 1000):
+    """Classify source lifecycle independently of process exit or receiver ACKs.
+
+    A complete quiet interval is a mechanical result. It is not an audited
+    market window, opportunity-recognition proof or acceptance result.
+    """
+    engine = (source or {}).get("engine") or {}
+    counters = engine.get("counters") or {}
+    stop_reason = (source or {}).get("stopReason")
+    fatal = (engine.get("rpc") or {}).get("fatal")
+    started_at = (source or {}).get("startedAt")
+    generated_at = (source or {}).get("generatedAt")
+    elapsed = (source or {}).get("elapsedMs")
+    stopped_at = (source or {}).get("stopRequestedAt")
+    reported_cutoff = (source or {}).get("logicalObservationCutoffAt")
+    reserve = 10000
+    expected_cutoff = started_at + planned_duration_ms - reserve if type(started_at) is int else None
+    wall_span = generated_at - started_at if type(started_at) is int and type(generated_at) is int and generated_at >= started_at else None
+    # The source captures generatedAt before its elapsedMs field. An elapsed
+    # value below that wall span is inconsistent, not a way to hide an overrun.
+    timing_valid = all(type(x) is int and x >= 0 for x in [started_at, generated_at, elapsed, reported_cutoff]) and wall_span is not None and elapsed >= wall_span and (stopped_at is None or type(stopped_at) is int and started_at <= stopped_at <= generated_at)
+    reached_cutoff = timing_valid and reported_cutoff == expected_cutoff and generated_at >= expected_cutoff and (stopped_at is None or stopped_at >= expected_cutoff)
+    normal_reason = stop_reason in ["bounded interval completed", "logical observation cutoff reached; shutdown reserve begins"]
+    classification = "unavailable-source-outcome"
+    failure = "NATIVE_RESEARCH_SOURCE_OUTCOME_UNAVAILABLE"
+    if source and (fatal is not None or stop_reason == "NATIVE_RESEARCH_RPC_FATAL"):
+        classification, failure = "fatal-source-stop", "NATIVE_RESEARCH_SOURCE_FATAL_STOP"
+    elif source and not timing_valid:
+        classification, failure = "invalid-source-timing", "NATIVE_RESEARCH_SOURCE_TIMING_INVALID"
+    elif source and source.get("running") is not False:
+        classification, failure = "source-not-stopped", "NATIVE_RESEARCH_SOURCE_NOT_STOPPED"
+    elif source and (elapsed > planned_duration_ms or wall_span > planned_duration_ms):
+        classification, failure = "planned-duration-overrun", "NATIVE_RESEARCH_SOURCE_DURATION_OVERRUN"
+    elif source and not normal_reason:
+        classification, failure = "interrupted-or-failed-source-stop", "NATIVE_RESEARCH_SOURCE_STOP_NOT_NORMAL"
+    elif source and not reached_cutoff:
+        classification, failure = "premature-source-stop", "NATIVE_RESEARCH_SOURCE_STOPPED_BEFORE_PLANNED_CUTOFF"
+    elif source:
+        classification, failure = "mechanically-completed", None
+    audited = counters.get("auditedWindows")
+    assessments = counters.get("predictiveAssessments")
+    unique = counters.get("uniqueEvaluated")
+    return {"classification": classification, "mechanicallyCompleted": classification == "mechanically-completed", "failureReason": failure, "sourceStopReason": stop_reason, "sourceRpcFatalState": fatal, "plannedRunDurationMs": planned_duration_ms, "shutdownReserveMs": reserve, "plannedAdmissionDurationMs": planned_duration_ms - reserve, "actualRunElapsedMs": elapsed, "actualWallSpanMs": wall_span, "logicalObservationCutoffAt": reported_cutoff, "expectedLogicalObservationCutoffAt": expected_cutoff, "stopRequestedAt": stopped_at, "plannedAdmissionCutoffReached": bool(reached_cutoff), "candidateWindowEvidence": {"auditedWindows": audited, "predictiveAssessments": assessments, "uniqueEvaluated": unique, "classification": "audited-window-views-recorded-not-readiness" if type(audited) is int and audited > 0 else "no-audited-window-evidence", "overlappingViewsAreNotIndependentCoverage": True, "mechanicalCompletionIsNotWindowValidation": True}, "reportingMeaning": "Receiver acceptance and physical settlement are evaluated separately; neither makes a fatal or premature source interval successful."}
+
+
+def capture_accepted_source(root, binding, retained):
+    """Retain at most two exact source files matched to distinct running ACKs.
+
+    An old ACK without the actual still-current source bytes is not reconstructed
+    from later counters. All snapshots remain reporting-only, not a portfolio.
+    """
+    if len(retained) >= 2:
+        return
+    raw = regular(root / "run/status.json", 4 * MIB, 994, True)
+    source = json.loads(raw)
+    generated_at = source.get("generatedAt")
+    require(type(generated_at) is int and source.get("accountId") == binding["accountId"] and source.get("inceptionAt") == binding["inceptionAt"], "REPORTING_SNAPSHOT_SOURCE_BINDING_MISMATCH")
+    if source.get("running") is not True or any(row["sourceAt"] == generated_at for row in retained):
+        return
+    ack = next((row for row in publisher_acks(root / "publisher.log", binding) if row.get("sourceAt") == generated_at and row.get("runId") == source.get("runId") and row.get("running") is True), None)
+    if ack is None:
+        return
+    directory = root / "reporting-evidence"
+    directory.mkdir(exist_ok=True, mode=0o700)
+    index = len(retained) + 1
+    name = "accepted-source-" + str(index).zfill(3) + ".json"
+    with (directory / name).open("xb") as out:
+        out.write(raw)
+    (directory / name).chmod(0o600)
+    record = {"sourceAt": generated_at, "runId": source.get("runId"), "accountId": binding["accountId"], "inceptionAt": binding["inceptionAt"], "sourceFile": name, "sourceBytes": len(raw), "sourceSha256": digest(raw), "observedAt": int(time.time() * 1000), "acknowledgement": ack, "meaning": "Exact private status bytes observed while their generatedAt matched an accepted running publisher acknowledgement; no backdated reconstruction."}
+    save(directory / ("accepted-source-" + str(index).zfill(3) + "-ack.json"), record)
+    retained.append(record)
+
+
 def export_artifact(root, package_manifest):
     """Index ALL retained selected-flow evidence and mandatory summaries/books.
 
@@ -213,7 +288,7 @@ def export_artifact(root, package_manifest):
         if not p.is_file() or p.is_symlink() or output in p.parents:
             continue
         name = p.relative_to(root).as_posix()
-        allowed = name in ["before.json", "after.json", "supervisor.json", "input.json", "package.json", "runner.log", "publisher.log", "publisher-final.log", "run/status.json", "run/receipt.json", "run/watch-checkpoint.json"] or name.startswith("run/rpc/") and name.endswith(".json") or name.startswith("run/events/") and name.endswith(".ndjson")
+        allowed = name in ["before.json", "after.json", "supervisor.json", "input.json", "package.json", "runner.log", "publisher.log", "publisher-final.log", "run/status.json", "run/receipt.json", "run/watch-checkpoint.json"] or name.startswith("run/rpc/") and name.endswith(".json") or name.startswith("run/events/") and name.endswith(".ndjson") or name.startswith("reporting-evidence/") and name.endswith(".json")
         if not allowed:
             continue
         size = p.stat().st_size
@@ -229,6 +304,30 @@ def export_artifact(root, package_manifest):
     save(output / "index.json", index)
     require(tree_size(root) <= 256 * MIB, "TEMPORARY_STORAGE_CAP")
     return {"index": str(output / "index.json"), "indexSha256": digest((output / "index.json").read_bytes()), "uncompressedBytes": total, "selectedEvidenceBytes": evidence_bytes, "omittedSegments": 0, "localArchiveCopies": 0}
+
+
+def export_failure_manifest(root, error, outcome):
+    """Explicitly inventory evidence omitted by the bounded failure fallback."""
+    included, omitted = [], []
+    fixed = {"before.json", "after.json", "supervisor.json", "run/status.json", "run/receipt.json"}
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.is_symlink() or root / "export" in path.parents:
+            continue
+        name = path.relative_to(root).as_posix()
+        selected = name.startswith("run/events/") and name.endswith(".ndjson")
+        fallback = name in fixed or name.startswith("run/rpc/") and name.endswith(".json") or name.startswith("reporting-evidence/") and name.endswith(".json")
+        if not selected and not fallback:
+            continue
+        size = path.stat().st_size
+        row = {"path": name, "bytes": size, "sha256": digest(path.read_bytes()) if size <= 8 * MIB else None}
+        if row["sha256"] is None:
+            row["hashLimitation"] = "File exceeds the declared per-file bound; complete hash not verified."
+        (included if fallback else omitted).append(row)
+    value = {"schemaVersion": 1, "fullEvidenceExportVerified": False, "reason": str(error) if str(error).replace("_", "").isalnum() and len(str(error)) <= 160 else "FULL_EVIDENCE_INDEXING_FAILED", "fallbackIncludedFiles": included, "omittedSelectedEvidence": omitted, "outcome": outcome, "meaning": "Failure summaries/counterbooks/source snapshots only. Full selected evidence is incomplete; RUNNER_TEMP is not durable and no full-window reproducibility/readiness claim is made."}
+    directory = root / "export"
+    directory.mkdir(exist_ok=True, mode=0o700)
+    save(directory / "failure.json", value)
+    return {"fullEvidenceExportVerified": False, "failureManifest": str(directory / "failure.json"), "omittedSelectedSegments": len(omitted)}
 
 
 def main():
@@ -264,8 +363,9 @@ def main():
     save(root / "before.json", before)
     save(root / "package.json", manifest)
     with open(os.environ["GITHUB_ENV"], "a") as out:
-        out.write("POE_NATIVE_RESEARCH_DIRECTORY=" + str(root) + "\n")
+        out.write("POE_NATIVE_RESEARCH_DIRECTORY=" + str(root) + "\nPOE_NATIVE_EVIDENCE_EXPORT_READY=false\n")
     runner = publisher = None
+    accepted_sources = []
     outcome = {"startedAt": before["startedAt"], "packageSha256": args.manifest_sha256, "source": manifest["source"], "boundaries": {"candidateOnly": True, "financialWriter": False, "entriesEnabled": False, "liveTrading": False, "observerReplacement": False}, "runnerExit": None, "publisherStarted": False, "finalStoppedReportAccepted": False, "failure": None, "maximumRunnerRssBytes": 0, "maximumPublisherRssBytes": 0, "finalPublisherDrainSeconds": FINAL_REPORT_SECONDS}
     try:
         staged_bytes = 0
@@ -313,7 +413,7 @@ def main():
                 verify = subprocess.run(report_args + ["--verify-only"], env={"PATH": "/usr/bin:/bin"}, capture_output=True, text=True, timeout=5)
                 require(verify.returncode == 0, "REPORTING_PRIVATE_FILE_OR_IDENTITY_CHECK_FAILED")
                 publisher_seconds = max(1, min(960, int(outer_deadline - time.monotonic() - 3)))
-                publisher = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=3s", str(publisher_seconds) + "s"] + report_args + ["--watch"], root / "publisher.log", 15)
+                publisher = launch(["/usr/bin/timeout", "--signal=TERM", "--kill-after=3s", str(publisher_seconds) + "s"] + report_args + ["--watch"], root / "publisher.log", 15, file_size_mib=1)
                 outcome["publisherStarted"] = True
             require(publisher is not None or time.monotonic() < until_status, "INITIAL_RUNTIME_STATUS_NOT_AVAILABLE")
             if publisher is not None:
@@ -321,6 +421,10 @@ def main():
                 publisher_rss = group_rss(publisher.pid)
                 outcome["maximumPublisherRssBytes"] = max(outcome["maximumPublisherRssBytes"], publisher_rss)
                 require(publisher_rss <= 128 * MIB, "PUBLISHER_RSS_BOUND")
+                try:
+                    capture_accepted_source(root, binding, accepted_sources)
+                except Exception:
+                    outcome["acceptedSourceSnapshotCaptureFailure"] = "ACTUAL_ACCEPTED_SOURCE_SNAPSHOT_UNAVAILABLE"
             time.sleep(0.5)
         outcome["runnerExit"] = runner.returncode
         require(runner.returncode == 0, "NATIVE_RESEARCH_RUNNER_EXITED_WITH_FAILURE")
@@ -345,7 +449,7 @@ def main():
             require(outcome["ownedProcessGroupsSettled"], "WATCH_OR_RUNTIME_PROCESS_GROUP_NOT_SETTLED")
             deadline = min(outer_deadline - 5, time.monotonic() + FINAL_REPORT_SECONDS)
             require(deadline - time.monotonic() >= 6, "FINAL_REPORT_DRAIN_NOT_AVAILABLE")
-            final_publisher = launch(report_args + ["--once"], root / "publisher-final.log", 5)
+            final_publisher = launch(report_args + ["--once"], root / "publisher-final.log", 5, file_size_mib=1)
             try:
                 final_publisher.wait(timeout=max(1, min(8, deadline - time.monotonic())))
             finally:
@@ -369,13 +473,29 @@ def main():
         outcome["finishedAt"] = int(time.time() * 1000)
         outcome["aggregateElapsedSeconds"] = time.monotonic() - started
         outcome["actualRunElapsedMs"] = final_status.get("elapsedMs") if final_status else None
+        outcome["runtimeOutcome"] = runtime_outcome(final_status, OBSERVATION_SECONDS * 1000)
+        outcome["sourceStopReason"] = final_status.get("stopReason") if final_status else None
+        if outcome["runtimeOutcome"]["failureReason"]:
+            if outcome["failure"]:
+                outcome["otherSupervisorFailure"] = outcome["failure"]
+            outcome["failure"] = outcome["runtimeOutcome"]["failureReason"]
         outcome["candidateCounters"] = (final_status.get("engine") or {}).get("counters") if final_status else None
+        outcome["acceptedSourceSnapshots"] = accepted_sources
+        outcome["twoDistinctAcceptedSourcesRetained"] = len(accepted_sources) >= 2
         outcome["originalFinancialAccountTouched"] = False
         outcome["reportingCredentialReadBySupervisor"] = False
         if not outcome.get("reportingAvailability", {}).get("continuityVerifiedForInterval"):
             outcome["failure"] = outcome["failure"] or "REPORTING_CONTINUITY_NOT_VERIFIED"
+        if not outcome["twoDistinctAcceptedSourcesRetained"]:
+            outcome["failure"] = outcome["failure"] or "TWO_ACCEPTED_SOURCE_SNAPSHOTS_NOT_RETAINED"
         save(root / "supervisor.json", outcome)
-        artifact = export_artifact(root, args.manifest_sha256)
+        try:
+            artifact = export_artifact(root, args.manifest_sha256)
+            with open(os.environ["GITHUB_ENV"], "a") as out:
+                out.write("POE_NATIVE_EVIDENCE_EXPORT_READY=true\n")
+        except Exception as error:
+            outcome["failure"] = outcome["failure"] or "FULL_EVIDENCE_EXPORT_NOT_VERIFIED"
+            artifact = export_failure_manifest(root, error, outcome)
         print(json.dumps({"directory": str(root), "outcome": outcome, "artifact": artifact}, sort_keys=True))
     return 0 if not outcome["failure"] and outcome.get("physicalSettlementConfirmed") and outcome["finalStoppedReportAccepted"] else 1
 

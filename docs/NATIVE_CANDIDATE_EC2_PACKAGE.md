@@ -27,3 +27,9 @@ The separate publisher uses the existing dedicated private reporting file throug
 Before/after receipts, actual source versions, final status/checkpoint, new append-only counterbooks, and all retained selected-flow evidence (at most128MiB) are uploaded directly within a192MiB uncompressed artifact ceiling. No duplicate local archive is created, no selected segment is sampled away, and RUNNER_TEMP is not treated as durable storage. No credential or financial file is exported. Existing compute, transfer, and GitHub storage allowances remain separate from documented zero API purchases.
 
 Successful workflow execution alone does not establish opportunity recall, valid candidate assessments, financial execution, profitability, or continuous operation. Review the actual candidate/audit/provider outcomes and source-to-Render agreement.
+
+The supervisor classifies the source's actual stop reason and lifecycle duration separately from process exit, transport settlement, and reporting. A fatal source stop or premature interval fails the job even when the receiver accepted its stopped report. A normal quiet interval can be mechanically complete with no audited-window evidence. The first two distinct accepted running cycles retain their exact matching source files and ACK/hash metadata for counter and timestamp comparison; later snapshots are never reconstructed as earlier evidence.
+
+Full artifact upload is admitted only after size-checked indexing succeeds. If that check fails, the job fails and uploads separately labeled failure summaries, source snapshots and new counterbooks; it does not claim that full selected-flow evidence was exported or that RUNNER_TEMP is durable. Publisher logs have a1MiB per-file OS ceiling, independently of the runner's8MiB segmented evidence limit.
+
+Offline supervisor regressions: `python3 -B operator/native-candidate-ec2/test-runtime-outcomes.py`.
