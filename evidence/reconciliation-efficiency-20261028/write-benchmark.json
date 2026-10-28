@@ -1,0 +1,133 @@
+{
+  "kind": "offline-disposable-reconciliation-write-benchmark-v1",
+  "baselineSourcePath": "/workspace/pump-opportunity-engine/src/native-paper.ts",
+  "baselineSourceSha256": "e562c4d9097c1bc3f56c30bbb113080a7ddb1f2d92f11ac6178e6fece3f67172",
+  "repairedSourceSha256": "ddda1fe3dc6d5ec4c779c3bf5d9dc7e7059fe1f278794b0f8e1ec7b3674905a3",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "ticks": 2000,
+  "repetitions": 3,
+  "method": "Flat hypothetical account, fixed synthetic USD, one actual NativePaper.protection call per 2s simulated step. Alternating paired runs, real SQLite WAL/FULL durability, no recorded market or network. Temporary fixture DBs removed after integrity/census.",
+  "rows": [
+    {
+      "round": 0,
+      "label": "baseline",
+      "ticks": 2000,
+      "simulatedCadenceMs": 2000,
+      "elapsedMs": 1431.848606,
+      "cpuMicros": 1532699,
+      "actionsAdded": 4000,
+      "reconciled": 2000,
+      "liveDatabaseWalShmBytes": 2534672,
+      "settledDatabaseBytes": 1941504,
+      "census": {
+        "actions": 4001,
+        "journal": 4002,
+        "reconciles": 4000,
+        "reconcilePayloadBytes": 572000,
+        "actionColumnBytes": 587062
+      },
+      "financialParity": true
+    },
+    {
+      "round": 0,
+      "label": "repaired",
+      "ticks": 2000,
+      "simulatedCadenceMs": 2000,
+      "elapsedMs": 845.1008569999999,
+      "cpuMicros": 891248,
+      "actionsAdded": 2000,
+      "reconciled": 2000,
+      "liveDatabaseWalShmBytes": 1576208,
+      "settledDatabaseBytes": 978944,
+      "census": {
+        "actions": 2001,
+        "journal": 2002,
+        "reconciles": 2000,
+        "reconcilePayloadBytes": 286000,
+        "actionColumnBytes": 289062
+      },
+      "financialParity": true
+    },
+    {
+      "round": 1,
+      "label": "repaired",
+      "ticks": 2000,
+      "simulatedCadenceMs": 2000,
+      "elapsedMs": 782.108209,
+      "cpuMicros": 849924,
+      "actionsAdded": 2000,
+      "reconciled": 2000,
+      "liveDatabaseWalShmBytes": 1576208,
+      "settledDatabaseBytes": 978944,
+      "census": {
+        "actions": 2001,
+        "journal": 2002,
+        "reconciles": 2000,
+        "reconcilePayloadBytes": 286000,
+        "actionColumnBytes": 289062
+      },
+      "financialParity": true
+    },
+    {
+      "round": 1,
+      "label": "baseline",
+      "ticks": 2000,
+      "simulatedCadenceMs": 2000,
+      "elapsedMs": 1214.2586810000003,
+      "cpuMicros": 1260191,
+      "actionsAdded": 4000,
+      "reconciled": 2000,
+      "liveDatabaseWalShmBytes": 2534672,
+      "settledDatabaseBytes": 1941504,
+      "census": {
+        "actions": 4001,
+        "journal": 4002,
+        "reconciles": 4000,
+        "reconcilePayloadBytes": 572000,
+        "actionColumnBytes": 587062
+      },
+      "financialParity": true
+    },
+    {
+      "round": 2,
+      "label": "baseline",
+      "ticks": 2000,
+      "simulatedCadenceMs": 2000,
+      "elapsedMs": 1250.8135730000004,
+      "cpuMicros": 1306137,
+      "actionsAdded": 4000,
+      "reconciled": 2000,
+      "liveDatabaseWalShmBytes": 2534672,
+      "settledDatabaseBytes": 1941504,
+      "census": {
+        "actions": 4001,
+        "journal": 4002,
+        "reconciles": 4000,
+        "reconcilePayloadBytes": 572000,
+        "actionColumnBytes": 587062
+      },
+      "financialParity": true
+    },
+    {
+      "round": 2,
+      "label": "repaired",
+      "ticks": 2000,
+      "simulatedCadenceMs": 2000,
+      "elapsedMs": 1034.6529230000006,
+      "cpuMicros": 1131008,
+      "actionsAdded": 2000,
+      "reconciled": 2000,
+      "liveDatabaseWalShmBytes": 1576208,
+      "settledDatabaseBytes": 978944,
+      "census": {
+        "actions": 2001,
+        "journal": 2002,
+        "reconciles": 2000,
+        "reconcilePayloadBytes": 286000,
+        "actionColumnBytes": 289062
+      },
+      "financialParity": true
+    }
+  ]
+}
