@@ -12,7 +12,7 @@ class Tests(unittest.TestCase):
   self.assertFalse(m.sudo_metadata('(root) PASSWD: /usr/bin/systemctl start poe-native-paper.service')['passwordlessPoeNativePaperStartExplicit'])
  def test_relevant_sudo_command_paths_survive_but_sensitive_or_unrelated_arguments_do_not(self):
   r=m.sudo_metadata('(root) NOPASSWD: /usr/local/sbin/mm-apply *, /usr/bin/systemctl start poe-runtime.service, /usr/bin/tool SECRET_SENTINEL /etc/poe/secrets/key')
-  self.assertIn('/usr/local/sbin/mm-apply',[v['commandPath']for v in r['passwordlessCommandMetadata']]);self.assertEqual(next(v for v in r['passwordlessCommandMetadata']if v['commandPath']=='/usr/bin/systemctl')['literalPoeArguments'],['poe-runtime.service']);self.assertNotIn('SECRET_SENTINEL',str(r));self.assertNotIn('/etc/poe/secrets',str(r));self.assertFalse(any(v['otherArgumentsExported']for v in r['passwordlessCommandMetadata']))
+  self.assertIn('/usr/local/sbin/mm-apply',[v['commandPath']for v in r['passwordlessCommandMetadata']]);self.assertIn('/usr/bin/systemctl',[v['commandPath']for v in r['passwordlessCommandMetadata']]);self.assertFalse(any('literalPoeArguments'in v for v in r['passwordlessCommandMetadata']));self.assertNotIn('SECRET_SENTINEL',str(r));self.assertNotIn('/etc/poe/secrets',str(r));self.assertFalse(any(v['otherArgumentsExported']for v in r['passwordlessCommandMetadata']))
  def test_fixed_uid_guard_precedes_every_subprocess(self):
   with patch.object(m.os,'getuid',return_value=0),patch.object(m,'command',side_effect=AssertionError('no command permitted')):
    with self.assertRaisesRegex(m.Refusal,'FIXED_NONROOT_RUNNER_REQUIRED'):m.inspect()
