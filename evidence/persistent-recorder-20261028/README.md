@@ -23,3 +23,11 @@ node --import tsx evidence/persistent-recorder-20261028/review-refusal-range.mts
 ```
 
 Integration must check `record()` refusal, `usage().candidateAdmissionAllowed`, and `pinRange().complete`; a boolean success here does not validate market-flow completeness. Full source hashes and raw test output are retained beside this report. No service was deployed or financial account read by these tests.
+
+## Follow-up independent review: zero-byte committed-prefix loss
+
+The original four defects passed review, but independent crash recovery inspection found another failure in d41c287: an entire previously committed essential prefix truncated to zero bytes had no nonempty torn tail, so admission incorrectly stayed open. The original adverse reproduction is retained unmodified in `zero-prefix-before.txt`.
+
+Recovery now distinguishes a missing or changed committed prefix from an opaque appended tail. The expected prefix byte count/hash is retained in segment metadata and receipts even when zero bytes survive. Essential prefix loss blocks new risk persistently across restarts; diagnostic prefix loss makes the old window unpinnable. Such manifests explicitly deny full essential byte preservation. Both real-subprocess-crash cases pass, with 23/23 tests and TypeScript verification in the follow-up outputs.
+
+Reproduce the independent case with `node --import tsx evidence/persistent-recorder-20261028/review-zero-prefix.mts`. This is an offline correction; no lost real market or financial evidence is claimed recovered.

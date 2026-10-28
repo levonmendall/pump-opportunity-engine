@@ -36,6 +36,10 @@ type Meta = {
     prefixSha256: string;
     sha256?: string;
     unusableTailBytes?: number;
+    invalidCommittedPrefix?: {
+        expectedBytes: number;
+        expectedSha256: string;
+    };
 };
 type Receipt = {
     sequence: number;
@@ -244,7 +248,8 @@ export class BoundedRotatingRecorder {
             closeSync(fd);
         }
     }
-    private validateMeta(m: Meta, kind: 'diagnostic' | 'essential') { need(new RegExp('^' + kind + '-[0-9]{12}\\.ndjson$').test(m.file) && integer(m.sequence) && integer(m.startedAt) && integer(m.endedAt) && integer(m.bytes) && m.bytes <= this.state.policy.segmentBytes && integer(m.records) && sha(m.previousSha256) && sha(m.lastRecordHash) && sha(m.prefixSha256), 'SEGMENT_STATE'); }
+    private validateMeta(m: Meta, kind: 'diagnostic' | 'essential') { if(m.unusableTailBytes!==undefined)need(integer(m.unusableTailBytes),'UNUSABLE_TAIL_STATE'); if (m.invalidCommittedPrefix !== undefined)
+        need(integer(m.invalidCommittedPrefix.expectedBytes) && sha(m.invalidCommittedPrefix.expectedSha256), 'COMMITTED_PREFIX_FAILURE_STATE'); need(new RegExp('^' + kind + '-[0-9]{12}\\.ndjson$').test(m.file) && integer(m.sequence) && integer(m.startedAt) && integer(m.endedAt) && integer(m.bytes) && m.bytes <= this.state.policy.segmentBytes && integer(m.records) && sha(m.previousSha256) && sha(m.lastRecordHash) && sha(m.prefixSha256), 'SEGMENT_STATE'); }
     private validateState() {
         const s = this.state;
         for (const k of ['startedAt', 'nextDiagnostic', 'nextEssential', 'totalRecordedBytes', 'retiredBytes', 'protectedBytes', 'refusedRecords', 'refusedBytes', 'nextReceipt', 'lastAt', 'evictedThroughAt'] as const)
@@ -359,7 +364,7 @@ export class BoundedRotatingRecorder {
             this.atomicNew(m.file + '.manifest.json', body);
             this.state.protectedBytes += body.length;
         }
-        this.receipt(recovered ? 'recovered-segment' : 'sealed-segment', { kind, file: m.file, bytes: m.bytes, sha256: m.sha256, previousSha256: m.previousSha256, records: m.records, unusableTailBytes: m.unusableTailBytes ?? 0, historicalIncompleteProofNeverReclassified: true, fullEssentialBytesPreserved: kind === 'essential' });
+        this.receipt(recovered ? 'recovered-segment' : 'sealed-segment', { kind, file: m.file, bytes: m.bytes, sha256: m.sha256, previousSha256: m.previousSha256, records: m.records, unusableTailBytes: m.unusableTailBytes ?? 0, invalidCommittedPrefix: m.invalidCommittedPrefix ?? null, historicalIncompleteProofNeverReclassified: true, fullEssentialBytesPreserved: kind === 'essential' && !m.invalidCommittedPrefix && !(m.unusableTailBytes ?? 0) });
     }
     private recoverActive(kind: 'diagnostic' | 'essential', m: Meta | null) {
         if (!m)
@@ -389,7 +394,10 @@ export class BoundedRotatingRecorder {
                 }
             }
         const unusableTailBytes = raw.length - validBytes;
-        if (unusableTailBytes && kind === 'essential')
+        // A zero-byte surviving file has no opaque tail, but can still have lost
+        // a previously fsynced committed prefix. Preserve that distinct failure.
+        const invalidCommittedPrefix = m.invalidCommittedPrefix ?? (!prefixValid ? { expectedBytes: m.bytes, expectedSha256: m.prefixSha256 } : undefined);
+        if ((invalidCommittedPrefix || unusableTailBytes) && kind === 'essential')
             this.state.requiresCriticalRecovery = true;
         this.state.totalRecordedBytes += Math.max(0, raw.length - m.bytes);
         if (kind === 'essential')
@@ -402,7 +410,7 @@ export class BoundedRotatingRecorder {
             closeSync(fd);
             throw error;
         }
-        const a = { fd, meta: { ...m, bytes: raw.length, records, lastRecordHash: head, ...(unusableTailBytes ? { unusableTailBytes } : {}) }, hash: createHash('sha256').update(raw) };
+        const a = { fd, meta: { ...m, bytes: raw.length, records, lastRecordHash: head, ...(unusableTailBytes ? { unusableTailBytes } : {}), ...(invalidCommittedPrefix ? { invalidCommittedPrefix } : {}) }, hash: createHash('sha256').update(raw) };
         if (kind === 'diagnostic')
             this.diagnostic = a;
         else
@@ -653,6 +661,7 @@ export class BoundedRotatingRecorder {
                     for (const m of old.files) {
                         this.validateMeta(m, 'diagnostic');
                         need(sha(m.sha256), 'PROOF_HASH');
+                        need(!m.invalidCommittedPrefix && !(m.unusableTailBytes ?? 0), 'PROOF_UNUSABLE');
                         await this.verifyFile({ ...m, file: join(prefix, m.file) });
                     }
                     need(this.record('qualification-proof-revalidated', { proofId, fromAt, toAt, manifestSha256: digest(raw), fullBytesRetained: true }, { essential: true }), 'PIN_REFERENCE_NOT_DURABLE');
@@ -666,7 +675,7 @@ export class BoundedRotatingRecorder {
         }
         this.seal('diagnostic');
         const selected = this.state.diagnostics.filter(m => m.startedAt <= toAt && m.endedAt >= fromAt);
-        if (fromAt <= this.state.evictedThroughAt || selected.some(m => (m.unusableTailBytes ?? 0) > 0) || fromAt < this.state.startedAt || !selected.length || fromAt < Math.min(...this.state.diagnostics.map(m => m.startedAt)))
+        if (fromAt <= this.state.evictedThroughAt || selected.some(m => !!m.invalidCommittedPrefix || (m.unusableTailBytes ?? 0) > 0) || fromAt < this.state.startedAt || !selected.length || fromAt < Math.min(...this.state.diagnostics.map(m => m.startedAt)))
             return Promise.resolve(failed('RANGE_NOT_RETAINED'));
         if (this.state.refusalIntervals.some(r => r.fromAt <= toAt && r.toAt >= fromAt))
             return Promise.resolve(failed('RANGE_CONTAINS_REFUSAL'));

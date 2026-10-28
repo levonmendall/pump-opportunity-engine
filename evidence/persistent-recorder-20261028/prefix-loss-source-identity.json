@@ -1,0 +1,19 @@
+{
+  "kind": "offline-persistent-recorder-review-v2",
+  "supersedesApproval": "d41c287 remained NO-GO until zero-byte committed-prefix-loss correction",
+  "sourceFiles": [
+    {
+      "path": "src/recorder.ts",
+      "sha256": "d311de8a9372b4dacfe41a736a711ab6e254cb3c9496647ddb095e685d9398eb"
+    },
+    {
+      "path": "src/retained-recorder.ts",
+      "sha256": "d9599c7041a86bbf597f814f939c22aa8137ae42c43231a4bf17a342c92048a3"
+    },
+    {
+      "path": "test/retained-recorder.test.ts",
+      "sha256": "aacfaa136cca46f0c0f9f86e28ec230466e0b0f0af875e287a091f0fb3cde2b8"
+    }
+  ],
+  "verification": "23 recorder tests passed, TypeScript build passed; original negative repro retained"
+}
