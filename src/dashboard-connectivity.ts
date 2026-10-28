@@ -45,7 +45,7 @@ export function connectionReport(cache: SnapshotCache, now = Date.now(), pilot?:
 const PANEL = `<section class="panel connection-panel" id="reportingConnections" aria-labelledby="connectionsTitle">
 <div class="panel-heading"><div><div class="section-index">REPORTING CONNECTIONS</div><h2 id="connectionsTitle">Source &amp; pipeline status</h2></div><div class="panel-tag" id="connectionBadge">CHECKING SOURCE</div></div>
 <p class="connection-explanation" id="sourceExplanation">Checking which runtime is publishing this dashboard. Data availability is separate from trading readiness.</p>
-<div class="connection-grid"><div class="metric"><div class="metric-name">Authenticated source</div><div class="metric-value" id="sourceConnection">Awaiting snapshot</div></div><div class="metric"><div class="metric-name">Candidate evaluation</div><div class="metric-value" id="pipelineConnection">Unknown</div></div><div class="metric"><div class="metric-name">Experimental PAPER pilot</div><div class="metric-value" id="pilotConnection">Not connected to this dashboard</div></div><div class="metric"><div class="metric-name">Snapshot / age</div><div class="metric-value" id="snapshotConnection">Not received</div></div></div>
+<div class="connection-grid"><div class="metric"><div class="metric-name">Authenticated source</div><div class="metric-value" id="sourceConnection">Awaiting snapshot</div></div><div class="metric"><div class="metric-name">Candidate evaluation</div><div class="metric-value" id="pipelineConnection">Unknown</div></div><div class="metric"><div class="metric-name">Snapshot / age</div><div class="metric-value" id="snapshotConnection">Not received</div></div></div>
 <div class="connection-controls"><span id="refreshStatus">Automatic refresh every 15 seconds</span><button type="button" id="refreshNow">Refresh now</button><a href="/api/connections" target="_blank" rel="noopener">Connection details</a></div>
 <p class="connection-note" id="sourceIdentity"></p>
 </section>`;
@@ -73,9 +73,8 @@ function paintConnection(){
  set('connectionBadge',sourceProblem?'READ FAILED':!source?'AWAITING SOURCE':stale?'STALE SNAPSHOT':isObserver?'OBSERVER ONLY':'SOURCE REPORTING');
  set('sourceConnection',sourceProblem?'Browser read failed; last snapshot retained':!source?'No accepted snapshot':stale?'No fresh snapshot — last report retained':'Authenticated snapshot received');
  set('pipelineConnection',!source?'No source evidence':isObserver?'Not implemented in published runtime':source.entries==='enabled'?'Runtime reports entries enabled':'Entries '+source.entries+'; see reported counters');
- const pilot=d.experimentalPilot;set('pilotConnection',!pilot||pilot.state==='not-configured'?'Separate diagnostics not configured':pilot.connected?'Separate diagnostics connected · '+pilot.state:'Separate diagnostics '+pilot.state+' · publisher disconnected');
  set('snapshotConnection',source?'#'+source.sequence+' · source '+age(sourceAge)+' old':'Not received');
- set('sourceExplanation',isObserver?'This dashboard is receiving the EC2 discovery observer, not the experimental PAPER pilot. Discovery can advance while evaluation, execution and decisions remain inactive. Inactive stages below are not measured zero-result evaluations.':!source?'Waiting for an authenticated account snapshot. No balances, counters, or activity will be invented.':'Panels show only the configured source account. The experimental pilot is a separate account and is not combined with these metrics.');
+ set('sourceExplanation',isObserver?'The EC2 account currently reports migration discovery only. Candidate evaluations and PAPER execution are not yet active in this authoritative runtime.':!source?'Waiting for an authenticated account snapshot. No balances, counters, or activity will be invented.':'All displayed portfolio and candidate data comes from the configured authoritative EC2 account. Unreported fields remain unavailable.');
  if(source)set('sourceIdentity','Account '+source.accountId+' · runtime '+source.release+' · strategy '+source.strategy+' · dashboard '+d.dashboardRelease);
  set('refreshStatus',(sourceProblem?'Last refresh failed; retrying. ':'')+'Auto-refresh 15s · last source read '+age(elapsed)+' ago');
  const badge=document.getElementById('connectionBadge');if(badge)badge.classList.toggle('connection-warning',!!sourceProblem||stale||isObserver);
@@ -84,8 +83,8 @@ function paintConnection(){
 const originalFunnel=renderFunnel;
 renderFunnel=function(f){
  originalFunnel(f);
- const p=document.getElementById('funnel'),pilotSelected=typeof candidateIntelligenceUsesPilot==='function'&&candidateIntelligenceUsesPilot(),isObserver=observer(latest)&&!pilotSelected;
- note('funnelCapability',p,pilotSelected?'Candidate progression is sourced from the separate experimental PAPER pilot. Portfolio balances, positions and P&L remain bound to the authoritative EC2 account.':isObserver?'Only migration discovery is connected in this runtime. Later zero-valued fields are placeholders; they do not mean tokens were evaluated and rejected.':'');
+ const p=document.getElementById('funnel'),isObserver=observer(latest);
+ note('funnelCapability',p,isObserver?'Only migration discovery is connected in this runtime. Later zero-valued fields are placeholders, not measured evaluations or rejections.':'');
  if(isObserver)Array.from(p.querySelectorAll('.funnel-line')).filter(row=>row.dataset.funnelStage!=='discovered').forEach(row=>{row.classList.add('inactive-stage');const n=row.querySelector('.funnel-count');if(n)n.textContent='NOT ACTIVE';const bar=row.querySelector('.funnel-fill');if(bar)bar.style.width='0%'});
 };
 renderMetrics=function(m,source){
@@ -108,12 +107,11 @@ const originalShow=showSnapshot;
 showSnapshot=function(s,received,f,connections){
  sourceProblem=null;lastReport=connections||null;lastReportAt=performance.now();
  originalShow(s,received,f);
- const pilotSelected=typeof candidateIntelligenceUsesPilot==='function'&&candidateIntelligenceUsesPilot();
- if(observer(s)&&!pilotSelected){
+ if(observer(s)){
   set('decisionsCount','NOT CONNECTED');
-  renderTable('decisions',['UTC','Mint','Stage','Reason'],s.decisions,'EVALUATION ENGINE NOT CONNECTED','This EC2 source publishes discovery only. No experimental pilot candidate report is currently available.');
+  renderTable('decisions',['UTC','Mint','Stage','Reason'],s.decisions,'EVALUATION ENGINE NOT CONNECTED','This EC2 source publishes discovery only. No qualifying evaluations from this account are available.');
  }
- if(observer(s)&&f.state!=='stale'&&f.state!=='unavailable'){set('stateTitle','Discovery observer reporting');set('sourceLabel','REPORTING LIVE · TRADING INACTIVE');set('state','The authenticated EC2 observer feed is connected. Candidate evaluation shown above may come from the separately labeled experimental pilot; financial portfolio data remains authoritative EC2 only.');}
+ if(observer(s)&&f.state!=='stale'&&f.state!=='unavailable'){set('stateTitle','Discovery observer reporting');set('sourceLabel','REPORTING LIVE · TRADING INACTIVE');set('state','The authenticated EC2 observer feed is connected. Candidate evaluation and PAPER execution are not yet active in this authoritative runtime.');}
  paintConnection();
 };
 const originalSignal=signal;
