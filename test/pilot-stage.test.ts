@@ -224,7 +224,10 @@ test('candidate-only support phase fits seven prior starts and leaves the unchan
  const eighth=[...prior,at-250];assert.ok(pilotObservationReadyAt(eighth,at,20,phase)>at);
  const disconnected=pilotOpeningReserves(true,0,false);assert.deepEqual(disconnected,{short:11,minute:20});
  assert.ok(pilotObservationReadyAt(prior,at,20,{short:disconnected.short+3,minute:23})>at,'upgrade consumes shared headroom');
- assert.deepEqual(pilotOpeningReserves(false,0,true),{short:15,minute:20});
+ assert.deepEqual(pilotOpeningReserves(false,0,true),{short:10,minute:20});
+ const paperPhase={short:pilotOpeningReserves(false,0,true).short+5,minute:25};
+ assert.equal(pilotObservationReadyAt(prior.slice(0,5),at,20,paperPhase),at,'all five PAPER support/rent calls remain reserved');
+ assert.ok(pilotObservationReadyAt(prior.slice(0,6),at,20,paperPhase)>at,'PAPER does not reuse the three-read candidate reservation');
  assert.deepEqual(pilotOpeningReserves(false,3,true),{short:10,minute:10});
  assert.deepEqual(pilotOpeningReserves(false,3,false),{short:11,minute:10});
  const minuteHistory=Array.from({length:38},(_,i)=>1000+i*250);

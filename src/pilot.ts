@@ -80,10 +80,11 @@ export function pilotObservationReadyAt(starts:readonly number[],now:number,shor
 
 /** Candidate-only admission reserves the existing eight transaction starts,
  * one audit and one control/headroom unit. A new socket needs one more upgrade.
+ * PAPER support still reserves all five validation/rent reads before opening.
  * This is phase admission, not a separate budget or a completion guarantee. */
 export function pilotOpeningReserves(candidateOnly:boolean,held:number,connected:boolean){
   need(Number.isSafeInteger(held)&&held>=0,'PILOT_OPENING_RESERVES');
-  return candidateOnly||held?{short:connected?10:11,minute:held?10:20}:{short:15,minute:20};
+  return {short:connected?10:11,minute:held?10:20};
 }
 
 export type PilotStage='single'|'shadow'|'two'|'three';
