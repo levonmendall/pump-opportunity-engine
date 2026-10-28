@@ -1,0 +1,833 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+  "idlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61",
+  "idlVersion": "0.1.0",
+  "decodedOnly": true,
+  "fullTransactionFetched": false,
+  "cases": [
+    {
+      "signature": "21UdCqyUj1wWcVuPH7vbRL8YYCoHnbLzjRBJpJ9YoMk1N4DfUYTNwkpvbi7KkAnwZ5AKWwppezpbKjnEbfT4ycnu",
+      "slot": 462580695,
+      "sourceRawRef": "events/events-001.ndjson:451",
+      "sourceRefusalRef": "events/events-001.ndjson:450",
+      "sourceRefusal": {
+        "signature": "21UdCqyUj1wWcVuPH7vbRL8YYCoHnbLzjRBJpJ9YoMk1N4DfUYTNwkpvbi7KkAnwZ5AKWwppezpbKjnEbfT4ycnu",
+        "slot": 462580695,
+        "receivedAt": 1793212723380,
+        "availableAt": 1793212723969,
+        "success": true,
+        "rawHash": "e81046af789f8e620e35bee1140b386a994387161cdeeeb1417d99c0828c4f27",
+        "subscriptionMint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "subscriptionPool": "89MFRL9ypWvMYsMvpGayei4rje6MDctEpoWqrSfuYWw8",
+        "subscriptionId": 102437722,
+        "connectionId": 1,
+        "parsedEvents": 0,
+        "eventsAccepted": 0,
+        "duplicate": false,
+        "correction": false,
+        "classification": "unusable",
+        "reason": "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL",
+        "chainBlockTime": null
+      },
+      "priorSupport": {
+        "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+        "pool": "89MFRL9ypWvMYsMvpGayei4rje6MDctEpoWqrSfuYWw8",
+        "at": 1793212723070,
+        "sourceSlot": 462580693,
+        "evidence": "research-clock-observation-support:431cb62332e5fb6c59688ac4c2bb120a1756cc49054389f56adf4d0840f15b74",
+        "summary": {
+          "pool": "89MFRL9ypWvMYsMvpGayei4rje6MDctEpoWqrSfuYWw8",
+          "mint": "F5v2odurfbucdViokrzwYNczrrTZuvHhnY8ofRU2pump",
+          "slot": 462580693,
+          "commitment": "confirmed",
+          "requestedAt": "2026-10-28T18:38:42.928Z",
+          "receivedAt": "2026-10-28T18:38:43.049Z",
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "decimals": 6,
+          "poolFlags": {
+            "mayhem": false,
+            "cashback": false,
+            "holderReward": false
+          },
+          "rawBaseReserve": "145052237074186",
+          "rawQuoteReserve": "137902194951",
+          "virtualQuoteReserves": "16793098648",
+          "effectiveQuoteReserve": "154695293599",
+          "feeBuckets": "791406641",
+          "feeBps": {
+            "lpFeeBps": "20",
+            "protocolFeeBps": "5",
+            "creatorFeeBps": "95"
+          },
+          "creatorFeeApplied": true,
+          "baseAssociatedAccount": {
+            "accountLengthBytes": 170,
+            "accountExtensions": [
+              "ImmutableOwner"
+            ],
+            "rentLamports": null,
+            "rentStatus": "requires-current-RPC-and-account-existence-check",
+            "depositTreatment": "refundable locked capital when a new account is required"
+          },
+          "quoteAssociatedAccount": {
+            "accountLengthBytes": 165,
+            "accountExtensions": [],
+            "rentLamports": null,
+            "rentStatus": "requires-current-RPC-and-account-existence-check",
+            "depositTreatment": "refundable locked capital when a new account is required"
+          },
+          "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+          "mode": "QUOTE_ONLY",
+          "timeEvidence": "confirmed-bank-clock",
+          "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+          "clockSlot": 462580693,
+          "marketClockUnixSeconds": 1793212722,
+          "maxMarketAgeMs": 30000,
+          "validatedAt": "2026-10-28T18:38:43.070Z",
+          "researchOnly": true
+        },
+        "ref": "events/events-001.ndjson:347"
+      },
+      "frames": [
+        {
+          "program": "11111111111111111111111111111111",
+          "depth": 1,
+          "label": null,
+          "invokeLogIndex": 0,
+          "parent": null,
+          "childCalls": 0,
+          "endLogIndex": 1,
+          "outcome": "success"
+        },
+        {
+          "program": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+          "depth": 1,
+          "label": null,
+          "invokeLogIndex": 2,
+          "parent": null,
+          "childCalls": 4,
+          "endLogIndex": 18,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 4,
+          "parent": 2,
+          "childCalls": 0,
+          "endLogIndex": 7,
+          "outcome": "success"
+        },
+        {
+          "program": "11111111111111111111111111111111",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 8,
+          "parent": 2,
+          "childCalls": 0,
+          "endLogIndex": 9,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 11,
+          "parent": 2,
+          "childCalls": 0,
+          "endLogIndex": 13,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 14,
+          "parent": 2,
+          "childCalls": 0,
+          "endLogIndex": 16,
+          "outcome": "success"
+        },
+        {
+          "program": "6Vo3245eszAb5wuqEMw8mGdbfRUdKbHhDHP5LcaGuTAB",
+          "depth": 1,
+          "label": "MultiHopJupiterBuy",
+          "invokeLogIndex": 19,
+          "parent": null,
+          "childCalls": 4,
+          "endLogIndex": 62,
+          "outcome": "success"
+        },
+        {
+          "program": "11111111111111111111111111111111",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 21,
+          "parent": 19,
+          "childCalls": 0,
+          "endLogIndex": 22,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 23,
+          "parent": 19,
+          "childCalls": 0,
+          "endLogIndex": 25,
+          "outcome": "success"
+        },
+        {
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "depth": 2,
+          "label": "MultiHopSwap",
+          "invokeLogIndex": 26,
+          "parent": 19,
+          "childCalls": 4,
+          "endLogIndex": 57,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 3,
+          "label": null,
+          "invokeLogIndex": 28,
+          "parent": 26,
+          "childCalls": 0,
+          "endLogIndex": 30,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 3,
+          "label": null,
+          "invokeLogIndex": 31,
+          "parent": 26,
+          "childCalls": 0,
+          "endLogIndex": 33,
+          "outcome": "success"
+        },
+        {
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "depth": 3,
+          "label": null,
+          "invokeLogIndex": 35,
+          "parent": 26,
+          "childCalls": 0,
+          "endLogIndex": 37,
+          "outcome": "success"
+        },
+        {
+          "program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+          "depth": 3,
+          "label": "MultiHopCurveSwap",
+          "invokeLogIndex": 38,
+          "parent": 26,
+          "childCalls": 3,
+          "endLogIndex": 54,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "depth": 4,
+          "label": "TransferChecked",
+          "invokeLogIndex": 40,
+          "parent": 38,
+          "childCalls": 0,
+          "endLogIndex": 43,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "depth": 4,
+          "label": "TransferChecked",
+          "invokeLogIndex": 44,
+          "parent": 38,
+          "childCalls": 0,
+          "endLogIndex": 47,
+          "outcome": "success"
+        },
+        {
+          "program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+          "depth": 4,
+          "label": null,
+          "invokeLogIndex": 49,
+          "parent": 38,
+          "childCalls": 0,
+          "endLogIndex": 51,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 58,
+          "parent": 19,
+          "childCalls": 0,
+          "endLogIndex": 60,
+          "outcome": "success"
+        },
+        {
+          "program": "11111111111111111111111111111111",
+          "depth": 1,
+          "label": null,
+          "invokeLogIndex": 63,
+          "parent": null,
+          "childCalls": 0,
+          "endLogIndex": 64,
+          "outcome": "success"
+        }
+      ],
+      "events": [
+        {
+          "logIndex": 34,
+          "frameInvokeLogIndex": 26,
+          "frameLabel": "MultiHopSwap",
+          "name": "BuyEvent",
+          "bytes": 508,
+          "sha256": "ffa3e42df6962cb1198587c239b8f76e50990c0b46c60cfbf5e997c446aecc3a",
+          "data": {
+            "timestamp": "1793212722",
+            "base_amount_out": "20914680636",
+            "max_quote_amount_in": "22581424",
+            "user_base_token_reserves": "0",
+            "user_quote_token_reserves": "22581424",
+            "pool_base_token_reserves": "144209312854647",
+            "pool_quote_token_reserves": "138817036812",
+            "quote_amount_in": "22581424",
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "5",
+            "protocol_fee": "11286",
+            "quote_amount_in_with_lp_fee": "22570138",
+            "user_quote_amount_in": "22570138",
+            "pool": "89MFRL9ypWvMYsMvpGayei4rje6MDctEpoWqrSfuYWw8",
+            "user": "D5V2LbmW8uPZrUomZH2ioAECCvxypoAmJadm1xnmv4GS",
+            "user_base_token_account": "11111111111111111111111111111111",
+            "user_quote_token_account": "kgENp7zw2sJEaVSGsU7pwuKQbd8j4yaK54r7FwiHSQs",
+            "protocol_fee_recipient": "11111111111111111111111111111111",
+            "protocol_fee_recipient_token_account": "11111111111111111111111111111111",
+            "coin_creator": "DPQoxAKKrCtjfZ577QyrKBCfXy8KhJxRcxj6awgbBWYw",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "track_volume": false,
+            "total_unclaimed_tokens": "0",
+            "total_claimed_tokens": "0",
+            "current_sol_volume": "0",
+            "last_update_timestamp": "0",
+            "min_base_amount_out": "0",
+            "ix_name": "multi_hop_swap",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "5000",
+            "buyback_fee": "5643",
+            "virtual_quote_reserves": "16784282528",
+            "can_boost": true,
+            "base_supply": "989182112424404",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "creator_fee_unclaimed": "64430983",
+            "quote_transfer_fee": "0"
+          }
+        }
+      ],
+      "offlineChecks": {
+        "scopePoolMatchesBuyEvent": true,
+        "multiHopLabelAndEventVariantAgree": true,
+        "baseUserAccountPlaceholder": true,
+        "grossMinusReportedProtocolFeeMatchesNetQuote": true,
+        "buybackIsReportedProtocolSlice": true,
+        "scopeTransferAndTraderRolesVerified": false,
+        "compiledRemainingAccountRouteVerified": false,
+        "normalizedForStrategy": false
+      }
+    },
+    {
+      "signature": "4kp9ph7W3ziFuNvd2E1TpXgqydHzjquXaBHr6RYo7dDikkbJ5qvVmbRGj3oPkudVTrXpAtBYxaMVxU2iVnmEns7E",
+      "slot": 462583391,
+      "sourceRawRef": "events/events-007.ndjson:3774",
+      "sourceRefusalRef": "events/events-007.ndjson:3773",
+      "sourceRefusal": {
+        "signature": "4kp9ph7W3ziFuNvd2E1TpXgqydHzjquXaBHr6RYo7dDikkbJ5qvVmbRGj3oPkudVTrXpAtBYxaMVxU2iVnmEns7E",
+        "slot": 462583391,
+        "receivedAt": 1793213297600,
+        "availableAt": 1793213297695,
+        "success": true,
+        "rawHash": "da75609212c719e10560d24ce37ffa951d62930ac76c2d13739a45c16b876009",
+        "subscriptionMint": "GwvVsrECK5dajqMQhh6FT5PcPX4ao5QipuZMbWQHpump",
+        "subscriptionPool": "DTv86qoU5tLwCyL4gfrArkjy1o7UeWcVNQmKuWzqDZJa",
+        "subscriptionId": 102737344,
+        "connectionId": 2,
+        "parsedEvents": 0,
+        "eventsAccepted": 0,
+        "duplicate": false,
+        "correction": false,
+        "classification": "unusable",
+        "reason": "LOG_NATIVE_PROTOCOL_CHILD_SHAPE",
+        "chainBlockTime": null
+      },
+      "priorSupport": {
+        "mint": "GwvVsrECK5dajqMQhh6FT5PcPX4ao5QipuZMbWQHpump",
+        "pool": "DTv86qoU5tLwCyL4gfrArkjy1o7UeWcVNQmKuWzqDZJa",
+        "at": 1793213292099,
+        "sourceSlot": 462583366,
+        "evidence": "research-clock-observation-support:1420c1cca40c16697b9761e49541601efad6bcab08b1b344d61b1cf708cf53ea",
+        "summary": {
+          "pool": "DTv86qoU5tLwCyL4gfrArkjy1o7UeWcVNQmKuWzqDZJa",
+          "mint": "GwvVsrECK5dajqMQhh6FT5PcPX4ao5QipuZMbWQHpump",
+          "slot": 462583366,
+          "commitment": "confirmed",
+          "requestedAt": "2026-10-28T18:48:11.925Z",
+          "receivedAt": "2026-10-28T18:48:12.086Z",
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "decimals": 6,
+          "poolFlags": {
+            "mayhem": false,
+            "cashback": false,
+            "holderReward": false
+          },
+          "rawBaseReserve": "526458182757773",
+          "rawQuoteReserve": "20197538357",
+          "virtualQuoteReserves": "13388966036",
+          "effectiveQuoteReserve": "33586504393",
+          "feeBuckets": "4195539594",
+          "feeBps": {
+            "lpFeeBps": "2",
+            "protocolFeeBps": "93",
+            "creatorFeeBps": "30"
+          },
+          "creatorFeeApplied": true,
+          "baseAssociatedAccount": {
+            "accountLengthBytes": 170,
+            "accountExtensions": [
+              "ImmutableOwner"
+            ],
+            "rentLamports": null,
+            "rentStatus": "requires-current-RPC-and-account-existence-check",
+            "depositTreatment": "refundable locked capital when a new account is required"
+          },
+          "quoteAssociatedAccount": {
+            "accountLengthBytes": 165,
+            "accountExtensions": [],
+            "rentLamports": null,
+            "rentStatus": "requires-current-RPC-and-account-existence-check",
+            "depositTreatment": "refundable locked capital when a new account is required"
+          },
+          "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+          "mode": "QUOTE_ONLY",
+          "timeEvidence": "confirmed-bank-clock",
+          "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+          "clockSlot": 462583366,
+          "marketClockUnixSeconds": 1793213291,
+          "maxMarketAgeMs": 30000,
+          "validatedAt": "2026-10-28T18:48:12.099Z",
+          "researchOnly": true
+        },
+        "ref": "events/events-007.ndjson:3570"
+      },
+      "frames": [
+        {
+          "program": "ComputeBudget111111111111111111111111111111",
+          "depth": 1,
+          "label": null,
+          "invokeLogIndex": 0,
+          "parent": null,
+          "childCalls": 0,
+          "endLogIndex": 1,
+          "outcome": "success"
+        },
+        {
+          "program": "ComputeBudget111111111111111111111111111111",
+          "depth": 1,
+          "label": null,
+          "invokeLogIndex": 2,
+          "parent": null,
+          "childCalls": 0,
+          "endLogIndex": 3,
+          "outcome": "success"
+        },
+        {
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "depth": 1,
+          "label": "BoostBuyAndBurn",
+          "invokeLogIndex": 4,
+          "parent": null,
+          "childCalls": 5,
+          "endLogIndex": 25,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 6,
+          "parent": 4,
+          "childCalls": 0,
+          "endLogIndex": 8,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "depth": 2,
+          "label": "Burn",
+          "invokeLogIndex": 9,
+          "parent": 4,
+          "childCalls": 0,
+          "endLogIndex": 12,
+          "outcome": "success"
+        },
+        {
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 14,
+          "parent": 4,
+          "childCalls": 0,
+          "endLogIndex": 16,
+          "outcome": "success"
+        },
+        {
+          "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 18,
+          "parent": 4,
+          "childCalls": 0,
+          "endLogIndex": 20,
+          "outcome": "success"
+        },
+        {
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "depth": 2,
+          "label": null,
+          "invokeLogIndex": 21,
+          "parent": 4,
+          "childCalls": 0,
+          "endLogIndex": 23,
+          "outcome": "success"
+        },
+        {
+          "program": "11111111111111111111111111111111",
+          "depth": 1,
+          "label": null,
+          "invokeLogIndex": 26,
+          "parent": null,
+          "childCalls": 0,
+          "endLogIndex": 27,
+          "outcome": "success"
+        }
+      ],
+      "events": [
+        {
+          "logIndex": 13,
+          "frameInvokeLogIndex": 4,
+          "frameLabel": "BoostBuyAndBurn",
+          "name": "BuyEvent",
+          "bytes": 512,
+          "sha256": "102dd29c534fc9a101aced5fec53dca37e47f0977c48226b01b7cbdf3af00b08",
+          "data": {
+            "timestamp": "1793213296",
+            "base_amount_out": "8981894354501",
+            "max_quote_amount_in": "604925295",
+            "user_base_token_reserves": "0",
+            "user_quote_token_reserves": "604925295",
+            "pool_base_token_reserves": "516897796586740",
+            "pool_quote_token_reserves": "20819105337",
+            "quote_amount_in": "604925295",
+            "lp_fee_basis_points": "0",
+            "lp_fee": "0",
+            "protocol_fee_basis_points": "0",
+            "protocol_fee": "0",
+            "quote_amount_in_with_lp_fee": "604925295",
+            "user_quote_amount_in": "604925295",
+            "pool": "DTv86qoU5tLwCyL4gfrArkjy1o7UeWcVNQmKuWzqDZJa",
+            "user": "9hwzihq1bk9Yunx2FWLQf4LTSaxWEDWJYSGdxvXV5bbw",
+            "user_base_token_account": "11111111111111111111111111111111",
+            "user_quote_token_account": "B9WHK2YvXR31SNt7WesmSPCYoyNrQZVffzywMveZGnvs",
+            "protocol_fee_recipient": "11111111111111111111111111111111",
+            "protocol_fee_recipient_token_account": "11111111111111111111111111111111",
+            "coin_creator": "9Sr9c5E24L1tYVqPnQqY5z7m56tfxGH8Js3VV1HY2nxr",
+            "coin_creator_fee_basis_points": "0",
+            "coin_creator_fee": "0",
+            "track_volume": false,
+            "total_unclaimed_tokens": "0",
+            "total_claimed_tokens": "0",
+            "current_sol_volume": "0",
+            "last_update_timestamp": "0",
+            "min_base_amount_out": "8785124403407",
+            "ix_name": "buy_exact_quote_in",
+            "cashback_fee_basis_points": "0",
+            "cashback": "0",
+            "buyback_fee_basis_points": "0",
+            "buyback_fee": "0",
+            "virtual_quote_reserves": "13388731491",
+            "can_boost": true,
+            "base_supply": "813996500238557",
+            "holder_rewards_bps": "0",
+            "holder_rewards": "0",
+            "creator_fee_unclaimed": "2069747056",
+            "quote_transfer_fee": "0"
+          }
+        },
+        {
+          "logIndex": 17,
+          "frameInvokeLogIndex": 4,
+          "frameLabel": "BoostBuyAndBurn",
+          "name": "BoostBuyAndBurnEvent",
+          "bytes": 208,
+          "sha256": "52cec28519d34da5d07cc32538877e72561b01b5e6bc7b39dd2d00bab0256def",
+          "data": {
+            "timestamp": "1793213296",
+            "mint": "GwvVsrECK5dajqMQhh6FT5PcPX4ao5QipuZMbWQHpump",
+            "bonding_curve": "DvaMkyw2nChwk9RktcQFJUG8SYbtNVeC9bqcF7iXfrsL",
+            "pool": "DTv86qoU5tLwCyL4gfrArkjy1o7UeWcVNQmKuWzqDZJa",
+            "authority": "HTVZVEQMBsNanubDPTs3CxDAEGNFQHJY8c1441iy2S5r",
+            "quote_amount_in_requested": "604925295",
+            "quote_amount_in_used": "604925295",
+            "base_amount_burned": "8981894354501",
+            "virtual_quote_reserves": "13388731491",
+            "real_quote_reserves_after": "21424030632",
+            "base_reserves_after": "507915902232239",
+            "boost_vault_remaining": "0"
+          }
+        }
+      ],
+      "offlineChecks": {
+        "programUserIsBoostVaultPda": true,
+        "quoteAccountIsBoostWsolAta": true,
+        "scopeMatchesOfficialPair": true,
+        "pairedTimesAgree": true,
+        "pairedQuoteAmountsAgree": true,
+        "pairedBaseAmountAgrees": true,
+        "allReportedFeeAmountsZero": true,
+        "baseReserveDelta": true,
+        "quoteReserveDelta": true,
+        "boostReserveDelta": true,
+        "baseUserPlaceholder": true,
+        "ordinaryUserBaseReceived": false,
+        "transferBytesAndRolesVerified": false,
+        "extraClassicChildInstructionVerified": false
+      }
+    }
+  ],
+  "pinnedInterfaces": [
+    {
+      "name": "boost_buy_and_burn",
+      "discriminator": [
+        105,
+        68,
+        6,
+        175,
+        0,
+        7,
+        35,
+        162
+      ],
+      "args": [
+        {
+          "name": "quote_amount_in",
+          "type": "u64"
+        },
+        {
+          "name": "min_base_amount_burned",
+          "type": "u64"
+        }
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "writable": true
+        },
+        {
+          "name": "global_config",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "base_mint",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "quote_mint",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "pool_base_token_account",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "pool_quote_token_account",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "boost_vault_authority",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "boost_vault",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "base_token_program",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "quote_token_program",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "event_authority",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "program",
+          "signer": false,
+          "writable": false
+        }
+      ]
+    },
+    {
+      "name": "multi_hop_swap",
+      "discriminator": [
+        43,
+        100,
+        73,
+        19,
+        233,
+        246,
+        111,
+        148
+      ],
+      "args": [
+        {
+          "name": "amount_in",
+          "type": "u64"
+        },
+        {
+          "name": "min_amount_out",
+          "type": "u64"
+        }
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "signer": true,
+          "writable": true
+        },
+        {
+          "name": "user_in_token_account",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "user_out_token_account",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "global_config",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "fee_config",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "user_volume_accumulator",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "buyback_fee_recipient",
+          "signer": false,
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "token_2022_program",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "system_program",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "event_authority",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "program",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "pump_program",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "pump_global",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "pump_fee_config",
+          "signer": false,
+          "writable": false
+        },
+        {
+          "name": "pump_event_authority",
+          "signer": false,
+          "writable": false
+        }
+      ]
+    }
+  ],
+  "pinnedSourceFiles": [
+    {
+      "file": "src/sdk/multiHop.ts",
+      "bytes": 11477,
+      "sha256": "8ef46c3ca717d281111d8390e3b49ac3c81df994cad7c47d5ba4e144f3f8e900"
+    },
+    {
+      "file": "src/sdk/offlinePumpAmm.ts",
+      "bytes": 59340,
+      "sha256": "6772dc3439df9782e565d8fcc8b11e232b0f28569b11b65629a299cd5191e835"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_RETAINED_UNSUPPORTED_SHAPE_REVIEW",
+  "sourceCommit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 6811,
+      "sha256": "bda0e27d1b021ffcacad6c2b143edfa903f845a03b5606e95cc937cbeebb7a71"
+    },
+    {
+      "file": "decode-retained-shapes.mjs",
+      "bytes": 6033,
+      "sha256": "683833c322f537f814006d40032d4a60911e58125c19c9d3a3ab2b50a2f047b4"
+    },
+    {
+      "file": "decoded-two-shapes.json",
+      "bytes": 26539,
+      "sha256": "baee2e65d38690cbb2cd9a2d6dcd0fe33dc71835a3ede8e7b5e6cbe7d08c5a1e"
+    },
+    {
+      "file": "inspect-fetched-transactions.mjs",
+      "bytes": 5079,
+      "sha256": "3b4d829ab0ad8b11ad7e35f6551534893aa2aa608cc34ed04b55d9c2004bd395"
+    },
+    {
+      "file": "offline-decoding-output.txt",
+      "bytes": 7252,
+      "sha256": "0e21809c329fc7322a08a21170722f68e50d8ece6a3433525843afcb83fd07c6"
+    },
+    {
+      "file": "retained-two-shapes.json",
+      "bytes": 18123,
+      "sha256": "f6aa40b3838be35e885fb5b026f11b40b8f5a1fe0ffec117d253b5a772d38830"
+    },
+    {
+      "file": "unsupported-ten-identities.json",
+      "bytes": 8298,
+      "sha256": "cc8e1409cdce3b705c34d1e336b43a2f8eed9f18dd5bf2a2c38b447e5c902853"
+    }
+  ],
+  "networkRequests": 0,
+  "financialFilesRead": false,
+  "runtimeMappingsChanged": false,
+  "fullTransactionCrossCheck": "NOT_YET_PERFORMED"
+}
