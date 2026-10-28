@@ -14,7 +14,7 @@ export type NativeFlowAuditResult={
  complete:boolean;pool:string;target:{startAt:number;endAt:number};startedAt:number;availableAt:number;
  anchor:Fence|null;lowerFence:Fence|null;strictInteriorSlots:{lower:number;upper:number}|null;historyRangeCovered:boolean;
  anchorKind:'notification'|'confirmed-bank-context'|null;contextFences:NativeAuditContextFences|null;
- requestAttempts:number;maximumPages:number;pages:Page[];historyPayloadBytes:number;historyRows:number;interiorRows:number;
+ requestAttempts:number;maximumPages:number;pageLimit:100|1000;pages:Page[];historyPayloadBytes:number;historyRows:number;interiorRows:number;
  requiredSignatures:string[];comparedSignatures:string[];missingNotifications:NativeAuditHistoryRow[];unconfirmedCapturedSignatures:string[];
  statusDisagreements:string[];boundaryExcludedSignatures:string[];duplicateNotifications:number;retryAt:number|null;
  scope:string;limitations:readonly string[];
@@ -22,7 +22,7 @@ export type NativeFlowAuditResult={
 export type NativeFlowAuditOptions={
  pool:string;notifications:readonly NativeNotification[];target:{startAt:number;endAt:number};
  call:<T>(method:string,params:unknown[],signal?:AbortSignal,options?:PilotRpcCallOptions)=>Promise<T>;
- now?:()=>number;signal?:AbortSignal;admission?:PilotRpcCallOptions;maximumPages?:number;maximumElapsedMs?:number;
+ now?:()=>number;signal?:AbortSignal;admission?:PilotRpcCallOptions;maximumPages?:number;maximumElapsedMs?:number;pageLimit?:100|1000;
  record?:(kind:string,data:unknown)=>void;
  /** Already decoded/validated coherent confirmed SDK+Clock contexts. A slot
   * number alone is insufficient; upper bank Clock must reach the target end. */
@@ -44,12 +44,12 @@ const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(e.m
 
 export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Promise<NativeFlowAuditResult>{
  const now=options.now??Date.now,startedAt=now(),target={...options.target};let lastAt=startedAt,open=true;
- const maximumPages=options.maximumPages??4,maximumElapsedMs=options.maximumElapsedMs??10000;
- const result:NativeFlowAuditResult={schemaVersion:1,classification:'BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT',status:'unavailable',reason:'NATIVE_AUDIT_NOT_COMPLETED',complete:false,pool:options.pool,target,startedAt,availableAt:startedAt,anchor:null,lowerFence:null,strictInteriorSlots:null,anchorKind:null,contextFences:null,historyRangeCovered:false,requestAttempts:0,maximumPages,pages:[],historyPayloadBytes:0,historyRows:0,interiorRows:0,requiredSignatures:[],comparedSignatures:[],missingNotifications:[],unconfirmedCapturedSignatures:[],statusDisagreements:[],boundaryExcludedSignatures:[],duplicateNotifications:0,retryAt:null,scope:'Exact target application-availability window, audited conservatively within independently retrieved strict-interior pool-address signature history.',limitations};
+ const maximumPages=options.maximumPages??4,maximumElapsedMs=options.maximumElapsedMs??10000,pageLimit=options.pageLimit??100;
+ const result:NativeFlowAuditResult={schemaVersion:1,classification:'BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT',status:'unavailable',reason:'NATIVE_AUDIT_NOT_COMPLETED',complete:false,pool:options.pool,target,startedAt,availableAt:startedAt,anchor:null,lowerFence:null,strictInteriorSlots:null,anchorKind:null,contextFences:null,historyRangeCovered:false,requestAttempts:0,maximumPages,pageLimit,pages:[],historyPayloadBytes:0,historyRows:0,interiorRows:0,requiredSignatures:[],comparedSignatures:[],missingNotifications:[],unconfirmedCapturedSignatures:[],statusDisagreements:[],boundaryExcludedSignatures:[],duplicateNotifications:0,retryAt:null,scope:'Exact target application-availability window, audited conservatively within independently retrieved strict-interior pool-address signature history.',limitations};
  const clock=()=>{const at=now();need(int(at)&&at>=lastAt&&at>=startedAt,'CLOCK_REGRESSION');lastAt=at;need(at-startedAt<=maximumElapsedMs,'ELAPSED_LIMIT');return at;};
  const finish=(status:NativeFlowAuditResult['status'],reason:string)=>{result.status=status;result.reason=reason;result.complete=status==='verified';result.availableAt=clock();return result;};
  try{
-  need(int(startedAt)&&key(options.pool,32)&&int(maximumPages)&&maximumPages>=1&&maximumPages<=4&&int(maximumElapsedMs)&&maximumElapsedMs>=1&&maximumElapsedMs<=10000,'INVALID_OPTIONS');
+  need(int(startedAt)&&key(options.pool,32)&&int(maximumPages)&&maximumPages>=1&&maximumPages<=4&&int(maximumElapsedMs)&&maximumElapsedMs>=1&&maximumElapsedMs<=10000&&(pageLimit===100||pageLimit===1000),'INVALID_OPTIONS');
   need(int(target.startAt)&&int(target.endAt)&&target.endAt-target.startAt===60000&&target.startAt%10000===0&&target.endAt%10000===0&&target.endAt<=startedAt,'INVALID_TARGET');
   need(Array.isArray(options.notifications)&&options.notifications.length<=8192,'NOTIFICATION_BOUND');
   const captured=new Map<string,NativeNotification>(),all:NativeNotification[]=[];
@@ -83,13 +83,13 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
   for(let page=0;page<maximumPages;page++){
    options.signal?.throwIfAborted();clock();if(options.admission?.admissionOpen&&!options.admission.admissionOpen())return finish('unavailable','NATIVE_AUDIT_ADMISSION_CLOSED');
    const requestOptions:PilotRpcCallOptions={...options.admission,latestStartAt:Math.min(options.admission?.latestStartAt??Infinity,startedAt+maximumElapsedMs),admissionOpen:()=>open&&!options.signal?.aborted&&now()>=startedAt&&now()-startedAt<=maximumElapsedMs&&(options.admission?.admissionOpen?.()??true)};
-   result.requestAttempts++;const payload=await options.call<unknown>('getSignaturesForAddress',[options.pool,{...(before?{before}:{}),limit:100,commitment:'confirmed'}],options.signal,requestOptions),receivedAt=clock();
-   need(Array.isArray(payload)&&payload.length<=100,'HISTORY_PAGE_SCHEMA');const pageBytes=Buffer.byteLength(JSON.stringify(payload));need(pageBytes<=256*1024,'HISTORY_PAGE_PAYLOAD_LIMIT');result.historyPayloadBytes+=pageBytes;
+   result.requestAttempts++;const payload=await options.call<unknown>('getSignaturesForAddress',[options.pool,{...(before?{before}:{}),limit:pageLimit,commitment:'confirmed'}],options.signal,requestOptions),receivedAt=clock();
+   need(Array.isArray(payload)&&payload.length<=pageLimit,'HISTORY_PAGE_SCHEMA');const pageBytes=Buffer.byteLength(JSON.stringify(payload));result.historyPayloadBytes+=pageBytes;need(pageBytes<=(pageLimit===1000?1024*1024:256*1024),'HISTORY_PAGE_PAYLOAD_LIMIT');
    const rows:NativeAuditHistoryRow[]=[];for(const r of payload){need(r&&key(r.signature,64)&&r.signature!==result.anchor?.signature&&!seen.has(r.signature)&&int(r.slot)&&r.slot<=previousSlot&&Object.hasOwn(r,'err')&&(r.err===null||typeof r.err==='object'&&!Array.isArray(r.err))&&(r.blockTime===null||int(r.blockTime))&&['confirmed','finalized'].includes(r.confirmationStatus),'HISTORY_CONTEXT');seen.add(r.signature);previousSlot=r.slot;rows.push({signature:r.signature,slot:r.slot,success:r.err===null,blockTime:r.blockTime,confirmationStatus:r.confirmationStatus});}
    history.push(...rows);result.historyRows=history.length;options.record?.('native-flow-history-page',{pool:options.pool,target,anchor:result.anchor,page:page+1,requestedBefore:before,receivedAt,rows});const validatedAt=clock();result.pages.push({page:page+1,rows:rows.length,newestSlot:rows[0]?.slot??null,oldestSlot:rows.at(-1)?.slot??null,receivedAt,validatedAt});
-   if(rows.length&&rows.at(-1)!.slot<=lowerSlot){result.historyRangeCovered=true;break;}if(rows.length<100)break;before=rows.at(-1)!.signature;
+   if(rows.length&&rows.at(-1)!.slot<=lowerSlot){result.historyRangeCovered=true;break;}if(rows.length<pageLimit)break;before=rows.at(-1)!.signature;
   }
-  if(!result.historyRangeCovered)return finish('unavailable','NATIVE_AUDIT_HISTORY_RANGE_NOT_COVERED');
+  if(!result.historyRangeCovered)return finish('unavailable',pageLimit===1000&&result.pages.at(-1)?.rows===1000?'NATIVE_AUDIT_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN':'NATIVE_AUDIT_HISTORY_RANGE_NOT_COVERED');
   const interior=history.filter(r=>r.slot>lowerSlot&&r.slot<upperSlot);result.interiorRows=interior.length;result.comparedSignatures=interior.map(r=>r.signature);result.boundaryExcludedSignatures=[...new Set([...result.boundaryExcludedSignatures,...history.filter(r=>r.slot===lowerSlot||r.slot===upperSlot).map(r=>r.signature)])];
   result.missingNotifications=interior.filter(r=>!captured.has(r.signature));if(result.missingNotifications.length)return finish('unusable','NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED');
   const bySignature=new Map(interior.map(r=>[r.signature,r]));result.unconfirmedCapturedSignatures=required.filter(n=>!bySignature.has(n.signature)).map(n=>n.signature);if(result.unconfirmedCapturedSignatures.length)return finish('unavailable','NATIVE_AUDIT_CAPTURED_TARGET_NOT_IN_HISTORY');
