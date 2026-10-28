@@ -1,0 +1,46 @@
+{
+  "kind": "OFFLINE_LOCAL_REPORTING_FIXTURE",
+  "naturalMarketOrFinancialResult": false,
+  "scope": "Disposable HTTP reporting cache and source-calculated fixture Snapshot and exact SOL accounting; no production or Render deploy",
+  "mobile": {
+    "title": "POE // Opportunity Command Center",
+    "href": "http://127.0.0.1:18471/",
+    "viewport": 390,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "portfolioText": "EXPERIMENTAL PAPER \u00b7 OWN ACCOUNT\nExperimental portfolio\nPAPER SOURCE RUNNING \u00b7 RECONCILED AS REPORTED \u00b7 ENTRIES PAUSED\n\nExperimental account poe-pilot-portfolio-fixture \u00b7 inception 2026-10-27T23:55:06.573Z \u00b7 sequence 1\nRuntime fixture-release \u00b7 strategy fixture-strategy\nFinancial source 2026-10-28T00:05:06.573Z \u00b7 market 2026-10-28T00:05:05.573Z \u00b7 reconciliation 2026-10-28T00:05:05.573Z \u00b7 SOL accounting source 2026-10-28T00:05:06.573Z. Original EC2 portfolio remains separate. Source reports only; PAPER outcomes are simulated.\n\nVirtual inception\n$1,000.00\nEquity\nUnavailable\nCash / reserved SOL\n9 / 0.1\nTotal trading P&L \u00b7 SOL\nUnavailable\nRealized P&L \u00b7 SOL\n-0.001 SOL\nUnrealized P&L \u00b7 SOL\nUnavailable\nModeled execution costs \u00b7 SOL\n0.000007 SOL\nLocked refundable deposits \u00b7 SOL\n0.002 SOL\nTotal trading P&L \u00b7 USD\nUnavailable\nRealized P&L\nUnavailable\nUnrealized P&L\nUnavailable\nEconomic P&L\nUnavailable\nPosition cost / net exposure\n$50.00 / Unavailable\nModeled execution costs\n$0.01\nOperating costs\nUnavailable \u00b7 unavailable\nDrawdown\nUnavailable\nPassive SOL benchmark\n$1,001.00\nExperimental positions\n\n<script>untrusted-token</script> \u00b7 units 1000 \u00b7 entry 2026-10-28T00:04:56.573Z \u00b7 entry cost $50.00 \u00b7 net liquidation Unavailable \u00b7 mark unavailable; exposure retained\n\nExperimental trades and attempts\n\n2026-10-28T00:05:01.573Z \u00b7 fixture-mint \u00b7 buy \u00b7 units 0 \u00b7 failed \u00b7 Unavailable \u00b7 modeled cost Unavailable \u00b7 expiry; no fill\n\nExperimental trading P&L \u00b7 USD\n2026-10-28T00:04:36.573Z UTC\n2026-10-28T00:05:06.573Z UTC\n\nOFFLINE fixture recorded points; gap retained \u00b7 3/720 actual source points \u00b7 as recorded \u00b7 UTC. Null values remain gaps; a zero reference is not fabricated historical performance. After-operating-cost performance is separately reported above.",
+    "portfolioCardCount": 17,
+    "portfolioPositionText": "<script>untrusted-token</script> \u00b7 units 1000 \u00b7 entry 2026-10-28T00:04:56.573Z \u00b7 entry cost $50.00 \u00b7 net liquidation Unavailable \u00b7 mark unavailable; exposure retained",
+    "scriptTagCount": 0,
+    "pilotState": "RUNNING REPORTED",
+    "sourceText": "Account poe-pilot-portfolio-fixture \u00b7 inception 2026-10-27T23:55:06.573Z\nRun fixture-run\nRuntime fixture-release \u00b7 strategy fixture-strategy \u00b7 mode paper\nLocal source 2026-10-28T00:05:06.573Z (11.02s old) \u00b7 first accepted 2026-10-28T00:05:06.578Z\nLast authenticated publisher contact 2026-10-28T00:05:06.578Z (11.02s ago). Receiver contact does not refresh source facts.",
+    "checkedAt": "2026-10-28T00:05:17.873Z",
+    "errors": [],
+    "horizontalOverflow": false,
+    "tlsVerificationEnabled": true
+  },
+  "validation": {
+    "build": "PASS",
+    "compile": "PASS",
+    "repositoryTsTests": {
+      "pass": 212,
+      "fail": 0
+    },
+    "focusedTsTests": {
+      "pass": 34,
+      "fail": 0
+    },
+    "reportingMjsTests": {
+      "pass": 27,
+      "fail": 0
+    }
+  },
+  "sourceHashes": {
+    "src/dashboard.ts": "4830ac2f1c1babbc382430fb210303af460b410267b560cbbd9d8f01658a562a",
+    "src/dashboard-connections.ts": "97929588f05d8de1e80c7be0e21da4c8b9457e379c6a73acbe0be0a38d80911a",
+    "src/pilot-telemetry.ts": "6a963887260f978e0e8079e0bcdf970eb6c7afa0a306b2bda926e0f6ede746ac",
+    "src/pilot-portfolio-ui.ts": "50cb370b3d0b600b262bf22e96e88559ae66c33b7827ae28f5d25a1910c14ef5",
+    "src/reporting.ts": "c39bd0153bcb91ceaa3e951610b3578b61f2dbd5c186a96a06ed9750eec35294",
+    "test/dashboard-pilot-portfolio.test.ts": "4708acf84c73610f78eb16900528f4808eca6090d5ea2b384821f5d226362930"
+  }
+}

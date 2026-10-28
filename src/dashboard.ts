@@ -2,6 +2,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import { timingSafeEqual, createHash } from 'node:crypto';
 import { createPilotTelemetryChannel } from './pilot-telemetry.js';
 import { CONNECTIONS_HTML, CONNECTIONS_SCRIPT } from './dashboard-connections.js';
+import { PILOT_PORTFOLIO_HTML, PILOT_PORTFOLIO_SCRIPT } from './pilot-portfolio-ui.js';
 import { fileURLToPath } from 'node:url';
 import { connectionReport, withConnectionDiagnostics } from './dashboard-connectivity.js';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
@@ -83,7 +84,7 @@ export function createDashboard(config: DashboardConfig) {
       'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
       'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     });
-    res.end(withConnectionDiagnostics(HTML).replace('<div class="section-heading reporting-zone-heading"',CONNECTIONS_HTML+'<div class="section-heading reporting-zone-heading"').replace('</body>',CONNECTIONS_SCRIPT+'</body>'));
+    res.end(withConnectionDiagnostics(HTML).replace('<div class="section-heading reporting-zone-heading"',CONNECTIONS_HTML+PILOT_PORTFOLIO_HTML+'<div class="section-heading reporting-zone-heading"').replace('</body>',PILOT_PORTFOLIO_SCRIPT+CONNECTIONS_SCRIPT+'</body>'));
   });
   server.keepAliveTimeout = 5000; server.maxRequestsPerSocket = 100;
   return { server, cache, pilotTelemetry };
@@ -240,7 +241,7 @@ function renderFunnel(f){
  const el=byId('funnel');el.replaceChildren();const outer=add(el,'div',undefined,'funnel-grid');
  const fields=[['discovered','Discovered'],['supported','Supported'],['sufficientlyObserved','Sufficiently observed'],['evaluated','Evaluated'],['qualified','Qualified'],['attempted','Attempted'],['paperFilled','PAPER filled'],['exited','Exited'],['reconciled','Reconciled']];
  const ceiling=Math.max(1,...fields.map(([k])=>f[k]));
- fields.forEach(([key,label])=>{const row=add(outer,'div',undefined,'funnel-line');add(row,'div',label,'funnel-name');const track=add(row,'div',undefined,'funnel-track');const fill=add(track,'div',undefined,'funnel-fill');fill.style.width=(100*f[key]/ceiling).toFixed(2)+'%';add(row,'div',f[key].toLocaleString('en-US'),'funnel-count')});
+ fields.forEach(([key,label])=>{const value=typeof f[key]==='number'&&Number.isFinite(f[key])?f[key]:null;const row=add(outer,'div',undefined,'funnel-line');add(row,'div',label,'funnel-name');const track=add(row,'div',undefined,'funnel-track');const fill=add(track,'div',undefined,'funnel-fill');fill.style.width=value===null?'0%':(100*value/ceiling).toFixed(2)+'%';add(row,'div',value===null?'Unavailable':value.toLocaleString('en-US'),'funnel-count')});
 }
 function renderMetrics(m,source){
  const p=byId('metrics');p.replaceChildren();const grid=add(p,'div',undefined,'metric-grid');

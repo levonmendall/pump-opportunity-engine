@@ -17,7 +17,7 @@ export type Snapshot = {
   };
   costLabels: { execution: 'simulated'; operating: 'actual' | 'estimated' | 'allocated' | 'mixed' | 'unavailable' };
   positions: { mint: string; label: string; quantity: string; enteredAt: string; entryCostUsd: number; netLiquidationUsd: number | null; executionCostsUsd: number; status: string }[];
-  trades: { id: string; mint: string; side: 'buy' | 'sell'; quantity: string; at: string; valueUsd: number | null; executionCostsUsd: number; status: string; reason: string }[];
+  trades: { id: string; mint: string; side: 'buy' | 'sell'; quantity: string; at: string; valueUsd: number | null; executionCostsUsd: number | null; status: string; reason: string }[];
   decisions: { id: string; mint: string; at: string; stage: string; reason: string }[];
   pnl: { at: string; tradingUsd: number | null; economicUsd: number | null }[];
   history: { windowStartAt: string | null; downsampled: boolean; label: string };
@@ -86,7 +86,7 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   });
   list(s.trades, 50, v => {
     const t = object(v, ['id','mint','side','quantity','at','valueUsd','executionCostsUsd','status','reason']);
-    text(t.id, 128); text(t.mint, 96); oneOf(t.side, ['buy','sell']); units(t.quantity, false); eventTime(t.at); nullable(t.valueUsd, v => number(v, true)); number(t.executionCostsUsd, true); text(t.status, 80); text(t.reason, 512);
+    text(t.id, 128); text(t.mint, 96); oneOf(t.side, ['buy','sell']); units(t.quantity, false); eventTime(t.at); nullable(t.valueUsd, v => number(v, true)); nullable(t.executionCostsUsd, v => number(v, true)); text(t.status, 80); text(t.reason, 512);
   });
   list(s.decisions, 50, v => { const d = object(v, ['id','mint','at','stage','reason']); text(d.id, 128); text(d.mint, 96); eventTime(d.at); text(d.stage, 80); text(d.reason, 512); });
   let last = -Infinity;

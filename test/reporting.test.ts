@@ -311,7 +311,7 @@ test('dashboard explains observer placeholders, supports mobile refresh, and has
   assert.match(html,/refreshInFlight/);
   assert.match(html,/maximumFractionDigits:decimals/);
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length,3);
+  assert.equal(scripts.length,4);
   for(const match of scripts)assert.doesNotThrow(()=>new Function(match[1]!));
   assert.equal((await app.get('/healthz').then(r=>r.json())).connectivityDiagnostics,1);
 });

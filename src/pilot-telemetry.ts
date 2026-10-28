@@ -1,8 +1,10 @@
 /** Reporting only: separate experimental diagnostics, never an authoritative ledger. */
 import { createHash, timingSafeEqual } from 'node:crypto';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { MAX_SNAPSHOT_BYTES, validateSnapshot, type Snapshot } from './reporting.js';
 
-const LIMIT = 64 * 1024;
+export const PILOT_TELEMETRY_LIMIT = 192 * 1024;
+const LIMIT = PILOT_TELEMETRY_LIMIT;
 const eq = (a: string, b: string) => timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest());
 const stages = ['discovered','supported','sufficientlyObserved','evaluated','qualified','reserved','attempted','paperFilled','exited','reconciled','verifiedMigrationOrigins','admitted','usableWindows'] as const;
 const metricNames = ['rpcRequests','providerEvents','normalizedTrades','eventLoopLagMs','maximumCompletedGapMs','maximumQuoteAgeMs','protectionBreaches','unavailableChecks','streamBytes'] as const;
@@ -13,11 +15,18 @@ const featureCounts = ['predictiveAssessments','predictiveFailures'] as const;
 type WatchCount = typeof watchCounts[number];
 type WatchWait = { mean: number | null; maximum: number | null };
 export type PilotWatchTelemetry = Record<WatchCount, number | null> & Partial<Record<typeof featureCounts[number],number|null>> & { waitMs: WatchWait; promotionWaitMs?: WatchWait | null };
+export type PilotAccounting = {schemaVersion:1;at:number;totalPnlLamports:string|null;realizedLamports:string;unrealizedLamports:string|null;executionCostsLamports:string;lockedDepositLamports:string};
 export type PilotTelemetry = {
   schemaVersion: 1; kind: 'experimental-pilot'; authoritative: false; liveTrading: false;
   accountId: string; inceptionAt: number; runId: string; generatedAt: number;
   source: { release: string; strategy: string; sha256: string | null };
   running: boolean; entriesEnabled: boolean; status: string;
+  /** Optional for legacy diagnostics; explicit mode is mandatory for a financial report. */
+  mode?: 'candidate-evaluation'|'paper'; financialExecutionAuthorized?: boolean;
+  /** A complete source-calculated experimental portfolio; never the original account. */
+  portfolio?: Snapshot | null;
+  /** Exact SOL accounting calculated by the same experimental source. */
+  accounting?: PilotAccounting | null;
   funnel: Record<Stage, number | null>; metrics: Record<Metric, number | null>;
   decisions: Array<{ at: number; mint: string; stage: string; reason: string }>;
   refusals: Array<{ reason: string; count: number }>;
@@ -67,6 +76,9 @@ export function projectPilotStatus(value: unknown): PilotTelemetry {
     accountId:text(p.accountId,100),inceptionAt:integer(p.inceptionAt,false)!,runId:text(p.runId,120),generatedAt:integer(p.generatedAt,false)!,
     source:{release:text(source.commit,64),strategy:text(p.strategyVersion,100),sha256:typeof source.sha256==='string'&&/^[a-f0-9]{64}$/.test(source.sha256)?source.sha256:null},
     running:bool(p.running),entriesEnabled:bool(p.entriesEnabled),status:safeText(p.status),
+    ...(p.mode===undefined?{}:{mode:p.mode,financialExecutionAuthorized:bool(p.financialExecutionAuthorized)}),
+    portfolio:p.mode==='paper'&&p.financialExecutionAuthorized===true&&p.experimentalPortfolio!==undefined?p.experimentalPortfolio:null,
+    accounting:p.mode==='paper'&&p.financialExecutionAuthorized===true&&p.experimentalPortfolio&&p.experimentalAccounting!==undefined?p.experimentalAccounting:null,
     funnel:Object.fromEntries(stages.map(k=>[k,integer(f[k])])) as Record<Stage,number|null>,
     metrics:{rpcRequests:integer(rpc.newUnits),providerEvents:integer(feeds.frames),normalizedTrades:integer(feeds.normalizedTrades),eventLoopLagMs:number(u.eventLoopDelayP95Ms),maximumCompletedGapMs:Array.isArray(t.completedEvaluationGaps)&&t.completedEvaluationGaps.length?number(t.maximumCompletedGapMs):null,maximumQuoteAgeMs:Array.isArray(t.completedEvaluationGaps)&&t.completedEvaluationGaps.length?number(t.maximumQuoteAgeAtUseMs):null,protectionBreaches:integer(t.protectionBreaches),unavailableChecks:integer(t.unavailableChecks),streamBytes:integer(feeds.totalSocketBytes)},
     decisions:(Array.isArray(p.decisions)?p.decisions:[]).slice(-30).map((d:any)=>({at:integer(d.at,false)!,mint:text(d.mint,100),stage:safeText(d.stage,100),reason:safeText(d.reason)})),
@@ -77,7 +89,7 @@ export function projectPilotStatus(value: unknown): PilotTelemetry {
 }
 export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   const p=object(input);
-  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals','watch']);
+  keys(p,['schemaVersion','kind','authoritative','liveTrading','accountId','inceptionAt','runId','generatedAt','source','running','entriesEnabled','status','funnel','metrics','decisions','refusals','watch','mode','financialExecutionAuthorized','portfolio','accounting']);
   if(p.schemaVersion!==1||p.kind!=='experimental-pilot'||p.authoritative!==false||p.liveTrading!==false) throw new Error('invalid pilot identity');
   if(!/^poe-pilot-[a-z0-9-]+$/.test(text(p.accountId,100))) throw new Error('pilot account required');
   integer(p.inceptionAt,false);integer(p.generatedAt,false);if(p.generatedAt<p.inceptionAt)throw new Error('invalid source time');
@@ -89,6 +101,32 @@ export function validatePilotTelemetry(input: unknown): PilotTelemetry {
   for(const d of p.decisions){keys(object(d),['at','mint','stage','reason']);integer(d.at,false);if(d.at>p.generatedAt)throw new Error('future decision');text(d.mint,100);text(d.stage,100);text(d.reason,256);}
   for(const r of p.refusals){keys(object(r),['reason','count']);text(r.reason,256);integer(r.count,false);}
   if(p.watch!==undefined&&p.watch!==null)validateWatch(p.watch);
+  if(p.mode!==undefined){
+    if(!['candidate-evaluation','paper'].includes(p.mode))throw Error('invalid pilot mode');
+    bool(p.financialExecutionAuthorized);
+    if(p.mode==='candidate-evaluation'&&(p.financialExecutionAuthorized||p.entriesEnabled))throw Error('candidate mode cannot authorize financial execution');
+  }else if(p.financialExecutionAuthorized!==undefined)throw Error('financial mode required');
+  if(p.portfolio!==undefined&&p.portfolio!==null){
+    if(p.mode!=='paper'||p.financialExecutionAuthorized!==true)throw Error('explicit PAPER financial mode required');
+    if(Buffer.byteLength(JSON.stringify(p.portfolio))>MAX_SNAPSHOT_BYTES)throw Error('portfolio size limit');
+    const portfolio=validateSnapshot(p.portfolio,{accountId:p.accountId,inceptionAt:new Date(p.inceptionAt).toISOString(),release:p.source.release,strategy:p.source.strategy},p.generatedAt);
+    if(Date.parse(portfolio.times.generatedAt)>p.generatedAt)throw Error('portfolio source time newer than diagnostic source');
+    if(p.running===false&&portfolio.status.runtime==='running'||p.running===true&&portfolio.status.runtime==='stopped')throw Error('portfolio runtime status inconsistent');
+    if(portfolio.status.entries==='enabled'&&!p.entriesEnabled)throw Error('portfolio entry permission inconsistent');
+  }
+  if(p.accounting!==undefined&&p.accounting!==null){
+    if(p.mode!=='paper'||p.financialExecutionAuthorized!==true||!p.portfolio)throw Error('accounting requires the experimental PAPER portfolio');
+    const a=object(p.accounting),fields=['schemaVersion','at','totalPnlLamports','realizedLamports','unrealizedLamports','executionCostsLamports','lockedDepositLamports'];keys(a,fields);
+    if(fields.some(k=>!Object.hasOwn(a,k))||a.schemaVersion!==1||integer(a.at,false)!==p.generatedAt)throw Error('invalid accounting source time or shape');
+    const amount=(value:unknown,signed:boolean,nullable=false)=>{
+      if(nullable&&value===null)return;
+      if(typeof value!=='string'||value.length>40||!(signed?/^(?:0|[1-9][0-9]*|-[1-9][0-9]*)$/:/^(?:0|[1-9][0-9]*)$/).test(value))throw Error('invalid accounting integer');
+      const n=BigInt(value),minimum=signed?-(1n<<127n):0n,maximum=signed?(1n<<127n)-1n:(1n<<128n)-1n;
+      if(n<minimum||n>maximum)throw Error('accounting integer bound');
+    };
+    amount(a.totalPnlLamports,true,true);amount(a.realizedLamports,true);amount(a.unrealizedLamports,true,true);amount(a.executionCostsLamports,false);amount(a.lockedDepositLamports,false);
+    if(p.portfolio.balances.equitySol===null&&(a.totalPnlLamports!==null||a.unrealizedLamports!==null))throw Error('unknown marks require unavailable accounting totals');
+  }
   if(Buffer.byteLength(JSON.stringify(p))>LIMIT)throw new Error('telemetry size limit');
   return structuredClone(p) as PilotTelemetry;
 }
@@ -100,6 +138,7 @@ async function body(req:IncomingMessage):Promise<unknown>{
 export function createPilotTelemetryChannel(config:TelemetryConfig,now=Date.now){
   const configured=config.secret.length>=32&&/^poe-pilot-[a-z0-9-]+$/.test(config.accountId)&&Number.isSafeInteger(config.inceptionAt)&&config.inceptionAt>0;
   let current:{snapshot:PilotTelemetry;receivedAt:number;lastContactAt:number;digest:string}|null=null;
+  let lastPortfolio:{sequence:bigint;digest:string}|null=null;
   function read(){
     if(!current)return {state:configured?'awaiting-data':'not-configured',message:configured?'No pilot report received.':'Separate pilot telemetry is not configured.',snapshot:null,receivedAt:null,lastContactAt:null,sourceAgeMs:null,lastContactAgeMs:null,publisherConnected:false};
     const sourceAgeMs=Math.max(0,now()-current.snapshot.generatedAt),receiverAgeMs=Math.max(0,now()-current.receivedAt),lastContactAgeMs=Math.max(0,now()-current.lastContactAt),sourceStale=sourceAgeMs>90000,publisherConnected=lastContactAgeMs<=90000;
@@ -110,12 +149,17 @@ export function createPilotTelemetryChannel(config:TelemetryConfig,now=Date.now)
     if(p.accountId!==config.accountId||p.inceptionAt!==config.inceptionAt)throw Error('pilot source mismatch');
     if(p.generatedAt>now()+5000)throw Error('future source time');
     const digest=createHash('sha256').update(JSON.stringify(p)).digest('hex');
+    let nextPortfolio:typeof lastPortfolio=null;
+    if(p.portfolio){
+      nextPortfolio={sequence:BigInt(p.portfolio.sequence),digest:createHash('sha256').update(JSON.stringify(p.portfolio)).digest('hex')};
+      if(lastPortfolio&&(nextPortfolio.sequence<lastPortfolio.sequence||nextPortfolio.sequence===lastPortfolio.sequence&&nextPortfolio.digest!==lastPortfolio.digest))throw Error('portfolio sequence regression or conflict');
+    }
     if(current){
       if(p.generatedAt<current.snapshot.generatedAt)throw Error('source time regression');
       if(p.generatedAt===current.snapshot.generatedAt){if(digest!==current.digest)throw Error('source time conflict');current.lastContactAt=now();return 'duplicate';}
       if(p.runId===current.snapshot.runId){for(const k of stages){const a=p.funnel[k],b=current.snapshot.funnel[k];if(a!==null&&b!==null&&a<b)throw Error('counter regression');}}
     }
-    current={snapshot:p,receivedAt:now(),lastContactAt:now(),digest};return 'accepted';
+    current={snapshot:p,receivedAt:now(),lastContactAt:now(),digest};if(nextPortfolio)lastPortfolio=nextPortfolio;return 'accepted';
   }
   async function handle(req:IncomingMessage,res:ServerResponse,path:string|undefined){
     if(path!=='/api/pilot')return false;
