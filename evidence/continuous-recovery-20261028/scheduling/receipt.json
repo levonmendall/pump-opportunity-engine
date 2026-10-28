@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-28T16:05:32.690076+00:00",
+  "baseHead": "e7ffe502161a3d4f965cc30c4d6a75f3776744fa",
+  "status": "IMPLEMENTED_OFFLINE_VERIFIED_NOT_FORWARD_VERIFIED",
+  "ownedChanges": [
+    "src/native-candidate-runner.ts",
+    "test/native-candidate-runner.test.ts"
+  ],
+  "sourceHashes": {
+    "src/native-candidate-runner.ts": "34b6c0ca9c52f9a335a228e934fe5aa13b72bff6ea8a0fe0cd5719ab891039b6",
+    "test/native-candidate-runner.test.ts": "c576ead6416ba29e8cb73a5e616c20194756a330e7fbd21048952ed0a74f7b07"
+  },
+  "logs": {
+    "before-fix.log": {
+      "bytes": 1784,
+      "sha256": "b98b5960fda7fd860a93593c06f1082ecb97c416494a6a8684173ec2dd015ab6"
+    },
+    "after-admission-fix.log": {
+      "bytes": 3341,
+      "sha256": "a435939037677e437d8a659fcd80a390392f1e3da4e88c0e25f325106edd4e69"
+    },
+    "after-domain-fix.log": {
+      "bytes": 5059,
+      "sha256": "fd15795caf043b1ab83c40b90021adc0563933b20548b32a76ee95251d591769"
+    },
+    "focused-final.log": {
+      "bytes": 3652,
+      "sha256": "cadf0b8abdc85e5c9ebac7012099c7b68dcd112581aad354caa33f050b6702dd"
+    },
+    "typecheck.log": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  },
+  "verification": {
+    "originalRegression": {
+      "command": "node --import tsx --test --test-name-pattern=\"six ready rejection audits\" test/native-candidate-runner.test.ts",
+      "expectedFailed": 2,
+      "failure": "replacement candidate allocated before ready audit batch completed at both50/100ms jitter"
+    },
+    "finalFocused": {
+      "command": "node --import tsx --test test/native-candidate-runner.test.ts",
+      "passed": 28,
+      "failed": 0
+    },
+    "typecheck": {
+      "command": "npm run build",
+      "exitCode": 0
+    }
+  },
+  "networkRequests": 0,
+  "runtimeInterventions": 0,
+  "deployed": false,
+  "committedByThisAgent": false,
+  "limitsUnchanged": [
+    "four audit pages",
+    "9999ms original audit span",
+    "1500ms physical timeout",
+    "2000ms declared page bound",
+    "shared physical gate and pacing",
+    "no financial writer"
+  ],
+  "researchAuditProfile": "native-resumable-executed-flow-adaptive-history-v3",
+  "remaining": "Root full-suite/integration regression and frozen forward validation of combined repairs; offline fixture timings do not establish provider capacity"
+}

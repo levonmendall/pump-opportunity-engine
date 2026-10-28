@@ -9,7 +9,7 @@ import {ComponentBudget} from '../src/component-budget.js';
 import {ComponentTransport} from '../src/component-transport.js';
 function setup(){let now=200000;const dir=mkdtempSync(join(tmpdir(),'poe-component-transport-'));
  const budget=new ComponentBudget({statePath:join(dir,'book.json'),grantId:'test-component',startedAt:now,baseline:{calls:20,bytes:272634,starts:Array.from({length:20},(_,i)=>1000+i),refusal:'RPC_HTTP_429',refusalAt:2000,sha256:'a'.repeat(64)},now:()=>now,monotonic:()=>now,sleep:async ms=>{now+=ms;}});
- return {budget,now:()=>now,cleanup(){budget.close();rmSync(dir,{recursive:true,force:true});}};}
+ return {budget,now:()=>now,advance(ms:number){now+=ms;},cleanup(){budget.close();rmSync(dir,{recursive:true,force:true});}};}
 const turn=()=>new Promise<void>(r=>setImmediate(r));
 
 test('HTTP429 stops at headers, retains uncertain body reserve and prior refusal, and never retries',{timeout:3000},async()=>{
@@ -117,5 +117,38 @@ test('unsupported request methods are denied before network and budget use',asyn
  const f=setup();let calls=0;
  try{const c=new ComponentTransport(f.budget,()=>{},()=>{},f.now,(async()=>{calls++;throw Error('must not fetch');}) as typeof fetch);
  await assert.rejects(c.call('sendTransaction'));await assert.rejects(c.call('simulateTransaction'));assert.equal(calls,0);assert.equal(f.budget.newUnits,0);
+ }finally{f.cleanup();}
+});
+
+
+test('HTTP lifecycle separates headers, body transfer and JSON availability without claiming pool reuse',async()=>{
+ const f=setup(),records:any[]=[];let index=0;
+ try{const a=new TextEncoder().encode('{"jsonrpc":"2.0","id":21,"result":'),b=new TextEncoder().encode('123}');
+ const c=new ComponentTransport(f.budget,(kind,data)=>records.push({kind,data}),()=>{},f.now,(async()=>{f.advance(25);return new Response(new ReadableStream({pull(stream){if(index++===0){f.advance(40);stream.enqueue(a);}else if(index===2){f.advance(60);stream.enqueue(b);}else{f.advance(5);stream.close();}}},{highWaterMark:0}),{status:200});})as typeof fetch);
+ assert.equal(await c.call('getSlot'),123);const row=records.find(r=>r.kind==='http-lifecycle-timing')!.data;
+ assert.equal(row.requestedAt,200000);assert.equal(row.headersAt,200025);assert.equal(row.firstBodyAt,200065);assert.equal(row.lastBodyAt,200125);assert.equal(row.bodyCompleteAt,200130);assert.equal(row.jsonDecodedAt,200130);assert.equal(row.headersDelayMs,25);assert.equal(row.bodyAfterHeadersMs,105);assert.equal(row.chunksReceived,2);assert.equal(row.responseBytes,a.byteLength+b.byteLength);assert.equal(row.outcome,'json-decoded');assert.equal(row.aborted,false);assert.ok(row.jsonDecodeMonotonicMs>=0);assert.match(row.connectionReuse,/not-instrumented/);assert.equal(f.budget.usage().uncertainResponseBytes,0);
+ }finally{f.cleanup();}
+});
+
+test('HTTP lifecycle retains partial successful-body timing after timeout without logging payload',{timeout:3000},async()=>{
+ const f=setup(),records:any[]=[];let pulls=0,cancelled=false;const payload=new TextEncoder().encode('PRIVATE_BODY_NEVER_TELEMETRY');
+ try{const c=new ComponentTransport(f.budget,(kind,data)=>records.push({kind,data}),()=>{},f.now,(async()=>new Response(new ReadableStream({pull(stream){if(pulls++===0)stream.enqueue(payload);},cancel(){cancelled=true;}},{highWaterMark:0}),{status:200}))as typeof fetch);
+ await assert.rejects(c.call('getSlot',[],undefined,{timeoutMs:10}),/PHYSICAL_TIMEOUT/);await turn();const row=records.find(r=>r.kind==='http-lifecycle-timing')!.data;
+ assert.equal(row.status,200);assert.equal(row.responseBytes,payload.byteLength);assert.equal(row.chunksReceived,1);assert.equal(row.firstBodyAt,200000);assert.equal(row.bodyCompleteAt,null);assert.equal(row.jsonDecodedAt,null);assert.equal(row.jsonDecodeMonotonicMs,null);assert.equal(row.aborted,true);assert.equal(cancelled,true);assert.equal(f.budget.usage().uncertainResponseBytes,2*1024*1024);assert.equal(JSON.stringify(records).includes('PRIVATE_BODY_NEVER_TELEMETRY'),false);
+ }finally{f.cleanup();}
+});
+
+test('HTTP lifecycle does not emit a settled-body claim while timed-out fetch still owns physical gate',{timeout:3000},async()=>{
+ const f=setup(),records:any[]=[];let release!:(r:Response)=>void;
+ try{const c=new ComponentTransport(f.budget,(kind,data)=>records.push({kind,data}),()=>{},f.now,(()=>new Promise<Response>(resolve=>{release=resolve;}))as typeof fetch);
+ await assert.rejects(c.call('getSlot',[],undefined,{timeoutMs:10}),/PHYSICAL_TIMEOUT/);assert.equal(f.budget.inFlight,1);assert.equal(records.some(r=>r.kind==='http-lifecycle-timing'),false);release(new Response('{"jsonrpc":"2.0","id":21,"result":123}'));
+ for(let n=0;n<20&&f.budget.inFlight;n++)await turn();assert.equal(f.budget.inFlight,0);const row=records.find(r=>r.kind==='http-lifecycle-timing')!.data;assert.equal(row.aborted,true);assert.equal(row.bodyCompleteAt,null);assert.equal(row.jsonDecodedAt,null);assert.match(row.validationScope,/caller owns/);assert.equal(f.budget.usage().uncertainResponseBytes,2*1024*1024);
+ }finally{f.cleanup();}
+});
+
+test('HTTP lifecycle distinguishes fully received malformed JSON from a validated response',async()=>{
+ const f=setup(),records:any[]=[];
+ try{const c=new ComponentTransport(f.budget,(kind,data)=>records.push({kind,data}),()=>{},f.now,(async()=>new Response('{PRIVATE_MALFORMED'))as typeof fetch);
+ await assert.rejects(c.call('getSlot'),/MALFORMED_JSON/);const row=records.find(r=>r.kind==='http-lifecycle-timing')!.data;assert.equal(row.bodyCompleteAt,200000);assert.equal(row.jsonDecodedAt,null);assert.equal(row.outcome,'COMPONENT_HTTP_MALFORMED_JSON');assert.ok(row.jsonDecodeMonotonicMs>=0);assert.equal(f.budget.usage().uncertainResponseBytes,0);assert.equal(JSON.stringify(records).includes('PRIVATE_MALFORMED'),false);
  }finally{f.cleanup();}
 });

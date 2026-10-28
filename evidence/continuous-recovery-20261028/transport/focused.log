@@ -1,0 +1,44 @@
+✔ six independent queries use one HTTP start, preserve original params/IDs and expose later validation time (70.560167ms)
+✔ caller and recorder mutations cannot replace validated pool identity or slot floors before physical start (14.619843ms)
+✔ ordinary per-item RPC failure leaves successful siblings independent and never logs provider text (11.251249ms)
+✔ per-item -32005 retains partial results and stops future gate admission after physical settlement (10.586246ms)
+✔ per-item 429 retains partial results and stops future gate admission after physical settlement (6.579939ms)
+✔ HTTP429 retains body uncertainty and six logical attempts without reading or retrying its error body (23.661619ms)
+✔ malformed single batch cannot associate another query response with a pool (7.349986ms)
+✔ malformed missing batch cannot associate another query response with a pool (6.527292ms)
+✔ malformed duplicate batch cannot associate another query response with a pool (4.801253ms)
+✔ malformed unknown batch cannot associate another query response with a pool (14.489504ms)
+✔ malformed wrong-id-type batch cannot associate another query response with a pool (5.011446ms)
+✔ malformed both-result-error batch cannot associate another query response with a pool (7.643784ms)
+✔ malformed invalid-error-code batch cannot associate another query response with a pool (6.45215ms)
+✔ total batch response keeps the existing2MiB limit and charges received overflow before stopping (9.894511ms)
+✔ timeout and cancellation cannot release a physical batch that ignores AbortSignal (21.269605ms)
+✔ invalid size, non-readonly request shape or pre-admission cancellation consumes no request (7.041183ms)
+✔ HTTP429 stops at headers, retains uncertain body reserve and prior refusal, and never retries (44.570836ms)
+✔ a fully received bounded HTTP503 body is charged exactly without an unknown response reservation (30.446437ms)
+✔ stalled HTTP503 body times out, charges partial receipt and preserves uncertain response bytes (16.377837ms)
+✔ canceling a partially received HTTP503 cannot turn cancellation into a complete response (8.109266ms)
+✔ declared oversize HTTP503 is canceled before reading and preserves uncertainty (6.92082ms)
+✔ streamed oversize HTTP503 charges delivered chunks and cannot mark a partial body complete (15.956717ms)
+✔ truncated HTTP503 body does not clear uncertainty when the identity Content-Length disagrees (8.000855ms)
+✔ upgrade, ACK and passive data share counters without double-counting socket/payload (12.375577ms)
+✔ raw partial and oversized receipt is charged before application parsing (7.748465ms)
+✔ notification before subscribe ACK preserves receipt time and resolves only the acknowledged scope (8.158344ms)
+✔ rejected invalid ACK halts without an automatic second request (12.054541ms)
+✔ rejected error ACK halts without an automatic second request (8.509208ms)
+✔ missing ACK cancellation retains uncertain response and cannot release a replacement request (8.072877ms)
+✔ planned reconnect waits for CLOSED and ignores stale first-socket events (7.961086ms)
+✔ close timeout halts without opening a second session (10.696424ms)
+✔ unsupported request methods are denied before network and budget use (4.177761ms)
+✔ HTTP lifecycle separates headers, body transfer and JSON availability without claiming pool reuse (8.656957ms)
+✔ HTTP lifecycle retains partial successful-body timing after timeout without logging payload (15.96874ms)
+✔ HTTP lifecycle does not emit a settled-body claim while timed-out fetch still owns physical gate (15.310185ms)
+✔ HTTP lifecycle distinguishes fully received malformed JSON from a validated response (4.500669ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 702.437618

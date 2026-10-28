@@ -67,6 +67,24 @@ test('SYNTHETIC six-slot saturation preserves seventh watch identity and release
  const f=fixture({maximumDeep:6}),mints=Array.from({length:7},(_,i)=>f.seed(i+1));await f.steps(20);let s=f.runner.status();assert.equal(s.maximumSimultaneousCandidates,6);assert.equal(s.candidates.length,6);assert.equal(s.watch.rows.length,7);const first=s.candidates[0]!.mint;assert.ok(mints.includes(first));f.runner.onGap({mint:first,at:f.now,reason:'SYNTHETIC_SELECTED_DATA_GAP'});assert.equal(f.retiring.size,1);const added=f.added.length;await f.runner.step();assert.equal(f.added.length,added,'retiring native subscription still occupies its bounded slot');assert.equal(f.flowActions.at(-1),'unsubscribe');await f.runner.step();s=f.runner.status();assert.equal(s.candidates.length,6);assert.equal(f.added.length,added+1);assert.equal(s.maximumSimultaneousCandidates,6);assert.equal(s.financialExecutionAuthorized,false);await f.runner.stop();
 });
 
+for(const jitterMs of [50,100])test(`SYNTHETIC six ready rejection audits finish before replacement support/setup with ${jitterMs} ms jitter`,async()=>{
+ const f=fixture({maximumDeep:6,responseDelayMs:700}),mints=Array.from({length:7},(_,i)=>f.seed(i+1));await f.steps(30);assert.equal(f.added.length,6);assert.equal(f.resolveCalls,7,'the waiting identity already has its immutable origin proof');
+ // The actual forward trace refilled a rejected scope immediately, putting
+ // unsubscribe/two support reads/subscribe ahead of remaining ready audits.
+ // Preserve required retirement; model both setup reads only if a new scope
+ // is admitted. They are not substitutes for history/audit validation.
+ const service=f.flow.service.bind(f.flow);let setupReads=0;
+ f.flow.service=async(signal,admission)=>{const pending=[...f.states.values()].find(s=>s.openedAt===null);if(!f.retiring.size&&pending&&f.added.length>6&&setupReads<2){setupReads++;f.flowActions.push('replacement-support');f.advance(100);return {kind:'support'};}return service(signal,admission);};
+ f.advance(70000);const target=Math.floor(f.now/10000)*10000;
+ for(let i=0;i<100&&f.runner.status().counters.predictiveAssessments<6;i++){
+  await f.runner.step();f.advance(jitterMs);
+  if(f.runner.status().counters.predictiveAssessments<6){assert.equal(f.added.length,6,'a vacancy must not create discretionary setup while the existing batch still needs auditing');assert.equal(setupReads,0);}
+ }
+ const rows=f.records.filter(r=>r.kind==='native-predictive-assessment'&&r.data.windowEndAt===target);assert.equal(rows.length,6);assert.deepEqual(new Set(rows.map(r=>r.data.mint)),new Set(mints.slice(0,6)));assert.ok(rows.every(r=>r.data.at<target+10000));assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);assert.equal(f.runner.status().counters.auditUnavailable,0);assert.equal(f.maximumInFlight,1);assert.ok(f.records.some(r=>r.kind==='native-deep-admission-deferred'));
+ for(let i=0;i<15&&f.states.get(mints[6]!)?.openedAt==null;i++){await f.runner.step();f.advance(jitterMs);}
+ assert.equal(setupReads,2,'waiting candidate setup resumes after the current batch settles');assert.equal(f.added.length,7);assert.notEqual(f.states.get(mints[6]!)?.openedAt,null);assert.equal(f.runner.status().financialWriterOpened,false);await f.runner.stop();
+});
+
 test('verification refusal retains its exact seed and respects the watch retry time instead of disappearing',async()=>{
  const f=fixture({refuseVerification:1}),mint=f.seed(1);await f.runner.step();assert.equal(f.resolveCalls,1);let s=f.runner.status();assert.equal(s.verificationQueue,1);assert.equal(s.counters.verificationRefusals,1);const until=s.watch.rows[0]!.deferUntil;assert.ok(until>f.now);await f.steps(3);assert.equal(f.resolveCalls,1);f.advance(until-f.now);await f.runner.step();assert.equal(f.resolveCalls,2);await f.runner.step();s=f.runner.status();assert.equal(s.verificationQueue,0);assert.equal(s.candidates[0]!.mint,mint);await f.runner.stop();
 });
@@ -80,6 +98,25 @@ test('closed owner admission and unsettled shared physical gate start no verific
 });
 test('due native setup retains its service opportunity after deferred, busy or backoff outcomes without origin-preparation fallthrough',async()=>{
  for(const kind of ['deferred','busy','backoff','closed']){const f=fixture();f.importActual();await f.runner.step();f.seed(1);const usage=f.flow.usage.bind(f.flow);f.flow.usage=()=>({...usage(),nextServiceAt:f.now});f.flow.service=async()=>({kind});const before=f.records.filter(r=>r.kind==='native-origin-verification-service-preparation').length;assert.equal(await f.runner.step(),kind);assert.equal(f.resolveCalls,0);assert.equal(f.records.filter(r=>r.kind==='native-origin-verification-service-preparation').length,before);assert.equal(f.rpcCalls.length,0);await f.runner.stop();}
+});
+
+test('due native control uses the shared control window during an HTTP-only cooldown',async()=>{
+ const f=fixture();f.importActual();await f.runner.step();const usage=f.rpc.usage.bind(f.rpc),flowUsage=f.flow.usage.bind(f.flow);let controls=0;
+ f.rpc.usage=()=>{const u=usage(),blocked={...u.dispatchWindow,readyAt:f.now+5000,waitMs:5000};return {...u,dispatchWindow:blocked,rpcDispatchWindow:blocked,controlDispatchWindow:u.dispatchWindow};};
+ f.flow.usage=()=>({...flowUsage(),nextServiceAt:f.now,nextServiceDomain:'control' as const});f.flow.service=async()=>{controls++;return {kind:'ping'};};
+ assert.equal(await f.runner.step(),'ping');assert.equal(controls,1);assert.equal(f.rpcCalls.length,0);assert.equal(f.runner.status().counters.qualityGaps,0);f.setPhysicalBusy(true);assert.equal(await f.runner.step(),'wait','a domain cooldown never bypasses unsettled physical ownership');assert.equal(controls,1);await f.runner.stop();
+});
+
+test('due native support and ready audits use the RPC window during a control-only cooldown',async()=>{
+ const f=fixture({forcePredictiveFeatures:true});f.importActual();await f.runner.step();const usage=f.rpc.usage.bind(f.rpc),flowUsage=f.flow.usage.bind(f.flow);let supportDue=true,supportCalls=0;
+ f.rpc.usage=()=>{const u=usage(),blocked={...u.dispatchWindow,readyAt:f.now+5000,waitMs:5000};return {...u,dispatchWindow:blocked,rpcDispatchWindow:u.dispatchWindow,controlDispatchWindow:blocked};};
+ f.flow.usage=()=>({...flowUsage(),nextServiceAt:supportDue?f.now:f.now+20000,nextServiceDomain:supportDue?'rpc' as const:'control' as const});const service=f.flow.service.bind(f.flow);f.flow.service=async(signal,admission)=>{if(supportDue){supportDue=false;supportCalls++;f.refresh();return {kind:'support'};}return service(signal,admission);};
+ assert.equal(await f.runner.step(),'support');assert.equal(supportCalls,1);f.advance(70000);f.refresh();await f.runner.step();assert.equal(f.rpcCalls.length,1);assert.equal(f.runner.status().counters.predictiveNotRejected,1);assert.equal(f.runner.status().counters.qualityGaps,0);await f.runner.stop();
+});
+
+test('an RPC cooldown defers audit preparation without manufacturing completeness or a source gap',async()=>{
+ const f=fixture();f.importActual();await f.runner.step();f.advance(70000);const usage=f.rpc.usage.bind(f.rpc);f.rpc.usage=()=>{const u=usage();return {...u,rpcDispatchWindow:{...u.dispatchWindow,readyAt:f.now+5000,waitMs:5000}};};
+ assert.equal(await f.runner.step(),'wait');assert.equal(f.rpcCalls.length,0);assert.equal(f.auditCalls,0);assert.equal(f.records.some(r=>r.kind==='native-shared-audit-ceiling-requested'),false);assert.equal(f.runner.status().counters.qualityGaps,0);assert.equal(f.runner.status().counters.predictiveAssessments,0);await f.runner.stop();
 });
 
 test('known structural outside-family seed is excluded once without converting its provisional token into an unsupported market',async()=>{
@@ -98,7 +135,7 @@ for(const jitterMs of [50,100])test(`SYNTHETIC six strong scopes retain every ro
  assert.equal(assessments.length,18,JSON.stringify({status:f.runner.status().counters,audits:f.records.filter(r=>r.kind==='native-candidate-window-audit').map(r=>({mint:r.data.mint,status:r.data.result.status,reason:r.data.result.reason,missing:r.data.result.missingNotifications,required:r.data.result.requiredSignatures.length})),at:f.now}));
  assert.deepEqual([...new Set(assessments.map(r=>r.data.windowEndAt))],[firstEnd,firstEnd+10000,lastEnd]);
  for(const end of [firstEnd,firstEnd+10000,lastEnd]){const rows=assessments.filter(r=>r.data.windowEndAt===end);assert.equal(rows.length,6);assert.deepEqual(new Set(rows.map(r=>r.data.mint)),new Set(mints));for(const row of rows){assert.equal(row.data.assessment.status,'not-rejected');assert.equal(row.data.financialQualification,false);assert.ok(row.data.at>=end&&row.data.at<end+10000);assert.equal(row.data.auditAvailableAt,row.data.at);}}
- assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);assert.equal(f.runner.status().counters.predictiveUnavailable,0);assert.equal(f.records.some(r=>r.kind==='native-predictive-window-expired'),false);assert.equal(f.rpcCalls.length,18);for(const call of f.rpcCalls){assert.equal(call.method,'getSignaturesForAddress');assert.equal((call.params[1] as any).limit,1000);}for(let i=1;i<f.rpcCalls.length;i++)assert.ok(f.rpcCalls[i]!.at-f.rpcCalls[i-1]!.at>=250);assert.equal(f.maximumInFlight,1);assert.equal(f.runner.status().candidates.length,6);await f.runner.stop();
+ assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);assert.equal(f.runner.status().counters.predictiveUnavailable,0);assert.equal(f.records.some(r=>r.kind==='native-predictive-window-expired'),false);assert.equal(f.rpcCalls.length,18);for(const call of f.rpcCalls){assert.equal(call.method,'getSignaturesForAddress');assert.equal((call.params[1] as any).limit,100,'the frozen adaptive profile starts with a complete bounded100-row page for this low-count fixture');}for(let i=1;i<f.rpcCalls.length;i++)assert.ok(f.rpcCalls[i]!.at-f.rpcCalls[i-1]!.at>=250);assert.equal(f.maximumInFlight,1);assert.equal(f.runner.status().candidates.length,6);await f.runner.stop();
 });
 
 test('SYNTHETIC slow settled audit response exceeds its per-page operation envelope without a false predictive decision or hidden retry',async()=>{

@@ -30,27 +30,31 @@ export class ComponentTransport {
   }
   sampleSocket(){return this.activeConnection?this.sampleConnection(this.activeConnection):undefined;}
   private async httpJson(op:ComponentOperation,method:string,envelope:unknown,onHttpInvoked?:()=>void){
-    const requestedAt=this.now();onHttpInvoked?.();let res:Response;
-    try{res=await this.fetcher(HTTP,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(envelope),signal:op.signal,redirect:'error'});}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
-    const retryAfter=res.headers.get('retry-after');this.record('http-headers',{id:op.id,method,status:res.status,retryAfter:retryAfter?.slice(0,128)??null,at:this.now(),byteAccounting:'measured-body; response-header-and-wire-overhead-unmeasured'});
-    // A throttle refusal ends this grant at its first known observation. Do
-    // not read the error body to completion; retain the reserved uncertainty.
-    if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
-    if(Number(res.headers.get('content-length'))>2*1024*1024){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_RESPONSE_SIZE');}
-    const reader=res.body?.getReader();if(!reader)throw Error('COMPONENT_HTTP_EMPTY_RESPONSE');
-    const chunks:Uint8Array[]=[];let size=0,complete=false;const abort=()=>{void reader.cancel().catch(()=>{});};op.signal.addEventListener('abort',abort,{once:true});
-    // Fetch exposes decoded body bytes. Only an identity body can be compared
-    // with Content-Length; compressed wire lengths describe different bytes.
-    const length=res.headers.get('content-length'),encoding=res.headers.get('content-encoding');
-    const expectedLength=length!==null&&/^[0-9]+$/.test(length)&&Number.isSafeInteger(Number(length))&&(!encoding||encoding==='identity')?Number(length):null;
-    try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');if(expectedLength!==null&&size!==expectedLength)throw Error('COMPONENT_HTTP_TRUNCATED_RESPONSE');op.completeResponse();complete=true;break;}size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>2*1024*1024)throw Error('COMPONENT_HTTP_RESPONSE_SIZE');if(res.ok)chunks.push(value);}}
-    finally{op.signal.removeEventListener('abort',abort);if(!complete)await reader.cancel().catch(()=>{});reader.releaseLock();}
-    const responseReceivedAt=this.now();this.record('http-response-timing',{id:op.id,method,requestedAt,availableAt:responseReceivedAt,responseBytes:size,status:res.status});
-    // A fully drained bounded error body has known size, even though the
-    // status halts this grant. Never parse, retain or log provider error text.
-    if(!res.ok)throw Error('COMPONENT_HTTP_STATUS_'+res.status);
-    let body:any;try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw Error('COMPONENT_HTTP_MALFORMED_JSON');}
-    return {body,requestedAt,responseReceivedAt,responseBytes:size};
+    const requestedAt=this.now(),startedMono=performance.now();onHttpInvoked?.();
+    let res:Response|undefined,headersAt:number|null=null,firstBodyAt:number|null=null,lastBodyAt:number|null=null,bodyCompleteAt:number|null=null,jsonDecodedAt:number|null=null,decodeMs:number|null=null,size=0,chunksReceived=0,outcome='not-completed';
+    try{
+      try{res=await this.fetcher(HTTP,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(envelope),signal:op.signal,redirect:'error'});}catch{throw Error('COMPONENT_HTTP_TRANSPORT');}
+      headersAt=this.now();const retryAfter=res.headers.get('retry-after');this.record('http-headers',{id:op.id,method,status:res.status,retryAfter:retryAfter?.slice(0,128)??null,at:headersAt,byteAccounting:'measured-body; response-header-and-wire-overhead-unmeasured'});
+      // Stop at throttle headers; the unread body remains reserved uncertainty.
+      if(res.status===429){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_429');}
+      if(Number(res.headers.get('content-length'))>2*1024*1024){await res.body?.cancel().catch(()=>{});throw Error('COMPONENT_HTTP_RESPONSE_SIZE');}
+      const reader=res.body?.getReader();if(!reader)throw Error('COMPONENT_HTTP_EMPTY_RESPONSE');
+      const chunks:Uint8Array[]=[];let complete=false;const abort=()=>{void reader.cancel().catch(()=>{});};op.signal.addEventListener('abort',abort,{once:true});
+      // Fetch yields decoded bytes. Compressed Content-Length is not that size.
+      const length=res.headers.get('content-length'),encoding=res.headers.get('content-encoding');
+      const expectedLength=length!==null&&/^[0-9]+$/.test(length)&&Number.isSafeInteger(Number(length))&&(!encoding||encoding==='identity')?Number(length):null;
+      try{for(;;){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');const {done,value}=await reader.read();if(done){if(op.signal.aborted)throw Error('COMPONENT_ABORTED');if(expectedLength!==null&&size!==expectedLength)throw Error('COMPONENT_HTTP_TRUNCATED_RESPONSE');op.completeResponse();complete=true;bodyCompleteAt=this.now();break;}const at=this.now();firstBodyAt??=at;lastBodyAt=at;chunksReceived++;size+=value.byteLength;op.chargeHttp(value.byteLength);if(size>2*1024*1024)throw Error('COMPONENT_HTTP_RESPONSE_SIZE');if(res.ok)chunks.push(value);}}
+      finally{op.signal.removeEventListener('abort',abort);if(!complete)await reader.cancel().catch(()=>{});reader.releaseLock();}
+      const responseReceivedAt=this.now();this.record('http-response-timing',{id:op.id,method,requestedAt,availableAt:responseReceivedAt,responseBytes:size,status:res.status});
+      if(!res.ok)throw Error('COMPONENT_HTTP_STATUS_'+res.status);
+      let body:any;const decodeStarted=performance.now();try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw Error('COMPONENT_HTTP_MALFORMED_JSON');}finally{decodeMs=performance.now()-decodeStarted;}
+      jsonDecodedAt=this.now();outcome='json-decoded';return {body,requestedAt,responseReceivedAt,responseBytes:size};
+    }catch(error){outcome=error instanceof Error&&/^COMPONENT_[A-Z0-9_:-]{1,100}$/.test(error.message)?error.message:'COMPONENT_HTTP_BODY_INTERRUPTED';throw error;}
+    finally{
+      // Bounded metadata also survives partial bodies. No payload, headers,
+      // provider text, inferred TTFB origin or fabricated connection reuse.
+      const httpWorkEndedAt=this.now();this.record('http-lifecycle-timing',{id:op.id,method,requestedAt,headersAt,firstBodyAt,lastBodyAt,bodyCompleteAt,jsonDecodedAt,httpWorkEndedAt,status:res?.status??null,responseBytes:size,chunksReceived,outcome,aborted:op.signal.aborted,headersDelayMs:headersAt===null?null:headersAt-requestedAt,bodyAfterHeadersMs:bodyCompleteAt===null||headersAt===null?null:bodyCompleteAt-headersAt,jsonDecodeMonotonicMs:decodeMs,elapsedMonotonicMs:performance.now()-startedMono,connectionReuse:'not-instrumented; inherited fetch dispatcher retained',validationScope:'HTTP body/JSON only; caller owns envelope/domain validation and physical settlement'});
+    }
   }
   async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<T>{
     validateRpc({method});

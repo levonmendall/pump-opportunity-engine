@@ -1,0 +1,220 @@
+{
+  "requestedAt": 1793203583379,
+  "receivedAt": 1793203583639,
+  "httpStatus": 200,
+  "responseBytes": 4821,
+  "receiver": {
+    "state": "stopped",
+    "snapshot": {
+      "schemaVersion": 1,
+      "kind": "experimental-pilot",
+      "authoritative": false,
+      "liveTrading": false,
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "native-candidates-20261028151711944",
+      "generatedAt": 1793202794375,
+      "source": {
+        "release": "640143a5924a7ff7d98039967c2db17957f71f24",
+        "strategy": "persistent-buying-v0-unfrozen",
+        "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+      },
+      "running": false,
+      "entriesEnabled": false,
+      "status": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 1, protocol effects 43. stopped: NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_UNSCOPED_NOTIFICATION",
+      "mode": "candidate-evaluation",
+      "financialExecutionAuthorized": false,
+      "observationAgePolicy": {
+        "version": "observation-age-selected-24h-study-v1",
+        "minimumObservationAgeMs": 0,
+        "recentMaximumAgeMs": 7200000,
+        "selectedOlderMaximumAgeMs": 86400000
+      },
+      "sourceTimes": {
+        "lastMarketNotificationAt": 1793202792242,
+        "lastFreshSupportAt": 1793202790481,
+        "lastBankClockAt": 1793202789000,
+        "lastAuditAt": 1793202728752,
+        "lastPredictiveAt": 1793202717474,
+        "financialReconciliationAt": null
+      },
+      "portfolio": null,
+      "accounting": null,
+      "funnel": {
+        "discovered": 23,
+        "supported": null,
+        "sufficientlyObserved": 13,
+        "evaluated": 13,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0,
+        "verifiedMigrationOrigins": 136,
+        "admitted": 607,
+        "usableWindows": 13
+      },
+      "metrics": {
+        "rpcRequests": 648,
+        "providerEvents": 1451547,
+        "normalizedTrades": 7817,
+        "eventLoopLagMs": 32.702463,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeMs": null,
+        "protectionBreaches": null,
+        "unavailableChecks": null,
+        "streamBytes": 2289531299
+      },
+      "decisions": [
+        {
+          "at": 1793200812638,
+          "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793200836303,
+          "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201066312,
+          "mint": "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201068239,
+          "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201076279,
+          "mint": "9ojYt5LiB5FqBoyYYAZbPP6VGtGRpCWem35ENxitpump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201079149,
+          "mint": "Tp7EZyRaU7Qkb41WA5yrLTuwCyLj1Fpe2CXrChW8mdt",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793202262588,
+          "mint": "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793202264988,
+          "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793202267108,
+          "mint": "HWjJ8dFwf68sdWzhj4qHQpUf6rSG3u3xRWzV2Y29pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793202303598,
+          "mint": "9UJfCYDbYdKt19emZkFqGHo9pvGn6hVAHmYkALEkpump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793202313316,
+          "mint": "evEidkshRzz55PovfPY8PaKGWvmxPjLHbKCWy2spump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793202332861,
+          "mint": "YxD2uUmH7cBiWYhfgXnPon3NThaK6BGSzAU2JNjpump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793202717474,
+          "mint": "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "refusals": [
+        {
+          "reason": "migration-verification-unavailable",
+          "count": 36
+        },
+        {
+          "reason": "verification-queue-full",
+          "count": 0
+        },
+        {
+          "reason": "native-quality-gaps",
+          "count": 122
+        },
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 24
+        },
+        {
+          "reason": "independent-audit-unusable",
+          "count": 2
+        },
+        {
+          "reason": "predictive-window-deadline-missed",
+          "count": 21
+        }
+      ],
+      "watch": {
+        "known": 167,
+        "watch": 55,
+        "eligibleKnown": 24,
+        "deepActive": 0,
+        "maximumDeep": 6,
+        "queued": 20,
+        "promoted": 607,
+        "repromoted": 482,
+        "demoted": 606,
+        "expired": 129,
+        "capacityExclusions": 0,
+        "structuralExclusions": 16,
+        "completeWindows": 437,
+        "strategyRejections": 0,
+        "incompleteDataExclusions": 122,
+        "enrichmentDeadlineFailures": 0,
+        "predictiveAssessments": 13,
+        "predictiveFailures": 13,
+        "observationEligibleKnown": 49,
+        "observationQueued": 43,
+        "maximumOlderResearchIdentities": 24,
+        "ageCohorts": {
+          "preEntry": 1,
+          "entryEligible": 24,
+          "olderSelected": 24
+        },
+        "waitMs": {
+          "mean": 220607.45,
+          "maximum": 460527
+        },
+        "promotionWaitMs": {
+          "mean": 972203.589958159,
+          "maximum": 6515299
+        }
+      }
+    },
+    "receivedAt": 1793202795393,
+    "lastContactAt": 1793202795393,
+    "sourceAgeMs": 789228,
+    "receiverAgeMs": 788210,
+    "lastContactAgeMs": 788210,
+    "sourceStale": true,
+    "publisherConnected": false
+  }
+}

@@ -1,0 +1,45 @@
+[
+  {
+    "name": "focused",
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "test/native-flow-audit.test.ts",
+      "test/native-audit-session.test.ts",
+      "test/native-flow-audit-batch.test.ts"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.9949924029997419,
+    "endedAt": "2026-10-28T16:08:32.872053+00:00",
+    "logBytes": 7759,
+    "logSha256": "9ecbe99fde03728e7dd8f1a1e4e27a9fe6f792d25cedbdeb8bc1b1fcae6aa1fb"
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 7.467318560000422,
+    "endedAt": "2026-10-28T16:08:40.343013+00:00",
+    "logBytes": 55,
+    "logSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  {
+    "name": "compile",
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 9.171182607999981,
+    "endedAt": "2026-10-28T16:08:49.514603+00:00",
+    "logBytes": 77,
+    "logSha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+  }
+]

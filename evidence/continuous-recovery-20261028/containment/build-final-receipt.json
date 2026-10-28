@@ -1,0 +1,13 @@
+{
+  "startedAt": "2026-10-28T16:12:39.536922+00:00",
+  "head": "e7ffe502161a3d4f965cc30c4d6a75f3776744fa",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "networkRequests": 0,
+  "exitCode": 0,
+  "completedAt": "2026-10-28T16:12:47.224683+00:00",
+  "rawOutputSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+}

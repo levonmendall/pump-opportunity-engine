@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "exitCode": 1,
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/native-flow-audit.test.ts",
+    "test/native-audit-session.test.ts"
+  ],
+  "at": "2026-10-28T16:06:03.045508+00:00",
+  "logSha256": "2be3d720dfb3c4e9c3cb24b7cea68aa964e441fbf25db1086705762109c7a4bc",
+  "knownFailure": "Synthetic99-row short-page fixture had slotsaboveanchor; validatorcorrectlyrefusedbeforecoverage. Correctfixture ratherthanrelaxrowordering."
+}

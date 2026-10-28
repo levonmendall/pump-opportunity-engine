@@ -93,13 +93,14 @@ export class PilotRpc{
     if(!int(d.at)||d.at>this.now()||this.methodStarts.at(-1)?.at!>d.at)throw new PilotRpcUnavailable('METHOD_CLOCK');this.recentMethodStarts();this.methodStarts.push({at:d.at,origin:'getTransaction'});if(this.methodStarts.length>600)throw new PilotRpcUnavailable('METHOD_HISTORY_BOUND');this.persist();
   }
   private current(){return this.budget?.usage();}
-  private check(){
+  private check(domain:'rpc'|'control'='rpc'){
     if(this.closed)throw new PilotRpcUnavailable('CLOSED');if(this.fatal)throw new PilotRpcUnavailable(this.fatal);
     if(this.remainingMs()<=0)throw new PilotRpcUnavailable('RUN_TIME_CAP');
     const u=this.current(),calls=u?.cumulativeUnits??this.baseline.calls,bytes=(u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes);
     if(calls-this.initial.calls>=this.units)throw new PilotRpcUnavailable('RUN_UNIT_CAP');if(bytes-this.initial.bytes+4*MIB>this.responseBytes)throw new PilotRpcUnavailable('RUN_RESPONSE_RESERVE');
     if(this.active||u&&(u.inFlight!==0||u.waitingOrOperating))throw new PilotRpcUnavailable('PHYSICAL_SLOT_OCCUPIED');
-    if(this.now()<this.cooldown||this.mono()<this.cooldownMono)throw new PilotRpcUnavailable('COOLDOWN',this.cooldown);
+    const until=domain==='rpc'?this.cooldown:this.controlCooldown,untilMono=domain==='rpc'?this.cooldownMono:this.controlCooldownMono;
+    if(this.now()<until||this.mono()<untilMono)throw new PilotRpcUnavailable('COOLDOWN',Math.max(until,this.now()+Math.ceil(Math.max(0,untilMono-this.mono()))));
     if(u?.haltedReason&&!this.controlFailure&&!recoverable(u.haltedReason)&&!localAdmissionRefusal(u.haltedReason)&&!['COMPONENT_UNIT_CAP','COMPONENT_TIME_CAP'].includes(u.haltedReason))throw new PilotRpcUnavailable('FATAL_'+u.haltedReason);
   }
   private finishChapter(){
@@ -108,10 +109,10 @@ export class PilotRpc{
     this.paths.push(join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'));
     const linked=readResearchBaseline({paths:this.paths,now:this.now(),physicalSettled:true,allowCumulativeBeyondLegacy:true,maximumPaths:RESEARCH_MAXIMUM_PATHS});this.baseline=linked.baseline;this.inheritedUncertainty=linked.uncertainResponseBytes;this.budget=undefined;this.transport=undefined;
   }
-  private openChapter(){
-    this.check();const u=this.current();
+  private openChapter(domain:'rpc'|'control'='rpc'){
+    this.check(domain);const u=this.current();
     if(u&&u.newUnits<this.chapterUnits&&this.now()<u.deadlineAt&&!u.haltedReason&&u.pending.length===0)return;
-    this.finishChapter();this.check();if(this.chapter>=this.maximumChapters)throw new PilotRpcUnavailable('CHAPTER_CAP');
+    this.finishChapter();this.check(domain);if(this.chapter>=this.maximumChapters)throw new PilotRpcUnavailable('CHAPTER_CAP');
     const remainingUnits=this.units-(this.baseline.calls-this.initial.calls),remainingBytes=this.responseBytes-(this.baseline.bytes-this.initial.bytes),at=this.now(),index=++this.chapter;
     const path=join(this.dir,'chapter-'+String(index).padStart(3,'0')+'.json');this.controlFailure=false;
     this.budget=new ComponentBudget({...(this.componentProfile===undefined?{}:{profile:this.componentProfile}),statePath:path,grantId:this.options.runId+'-'+index,baseline:this.baseline,startedAt:at,totalMs:Math.min(this.chapterMs,Math.max(1,Math.floor(this.remainingMs()))),limits:{maxNewUnits:Math.min(this.chapterUnits,remainingUnits),maxCumulativeUnits:this.initial.calls+this.units,maxHttpBytes:remainingBytes,maxWsBytes:remainingBytes,maxCombinedBytes:remainingBytes,maxCumulativeBytes:this.initial.bytes+this.responseBytes,minSpacingMs:250,maxStartsPerMinute:this.startsPerMinute,maxStartsPer10s:this.startsPer10s},now:this.now,monotonic:this.mono,sleep:this.options.sleep,record:(kind,data)=>{
@@ -126,8 +127,7 @@ export class PilotRpc{
   }
   private async perform<T>(work:(options:PilotRpcCallOptions)=>Promise<T>,signal:AbortSignal|undefined,options:PilotRpcCallOptions,domain:'rpc'|'control'):Promise<T>{
     if(signal?.aborted)throw new PilotRpcUnavailable('ABORTED');
-    if(domain==='control'&&(this.now()<this.controlCooldown||this.mono()<this.controlCooldownMono))throw new PilotRpcUnavailable('COOLDOWN',Math.max(this.controlCooldown,this.now()+Math.ceil(Math.max(0,this.controlCooldownMono-this.mono()))));
-    this.openChapter();this.active=true;this.pendingRetryAfter=null;
+    this.openChapter(domain);this.active=true;this.pendingRetryAfter=null;
     try{
       const remaining=Math.floor(this.remainingMs()),timeout=options.timeoutMs??1000;if(!int(timeout)||timeout<1||timeout>1500)throw new PilotRpcUnavailable('INVALID_TIMEOUT');
       const result=await work({...options,timeoutMs:Math.max(1,Math.min(timeout,remaining)),admissionOpen:()=>this.remainingMs()>0&&(!options.admissionOpen||options.admissionOpen())});
@@ -181,23 +181,24 @@ export class PilotRpc{
    * Low-level pending reservations remain busy inside ComponentBudget. They are
    * not physical occupancy after settlement, and openChapter still owns every
    * cooldown, budget, settlement and immutable-book transition check. */
-  private dispatchView(u:ReturnType<ComponentBudget['usage']>|undefined){
+  private dispatchView(u:ReturnType<ComponentBudget['usage']>|undefined,domain:'rpc'|'control'|'all'='all'){
     const raw=this.budget?.dispatchWindow()??null;if(!raw||!u)return {raw:null,planned:null};
     const at=this.now(),mono=this.mono(),physicalBusy=this.active||u.inFlight!==0||u.waitingOrOperating;
     const reason=u.haltedReason,reasonRecoverable=reason!==null&&(this.controlFailure||recoverable(reason)||localAdmissionRefusal(reason)||['COMPONENT_UNIT_CAP','COMPONENT_TIME_CAP'].includes(reason));
     const needsChapterRecovery=u.pending.length!==0||reason!==null;
     const recoveryAdmissible=needsChapterRecovery&&reasonRecoverable&&!physicalBusy&&!this.closed&&!this.fatal&&!u.storageFailed&&this.remainingMs()>0&&u.cumulativeUnits-this.initial.calls<this.units&&u.cumulativeResponseBytes+u.uncertainResponseBytes-this.initial.bytes+4*MIB<=this.responseBytes&&this.chapter<this.maximumChapters;
-    // The common planner is used by native controls as well as HTTP work. A
-    // Portal-only cooldown therefore delays this conservative control view;
-    // direct ordinary HTTP still uses its independent existing check().
-    const readyAt=Math.max(raw.readyAt,this.cooldown,this.controlCooldown,at+Math.ceil(Math.max(0,this.cooldownMono-mono,this.controlCooldownMono-mono)));
+    // Domain cooldowns never grant a second gate or erase a failed book. The
+    // legacy common view remains conservative until its caller selects a domain.
+    const until=domain==='rpc'?this.cooldown:domain==='control'?this.controlCooldown:Math.max(this.cooldown,this.controlCooldown),untilMono=domain==='rpc'?this.cooldownMono:domain==='control'?this.controlCooldownMono:Math.max(this.cooldownMono,this.controlCooldownMono);
+    const readyAt=Math.max(raw.readyAt,until,at+Math.ceil(Math.max(0,untilMono-mono)));
     return {raw,planned:{...raw,readyAt,waitMs:Math.max(0,readyAt-at),physicalBusy:physicalBusy||raw.physicalBusy&&!recoveryAdmissible,actualPhysicalBusy:physicalBusy,needsChapterRecovery,recoveryAdmissible,uncertainResponseReservationsRetained:u.uncertainResponseBytes}};
   }
   usage(){
-    const u=this.current(),dispatch=this.dispatchView(u),calls=u?.cumulativeUnits??this.baseline.calls,bytes=u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes;
-    return {persistence:{...this.persistence},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:this.startsPerMinute,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,rawChapterDispatchWindow:dispatch.raw,dispatchWindow:dispatch.planned,automaticRequestRetries:0};
+    const u=this.current(),dispatch=this.dispatchView(u),rpcDispatch=this.dispatchView(u,'rpc'),controlDispatch=this.dispatchView(u,'control'),calls=u?.cumulativeUnits??this.baseline.calls,bytes=u?u.cumulativeResponseBytes+u.uncertainResponseBytes:this.baseline.bytes;
+    return {persistence:{...this.persistence},profile:this.options.profile??'legacy',runId:this.options.runId,startedAt:this.startedAt,deadlineAt:this.startedAt+this.duration,remainingMs:this.remainingMs(),chapter:this.chapter,chapterPaths:[...this.paths],activeChapterPath:this.budget?join(this.dir,'chapter-'+String(this.chapter).padStart(3,'0')+'.json'):null,cumulativeUnits:calls,newUnits:calls-this.initial.calls,accountedCumulativeResponseBytes:bytes,newAccountedResponseBytes:bytes-this.initial.bytes,maximumNewUnits:this.units,maximumNewResponseBytes:this.responseBytes,requestLimits:{maxStartsPer10s:this.startsPer10s,maxGetTransactionStartsPer10s:this.transactionStartsPer10s??null,maxStartsPerMinute:this.startsPerMinute,minSpacingMs:250,physicalInFlight:1},methodPacing:{getTransactionStartsLast10s:this.recentMethodStarts().map(r=>({...r})),capacityRefusals:this.methodRefusals,baselineUnknownMethodsCountConservatively:true},inFlight:u?.inFlight??0,waitingOrOperating:this.active||u?.waitingOrOperating===true,uncertainResponseBytes:this.inheritedUncertainty+(u?.uncertainResponseBytes??0),currentChapterUncertainResponseBytes:u?.uncertainResponseBytes??0,inheritedUncertaintyIsRetainedInBaseline:true,cooldownUntil:this.cooldown,controlCooldownUntil:this.controlCooldown,lastFailureWasDataControl:this.controlFailure,closed:this.closed,fatal:this.fatal,chapterUsage:u??null,rawChapterDispatchWindow:dispatch.raw,dispatchWindow:dispatch.planned,rpcDispatchWindow:rpcDispatch.planned,controlDispatchWindow:controlDispatch.planned,automaticRequestRetries:0};
   }
   available(){try{this.check();return true;}catch{return false;}}
-  cooldownUntil(){return this.cooldown;}
+  cooldownUntil(){const remaining=this.cooldownMono-this.mono();return remaining>0?Math.max(this.cooldown,this.now()+Math.ceil(remaining)):this.cooldown;}
+  controlCooldownUntil(){const remaining=this.controlCooldownMono-this.mono();return remaining>0?Math.max(this.controlCooldown,this.now()+Math.ceil(remaining)):this.controlCooldown;}
   close(){if(this.closed)return;if(this.active)throw new PilotRpcUnavailable('PHYSICAL_SLOT_OCCUPIED');this.finishChapter();this.closed=true;this.persist();}
 }

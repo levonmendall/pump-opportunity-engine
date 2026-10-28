@@ -58,10 +58,36 @@ test('HTTP429 never retries; Retry-After plus5s gates a settled new chapter and 
     await assert.rejects(f.client.call('getSlot'),/COOLDOWN/);assert.equal(calls,1);f.advance(14999);assert.equal(f.client.available(),false);f.advance(1);assert.equal(await f.client.call('getSlot'),'fresh');assert.equal(calls,2);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().uncertainResponseBytes,4*MIB);assert.deepEqual(readFileSync(join(f.directory,'run/chapter-001.json')),refused);
   }finally{f.close();}
 });
+
+test('settled HTTP refusal preserves its Retry-After while permitting separately admitted control on the same gate',async()=>{
+ let calls=0,controls=0;const f=fixture({fetcher:(async()=>{calls++;return new Response('denied',{status:429,headers:{'retry-after':'10'}});}) as typeof fetch});try{
+  await assert.rejects(f.client.call('getSlot'),/HTTP_429/);await turn();const until=f.client.cooldownUntil(),failed=readFileSync(join(f.directory,'run/chapter-001.json')),uncertain=f.client.usage().uncertainResponseBytes;assert.equal(f.client.usage().rpcDispatchWindow!.readyAt,until);assert.ok(f.client.usage().controlDispatchWindow!.readyAt<until);assert.equal(f.client.usage().dispatchWindow!.readyAt,until);
+  await f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;f.client.accountControlBytes(30);op.completeResponse();});assert.equal(controls,1);assert.equal(f.client.cooldownUntil(),until);assert.equal(f.client.usage().newUnits,2);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().uncertainResponseBytes,uncertain);assert.deepEqual(readFileSync(join(f.directory,'run/chapter-001.json')),failed);await assert.rejects(f.client.call('getSlot'),/COOLDOWN/);assert.equal(calls,1);assert.equal(f.client.usage().newUnits,2);
+ }finally{f.close();}
+});
+
+test('actual control Retry-After blocks only controls and cannot be cleared by successful HTTP work',async()=>{
+ const f=fixture();try{
+  await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async()=>{f.client.noteThrottle('10');throw Error('COMPONENT_HTTP_429');}),/HTTP_429/);await turn();const until=f.client.usage().controlCooldownUntil;assert.equal(until,215000);assert.equal(f.client.usage().controlDispatchWindow!.readyAt,until);assert.ok(f.client.usage().rpcDispatchWindow!.readyAt<until);let controls=0;await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();}),/COOLDOWN/);assert.equal(controls,0);assert.equal(f.client.usage().newUnits,1);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().controlCooldownUntil,until);await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();}),/COOLDOWN/);assert.equal(controls,0);f.advance(until-f.now());await f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();});assert.equal(controls,1);assert.equal(f.client.usage().newUnits,3);
+ }finally{f.close();}
+});
+
+test('mixed HTTP and control work share the same sixty-start minute and short-window pacing',async()=>{
+ const f=fixture({maxStartsPer10s:20});try{
+  for(let i=0;i<60;i++){if(i%2)await f.client.operateData({transport:'ws',method:'ping'},async op=>op.completeResponse());else assert.equal(await f.client.call('getSlot'),123);}
+  const starts=f.records.filter(r=>r.kind==='component-physical-start').map(r=>r.data);assert.equal(starts.length,60);assert.equal(starts.filter(r=>r.kind.transport==='http').length,30);assert.equal(starts.filter(r=>r.kind.transport==='ws').length,30);assert.ok(starts.every((r,i)=>i===0||r.at-starts[i-1]!.at>=250));assert.ok(starts.every(r=>starts.filter(s=>s.at>r.at-10000&&s.at<=r.at).length<=20));assert.equal(f.client.usage().chapterUsage!.rolling60SecondStarts,60);const units=f.client.usage().newUnits,at=f.now();await assert.rejects(f.client.call('getSlot',[],undefined,{latestStartAt:at+1000}),/DISPATCH_EXPIRED/);await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>op.completeResponse(),undefined,{latestStartAt:at+1000}),/DISPATCH_EXPIRED/);assert.equal(f.client.usage().newUnits,units);assert.equal(f.client.usage().newUnits,60);assert.equal(f.client.usage().inFlight,0);
+ }finally{f.close();}
+});
+
+test('an unsettled timed-out control operation blocks both domains until actual settlement',async()=>{
+ const f=fixture();let release!:()=>void;try{
+  await assert.rejects(f.client.operateData({transport:'ws',method:'logsSubscribe'},async()=>new Promise<void>(resolve=>{release=resolve;}),undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);assert.equal(f.client.usage().inFlight,1);f.advance(3000);await assert.rejects(f.client.call('getSlot'),/PHYSICAL_SLOT_OCCUPIED/);await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>op.completeResponse()),/PHYSICAL_SLOT_OCCUPIED/);assert.equal(f.client.usage().newUnits,1);release();await turn();await turn();assert.equal(f.client.usage().inFlight,0);await f.client.operateData({transport:'ws',method:'ping'},async op=>op.completeResponse());assert.equal(f.client.usage().newUnits,2);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().uncertainResponseBytes,2*MIB+65536);assert.equal(f.invocations.length,0);
+ }finally{f.close();}
+});
 test('a canceled physical request remains occupied after cooldown and cannot create a replacement slot',async()=>{
   let resolveFetch!:(value:Response)=>void,calls=0;const f=fixture({fetcher:(async(_u,init)=>{calls++;const b=JSON.parse(String(init?.body));if(calls===1)return new Promise<Response>(r=>{resolveFetch=r;});return new Response(JSON.stringify({jsonrpc:'2.0',id:b.id,result:7}));}) as typeof fetch});
   try{
-    await assert.rejects(f.client.call('getSlot',[],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);assert.equal(f.client.usage().inFlight,1);f.advance(3000);assert.equal(f.client.available(),false);await assert.rejects(f.client.call('getSlot'),/PHYSICAL_SLOT_OCCUPIED/);assert.equal(calls,1);assert.throws(()=>f.client.close(),/PHYSICAL_SLOT_OCCUPIED/);
+    await assert.rejects(f.client.call('getSlot',[],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);assert.equal(f.client.usage().inFlight,1);f.advance(3000);assert.equal(f.client.available(),false);await assert.rejects(f.client.call('getSlot'),/PHYSICAL_SLOT_OCCUPIED/);await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>op.completeResponse()),/PHYSICAL_SLOT_OCCUPIED/);assert.equal(f.client.usage().newUnits,1);assert.equal(calls,1);assert.throws(()=>f.client.close(),/PHYSICAL_SLOT_OCCUPIED/);
     resolveFetch(new Response('{}'));await turn();await turn();assert.equal(f.client.usage().inFlight,0);assert.equal(await f.client.call('getSlot'),7);assert.equal(calls,2);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().uncertainResponseBytes,4*MIB);
   }finally{f.close();}
 });

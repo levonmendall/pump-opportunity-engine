@@ -7,7 +7,7 @@ import type {PilotRpcCallOptions} from './pilot-rpc.js';
 export type NativeAuditSessionOptions=Omit<NativeFlowAuditOptions,'call'|'maximumElapsedMs'|'maximumPages'> & {
  deadlineAt:number;maximumPages?:1|2|3|4;audit?:typeof auditNativeFlowWindow;
 };
-export type NativeAuditPage={page:number;method:'getSignaturesForAddress';params:unknown[];signal:AbortSignal;options:PilotRpcCallOptions};
+export type NativeAuditPage={page:number;requestedLimit:100|1000;method:'getSignaturesForAddress';params:unknown[];signal:AbortSignal;options:PilotRpcCallOptions};
 type DeferredPage={request:NativeAuditPage;resolve:(value:unknown)=>void;reject:(error:unknown)=>void;detach:()=>void};
 const int=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const code=(error:unknown)=>error instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(error.message)?error.message:'NATIVE_AUDIT_SESSION_UNAVAILABLE';
@@ -42,9 +42,10 @@ export class NativeAuditSession {
  private defer<T>(method:string,params:unknown[],signal?:AbortSignal,admission?:PilotRpcCallOptions):Promise<T>{
   if(this.expired())return Promise.reject(Error(this.failure!));
   if(method!=='getSignaturesForAddress'||this.pendingPage!==null||this.nextPage>=4)return Promise.reject(Error('NATIVE_AUDIT_SESSION_PAGE_BOUND'));
+  const requestedLimit=(params[1] as {limit?:unknown}|undefined)?.limit;if(requestedLimit!==100&&requestedLimit!==1000)return Promise.reject(Error('NATIVE_AUDIT_SESSION_PAGE_LIMIT'));
   const combined=signal?AbortSignal.any([signal,this.signal]):this.signal;
   return new Promise<T>((resolve,reject)=>{
-   const request:NativeAuditPage={page:++this.nextPage,method,params:structuredClone(params),signal:combined,options:{...admission,latestStartAt:Math.min(admission?.latestStartAt??this.deadlineAt,this.deadlineAt),admissionOpen:()=>!this.expired()&&(admission?.admissionOpen?.()??true)}};
+   const request:NativeAuditPage={page:++this.nextPage,requestedLimit,method,params:structuredClone(params),signal:combined,options:{...admission,latestStartAt:Math.min(admission?.latestStartAt??this.deadlineAt,this.deadlineAt),admissionOpen:()=>!this.expired()&&(admission?.admissionOpen?.()??true)}};
    const aborted=()=>{if(this.pendingPage?.request.page===request.page){this.pendingPage.detach();this.pendingPage=null;}reject(Error(this.failure??'NATIVE_AUDIT_SESSION_ABORTED'));};
    combined.addEventListener('abort',aborted,{once:true});this.pendingPage={request,resolve:value=>resolve(value as T),reject,detach:()=>combined.removeEventListener('abort',aborted)};
    if(combined.aborted)aborted();

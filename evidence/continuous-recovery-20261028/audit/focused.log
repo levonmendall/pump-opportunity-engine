@@ -1,0 +1,95 @@
+✔ 2 deferred pages use existing validation and permit explicit controls between caller dispatches (53.810484ms)
+✔ 3 deferred pages use existing validation and permit explicit controls between caller dispatches (47.569097ms)
+✔ 4 deferred pages use existing validation and permit explicit controls between caller dispatches (37.04709ms)
+✔ late page identity and cancellation never release a caller-owned physical operation or create an audit pass (17.150809ms)
+✔ same-bucket deadline expires deferred work without timers, hidden retries, later information or a false pass (13.956752ms)
+✔ provider refusal is returned by the existing helper with actual availability and no automatic retry (13.504441ms)
+✔ captured source inputs are immutable and existing malformed-history checks remain authoritative (9.098676ms)
+✔ abort before or during a pending page is observable and never starts a physical client (17.146633ms)
+✔ custom audit injection still receives only a deferred caller and the original fixed bucket deadline (12.653689ms)
+✔ complete validation available only after the fixed deadline is never admitted as an earlier pass (17.795405ms)
+✔ oversized retained source input is refused before a cloning or deferred-call session (8.532892ms)
+✔ adaptive deferred pages expose their actual100 then1000 limits and count each physical page separately (4.071655ms)
+✔ adaptive escalation cannot survive cancellation or the original same-bucket deadline (8.83535ms)
+✔ six independent strict-window audits share one physical batch without merging their params, fences or availability (13.45678ms)
+✔ preflight no-call failures cannot deadlock valid siblings or an entirely ineligible batch (1.73268ms)
+✔ ordinary per-item errors affect only that candidate and preserve all transport receipt metadata (1.55775ms)
+✔ overload closes every current admission but retains valid sibling response facts and blocks future shared-gate use explicitly (1.290634ms)
+✔ per-item429 is a shared provider refusal even if the receipt flag is missing (0.6074ms)
+✔ individual cancellations, expired starts and closed admission are explicit without dispatching those queries (0.996168ms)
+✔ a late individual cancellation invalidates its information but does not cancel or lose its sibling (1.157036ms)
+✔ latestStartAt applies at request admission; actual information still must meet its separate validity deadline (0.755992ms)
+✔ outer cancellation does not finish the audit until the one physical operation actually settles (0.889379ms)
+✔ transport failure and refused starts are not mislabeled as known physical or provider-query consumption (1.119791ms)
+✔ the original audit still rejects missing history, malformed rows, corrections and saturated history (41.06852ms)
+✔ context-fence and notification-fence jobs preserve their distinct history cursors and original Clock provenance (1.101834ms)
+✔ a reused old transport receipt cannot be presented as a fresh independent audit (0.659568ms)
+✔ bounded collector rejects duplicate jobs, mixed targets and seven jobs without provider work (2.698092ms)
+✖ the actual batch transport plus existing semantic audits use one injected HTTP response and one durable physical start (55.297501ms)
+✔ missing transport items returns keyed unavailable results and safe aggregate evidence instead of throwing from final recording (1.134953ms)
+✔ actual cancelled stalled fetch keeps physical ownership and uncertainty after the collector returns unavailable (26.965236ms)
+✔ a partial context-not-reached error cannot verify that pool while six logical query identities remain intact (2.113454ms)
+✔ strict interior signature audit verifies a complete target using actual pre/post window fences (11.32992ms)
+✔ failed and nontrade captured signatures participate without becoming executed trades (3.537447ms)
+✔ an unobserved successful or failed interior pool transaction makes the window unusable without inventing a swap (5.887062ms)
+✔ a target signature absent from independent history is unavailable, not a silent complete pass (3.513741ms)
+✔ same-slot target boundaries and missing before/after fences cannot establish coverage (1.683427ms)
+✔ three bounded history pages follow actual last-row cursors and cover all required unique signatures (43.638908ms)
+✔ saturated four-page history retains an explicit incomplete denominator and performs no fifth read (27.991779ms)
+✔ duplicate capture preserves the earliest availability; corrections and confirmed status disagreement are not accepted (1.311656ms)
+✔ malformed and duplicate independent history rows fail closed without extra requests (1.73291ms)
+✔ provider refusal, elapsed time, abort and closed admission retain honest availability and never retry (1.528848ms)
+✔ recording delay is included in audit availability and immutable source-window timestamps are never backdated (0.464129ms)
+✔ quiet interval can verify bounded signature absence only with genuine temporal fences and independent history coverage (0.444078ms)
+✔ invalid target, candidate identity and excessive input bounds perform no provider request (1.709515ms)
+✔ fresh coherent bank Clock ceiling independently audits quiet history without an invented notification anchor (0.5396ms)
+✔ old, future or time-unbound context ceilings are unavailable before any history request (1.909632ms)
+✔ context quiet audit still rejects unobserved interior activity and ambiguous target boundary slots (0.66093ms)
+✔ empty independent history does not prove quietness when it never reaches the known lower context (0.180708ms)
+✔ a genuine newer pre-window notification narrows context history without hiding target activity (0.43151ms)
+✔ SYNTHETIC busy1000-row page verifies every strict-interior signature in one bounded callback (113.194436ms)
+✔ saturated1000 history that cannot reach its lower fence is explicit capacity-unknown, never a partial pass (81.800096ms)
+✔ 1000-row response has an explicit1MiB processing bound and preserves known rejected payload bytes (26.058306ms)
+✔ 1000-page mode preserves exact row validation, provider failure and accepted option values (1.745168ms)
+✔ a node behind the upper slot floor cannot verify quiet history in either fence mode (0.441765ms)
+✔ Clock-fenced pagination retains the original served-node floor as history cursors move backward (13.142374ms)
+✔ adaptive quiet audit requests100 rows and keeps the original strict coverage checks (0.417079ms)
+✔ adaptive103-row quiet history escalates only after a full100-row page cannot reach the lower fence (3.577006ms)
+✔ adaptive busy2200-row history starts1000 and counts three separate physical pages without raising the cap (117.601583ms)
+✔ adaptive sizing refuses a response larger than the actual100 request and does not escalate a short uncovered page (3.639849ms)
+✔ adaptive history remains incomplete after four full pages and performs no fifth read (84.100903ms)
+✔ executed-flow scope retains independently failed missing packets as explicit diagnostics without claiming full notification coverage (1.110407ms)
+✔ executed-flow scope still rejects missing successful activity and every captured/history status reversal (1.148133ms)
+✔ a failed source hint without independently confirmed failed history remains unavailable, and malformed status cannot waive evidence (1.795664ms)
+✔ adaptive paging preserves actual elapsed/refusal failures and never retries them as an escalation (3.144715ms)
+✔ final admission clock failure clears packet and executed-flow completeness flags (1.197657ms)
+ℹ tests 65
+ℹ suites 0
+ℹ pass 64
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 937.556574
+
+✖ failing tests:
+
+test at test/native-flow-audit-batch.test.ts:1:15243
+✖ the actual batch transport plus existing semantic audits use one injected HTTP response and one durable physical start (55.297501ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unavailable'
+  - 'unusable'
+       ^
+  
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/native-flow-audit-batch.test.ts:112:32)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unavailable',
+    expected: 'unusable',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
