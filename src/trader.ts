@@ -1,6 +1,6 @@
 import {PaperLedger,type ExecutionQuote,type Mark,type Position} from './ledger.js';
 import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,type QuoteRequest} from './execution.js';
-import {FlowWindow,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
+import {FlowWindow,copyEventIdentity,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
 import {assertPilotBaseline,resolvePilotBinding,type PilotBinding,type ResolvedPilotBinding} from './pilot-contract.js';
 
 export type CandidateEvidence={mint:string;migrationAt:number;migrationVerified:boolean;supportedPool:boolean;evidence:string};
@@ -141,9 +141,9 @@ export class PaperTrader{
     const c=this.candidates.get(trade.mint);if(!c||!c.active)return 'unselected';if(trade.receivedAt>this.clock())throw new Error('future flow information unavailable');
     const result=c.window.ingest(trade);
     if((this.pilot||this.options.deferPredictivelyRejectedQuotes===true)&&trade.slot!==undefined)c.knownSlot=Math.max(c.knownSlot??0,trade.slot);
-    this.record('trader-input',{kind:'trade',...(this.pilot?{amountConvention:'curve'}:{}),trade:{identity:{signature:trade.identity.signature,instructionIndex:trade.identity.instructionIndex,eventIndex:trade.identity.eventIndex},mint:trade.mint,wallet:trade.wallet,side:trade.side,quoteLamports:trade.quoteLamports,tokenUnits:trade.tokenUnits,receivedAt:trade.receivedAt,commitment:trade.commitment,...(trade.slot===undefined?{}:{slot:trade.slot})}});return result;
+    this.record('trader-input',{kind:'trade',...(this.pilot?{amountConvention:'curve'}:{}),trade:{identity:copyEventIdentity(trade.identity),mint:trade.mint,wallet:trade.wallet,side:trade.side,quoteLamports:trade.quoteLamports,tokenUnits:trade.tokenUnits,receivedAt:trade.receivedAt,commitment:trade.commitment,...(trade.slot===undefined?{}:{slot:trade.slot})}});return result;
   }
-  reverse(mint:string,identity:EventIdentity){const c=this.candidates.get(mint);if(c){c.window.reverse(identity,this.clock());c.interrupted=true;}this.record('trader-input',{kind:'reversal',at:this.clock(),mint,identity:{signature:identity.signature,instructionIndex:identity.instructionIndex,eventIndex:identity.eventIndex}});}
+  reverse(mint:string,identity:EventIdentity){const c=this.candidates.get(mint);if(c){c.window.reverse(identity,this.clock());c.interrupted=true;}this.record('trader-input',{kind:'reversal',at:this.clock(),mint,identity:copyEventIdentity(identity)});}
   feedGap(){const at=this.clock();for(const c of this.candidates.values()){c.window.invalidate(at,'feed-gap');c.active=false;c.interrupted=true;}this.pause('feed gap; selected windows require fresh subscription and warming');this.record('trader-input',{kind:'gap',at});}
   /** Intentional upstream retirement is separate from losing the whole feed.
    * Held-position management comes from the ledger/RPC context, not this window.
