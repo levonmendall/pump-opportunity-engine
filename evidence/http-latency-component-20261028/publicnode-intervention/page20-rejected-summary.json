@@ -1,0 +1,83 @@
+{
+  "classification": "retained-page20-rejection-not-an-operating-change",
+  "workflowRunId": 40777452497,
+  "sourceRecordsSha256": "07dcc0a25f017100a959e9edc84d63870a6f2f3d6c3c9ab41f8934da94dae3cd",
+  "requests": 9,
+  "responseBytes": 10686,
+  "uncertainResponseBytes": 8388608,
+  "elapsedMs": 15159.154472,
+  "outcomes": [
+    {
+      "method": "getMultipleAccounts",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "floorKind": null,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "elapsedMs": 163.661011,
+      "rows": null
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "floorKind": "historical",
+      "outcome": "TIMED_OUT_OR_ABORTED",
+      "elapsedMs": 3015.4409739999996,
+      "rows": null
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "floorKind": "fresh",
+      "outcome": "TIMED_OUT_OR_ABORTED",
+      "elapsedMs": 3010.519476,
+      "rows": null
+    },
+    {
+      "method": "getMultipleAccounts",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "floorKind": null,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "elapsedMs": 103.12019300000065,
+      "rows": null
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "floorKind": "fresh",
+      "outcome": "TIMED_OUT_OR_ABORTED",
+      "elapsedMs": 3012.69017,
+      "rows": null
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "floorKind": "historical",
+      "outcome": "TIMED_OUT_OR_ABORTED",
+      "elapsedMs": 3010.9181339999996,
+      "rows": null
+    },
+    {
+      "method": "getMultipleAccounts",
+      "pool": "oMwGi1ntDawN9qJBhCjBXWaE8Je171DEzKn1rwJTMJp",
+      "floorKind": null,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "elapsedMs": 115.82676799999899,
+      "rows": null
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "pool": "oMwGi1ntDawN9qJBhCjBXWaE8Je171DEzKn1rwJTMJp",
+      "floorKind": "historical",
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "elapsedMs": 115.64796299999944,
+      "rows": 20
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "pool": "oMwGi1ntDawN9qJBhCjBXWaE8Je171DEzKn1rwJTMJp",
+      "floorKind": "fresh",
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "elapsedMs": 65.03597099999934,
+      "rows": 20
+    }
+  ]
+}

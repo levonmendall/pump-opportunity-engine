@@ -1,8 +1,9 @@
 {
   "schemaVersion": 1,
-  "classification": "post-c189-history-page20-latency-v2",
-  "endpoint": "https://api.mainnet.solana.com",
-  "historyPageLimit": 20,
+  "classification": "post-c189-publicnode-history-only-availability-v3",
+  "clockEndpoint": "https://api.mainnet.solana.com",
+  "historyEndpoint": "https://solana-rpc.publicnode.com",
+  "historyPageLimit": 100,
   "pools": [
     {
       "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
