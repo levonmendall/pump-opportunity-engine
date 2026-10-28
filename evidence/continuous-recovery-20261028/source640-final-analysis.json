@@ -1,0 +1,1492 @@
+{
+  "schemaVersion": 1,
+  "classification": "READ_ONLY_STREAMED_FINAL_SOURCE640_ANALYSIS",
+  "generatedAt": "2026-10-28T16:32:34.027887+00:00",
+  "sourceArtifact": "/workspace/poe-pilot/runs/native-640-recovery-20261028151700/artifact",
+  "source": {
+    "commit": "640143a5924a7ff7d98039967c2db17957f71f24",
+    "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+  },
+  "configurationSha256": "29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf",
+  "runId": "native-candidates-20261028151711944",
+  "startedAtUtc": "2026-10-28T15:17:11.944Z",
+  "stopRequestedAtUtc": "2026-10-28T15:53:14.173Z",
+  "observationUntilStopRequestMs": 2162229,
+  "elapsedMsFinalStatus": 2162431,
+  "financial": {
+    "financialExecutionAuthorized": false,
+    "financialWriterOpened": false,
+    "entriesEnabled": false,
+    "portfolio": null
+  },
+  "counts": {
+    "native-research-frozen-input": 1,
+    "native-flow-contract": 1,
+    "native-known-origin-proof-queued": 32,
+    "pilot-watch-discovered": 34,
+    "pilot-watch-identity-merged": 11,
+    "native-origin-import": 119,
+    "component-job-enqueued": 648,
+    "component-physical-start": 648,
+    "pilot-feed-open": 2,
+    "component-physical-settled": 648,
+    "component-pacing-wait": 114,
+    "native-verification-queue-retired": 33,
+    "pilot-watch-promotion": 135,
+    "pilot-watch-transition": 359,
+    "pilot-watch-activity": 21066,
+    "http-headers": 317,
+    "http-response-timing": 293,
+    "research-clock-pool-state": 141,
+    "research-clock-observation-support": 835,
+    "native-source-status-snapshot": 5,
+    "native-flow-subscription-ack": 129,
+    "native-candidate-observation-open": 129,
+    "native-candidate-feature-view": 881,
+    "native-flow-validated-events": 27113,
+    "native-flow-raw-representative": 8,
+    "native-flow-information-available": 27113,
+    "component-physical-timeout": 48,
+    "pilot-data-control-unavailable": 4,
+    "native-candidate-quality-gap": 122,
+    "native-candidate-retired": 135,
+    "native-flow-control-refused": 4,
+    "native-flow-disconnected": 19,
+    "native-flow-early-heartbeat-request": 59,
+    "native-origin-verification-service-preparation": 39,
+    "native-flow-outbound-control": 134,
+    "native-migration-resolution": 17,
+    "pilot-watch-verified": 17,
+    "native-older-observation-selection-refused": 60,
+    "native-shared-audit-ceiling-requested": 44,
+    "native-candidate-audit-session-open": 39,
+    "pilot-rpc-unavailable": 45,
+    "native-candidate-window-audit": 39,
+    "native-independent-audit-warming": 55,
+    "native-flow-history-page": 19,
+    "pilot-watch-complete-window": 13,
+    "native-predictive-assessment": 13,
+    "native-flow-subscription-retired": 21,
+    "pilot-migration-hint": 23,
+    "native-predictive-window-expired": 21,
+    "research-clock-cache-invalidation": 9,
+    "pilot-watch-verification-deferred": 35,
+    "native-migration-refused": 36,
+    "native-flow-protocol-pool-effect": 43,
+    "native-flow-refusal": 4,
+    "native-flow-raw-refusal": 2,
+    "native-flow-notification": 1,
+    "native-candidate-source-stop": 1,
+    "native-candidate-runner-stopped": 1,
+    "native-research-final": 1
+  },
+  "sixScopeConcurrency": {
+    "method": "ACK opens scope; candidate retirement closes scope; disconnect closes matching connection. Data.at sorted, original evidence order tie-break. Allocated-but-unacknowledged scopes excluded.",
+    "uniqueAckedMints": 39,
+    "durationByActiveAckedScopesMs": {
+      "0": 882661,
+      "1": 14709,
+      "2": 9343,
+      "3": 9020,
+      "4": 17261,
+      "5": 39182,
+      "6": 1190053
+    },
+    "sixScopesTotalMs": 1190053,
+    "sixScopesLongestMs": 84862,
+    "sixScopeIntervals": [
+      {
+        "startAt": 1793200650957,
+        "endAt": 1793200714142,
+        "durationMs": 63185
+      },
+      {
+        "startAt": 1793200746358,
+        "endAt": 1793200812638,
+        "durationMs": 66280
+      },
+      {
+        "startAt": 1793200813647,
+        "endAt": 1793200836303,
+        "durationMs": 22656
+      },
+      {
+        "startAt": 1793200837367,
+        "endAt": 1793200840042,
+        "durationMs": 2675
+      },
+      {
+        "startAt": 1793200863974,
+        "endAt": 1793200940017,
+        "durationMs": 76043
+      },
+      {
+        "startAt": 1793200982619,
+        "endAt": 1793201066312,
+        "durationMs": 83693
+      },
+      {
+        "startAt": 1793201067281,
+        "endAt": 1793201068239,
+        "durationMs": 958
+      },
+      {
+        "startAt": 1793201069204,
+        "endAt": 1793201076279,
+        "durationMs": 7075
+      },
+      {
+        "startAt": 1793201077271,
+        "endAt": 1793201079149,
+        "durationMs": 1878
+      },
+      {
+        "startAt": 1793201080487,
+        "endAt": 1793201086565,
+        "durationMs": 6078
+      },
+      {
+        "startAt": 1793201149388,
+        "endAt": 1793201212797,
+        "durationMs": 63409
+      },
+      {
+        "startAt": 1793201213766,
+        "endAt": 1793201215823,
+        "durationMs": 2057
+      },
+      {
+        "startAt": 1793201280828,
+        "endAt": 1793201320030,
+        "durationMs": 39202
+      },
+      {
+        "startAt": 1793201321935,
+        "endAt": 1793201347333,
+        "durationMs": 25398
+      },
+      {
+        "startAt": 1793201409845,
+        "endAt": 1793201413610,
+        "durationMs": 3765
+      },
+      {
+        "startAt": 1793201416114,
+        "endAt": 1793201482867,
+        "durationMs": 66753
+      },
+      {
+        "startAt": 1793201545662,
+        "endAt": 1793201617305,
+        "durationMs": 71643
+      },
+      {
+        "startAt": 1793201681944,
+        "endAt": 1793201741760,
+        "durationMs": 59816
+      },
+      {
+        "startAt": 1793201804398,
+        "endAt": 1793201873843,
+        "durationMs": 69445
+      },
+      {
+        "startAt": 1793201939949,
+        "endAt": 1793202003449,
+        "durationMs": 63500
+      },
+      {
+        "startAt": 1793202066410,
+        "endAt": 1793202131144,
+        "durationMs": 64734
+      },
+      {
+        "startAt": 1793202193549,
+        "endAt": 1793202216952,
+        "durationMs": 23403
+      },
+      {
+        "startAt": 1793202218328,
+        "endAt": 1793202232587,
+        "durationMs": 14259
+      },
+      {
+        "startAt": 1793202234324,
+        "endAt": 1793202262588,
+        "durationMs": 28264
+      },
+      {
+        "startAt": 1793202263547,
+        "endAt": 1793202264988,
+        "durationMs": 1441
+      },
+      {
+        "startAt": 1793202266007,
+        "endAt": 1793202267108,
+        "durationMs": 1101
+      },
+      {
+        "startAt": 1793202268118,
+        "endAt": 1793202303598,
+        "durationMs": 35480
+      },
+      {
+        "startAt": 1793202304827,
+        "endAt": 1793202305615,
+        "durationMs": 788
+      },
+      {
+        "startAt": 1793202306884,
+        "endAt": 1793202313316,
+        "durationMs": 6432
+      },
+      {
+        "startAt": 1793202314298,
+        "endAt": 1793202332861,
+        "durationMs": 18563
+      },
+      {
+        "startAt": 1793202399504,
+        "endAt": 1793202427082,
+        "durationMs": 27578
+      },
+      {
+        "startAt": 1793202490554,
+        "endAt": 1793202570055,
+        "durationMs": 79501
+      },
+      {
+        "startAt": 1793202632612,
+        "endAt": 1793202717474,
+        "durationMs": 84862
+      },
+      {
+        "startAt": 1793202718510,
+        "endAt": 1793202723995,
+        "durationMs": 5485
+      },
+      {
+        "startAt": 1793202727062,
+        "endAt": 1793202729715,
+        "durationMs": 2653
+      }
+    ]
+  },
+  "throughput": {
+    "meaning": "Scoped notification records including failed transactions. Same signature can appear in several scopes. Ordinary trades exclude protocol effects.",
+    "nativeInformationAvailableRecords": 27113,
+    "distinctSignaturesAcrossScopes": 27110,
+    "successfulRecords": 13213,
+    "failedRecords": 13900,
+    "ordinaryNormalizedEvents": 7817,
+    "protocolEffects": 43,
+    "finalCounterNotifications": 27118,
+    "counterDifference": "5 extra diagnostic records:4unusable refusals+1correction. ReceivedBound additionally includes346 ignored-after-gap.",
+    "peakAggregate10sReceipt": {
+      "count": 2419,
+      "startExclusiveAt": 1793201330096,
+      "lastAt": 1793201340096,
+      "firstAt": 1793201330773
+    },
+    "peakAggregate60sReceipt": {
+      "count": 7884,
+      "startExclusiveAt": 1793201283225,
+      "lastAt": 1793201343225,
+      "firstAt": 1793201283892
+    },
+    "receiptToInformationMs": {
+      "p50": 885,
+      "p95": 1998,
+      "maximum": 4207
+    },
+    "perMint": [
+      {
+        "mint": "D9NXzZxiJxgp2U69EDWJ1tJDMtGcEiWh2xGGY58Gpump",
+        "notificationRecords": 12616,
+        "uniqueSignatures": 12614,
+        "successful": 5414,
+        "failed": 7202,
+        "ordinaryTrades": 4107,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 1253,
+          "startExclusiveAt": 1793201448434,
+          "lastAt": 1793201458434,
+          "firstAt": 1793201449245
+        },
+        "peak60sReceipt": {
+          "count": 3909,
+          "startExclusiveAt": 1793201421823,
+          "lastAt": 1793201481823,
+          "firstAt": 1793201422281
+        }
+      },
+      {
+        "mint": "FhsZqiGsBrBe3kkZZ1H3Z35ae9uCqfKhMJdJs9bPpump",
+        "notificationRecords": 8935,
+        "uniqueSignatures": 8935,
+        "successful": 3488,
+        "failed": 5447,
+        "ordinaryTrades": 1353,
+        "protocolEffects": 4,
+        "peak10sReceipt": {
+          "count": 2354,
+          "startExclusiveAt": 1793201330096,
+          "lastAt": 1793201340096,
+          "firstAt": 1793201330773
+        },
+        "peak60sReceipt": {
+          "count": 7259,
+          "startExclusiveAt": 1793201283225,
+          "lastAt": 1793201343225,
+          "firstAt": 1793201283892
+        }
+      },
+      {
+        "mint": "EFUwoW2EW5qEinEyVFzqo9SAxtFiPA8AhEBnSxeCpump",
+        "notificationRecords": 2274,
+        "uniqueSignatures": 2274,
+        "successful": 2224,
+        "failed": 50,
+        "ordinaryTrades": 763,
+        "protocolEffects": 5,
+        "peak10sReceipt": {
+          "count": 391,
+          "startExclusiveAt": 1793201941229,
+          "lastAt": 1793201951229,
+          "firstAt": 1793201941369
+        },
+        "peak60sReceipt": {
+          "count": 1134,
+          "startExclusiveAt": 1793202172167,
+          "lastAt": 1793202232167,
+          "firstAt": 1793202193878
+        }
+      },
+      {
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "notificationRecords": 1131,
+        "uniqueSignatures": 1131,
+        "successful": 712,
+        "failed": 419,
+        "ordinaryTrades": 706,
+        "protocolEffects": 6,
+        "peak10sReceipt": {
+          "count": 240,
+          "startExclusiveAt": 1793202538300,
+          "lastAt": 1793202548300,
+          "firstAt": 1793202538375
+        },
+        "peak60sReceipt": {
+          "count": 937,
+          "startExclusiveAt": 1793202490844,
+          "lastAt": 1793202550844,
+          "firstAt": 1793202490879
+        }
+      },
+      {
+        "mint": "Asjmk93s5j9XtTayrNt52yYahtz8dYXHB9wbEjNDpump",
+        "notificationRecords": 625,
+        "uniqueSignatures": 625,
+        "successful": 201,
+        "failed": 424,
+        "ordinaryTrades": 199,
+        "protocolEffects": 2,
+        "peak10sReceipt": {
+          "count": 239,
+          "startExclusiveAt": 1793202414821,
+          "lastAt": 1793202424821,
+          "firstAt": 1793202415155
+        },
+        "peak60sReceipt": {
+          "count": 625,
+          "startExclusiveAt": 1793202366178,
+          "lastAt": 1793202426178,
+          "firstAt": 1793202394959
+        }
+      },
+      {
+        "mint": "YxD2uUmH7cBiWYhfgXnPon3NThaK6BGSzAU2JNjpump",
+        "notificationRecords": 381,
+        "uniqueSignatures": 381,
+        "successful": 153,
+        "failed": 228,
+        "ordinaryTrades": 147,
+        "protocolEffects": 6,
+        "peak10sReceipt": {
+          "count": 60,
+          "startExclusiveAt": 1793201165138,
+          "lastAt": 1793201175138,
+          "firstAt": 1793201165250
+        },
+        "peak60sReceipt": {
+          "count": 250,
+          "startExclusiveAt": 1793201148521,
+          "lastAt": 1793201208521,
+          "firstAt": 1793201148672
+        }
+      },
+      {
+        "mint": "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+        "notificationRecords": 283,
+        "uniqueSignatures": 283,
+        "successful": 216,
+        "failed": 67,
+        "ordinaryTrades": 15,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 177,
+          "startExclusiveAt": 1793200829719,
+          "lastAt": 1793200839719,
+          "firstAt": 1793200837640
+        },
+        "peak60sReceipt": {
+          "count": 177,
+          "startExclusiveAt": 1793200779719,
+          "lastAt": 1793200839719,
+          "firstAt": 1793200837640
+        }
+      },
+      {
+        "mint": "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+        "notificationRecords": 169,
+        "uniqueSignatures": 169,
+        "successful": 163,
+        "failed": 6,
+        "ordinaryTrades": 9,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 62,
+          "startExclusiveAt": 1793202199788,
+          "lastAt": 1793202209788,
+          "firstAt": 1793202199872
+        },
+        "peak60sReceipt": {
+          "count": 113,
+          "startExclusiveAt": 1793202197925,
+          "lastAt": 1793202257925,
+          "firstAt": 1793202199872
+        }
+      },
+      {
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "notificationRecords": 143,
+        "uniqueSignatures": 143,
+        "successful": 143,
+        "failed": 0,
+        "ordinaryTrades": 137,
+        "protocolEffects": 6,
+        "peak10sReceipt": {
+          "count": 17,
+          "startExclusiveAt": 1793202292319,
+          "lastAt": 1793202302319,
+          "firstAt": 1793202292716
+        },
+        "peak60sReceipt": {
+          "count": 60,
+          "startExclusiveAt": 1793202245070,
+          "lastAt": 1793202305070,
+          "firstAt": 1793202247015
+        }
+      },
+      {
+        "mint": "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+        "notificationRecords": 140,
+        "uniqueSignatures": 140,
+        "successful": 124,
+        "failed": 16,
+        "ordinaryTrades": 117,
+        "protocolEffects": 7,
+        "peak10sReceipt": {
+          "count": 41,
+          "startExclusiveAt": 1793202653255,
+          "lastAt": 1793202663255,
+          "firstAt": 1793202653528
+        },
+        "peak60sReceipt": {
+          "count": 123,
+          "startExclusiveAt": 1793202632235,
+          "lastAt": 1793202692235,
+          "firstAt": 1793202632937
+        }
+      },
+      {
+        "mint": "mWTK7nLFCjcAWXH4tyCUSvLvdwjZ9sQ6NWbK72cpump",
+        "notificationRecords": 126,
+        "uniqueSignatures": 126,
+        "successful": 126,
+        "failed": 0,
+        "ordinaryTrades": 126,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 13,
+          "startExclusiveAt": 1793200652101,
+          "lastAt": 1793200662101,
+          "firstAt": 1793200652229
+        },
+        "peak60sReceipt": {
+          "count": 59,
+          "startExclusiveAt": 1793200650129,
+          "lastAt": 1793200710129,
+          "firstAt": 1793200651099
+        }
+      },
+      {
+        "mint": "AUzxwHbzhR1rxC8xU4YV438oYVaQYZydotSNBf6vpump",
+        "notificationRecords": 77,
+        "uniqueSignatures": 77,
+        "successful": 74,
+        "failed": 3,
+        "ordinaryTrades": 5,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 59,
+          "startExclusiveAt": 1793202112499,
+          "lastAt": 1793202122499,
+          "firstAt": 1793202113131
+        },
+        "peak60sReceipt": {
+          "count": 77,
+          "startExclusiveAt": 1793202070922,
+          "lastAt": 1793202130922,
+          "firstAt": 1793202113131
+        }
+      },
+      {
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "notificationRecords": 57,
+        "uniqueSignatures": 57,
+        "successful": 56,
+        "failed": 1,
+        "ordinaryTrades": 22,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 34,
+          "startExclusiveAt": 1793201274146,
+          "lastAt": 1793201284146,
+          "firstAt": 1793201277465
+        },
+        "peak60sReceipt": {
+          "count": 47,
+          "startExclusiveAt": 1793201257853,
+          "lastAt": 1793201317853,
+          "firstAt": 1793201277465
+        }
+      },
+      {
+        "mint": "evEidkshRzz55PovfPY8PaKGWvmxPjLHbKCWy2spump",
+        "notificationRecords": 55,
+        "uniqueSignatures": 55,
+        "successful": 55,
+        "failed": 0,
+        "ordinaryTrades": 55,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 2,
+          "startExclusiveAt": 1793200871652,
+          "lastAt": 1793200881652,
+          "firstAt": 1793200874035
+        },
+        "peak60sReceipt": {
+          "count": 8,
+          "startExclusiveAt": 1793200873934,
+          "lastAt": 1793200933934,
+          "firstAt": 1793200874035
+        }
+      },
+      {
+        "mint": "GRqLZkWRaxSyqaj3MyH6AM71RhubP56JNnHPWQqUpump",
+        "notificationRecords": 34,
+        "uniqueSignatures": 34,
+        "successful": 30,
+        "failed": 4,
+        "ordinaryTrades": 23,
+        "protocolEffects": 7,
+        "peak10sReceipt": {
+          "count": 9,
+          "startExclusiveAt": 1793202671166,
+          "lastAt": 1793202681166,
+          "firstAt": 1793202672128
+        },
+        "peak60sReceipt": {
+          "count": 31,
+          "startExclusiveAt": 1793202640456,
+          "lastAt": 1793202700456,
+          "firstAt": 1793202641320
+        }
+      },
+      {
+        "mint": "9ojYt5LiB5FqBoyYYAZbPP6VGtGRpCWem35ENxitpump",
+        "notificationRecords": 31,
+        "uniqueSignatures": 31,
+        "successful": 0,
+        "failed": 31,
+        "ordinaryTrades": 0,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 5,
+          "startExclusiveAt": 1793202290619,
+          "lastAt": 1793202300619,
+          "firstAt": 1793202291334
+        },
+        "peak60sReceipt": {
+          "count": 24,
+          "startExclusiveAt": 1793202273458,
+          "lastAt": 1793202333458,
+          "firstAt": 1793202274042
+        }
+      },
+      {
+        "mint": "nyHJiwvXBQj9rLjAfx3kuhmHczrfw33dwXCK79spump",
+        "notificationRecords": 11,
+        "uniqueSignatures": 11,
+        "successful": 11,
+        "failed": 0,
+        "ordinaryTrades": 11,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793200853195,
+          "lastAt": 1793200863195,
+          "firstAt": 1793200863195
+        },
+        "peak60sReceipt": {
+          "count": 5,
+          "startExclusiveAt": 1793201671753,
+          "lastAt": 1793201731753,
+          "firstAt": 1793201684282
+        }
+      },
+      {
+        "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+        "notificationRecords": 8,
+        "uniqueSignatures": 8,
+        "successful": 8,
+        "failed": 0,
+        "ordinaryTrades": 8,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 3,
+          "startExclusiveAt": 1793201056865,
+          "lastAt": 1793201066865,
+          "firstAt": 1793201060733
+        },
+        "peak60sReceipt": {
+          "count": 4,
+          "startExclusiveAt": 1793201897768,
+          "lastAt": 1793201957768,
+          "firstAt": 1793201936661
+        }
+      },
+      {
+        "mint": "x5tzEf5eF5EUMxYLvQa6wxe9bL3mLubKtBH7fpspump",
+        "notificationRecords": 8,
+        "uniqueSignatures": 8,
+        "successful": 8,
+        "failed": 0,
+        "ordinaryTrades": 8,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 8,
+          "startExclusiveAt": 1793202782242,
+          "lastAt": 1793202792242,
+          "firstAt": 1793202791057
+        },
+        "peak60sReceipt": {
+          "count": 8,
+          "startExclusiveAt": 1793202732242,
+          "lastAt": 1793202792242,
+          "firstAt": 1793202791057
+        }
+      },
+      {
+        "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+        "notificationRecords": 3,
+        "uniqueSignatures": 3,
+        "successful": 3,
+        "failed": 0,
+        "ordinaryTrades": 3,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 2,
+          "startExclusiveAt": 1793200828022,
+          "lastAt": 1793200838022,
+          "firstAt": 1793200830597
+        },
+        "peak60sReceipt": {
+          "count": 2,
+          "startExclusiveAt": 1793200778022,
+          "lastAt": 1793200838022,
+          "firstAt": 1793200830597
+        }
+      },
+      {
+        "mint": "HWjJ8dFwf68sdWzhj4qHQpUf6rSG3u3xRWzV2Y29pump",
+        "notificationRecords": 3,
+        "uniqueSignatures": 3,
+        "successful": 1,
+        "failed": 2,
+        "ordinaryTrades": 1,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201804602,
+          "lastAt": 1793201814602,
+          "firstAt": 1793201814602
+        },
+        "peak60sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201754602,
+          "lastAt": 1793201814602,
+          "firstAt": 1793201814602
+        }
+      },
+      {
+        "mint": "4VqezWppX3Nq5XLGoTZTqom7NqfMH539UFEZtN9Upump",
+        "notificationRecords": 1,
+        "uniqueSignatures": 1,
+        "successful": 1,
+        "failed": 0,
+        "ordinaryTrades": 1,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201161778,
+          "lastAt": 1793201171778,
+          "firstAt": 1793201171778
+        },
+        "peak60sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201111778,
+          "lastAt": 1793201171778,
+          "firstAt": 1793201171778
+        }
+      },
+      {
+        "mint": "4biV2urUKduJvWvwpZfw4Cn8VnQf1cefhev5rakBA8Cq",
+        "notificationRecords": 1,
+        "uniqueSignatures": 1,
+        "successful": 1,
+        "failed": 0,
+        "ordinaryTrades": 1,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201322857,
+          "lastAt": 1793201332857,
+          "firstAt": 1793201332857
+        },
+        "peak60sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201272857,
+          "lastAt": 1793201332857,
+          "firstAt": 1793201332857
+        }
+      },
+      {
+        "mint": "HuUgLZGMAVqtUA5MVcBDDjQswzCKViH7i8CNxeKzpump",
+        "notificationRecords": 1,
+        "uniqueSignatures": 1,
+        "successful": 1,
+        "failed": 0,
+        "ordinaryTrades": 0,
+        "protocolEffects": 0,
+        "peak10sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201813976,
+          "lastAt": 1793201823976,
+          "firstAt": 1793201823976
+        },
+        "peak60sReceipt": {
+          "count": 1,
+          "startExclusiveAt": 1793201763976,
+          "lastAt": 1793201823976,
+          "firstAt": 1793201823976
+        }
+      }
+    ]
+  },
+  "audits": {
+    "counters": {
+      "migrationHints": 23,
+      "verificationQueueRefusals": 0,
+      "verificationAttempts": 53,
+      "verifiedOrigins": 136,
+      "verificationRefusals": 36,
+      "normalizedEvents": 7817,
+      "qualityGaps": 122,
+      "featureViews": 881,
+      "auditedWindows": 13,
+      "predictiveAssessments": 13,
+      "predictiveFailed": 13,
+      "predictiveNotRejected": 0,
+      "predictiveUnavailable": 0,
+      "auditUnavailable": 24,
+      "auditUnusable": 2,
+      "decisionDeadlineMisses": 21,
+      "auditFenceWarmingWindows": 55,
+      "uniqueEvaluated": 11,
+      "strictV2BaselineUnavailableViews": 1,
+      "protocolAwareShadowViews": 13
+    },
+    "resultStatus": {
+      "unavailable": 24,
+      "verified": 13,
+      "unusable": 2
+    },
+    "reasons": {
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 23,
+      "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED": 13,
+      "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED": 2,
+      "NATIVE_AUDIT_CAPTURED_TARGET_NOT_IN_HISTORY": 1
+    },
+    "physicalHistoryPageRecords": 19,
+    "historyRowsRetrieved": 18355,
+    "interiorRowsInResults": 496,
+    "maximumPhysicalPagesPerResult": 3,
+    "uniqueIndependentlyEvaluatedMints": [
+      "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+      "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+      "9UJfCYDbYdKt19emZkFqGHo9pvGn6hVAHmYkALEkpump",
+      "9ojYt5LiB5FqBoyYYAZbPP6VGtGRpCWem35ENxitpump",
+      "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+      "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+      "HWjJ8dFwf68sdWzhj4qHQpUf6rSG3u3xRWzV2Y29pump",
+      "Tp7EZyRaU7Qkb41WA5yrLTuwCyLj1Fpe2CXrChW8mdt",
+      "YxD2uUmH7cBiWYhfgXnPon3NThaK6BGSzAU2JNjpump",
+      "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+      "evEidkshRzz55PovfPY8PaKGWvmxPjLHbKCWy2spump"
+    ],
+    "completeAssessments": 13,
+    "assessments": [
+      {
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "at": 1793200812638,
+        "windowEndAt": 1793200810000,
+        "tradeCount": 5,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": false,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+        "at": 1793200836303,
+        "windowEndAt": 1793200830000,
+        "tradeCount": 0,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+        "at": 1793201066312,
+        "windowEndAt": 1793201060000,
+        "tradeCount": 2,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": false,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+        "at": 1793201068239,
+        "windowEndAt": 1793201060000,
+        "tradeCount": 0,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "9ojYt5LiB5FqBoyYYAZbPP6VGtGRpCWem35ENxitpump",
+        "at": 1793201076279,
+        "windowEndAt": 1793201070000,
+        "tradeCount": 0,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "Tp7EZyRaU7Qkb41WA5yrLTuwCyLj1Fpe2CXrChW8mdt",
+        "at": 1793201079149,
+        "windowEndAt": 1793201070000,
+        "tradeCount": 0,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "D8dccp6aCzuAYwvh6Txz1BmaRPeB3jM9oK7Nh9KKpump",
+        "at": 1793202262588,
+        "windowEndAt": 1793202260000,
+        "tradeCount": 5,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": false,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+        "at": 1793202264988,
+        "windowEndAt": 1793202260000,
+        "tradeCount": 0,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "HWjJ8dFwf68sdWzhj4qHQpUf6rSG3u3xRWzV2Y29pump",
+        "at": 1793202267108,
+        "windowEndAt": 1793202260000,
+        "tradeCount": 1,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "9UJfCYDbYdKt19emZkFqGHo9pvGn6hVAHmYkALEkpump",
+        "at": 1793202303598,
+        "windowEndAt": 1793202300000,
+        "tradeCount": 0,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": false,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "evEidkshRzz55PovfPY8PaKGWvmxPjLHbKCWy2spump",
+        "at": 1793202313316,
+        "windowEndAt": 1793202310000,
+        "tradeCount": 4,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "YxD2uUmH7cBiWYhfgXnPon3NThaK6BGSzAU2JNjpump",
+        "at": 1793202332861,
+        "windowEndAt": 1793202330000,
+        "tradeCount": 28,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      },
+      {
+        "mint": "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+        "at": 1793202717474,
+        "windowEndAt": 1793202710000,
+        "tradeCount": 87,
+        "assessmentStatus": "failed",
+        "entryAgeEligible": true,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification"
+      }
+    ],
+    "unusableResults": [
+      {
+        "pool": "D1NnF4Soo8TybadG9t51dMie4MiTLwUVC8oHZHq9bcZE",
+        "target": {
+          "startAt": 1793201150000,
+          "endAt": 1793201210000
+        },
+        "startedAt": 1793201211859,
+        "availableAt": 1793201212797,
+        "strictInteriorSlots": {
+          "lower": 462526248,
+          "upper": 462526544
+        },
+        "contextFences": {
+          "lower": {
+            "slot": 462526238,
+            "availableAt": 1793201146968,
+            "bankClockAt": 1793201146000
+          },
+          "upper": {
+            "slot": 462526544,
+            "availableAt": 1793201211680,
+            "bankClockAt": 1793201210000
+          }
+        },
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "historyRangeCovered": true,
+        "historyRows": 1000,
+        "interiorRows": 59,
+        "mint": "mWTK7nLFCjcAWXH4tyCUSvLvdwjZ9sQ6NWbK72cpump",
+        "ref": {
+          "path": "run/events/events-004.ndjson",
+          "line": 2,
+          "recordedAt": "2026-10-28T15:26:52.797Z"
+        },
+        "requiredSignatures": 54,
+        "missing": [
+          {
+            "signature": "fH4qUstAzurFEQtjy1duWSTNiCtvV6MwdYfEWci7FjH6D7nwevgrkwx94rvuyxqAFbV6pXPwM58RtfMXLzth1dE",
+            "slot": 462526542,
+            "success": true,
+            "blockTime": 1793201210,
+            "confirmationStatus": "finalized",
+            "matchingRetainedPackets": [
+              {
+                "receivedAt": 1793201212644,
+                "availableAt": 1793201212705,
+                "subscriptionId": 101680490,
+                "connectionId": 7,
+                "classification": "program-event",
+                "eventsAccepted": 1,
+                "ref": {
+                  "path": "run/events/events-003.ndjson",
+                  "line": 6974,
+                  "recordedAt": "2026-10-28T15:26:52.705Z"
+                },
+                "protocolEffects": 0,
+                "afterTargetEndMs": 2705,
+                "afterFrozenSnapshotMs": 846,
+                "beforeAuditCompletion": true
+              }
+            ]
+          },
+          {
+            "signature": "4MmyPQx4Yhu22nNtcs2XxjeNTMjpTmuE6c4rtetA6WMfEoc6ic3jSqxuyn3wb9W8McVnJxw4Ei5VbMC8yynXxU3s",
+            "slot": 462526540,
+            "success": true,
+            "blockTime": 1793201209,
+            "confirmationStatus": "finalized",
+            "matchingRetainedPackets": [
+              {
+                "receivedAt": 1793201212159,
+                "availableAt": 1793201212275,
+                "subscriptionId": 101680490,
+                "connectionId": 7,
+                "classification": "program-event",
+                "eventsAccepted": 1,
+                "ref": {
+                  "path": "run/events/events-003.ndjson",
+                  "line": 6968,
+                  "recordedAt": "2026-10-28T15:26:52.275Z"
+                },
+                "protocolEffects": 0,
+                "afterTargetEndMs": 2275,
+                "afterFrozenSnapshotMs": 416,
+                "beforeAuditCompletion": true
+              }
+            ]
+          },
+          {
+            "signature": "5w5xbsQgT6cAANdvPrMepfsErc8sZdWRNYZszyLumfhJe5P5R9VLWYbHnNbGqBgASiDmqNAdyd3U1FBSYc5Dud6o",
+            "slot": 462526540,
+            "success": true,
+            "blockTime": 1793201209,
+            "confirmationStatus": "finalized",
+            "matchingRetainedPackets": [
+              {
+                "receivedAt": 1793201212159,
+                "availableAt": 1793201212263,
+                "subscriptionId": 101680490,
+                "connectionId": 7,
+                "classification": "program-event",
+                "eventsAccepted": 1,
+                "ref": {
+                  "path": "run/events/events-003.ndjson",
+                  "line": 6965,
+                  "recordedAt": "2026-10-28T15:26:52.263Z"
+                },
+                "protocolEffects": 0,
+                "afterTargetEndMs": 2263,
+                "afterFrozenSnapshotMs": 404,
+                "beforeAuditCompletion": true
+              }
+            ]
+          }
+        ],
+        "conclusion": "All missing independent rows succeeded. All3 packets actually arrived and validated after frozen ledger snapshot and before audit completion."
+      },
+      {
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "target": {
+          "startAt": 1793202240000,
+          "endAt": 1793202300000
+        },
+        "startedAt": 1793202304947,
+        "availableAt": 1793202305615,
+        "strictInteriorSlots": {
+          "lower": 462531370,
+          "upper": 462531673
+        },
+        "contextFences": {
+          "lower": {
+            "slot": 462531345,
+            "availableAt": 1793202233797,
+            "bankClockAt": 1793202233000
+          },
+          "upper": {
+            "slot": 462531673,
+            "availableAt": 1793202304502,
+            "bankClockAt": 1793202303000
+          }
+        },
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "historyRangeCovered": true,
+        "historyRows": 355,
+        "interiorRows": 66,
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "ref": {
+          "path": "run/events/events-011.ndjson",
+          "line": 5325,
+          "recordedAt": "2026-10-28T15:45:05.615Z"
+        },
+        "requiredSignatures": 55,
+        "missing": [
+          {
+            "signature": "4ibMkh4H6PGYvtBuRjuzRm8KCKtp167Jbxcss6BgRGPdWZ54BcqUQ6FXfNjqaj8MmyuUVAq4QL8wS5Laa4iaTUhk",
+            "slot": 462531672,
+            "success": true,
+            "blockTime": 1793202303,
+            "confirmationStatus": "finalized",
+            "matchingRetainedPackets": []
+          },
+          {
+            "signature": "2EdUgXddcQvXL3KKsrpC9Cvgoq29L3ehYrFSmHbnn1bYW3tmcQNhfq7yZToC6xV6RcFMD2RSFMkAA1tAXqUgs1XW",
+            "slot": 462531661,
+            "success": true,
+            "blockTime": 1793202300,
+            "confirmationStatus": "finalized",
+            "matchingRetainedPackets": [
+              {
+                "receivedAt": 1793202305070,
+                "availableAt": 1793202305149,
+                "subscriptionId": 101877376,
+                "connectionId": 15,
+                "classification": "program-event",
+                "eventsAccepted": 1,
+                "ref": {
+                  "path": "run/events/events-011.ndjson",
+                  "line": 5317,
+                  "recordedAt": "2026-10-28T15:45:05.150Z"
+                },
+                "protocolEffects": 0,
+                "afterTargetEndMs": 5149,
+                "afterFrozenSnapshotMs": 202,
+                "beforeAuditCompletion": true
+              }
+            ]
+          },
+          {
+            "signature": "24mnoUDq2cMLc6RuW4R67xsXT1uFXuDkHZdnWanvWBC8E6oCuD4RuK1kd4DyUdf8nHc3HDjvj8Kc8zdf5m293ZvU",
+            "slot": 462531660,
+            "success": true,
+            "blockTime": 1793202300,
+            "confirmationStatus": "finalized",
+            "matchingRetainedPackets": [
+              {
+                "receivedAt": 1793202304848,
+                "availableAt": 1793202304970,
+                "subscriptionId": 101877376,
+                "connectionId": 15,
+                "classification": "program-event",
+                "eventsAccepted": 0,
+                "ref": {
+                  "path": "run/events/events-011.ndjson",
+                  "line": 5314,
+                  "recordedAt": "2026-10-28T15:45:04.970Z"
+                },
+                "protocolEffects": 1,
+                "afterTargetEndMs": 4970,
+                "afterFrozenSnapshotMs": 23,
+                "beforeAuditCompletion": true
+              }
+            ]
+          }
+        ],
+        "conclusion": "All missing independent rows succeeded. 2 packets actually arrived/validated after frozen snapshot before completion; 1 successful signature has no native packet match. Its post-target chain blockTime cannot prove local information availability or excuse missing evidence."
+      }
+    ],
+    "limitations": [
+      "13overlapping60s assessments are not13independent market minutes.",
+      "All13failed shadow persistent-buying;0qualified. Not financial qualification.",
+      "No successfully completed multipage audit or four-page-capacity refusal was observed; Fhs completed3physical pages of1000rows then its4thattempt timed out before lower-fence coverage."
+    ],
+    "busyMultipageFailure": {
+      "mint": "FhsZqiGsBrBe3kkZZ1H3Z35ae9uCqfKhMJdJs9bPpump",
+      "ref": "run/events/events-006.ndjson:7096",
+      "status": "unavailable",
+      "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+      "requestAttempts": 4,
+      "pagesReceived": 3,
+      "rowsReceived": 3000,
+      "slotsCovered": [
+        462527086,
+        462527154
+      ],
+      "historyRangeCovered": false,
+      "notAFourPageCapacityRefusal": true
+    }
+  },
+  "providerAndResources": {
+    "physicalStarts": 648,
+    "settledRecords": 648,
+    "physicalTimeoutRecords": 48,
+    "peakStarts60s": {
+      "count": 52,
+      "startExclusiveAt": 1793202253694,
+      "lastAt": 1793202313694,
+      "firstAt": 1793202253930
+    },
+    "peakStarts10s": {
+      "count": 20,
+      "startExclusiveAt": 1793200633995,
+      "lastAt": 1793200643995,
+      "firstAt": 1793200634054
+    },
+    "physicalStartKinds": {
+      "{'transport': 'ws-upgrade', 'method': 'upgrade'}": 21,
+      "{'transport': 'ws', 'method': 'subscribeMigration'}": 1,
+      "{'transport': 'http', 'method': 'getMultipleAccounts'}": 184,
+      "{'transport': 'ws', 'method': 'logsSubscribe'}": 133,
+      "{'transport': 'ws', 'method': 'ping'}": 134,
+      "{'transport': 'http', 'method': 'getTransaction'}": 75,
+      "{'transport': 'http', 'method': 'getSignaturesForAddress'}": 79,
+      "{'transport': 'ws', 'method': 'logsUnsubscribe'}": 21
+    },
+    "httpStatuses": {
+      "200": 317
+    },
+    "candidateGapReasons": {
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 24,
+      "PILOT_RPC_COOLDOWN": 84,
+      "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED": 2,
+      "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL": 2,
+      "LOG_NATIVE_PROTOCOL_CHILD_SHAPE": 2,
+      "NATIVE_FLOW_CONFIRMED_CORRECTION": 2,
+      "PILOT_RPC_COMPONENT_OPERATION_FAILED": 6
+    },
+    "finalResources": {
+      "maximumRssBytes": 378204160,
+      "cpu": {
+        "user": 351946872,
+        "system": 18708168
+      },
+      "eventLoopDelayP95Ms": 32.702463,
+      "eventLoopDelayMaximumMs": 1183.842303,
+      "retainedEvidenceBytes": 100244724,
+      "evidenceSegments": 13
+    },
+    "finalUsage": {
+      "rpc": {
+        "cumulativeUnits": 5681,
+        "newUnits": 648,
+        "accountedCumulativeResponseBytes": 384878965,
+        "newAccountedResponseBytes": 175593198,
+        "uncertainResponseBytes": 148111360,
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "automaticRequestRetries": 0,
+        "methodPacing": {
+          "getTransactionStartsLast10s": [],
+          "capacityRefusals": 0,
+          "baselineUnknownMethodsCountConservatively": true
+        }
+      },
+      "feeds": {
+        "frames": 1451547,
+        "normalizedTrades": 7817,
+        "totalSocketBytes": 2289531299,
+        "nativeSocketBytes": 65825081,
+        "broadWatchSocketBytes": 2223701237,
+        "discoverySocketBytes": 4981
+      }
+    },
+    "physicalSettlementConfirmed": true,
+    "flow": {
+      "dataContract": "confirmed-program-activity-v3-shadow",
+      "receiptTimeMeaning": "Conservative earliest application-transport chunk of an undrained receiver batch; message availability remains separate. Not an exact wire timestamp.",
+      "maximumCandidates": 6,
+      "candidates": 0,
+      "retiring": 0,
+      "connected": false,
+      "physicalTransportsSettled": true,
+      "sharedOperationActive": false,
+      "nativePhysicalOperations": 0,
+      "sharedGateSettlement": "Caller must additionally check authoritative PilotRpc HTTP inFlight/waitingOrOperating; native settlement covers module-owned WebSockets",
+      "stopped": true,
+      "fatal": "NATIVE_FLOW_UNSCOPED_NOTIFICATION",
+      "retryAt": 1793202854159,
+      "nextServiceAt": null,
+      "lastNotificationAt": 1793202792242,
+      "lastFreshSupportAt": 1793202790481,
+      "lastBankClockAt": 1793202789000,
+      "socketBytes": 65825081,
+      "applicationBytes": 65698396,
+      "recordedBytes": 57030335,
+      "notifications": 27118,
+      "notificationRetentionAggregate": {
+        "compactedScopeRows": 1866,
+        "compactionOperations": 26,
+        "peakRetainedRowsPerScope": 7803,
+        "peakRetainedRowsAcrossScopes": 8428,
+        "candidatePressureRefusals": 0,
+        "units": "Scoped notification metadata rows, including one refusal reserve per scope; the same transaction in two scopes counts twice",
+        "meaning": "Run totals survive subscription ACK reset and candidate retirement; compaction operations count only removals. These are not unique trades, audit completeness or market coverage."
+      },
+      "ignoredAfterGap": 346,
+      "receivedBoundNotifications": 27464,
+      "retiredNotifications": 0,
+      "retiredCorrectionNotifications": 0,
+      "retiredSubscriptions": 0,
+      "retiredSubscriptionPolicy": {
+        "maximum": 256,
+        "retentionMs": 180000
+      },
+      "rawEvidence": {
+        "successfulShapes": 8,
+        "successfulBytes": 36510,
+        "refusalShapes": 2,
+        "refusalBytes": 9408,
+        "refusalPayloadsOmitted": 0,
+        "limits": {
+          "maximumSuccessShapes": 8,
+          "maximumRefusalShapes": 8,
+          "maximumSuccessBytes": 524288,
+          "maximumRefusalBytes": 524288
+        }
+      },
+      "protocolFrames": 134,
+      "unmanagedControlUnits": 0,
+      "suppressedLibraryControlFrames": 0,
+      "controlByteChargeFailures": 0,
+      "managementAccounting": "Shared gate counts actual managed operations; unadmitted automatic library controls are suppressed before send and force transport recovery. Historical actual unmatched controls still require append-only accounting.",
+      "duplicates": 0,
+      "duplicateNotificationsSuppressed": 0,
+      "duplicateEvents": 0,
+      "corrections": 1,
+      "normalizedEvents": 7817,
+      "protocolEffects": 43,
+      "duplicateProtocolEffects": 0,
+      "strictV2UnavailableNotifications": 43,
+      "gaps": 135,
+      "processingMs": {
+        "count": 256,
+        "p95": 4.607679000124335,
+        "maximum": 6.940285999793559
+      },
+      "queueAgeMs": {
+        "p95": 876,
+        "maximum": 1841
+      },
+      "perTransactionEnrichmentRequests": 0,
+      "auditVerified": false,
+      "liveTradingEnabled": false,
+      "financialWriterOpened": false
+    }
+  },
+  "finalStopContext": {
+    "fatal": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_UNSCOPED_NOTIFICATION",
+    "demonstratedPrecursor": "Connection19 timeout/cancellation/late numeric ACK race immediately precedes source-wide UNSCOPED fatal.",
+    "timeline": [
+      {
+        "at": "2026-10-28T15:53:10.918Z",
+        "event": "connection19 ACK1; ACK2/3/4 at11.465/11.790/12.086"
+      },
+      {
+        "at": "2026-10-28T15:53:12.400Z",
+        "event": "logsSubscribe operation5681 physical start"
+      },
+      {
+        "at": "2026-10-28T15:53:14.085Z",
+        "event": "timeout fires1685.428ms vs1500ms bound; recorded14.103"
+      },
+      {
+        "at": "2026-10-28T15:53:14.119Z",
+        "event": "6candidate retirements"
+      },
+      {
+        "at": "2026-10-28T15:53:14.127Z",
+        "event": "late ACK101851025 refused CONTROL_CANCELLED; noactive/retiredmatch"
+      },
+      {
+        "at": "2026-10-28T15:53:14.158Z",
+        "event": "physical settlement"
+      },
+      {
+        "at": "2026-10-28T15:53:14.159Z",
+        "event": "connection disconnect"
+      },
+      {
+        "at": "2026-10-28T15:53:14.173Z",
+        "event": "source stop UNSCOPED"
+      }
+    ],
+    "evidence": [
+      "run/events/events-012.ndjson:6736-6809",
+      "run/events/events-013.ndjson:1-8"
+    ],
+    "unknown": [
+      "Actual offending unscoped packet/subscriptionID was not retained.",
+      "No connection19subscription-retirement event exists. TTL expiry is not established.",
+      "No evidence distinguishes no-pending-subscribe branch from early-buffer8overflow.",
+      "LateACK101851025 is context, not proven offending notificationID."
+    ]
+  },
+  "conclusion": "Useful native-data throughput and11unique independent shadow evaluations; NOT reliable concurrent operation or production acceptance.5knownlate-tail packets were present before audit completion but absent from frozen audit snapshot;1unknownsuccess packet remains insufficient evidence. Final timeout/cancellation race still requires containment/diagnostics. No financial writer or PAPER trade.",
+  "inputs": [
+    {
+      "path": "run/events/events-001.ndjson",
+      "bytes": 7973414,
+      "sha256": "0d0b5d7ff462e68163617fda5c1b970f74a4590609f40205ad8a34aae50785b5"
+    },
+    {
+      "path": "run/events/events-002.ndjson",
+      "bytes": 7802785,
+      "sha256": "bb615ef0b30648e2f2f29992865128ca2599b1743d72eadf1623d60b8671cf68"
+    },
+    {
+      "path": "run/events/events-003.ndjson",
+      "bytes": 7652192,
+      "sha256": "dd7ce95417ae4c89926b7e049fe6a37f31e4e6757aaf129ef5b3c35595ad086b"
+    },
+    {
+      "path": "run/events/events-004.ndjson",
+      "bytes": 7589098,
+      "sha256": "58452802a1ddf71fb91362453dfc709eeb400c077278c423edbf34711e81b7ba"
+    },
+    {
+      "path": "run/events/events-005.ndjson",
+      "bytes": 7566963,
+      "sha256": "2319370c18b134cba147a6ed65c7c1d12064a7c197950c7e70c1ea9255a4718e"
+    },
+    {
+      "path": "run/events/events-006.ndjson",
+      "bytes": 7636561,
+      "sha256": "0818d92aeff4d57a4dc028cc3d7f3f9e35d5cb661d49e87a944b21b2f41b9e24"
+    },
+    {
+      "path": "run/events/events-007.ndjson",
+      "bytes": 7614436,
+      "sha256": "d1fac141a2c5cf9a4b3320e86b4b6766af96283180deba509d58f01a0094c5a4"
+    },
+    {
+      "path": "run/events/events-008.ndjson",
+      "bytes": 7633231,
+      "sha256": "b6eb91700a749516a5627f22d1f905cf210cb4d2905f713d06f89a230de9824e"
+    },
+    {
+      "path": "run/events/events-009.ndjson",
+      "bytes": 7646216,
+      "sha256": "654c690b6b1c0a635bb638ec3a5b69166c371061a4b6262e760d95de86d77878"
+    },
+    {
+      "path": "run/events/events-010.ndjson",
+      "bytes": 7686798,
+      "sha256": "02b8309f1a156b229209215dac11f7a29dee07eaf5e6af3235fb971b18742628"
+    },
+    {
+      "path": "run/events/events-011.ndjson",
+      "bytes": 7764548,
+      "sha256": "f33bbc3f53f9fe4aff08b48bfe9f69094dc9999c6d046ca5b666667ec5404d99"
+    },
+    {
+      "path": "run/events/events-012.ndjson",
+      "bytes": 7732602,
+      "sha256": "c67d6576275fffd213f7b01c841344cdcf945ebd010c9d429ca183d225057a0d"
+    },
+    {
+      "path": "run/events/events-013.ndjson",
+      "bytes": 1462753,
+      "sha256": "c8c52d394fb111f87f2eb092d23c0d6892ccb9a819c1fb487f114656aeed34a2"
+    }
+  ]
+}

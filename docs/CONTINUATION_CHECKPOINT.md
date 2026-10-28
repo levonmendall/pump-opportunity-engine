@@ -1,5 +1,47 @@
 # POE recovered continuation checkpoint
 
+Continuous recovery update 2026-10-28 16:42 UTC. Latest frozen SOURCE90625f53b686578637accf73ebc457f841743ee2
+is RUNNING on existing EC2, GH40726448588/admin221094f347665cb5553b5769cd693f73d776409c.
+Actualsource run native-candidates-20261028162930001, start16:29:30.001UTC,
+900second observation (not2h), expected end16:44:30.001/cutoff16:44:20.001.
+Executablebe2a5fc3132c7a2bfefe04ec7717d61e0d7030c6c462ccebca2e384d5558915a,
+config5a55cc6635b814cb4b76d5b9636d2eecca1439ebd534ed1c84ed587c03aa377b,
+manifest0b328f3419e5d69dd3c8e1347501a393700b53eb130fe632ba7b31c2cd43085e.
+HTTP/controlcooldown containment+ready-auditpriority+adaptive100/1000page auditv3
+and executed-flow/failedpacketdiagnostic distinction implemented. Wellformed
+unscopednotifications now realgap/actualclose/backoff/newACK, notpermanentfatal.
+1252repositorytests/build/compile PASS;43operatorchecksPASS. Priorfullsuitefailure
+and wronglynamedpackaging invocation retained; correctedchecks supersede them.
+Latest publicsourceAt1793205711835: assessments36,
+qualitygaps36,
+misses13;
+stillnotreliableacceptance. NativePAPERdisabled here; nofinancialwriter/no24hclock.
+PublicRender sampler session85905 finite25min8MiB, evidenceforward-01/render-cycles.
+
+PRIOR640run is now VERIFIEDSETTLED and fullybackedup:131filehashes,16,291,835B
+archive1e11cc2fbe94ffa81e1e0ff669b6b382a671acdb575b6822a1d9fa5147931c75,
+648starts=settlements,0unmanaged. Actualfinal13shadowfails/11tokens/7817trades,
+43protocoleffects,122gaps,24unavailable,2unusable,21misses; stopUNSCOPED15:53:14.
+OriginalsupervisorfinalstoppedACKwasaccepted+1s. Recoveryoldstalesourceresendrefused,
+notfakedfresh. Originalobserver/account/PID/restartsverifiedunchangedduringrecovery.
+Accountinglinked187books/5681units/384878965accountedB/148111360uncertainB;
+noactualusageoruncertaintyrefunded. Oldunresolvedcleared onlyafterthatproof.
+Newunresolved native-continuous-20261028163000 remains until newrunsettles/readback.
+LeasePID36042 stillsoleleadcoordination until19:15UTC; noCloudmarketwriter.
+
+Parallelisolatedworktreepaths (doNOToverwrite):
+/workspace/poe-native-audit-tail: actualmWTlateaudit-snapshot falsemissing repair;
+vvunknownsuccess remainsblocked. /workspace/poe-rpc-derived-status: derivedRPC
+metadatawritecoalescing only, authoritativeper-chunkbooks unchanged.
+/workspace/poe-native-paper-integration: runnableexplicitprogram-authoritative
+ordinary-flow PAPERadapter/launcher+actualSDKtwo-positiondisposablefixture;
+notyetleadcherry-picked/deployed/naturaltrades. Rootreviewsallbeforemerge.
+Adminnewfixedhost-keytransferprep may beuncommitted; nofinancialaccountmigration
+performed. GHsecretsAPI403; don'taskforwallet/providerkeys. Plannedtransport uses
+host-onlyone-timeencryptionkey/publickeyreturn, neverplaintextledger inGitHub.
+No originalportfolio/tradingruntime replacement. Existingpilotaccount/inception
+remainsCloudprivateledger, unopenedbycandidateintervals. Seecontinuous-recovery evidence.
+
 Updated 2026-10-28 15:52 UTC: user-requested attribution of source640's
 15:24:48.374 snapshot is complete. Exact36qualitygaps are six all-six shared
 interruptions:12callbacks from2subscriptiontimeouts,24from4HTTPcooldown cascades
