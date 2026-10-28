@@ -1,3 +1,53 @@
+Updated2026-10-28 20:11UTC — ACTUAL FIRST NATIVE PAPER RUN ACTIVE, not acceptance.
+
+Existing account was imported unchanged atrevision8934 byGH40757848269;
+Cloudoriginalfiles are fenced0400/parent0500 underownerflock. No secondwriter.
+Actualhostcode/SQLite/workerproofGH40757464996 PASS. Currentmarket+financial
+process isGH40758225777/admin255a4ab, native-paper-20261028195247298,
+source6d894c1262b93d22f288e214016bfb314799e0ae,
+main9baf5500b40eb26bc1ae898c8dbdb8801b9798e8c03de0280bb3896556cb6553,
+normalconfig8d3bfa5d58dfae316250b290113badaf9969c785c9f1d76c566b272d41a321f9.
+Frozen persistent-buying-pilot-v1, deep3, initialmax1position, finite1800s,
+withone1800smanagement-onlyhandoffifexposureremains. DoNOTreimportoldledger,
+reseed, or startanotherwriter. ActualcurrentfinancialauthorityistheHOSTcopy.
+
+RenderpublicsamplerPID125785 startedBEFOREdispatch, correct--use-env-proxy,
+finite66min/32MiB/420GET. Outputpaper-forward-01/render-cycles.ndjson.
+Originalportfolioidentityverifiedunchangedseparately;unauthenticatedpilotPOST401.
+Mobile390x844 renderedwithoutJSerrors/horizontaloverflow. Nooriginalobserver
+servicechanges. Lastactualremoteoriginalprocesscheckisrunstartup; no later
+privatehosthealthclaimuntilsupervisorafterreceipt.
+
+ACTUALNEWFAILURE: diagnosticsACK/publishwork,butallcurrentfinancialportfolio/
+accountingoutputsarenull. ReproducedOFFLINEwithactualPaperTrader.funnel:
+extrareservedcounterviolatesstrict9-fieldSnapshot.funnelschema. Repairce16f0f
+reviewed55tests/buildPASSbutNOTinrunning6d. AnotherreportingdefectusesWATCH
+tradecount0insteadofactualnativeflowandhidesindependentassessmentcounters;
+fixisbeingfinishedinisolatedworktree. DoNOTinferzerotrades/financialsuccess
+fromnullportfolio. Noorders/fillsarereportedsofar;directledgerreadbackpending.
+Nativequality/audit/deadlinefailurecountersarealsononzeroandremainactualadverse
+evidence. Normalwarming, independentpredictiverejection, executionpermission,
+andmissingdatasituationsremainseparate.
+
+Currentlead5df48a4includesnextversionrepairsonly;runningprivateexecutableis6d.
+Multihopaf840fa/6df0456retainedactualtwo-hopgrammar/amount/fee/userproof
+(123focusedtests/buildPASS),doesnotclaimallswapvariants. Same-accountsource-only
+supervisorupgrade5df48a4passed27+18operatorchecks/review:changesonlyinput.source
+underownerlockafterpriorwriter+transportsettlement,preservesoldinput/provenance
+andfinancialstate. Bothneedintegratedtests/freeze/hostverificationbeforeuse.
+
+NEXT: allowcurrentfinitewriter/supervisortosettlesafely;preserveitsownsource,
+scorecard,rawfailureevidence/accounting. Detailedreadbackisbeingextendednarrowly
+toincludeboundedcandidate/audit/physicalHTTPmetadata,withoutprivateledgerexport.
+Meanwhilefinishnextreportingfixesandrunintegratedverification. Thenreadbackand
+reconcileSAMEactualhostaccount, diagnoseauditfailures, source-pincorrectedbuild,
+versiontransitionwithreviewedexistinghelper, startnextfinitePAPERsegment.
+No24hacceptance:provider/auditreliability,naturalqualification/execution,
+liveholdingprotection/recoveryandpersistentcontinuousresourcecontrolsunproven.
+
+Prior verifiedcode/forwardevidence follows; old 'noactivewriter/transfernotdone'
+statements are historical and superseded by the current topsection.
+
 Updated2026-10-28 19:44UTC — latest lead19cdd8c5a6bb23874bd8179cdc698ee7e355e442.
 This replaces the stale18:35 status only; historical evidence below remains valid.
 
