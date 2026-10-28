@@ -161,7 +161,7 @@ test('new observed capacity can reconsider a busy identity after five seconds ra
  const f=fixture();f.seed('capacity-growth');f.registry.transition('mint-capacity-growth','DEEP_OBSERVATION','first');f.registry.transition('mint-capacity-growth','DEFERRED','old fixed capacity backoff',f.now(),{deferUntil:f.now()+600000});
  f.registry.deferCapacity('mint-capacity-growth','measured enrichment capacity loss',demand(f.now(),17));f.at(f.now()+5000);const reconsidered=f.registry.reassessCapacity(capacity(f.now(),18))!;
  assert.equal(reconsidered.kind,'deep-readmission-ready');assert.equal(reconsidered.row.deferUntil,f.now());assert.equal(reconsidered.row.capacityCoverage!.status,'PROBE_READY');assert.equal(reconsidered.row.completeWindows,0);assert.equal(f.registry.next(f.now(),new Set())!.mint,'mint-capacity-growth');
- f.registry.transition('mint-capacity-growth','DEEP_OBSERVATION','fresh support and new flow required');assert.equal(f.registry.snapshot().rows[0]!.capacityCoverage!.status,'OBSERVING');assert.equal(f.records.filter(r=>r.kind==='pilot-watch-promotion').at(-1)!.data.freshFullWindowRequired,true);
+ assert.equal(f.registry.admitCapacity('mint-capacity-growth',capacity(f.now(),18)).allowed,true);f.registry.transition('mint-capacity-growth','DEEP_OBSERVATION','fresh support and new flow required');assert.equal(f.registry.snapshot().rows[0]!.capacityCoverage!.status,'OBSERVING');assert.equal(f.records.filter(r=>r.kind==='pilot-watch-promotion').at(-1)!.data.freshFullWindowRequired,true);
  f.at(f.now()+60000);f.registry.noteWindow('mint-capacity-growth',f.now());assert.equal(f.registry.snapshot().rows[0]!.capacityCoverage!.status,'VALID_WINDOW');
 });
 
@@ -197,7 +197,7 @@ test('repetitive overload cannot hot-loop, and restart preserves pending reasses
 test('weak predictive rejections and provider outages are not reclassified as capacity shortages',()=>{
  const f=fixture();f.seed('weak');f.seed('provider');f.registry.transition('mint-weak','DEFERRED','valid-window-predictive-assessment-failed',f.now(),{deferUntil:f.now()+60000});f.registry.transition('mint-provider','DEFERRED','HTTP429 provider cooldown',f.now(),{deferUntil:f.now()+65000});f.at(f.now()+5000);
  assert.equal(f.registry.reassessCapacity(capacity(f.now())),null);assert.ok(f.registry.snapshot().rows.every(r=>r.capacityCoverage===undefined));assert.equal(f.registry.next(f.now(),new Set()),null);
- f.seed('prior-capacity');f.registry.deferCapacity('mint-prior-capacity','capacity loss',demand(f.now(),18));f.registry.transition('mint-prior-capacity','DEFERRED','HTTP503 provider failure',f.now(),{deferUntil:f.now()+65000});assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-prior-capacity')!.capacityCoverage!.status,'OTHER_UNAVAILABLE');assert.equal(f.registry.reassessCapacity(capacity(f.now()+5000)),null);
+ f.seed('prior-capacity');f.registry.deferCapacity('mint-prior-capacity','capacity loss',demand(f.now(),18));f.registry.transition('mint-prior-capacity','DEFERRED','HTTP503 provider failure',f.now(),{deferUntil:f.now()+65000});assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-prior-capacity')!.capacityCoverage!.status,'AWAITING_CAPACITY','a provider failure cannot erase the prior unresolved resource loss');assert.equal(f.registry.reassessCapacity(capacity(f.now()+5000)),null,'the provider defer remains in force as well');
 });
 
 test('capacity metadata is optional for old checkpoints and rejects impossible new evidence without touching obligations',()=>{
@@ -325,4 +325,63 @@ test('old checkpoints retain valid entry-age coverage and unverified retention s
  const f=fixture();f.seed('baseline');f.registry.transition('mint-baseline','DEEP_OBSERVATION','old entry-age window');f.registry.noteWindow('mint-baseline',f.now());const checkpoint=f.registry.export();delete checkpoint.entryAgePromotionCount;const restored=new PilotWatch({...f.options,restored:checkpoint});assert.equal(restored.snapshot().summary.coverage.atLeastOneValidWindow,1);assert.equal(restored.snapshot().summary.promotionWaitMs.entryAgePromotions,checkpoint.counters.promoted);
  const g=fixture();g.registry.discover({signature:'unknown-origin',receivedAt:g.now()});g.at(g.now()+7500000);assert.equal(g.registry.snapshot().rows[0]!.state,'EXPIRED');assert.throws(()=>g.registry.selectOlderResearch('unknown-origin',{observedAt:g.now(),evidence:'no verified migration'}),/OLDER_VERIFIED_IDENTITY/);
  const h=fixture();h.at(100000000);h.seed('selected',h.now()-7200001);h.registry.selectOlderResearch('mint-selected',{observedAt:h.now(),evidence:'actual current selection hint'});const saved=h.registry.export();saved.rows[0]!.olderResearch!.selectedAt=saved.rows[0]!.migrationAt!+1000;assert.throws(()=>new PilotWatch({...h.options,restored:saved}),/CHECKPOINT_OLDER_RESEARCH/);
+});
+
+test('rebroadcast identity refresh cannot erase an awaiting/probe-ready resource gate or its provider deadline',()=>{
+ const f=fixture();f.seed('busy');f.registry.deferCapacity('mint-busy','measured enrichment capacity loss',demand(f.now(),1));f.registry.transition('mint-busy','WATCH','finalized cached identity refreshed');
+ let row=f.registry.snapshot().rows.find(r=>r.mint==='mint-busy')!;assert.equal(row.state,'DEFERRED');assert.equal(row.capacityCoverage!.status,'AWAITING_CAPACITY');assert.equal(f.registry.next(f.now(),new Set()),null);assert.throws(()=>f.registry.transition('mint-busy','DEEP_OBSERVATION','identity is verified'),/CAPACITY_PROBE_REQUIRED/);
+ f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.kind,'deep-readmission-ready','changed display reason must not starve explicit reassessment');
+ const until=f.now()+65000;f.registry.transition('mint-busy','DEFERRED','provider recovery also required',f.now(),{deferUntil:until});f.registry.transition('mint-busy','WATCH','another duplicate identity refresh');
+ row=f.registry.snapshot().rows.find(r=>r.mint==='mint-busy')!;assert.equal(row.capacityCoverage!.status,'PROBE_READY');assert.equal(row.deferUntil,until);assert.equal(f.registry.next(f.now(),new Set()),null);assert.equal(f.registry.admitCapacity('mint-busy',capacity(f.now())).allowed,false);assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-busy')!.capacityCoverage!.status,'AWAITING_CAPACITY');
+});
+
+test('stale ready demand is unavailable and does not block another capacity probe',()=>{
+ const f=fixture();f.seed('stale');f.registry.deferCapacity('mint-stale','capacity loss',demand(f.now(),1));f.at(f.now()+5000);f.registry.reassessCapacity(capacity(f.now()));
+ f.at(f.now()+30001);f.seed('fresh');f.registry.deferCapacity('mint-fresh','another capacity loss',demand(f.now(),1));f.at(f.now()+5000);
+ assert.equal(f.registry.next(f.now(),new Set()),null);assert.equal(f.registry.snapshot().rows.find(r=>r.mint==='mint-stale')!.capacityCoverage!.status,'AWAITING_CAPACITY');assert.equal(f.registry.reassessCapacity(capacity(f.now()),new Set(['mint-stale']))!.row.mint,'mint-fresh');
+});
+
+test('excluded or deferred ready identities cannot stall an unrelated capacity reassessment',()=>{
+ for(const blockedBy of ['excluded','defer'] as const){const f=fixture();for(const id of ['blocked','waiting']){f.seed(id);f.registry.deferCapacity('mint-'+id,'capacity loss',demand(f.now(),1));}f.at(f.now()+5000);assert.equal(f.registry.reassessCapacity(capacity(f.now()))!.row.mint,'mint-blocked');
+  if(blockedBy==='defer')f.registry.transition('mint-blocked','DEFERRED','support preparation backoff',f.now(),{deferUntil:f.now()+10000});
+  const excluded=blockedBy==='excluded'?new Set(['mint-blocked']):new Set<string>();assert.equal(f.registry.reassessCapacity(capacity(f.now()),excluded)!.row.mint,'mint-waiting');
+ }
+});
+
+test('deep readmission revalidates current capacity immediately and cannot reuse a stale or restored admission stamp',()=>{
+ const f=fixture();f.seed('busy');f.registry.deferCapacity('mint-busy','capacity loss',demand(f.now(),1));f.at(f.now()+5000);f.registry.reassessCapacity(capacity(f.now()));
+ assert.throws(()=>f.registry.transition('mint-busy','DEEP_OBSERVATION','skip actual capacity check'),/CAPACITY_ADMISSION_REQUIRED/);
+ const saved=f.registry.export();assert.equal(f.registry.admitCapacity('mint-busy',capacity(f.now())).allowed,true);f.at(f.now()+1001);assert.throws(()=>f.registry.transition('mint-busy','DEEP_OBSERVATION','queued too long after capacity check'),/CAPACITY_ADMISSION_REQUIRED/);
+ const restored=new PilotWatch({...f.options,restored:saved});assert.throws(()=>restored.transition('mint-busy','DEEP_OBSERVATION','restore cannot carry capacity authorization'),/CAPACITY_ADMISSION_REQUIRED/);
+ assert.equal(restored.admitCapacity('mint-busy',{...capacity(f.now()),freeEnrichmentStarts:0}).allowed,false);assert.equal(restored.snapshot().rows[0]!.capacityCoverage!.status,'AWAITING_CAPACITY');
+ f.at(f.now()+5000);restored.recordCapacityDemand('mint-busy',demand(f.now(),1));assert.equal(restored.reassessCapacity(capacity(f.now()))!.kind,'deep-readmission-ready');assert.equal(restored.admitCapacity('mint-busy',capacity(f.now())).allowed,true);restored.transition('mint-busy','DEEP_OBSERVATION','fresh current capacity verified');assert.equal(restored.snapshot().summary.deepActive,1);
+});
+
+test('legacy reason-churn checkpoints recover resource gates instead of silently treating them as ready',()=>{
+ const f=fixture();f.seed('busy');f.registry.deferCapacity('mint-busy','capacity loss',demand(f.now(),1));const saved=f.registry.export();saved.rows[0]!.state='WATCH';saved.rows[0]!.reason='cached identity refreshed';saved.rows[0]!.capacityCoverage!.status='OTHER_UNAVAILABLE';saved.rows[0]!.deferUntil=0;
+ const restored=new PilotWatch({...f.options,restored:saved});assert.equal(restored.snapshot().rows[0]!.capacityCoverage!.status,'AWAITING_CAPACITY');assert.equal(restored.next(f.now(),new Set()),null);assert.throws(()=>restored.transition('mint-busy','DEEP_OBSERVATION','identity-only readmission'),/CAPACITY_PROBE_REQUIRED/);
+});
+
+test('an actual age-only-expired activity hint remains awareness until explicit bounded older selection',()=>{
+ const f=fixture();f.at(100000000);const origin=f.now()-7200001;f.seed('later-active',origin);assert.equal(f.registry.snapshot().rows[0]!.state,'EXPIRED');
+ assert.equal(f.registry.noteActivity('mint-later-active',f.now(),'actual newly received broad-feed hint'),true);let row=f.registry.snapshot().rows[0]!;assert.equal(row.state,'EXPIRED');assert.equal(row.olderResearch,undefined);assert.equal(f.registry.next(f.now(),new Set()),null);assert.equal(f.registry.snapshot().summary.eligibleKnown,0);
+ const restored=new PilotWatch({...f.options,restored:f.registry.export()});assert.equal(restored.snapshot().rows[0]!.lastActivityAt,f.now());const selected=restored.selectOlderResearch('mint-later-active',{observedAt:f.now(),evidence:'same actual hint selects research only'});assert.equal(selected.state,'WATCH');assert.equal(restored.snapshot().summary.ageCohorts.olderSelected,1);assert.equal(restored.snapshot().summary.eligibleKnown,0);
+ f.at(origin+21600000);assert.equal(restored.noteActivity('mint-later-active',f.now(),'later outside six-hour scope'),false);
+});
+
+test('manual expiry, structural exclusions, unverified identities and future activity cannot bypass older selection',()=>{
+ const f=fixture();f.at(100000000);for(const id of ['manual','unsupported'])f.seed(id,f.now()-7200001);f.registry.transition('mint-manual','EXPIRED','manual archive');f.registry.transition('mint-unsupported','PERMANENTLY_UNSUPPORTED','unsupported structural proof');f.registry.discover({signature:'unverified-old',receivedAt:f.now()});
+ for(const id of ['mint-manual','mint-unsupported','unverified-old'])assert.equal(f.registry.noteActivity(id,f.now(),'new untrusted hint'),false);assert.throws(()=>f.registry.noteActivity('mint-manual',f.now()+1,'future hint'),/ACTIVITY_FUTURE/);
+});
+
+test('default174 identity capacity restores its150 primary plus24 selected older identities without restoring flow',()=>{
+ let now=100000000;const options={maximumDeep:6,now:()=>now,record:()=>{}},watch=new PilotWatch(options);
+ for(let i=0;i<24;i++){const signature='older-'+i,mint='mint-older-'+i;watch.discover({signature,receivedAt:now});watch.verify(signature,{mint,pool:'pool-older-'+i,migrationAt:now-7200001,verifiedAt:now});watch.selectOlderResearch(mint,{observedAt:now,evidence:'actual fresh activity hint'});}
+ for(let i=0;i<150;i++)watch.discover({signature:'primary-'+i,receivedAt:now});const restored=new PilotWatch({...options,restored:watch.export()}),s=restored.snapshot();assert.equal(s.summary.known,174);assert.equal(s.summary.minimumPrimaryIdentityCapacity,150);assert.equal(s.summary.ageCohorts.olderSelected,24);assert.equal(s.summary.unverified,150);assert.equal(s.summary.deepActive,0);assert.equal(s.summary.eligibleKnown,0);
+});
+
+test('capacity admission cannot demote owned obligations or revive terminal exclusions',()=>{
+ for(const state of ['HELD','ENTRY_PENDING','EXPIRED','PERMANENTLY_UNSUPPORTED'] as const){const f=fixture();f.seed('ready');f.registry.deferCapacity('mint-ready','capacity loss',demand(f.now(),1));f.at(f.now()+5000);f.registry.reassessCapacity(capacity(f.now()));f.registry.transition('mint-ready',state,state==='EXPIRED'?'manual expiry':'explicit '+state);const before=f.registry.snapshot().rows[0]!;
+  for(const context of [capacity(f.now()),{...capacity(f.now()),protectionPending:true,freeEnrichmentStarts:0}]){assert.equal(f.registry.admitCapacity('mint-ready',context).allowed,false);assert.deepEqual(f.registry.snapshot().rows[0],before,'resource admission must leave '+state+' identity, deadline, history and capacity metadata unchanged');}
+ }
 });
