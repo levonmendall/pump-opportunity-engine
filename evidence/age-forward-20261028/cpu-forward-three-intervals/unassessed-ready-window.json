@@ -1,0 +1,1126 @@
+{
+  "schemaVersion": 1,
+  "classification": "DEMONSTRATED_LOCAL_RECOGNITION_SCHEDULING_LOSS_CANDIDATE_ONLY",
+  "runId": "pilot-20261028024343351-654738bd",
+  "sourceCommit": "cf8d8bcd5b674ba6d510e92c1ae181d3cc6e5e4d",
+  "window": {
+    "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+    "startAt": 1793156090000,
+    "endAt": 1793156150000,
+    "auditedReadyAt": 1793156156767,
+    "independentAuditAvailableInOriginalClosedBucket": true
+  },
+  "sourceHash": "151bdd8b51aa2faa0a89b5b6006bc34edf4e7a412672b899dde31b23d5cc0296",
+  "sourceExcerpts": [
+    {
+      "line": 149,
+      "text": "  if(input.candidatePending)return {admitted:false,latestStartAt:input.now-1,reason:'required-existing-candidate-enrichment-has-priority'};"
+    },
+    {
+      "line": 244,
+      "text": "    const lowerAdmission=(bound=1200)=>{const at=Date.now(),held=Object.keys(currentLedger.state().positions).length,view=pilotLowerPriorityAdmission({now:at,endAt,held,lastUsable,nextPendingAt:trader.nextDueAt(),operationBoundMs:bound,candidatePending:workKind!=='enrichment'&&!!feeds?.peekHint()});return held&&!pilotDiscretionaryAdmission(discretionaryStarts,at).admitted?{admitted:false,latestStartAt:at-1,reason:'held-discretionary20-of-shared60-reserve'}:view;};"
+    },
+    {
+      "line": 385,
+      "text": "      if(evaluate&&rpc.available()&&lowerAdmission().admitted){const mint=evaluate.proof.identity.baseMint;busy=true;workKind='candidate';try{if(!candidateOnly&&candidateReadyAt(mint,now)&&capacity&&!candidateRecordingClosed&&newRiskCapacity&&hasPrice&&held<configuration.maximumPositions&&!pending.length){const at=Date.now();ledger.reconcile('pilot-ready-reconcile:'+state.revision+':'+at,at,price!,usableContextMarks(at));const traffic=feeds.usage().lastAnyTrafficAt;if(traffic!==null&&at-traffic<=2000&&!ledger.state().controls.entriesEnabled){const result=ledger.resume('pilot-ready-resume:'+ledger.state().revision+':'+at,at,price!,usableContextMarks(at),{version:configuration.contract.version,evidence:'pilot-contract:'+configuration.contractSha256,marketAt:traffic,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});if(result.enabled)entryEnabledAt??=at;}}}catch(e){reject('candidate-risk-readiness-unavailable',{mint,reason:safe(e)});}finally{busy=false;workKind='idle';}if(!candidateOnly&&candidateReadyAt(mint,now)&&!newRiskCapacity)reject('entry-capacity-refusal',{mint,rollingDiscretionaryStarts:pilotDiscretionaryAdmission(discretionaryStarts,now),held});evaluate.lastEvaluatedAt=Date.now();await tick('candidate',{candidateMint:mint,reuseFreshContext:true});continue;}"
+    }
+  ],
+  "events": [
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156145017,
+      "line": 6165,
+      "lineSha256": "dd4d2a1cd593c0953e23f89167494ca596982e6169edebf8928c9bf7cb928a0e",
+      "data": {
+        "id": 4563,
+        "at": 1793156145015,
+        "enqueuedAt": 1793156145013,
+        "reservedAt": 1793156145013,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "operationPurpose": "candidate"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156145079,
+      "line": 6168,
+      "lineSha256": "e47b496be6430ae79b5f00078af088d64ad672273fc48511669ec896b74a18bb",
+      "data": {
+        "id": 4563,
+        "at": 1793156145079,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "pilot-independent-history-audit",
+      "recordedAt": 1793156145082,
+      "line": 6170,
+      "lineSha256": "a09cbff9c5d6ed2100a4ec170e3ff881e60aca2ce86078f65232ef0975758375",
+      "data": {
+        "mint": "E2QtMc39ifrmadLzadECyEQr1fn7LVKH3bsQiiRupump",
+        "start": 1793156076976,
+        "end": 1793156140000,
+        "rows": 100,
+        "missing": 0,
+        "classification": "bounded confirmed pool-signature sample; receive-time completeness and pending finality remain limited"
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156145083,
+      "line": 6171,
+      "lineSha256": "fcb23c398d66971bc394392eee4611633025ce08faae7d68a9c0005ef1f52613",
+      "data": {
+        "kind": "candidate-information-pending",
+        "at": 1793156145083,
+        "mint": "E2QtMc39ifrmadLzadECyEQr1fn7LVKH3bsQiiRupump",
+        "pending": false
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "recordedAt": 1793156145085,
+      "line": 6173,
+      "lineSha256": "02d43c10f700e241dd861e82c85ed34cf90e7df285999715cb6caaf690d06015",
+      "data": {
+        "mint": "E2QtMc39ifrmadLzadECyEQr1fn7LVKH3bsQiiRupump",
+        "at": 1793156145085,
+        "reason": "financial-execution-intentionally-disabled",
+        "windowEndAt": 1793156140000
+      }
+    },
+    {
+      "kind": "trader-predictive-assessment",
+      "recordedAt": 1793156145085,
+      "line": 6174,
+      "lineSha256": "8b603bed43b2330d8dd565ed168a31675f0ddec3a1c5f5063f458817cfd96756",
+      "data": {
+        "mint": "E2QtMc39ifrmadLzadECyEQr1fn7LVKH3bsQiiRupump",
+        "at": 1793156145085,
+        "reason": "persistent-broad-buying-rule-not-met",
+        "windowEndAt": 1793156140000
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156145087,
+      "line": 6178,
+      "lineSha256": "0f9e4798aadf573e183ab47fbd1631fbd37262c7c4047e3d44f260749e16808d",
+      "data": {
+        "kind": "candidate-gap",
+        "at": 1793156145087,
+        "mint": "E2QtMc39ifrmadLzadECyEQr1fn7LVKH3bsQiiRupump"
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156149478,
+      "line": 6186,
+      "lineSha256": "d81609383a306ecfa3857606e2b5feac69be14e89a9c7006af71bec8420b75f4",
+      "data": {
+        "id": 4564,
+        "at": 1793156149476,
+        "enqueuedAt": 1793156149474,
+        "reservedAt": 1793156149474,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "operationPurpose": "candidate"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156149543,
+      "line": 6189,
+      "lineSha256": "237473f66f7715560cb432d7758d8164009bea49b4d1a5e7792f0ef57ed94723",
+      "data": {
+        "id": 4564,
+        "at": 1793156149543,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "recordedAt": 1793156150010,
+      "line": 6192,
+      "lineSha256": "4424d3a5fa5c55b8a07f6b07a1fa1551ad67fb1efe8aa8a007774beafef0ea81",
+      "data": {
+        "mint": "GtETXWKL8iEJzC3S38CBzrzyaqfVh7Jf2qWYE2J1pump",
+        "at": 1793156150010,
+        "reason": "warming",
+        "windowEndAt": 1793156150000
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "recordedAt": 1793156150015,
+      "line": 6193,
+      "lineSha256": "98711a703b735d5c49f0fc3004e1b64e083dee2d017de5631e7e5812e7c898fb",
+      "data": {
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "at": 1793156150015,
+        "reason": "outside-provisional-migration-age",
+        "windowEndAt": 1793156150000
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156150029,
+      "line": 6194,
+      "lineSha256": "c84442f35dfbed8e8329169d6e9eb11185c242945bb021eade02d92d394b6ec5",
+      "data": {
+        "at": 1793156150029,
+        "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": true,
+        "pending": 0
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156150029,
+      "line": 6195,
+      "lineSha256": "fceefcbf88d81bfac751bc3397699222424481bccdef36b720a7cafd4541980d",
+      "data": {
+        "at": 1793156150029,
+        "mint": "GtETXWKL8iEJzC3S38CBzrzyaqfVh7Jf2qWYE2J1pump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": true,
+        "pending": 0
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156150029,
+      "line": 6196,
+      "lineSha256": "1d35749d0b168fc27c8de45b215bfb98f3f03da93726baa790ed3b308236b14e",
+      "data": {
+        "at": 1793156150029,
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": true,
+        "pending": 0
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156153519,
+      "line": 6207,
+      "lineSha256": "6ea8430f7bdf2676eee0e1e960579638d4ac581ed258ef8922b95a9e6c2cd169",
+      "data": {
+        "id": 4565,
+        "at": 1793156153517,
+        "enqueuedAt": 1793156153515,
+        "reservedAt": 1793156153516,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "operationPurpose": "discovery"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156153563,
+      "line": 6210,
+      "lineSha256": "36090a3f710210a09e8e35a15f66924b6dbe4da28550494c4af85b64339d35c0",
+      "data": {
+        "id": 4565,
+        "at": 1793156153563,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156153772,
+      "line": 6213,
+      "lineSha256": "572f38a65e1f22356d74a13ee846ee033bbb17d864a6df815768a1fa2454899c",
+      "data": {
+        "id": 4566,
+        "at": 1793156153770,
+        "enqueuedAt": 1793156153569,
+        "reservedAt": 1793156153768,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "operationPurpose": "discovery"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156153813,
+      "line": 6216,
+      "lineSha256": "24a2764df6dc373a3059541721aba74e8e44e9c4c072703c1049377ec2abe7f3",
+      "data": {
+        "id": 4566,
+        "at": 1793156153813,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156154027,
+      "line": 6220,
+      "lineSha256": "ca54e7200842068d27e0b6a398277629404de09263519c2ad48e9f22b49d80d3",
+      "data": {
+        "id": 4567,
+        "at": 1793156154025,
+        "enqueuedAt": 1793156153817,
+        "reservedAt": 1793156154022,
+        "kind": {
+          "transport": "http",
+          "method": "getBlockTime"
+        },
+        "operationPurpose": "discovery"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156154068,
+      "line": 6223,
+      "lineSha256": "baecaf29f956353447835a5ef9bf0891346794255f6f3e6643dd07a66d322add",
+      "data": {
+        "id": 4567,
+        "at": 1793156154068,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getBlockTime"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156154075,
+      "line": 6228,
+      "lineSha256": "dbdf478f20c5361a6c7da883144b860f722ce13feecb1fe993cbf0caeb31a051",
+      "data": {
+        "kind": "candidate",
+        "at": 1793156154075
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156154075,
+      "line": 6231,
+      "lineSha256": "205ee351d81a041480fab9e4e75e5f2318c743533950690bdc5ce407cd53846a",
+      "data": {
+        "kind": "candidate-information-pending",
+        "at": 1793156154075,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "pending": true
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156154076,
+      "line": 6233,
+      "lineSha256": "1012e39ee44a8d3dc504eb28607071c96ab23f984acc9507ee531cb446b42bde",
+      "data": {
+        "kind": "flow-start",
+        "at": 1793156154076,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump"
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156154076,
+      "line": 6234,
+      "lineSha256": "358f0134c385593f3d844bd0951345a630cf321754a1cd55eafbec3bbd56f640",
+      "data": {
+        "kind": "candidate-information-pending",
+        "at": 1793156154076,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "pending": true
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "recordedAt": 1793156154080,
+      "line": 6235,
+      "lineSha256": "f009e5d657f4f3917e661a444d172443204527ef56288aac233756937a0ba9d1",
+      "data": {
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "at": 1793156154080,
+        "reason": "warming",
+        "windowEndAt": 1793156150000
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156154149,
+      "line": 6236,
+      "lineSha256": "cfd2665b4e8052c9dd8090c297806e6618b173cfbb71735cb6418e7d004e1ab1",
+      "data": {
+        "at": 1793156154149,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": true,
+        "pending": 0
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156155158,
+      "line": 6241,
+      "lineSha256": "a334fd98a1af85f0642840275fbf87cf445432a3e396e5625ae68dd90dac0a97",
+      "data": {
+        "at": 1793156155158,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": false,
+        "pending": 2
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156155379,
+      "line": 6244,
+      "lineSha256": "1264187bf76c1cd6767ce9047d92eebf1db093a5b81febf2c80903bd27c91d58",
+      "data": {
+        "signature": "3aaiYzPHTnHhtzuRryGFeFzjvbKLVpKFGF3mCXUp91mfhZgb7moxKdDZRpUQDpmWtVhcshrW9b1CHQHTfKnMhvBt",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156155377,
+        "dispatchCheckedAt": 1793156155379,
+        "methodReadyAt": 1793156155379,
+        "eligibleAt": 1793156155333,
+        "deadlineAt": 1793156159333
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156155387,
+      "line": 6246,
+      "lineSha256": "c640540cc05339b421852ccec1a0fbabc8bca65a74c5d52532f4d72ef71d5655",
+      "data": {
+        "id": 4568,
+        "at": 1793156155383,
+        "enqueuedAt": 1793156155381,
+        "reservedAt": 1793156155381,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156155448,
+      "line": 6249,
+      "lineSha256": "dc647ee605426e3fe36a968b49bcba3fa73e4baf75ef0cd3f30df82a00ab5544",
+      "data": {
+        "id": 4568,
+        "at": 1793156155448,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156155452,
+      "line": 6253,
+      "lineSha256": "4286152650d69cf955cb106e585a23687b5b6655201880017be9dbb1a085ff18",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156155959,
+      "line": 6254,
+      "lineSha256": "4afaa9d1fd864b9cc55369d13bb0a299d3de575ff91d6682cf646c1b1e797ebb",
+      "data": {
+        "signature": "dxzPsbVFu2nj1XB4NmjCSoR4m93mNujUDBMjsAd6zf9t5SD3345iRqoPpm5Kw6JCucugvFVBwinovLfcBnYDgtM",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156155957,
+        "dispatchCheckedAt": 1793156155959,
+        "methodReadyAt": 1793156155959,
+        "eligibleAt": 1793156155935,
+        "deadlineAt": 1793156159935
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156155968,
+      "line": 6256,
+      "lineSha256": "ef98b4cd2c34af55e3cf0b2f6c0ae75bb741305bad6438a3b6c5aca85941df90",
+      "data": {
+        "id": 4569,
+        "at": 1793156155964,
+        "enqueuedAt": 1793156155961,
+        "reservedAt": 1793156155962,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156156015,
+      "line": 6259,
+      "lineSha256": "4dd2bb4cae34c55c7ebf4fceb9d94a73a8a0d95ae711a3dc6fefef1a0f2c361f",
+      "data": {
+        "id": 4569,
+        "at": 1793156156015,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156156019,
+      "line": 6263,
+      "lineSha256": "60b0b659b83c8d12a06828f5fcf1a7ce93f051cc97c00842cf33fc309f4cadd7",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156156168,
+      "line": 6264,
+      "lineSha256": "6f95e0e7bc5af3679a174d3ef0441507cbed8001754bd12156523c402238a3c9",
+      "data": {
+        "at": 1793156156168,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": false,
+        "pending": 1
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156156426,
+      "line": 6267,
+      "lineSha256": "4529fc1e8414ee0fa570ba04ac4bfabf2ed7ddb5cdbf3b950a9b19c3a5548a31",
+      "data": {
+        "signature": "5E6CWgsGNz5LenFCePr6ckz484iK9XP45WKoVmB5VubGYmSsbiBZNY2BJTUzGSLQEyxeDYaJ4R2YpiqLeYoWNtto",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156156423,
+        "dispatchCheckedAt": 1793156156425,
+        "methodReadyAt": 1793156156425,
+        "eligibleAt": 1793156156376,
+        "deadlineAt": 1793156160376
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156156434,
+      "line": 6269,
+      "lineSha256": "7185080581cac5a2f4a538937d622c20d7573c295513d95660e897cc3558be75",
+      "data": {
+        "id": 4570,
+        "at": 1793156156430,
+        "enqueuedAt": 1793156156428,
+        "reservedAt": 1793156156428,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156156491,
+      "line": 6272,
+      "lineSha256": "13a212ed5a0299787afefacb8cb90cebfc31db55da086d614ed8b318c5eccfaf",
+      "data": {
+        "id": 4570,
+        "at": 1793156156491,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156156496,
+      "line": 6276,
+      "lineSha256": "376751f34e8d46b3d5cb210cf381c16f7d76ec315daf6c9a7f04205a996b56af",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156156686,
+      "line": 6279,
+      "lineSha256": "b598936d78651e9db9faf431dc03c0dc68f7a84738804373685cd09db09af893",
+      "data": {
+        "id": 4571,
+        "at": 1793156156683,
+        "enqueuedAt": 1793156156507,
+        "reservedAt": 1793156156680,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "operationPurpose": "candidate"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156156762,
+      "line": 6284,
+      "lineSha256": "2f8728d52656cb991eec7558d84109a590f366167d2b6af054f5d10f4bd468b8",
+      "data": {
+        "id": 4571,
+        "at": 1793156156762,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "pilot-independent-history-audit",
+      "recordedAt": 1793156156767,
+      "line": 6286,
+      "lineSha256": "bb18f3d276fb465c1d9a29902c1be718631b04faf5b4e8bc5cb5b5531012b360",
+      "data": {
+        "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+        "start": 1793156080933,
+        "end": 1793156150000,
+        "rows": 100,
+        "missing": 0,
+        "classification": "bounded confirmed pool-signature sample; receive-time completeness and pending finality remain limited"
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156156769,
+      "line": 6287,
+      "lineSha256": "703ec1c40633618077a22f9c0c9237ddbfaecc4066d726a66a35361937398cfd",
+      "data": {
+        "kind": "candidate-information-pending",
+        "at": 1793156156769,
+        "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+        "pending": false
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156157682,
+      "line": 6292,
+      "lineSha256": "5bf7da85b5b12ab1a14e2b92a0e49819cee1238aa3e877cdf03e9d46b66fc123",
+      "data": {
+        "at": 1793156157682,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": false,
+        "pending": 2
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156157711,
+      "line": 6293,
+      "lineSha256": "16d824ab7c00a0048dfa6259f2903f55733eabee3fba9f11674ff72d7274538b",
+      "data": {
+        "signature": "5snqEdnb2ADKS67ZqeW6vBVf5AZ9QcykXsoehvmsfx7Bw69eorLNkLRGWCfpRWaEuJwVCTfmyGBCcfCyzRhUGT4j",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156157707,
+        "dispatchCheckedAt": 1793156157710,
+        "methodReadyAt": 1793156157710,
+        "eligibleAt": 1793156157704,
+        "deadlineAt": 1793156161704
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156157724,
+      "line": 6295,
+      "lineSha256": "ecf451c736cc4bf7efa7476f2236cb2f2588aed7397bc2231eebb73a4265f093",
+      "data": {
+        "id": 4572,
+        "at": 1793156157718,
+        "enqueuedAt": 1793156157714,
+        "reservedAt": 1793156157715,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156157776,
+      "line": 6298,
+      "lineSha256": "5f5380c90d6081e9122e30dd69db089727c0c1ed6e78777cb2c069ed345407d5",
+      "data": {
+        "id": 4572,
+        "at": 1793156157776,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156157781,
+      "line": 6302,
+      "lineSha256": "a1e59f3dbee31b8b33a3811a37ca297572014f0096b10e9354c3f3b7f4ab1a34",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156158689,
+      "line": 6305,
+      "lineSha256": "e605deadbb4fe5f88689020bf801e513a86a120c81a02abf4a0fd49988aafd5d",
+      "data": {
+        "signature": "AQuAv8rqe3jCUHiJTGdMoWEctMDqycmbGntfFF3p34jp9SdqYEfZC9RQViieAp1S65GGBztkVYVG8L6vxdk21eA",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156158686,
+        "dispatchCheckedAt": 1793156158688,
+        "methodReadyAt": 1793156158688,
+        "eligibleAt": 1793156158636,
+        "deadlineAt": 1793156162636
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156158699,
+      "line": 6307,
+      "lineSha256": "ea7cba41e8c3b29a7cd671fe3a6fc19c35dcf74a30a8b7166a780aa649039f6d",
+      "data": {
+        "id": 4573,
+        "at": 1793156158694,
+        "enqueuedAt": 1793156158691,
+        "reservedAt": 1793156158691,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156158774,
+      "line": 6312,
+      "lineSha256": "5be606c74cd9f776ac64d0d5d55180bc561224984abfeb629532fb600dd56873",
+      "data": {
+        "id": 4573,
+        "at": 1793156158774,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156158777,
+      "line": 6314,
+      "lineSha256": "d6291940748923937e3adbbbcc1c59854d15d8355fc1a8d7b380d2e9493dbfce",
+      "data": {
+        "at": 1793156158777,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": false,
+        "pending": 3
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156158779,
+      "line": 6317,
+      "lineSha256": "f7771ed16ae72f018a43d6d1683b7784802cb9b9a022f381786e86dd82becbd5",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156159727,
+      "line": 6322,
+      "lineSha256": "3ef0c7f0fc462bed3691dc60041282ba1216e6724d91c2a5dbbfca1cb718a715",
+      "data": {
+        "signature": "3F7oUQ35gQrXoJ4scZ224zUZ2uku8z64SfDJ9fSysjaRuDNMyPbBwH5GeeWLa5n7VTXRstqK3Nq8smFAN7CASuZR",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156159724,
+        "dispatchCheckedAt": 1793156159726,
+        "methodReadyAt": 1793156159726,
+        "eligibleAt": 1793156159594,
+        "deadlineAt": 1793156163594
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156159739,
+      "line": 6324,
+      "lineSha256": "8e42c94ac9c96c509070123a9644343d4030b03e58e36afe0617442959b16446",
+      "data": {
+        "id": 4574,
+        "at": 1793156159732,
+        "enqueuedAt": 1793156159728,
+        "reservedAt": 1793156159729,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156159809,
+      "line": 6327,
+      "lineSha256": "696f9b275a90e01a016786b94265c0c1d1b779b80ccfbeda82c84ca7c6edcd0e",
+      "data": {
+        "id": 4574,
+        "at": 1793156159809,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156159813,
+      "line": 6331,
+      "lineSha256": "cbf33bd7b5d38e1833ec752793b5050a8da531549e40903afffebfa698c50d9d",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156159814,
+      "line": 6332,
+      "lineSha256": "9c92eebdabc684d211279c0435ac01cd145809d898c86ebe23b6c970b2bfe143",
+      "data": {
+        "at": 1793156159813,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "windowEndAt": 1793156150000,
+        "fullyEnriched": false,
+        "pending": 2
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156159816,
+      "line": 6333,
+      "lineSha256": "ed855215c71d4071278ede039865cec75db1d133418583e2afd277804bf7bec5",
+      "data": {
+        "signature": "63qmMXjirgRx1rnhZUn6xUisT3uJ1y1zD2fyj6p3riDNUNAM5cqJaz1mPX9WAw8McKa5Sk2aMH3TPm2diPEZbwur",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156159814,
+        "dispatchCheckedAt": 1793156159816,
+        "methodReadyAt": 1793156159816,
+        "eligibleAt": 1793156159716,
+        "deadlineAt": 1793156163716
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156159993,
+      "line": 6338,
+      "lineSha256": "0df668b01a15275b56f45259ec818866ab71ad637b820399bf6c0e9380b53937",
+      "data": {
+        "id": 4575,
+        "at": 1793156159987,
+        "enqueuedAt": 1793156159818,
+        "reservedAt": 1793156159983,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156160061,
+      "line": 6341,
+      "lineSha256": "a446c6a88fafe46e81909c035628f5bd67a72f7e4f14cdbd358b2618939fb8f6",
+      "data": {
+        "id": 4575,
+        "at": 1793156160061,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156160066,
+      "line": 6345,
+      "lineSha256": "8beb11e850eecfc76d5dbfa4deb3a121f466d7b750c2bc5785de3403bf11c49f",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "pilot-enrichment-dispatch-admission",
+      "recordedAt": 1793156160070,
+      "line": 6346,
+      "lineSha256": "427524c62596475b18a2d6d645781af12754cee599d4e459ed27d9b8e46de103",
+      "data": {
+        "signature": "5fJ7c19aYQx1y8k8XUS8YzpLNqdXXRDzEkVjuPfYudVvWoSKdWa8hdQUcRNXaEprtoBZKJzLb4MPDC6VJALs36w7",
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+        "loopObservedAt": 1793156160066,
+        "dispatchCheckedAt": 1793156160069,
+        "methodReadyAt": 1793156160069,
+        "eligibleAt": 1793156159949,
+        "deadlineAt": 1793156163949
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156160081,
+      "line": 6349,
+      "lineSha256": "3bed3cb40e5dc615e41a59417fd8b58d18cbd59c3fc4102c17dd74b7c8be70b4",
+      "data": {
+        "at": 1793156160081,
+        "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+        "windowEndAt": 1793156160000,
+        "fullyEnriched": true,
+        "pending": 0
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156160081,
+      "line": 6350,
+      "lineSha256": "2219e377738007a0866c8b0d154cd19ea56a2519398f1ca2f86f8b15fe009116",
+      "data": {
+        "at": 1793156160081,
+        "mint": "GtETXWKL8iEJzC3S38CBzrzyaqfVh7Jf2qWYE2J1pump",
+        "windowEndAt": 1793156160000,
+        "fullyEnriched": true,
+        "pending": 0
+      }
+    },
+    {
+      "kind": "research-feature-view",
+      "recordedAt": 1793156160081,
+      "line": 6351,
+      "lineSha256": "30c7643cd8f8511a58a599e2a04d6e1cd3eac6232c500b86eab545521eed10ed",
+      "data": {
+        "at": 1793156160081,
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "windowEndAt": 1793156160000,
+        "fullyEnriched": true,
+        "pending": 0
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156160245,
+      "line": 6352,
+      "lineSha256": "58d801c7e32566cebebc0f7f9166f8476bbb2a5bb4ef789e42d06bbb5bdbf684",
+      "data": {
+        "id": 4576,
+        "at": 1793156160240,
+        "enqueuedAt": 1793156160072,
+        "reservedAt": 1793156160238,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "operationPurpose": "enrichment"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156160296,
+      "line": 6355,
+      "lineSha256": "2d39febdb8ca571684f815f1a4e0eaec7b1b2ffe18c128b169a225a582017fb9",
+      "data": {
+        "id": 4576,
+        "at": 1793156160295,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156160299,
+      "line": 6359,
+      "lineSha256": "21583a2bb7d3ff76753707688e59e79b2601b4ad606753d0a4ec3cf8950efc8f",
+      "data": {
+        "kind": "trade"
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156160308,
+      "line": 6366,
+      "lineSha256": "bf9ae6c14c48381b800818e1ded8ee6777c9c72c807d9b8797f6a3b1607df00e",
+      "data": {
+        "kind": "candidate-gap",
+        "at": 1793156160308,
+        "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump"
+      }
+    },
+    {
+      "kind": "trader-input",
+      "recordedAt": 1793156160310,
+      "line": 6370,
+      "lineSha256": "e960402d2ce541832d6e2a9ed9fd83f29b07b32d245f60fec476cac82f257baa",
+      "data": {
+        "kind": "candidate-information-pending",
+        "at": 1793156160310,
+        "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+        "pending": true
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "recordedAt": 1793156160311,
+      "line": 6371,
+      "lineSha256": "5e401aa3163b70e4b14d19ab19061c29de8509726d5e52113748689057e54cf8",
+      "data": {
+        "mint": "GtETXWKL8iEJzC3S38CBzrzyaqfVh7Jf2qWYE2J1pump",
+        "at": 1793156160311,
+        "reason": "warming",
+        "windowEndAt": 1793156160000
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "recordedAt": 1793156160315,
+      "line": 6372,
+      "lineSha256": "3d2921df34407f580bcb0955e93d1ac3285533fee99b62efbc5ac78f91683694",
+      "data": {
+        "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+        "at": 1793156160315,
+        "reason": "outside-provisional-migration-age",
+        "windowEndAt": 1793156160000
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156160495,
+      "line": 6376,
+      "lineSha256": "00ec47f5db606519108c964610cc922770eaa00131806786335cd122885d9ef8",
+      "data": {
+        "id": 4577,
+        "at": 1793156160494,
+        "enqueuedAt": 1793156160327,
+        "reservedAt": 1793156160492,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "operationPurpose": "candidate"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156160561,
+      "line": 6379,
+      "lineSha256": "bef9f24b81df0ee8ead632fad9bd00b5ffd9f28f6fae797dc595b06555aba62c",
+      "data": {
+        "id": 4577,
+        "at": 1793156160561,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "recordedAt": 1793156163530,
+      "line": 6386,
+      "lineSha256": "70e42f5fc1649f7a28d4e89dcf80701ec1ca35b40cdd8b2f192bfe19802454ae",
+      "data": {
+        "id": 4578,
+        "at": 1793156163529,
+        "enqueuedAt": 1793156163526,
+        "reservedAt": 1793156163527,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "operationPurpose": "candidate"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "recordedAt": 1793156163596,
+      "line": 6389,
+      "lineSha256": "543bc25e606b88a05eac27b4246af0b4dea088ddeffdd257d0ed5a90b19480f8",
+      "data": {
+        "id": 4578,
+        "at": 1793156163596,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "uncertainReservedBytes": 0
+      }
+    }
+  ],
+  "demonstrated": "Audit was available in the original closed bucket; this mint was explicitly set pending=false; no matching actual assessment was recorded. Other-mint enrichment hints remained queued, and the candidate-only CPU assessment branch reused a network admission gate which rejects whenever any candidate enrichment is pending.",
+  "notDemonstrated": "No statement that this window would pass, lead to an executable trade or generate profit. Exact counterfactual CPU scheduling/provider response behavior was not replayed. Original result remains50actual assessments, not51.",
+  "smallestRepairHypothesis": "Give no-network candidate-only assessments a bounded in-memory service opportunity when their information is ready, including paced gaps before required enrichment starts. Preserve held/pending-action priority and enrichment deadlines; verify offline before another frozen interval.",
+  "networkRequests": 0,
+  "sourceChanged": false
+}
