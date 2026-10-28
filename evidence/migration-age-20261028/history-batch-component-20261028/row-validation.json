@@ -1,0 +1,54 @@
+{
+  "meaning": "Transaction-history rows, not decoded swaps or independent window-completeness proof. Every requested query had minContextSlot=current confirmed slot.",
+  "slotFloor": 462363979,
+  "rows": [
+    {
+      "key": "prior-pool-0",
+      "rows": 100,
+      "transactionSuccessRows": 99,
+      "firstSlot": 462363953,
+      "lastSlot": 462354560,
+      "saturated": true
+    },
+    {
+      "key": "prior-pool-1",
+      "rows": 100,
+      "transactionSuccessRows": 87,
+      "firstSlot": 462353776,
+      "lastSlot": 462317486,
+      "saturated": true
+    },
+    {
+      "key": "prior-pool-2",
+      "rows": 100,
+      "transactionSuccessRows": 75,
+      "firstSlot": 462344520,
+      "lastSlot": 462318863,
+      "saturated": true
+    },
+    {
+      "key": "prior-pool-3",
+      "rows": 100,
+      "transactionSuccessRows": 100,
+      "firstSlot": 462363982,
+      "lastSlot": 462363512,
+      "saturated": true
+    },
+    {
+      "key": "prior-pool-4",
+      "rows": 100,
+      "transactionSuccessRows": 100,
+      "firstSlot": 462318706,
+      "lastSlot": 462315041,
+      "saturated": true
+    },
+    {
+      "key": "prior-pool-5",
+      "rows": 100,
+      "transactionSuccessRows": 98,
+      "firstSlot": 462336491,
+      "lastSlot": 462313888,
+      "saturated": true
+    }
+  ]
+}
