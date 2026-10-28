@@ -145,7 +145,7 @@ export class PilotWatch {
   }
   noteActivity(mint:string,at:number,evidence:string):boolean{
     this.at(at);need(text(evidence,256),'PILOT_WATCH_ACTIVITY_EVIDENCE');const r=this.row(mint);if(!r||r.mint===null||['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state))return false;
-    if(r.lastActivityAt!==null&&at<=r.lastActivityAt)return false;r.lastActivityAt=at;r.lastActivityEvidence=evidence;this.counters.activityHints++;
+    if(r.lastActivityAt!==null&&at<=r.lastActivityAt)return false;r.lastActivityAt=at;r.lastActivityEvidence=evidence;this.counters.activityHints++;this.emit('pilot-watch-activity',{mint:r.mint,at,evidence,hintOnly:true,meaning:'allocation hint only; no normalized trade fields or qualification supplied'});
     // This is a scheduling hint only. It never supplies normalized trade fields
     // or clears any defer deadline, audit gap, or incomplete flow window.
     return true;
@@ -157,11 +157,14 @@ export class PilotWatch {
   next(at:number,excluded:ReadonlySet<string>):WatchRow|null{
     this.at(at);this.expire(at);
     const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil&&this.eligible(r,at));
-    // New evidence receives bounded preference, but a waiting identity older
-    // than five minutes goes first so busy hints cannot monopolize re-promotion.
-    const rank=(r:WatchRow)=>at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!)>=300000?0:r.lastDemotedAt!==null&&(r.lastActivityAt??0)>r.lastDemotedAt?1:2;
-    const freshReady=ready.some(r=>r.promotions===0&&r.capacityCoverage?.status!=='PROBE_READY');
-    ready.sort((a,b)=>(freshReady?Number(a.capacityCoverage?.status==='PROBE_READY')-Number(b.capacityCoverage?.status==='PROBE_READY'):0)||rank(a)-rank(b)||a.waitingSince-b.waitingSince||a.firstSeenAt-b.firstSeenAt||a.signature.localeCompare(b.signature));return ready[0]?copy(ready[0]):null;
+    // Allocation only: new post-demotion activity and never-deep identities
+    // precede inactive revisits. Four durable promotion phases give fresh work
+    // one guaranteed turn and inactive revisits at most one when both wait;
+    // the remaining turns prefer newly active identities. No flow is inferred.
+    const active=ready.filter(r=>r.promotions>0&&r.lastDemotedAt!==null&&r.lastActivityAt!==null&&r.lastActivityAt>r.lastDemotedAt&&r.lastActivityAt<=at&&at-r.lastActivityAt<=60000),activeIds=new Set(active.map(r=>r.signature));
+    const fresh=ready.filter(r=>r.promotions===0),inactive=ready.filter(r=>r.promotions>0&&!activeIds.has(r.signature)),phase=this.counters.promoted%4;
+    const order=phase===3?[inactive,active,fresh]:phase===1?[fresh,active,inactive]:[active,fresh,inactive];
+    const selected=order.find(rows=>rows.length)??[];selected.sort((a,b)=>a.waitingSince-b.waitingSince||a.firstSeenAt-b.firstSeenAt||a.signature.localeCompare(b.signature));return selected[0]?copy(selected[0]):null;
   }
   snapshot(at=this.clock()){
     this.at(at);this.expire(at);const rows=[...this.rows.values()],eligible=rows.filter(r=>this.eligible(r,at)&&r.state!=='PERMANENTLY_UNSUPPORTED'),waiting=eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil),waits=waiting.map(r=>Math.max(0,at-Math.max(r.waitingSince,r.migrationAt!+MIN_AGE,r.verifiedAt!))),covered=eligible.filter(r=>r.everHadWindow);
