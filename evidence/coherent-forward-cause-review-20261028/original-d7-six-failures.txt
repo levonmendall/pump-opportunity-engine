@@ -1,0 +1,120 @@
+✖ PLANNING CLOCK actual readiness helper serves three peers with 1ms computation jitter (42.101077ms)
+✖ PLANNING CLOCK actual readiness helper serves three peers with 5ms computation jitter (9.818633ms)
+✖ PLANNING CLOCK actual readiness helper serves three peers with 50ms computation jitter (8.802186ms)
+✖ PLANNING CLOCK real future query cooling still yields to healthy peers under advancing time (8.883166ms)
+✖ frozen query planning retains actual monotonic timeout cooling after a wall-clock jump (31.663484ms)
+✖ history readiness freezes only the planning floor across advancing clocks, never provider admission (8.53515ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 0
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1281.555577
+
+✖ failing tests:
+
+test at test/native-candidate-runner.test.ts:1:70494
+✖ PLANNING CLOCK actual readiness helper serves three peers with 1ms computation jitter (42.101077ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 3
+  
+      at TestContext.<anonymous> (/tmp/poe-planning-clock-baseline-d7/test/native-candidate-runner.test.ts:377:117)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:70494
+✖ PLANNING CLOCK actual readiness helper serves three peers with 5ms computation jitter (9.818633ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 3
+  
+      at TestContext.<anonymous> (/tmp/poe-planning-clock-baseline-d7/test/native-candidate-runner.test.ts:377:117)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:70494
+✖ PLANNING CLOCK actual readiness helper serves three peers with 50ms computation jitter (8.802186ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 3
+  
+      at TestContext.<anonymous> (/tmp/poe-planning-clock-baseline-d7/test/native-candidate-runner.test.ts:377:117)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:72073
+✖ PLANNING CLOCK real future query cooling still yields to healthy peers under advancing time (8.883166ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2
+  
+      at TestContext.<anonymous> (/tmp/poe-planning-clock-baseline-d7/test/native-candidate-runner.test.ts:383:223)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/pilot-rpc-history-batch.test.ts:1:23695
+✖ frozen query planning retains actual monotonic timeout cooling after a wall-clock jump (31.663484ms)
+  AssertionError [ERR_ASSERTION]: a peer without any actual cooldown remains eligible on the same frozen clock
+  
+  202500 !== 200000
+  
+      at TestContext.<anonymous> (/tmp/poe-planning-clock-baseline-d7/test/pilot-rpc-history-batch.test.ts:130:366)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 202500,
+    expected: 200000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/pilot-rpc.test.ts:1:54096
+✖ history readiness freezes only the planning floor across advancing clocks, never provider admission (8.53515ms)
+  AssertionError [ERR_ASSERTION]: reading a healthy query cannot push it one millisecond into its own future
+  
+  200009 !== 200004
+  
+      at TestContext.<anonymous> (/tmp/poe-planning-clock-baseline-d7/test/pilot-rpc.test.ts:350:48)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200009,
+    expected: 200004,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

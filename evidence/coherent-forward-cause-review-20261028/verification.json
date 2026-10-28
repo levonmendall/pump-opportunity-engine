@@ -1,0 +1,50 @@
+{
+  "verifiedAt": "2026-10-28T23:12:10.464341+00:00",
+  "codeCommit": "53eb5f4b82b0b52a4c3d0735be96be4df00d96c2",
+  "sourceBeforeFix": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+  "focusedTests": {
+    "passed": 141,
+    "failed": 0
+  },
+  "newRegressions": {
+    "originalD7Passed": 0,
+    "originalD7Failed": 6,
+    "correctedPassed": 6,
+    "independentlyPassed": 6
+  },
+  "build": "PASS",
+  "causalAnalyzerTestsPassed": 8,
+  "marketRequests": 0,
+  "financialFilesRead": false,
+  "runtimeOrDeploymentChangedByAnalysis": false,
+  "files": {
+    "independent-six-pass.txt": {
+      "bytes": 760,
+      "sha256": "5157147d9148cfbc0e16a349d663e4048e79b279bd58ba96177b9fc8bd3ba1a2"
+    },
+    "build.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "actual-d7-result.json": {
+      "bytes": 20011,
+      "sha256": "590689c5dc5dbbc4946159731a95220488d84492b2cfa91d173a97a87b3fd0dc"
+    },
+    "focused-141.txt": {
+      "bytes": 17217,
+      "sha256": "75bfe4b3bd67dc17a396e5a7257574695a8430be86897228d782678ce05ae08a"
+    },
+    "review.py": {
+      "bytes": 7938,
+      "sha256": "b248fb0fa5231427e5085789603d3593f76d0b9ae1a551a9050ef048dfcf4d85"
+    },
+    "original-d7-six-failures.txt": {
+      "bytes": 4890,
+      "sha256": "38cef980021b5c21e929b5a162fc52c980559fc36ed74598ca037aa4ed004b4e"
+    },
+    "README.md": {
+      "bytes": 6012,
+      "sha256": "3fecb2bc709aa9561a71529af148f3ed602f07a35832951b94516441f48954ad"
+    }
+  }
+}

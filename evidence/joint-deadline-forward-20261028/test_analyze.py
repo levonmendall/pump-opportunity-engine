@@ -108,5 +108,18 @@ class Join(unittest.TestCase):
             m.analyze(root)
 
 
+    def test_reported_query_wait_alone_cannot_become_provider_failure_causation(self):
+        state=('native-audit-dispatch-state',dict(mint='A',windowEndAt=1000,at=1001,
+            firstReadyAt=1001,reason='rpc-gate-wait',nextAction='await-history-provider-or-query-cooldown',
+            context=dict(historyReadyAt=1001,historyCooldownUntil=0,physicalBusy=False)), 'events-001.ndjson')
+        result=m.analyze(self.fixture([state]+self.page('A',1,1002)+self.outcome('A',1)))
+        causes=result['cases'][0]['demonstratedCauseEvidence']
+        self.assertTrue(any('requires separate evidence' in c for c in causes))
+        self.assertFalse(any('was explicitly active' in c for c in causes))
+        state[1]['context']['historyCooldownUntil']=2000
+        result=m.analyze(self.fixture([state]+self.page('A',1,1002)+self.outcome('A',1)))
+        self.assertTrue(any('was explicitly active' in c for c in result['cases'][0]['demonstratedCauseEvidence']))
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -199,9 +199,11 @@ def analyze(root):
         if any(p['timedOut'] and p['http'].get('headersAt') is None for p in pages):
             causes.append('no headers by timeout; remote/backend/network cause not isolated')
         if any(e['data'].get('nextAction') == 'await-primary-support-ceiling' for e in states):
-            causes.append('primary support ceiling explicitly unavailable')
+            causes.append('runner awaited usable primary support ceiling; this alone does not establish provider latency')
         if any(e['data'].get('nextAction') == 'await-history-provider-or-query-cooldown' for e in states):
-            causes.append('history/query cooldown explicitly blocked dispatch')
+            causes.append('runner reported history/query readiness wait; actual provider/query cooldown requires separate evidence')
+        if any((e['data'].get('context', {}).get('historyCooldownUntil') or 0) > (e['data'].get('at') or 0) for e in states):
+            causes.append('history provider cooldown was explicitly active at a retained dispatch observation')
         if t['expired'] and not pages:
             causes.append('no directly linked physical page before expiry; inspect dispatch/missing detail')
         if summary.get('omittedTransitions', 0):
