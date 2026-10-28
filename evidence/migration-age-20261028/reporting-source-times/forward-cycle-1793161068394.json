@@ -1,0 +1,139 @@
+{
+  "checkedAt": "2026-10-28T04:17:48.394Z",
+  "httpStatus": 200,
+  "receiver": {
+    "state": "stopped",
+    "snapshot": {
+      "schemaVersion": 1,
+      "kind": "experimental-pilot",
+      "authoritative": false,
+      "liveTrading": false,
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "native-candidates-20261028041609569",
+      "generatedAt": 1793160990220,
+      "source": {
+        "release": "60b93929bf3373a84a024b8712da2ca2e69e71e2",
+        "strategy": "persistent-buying-v0-unfrozen",
+        "sha256": "02f24f0516aef934df89e95fdde959eb53949c460e821e746ef34769f2bc29bf"
+      },
+      "running": false,
+      "entriesEnabled": false,
+      "status": "stopped: NATIVE_RESEARCH_RPC_FATAL",
+      "mode": "candidate-evaluation",
+      "financialExecutionAuthorized": false,
+      "observationAgePolicy": {
+        "version": "observation-age-v1",
+        "minimumObservationAgeMs": 0,
+        "recentMaximumAgeMs": 7200000,
+        "selectedOlderMaximumAgeMs": 21600000
+      },
+      "sourceTimes": {
+        "lastMarketNotificationAt": null,
+        "lastFreshSupportAt": 1793160988425,
+        "lastBankClockAt": 1793160987000,
+        "lastAuditAt": null,
+        "lastPredictiveAt": null,
+        "financialReconciliationAt": null
+      },
+      "portfolio": null,
+      "accounting": null,
+      "funnel": {
+        "discovered": 0,
+        "supported": null,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0,
+        "verifiedMigrationOrigins": 64,
+        "admitted": 418,
+        "usableWindows": 0
+      },
+      "metrics": {
+        "rpcRequests": 41,
+        "providerEvents": 10610,
+        "normalizedTrades": 0,
+        "eventLoopLagMs": 30.965759,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeMs": null,
+        "protectionBreaches": null,
+        "unavailableChecks": null,
+        "streamBytes": 16433928
+      },
+      "decisions": [],
+      "refusals": [
+        {
+          "reason": "migration-verification-unavailable",
+          "count": 0
+        },
+        {
+          "reason": "verification-queue-full",
+          "count": 0
+        },
+        {
+          "reason": "native-quality-gaps",
+          "count": 0
+        },
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 0
+        },
+        {
+          "reason": "independent-audit-unusable",
+          "count": 0
+        },
+        {
+          "reason": "predictive-window-deadline-missed",
+          "count": 0
+        }
+      ],
+      "watch": {
+        "known": 112,
+        "watch": 30,
+        "eligibleKnown": 10,
+        "deepActive": 0,
+        "maximumDeep": 6,
+        "queued": 10,
+        "promoted": 418,
+        "repromoted": 325,
+        "demoted": 418,
+        "expired": 91,
+        "capacityExclusions": 0,
+        "structuralExclusions": 13,
+        "completeWindows": 415,
+        "strategyRejections": 0,
+        "incompleteDataExclusions": 0,
+        "enrichmentDeadlineFailures": 0,
+        "predictiveAssessments": 0,
+        "predictiveFailures": 0,
+        "observationEligibleKnown": 29,
+        "observationQueued": 29,
+        "maximumOlderResearchIdentities": 24,
+        "ageCohorts": {
+          "preEntry": 0,
+          "entryEligible": 10,
+          "olderSelected": 19
+        },
+        "waitMs": {
+          "mean": 2348235.7,
+          "maximum": 4814991
+        },
+        "promotionWaitMs": {
+          "mean": 1072822.201591512,
+          "maximum": 6515299
+        }
+      }
+    },
+    "receivedAt": 1793160991056,
+    "lastContactAt": 1793160991056,
+    "sourceAgeMs": 78136,
+    "receiverAgeMs": 77300,
+    "lastContactAgeMs": 77300,
+    "sourceStale": false,
+    "publisherConnected": true
+  }
+}

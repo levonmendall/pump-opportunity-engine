@@ -1,7 +1,8 @@
 # POE continuation checkpoint
 
-Updated 2026-10-28T03:59:00+00:00. Lead review branch `poe-free-data-evaluation-20261027`.
-No forward runtime is currently running. Do not confuse a build or publisher
+Updated 2026-10-28T04:25:01+00:00. Lead review branch `poe-free-data-evaluation-20261027`.
+No forward runtime is currently running. The first integrated native segment stopped
+during setup; all evidence and usage are settled. Do not confuse a build or publisher
 heartbeat with a live observer/trader. All real-money operations remain disabled.
 
 ## Completed age and CPU intervals
@@ -25,8 +26,8 @@ Three immutable intervals, same frozen baseline/config4f159a554019e1d9c52af7df82
 
 Read `evidence/age-forward-20261028/cpu-forward-three-intervals/` and exact
 per-token/audit-availability traces. Overlapping lookbacks are unioned; no market
-recall or profit percentage is supported. Current settled remote units4643 after the bounded INGUS identity attempt;
-read actual books again before network. Historical uncertainty44,040,192bytes is
+recall or profit percentage is supported. Current settled remote units4684 after the bounded native setup failure;
+read actual books again before network. Historical uncertainty46,137,344bytes is
 retained separately from measured response bytes; no counter refund/reset.
 
 ## Implemented changes / current lead
@@ -119,3 +120,31 @@ Next: review native integrated runner+secure reporting delivery, complete start
 checks and bounded continuous forward trial via EXISTINGnonrootEC2adminroute.
 Continue actual work; don't repeat old captures for favorable samples. Update
 this checkpoint after each material outcome and before session interruption.
+
+## Actual native integration failure and current repair
+
+Existing nonrootEC2 admin run40631355108/job122628221094/admin8a80d5a ran
+canonical60b9392/bundle02f24f05…29bf for20.651s, then stoppedRPC_FATAL.
+No trade notification/window/assessment occurred. All36 completedHTTP calls
+were200; six valid pools were refreshed29times each, while zero logsSubscribe
+started. A stale loop-time comparison and deferred-service fall-through let
+origin-verification preparation repeatedly preempt required subscription setup.
+Reservation4684 expired after durable persistence but before invocation, and
+localDISPATCH_EXPIRED was incorrectly classified as globalfatal. Repairs are
+underway in separateworktree; this is not a provider-saturation result.
+
+41accountedunits/40provenphysicalstarts/601261measuredresponsebytes plus2MiB
+retaineduncertainty. Exact115-sourcechain linked once; no refunds/reset.
+Completepublicevidence.tar.gz +index/receipts retained under
+evidence/migration-age-20261028/native-setup-40631355108. Originalobserver
+identity/PID/restarts unchanged at04:16aftercheck. PrivatefinancialDB notread.
+
+Dedicatedreportingfile is installed privatelyUID994; one-time transportkey
+deleted after verifiedinstallation. Reporting-onlyRendera40c75e is LIVE via
+dep-dbgn8u0ae00c73cugtfg04:06:03UTC, sameFreeURL/service/originalaccount.
+Two actual running source ACKs occurred during failedsetup, followed by accepted
+actualSTOPPED snapshot04:16:30.220; no market-window pass is implied. New source
+fact times are separate from status/publisher heartbeat. OldCloudpublisher was
+stopped before receiverdeployment; current reporting comes from bounded EC2
+job only. It ended truthfully. Next correctedjob will retain actual source
+snapshot samples for exact runningcounter comparison. No24hourclock started.

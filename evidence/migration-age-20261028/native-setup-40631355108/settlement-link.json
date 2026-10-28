@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "administrationRun": 40631355108,
+  "administrationJob": 122628221094,
+  "administrationCommit": "8a80d5a8c2d3a1d4148cdf7c4a0a69f427e6c9ce",
+  "segment": "native-ec2-20261028041601",
+  "source": {
+    "commit": "60b93929bf3373a84a024b8712da2ca2e69e71e2",
+    "sha256": "02f24f0516aef934df89e95fdde959eb53949c460e821e746ef34769f2bc29bf"
+  },
+  "elapsedMs": 20651,
+  "stopReason": "NATIVE_RESEARCH_RPC_FATAL",
+  "classification": "FAILED_SETUP_NO_CANDIDATE_WINDOW",
+  "priorUnits": 4643,
+  "accountedNewUnits": 41,
+  "provenPhysicalStarts": 40,
+  "cumulativeAccountedUnits": 4684,
+  "measuredNewResponseBytes": 601261,
+  "uncertainNewResponseBytes": 2097152,
+  "cumulativeUncertainResponseBytes": 46137344,
+  "accountedCumulativeResponseBytes": 128725061,
+  "newChapter": {
+    "path": "/workspace/poe-pilot/runs/native-ec2-20261028041601/artifact/run/rpc/chapter-001.json",
+    "sha256": "12e1f926628f932d5bf44ae4d6a63e37372576610fccad6929b727bff1f10a42"
+  },
+  "historicalBooksChanged": false,
+  "reservationsRefunded": false,
+  "physicalSettled": true,
+  "financialLedgerOpened": false,
+  "originalObserverUnchanged": true,
+  "at": 1793161360008
+}
