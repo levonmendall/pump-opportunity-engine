@@ -1,0 +1,97 @@
+{
+  "frozenBeforeCalculation": true,
+  "settingsSha256": "b28acf05d26ce8d6cb61c8d6881a3e0aa5a476993934b76842e266adabe44191",
+  "settings": {
+    "version": "migration-age-offline-v1",
+    "variants": [
+      {
+        "id": "A-baseline-5-120m",
+        "minimumMinutes": 5,
+        "maximumMinutes": 120
+      },
+      {
+        "id": "B-earlier-1-120m",
+        "minimumMinutes": 1,
+        "maximumMinutes": 120
+      },
+      {
+        "id": "C-older-5-360m",
+        "minimumMinutes": 5,
+        "maximumMinutes": 360
+      },
+      {
+        "id": "D-adaptive-age",
+        "status": "NOT_ASSESSABLE",
+        "reason": "No frozen adaptive rule or adequate matched economic data; no threshold search."
+      }
+    ],
+    "unchanged": {
+      "windowSeconds": 60,
+      "bucketSeconds": 10,
+      "netBuyLamports": "1000000000",
+      "minimumPositiveBuckets": 4,
+      "minimumBuyers": 5,
+      "maximumLargestBuyerBps": 3500,
+      "priceStructure": "nonnegative",
+      "maximumInitialCostUsd": 50,
+      "maximumPositionCostUsd": 150,
+      "maximumPositions": 3,
+      "stopLossBps": 1500,
+      "takeProfitBps": 3000,
+      "maximumHoldSeconds": 900,
+      "delayMs": 1000,
+      "expiryMs": 5000,
+      "slippageBps": 100,
+      "quoteAgeAtUseMs": 2000,
+      "supportAndDataChecks": "unchanged"
+    },
+    "bins": [
+      [
+        "A",
+        0,
+        1
+      ],
+      [
+        "B",
+        1,
+        3
+      ],
+      [
+        "C",
+        3,
+        5
+      ],
+      [
+        "D",
+        5,
+        10
+      ],
+      [
+        "E",
+        10,
+        30
+      ],
+      [
+        "F",
+        30,
+        60
+      ],
+      [
+        "G",
+        60,
+        120
+      ],
+      [
+        "H",
+        120,
+        360
+      ],
+      [
+        "I",
+        360,
+        1440
+      ]
+    ],
+    "scope": "Retrospective age metadata and indicative observations; no financial execution or optimum selection."
+  }
+}

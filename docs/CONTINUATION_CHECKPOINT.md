@@ -1,75 +1,114 @@
-# POE continuation checkpoint — 2026-10-27 23:09UTC
+# POE continuation checkpoint
 
-Current task: **frozen candidate evaluation only**. No simulated financial entry,
-position, quote dispatch or execution is authorized. Historical pilot/PAPER names
-are not permission. Original EC2 observer/account/inception and Render portfolio
-remain untouched. Standing read-only research authority applies; old lifetime
-quotas are historical evidence, not current prohibitions.
+Updated 2026-10-28T03:35:29+00:00. Lead review branch `poe-free-data-evaluation-20261027`.
+No forward runtime is currently running. Do not confuse a build or publisher
+heartbeat with a live observer/trader. All real-money operations remain disabled.
 
-Branch `poe-free-data-evaluation-20261027`, core92b50f8f331021da8da5b7ced366abffcd3a4e5a
-(pushed). SourceSHA256d9b9b87d23a663fd6d4afc4c37b5d604c16cdd95bbf448126708f401e05f839d.
-Configuration7420a232157049667de8758614d9093ea782fa6a2b4a0a97f6673189f5634a5f;
-strategy contractebec988c7b87a5be0cdc2e9ddcc0d9ff42a35363418dd528dc3eb9e26d7474dd.
-Primary persistent-buying rules/window are unchanged. Candidate-only actor returns
-before financial recovery/context/quotes/reconciliation/actions and fails closed
-on financial permission/obligations or lost recorder evidence. No new capital.
+## Completed age and CPU intervals
 
-ACTIVE FROZEN RUN: `pilot-20261027230222347-7a5dc2cf`, PID/session from process
-inspection (`exec`session49909), six deep slots, historical stage three but
-effective financial positions0. Started23:02:22.347UTC, finite900seconds through
-about23:17:22UTC or an earlier guard. Do not edit src/package files, interrupt,
-restart or duplicate it. Allow natural completion and analyze its result.json.
-Private directory `/workspace/poe-pilot`, account
-`poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`, inception2026-10-27T17:56:13.252Z.
-Ledger revision7745 remains unchanged; balances/history are not reseeded or used
-as active performance. Local status reports current mode/config/financial meaning.
+Existing isolated account: `poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`,
+inception2026-10-27T17:56:13.252Z. No natural orders, positions or pending actions;
+never reseed. Original authoritative EC2 account remains separate and unchanged.
+Candidate-only mode intentionally has zero financial authorization.
 
-At368.448seconds:17audited windows/17independent assessments, financial revision
-unchanged. Required-selected-event overloads are invalidated, not sampled.
-No complete result claimed yet. Per-run bounds:1GiBPumpApi,32MiBrelated responses,
-1500request units,384MiBRSS,240CPUsec,14MiBevents(soft8MiB), five-second enrichment.
-Physical60starts/min,20/10s,250mspacing,oneinflight; getTransaction8/10s. Actual
-provider constraints/Retry-After remain binding. No paid service, wallet or EC2 load.
+Three immutable intervals, same frozen baseline/config4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d:
+-1657bb4/runpilot-20261028015809342-f9514585:318.444s/35units/3windows;
+ stopped for a demonstrated older-WATCH missing-proof selection head blockage.
+ Corrected runnable selection and exact known-origin recovery preserve awareness.
+-e69ad8b/runpilot-20261028022044929-0a67e810:765.250s/390units;
+ CPU240.415s caused early stop.22unique admitted/17assessed/32actual assessments,
+ allfailed.5earlytokens had no audited early assessment; mapping/audit/capacity losses.
+-cf8d8bc/runpilot-20261028024343351-654738bd:895.320s normal finite completion,
+ CPU165.929s/RSS358.33MB/491units/870.66MBPumpApi.25unique admitted/21assessed,
+ 50actual assessments/allfailed;51audit-covered endpoints, NOT51decisions.
+ One valid quiet early assessment atage4.464min; other early evidence gaps persist.
 
-Completed986 interval:696.790seconds,28unique admitted/25unique audited/predictive
-assessed;25explicit failures(23quiet/two4trade), threeunavailable scopes. Primary
-ledger-disabled outcomes are separate, not performance failures.45normalized
-market swaps,301physical requests. Six flow scopes existed only755ms. It was
-closed unchanged to honor the newly exclusive candidate-only financial boundary:
-its earlier source could auto-resume. No enabling/order/exposure occurred. See
-10-financial-boundary-transition.json; do not retroactively rename it candidate-only.
+Read `evidence/age-forward-20261028/cpu-forward-three-intervals/` and exact
+per-token/audit-availability traces. Overlapping lookbacks are unioned; no market
+recall or profit percentage is supported. Current settled remote units4631 before
+the announced INGUS identity attempt; read actual books again before network.
+37,748,736 historical uncertain bytes remain preserved; no counter refund/reset.
 
-Final repairs: shared support/fresh-method eligibility before selection, then
-candidate-only mode and3-read observation support instead of5reads includingrent.
-The old run spent56rent calls(18.6%of301), unnecessary for candidate prediction.
-Compile/build,800full tests and independent reviewGO precede the current freeze.
-Earlier metadata/evidence-pressure, provider, burst and scheduling failures remain.
+## Implemented changes / current lead
 
-NEXT AFTER NATURAL COMPLETION: analyze with
-`node scripts/analyze-candidate-coverage.mjs --run-dir /workspace/poe-pilot/runs/<run> --out <new-evidence.json>`.
-Root sole market/runtime writer. Largest proven local next fixes are persisted
-signature-specific backoff for unchanged saturated-origin seeds (two consumed
-49calls/5.72MB in986), and candidate-only support-opening headroom (old15+5
-required empty10s; current15+3 remains conservative). Keep identities DEFERRED,
-not permanently unsupported; different genuine originseed for same mint must pass.
-Prepare narrow regressions, full suite, review, then a separately frozen6-slot
-interval. No12slot advancement until useful six-scope coverage/headroom supports it.
-Do not raise method/physical limits or shorten windows. Filtered log/CPI evidence
-is offline only and not a drop-in data contract; no provider research detour.
+Immediate observation and selected2–6h research are separate from entry5–120min.
+WATCH174(total150primary+24selectedolder)/one older deep; baseline risk/fees/window
+and quote<=2s unchanged. No6–24h economic claim. Missing proofs cannot monopolize
+selection or revive terminal/owned identities. Technical capacity losses retain
+awareness/reassessment instead of an effective24h abandonment.
 
-Status command:
-`bash operator/pilot.sh status --directory /workspace/poe-pilot`
-Next candidate-only resume after confirmed stop only:
-`bash operator/pilot.sh resume --directory /workspace/poe-pilot --stage three --deep-slots 6 --duration-seconds 900`
-Never start another writer. `stop` is graceful if needed for a genuine boundary/
-failure; current frozen test should otherwise complete naturally.
+Cheap WATCH identity reads removed full-registry projection from hot paths;
+full expiry/capacity/protected-state semantics preserved. Runtime CPU verification
+above completed under the SAME240s allowance. Microbenchmarks are separate from
+forward effects; markets differed. Lean ActivePipeline/PilotFeeds readiness API
+also preserves current data while avoiding unnecessary diagnostic projections.
 
-Existing Render service srv-daqon53tqb8s73bdceq0, Free/auto-deployoff, URL unchanged:
-https://meme-machine-dashboard-staging.onrender.com . Live reporting3409b767,
-deploydep-dbgi1guk1f9s738ri93g. Separate dedicated status-only publisher remains;
-its config/credential in`/workspace/poe-dashboard-publisher`must never be printed.
-It cannot read ledger/trade; pilot financials never enter original portfolio.
-Public original reconciliation was checked22:41:07UTC (not a direct EC2 probe).
+Local recognition defect in cf8: audited5jV windowend02:55:50 became ready
+02:55:56.767, but unrelatedFssj pending hints closed a network-work gate through
+02:56. Commit ed09597 gives verified candidate-only CPU assessment a bounded
+service opportunity BEFORE the next physical enrichment start, without quotes,
+context/execution/financial calls. Current build/compile/full971tests passed.
+No forward validation of this controller correction is claimed yet.
 
-Preserve unrelated docs/FUNDING.md,operator/funding/,historic lockfiles. No owner
-action currently required. No trading/economic/EC2/24–72h acceptance claim.
+Native selected-flow adapter is committed (7177bbe; tests included), one socket
+up to6deep scopes, exact v2 program events, fresh batched support, recovery,
+compact complete selected evidence and an audit ledger. Not yet integrated live.
+No general provider platform or paid provider was introduced.
+
+## Actual EC2 native evidence
+
+Admin76ce771/run40619930479/job122591225512 completed a bounded read-only FRONGUS
+component. Exactwindow02:16:40–02:17:40:149trades(97Buy/52Sell),44buyeraddresses,
+net-23.821587658SOL/twopositivebuckets; legitimate unchanged predicateFAIL.
+One10sbucket had34trades, beyond old8getTX/10senvelope.293independent interior
+pool-address rows/3pages/0missing; ALL149targetsig+slot+success tuples matched.
+Upperanchor arrived02:17:41.786afterfeatureend; excludedboundaries contain0target
+events. New independent replay artifact preserves scope/limits. FourfullTX/SPL
+matches do NOT establish per-event full-transfer equivalence.24remoteoperations,
+1,493,492bytes,CPU3.66s/RSS133.75MB, no holdings or financial writer. Pool isolder
+than baselineentryage. `confirmed-program-events-v2` is an explicit research
+contract, not a claim of baseline full-transaction identity/transfer coverage.
+
+Original observer unchanged: activePID2333724/NRestarts0/account/inception/release
+same; public reconciliation02:17:42.973UTC. This is the last direct host check,
+not a private financial-DB audit or a guarantee of present uptime.
+
+## Active delegated work — separate worktrees
+
+-native_flow_capacity: `/workspace/poe-native-candidate-runner`, assembled ledger-
+ free continuous discovery→verify→WATCH→native6deep→independent audit→frozen
+ predictive decision loop; broad PumpApi WATCH hints retained (no old enrichment).
+ Fixing helper-envelope/deferredseed/subscription-drain/quiet-window endpoint
+ regressions. First15–30min finite profile, no network before root review.
+ Profile256MiB/30minff814f0; defaultproductionlimits unchanged.2hbook-size/start-
+ history limit remains separate; do not claim an unusable long profile.
+-paper_mode_readiness: `/workspace/poe-reporting-file-delivery`, standardRSA-OAEP
+ one-time file delivery for EXISTING reporting-only token, plus bundled deployed
+ publisher. GitHubActionsSecrets API403 preserved; no permission bypass/change.
+ PublicSPKI/ciphertext only onGitHub; private transport key staysEC2UID994, token
+ onlyprivatefile. Tests use synthetictokens; NOactualkey/token transfer executed.
+ Root mustreview before hostprepare. No wallet/provider credentials eligible.
+-market_report: one bounded INGUS origin attempt using EXISTINGrecoverPilotOrigin
+ helper(24reads/20s/4MiB), indexedtime onlysearchhint, strictc/fproofrequired;
+ announce/holdgloballease, preserve anyrefusal/no automatic widenedsearch.
+
+## Reporting / exact boundaries
+
+ExistingRenderFreeURL/service unchanged. Reporting LIVE9161d3849eae1ffa549a6afa2a1c263b6f3d1185,
+deploydep-dbgl96ugekts73889s40. Originalportfolio nevermerged. Dedicated Cloud
+publisher toolsession67306 reads onlystatus+reportingsecret; it is NOTpersistent
+EC2supervision. E69twoRUNNINGcycles matched exactly. Cf8oneRUNNING+actualSTOPPED
+cycle matched; TWO RUNNING cf8cycles were NOT verified, limitation preserved.
+Mobile,401,source/account/inception/stale/stopped behavior were verified earlier.
+Source files and screenshots under migration-age/reporting.
+
+No24/72hour acceptance clock has started. No production trading-runtime replacement,
+wallet/funding/signing/transaction simulation/submission/paid service/account reset.
+Persistent PAPER installation still needs a reviewed bundle/recovery route and
+available privileges; no repeated bootstrap or owner action is requested yet.
+Preserve unrelated docs/FUNDING.md,operator/funding/,all financial/history/evidence.
+
+Next: review native integrated runner+secure reporting delivery, complete start
+checks and bounded continuous forward trial via EXISTINGnonrootEC2adminroute.
+Continue actual work; don't repeat old captures for favorable samples. Update
+this checkpoint after each material outcome and before session interruption.

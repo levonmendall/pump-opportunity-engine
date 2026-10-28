@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_INDEPENDENT_CAPTURE_BOUNDARY_REVIEW",
+  "generatedAt": "2026-10-28T03:21:33.038Z",
+  "readOnly": true,
+  "networkRequests": 0,
+  "financialWriterOpened": false,
+  "originalEvidenceChanged": false,
+  "inputs": {
+    "probe": "evidence/high-activity-20261028/ec2-native-40619930479/probe.json.gz",
+    "compressedSha256": "1effd8e6b71ae7ab38f8a6bfa2150d49bcc215302a31a62dee19b70237637473",
+    "decodedSha256": "4da6d57f6c013099961a459e0a98296cef97f6c915130cb410315b5a3f417482",
+    "decodedBytes": 1514395,
+    "eventsNdjsonSha256": "e6bf31012c795628b56d4d19d40fe2c147e597038b02eadbf5cdc6f1b221cd14",
+    "eventsHashMatchesEmbeddedReceipt": true,
+    "decisionSha256": "a835923eba8b5d4b7b155c692a587813885d7f0b680684bea264c04178a67448"
+  },
+  "scope": {
+    "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+    "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+    "dataContract": "confirmed-program-events-v2",
+    "featureWindowStartAt": 1793153800000,
+    "featureWindowEndAt": 1793153860000,
+    "featureWindowUtc": [
+      "2026-10-28T02:16:40.000Z",
+      "2026-10-28T02:17:40.000Z"
+    ],
+    "assessmentAt": 1793153864251,
+    "financialQualified": false,
+    "entryAgeEligible": false
+  },
+  "targetEvidence": {
+    "normalizedEvents": 149,
+    "uniqueSignatures": 149,
+    "buyEvents": 97,
+    "sellEvents": 52,
+    "minimumSlot": 462303925,
+    "maximumSlot": 462304200,
+    "eventsTouchingOrOutsideExcludedBoundarySlots": 0,
+    "exactSignatureSlotErrMatches": 149,
+    "mismatchedSignatureSlotErr": [],
+    "normalizedSignatureSlotErrTupleSha256": "b101e77c50a454c88843f40df736048da01169934533d6f87501bdd5cd0df4a4",
+    "independentSignatureSlotErrTupleSha256": "b101e77c50a454c88843f40df736048da01169934533d6f87501bdd5cd0df4a4",
+    "firstNormalizedAt": 1793153801102,
+    "lastNormalizedAt": 1793153859866
+  },
+  "independentDenominator": {
+    "queryMethod": "getSignaturesForAddress, confirmed request; bounded before-verified-anchor pagination",
+    "pages": 3,
+    "allReturnedRows": 300,
+    "strictInteriorSlotRangeExclusive": [
+      462303836,
+      462304209
+    ],
+    "strictInteriorPoolAddressRows": 293,
+    "strictInteriorSuccessful": 200,
+    "strictInteriorFailed": 93,
+    "missingCapturedNotificationSignatures": [],
+    "duplicateHistorySignatures": 0,
+    "notAllRowsAreSwaps": true,
+    "targetRowsAreSubsetOfInteriorDenominator": true
+  },
+  "upperEndpoint": {
+    "lastAcceptedNormalizedAt": 1793153859866,
+    "featureWindowEndAt": 1793153860000,
+    "verifiedSuccessfulAnchorNotice": {
+      "signature": "3gTryAU3XKCzJo3CzRTchJZrjAEqu1b5F5JSveuMSSoL2WCrN171A9zw1zamKbybe6AqvL8e96pGoXCfzvsBikE6",
+      "slot": 462304209,
+      "err": null,
+      "receivedAt": 1793153861786,
+      "validatedAt": 1793153861787,
+      "normalizedAt": null,
+      "afterCutoff": false
+    },
+    "anchorReceiptUtc": "2026-10-28T02:17:41.786Z",
+    "independentAnchorTransaction": {
+      "signature": "3gTryAU3XKCzJo3CzRTchJZrjAEqu1b5F5JSveuMSSoL2WCrN171A9zw1zamKbybe6AqvL8e96pGoXCfzvsBikE6",
+      "slot": 462304209,
+      "err": null,
+      "blockTime": 1793153861,
+      "blockTimeUtc": "2026-10-28T02:17:41.000Z",
+      "requestedAt": 1793153862390,
+      "availableAt": 1793153862717
+    },
+    "anchorProgramClockTimestamp": "1793153861",
+    "lastReceivedNotification": {
+      "signature": "TmTTE4eBs7cFgMZ3ni4jaTtJ1NqGSV986BqMJfdjux4bA7eu7gJkCJ9XQuZWwEzHxTxjS1wS5NXPhE9uRZtcgbn",
+      "slot": 462304210,
+      "err": {
+        "InstructionError": [
+          3,
+          {
+            "Custom": 1
+          }
+        ]
+      },
+      "receivedAt": 1793153862170,
+      "validatedAt": null,
+      "normalizedAt": null,
+      "afterCutoff": true
+    },
+    "lastReceivedNotificationUtc": "2026-10-28T02:17:42.170Z",
+    "noticesReceivedAfterFeatureClose": 10,
+    "postFeatureBeforeLogicalCutoff": 9,
+    "normalizedAfterFeatureClose": 0
+  },
+  "decision": "No target-boundary downgrade is required for this sample: all149 target events match successful independently enumerated interior rows, and the separately verified successful upper anchor occurs after feature close. Preserve the bounded one-pool confirmed-program-event milestone; do not claim full-market, full-chain, perpetual delivery, or per-transaction transfer completeness.",
+  "limitations": [
+    "The293-row denominator covers only strict interior pool-address history slots. Entire boundary slots, same-slot rows beyond the anchor, and above-anchor history are excluded; no target normalized event lies there.",
+    "History/transaction verification was retrieved after observation and was not backdated into receipt or normalization timestamps. Program Clock and RPC blockTime remain distinct sources.",
+    "This boundary review does not perform new SPL-transfer or compiled-instruction checks. The existing four representative parity checks do not prove every transaction transfer.",
+    "These findings do not establish eligible-entry recall, profitability, holding protection, reconnect or unattended operation.",
+    "A continuous driver must obtain a current independent confirmed endpoint and bounded latest-history coverage after each closed window. An old last notification is insufficient for a quiet window; retain audit-pending status until the upper ceiling is established without relying on a natural pool trade."
+  ]
+}

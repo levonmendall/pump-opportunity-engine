@@ -1,5 +1,25 @@
 # POE operating runbook
 
+## Current authority and isolated dynamic pilot — 2026-10-27
+
+Standing research and isolated PAPER-pilot authorization supersedes historical
+one-capture and lifetime research quotas below. Historical grants/refusals remain
+immutable evidence; their old restrictions do not govern new runs. Keep cumulative
+actual usage, uncertain receipts, finite per-run limits and provider cooldowns.
+
+Use [PILOT.md](PILOT.md) for same-account start/status/stop/resume and
+[PILOT_REVIEW.md](PILOT_REVIEW.md) for current measured capacity. The watch registry
+and deep slots are independent of financial position limits. Never reseed or
+publish pilot balances into the original Render portfolio. Reporting uses the
+separate read-only publisher. Account-preserving PAPER application installation and repairs are authorized,
+but the reviewed persistent release and privileged route are not yet ready.
+Original account/entries remain unchanged; real-money trading stays prohibited.
+
+If evidence/transport capacity closes candidate observation, report the lost
+coverage; preserve and manage existing exposure. A process heartbeat does not
+establish useful observation or protection. Historical instructions below apply
+to their named completed experiments, not an indefinite research ban.
+
 ## Latest single forward diagnostic — completed, no retry
 
 Owner's de102ee grant was executed once with capture code349e67b. Read the final

@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "responses": [
+    {
+      "checkedAt": "2026-10-28T01:59:54.348Z",
+      "path": "/healthz",
+      "method": "GET",
+      "httpStatus": 200,
+      "state": null,
+      "sourceAgeMs": null,
+      "source": null
+    },
+    {
+      "checkedAt": "2026-10-28T01:59:54.473Z",
+      "path": "/api/pilot",
+      "method": "POST",
+      "httpStatus": 401,
+      "state": null,
+      "sourceAgeMs": null,
+      "source": null
+    },
+    {
+      "checkedAt": "2026-10-28T01:59:54.573Z",
+      "path": "/api/snapshot",
+      "method": "GET",
+      "httpStatus": 200,
+      "state": null,
+      "sourceAgeMs": null,
+      "source": {
+        "account": {
+          "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+          "inceptionAt": "2026-10-26T22:07:36.212Z",
+          "initialUsd": 1000
+        },
+        "accountId": null,
+        "inceptionAt": null,
+        "generatedAt": "2026-10-28T01:59:37.950Z",
+        "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+        "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+        "sha256": null,
+        "mode": "PAPER",
+        "entriesEnabled": null,
+        "financialExecutionAuthorized": null,
+        "pilotPortfolioPresent": false,
+        "observationAgePolicy": null,
+        "ageCohorts": null
+      }
+    },
+    {
+      "checkedAt": "2026-10-28T01:59:54.670Z",
+      "path": "/api/pilot",
+      "method": "GET",
+      "httpStatus": 200,
+      "state": "reporting",
+      "sourceAgeMs": 4141,
+      "source": {
+        "account": null,
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "generatedAt": 1793152790497,
+        "release": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+        "strategy": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "sha256": "7c0758a2a9ed96a93d1cdda0056df786dc85a679b8fbdde14634d895b2c9cc37",
+        "mode": "candidate-evaluation",
+        "entriesEnabled": false,
+        "financialExecutionAuthorized": false,
+        "pilotPortfolioPresent": false,
+        "observationAgePolicy": {
+          "version": "observation-age-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 21600000
+        },
+        "ageCohorts": {
+          "preEntry": 1,
+          "entryEligible": 9,
+          "olderSelected": 6
+        }
+      }
+    }
+  ]
+}

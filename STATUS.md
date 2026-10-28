@@ -1,28 +1,47 @@
-# Current POE operation — frozen candidate evaluation
+# Current POE status — 2026-10-28 UTC
 
-Core92b50f8 is running one frozen six-slot/900-second candidate-only interval,
-`pilot-20261027230222347-7a5dc2cf`, since23:02:22.347UTC. At368.448seconds it had
-17audited windows/17independent assessments; the financial journal remained
-revision7745. Financial execution is deliberately disabled and is not a candidate
-performance failure. Source/configuration and resource details are in the
-[checkpoint](docs/CONTINUATION_CHECKPOINT.md).
+The last isolated six-slot candidate interval completed normally at02:58:38.671UTC
+(sourcecf8d8bc,895.320seconds). No research runtime is currently active. The
+independent Cloud publisher truthfully republishes that stopped source; it does
+not make old market evidence fresh. The original EC2 observer remains unchanged,
+last directly verified active02:17UTC, samePID2333724/NRestarts0/account/inception.
 
-The prior settled986 interval evaluated25unique candidates from28admissions;
-all25predictive assessments failed independently of ledger permission. Three
-scopes were unavailable. Busy selected-transaction bursts remain incomplete;
-no fully qualified opportunity, profitability or whole-market coverage is inferred.
-Current work omits unnecessary financial rent reads and will repair measured
-origin-retry/headroom bottlenecks after the active freeze ends naturally.
+The completed interval admitted25distinct tokens and assessed21. It produced
+50actual predictive assessments, all failed, including one valid quiet assessment
+atage4.464minutes.51audit-covered endpoints do not mean51actual decisions. Other
+early tokens lost usable information to mapping, audit or enrichment failures.
+The preceding interval's CPU stop remained adverse evidence; equivalent WATCH
+projection changes completed the next interval under the same240CPU-second bound.
 
-Original EC2 observer, authoritative account/inception, financial history and
-Render portfolio remain unchanged. No production-trader deployment, financial
-activation or live trading is authorized. The separate public diagnostic channel
-and authenticated read-only publisher remain.800full repository tests passed
-before this freeze. Operational/economic acceptance is unproven.
+A separate EC2 native-data component obtained a real149-trade/60second FRONGUS
+window, audited293interior pool-address transactions with0missing notifications,
+and matched4representative full transactions/SPLtransfers. Its unchanged buying
+rule failed. This is an explicitv2program-event data contract, not whole-market
+recall, eligible-entry profitability or position-protection acceptance.
 
-Historical evidence follows; old individual research grants/lifetime ceilings do
-not restrict standing authorized research. See [the review](docs/PILOT_REVIEW.md)
-for measured limitations and separate experimental/fixture evidence.
+Observation now starts after verified market availability; selected2–6hour
+research is bounded independently from baseline5–120minute entries. There is no
+evidence of an economically optimal entry-age range. Earlier/older observation
+never grants trading permission or weakens quote/source/financial controls.
+
+Current code includes the resource-aware overload repairs, coherent support
+batching, lean readiness, native selected-flow adapter and a fix for audit-ready
+candidate-only assessments blocked by unrelated RPC hints. Build/compile and
+971repository tests passed. Native integrated candidate runner and independent
+host reporting are being prepared/reviewed separately. No24/72hour acceptance
+clock has started and no natural PAPER order/fill/position exists.
+
+Full standing development, account-preserving PAPER deployment and reporting
+authorization remains in force. Current candidate-only operation intentionally
+disables financial execution. Live-money trading, real signing/submission,
+funding and new spending remain prohibited. Original authoritative financial
+history and the separate experimental account/inception are preserved.
+
+See [the migration-age evaluation](docs/MIGRATION_AGE_EVALUATION.md),
+[completed cohort scorecard](evidence/age-forward-20261028/cpu-forward-three-intervals/README.md)
+and [continuation checkpoint](docs/CONTINUATION_CHECKPOINT.md). Historical source
+versions and restrictions below apply to their named intervals, not current
+standing research authority.
 
 ---
 

@@ -1,15 +1,26 @@
-## Current pilot owner actions — 2026-10-27
+# Current owner actions — 2026-10-28
 
-None required to continue the authorized isolated free-data PAPER pilot. Existing funding/credential requests below are historical or concern excluded paid-feed paths; they are not pilot prerequisites. Do not repeat inventory, Render source changes, publisher shutdown, Turnkey registration or wallet creation. Production deployment and authoritative entry enablement remain separately unauthorized.
+**No owner action is required to continue the current engineering and isolated
+candidate/PAPER research.** The current integrated-native start checks and secure
+reporting-only file delivery are being completed through existing authorized
+access. No wallet funding or excluded provider access is a prerequisite.
 
-# Owner actions — standing research continuation
+Do not repeat completed EC2 inventory/bootstrap, Render source/runtime edits,
+legacy publisher shutdown, Turnkey registration or wallet creation.
 
-No owner action is required for the current read-only research. Existing access, source changes, service setup and wallet registration are not being requested again. No new data budget or provider is requested.
+Standing authorization permits POE code/architecture/strategy work, isolated
+PAPER execution, repairs and account-preserving application deployment on existing
+infrastructure with verified recovery. Source intervals and financial histories
+must remain attributable. Prior individual-capture/lifetime caps and blanket
+PAPER prohibitions are historical, not current approval requirements.
 
-Standing research authorization replaces earlier individual-capture/lifetime limits. Completed counters, refusals and reservations remain immutable; unused local bytes are reconciled through append-only records. Actual traffic and uncertain RPC bytes remain charged in the research visibility totals.
+Owner-only escalation remains limited to genuinely unavailable privileged/access
+operations, new external spending, real financial transactions/live trading,
+and destructive/unrecoverable changes. The protected service-start route remains
+unavailable to the administration runner; no privileged installation is requested
+until a concrete reviewed account-preserving release/rollback bundle is ready.
+Routine research allowance or another wallet must not be requested.
 
-Production/account/inception/dashboard remain unchanged. No merge, deployment, restart, PAPER entries, signing or acceptance clock is authorized. The proposed4s maximum completed-evaluation gap is research-only and unapproved; the2s target and2s quote validity remain distinct.
-
-The corrected experiment observed38 three-holding checks with2.085s maximum gap, but a genuine24-byte Buy instruction exposed a decoder incompatibility. Its candidate window remains failed. A narrowly scoped decoder correction preserves actual amounts, trader roles, fees, transfer checks and identities; independent rechecking and one specifically justified corrected validation are proceeding under standing authority.
-
-See [the adaptive-monitoring evaluation](ADAPTIVE_MONITORING_EVALUATION.md) and [continuation checkpoint](CONTINUATION_CHECKPOINT.md). Any later production/risk decision will be presented with concrete results; routine research allowance is not an owner dependency.
+No24/72hour acceptance has begun. Read [STATUS](../STATUS.md), the
+[migration-age evidence](MIGRATION_AGE_EVALUATION.md) and
+[continuation checkpoint](CONTINUATION_CHECKPOINT.md) for actual engineering gates.

@@ -1,209 +1,226 @@
-# Progressive pilot: current evidence and preparation-priority repair
+# Dynamic opportunity funnel: measured result
 
-Original EC2 runtime, authoritative account/inception, financial history and
-Render portfolio are unchanged. Research uses the same isolated pilot account
-`poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`, inception
-2026-10-27T17:56:13.252Z. No reseed or forced natural trade occurred.
+POE now retains broad lightweight awareness independently of expensive observation.
+The isolated PAPER pilot has runnable decision/execution/accounting integration,
+but no natural candidate has qualified or produced a PAPER order. Production is
+unchanged. Whole-market coverage, sustained twelve-scope capacity and economic
+edge are not established.
 
-Source7020fc6/run08 completed443.888seconds with two simultaneous candidate
-scopes and zero natural positions/orders/fills/exits. Eight identities were
-admitted, eleven origins verified and eight migration hints received. All46
-independently audited windows were within entry age. Overlapping lookbacks cover
-660candidate-seconds/350distinctwall-seconds; this is not46*60seconds of unique
-coverage. Age-eligible collection was732.980candidate-seconds/393.870wall-seconds.
-Entry-control permission lasted125.477seconds; it does not mean qualification.
-The81decisions comprise45predictive rejections,31warming,4age exclusions and
-1ledger-control risk rejection. No qualified-but-unfilled order exists.
+## What changed
 
-Six swaps were validated: an inner/routed Buy, an inner/routed Sell and four
-direct Sells. No multiple-swap transaction was demonstrated in this interval.
-Enrichment availability p50/p95/max was1986/2593/2593ms. All143physical starts
-settled;137HTTP bodies had72/179/440ms p50/p95/max response time. New related
-bytes2,217,731; PumpApi bytes508,664,904. MaxRSS236,093,440bytes; CPU34.55149s;
-event-loop p9520.939ms. Backup20 agrees at financial revision3127. SOL trading
-P&L is zero; USD+$1.785626 comes entirely from passive SOL valuation. Economic
-P&L remains unavailable because infrastructure costs are not verified.
+- A persistent watch registry has capacity150 recent identities; verification queue256.
+  The observed registry reached49 known identities, not150 proven live scopes.
+  Raw feed mint/time remain unverified until canonical origin proof. Current
+  pool/mint/vault/fee support is rechecked before deep admission.
+- Deep ceilings3/6/12 are independent of the existing three-position financial
+  ceiling. One shared request gate and one PumpApi connection remain.
+- Complete audited weak windows release slots. Watch identities survive demotion
+  and can return after fresh activity or a fair periodic revisit. Every return
+  rebuilds a full60second window. This is a versioned selection/timing change,
+  not evidence that demotion has no false negatives.
+- Equivalent scheduler repairs give required enrichment priority, reserve the
+  whole support phase before reads, remove inline headroom waits and stale-clock
+  exact-start comparisons, and retain physical cancellation/uncertainty rules.
+- Capacity failures use120/300/600second backoff. They never become complete
+  windows. Feature-only assessments reuse the primary predicates during financial
+  pauses; actual risk decisions remain unchanged. A predictive pass is not entry
+  qualification. Primary and feature-only failure counts overlap and are separate.
+- One confirmed diagnostic proved a repeated seed used neither allowed Pump nor
+  PumpSwap program. Only that raw signature becomes structurally unsupported; its
+  mint hint is not banned. Unknown Pump/AMM variants retain the old unverified
+  result. All origin/authority/finalization checks remain.
 
-A real local scheduler defect remains separately recorded: while one candidate
-received17selected frames, lower-priority preparation made five additional fast
-reads and then waited8668ms inline for opening headroom. No enrichment was
-dispatched. Those responses were44–55ms; the trace does not show provider
-saturation. This overflow cannot all be attributed to inherent burst capacity.
+Primary thresholds, the six10second bins, pricing, simulated costs, slippage,
+execution delay/expiry, exposure/loss limits and two-second quote validity did
+not change. No price pre-screen or paid provider was introduced. Warm-up audits
+that cannot authorize entry are deferred; the full current-window audit remains
+mandatory. No trade-flow data is inferred from prices or activity hints.
 
-The narrow correction checks pending required enrichment before every lower-
-priority physical admission, caps a preparation/audit pacing segment at500ms
-when observation is active, and defers opening headroom instead of awaiting it
-inline. Enrichment bypasses its own priority guard; holdings/pending actions keep
-precedence. Local prephysical admission/dispatch deferrals preserve discovery
-seeds and use the existing30second bounded audit recovery. Post-reservation
-uncertainty/fatal accounting is unchanged. No rate, strategy, risk or quote-age
-limit was raised. Independent review found no blocker for an isolated interval.
-The corrected trace must still separate starvation repair from excessive bursts.
+## Settled live-market intervals
 
-Concurrency evidence is deliberately bounded: the disposable financial fixture
-ran1holding+2shadow candidates, then2holdings+1candidate, then3holdings+0candidates
-and3pending exits. It did not run3holdings+2candidates simultaneously. That
-combination passed only the separately labeled synthetic scheduler replay at
-47peak starts/minute and2100ms maximum completed gap. Actual natural forward
-holding concurrency remains zero. Bursts,4.5snonpreemptible requests and3sCPU
-stalls retain their recorded coverage/protection failures below. No production
-or unattended acceptance is claimed.
+These are different chronological intervals, not matched economic comparisons.
+A fleeting concurrency peak is not sustained usable-window capacity.
 
-The following forward interval will use the corrected frozen source, unchanged
-predictive/financial rules, a maximum of two candidate scopes and permitted
-three-position exposure. This is a capacity-bound research stage, not a permanent
-architecture limit. Every failed scope remains entry-ineligible; no sampling
-repairs completeness. Source/result/usage files remain preserved separately.
+| Configuration / source | Elapsed | Actual flow peak | Runtime audited windows | Selected unique signatures / normalized swaps | Physical request starts | Natural orders |
+|---|---:|---:|---:|---:|---:|---:|
+| Three slots /4abb86f |467.017s|3|21|0 /0|126|0|
+| Six slots, selection v3 /6668e6c |536.740s|6 for725ms|18|56 /19|205|0|
+| Twelve-slot ceiling /6668e6c |404.461s|6 for1299ms|13|31 /20|171|0|
 
-The historical feed-cooldown concern near the end of this document was repaired:
-manifest controlCooldownUntil is recovered from settled/crashed RPC books and
-checked before either feed control, separately from pricing cooldown. It is no
-longer a requested prerequisite; the historical review remains evidence.
+Three-slot source had13 admissions/eight re-promotions and11 predictive
+rejections, all quiet windows. It kept verifying migrations while full: three
+notifications included one custom-quote exclusion and two genuine SOL identities.
+Its22 reconstructed audit-covered endpoints include one later audit covering
+two endpoints; the runtime counted21. Later confirmation is never backdated.
 
-# Historical forward repairs and actual limits — 2026-10-27
+Six-slot selection v3 had24 admissions/20 re-promotions and18 feature-only
+failures:17 quiet windows and one single-trade window. Only three were primary
+strategy rejections;15 were actual ledger-control risk refusals. Twelve-ceiling
+had17 admissions/16 re-promotions and13 feature-only failures, alongside13
+primary risk refusals. No interval produced a qualified decision or a qualified-
+but-unfilled order. Literal control-enabled time was48ms/17ms/0 respectively;
+these flags are not qualification or continuous entry permission.
 
-The two-scope forward sourcef8d7cd8 completed246.829seconds and verified the
-recording repair beyond the original100-row boundary. It produced22audited
-windows, but only3were in entry-age eligibility;3genuine predictive rejections,
-zeroqualified/unfilled orders and no natural entries/exits.61.160seconds of
-literal entry-control permission is separate from154.135candidate-seconds of
-age-eligible collection (134.160distinctwall-seconds). Eleven swaps (7Buy/4Sell)
-were validated;4pendinghints caused an explicit busy-scope capacity refusal.
-That active window is unusable, even though the quiet windows succeeded. No
-mapper failure or provider429 occurred. The configuration is inadequate for that
-observed busy flow; unused average request capacity is not a deadline guarantee.
+The six-slot normalization sample included17 Buys/two Sells,16 direct/three
+inner-routed events, p95/max availability delay1922ms. Twelve-ceiling included
+11 Buys/nine Sells, ten direct/ten inner-routed events, p951225/max1336ms.
+Neither observed multiple swaps in one transaction. Unsupported Boost/AMM
+instruction shapes invalidated their scopes. Both contained invalidated/incomplete selected-market windows; these are not
+credited as complete. The six-slot run ended with ten pending hints; the twelve-
+ceiling run ended with zero pending hints, without repairing its earlier gaps.
 
-The next separately labeled source corrects observed selection timing: reject
-fresh-window impossibility under the unchanged2h age limit, recheck actual socket
-activation, retire expired entry scopes without discarding financial obligations,
-and alternate ready new discoveries with recent eligible cached identities.
-Transient backoff defers preparation rather than permanently excluding a valid
-candidate. These are selection/recovery changes; primary entry/exit thresholds,
-fees, actual-size pricing, source/quote validity and risk limits stay fixed.
+## Demonstrated limits and resource use
 
-The failed recorder source8c2a639 remains an incomplete adverse interval, with
-its rawrecording,40newRPCunits and last-known stream lowerbound preserved. Its
-failed final status projection is not replaced with fabricated performance.
-All substantive results and full uncertainty are in the bounded evidence folder.
+An earlier active pool produced18 and17 distinct transaction payloads in2.135
+and2.283seconds. Both exceeded the8getTransaction starts/10second method
+envelope and16-pending aggregate queue. Even perfect scheduling could not
+validate all required information within five seconds. No queue increase, stale
+fill or sampled-flow substitution was used to manufacture a pass.
 
-# Progressive validation — 2026-10-27
+| Measurement | Six-slot selection v3 | Twelve-slot ceiling |
+|---|---:|---:|
+| Enrichment requests / normalized events |20 /19|21 /20|
+| Request peak per10s /60s |14 /40|13 /35|
+| Capacity deadline refusals |2|2|
+| HTTP503 /429 |7 /0|3 /0|
+| Physical timeouts |0|1|
+| PumpApi socket receipt |580,066,536B|351,408,518B|
+| Maximum RSS |287,203,328B|318,566,400B|
+| CPU time |51.529s|41.515s|
 
-The temporary single-position contract remains immutable. Explicit stages now
-permit shadow observation and two/three simultaneous isolated PAPER positions,
-without changing the predictive strategy, order size, fees, quote validity,
-exposure or daily-loss rules. Source changes are reviewed on the research branch;
-no production installation or original-account entry enablement is included.
+Timeout uncertainty remains charged in the linked books. Historic429s and failed
+experiments remain unchanged. No endpoint rotation or provider purchase occurred.
+Broad receipt averaged roughly0.87–1.08MB/s in these samples: continuous receipt
+would project about75–93GB/day before unmeasured transport overhead. Local
+filtering saves parsing/storage, not incoming traffic. Public API fees are$0
+additional for these tests; Cloud/transfer/build allocation and economic costs
+remain unverified. This does not establish free continuous operation.
 
-Offline composition passed one same-account lifecycle, backup, restart,
-quarantined-exit expiry/recovery, two shadow candidates while holding, three
-positions and three overlapping exits. Four fixture entries/exits reconcile with
-56,000 modeled gas lamports and preserved locked rent. The synthetic adverse move
-produces a loss and persistent daily-loss pause. Original retained low-liquidity
-refusal is preserved; later concurrency mechanics explicitly change in-memory
-liquidity/Clock/flow/USD. This is not natural forward trading or an economic edge.
+These are Cloud measurements. No EC2 load/capacity experiment or production
+restart occurred. With no natural open positions, live completed holding gaps
+and quote-age-at-use performance are unavailable, not measured zeros. The
+two-second target and four-second experimental completion boundary remain
+distinct; four seconds is not approved production protection tolerance.
 
-The shared-policy replay retained these failures and limits:
+## Accounting and recovery
 
-| Synthetic workload | Measured simulated result |
-|---|---|
-| 3 holdings, 2 quiet candidates, 100-ms jitter | Peak47 starts/min; maximum2,100-ms evaluation gap; 8/8 selected transactions enriched; 12 usable overlapping windows |
-| 3 holdings, 3 quiet candidates | One scope lacks independent audit coverage despite complete selected trade enrichment |
-| Three-event bursts across two candidates | 18/72 enriched; 54 explicitly lost; zero usable windows; holdings continue at maximum2,100-ms gap |
-| 4.5-second nonpreemptible operation | Protection fails:6,610-ms gap |
-| Three-second processing overrun | Protection fails:5,200-ms gap; stale quote refused |
-| Three fast pending actions | Complete actions; lose candidate coverage |
-| Slow simultaneous actions | Two remain explicitly unresolved; no fabricated fills |
-| Reconnect | Invalidate old windows; fresh warming can produce later usable windows |
+The same experimental account/inception survives every stage and repair. No
+capital was reseeded. Natural entries/exits, positions, unresolved actions and
+forward simulated execution costs are zero. SOL trading P&L is zero. USD changes
+in the settled six/twelve intervals (+$6.398493/+$5.654482) are entirely passive
+SOL valuation. Economic P&L is unavailable.
 
-These are rescheduling/stress simulations using the actual dispatch/admission
-policies, not observations of endpoint entitlement or a full pilot-loop test.
-Both target misses above2seconds and failures above the unapproved4-second
-research boundary remain reported. Missing audit coverage blocks entry. Actual
-source-time/quote-age validation is unchanged. No blanket five-second polling,
-extra price screen, or strategy relaxation is introduced.
+Completed backup37 validates the twelve-ceiling final account/revision and
+contains the complete same-account financial journal. Historical controls for
+the earlier six-slot interval were reduced from that journal only through its
+cutoff (revision5044); later state was not substituted as earlier state. Source
+backup retention remains two consistent copies, while financial history remains
+in each full copy. Disposable lifecycle/restart/uncertain-exit/daily-pause tests
+are separate from forward results.
 
-The narrow next forward workload is at most two active candidates under the
-explicit two-position stage. Three-position accounting mechanics pass; live
-three-position management and bursty multi-candidate capacity remain unproven.
-Detailed bounded fixtures/replay are in `evidence/progressive-pilot-20261027/`.
-The actual forward scorecard must be appended after the frozen run, including
-entry-eligible time, all predictive rejections, qualified-but-unfilled orders,
-coverage loss, actual physical usage and retained adverse outcomes.
+Financial fixtures exercised1holding+2shadow candidates,2holdings+1candidate,
+then3holdings+0candidates/3pending exits. Three holdings+two candidates passed
+only a separate synthetic scheduler replay. Jitter, burst,4.5second response and
+3second processing-stall failures remain documented; no natural protection or
+24/72hour operational acceptance is claimed.
 
-## Historical review (retained)
+## Current release and decision
 
-# Isolated PAPER pilot review
+The review branch remains `poe-free-data-evaluation-20261027`. Source20567a8
+completed1,306.050seconds,22 audited windows and28 normalized swaps, then closed
+candidate observation at its evidence reserve and stopped gracefully with no
+orders or exposure. This degraded result is retained in07-evidence-pressure*.json.
+Its event journal contains1,519 preparation choices and1,456 support-phase
+capacity deferrals: many identities retried the same global shortage without a
+physical request. That metadata churn consumed useful recording capacity.
 
-Reviewed release: `f8bdf1e3945703756d35daf57f115d160ca80f52` (2026-10-27).
-This was a static, read-only orchestration review plus offline fake-transport
-tests. It did not inspect the production database, operate a wallet, deploy,
-restart a service, or make provider requests. It is not operational acceptance.
+Sourcee696e9f moves shared support readiness before cached-pool selection, while
+fresh identity verification stays independent. Its114.138second follow-up
+obtained three audited windows and zero support-phase retry deferrals. It also
+exposed29 fresh-identity attempts selected during an existing getTransaction
+method wait. The final narrow correction queues these seeds until method
+readiness, sampled before a new selection timestamp to avoid stale-clock
+starvation. Actual phase/physical admission remains authoritative. Token-specific
+errors retain their backoff. No trade, decision, gap or financial evidence is
+coalesced. Candidate recording suspension is now the dominant status reason.
+See the checkpoint and09 evidence for the final frozen source/current interval.
 
-The lead reports that the resumed pilot at this release began at 17:57:10 UTC
-and that no feed HTTP 429 occurred in the prior or current interval. These live
-facts were supplied by the lead; this review did not independently remeasure
-them. Keep the running source frozen. The future-resume issue below does not
-require interrupting this interval.
+Final source98601c4 passed compilation and792 repository tests, with focused
+independent review GO. Its frozen372.500second live prefix retained54 identities
+(capacity150),35verified entry-age-eligible identities,16deep admissions and
+12audited windows. Twenty-two of those35identities had at least one audited
+window in retained horizon history;62.86% is solely that bounded denominator,
+not market coverage or continuous observation. Actual deep concurrency peaked at
+six for756ms. The current ready queue was29; wait includes prior cooldown/stopped
+wall time and is not an estimate of profit lost solely to capacity.
 
-## Reviewed safeguards
+All12 current feature-only assessments failed; actual primary predictive
+rejections were zero because all12 primary decisions were capacity-risk refusals.
+There were no qualified decisions, qualified-but-unfilled orders or natural
+fills. A completed backup independently validates the unchanged account,
+7,298contiguous journal rows and zero control-enabled time through its
+22:43:39.220UTC cutoff. The remaining prefix tail is not joined to that artifact;
+the runtime reports no enabling instant. This is not a successful entry interval.
 
-- The pilot uses a private, nonroot Cloud directory and an explicitly isolated
-  `poe-pilot-` account with its own inception. It has no Render publisher or EC2
-  deployment path. Its RPC allowlist excludes simulation, signing and submission.
-  The original observer, account and dashboard are outside this entrypoint.
-- One physical request gate serves public RPC and free feed-control operations.
-  Finite run and chapter limits retain cumulative calls, measured bytes and
-  uncertain-response reservations. A caller timeout cannot release an unsettled
-  physical operation. Requests are never automatically retried by `PilotRpc`.
-- A durable in-progress marker is written before RPC/feed use. Crash recovery
-  requires the global and financial leases, verifies that the previous PID is
-  absent, links its counterbooks and preserves uncertainty before clearing the
-  marker. Manifest replacement fsyncs both the file and parent directory.
-- Normal completion clears the marker only after RPC and feed transports have
-  settled. Unclosed feeds retain the recovery marker even when HTTP accounting
-  closes successfully. Completed runs avoid a second financial stop action
-  after their final backup/report.
-- Independent history validation rejects omitted known trades, inconsistent
-  slots/times/success, duplicates, malformed commitment and unavailable chain
-  times. A missing event cannot be silently repaired into the original flow
-  window. This remains a bounded confirmed pool-history check; it does not prove
-  global coverage, receive-time completeness or universal finality.
-- Held positions and due financial actions precede candidate investigation.
-  Selected-flow gaps close entry risk while preserving holdings and pending
-  exits. Marks require actual-size pricing and unchanged freshness checks.
-  Finite stopping preserves open exposure explicitly; it does not invent an exit.
-- Feed protocol/HTTP 429 failures are separated from public-RPC provider health.
-  Feed-specific cooldowns do not disable unrelated holding quotes. Storage,
-  accounting, clock and response-budget failures remain shared blockers.
+The same prefix used157physical starts (peak11/10s,31/60s, minimum252ms spacing),
+4,339,299new accounted response bytes,411,160,328PumpApi bytes, maximumRSS
+319,451,136bytes and43.672CPU seconds. Cumulative accounted usage reached2,249
+units/68,105,340bytes;29,360,128historically uncertain bytes remain charged and
+are not measured receipts. Fifteen normalized swaps had p951879ms availability
+lag. One aggregate-enrichment-capacity failure recurred and invalidated its
+scope. That burst workload remains inadequate under this tested configuration.
+No pacing-refusal or shared support-preparation retry churn occurred:36choices,
+zero support-phase deferrals, zero preparation deferrals. These repairs remove
+zero-request CPU/log churn; they do not eliminate required getTransaction calls
+or broad-stream incoming traffic.
 
-Twelve focused `test/pilot-rpc.test.ts` fake-transport tests and scoped strict
-typechecking passed before the run. Twenty existing scheduler tests also passed
-after the final deadline guard. These checks establish software behavior within
-their fixtures, not live provider capacity, economic performance or production
-protection. The four-second completion-gap boundary remains experimental; quote
-age at use remains two seconds and source age remains thirty seconds.
+Initial support validation, reserved opening headroom and quick weak-window
+rotation also limit how many scopes overlap. A twelve-slot configuration with
+only six briefly allocated scopes does not test twelve persistent usable windows.
+No arbitrary request or position limit was raised to force that outcome.
 
-## Required correction before a later resume
+Build/type-check, repository regressions and focused independent review cover
+these corrections. Original adverse runs and accounting receipts are unchanged.
+This is measured scheduling efficiency, not a change to strategy or protection.
 
-`PilotRpc` records `controlCooldownUntil` in its status and chapter summaries.
-`PilotFeeds` respects each leg's HTTP `Retry-After` plus the five-second reserve
-within a running process. The pilot manifest currently preserves only the
-public-RPC `cooldownUntil`; new feed legs initialize `notBefore` to zero.
-Consequently, an immediate later resume after a feed throttle could forget an
-unexpired Portal/PumpApi cooldown even though its counterbook is retained.
+The best-supported configuration is bounded watch awareness with a conservative
+six-slot ceiling, unchanged financial limits, explicit data refusal and holding
+priority. Six was reached only briefly; twelve was never reached. Additional
+logical slots have not resolved the measured enrichment bottleneck. No20-slot
+expansion is justified. The relevant universe is received/verified supported
+identities, not an assumed whole-market denominator. Queue metrics count
+admission-ready identities; cooldown/backoff identities remain in watch.
 
-After the current run and all transports settle, preserve and restore either
-each feed's deadline or a conservative aggregate control deadline across both
-graceful completion and crash reconciliation. Keep it separate from public-RPC
-cooldown so held-position pricing remains available. Add focused stop/resume and
-crash/resume tests proving that controls wait through the retained deadline while
-HTTP pricing continues, with no counter or uncertainty reset. No source change
-or additional network attempt was made for this documentation update.
+Later-winner capture, deferred candidates that would have met an executable rule,
+and profit missed solely because of capacity remain unmeasured. A later price
+peak is not a missed fill. The selection policy needs chronological evidence
+before economic conclusions or another strategy version.
 
-Reviewed source SHA-256:
+A narrow offline alternative investigation matched genuine program-log and event-
+CPI bytes/economic fields in six retained transactions using the pinned SDK.
+Five program timestamps differed from RPC block time. Logs lack the existing
+compiled identities and explicit SPL-transfer evidence, so they are not a drop-in
+replacement and were not adopted. A separately validated log-native contract,
+notification coverage and bounded audit workload are needed before removing
+per-transaction enrichment. Twelve persistently warm scopes could require72
+history checks/minute at current10second audit cadence, before holding pricing;
+weak-window rotation reduces that demand but does not prove a general envelope.
 
-| File | SHA-256 |
-| --- | --- |
-| `src/pilot.ts` | `d271288c55a15c0b6ffd723d9fbe0a794be7b132f15c794ced6bcd6a3c4a1cd6` |
-| `src/pilot-rpc.ts` | `f7cb4b4639c7fd3568f1b25f6b447a7b9891919f8621862052de4360666c4d52` |
-| `src/pilot-feeds.ts` | `d71a48179961c06e71c67ae52d9fdebab11947256e4f3585adbdf391e0bd398e` |
+No owner action is required for current isolated work. An EC2 trader release,
+original-account entry enablement and live trading remain outside this release.
+The old observer is not a management rollback target after a future release has
+positions. Financial schema is unchanged; any later deployment must preserve the
+actual account, inception, reservations and pending actions.
+
+## Reproduction and evidence
+
+- `docs/PILOT.md`: exact start/status/graceful-stop/same-account resume commands.
+- `evidence/dynamic-funnel-20261027/`: adverse intervals, corrected scorecards,
+  capacity analysis, historical control audit and scope diagnostic fixture.
+- `evidence/progressive-pilot-20261027/`: financial fixtures and stress replay.
+- `node --import tsx scripts/compare-log-event-evidence.mjs --events
+  evidence/dynamic-funnel-20261027/retained-log-events.ndjson --out
+  /tmp/poe-log-review-new.json` on one line: offline log/CPI comparison.
+- The installed original observer/account and Render portfolio remain separate.
+  The dedicated publisher exports diagnostic allowlists only, without pilot
+  balances, wallet/provider credentials or a financial writer on Render.
