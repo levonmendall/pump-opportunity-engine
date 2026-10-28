@@ -112,3 +112,15 @@ Executable SHA256 `130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920
 Profile candidate-native-two-hour-90-research-v1, sixscopes, selected24h observation,
 v3-shadow only. No live result yet. Exact metadata/inputprovenance/package
 manifest and frozen source evidence are in evidence/resumed-forward-20261028/.
+
+## Active resumed measurement
+
+GH40704936322/job122874390126/admin4ee813c, actual runtime
+`native-candidates-20261028142028669`, started14:20:28.669UTC. Plannedend16:20:28.669;
+planned duration is not actualcompletedtime. PublicRenderfresh source63f4/executable
+130b02f… matchesfrozenidentity. SoleleadleasePID6822/session17893; publicsampler
+session53637; independentindexsampler80778 alignedwithactualstart. Manifest has
+unresolvedResearch native-retention-20261028142017 untilreal transport/external
+settlement+counterlink. Do NOT start a competing source or financialwriter.
+Firstminute:one olderselectedscope,8normalizedtrades,noassessments/noqualitygap;
+this is NOT six-concurrent busy capacity proof. No24hacceptance orfinancialrun.
