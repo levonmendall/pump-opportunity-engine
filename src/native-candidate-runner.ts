@@ -97,11 +97,15 @@ export class NativeCandidateRunner{
  async step(signal?:AbortSignal){
   if(!this.open()||this.working)return 'closed';this.working=true;
   try{
-   const at=this.now();this.pruneQueue(at);for(const c of [...this.candidates.values()]){const row=this.watch.lookupIdentity(c.identity.baseMint,at);if(!row||row.state==='EXPIRED')this.retire(c.identity.baseMint,'existing observation-age horizon elapsed',at,0);}
+   let at=this.now();this.pruneQueue(at);for(const c of [...this.candidates.values()]){const row=this.watch.lookupIdentity(c.identity.baseMint,at);if(!row||row.state==='EXPIRED')this.retire(c.identity.baseMint,'existing observation-age horizon elapsed',at,0);}
    this.allocate(at);
    for(const c of this.candidates.values()){const view=this.options.flow.snapshot(c.identity.baseMint,at);if(view?.warm&&view.features){if(c.lastReadyWindowEnd&&view.features.windowEndAt>c.lastReadyWindowEnd&&c.lastAssessmentEnd<c.lastReadyWindowEnd&&c.lastExpiredWindowEnd<c.lastReadyWindowEnd){c.lastExpiredWindowEnd=c.lastReadyWindowEnd;this.counters.decisionDeadlineMisses++;this.record('native-predictive-window-expired',{mint:c.identity.baseMint,at,windowEndAt:c.lastReadyWindowEnd,decisionDeadlineAt:c.lastReadyWindowEnd+PROVISIONAL_RULE.bucketMs,reason:'no validated predictive decision before next completed bucket; not a strategy rejection'});}c.lastReadyWindowEnd=view.features.windowEndAt;}if(view?.features&&view.features.windowEndAt>c.lastFeatureEnd){c.lastFeatureEnd=view.features.windowEndAt;this.counters.featureViews++;this.record('native-candidate-feature-view',{mint:c.identity.baseMint,at,features:view.features,auditVerified:false,financialQualification:false});}}
-   const usage=this.options.rpc.usage(),flow=this.options.flow.usage(),gate=usage.dispatchWindow;
-   if(!gate||flow.nextServiceAt<=at){const serviced=await this.options.flow.service(signal,this.admission(at+3000));if(!['idle','backoff','deferred','busy','closed'].includes(serviced.kind)){this.lastOutcome=serviced.kind;return serviced.kind;}}
+   const usage=this.options.rpc.usage(),flow=this.options.flow.usage(),gate=usage.dispatchWindow;at=this.now();
+   // Immediate native readiness is stamped by usage(), after variable local
+   // validation/reporting work. Compare against a fresh dispatch time. Pending
+   // setup/recovery retains its service opportunity while the shared gate waits;
+   // lower-priority origin preparation must not force another support refresh.
+   if(!gate||flow.nextServiceAt<=at){if(gate&&(gate.physicalBusy||gate.readyAt>at)){this.lastOutcome='native-service-shared-pacing';return 'wait';}const serviced=await this.options.flow.service(signal,this.admission(at+3000));this.lastOutcome=serviced.kind;if(serviced.kind!=='idle')return serviced.kind;at=this.now();}
    const jobs:ResearchJob[]=[],serviceDeadline=flow.nextServiceAt-200;
    const ready=[...this.candidates.values()].filter(c=>{const v=this.options.flow.snapshot(c.identity.baseMint,at);return v?.warm&&v.features&&v.features.windowEndAt>c.lastAssessmentEnd&&at>=c.nextAuditAt;}).sort((a,b)=>a.nextAuditAt-b.nextAuditAt||a.allocatedAt-b.allocatedAt);
    if(ready.length&&ready.some(c=>{const v=this.options.flow.snapshot(c.identity.baseMint,at);return !v?.supportContext||v.supportContext.bankClockAt<(v.features?.windowEndAt??Infinity);})){if(at<this.nextCeilingRefreshAt)return 'audit-ceiling-warming';this.nextCeilingRefreshAt=at+1500;this.options.flow.requestSupportRefresh();this.record('native-shared-audit-ceiling-requested',{at,mints:ready.map(c=>c.identity.baseMint),meaning:'coherent fresh confirmed SDK/Clock context; not a block timestamp or trade'});await this.options.flow.service(signal,this.admission(at+3000));return 'audit-ceiling-support';}
