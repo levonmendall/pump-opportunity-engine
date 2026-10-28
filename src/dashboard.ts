@@ -1,10 +1,8 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual, createHash } from 'node:crypto';
-import { createPilotTelemetryChannel } from './pilot-telemetry.js';
-import { CONNECTIONS_HTML, CONNECTIONS_SCRIPT } from './dashboard-connections.js';
-import { PILOT_PORTFOLIO_HTML, PILOT_PORTFOLIO_SCRIPT } from './pilot-portfolio-ui.js';
+import {holographicDashboard} from './dashboard-holographic.js';
+import {ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION} from './operating-intelligence.js';
 import { fileURLToPath } from 'node:url';
-import { connectionReport, withConnectionDiagnostics } from './dashboard-connectivity.js';
 import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
 
 const equal = (a: string, b: string) => timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest());
@@ -46,14 +44,12 @@ export function createDashboard(config: DashboardConfig) {
   } : null);
   const viewer = publicViewer ? null : 'Basic ' + Buffer.from(`${config.viewerUser}:${config.viewerPassword}`).toString('base64');
   const publisher = `Bearer ${config.ingestionSecret}`;
-  if (process.env.POE_PILOT_INGEST_SECRET && equal(process.env.POE_PILOT_INGEST_SECRET, config.ingestionSecret)) throw new Error('pilot and original publishing credentials must differ');
-  const pilotTelemetry = createPilotTelemetryChannel({secret:process.env.POE_PILOT_INGEST_SECRET??'',accountId:process.env.POE_PILOT_ACCOUNT_ID??'',inceptionAt:Number(process.env.POE_PILOT_INCEPTION_AT??'0'),publicViewer,viewerUser:config.viewerUser,viewerPassword:config.viewerPassword});
   const server = createServer({ maxHeaderSize: 8192, requestTimeout: 5000, headersTimeout: 5000 }, async (req, res) => {
     res.setHeader('x-content-type-options', 'nosniff'); res.setHeader('referrer-policy', 'no-referrer');
     res.setHeader('x-frame-options', 'DENY');
     const path = req.url?.split('?')[0];
-    if (await pilotTelemetry.handle(req,res,path)) return;
-    if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard', dashboardRelease: process.env.RENDER_GIT_COMMIT ?? 'local-build', connectivityDiagnostics: 1 }); return; }
+    if(path==='/api/pilot'){req.resume();send(res,410,{error:'retired-channel',message:'Use the original authoritative portfolio at /api/snapshot'});return;}
+    if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard', dashboardRelease: process.env.RENDER_GIT_COMMIT ?? 'local-build', reportingSchema: 1, unifiedPortfolio: true }); return; }
     if (path === '/api/snapshot' && req.method === 'POST') {
       if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res, 401, { error: 'unauthorized' }); return; }
       if (cache.identity === null) { req.resume(); send(res, 503, { error: 'source-not-configured', message: 'Awaiting POE data' }); return; }
@@ -72,22 +68,21 @@ export function createDashboard(config: DashboardConfig) {
     }
     if (req.method !== 'GET') { req.resume(); send(res, 405, { error: 'read-only viewer' }); return; }
     if (path === '/status') { send(res, 200, cache.status()); return; }
-    if (path === '/api/connections') { send(res, 200, connectionReport(cache,Date.now(),pilotTelemetry.read())); return; }
     if (path === '/api/snapshot' || path === '/api/export') {
       const current = cache.read();
       if (!current) { send(res, 503, { state: 'waiting', message: 'Awaiting POE data' }); return; }
       if (path === '/api/export') res.setHeader('content-disposition', 'attachment; filename="poe-bounded-snapshot.json"');
-      send(res, 200, { ...current, freshness: cache.status(), connections: connectionReport(cache,Date.now(),pilotTelemetry.read()) }); return;
+      send(res, 200, { ...current, freshness: cache.status() }); return;
     }
     if (path !== '/') { send(res, 404, { error: 'not found' }); return; }
     res.writeHead(200, {
       'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
       'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     });
-    res.end(withConnectionDiagnostics(HTML).replace('<div class="section-heading reporting-zone-heading"',CONNECTIONS_HTML+PILOT_PORTFOLIO_HTML+'<div class="section-heading reporting-zone-heading"').replace('</body>',PILOT_PORTFOLIO_SCRIPT+CONNECTIONS_SCRIPT+'</body>'));
+    res.end(holographicDashboard(HTML));
   });
   server.keepAliveTimeout = 5000; server.maxRequestsPerSocket = 100;
-  return { server, cache, pilotTelemetry };
+  return { server, cache };
 }
 
 const HTML = String.raw`<!doctype html>
@@ -149,33 +144,19 @@ body.poe-compact-view .compact-disclosure-body{padding-top:9px}
 body.poe-compact-view .compact-toggle{display:block;width:100%;text-align:left;cursor:pointer;margin:9px 0 0;padding:11px 13px;background:rgba(68,90,140,.12);color:#addccf;border:1px solid rgba(136,185,226,.25);border-radius:8px;font:600 11px var(--mono)}
 body.poe-compact-view .compact-toggle:hover{border-color:rgba(138,255,234,.48)}
 body.poe-compact-view #portfolio:not(.compact-expanded) #cards>.stat:nth-child(n+7){display:none!important}
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric{display:none!important}
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(2),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(3),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(4),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(5),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(6),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(9),
-body.poe-compact-view #experimental-portfolio:not(.compact-expanded) #experimental-portfolio-cards>.metric:nth-child(16){display:block!important}
-body.poe-compact-view #experimental-portfolio .metric-grid{margin-top:9px}
-body.poe-compact-view #experimental-portfolio .metric{padding:11px!important}
-body.poe-compact-view #experimental-portfolio h3{margin:13px 0 6px!important}
 body.poe-compact-view .section-heading{margin-top:20px!important;margin-bottom:10px!important}
 body.poe-compact-view .section-heading .section-note{font-size:9px}
 body.poe-compact-view .compact-folded{min-height:0}
-body.poe-compact-view #pilot-telemetry-panel .pilot-note{font-size:11px}
 @media(max-width:640px){
  body.poe-compact-view .topbar{height:64px!important}
  body.poe-compact-view .panel{padding:15px!important}
  body.poe-compact-view .compact-quick-links{gap:5px;margin:7px 0 12px}
  body.poe-compact-view .compact-quick-links a{flex:1 1 auto;justify-content:center;font-size:9px;padding:6px 8px;min-height:35px}
  body.poe-compact-view .stat{padding:13px!important}
- body.poe-compact-view #experimental-portfolio .metric{padding:10px!important}
 }
 @media print{
  body.poe-compact-view .hero-visual{display:none!important}
  body.poe-compact-view .compact-quick-links,body.poe-compact-view .compact-toggle{display:none!important}
- body.poe-compact-view #portfolio #cards>.stat,body.poe-compact-view #experimental-portfolio #experimental-portfolio-cards>.metric{display:block!important}
  body.poe-compact-view .compact-disclosure-body{display:block!important}
 }
 
@@ -207,13 +188,13 @@ body.poe-compact-view #pilot-telemetry-panel .pilot-note{font-size:11px}
 <section aria-labelledby="portfolioTitle" id="portfolio"><div class="section-heading"><div><div class="section-index">01 / PORTFOLIO INTELLIGENCE</div><h2 id="portfolioTitle">Portfolio overview</h2></div><div class="section-note">AUTHORITATIVE EC2 DATA ONLY<br>NO SYNTHETIC BALANCES OR TRADES</div></div>
 <div class="cards" id="cards"><div class="stat top empty"><div class="stat-label">PORTFOLIO EQUITY</div><div class="stat-value">—</div><div class="stat-foot">Awaiting verified balance</div></div><div class="stat top empty"><div class="stat-label">TOTAL TRADING P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">No actual PAPER record</div></div><div class="stat top empty"><div class="stat-label">CASH / RESERVED SOL</div><div class="stat-value">—</div><div class="stat-foot">Awaiting account snapshot</div></div><div class="stat top empty"><div class="stat-label">ECONOMIC P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">Operating costs not yet reported</div></div></div></section>
 <section class="panel chart-panel" id="performance" aria-labelledby="performanceTitle">
-<div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio P&amp;L trajectory</h2><p class="panel-sub">Total trading profit &amp; loss · USD · after modeled execution costs</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
+<div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio P&amp;L trajectory</h2><p class="panel-sub" id="chartBasis">Awaiting the source-reported P&amp;L convention</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
 <div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio trading profit and loss with explicit gaps for missing historical data"></svg></div>
-<div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend">TRADING P&amp;L / USD</span></div>
+<div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend" id="chartLegend">SOURCE P&amp;L / USD</span></div>
 <div class="chart-note" id="chartNote">Actual observations only. Zero is the reference line; missing history is not treated as zero.</div>
 </section>
 <div class="two-up" id="activity"><section class="panel data-panel" aria-labelledby="positionsTitle"><div class="panel-heading"><div><div class="section-index">03 / EXPOSURE</div><h2 id="positionsTitle">Open positions</h2></div><div class="panel-tag" id="positionsCount">—</div></div><div id="positions"><div class="no-records"><strong>NO POSITION DATA</strong><span>Waiting for an authoritative PAPER portfolio snapshot.</span></div></div></section>
-<section class="panel data-panel" aria-labelledby="tradesTitle"><div class="panel-heading"><div><div class="section-index">04 / EXECUTION LOG</div><h2 id="tradesTitle">Recent PAPER trades</h2></div><div class="panel-tag" id="tradesCount">—</div></div><div id="trades"><div class="no-records"><strong>NO TRADE DATA</strong><span>Execution records will appear after verified reporting begins.</span></div></div></section></div>
+<section class="panel data-panel" aria-labelledby="tradesTitle"><div class="panel-heading"><div><div class="section-index">04 / EXECUTION LOG</div><h2 id="tradesTitle">Recent PAPER trades</h2></div><div class="panel-tag" id="tradesCount">—</div></div><h3 class="panel-sub">Pending orders and reservations</h3><div id="orders"><div class="no-records"><strong>NO PENDING ORDERS</strong><span>Unresolved actions will remain visible until reconciled.</span></div></div><h3 class="panel-sub">Completed PAPER executions</h3><div id="trades"><div class="no-records"><strong>NO TRADE DATA</strong><span>Execution records will appear after verified reporting begins.</span></div></div></section></div>
 <div class="section-heading" id="system"><div><div class="section-index">05 / SYSTEM INTELLIGENCE</div><h2>Signal pipeline &amp; diagnostics</h2></div><div class="section-note">RAW VERIFIED COUNTS · NO INFERRED COVERAGE</div></div>
 <div class="system-grid">
 <section class="panel" aria-labelledby="funnelTitle"><div class="panel-heading"><div><div class="section-index">OPPORTUNITY FUNNEL</div><h2 id="funnelTitle">Candidate progression</h2></div><div class="panel-tag" id="funnelSource">AWAITING SOURCE</div></div><div id="funnel"><div class="no-records"><strong>NO VERIFIED COUNTS</strong><span>Discovery and qualification metrics are not yet reported.</span></div></div></section>
@@ -230,51 +211,35 @@ const money=n=>n===null?'Unavailable':new Intl.NumberFormat('en-US',{style:'curr
 const put=(id,value)=>{byId(id).textContent=String(value)};
 const add=(p,t,value,cls)=>{const n=document.createElement(t);if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;p.append(n);return n};
 const makeSvg=(tag,attrs,txt)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,String(v));if(txt!==undefined)e.textContent=txt;return e};
-let latest=null,pilotIntelligence=null;
-function candidateIntelligenceUsesPilot(){return !!pilotIntelligence}
-function candidateTime(at){return Number.isSafeInteger(at)&&at>0?new Date(at).toISOString():'Unavailable'}
+let latest=null,latestReceivedAt=null;
 function renderCandidateIntelligence(){
- if(pilotIntelligence){
-  const p=pilotIntelligence.snapshot;
-  renderFunnel(p.funnel);
-  const state=String(pilotIntelligence.state||'reporting').toUpperCase();
-  put('funnelSource','PILOT · '+state+' · CURRENT RUN');
-  const decisions=Array.isArray(p.decisions)?p.decisions.slice(-30).reverse():[];
-  const refusals=Array.isArray(p.refusals)?p.refusals.slice(0,30):[];
-  const rows=decisions.map(d=>[candidateTime(d.at),d.mint,d.stage,d.reason]);
-  refusals.forEach(x=>rows.push(['RUN TOTAL','—','REFUSAL COUNT',x.reason+' · '+x.count]));
-  put('decisionsCount','PILOT · '+decisions.length+' DECISIONS · '+refusals.length+' REFUSAL TYPES');
-  renderTable('decisions',['UTC','Mint','Stage','Reason'],rows,'NO PILOT DECISIONS','The current pilot run has not reported a decision or refusal.');
-  return;
- }
- if(!latest){
-  put('funnelSource','AWAITING SOURCE');put('decisionsCount','—');return;
- }
- renderFunnel(latest.funnel);
- put('funnelSource',latest.source.strategy==='UNIMPLEMENTED_FLOW_BLOCKED'?'OBSERVER · DISCOVERY ONLY':'AUTHORITATIVE RUNTIME');
- put('decisionsCount',latest.decisions.length+' REPORTED');
- renderTable('decisions',['UTC','Mint','Stage','Reason'],latest.decisions.map(d=>[d.at,d.mint,d.stage,d.reason]),'NO DECISIONS','No decisions in the current published window.');
+ if(!latest){put('funnelSource','AWAITING SOURCE');put('decisionsCount','—');return;}
+ const intelligence=latest.intelligence||null,isObserver=latest.source.strategy==='UNIMPLEMENTED_FLOW_BLOCKED'&&!intelligence;
+ renderFunnel(latest.funnel,intelligence,isObserver);
+ put('funnelSource',intelligence?'ORIGINAL ACCOUNT · '+intelligence.run.mode.toUpperCase():isObserver?'DISCOVERY OBSERVER · EVALUATION NOT CONNECTED':'AUTHORITATIVE RUNTIME');
+ const financial=latest.decisions.map(d=>[d.at,'FINANCIAL',d.mint,d.stage,d.reason]);
+ const predictive=intelligence?intelligence.decisions.map(d=>[d.at,'PREDICTIVE',d.mint,d.stage,d.reason]):[];
+ const seen=new Set(),rows=[...financial,...predictive].filter(d=>{const key=d[0]+'|'+d[2]+'|'+d[3]+'|'+d[4];if(seen.has(key))return false;seen.add(key);return true;}).sort((a,b)=>Date.parse(b[0])-Date.parse(a[0])).slice(0,50);
+ const refusals=intelligence?intelligence.refusals:[];refusals.forEach(d=>rows.push(['RUN TOTAL','DATA / RESOURCE','—',d.reason,String(d.count)]));
+ put('decisionsCount',(financial.length+predictive.length)+' SOURCE DECISIONS · '+refusals.length+' REFUSAL TYPES');
+ renderTable('decisions',['UTC','Scope','Mint','Stage','Reason'],rows,isObserver?'EVALUATION ENGINE NOT CONNECTED':'NO DECISIONS',isObserver?'The installed discovery observer has not been replaced by the unified trading engine. Downstream placeholders are not strategy rejections.':'No financial or independently verified predictive decision was reported in this source window.');
 }
-function setPilotIntelligence(snapshot,state,sourceAgeMs,publisherConnected){
- if(!snapshot||snapshot.kind!=='experimental-pilot'||snapshot.authoritative!==false||snapshot.liveTrading!==false)return false;
- pilotIntelligence={snapshot,state,sourceAgeMs,publisherConnected};renderCandidateIntelligence();return true;
-}
-function clearPilotIntelligence(){pilotIntelligence=null;renderCandidateIntelligence();}
+
 function signal(title,message,label,mode,time){put('stateTitle',title);put('state',message);put('sourceLabel',label);put('lastSync',time||'RECEIVER · AWAITING DATA');document.body.dataset.link=mode}
 function clock(){put('utcClock',new Date().toISOString().slice(11,19)+' UTC')}
 function renderCards(s){
- const b=s.balances;const data=[
- ['PORTFOLIO EQUITY',money(b.equityUsd),'Verified account equity',b.equityUsd],
- ['TOTAL TRADING P&L',money(b.tradingPnlUsd),'After modeled execution costs',b.tradingPnlUsd],
+ const b=s.balances,operating=!!s.intelligence;const data=[
+ ['PORTFOLIO EQUITY',money(b.equityUsd),'Includes passive SOL/USD valuation',b.equityUsd],
+ [operating?'TOKEN TRADING P&L':'EQUITY CHANGE FROM INCEPTION',money(b.tradingPnlUsd),operating?'Net token result translated at current SOL/USD':'Includes passive SOL/USD movement; not pure trading',b.tradingPnlUsd],
  ['CASH / RESERVED SOL',b.cashSol+' / '+b.reservedSol,'SOL · free cash / reservations',null],
- ['ECONOMIC P&L',money(b.economicPnlUsd),'After reported operating costs',b.economicPnlUsd],
+ [operating?'TRADING AFTER OPERATING COSTS':'EQUITY CHANGE AFTER COSTS',money(b.economicPnlUsd),operating?'Current USD translation; unknown costs stay unavailable':'Includes passive SOL/USD movement',b.economicPnlUsd],
  ['REALIZED TRADING P&L',money(b.realizedUsd),'Realized PAPER outcomes',b.realizedUsd],
  ['UNREALIZED TRADING P&L',money(b.unrealizedUsd),'Based on available marks',b.unrealizedUsd],
  ['MODELED EXECUTION COSTS',money(b.executionCostsUsd),'Simulated transaction costs',null],
  ['OPERATING COSTS',money(b.operatingCostsUsd),'Cost evidence: '+s.costLabels.operating,null],
  ['POSITION COST / EXPOSURE',money(b.positionCostUsd)+' / '+money(b.markedExposureUsd),'USD · cost / marked exposure',null],
  ['DRAWDOWN',money(b.drawdownUsd),'USD · reported risk',null],
- ['PASSIVE SOL BENCHMARK',money(b.passiveSolEquityUsd),'USD · passive comparator',null],
+ ['PASSIVE SOL BENCHMARK',money(b.passiveSolEquityUsd),'Reference holding · SOL/USD exposure',null],
  ['INCEPTION REFERENCE',money(s.account.initialUsd),'Virtual starting capital',null]
  ];
  const p=byId('cards');p.replaceChildren();
@@ -287,21 +252,32 @@ function renderTable(id,heads,rows,emptyTitle,emptyBody){
  heads.forEach(x=>add(tr,'th',x));const body=add(t,'tbody');
  rows.forEach(row=>{const r=add(body,'tr');row.forEach(cell=>add(r,'td',cell===null?'Unavailable':cell))});
 }
-function renderFunnel(f){
+function renderFunnel(f,intelligence=null,isObserver=false){
  const el=byId('funnel');el.replaceChildren();const outer=add(el,'div',undefined,'funnel-grid');
- const fields=[['discovered','Discovered'],['supported','Supported'],['sufficientlyObserved','Sufficiently observed'],['evaluated','Evaluated'],['qualified','Qualified'],['attempted','Attempted'],['paperFilled','PAPER filled'],['exited','Exited'],['reconciled','Reconciled']];
- // Event frequency, not lifecycle sequence. Keep the original order for ties.
- const ranked=fields.map(([key,label],index)=>({key,label,index,count:Number.isSafeInteger(f[key])&&f[key]>=0?f[key]:null}))
-  .sort((a,b)=>a.count===null?(b.count===null?a.index-b.index:1):b.count===null?-1:b.count-a.count||a.index-b.index);
- const ceiling=Math.max(1,...ranked.map(item=>item.count??0));
- ranked.forEach(({key,label,count})=>{const row=add(outer,'div',undefined,'funnel-line');row.dataset.funnelStage=key;add(row,'div',label,'funnel-name');const track=add(row,'div',undefined,'funnel-track');const fill=add(track,'div',undefined,'funnel-fill');fill.style.width=count===null?'0%':(100*count/ceiling).toFixed(2)+'%';add(row,'div',count===null?'Not reported':count.toLocaleString('en-US'),'funnel-count')});
+ const row=(key,label,value)=>{const line=add(outer,'div',undefined,'funnel-line');line.dataset.funnelStage=key;add(line,'div',label,'funnel-name');const track=add(line,'div',undefined,'funnel-track'),fill=add(track,'div',undefined,'funnel-fill');fill.style.width='0%';add(line,'div',value===null||value===undefined?'Unavailable':typeof value==='number'?value.toLocaleString('en-US'):String(value),'funnel-count');};
+ if(intelligence){
+  const c=intelligence.candidates;
+  [['migrationsReceived','Migrations received'],['known','Known market identities'],['watch','Lightweight watch'],['eligible','Eligible watch'],['queued','Waiting for deep observation'],['auditedWindows','Audited usable windows'],['uniqueAudited','Unique tokens audited'],['predictiveAssessments','Predictive assessments'],['predictivePasses','Predictive passes'],['predictiveFailures','Predictive failures']].forEach(([key,label])=>row(key,label,c[key]));
+  row('deepActive','Deep-analysis slots',(c.deepActive===null?'?':c.deepActive)+' / '+(c.deepMaximum===null?'?':c.deepMaximum));
+  [['qualified','Executable qualifications'],['attempted','PAPER attempts'],['paperFilled','PAPER fills'],['exited','PAPER exits']].forEach(([key,label])=>row(key,label,f[key]));
+  add(el,'p','Windows and assessments are not unique tokens. A market-wide coverage denominator has not been established.','panel-sub');
+ }else{
+  const fields=[['discovered','Discovered'],['supported','Supported'],['sufficientlyObserved','Sufficiently observed'],['evaluated','Financial evaluations'],['qualified','Qualified'],['attempted','Attempted'],['paperFilled','PAPER filled'],['exited','Exited'],['reconciled','Reconciled']];
+  fields.forEach(([key,label])=>row(key,label,isObserver&&key!=='discovered'?'NOT CONNECTED':f[key]));
+ }
 }
-function renderMetrics(m,source){
- const p=byId('metrics');p.replaceChildren();const grid=add(p,'div',undefined,'metric-grid');
- const fields=[['coverage','Market coverage'],['latency','Latency evidence'],['processingLagMs','Processing lag (ms)'],['eventLoopLagMs','Event-loop lag (ms)'],['providerEvents','Provider events'],['rpcRequests','RPC requests'],['projectedDailyDataSol','Projected data SOL/day'],['budgetRemainingSol','Data budget SOL'],['budgetStatus','Budget status']];
- fields.forEach(([key,label])=>{const e=add(grid,'div',undefined,'metric');add(e,'div',label,'metric-name');add(e,'div',m[key]===null?'Unavailable':String(m[key]),'metric-value')});
- [['Runtime release',source.release],['Strategy version',source.strategy]].forEach(([label,value])=>{const e=add(grid,'div',undefined,'metric');add(e,'div',label,'metric-name');add(e,'div',value,'metric-value')});
+function renderMetrics(m,source,intelligence=null){
+ const p=byId('metrics');p.replaceChildren();
+ const group=(title,items)=>{add(p,'h3',title,'panel-sub');const grid=add(p,'div',undefined,'metric-grid');items.forEach(([label,value])=>{const e=add(grid,'div',undefined,'metric');add(e,'div',label,'metric-name');add(e,'div',value===null||value===undefined?'Unavailable':String(value),'metric-value');});};
+ group('Source-reported market evidence', [['Market coverage',m.coverage],['Latency evidence',m.latency],['Processing lag (ms)',m.processingLagMs],['Event-loop lag (ms)',m.eventLoopLagMs],['Provider events',m.providerEvents],['RPC operations',m.rpcRequests],['Runtime release',source.release],['Strategy version',source.strategy]]);
+ if(!intelligence)return;
+ const c=intelligence.candidates,q=intelligence.quality,u=intelligence.provider,r=intelligence.resources,h=intelligence.protection,t=intelligence.times;
+ group('Selection and completeness',[['Current run',intelligence.run.id],['Run started',intelligence.run.startedAt],['Promotions / re-promotions',String(c.promoted??'?')+' / '+String(c.repromoted??'?')],['Mean / maximum slot wait (ms)',String(c.waitMeanMs??'?')+' / '+String(c.waitMaximumMs??'?')],['Older tokens retained',c.olderSelected],['Audit unavailable / unusable',String(q.auditUnavailable??'?')+' / '+String(q.auditUnusable??'?')],['Data gaps',q.qualityGaps],['Decision deadline failures',q.decisionDeadlineMisses],['Incomplete / capacity exclusions',String(q.incompleteExclusions??'?')+' / '+String(q.capacityExclusions??'?')],['Enrichment deadline failures',q.enrichmentDeadlineFailures]]);
+ group('Provider and resource health',[['Selected capture connected',q.captureConnected],['Migration / watch connected',String(u.discoveryConnected??'?')+' / '+String(u.watchConnected??'?')],['Accounted RPC response bytes',u.rpcResponseBytes],['Native / broad-stream bytes',String(u.nativeStreamBytes??'?')+' / '+String(u.broadWatchBytes??'?')],['HTTP timeouts / errors',String(u.httpTimeouts??'?')+' / '+String(u.httpErrors??'?')],['Throttles',u.throttles],['Rolling starts / per-minute limit',String(u.rollingStartsPerMinute??'?')+' / '+String(u.maximumStartsPerMinute??'?')],['Primary / history cooldown',String(u.primaryCooldownUntil??'None reported')+' / '+String(u.historyCooldownUntil??'None reported')],['Resource state',r.state],['Resource sample time',r.sampleAt],['CPU use (one core)',r.cpuOneCoreFraction===null?null:(100*r.cpuOneCoreFraction).toFixed(1)+'%'],['Resident memory (bytes)',r.rssBytes],['Available RAM / disk (bytes)',String(r.availableMemoryBytes??'?')+' / '+String(r.availableDiskBytes??'?')]]);
+ group('Position protection',[['Current protection',h.state],['Last completed evaluation',h.lastCompletedAt],['Target cadence (ms)',h.targetCadenceMs],['Measured maximum evaluation gap (ms)',h.maximumCompletedGapMs],['Maximum quote age at use (ms)',h.maximumQuoteAgeAtUseMs],['Protection failures / unavailable checks',String(h.breaches??'?')+' / '+String(h.unavailableChecks??'?')],['Last market notification',t.marketNotificationAt],['Last fresh support / bank Clock',String(t.freshSupportAt??'Unavailable')+' / '+String(t.bankClockAt??'Unavailable')],['Last independent audit / predictive assessment',String(t.auditAt??'Unavailable')+' / '+String(t.predictiveAt??'Unavailable')],['Financial reconciliation',t.reconciliationAt]]);
+ q.limitations.forEach(note=>add(p,'p',note,'panel-sub'));
 }
+
 function plot(points){
  const root=byId('chart');root.replaceChildren();
  const width=Math.max(305,Math.min(960,Math.floor(root.parentElement.clientWidth||900)));
@@ -337,13 +313,15 @@ function plot(points){
  root.append(makeSvg('text',{x:right,y:height-12,'text-anchor':'end',fill:'#7894b1','font-size':10},new Date(end).toISOString().slice(11,19)+' UTC'));
 }
 function showSnapshot(s,received,f){
- latest=s;
+ latest=s;latestReceivedAt=received;
  renderCards(s);
  put('positionsCount',s.positions.length+' REPORTED');
  put('tradesCount',s.trades.length+' REPORTED');
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.');
  renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.');
- renderCandidateIntelligence();renderMetrics(s.metrics,s.source);plot(s.pnl);
+ renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(s.pnl);
+ put('chartBasis',s.intelligence?'Net token trading result translated at current SOL/USD; not historical realized USD profit':'Legacy equity change includes passive SOL/USD; do not interpret as pure trading profit');put('chartLegend',s.intelligence?'TOKEN TRADING · CURRENT USD':'LEGACY EQUITY CHANGE · USD');
+ const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
  put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED SERIES':'HISTORY UNAVAILABLE');
  put('freshness','Generated '+s.times.generatedAt+' · Market '+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
  put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps.');
@@ -351,6 +329,7 @@ function showSnapshot(s,received,f){
  const bad=f.state==='stale'||f.state==='unavailable';
  signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
  byId('exportLink').hidden=false;
+ paintFreshness();
 }
 let refreshInFlight=false;
 async function refresh(){
@@ -361,7 +340,7 @@ async function refresh(){
   if(!resp.ok)throw new Error(resp.status===503?'SOURCE_NOT_CONFIGURED':'REPORTING_HTTP_'+resp.status);
   const result=await resp.json();
   if(!result||!result.snapshot||!result.freshness)throw new Error('SNAPSHOT_UNAVAILABLE');
-  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.connections);
+  showSnapshot(result.snapshot,result.receivedAt,result.freshness);
  }catch(error){
   const reason=error instanceof Error?error.message:'REPORTING_UNAVAILABLE';
   if(reason==='SOURCE_NOT_CONFIGURED'){if(!latest)signal('Awaiting authoritative data','No verified EC2 snapshot is configured. This dashboard will not fabricate balances, charts, or trades.','SOURCE NOT CONNECTED','pending');else signal('Source reporting unavailable','Last received data is retained for inspection, but current source configuration is unavailable.','SOURCE UNAVAILABLE','warning')}
@@ -369,7 +348,9 @@ async function refresh(){
  }finally{refreshInFlight=false}
 }
 document.querySelectorAll('.rail-link').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.rail-link').forEach(n=>n.classList.remove('selected'));link.classList.add('selected')}));
-clock();setInterval(clock,1000);plot([]);refresh();setInterval(refresh,15000);
+function paintFreshness(){if(!latest)return;const age=at=>at===null?0:Math.max(0,Date.now()-Date.parse(at));const stale=Math.max(age(latest.times.generatedAt),age(latest.times.marketAt),age(latest.times.reconciledAt))>90000;if(stale)signal('STALE SOURCE SNAPSHOT','Last verified source is retained; market or financial information is no longer current. PAPER entries '+latest.status.entries+' · runtime '+latest.status.runtime+' · account '+latest.account.id,'CHECK SOURCE FRESHNESS','warning','RECEIVER · '+latestReceivedAt);else if(latest.status.runtime==='stopped')signal('STOPPED','Runtime stopped. Positions and unresolved actions remain as reported; no liquidation is inferred. Account '+latest.account.id,'MONITORING INTERRUPTED','warning','RECEIVER · '+latestReceivedAt);}
+clock();setInterval(()=>{clock();paintFreshness()},1000);plot([]);refresh();setInterval(refresh,15000);
+window.addEventListener('focus',()=>{void refresh()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh()});
 window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
 
 /** UI-only progressive disclosure. All projections, API endpoints and financial boundaries are unchanged. */
@@ -396,41 +377,17 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
  };
  const status=one('section.status-strip'),hero=one('section.hero');
  if(status&&hero){const artworkCaption=hero.nextElementSibling;if(artworkCaption?.classList.contains('holo-index'))artworkCaption.after(status);else hero.after(status);}
- const portfolio=document.getElementById('portfolio'),experimental=document.getElementById('experimental-portfolio');
- if(portfolio&&experimental)portfolio.after(experimental);
+ const portfolio=document.getElementById('portfolio');
  if(status){
   const nav=document.createElement('nav');nav.className='compact-quick-links';nav.setAttribute('aria-label','Jump to dashboard sections');
-  for(const [href,label] of [['#portfolio','Original portfolio'],['#experimental-portfolio','PAPER account'],['#system','Candidates'],['#reporting-status','System health']]){
+  for(const [href,label] of [['#portfolio','Portfolio'],['#activity','PAPER orders and trades'],['#system','Candidates and system health']]){
    if(!document.querySelector(href))continue;
    const link=document.createElement('a');link.href=href;link.textContent=label;nav.append(link);
   }
   status.after(nav);
  }
  // Key figures stay visible; refreshes rebuild only their contents, not these controls.
- metricToggle('portfolio','cards','original portfolio metrics');
- metricToggle('experimental-portfolio','experimental-portfolio-cards','experimental PAPER accounting metrics');
- if(experimental){
-  const source=document.getElementById('experimental-portfolio-source');
-  if(source){
-   const details=document.createElement('details');details.className='compact-disclosure';
-   const summary=document.createElement('summary');summary.textContent='Account identity, freshness and source notes';
-   const body=document.createElement('div');body.className='compact-disclosure-body';
-   source.replaceWith(details);body.append(source);details.append(summary,body);
-   const heading=experimental.querySelector('.panel-heading');if(heading)heading.after(details);
-  }
-  const tradesHeading=Array.from(experimental.querySelectorAll('h3')).find(h=>h.textContent.includes('Experimental trades'));
-  if(tradesHeading){
-   const details=document.createElement('details');details.className='compact-disclosure';details.id='experimental-trade-history-details';
-   const summary=document.createElement('summary');summary.textContent='Trade attempts, execution history and P&L chart';
-   const body=document.createElement('div');body.className='compact-disclosure-body';
-   let current=tradesHeading;
-   while(current){const next=current.nextSibling;body.append(current);current=next;}
-   details.append(summary,body);experimental.append(details);
-  }
- }
- // Both candidate totals and source/staleness badges remain visible in their panel headings.
- panelFold('#pilot-telemetry-panel','Full pilot funnel, market watch and failure diagnostics');
- panelFold('#reportingConnections','Connection details, source identity and refresh controls');
+ metricToggle('portfolio','cards','portfolio metrics');
  panelFold('section[aria-labelledby="metricsTitle"]','Runtime metrics and provider usage');
  panelFold('section[aria-labelledby="decisionsTitle"]','Full evaluation decisions and refusal reasons');
  panelFold('#performance','Portfolio P&L chart and historical timestamps');
@@ -449,6 +406,7 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const required = (name: string) => { const value = process.env[name]; if (!value) throw new Error(`required configuration missing: ${name}`); return value; };
   const port = Number(process.env.PORT ?? 10000);
+  if((process.env.POE_ACCOUNT_ID||process.env.POE_INCEPTION_AT)&&(process.env.POE_ACCOUNT_ID!==ORIGINAL_POE_ACCOUNT||process.env.POE_INCEPTION_AT!==ORIGINAL_POE_INCEPTION))throw Error('original POE account and inception required');
   if (!Number.isSafeInteger(port) || port < 1 || port > 65535) throw new Error('invalid PORT');
   const { server } = createDashboard({
     accountId: process.env.POE_ACCOUNT_ID, inceptionAt: process.env.POE_INCEPTION_AT,

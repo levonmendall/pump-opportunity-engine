@@ -4,8 +4,6 @@ import {readFileSync} from 'node:fs';
 import {once} from 'node:events';
 import type {AddressInfo} from 'node:net';
 import {holographicDashboard,HOLOGRAPHIC_VERSION} from '../src/dashboard-holographic.js';
-import {withConnectionDiagnostics} from '../src/dashboard-connectivity.js';
-import {CONNECTIONS_HTML,CONNECTIONS_SCRIPT} from '../src/dashboard-connections.js';
 import {createDashboard} from '../src/dashboard.js';
 
 const source=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8');
@@ -14,7 +12,7 @@ const start=source.indexOf(marker)+marker.length;
 const end=source.indexOf('`;\n',start);
 assert.ok(start>=marker.length && end>start,'actual dashboard template must exist');
 const original=source.slice(start,end);
-const full=()=>withConnectionDiagnostics(original).replace('<div class="section-heading reporting-zone-heading"',CONNECTIONS_HTML+'<div class="section-heading reporting-zone-heading"').replace('</body>',CONNECTIONS_SCRIPT+'</body>');
+const full=()=>holographicDashboard(original);
 const ids=(s:string)=>Array.from(s.matchAll(/\bid="([^"]+)"/g),m=>m[1]!);
 const scripts=(s:string)=>Array.from(s.matchAll(/<script>([\s\S]*?)<\/script>/g),m=>m[1]!);
 
@@ -46,23 +44,10 @@ test('hero has one ornamental orbital illustration and no false performance data
  assert.ok(!rendered.includes('NaN'));
 });
 
-test('original and experimental diagnostics remain separate and visible',()=>{
- const rendered=full();
- for(const id of ['reportingConnections','refreshNow','pilot-telemetry-panel','pilot-link-state','pilot-source-detail','pilot-funnel','pilot-metrics','pilot-decisions','pilot-refusals'])assert.equal(ids(rendered).filter(x=>x===id).length,1,id);
- assert.match(rendered,/No pilot balances or results are merged into it/);
- assert.match(rendered,/SOURCE STALE/);
- assert.match(rendered,/PUBLISHER DISCONNECTED/);
- assert.ok(rendered.indexOf('id="overview"')<rendered.indexOf('id="portfolio"'));
- assert.ok(rendered.indexOf('id="portfolio"')<rendered.indexOf('id="performance"'));
- assert.ok(rendered.indexOf('id="performance"')<rendered.indexOf('id="activity"'));
- assert.ok(rendered.indexOf('id="activity"')<rendered.indexOf('id="system"'));
- assert.ok(rendered.indexOf('id="system"')<rendered.indexOf('id="decisions"'));
- assert.ok(rendered.indexOf('id="decisions"')<rendered.indexOf('id="pilot-telemetry-panel"'));
- assert.ok(rendered.indexOf('id="pilot-telemetry-panel"')<rendered.indexOf('id="metrics"'));
- assert.ok(rendered.indexOf('id="metrics"')<rendered.indexOf('class="status-strip reporting-bottom"'));
- assert.ok(rendered.indexOf('class="status-strip reporting-bottom"')<rendered.indexOf('id="reportingConnections"'));
- assert.match(rendered,/SYSTEM STATUS &amp; REPORTING/);
- assert.match(rendered,/Candidate progression &amp; decisions/);
+test('one authoritative portfolio and existing diagnostic sections remain visible',()=>{
+ const rendered=full();for(const id of ['portfolio','positions','trades','orders','metrics','decisions'])assert.equal(ids(rendered).filter(x=>x===id).length,1,id);
+ assert.doesNotMatch(rendered,/experimental-portfolio|pilot-telemetry-panel|Pilot intelligence/);
+ assert.ok(rendered.indexOf('id="portfolio"')<rendered.indexOf('id="performance"'));assert.ok(rendered.indexOf('id="performance"')<rendered.indexOf('id="activity"'));assert.match(rendered,/SYSTEM STATUS &amp; REPORTING/);assert.match(rendered,/Candidate progression &amp; decisions/);
 });
 
 test('visual layer adds no new client script, external dependency or request',()=>{
@@ -88,13 +73,12 @@ test('actual public HTTP viewer contains the new UI and keeps machine publishing
  const url='http://127.0.0.1:'+(app.server.address() as AddressInfo).port;
  const response=await fetch(url+'/');assert.equal(response.status,200);const html=await response.text();
  assert.match(html,/id="poe-holographic-style"/);
- assert.match(html,/id="pilot-telemetry-panel"/);
+ assert.match(html,/id="portfolio"/);assert.doesNotMatch(html,/experimental-portfolio|pilot-telemetry-panel/);
  assert.match(response.headers.get('content-security-policy')??'',/connect-src 'self'/);
  assert.equal(response.headers.get('cache-control'),'no-store');
  assert.equal(response.headers.get('www-authenticate'),null);
  assert.equal((await fetch(url+'/api/snapshot',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})).status,401);
  assert.equal((await fetch(url+'/api/snapshot')).status,503);
  assert.equal((await fetch(url+'/healthz')).status,200);
- const connections=await fetch(url+'/api/connections').then(r=>r.json()) as {source:unknown};
- assert.equal(connections.source,null);
+ assert.equal((await fetch(url+'/api/connections')).status,404);assert.equal((await fetch(url+'/api/pilot')).status,410);
 });

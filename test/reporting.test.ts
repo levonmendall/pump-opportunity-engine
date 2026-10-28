@@ -251,179 +251,31 @@ test('partial source identity fails configuration and credentials remain mandato
 });
 
 
-test('observer connectivity exposes inactive stages without altering accepted financial data', async t => {
-  const observerConfig = {...config, strategy: 'UNIMPLEMENTED_FLOW_BLOCKED', publicViewer: true};
-  const app = await serve(t, observerConfig);
-  const fixture = sample(); fixture.source.strategy = observerConfig.strategy;
-  const before = JSON.stringify(fixture);
-  assert.equal((await app.post(fixture)).status, 200);
-  const response = await app.get('/api/connections');
-  assert.equal(response.status, 200);
-  const report = await response.json();
-  assert.equal(report.sourceConfigured, true);
-  assert.equal(report.sourceRole, 'discovery-observer');
-  assert.equal(report.connection, 'receiving');
-  assert.equal(report.capabilities.candidatePipeline, 'not-implemented-in-source');
-  assert.equal(report.capabilities.decisionTrace, 'not-implemented-in-source');
-  assert.equal(report.experimentalPilot.connected, false);
-  assert.equal(report.source.accountId, config.accountId);
-  assert.equal(report.source.inceptionAt, config.inceptionAt);
-  assert.equal(report.source.sequence, fixture.sequence);
-  assert.ok(!JSON.stringify(report).includes(config.ingestionSecret));
-  const snapshot = await app.get('/api/snapshot').then(r=>r.json());
-  assert.equal(JSON.stringify(snapshot.snapshot), before);
-  assert.equal(snapshot.connections.sourceRole, 'discovery-observer');
-  assert.equal((await app.post(fixture,'Bearer invalid')).status,401);
+test('single portfolio viewer retires the experimental channel and retains original authenticated snapshots',async t=>{
+ const app=await serve(t,{...config,publicViewer:true});
+ assert.equal((await app.get('/api/pilot')).status,410);assert.equal((await fetch(app.url+'/api/pilot',{method:'POST',body:'{}'})).status,410);assert.equal((await app.get('/api/connections')).status,404);
+ assert.equal((await app.post(sample())).status,200);const response=await app.get('/api/snapshot').then(r=>r.json());assert.equal(response.snapshot.account.id,config.accountId);assert.equal(response.connections,undefined);
+ const html=await app.get('/').then(r=>r.text());for(const text of ['Experimental portfolio','Experimental trades','Pilot diagnostics','pilot-telemetry-panel','experimental-portfolio'])assert.equal(html.includes(text),false,text);
+ assert.equal((html.match(/id="portfolio"/g)||[]).length,1);assert.match(html,/Pending orders and reservations/);assert.match(html,/visibilitychange/);assert.match(html,/setInterval\(refresh,15000\)/);assert.match(html,/refreshInFlight/);
+ const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,1);for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
+ assert.equal((await app.get('/healthz').then(r=>r.json())).unifiedPortfolio,true);
 });
 
-test('connectivity is read-only, obeys viewer auth, and never invents a source', async t => {
-  const privateApp = await serve(t);
-  assert.equal((await privateApp.get('/api/connections')).status,401);
-  const report = await privateApp.get('/api/connections',viewer).then(r=>r.json());
-  assert.equal(report.connection,'awaiting-source');
-  assert.equal(report.source,null);
-  assert.equal(report.sourceRole,'unknown');
-  const result = await fetch(privateApp.url+'/api/connections',{method:'POST',headers:{authorization:viewer}});
-  assert.equal(result.status,405);
+test('source funnel distinguishes observer placeholders, predictive assessments, actual financial decisions and unavailable unique counts',async t=>{
+ const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text()),start=html.indexOf('function renderFunnel('),end=html.indexOf('\nfunction renderMetrics(',start);assert.ok(start>=0&&end>start);
+ class Node{textContent='';className='';dataset:Record<string,string>={};style={width:''};children:Node[]=[];append(...v:Node[]){this.children.push(...v);}replaceChildren(){this.children=[];}query(selector:string):Node[]{return this.children.flatMap(c=>[...(c.className===selector?[c]:[]),...c.query(selector)]);}}
+ const root=new Node(),add=(p:Node,_t:string,text?:unknown,cls='')=>{const n=new Node();n.textContent=text===undefined?'':String(text);n.className=cls;p.append(n);return n;};const context=createContext({byId:()=>root,add,Number,String});new Script(html.slice(start,end)).runInContext(context);
+ const render=(f:unknown,i:unknown,observer=false)=>new Script('renderFunnel('+JSON.stringify(f)+','+JSON.stringify(i)+','+observer+')').runInContext(context);const value=(key:string)=>root.query('funnel-line').find(r=>r.dataset.funnelStage===key)!.query('funnel-count')[0]!.textContent;
+ render(sample().funnel,null,true);assert.equal(value('discovered'),'12');assert.equal(value('evaluated'),'NOT CONNECTED');
+ render({...sample().funnel,qualified:0,paperFilled:0},{candidates:{migrationsReceived:12,known:100,watch:94,eligible:8,queued:5,auditedWindows:20,uniqueAudited:null,predictiveAssessments:20,predictivePasses:0,predictiveFailures:20,deepActive:3,deepMaximum:6}});assert.equal(value('predictiveAssessments'),'20');assert.equal(value('uniqueAudited'),'Unavailable');assert.equal(value('qualified'),'0');assert.equal(value('paperFilled'),'0');assert.equal(value('deepActive'),'3 / 6');
 });
 
-test('connectivity diagnostics age cached source data and do not refresh on duplicate delivery', async () => {
-  const { connectionReport } = await import('../src/dashboard-connectivity.js');
-  const cache = new SnapshotCache(config); const fixture=sample();
-  cache.accept(fixture,NOW);
-  cache.accept(fixture,NOW+30_000);
-  const report=connectionReport(cache,NOW+91_000);
-  assert.equal(report.connection,'stale');
-  assert.equal(report.sourceAgeMs,91_000);
-  assert.equal(report.receivedAgeMs,91_000);
-  assert.equal(report.source?.sequence,fixture.sequence);
-  assert.equal(report.capabilities.candidatePipeline,'runtime-reported');
-});
+test('compact one-account command view keeps metrics accessible without a duplicate portfolio',async t=>{const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text());assert.match(html,/Show all /);assert.match(html,/portfolio metrics/);assert.match(html,/compact-disclosure/);assert.match(html,/focus-visible/);assert.match(html,/overflow-wrap:anywhere/);assert.doesNotMatch(html,/experimental-portfolio|pilotIntelligence|setPilotIntelligence/);});
 
-test('dashboard explains observer placeholders, supports mobile refresh, and has valid scripts', async t => {
-  const app=await serve(t,{...config,publicViewer:true});
-  const html=await app.get('/').then(r=>r.text());
-  assert.match(html,/Source &amp; pipeline status/);
-  assert.match(html,/Not connected to this dashboard/);
-  assert.match(html,/NOT ACTIVE/);
-  assert.match(html,/EVALUATION ENGINE NOT CONNECTED/);
-  assert.match(html,/visibilitychange/);
-  assert.match(html,/setInterval\(refresh,15000\)/);
-  assert.match(html,/refreshInFlight/);
-  assert.match(html,/maximumFractionDigits:decimals/);
-  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length,4);
-  for(const match of scripts)assert.doesNotThrow(()=>new Function(match[1]!));
-  assert.equal((await app.get('/healthz').then(r=>r.json())).connectivityDiagnostics,1);
-});
-
-
-test('candidate progression sorts counts descending, updates dynamically, and preserves observer stage masking', async t => {
-  const app = await serve(t, { ...config, viewerUser: '', viewerPassword: '', publicViewer: true });
-  const html = await (await app.get('/')).text();
-  const start = html.indexOf('function renderFunnel(f){');
-  const end = html.indexOf('\nfunction renderMetrics(m,source){', start);
-  const wrapperStart = html.indexOf('const originalFunnel=renderFunnel;');
-  const wrapperEnd = html.indexOf('\nrenderMetrics=function(m,source){', wrapperStart);
-  assert.ok(start >= 0 && end > start && wrapperStart > end && wrapperEnd > wrapperStart, 'real browser-rendering functions are present');
-  class Node {
-    textContent = '';
-    className = '';
-    dataset: Record<string,string> = {};
-    style = { width: '' };
-    children: Node[] = [];
-    readonly classes = new Set<string>();
-    readonly classList = { add: (name: string) => { this.classes.add(name); }, contains: (name: string) => this.classes.has(name) };
-    append(...items: Node[]) { this.children.push(...items); }
-    replaceChildren(...items: Node[]) { this.children = items; }
-    querySelectorAll(selector: string): Node[] {
-      const name = selector.replace(/^\./, '');
-      return this.children.flatMap(child => [...(child.className.split(' ').includes(name) ? [child] : []), ...child.querySelectorAll(selector)]);
-    }
-    querySelector(selector: string): Node | null { return this.querySelectorAll(selector)[0] ?? null; }
-  }
-  const root = new Node();
-  let pilotSelected = true;
-  const add = (parent: Node, _tag: string, value?: unknown, className?: string) => {
-    const node = new Node();
-    if (value !== undefined) node.textContent = String(value);
-    node.className = className ?? '';
-    parent.append(node);
-    return node;
-  };
-  const context = createContext({
-    byId: () => root, add, Number, Math, Intl,
-    document: { getElementById: () => root },
-    candidateIntelligenceUsesPilot: () => pilotSelected,
-    observer: () => true, latest: {}, note: () => {},
-  });
-  new Script(html.slice(start,end) + '\n' + html.slice(wrapperStart,wrapperEnd)).runInContext(context);
-  const render = (counts: Record<string,number|null>) =>
-    new Script('renderFunnel(' + JSON.stringify(counts) + ')').runInContext(context);
-  const rows = () => root.querySelectorAll('.funnel-line');
-  const labels = () => rows().map(node => node.querySelector('.funnel-name')!.textContent);
-  const count = (key: string) => rows().find(row => row.dataset.funnelStage === key)!.querySelector('.funnel-count')!.textContent;
-  const order = ['supported','reconciled','evaluated','paperFilled','exited','qualified','discovered','sufficientlyObserved','attempted'];
-  render({discovered:0,supported:15,sufficientlyObserved:null,evaluated:7,qualified:1,attempted:null,paperFilled:2,exited:2,reconciled:10});
-  assert.deepEqual(labels(), ['Supported','Reconciled','Evaluated','PAPER filled','Exited','Qualified','Discovered','Sufficiently observed','Attempted']);
-  assert.deepEqual(rows().map(row => row.dataset.funnelStage),order);
-  assert.equal(count('supported'),'15');
-  assert.equal(count('attempted'),'Not reported');
-  assert.equal(rows()[0]!.querySelector('.funnel-fill')!.style.width,'100.00%');
-  assert.equal(rows().at(-1)!.querySelector('.funnel-fill')!.style.width,'0%');
-  assert.equal(rows().some(row => row.classes.has('inactive-stage')),false,'pilot source never masked by observer logic');
-
-  render({discovered:100,supported:15,sufficientlyObserved:2,evaluated:7,qualified:1,attempted:0,paperFilled:2,exited:2,reconciled:10});
-  assert.equal(labels()[0],'Discovered','latest counts re-sort without refreshing the page');
-  assert.equal(count('attempted'),'0','zero remains distinct from unavailable');
-
-  pilotSelected = false;
-  render({discovered:0,supported:15,sufficientlyObserved:null,evaluated:7,qualified:1,attempted:null,paperFilled:2,exited:2,reconciled:10});
-  assert.equal(labels()[0],'Supported','observer masking does not assume discovered is first');
-  assert.equal(count('supported'),'NOT ACTIVE');
-  assert.equal(count('discovered'),'0');
-  assert.equal(rows().find(row => row.dataset.funnelStage === 'discovered')!.classes.has('inactive-stage'),false);
-  assert.ok(rows().filter(row => row.dataset.funnelStage !== 'discovered').every(row => row.classes.has('inactive-stage')));
-});
-
-
-test('compact command view keeps critical summary visible and all secondary details accessible', async t => {
-  const app = await serve(t, { ...config, publicViewer: true, viewerUser: '', viewerPassword: '' });
-  const html = await app.get('/').then(r=>r.text());
-  // No financial or market source is replaced by the layout; the same endpoints remain.
-  const sampleReport=sample();
-  assert.equal((await app.post(sampleReport)).status,200);
-  const snapshot=await app.get('/api/snapshot').then(r=>r.json());
-  assert.deepEqual(snapshot.snapshot,sampleReport);
-  for(const id of ['portfolio','cards','experimental-portfolio','experimental-portfolio-state','experimental-portfolio-cards','experimental-portfolio-positions','experimental-portfolio-trades','experimental-portfolio-chart','performance','chart','positions','trades','funnel','reportingConnections','pilot-telemetry-panel','pilot-funnel','pilot-watch','pilot-decisions','pilot-refusals','sourceConnection','pilotConnection','refreshNow','metrics','decisions','sourceLabel','stateTitle']){
-    assert.equal((html.match(new RegExp('id="'+id+'"','g'))??[]).length,1,'source node is retained: '+id);
-  }
-  assert.match(html,/function compactCommandView\(\)/);
-  assert.match(html,/panelFold\('#pilot-telemetry-panel'/);
-  assert.match(html,/panelFold\('#reportingConnections'/);
-  assert.match(html,/panelFold\('#performance'/);
-  assert.match(html,/panelFold\('section\[aria-labelledby="decisionsTitle"\]'/);
-  assert.match(html,/document\.createElement\('details'\)/);
-  assert.match(html,/document\.createElement\('summary'\)/);
-  assert.match(html,/aria-expanded/);
-  assert.match(html,/body\.poe-compact-view #portfolio:not\(\.compact-expanded\) #cards>\.stat:nth-child\(n\+7\)/);
-  assert.match(html,/body\.poe-compact-view #experimental-portfolio:not\(\.compact-expanded\)/);
-  assert.match(html,/if\(portfolio&&experimental\)portfolio\.after\(experimental\)/);
-  assert.match(html,/artworkCaption\?\.classList\.contains\('holo-index'\)/);
-  assert.match(html,/A new dimension/);
-  assert.match(html,/class="hero-visual holo-visual"/);
-  assert.match(html,/class="holo-object"/);
-  assert.match(html,/class="holo-index"/);
-  assert.doesNotMatch(html,/body\.poe-compact-view \.hero\{min-height:0!important/);
-  assert.doesNotMatch(html,/body\.poe-compact-view \.hero-visual,body\.poe-compact-view \.holo-index\{display:none!important/);
-  assert.doesNotMatch(html,/body\.poe-compact-view \.hero-description\{display:none!important/);
-  assert.match(html,/main>section:not\(\.hero\)\{margin-top:12px;margin-bottom:12px\}/);
-  assert.match(html,/Account identity, freshness and source notes/);
-  assert.match(html,/Trade attempts, execution history and P&L chart/);
-  assert.match(html,/Full pilot funnel, market watch and failure diagnostics/);
-  assert.match(html,/LIVE EXECUTION DISABLED/);
-  assert.match(html,/financial source|FINANCIAL SOURCE OF TRUTH/i);
-  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length,4);
-  for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
+test('first snapshot paint immediately preserves stopped and stale source truth',async t=>{
+ const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text()),show=html.slice(html.indexOf('function showSnapshot('),html.indexOf('\nlet refreshInFlight=')),freshness=html.slice(html.indexOf('function paintFreshness('),html.indexOf('\nclock();setInterval('));const signals:string[][]=[];
+ const noop=()=>{},context=createContext({Date,Math,latest:null,latestReceivedAt:null,renderCards:noop,put:noop,renderTable:noop,renderCandidateIntelligence:noop,renderMetrics:noop,plot:noop,money:noop,byId:()=>({hidden:true}),signal:(...args:string[])=>signals.push(args)});new Script(show+'\n'+freshness).runInContext(context);
+ const paint=(snapshot:Snapshot,state:string)=>new Script('showSnapshot('+JSON.stringify(snapshot)+','+JSON.stringify(iso(NOW))+','+JSON.stringify({state})+')').runInContext(context);
+ const stopped=sample();stopped.status.runtime='stopped';paint(stopped,'unavailable');assert.equal(signals.at(-1)![0],'STOPPED');assert.equal(signals.at(-1)![3],'warning');
+ paint(sample('2',NOW-100000),'stale');assert.equal(signals.at(-1)![0],'STALE SOURCE SNAPSHOT');assert.equal(signals.at(-1)![3],'warning');
 });
