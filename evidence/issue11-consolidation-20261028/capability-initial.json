@@ -1,0 +1,151 @@
+{
+  "sourceLogBytes": 24960,
+  "sourceLogSha256": "95925991fd82a4acc14cd65d651c8c15dab33b87681efd60415b66e8aa5f07e9",
+  "records": [
+    {
+      "schemaVersion": 1,
+      "kind": "POE_PERSISTENT_STARTUP_CAPABILITIES",
+      "checkedAt": 1793229415690,
+      "uid": 994,
+      "systemUnits": {
+        "poe-runtime.service": {
+          "MainPID": "2333724",
+          "NRestarts": "0",
+          "User": "poe-runtime",
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "SubState": "running",
+          "UnitFileState": "enabled"
+        },
+        "poe-native-paper.service": {
+          "MainPID": "0",
+          "NRestarts": "0",
+          "User": "",
+          "LoadState": "not-found",
+          "ActiveState": "inactive",
+          "SubState": "dead",
+          "UnitFileState": ""
+        },
+        "poe-native-paper-reporting.service": {
+          "MainPID": "0",
+          "NRestarts": "0",
+          "User": "",
+          "LoadState": "not-found",
+          "ActiveState": "inactive",
+          "SubState": "dead",
+          "UnitFileState": ""
+        },
+        "user@994.service": {
+          "MainPID": "0",
+          "NRestarts": "0",
+          "User": "994",
+          "LoadState": "loaded",
+          "ActiveState": "inactive",
+          "SubState": "dead",
+          "UnitFileState": "static"
+        }
+      },
+      "userSession": {},
+      "runtimeDirectory": {
+        "exists": false
+      },
+      "userBus": {
+        "exists": false
+      },
+      "existingUserManager": {
+        "attempted": false,
+        "properties": {}
+      },
+      "sudoPolicy": {
+        "passwordlessAllCommandsExplicit": false,
+        "passwordlessPoeNativePaperStartExplicit": false,
+        "policyTextExported": false,
+        "permissionsChanged": false
+      },
+      "originalServiceBeforeAfterUnchanged": true,
+      "originalServiceAfter": {
+        "MainPID": "2333724",
+        "NRestarts": "0",
+        "User": "poe-runtime",
+        "LoadState": "loaded",
+        "ActiveState": "active",
+        "SubState": "running",
+        "UnitFileState": "enabled"
+      },
+      "receipts": [
+        {
+          "purpose": "system-unit:poe-runtime.service",
+          "exitCode": 0,
+          "timedOut": false,
+          "stdoutBytes": 120,
+          "stderrBytes": 0,
+          "stdoutSha256": "e82a334a29a30d655ca89606f77404413907fa8a31ae4fccb0d421b6b937d3d5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "purpose": "system-unit:poe-native-paper.service",
+          "exitCode": 0,
+          "timedOut": false,
+          "stdoutBytes": 98,
+          "stderrBytes": 0,
+          "stdoutSha256": "c3bbd678212bf6843bbdeefe401f330585d2239879ace64b46710afa182b5241",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "purpose": "system-unit:poe-native-paper-reporting.service",
+          "exitCode": 0,
+          "timedOut": false,
+          "stdoutBytes": 98,
+          "stderrBytes": 0,
+          "stdoutSha256": "c3bbd678212bf6843bbdeefe401f330585d2239879ace64b46710afa182b5241",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "purpose": "system-unit:user@994.service",
+          "exitCode": 0,
+          "timedOut": false,
+          "stdoutBytes": 104,
+          "stderrBytes": 0,
+          "stdoutSha256": "9cebe356a1fba65e1be42bf8d0d8278ed75cb1a463633810a4e7b89c88c3f1c9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "purpose": "user-session",
+          "exitCode": 1,
+          "timedOut": false,
+          "stdoutBytes": 0,
+          "stderrBytes": 62,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "0266d92df2080809f5f613c1989d51dc9c182c214916b605b8b6d196db14cf83"
+        },
+        {
+          "purpose": "read-only-sudo-policy",
+          "exitCode": 0,
+          "timedOut": false,
+          "stdoutBytes": 623,
+          "stderrBytes": 0,
+          "stdoutSha256": "3c039bbaa770098b59fe6425b813ac904958814edf5a343168717ef52b16bf91",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "purpose": "original-service-after",
+          "exitCode": 0,
+          "timedOut": false,
+          "stdoutBytes": 120,
+          "stderrBytes": 0,
+          "stdoutSha256": "e82a334a29a30d655ca89606f77404413907fa8a31ae4fccb0d421b6b937d3d5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "elapsedMs": 30,
+      "serviceStarts": 0,
+      "serviceChanges": 0,
+      "permissionChanges": 0,
+      "credentialReads": 0,
+      "financialFilesRead": false,
+      "providerRequests": 0,
+      "ownerActionDetermined": false,
+      "meaning": "Capability metadata only; a loaded unit or sudo-list entry is not proof of a successful install/start. No privileged mutation was attempted."
+    }
+  ]
+}

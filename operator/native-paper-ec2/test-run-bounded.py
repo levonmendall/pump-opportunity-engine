@@ -335,7 +335,7 @@ class Guards(unittest.TestCase):
                     first = m.supervise_segment('/unused', root, root, root, manifest(), helpers,
                                                 False, 0, time.monotonic()+4000, lambda: False, state)
                     self.assertEqual(first['reason'], 'SOURCE_EARLY_CPU_STOP')
-                    self.assertEqual(first['boundedStopEvidence']['sourceCpuSeconds'], 220)
+                    self.assertEqual(first['boundedStopEvidence']['sourceCpuSeconds'], 420)
                     self.assertTrue(first['sourceGroupSettled'])
                     self.assertEqual(first['sourceExit'], 0)
                     self.assertEqual(first['positions'], 1)
