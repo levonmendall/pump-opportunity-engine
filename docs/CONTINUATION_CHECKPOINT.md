@@ -1,4 +1,24 @@
-# POE continuation checkpoint
+# POE recovered continuation checkpoint
+
+Recovered 2026-10-28 at15:17UTC. Source640143a5924a7ff7d98039967c2db17957f71f24
+finalverification DID complete15:05:48UTC:1218tests/build/compile/39packagingchecks
+allpassed. All7rawloghashesverifiedafterreconnect. No runtime/source edits since.
+The interruption handoff is historical; localrepairs are recovered and being
+published by this merge, preserving both local and remote checkpoint histories.
+
+Exact source640 executableSHA4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a
+config29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf.
+Existing90/minute2h researchprofile,6scopes,selected24h non-entryobservation,v3shadow.
+Latestinput119proofs/144WATCH,138books/5033units; historicaluncertaintyretained.
+FreshresearchleasePID36042 replaceszombie6822; recheckownershipafteranyinterruption.
+No market interval hasstarted at this checkpoint write. Next:push exactrepairs and
+adminpackage, appendprepared/unresolved marker, then dispatchonce through existing
+nonroot route. Preserve originalobserver/account andno financialwriter/24hclock.
+
+See evidence/forward-recovery-20261028/ for frozenmetadata, provenance andmanifest;
+evidence/resumed-verification-20261028/640143a/ for actualverification.
+The previousfailure and oldercheckpoint chronology follows unchanged.
+
 
 Updated after resumed forward failure, 2026-10-28 at 14:56 UTC. No market source is
 running. Sole development lease PID6822 remains; do not confuse it with a listener.

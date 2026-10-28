@@ -1,0 +1,14 @@
+✔ default staging keeps the900-second envelope and pins independently staged readback helper (207.692973ms)
+✔ two-hour source/profile/age/contract are explicit and Python and staged maps agree exactly (246.94363ms)
+✔ duration profile never opts into shadow data or selected24-hour observation implicitly (1149.792693ms)
+✔ staging bounds physical book size, aggregate bytes and initial path count before reading accounting (715.836954ms)
+✔ explicit90 package pins11500 units and same durable non-upload limits as old60 package (442.795633ms)
+✔ new90 staging refuses a bundle which resolves that name to old7500-unit settings (226.55705ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3066.064953

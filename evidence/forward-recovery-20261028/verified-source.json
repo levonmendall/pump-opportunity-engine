@@ -1,0 +1,12 @@
+{
+  "sourceCommit": "640143a5924a7ff7d98039967c2db17957f71f24",
+  "verifiedAt": "2026-10-28T15:15:02.508826+00:00",
+  "trees": {
+    "src": "e224baca4994d24cfadc912715f9fffc8133bca7",
+    "scripts": "c10fab2b028ea6296b0413cf2ddfa9fce75f6e7e",
+    "test": "376d692ecbf61a3a73480ca84ae97c5341b7502c"
+  },
+  "rawVerification": "evidence/resumed-verification-20261028/640143a/combined-verification.json",
+  "tests": 1218,
+  "allOfflineChecksPassed": true
+}

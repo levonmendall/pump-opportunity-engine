@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "640143a5924a7ff7d98039967c2db17957f71f24",
+  "command": [
+    "node",
+    "--test",
+    "operator/native-candidate-ec2/test-stage-package.mjs"
+  ],
+  "startedAt": "2026-10-28T15:05:45.302110+00:00",
+  "endedAt": "2026-10-28T15:05:48.404648+00:00",
+  "elapsedSeconds": 3.1025630789999923,
+  "exitCode": 0,
+  "logSha256": "ae74d456f6d05f81cdd60ad227108e815a7fd46d1e3b2174e3c73c786ed97f75",
+  "logBytes": 766
+}

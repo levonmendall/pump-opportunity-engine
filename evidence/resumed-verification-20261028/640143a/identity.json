@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "640143a5924a7ff7d98039967c2db17957f71f24",
+  "at": "2026-10-28T15:04:07.742427+00:00",
+  "trackedStatus": " M docs/FUNDING.md\n",
+  "trees": {
+    "src": "e224baca4994d24cfadc912715f9fffc8133bca7",
+    "scripts": "c10fab2b028ea6296b0413cf2ddfa9fce75f6e7e",
+    "test": "376d692ecbf61a3a73480ca84ae97c5341b7502c"
+  }
+}

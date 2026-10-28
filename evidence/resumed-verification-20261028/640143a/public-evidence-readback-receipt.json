@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "640143a5924a7ff7d98039967c2db17957f71f24",
+  "command": [
+    "python3",
+    "-B",
+    "operator/native-candidate-ec2/test-readback-public-evidence.py"
+  ],
+  "startedAt": "2026-10-28T15:05:44.941204+00:00",
+  "endedAt": "2026-10-28T15:05:45.301362+00:00",
+  "elapsedSeconds": 0.36018067300028633,
+  "exitCode": 0,
+  "logSha256": "747b1c215c51149970e1ae67f71c07180bfae8e98f422d9a6f1954e2612d776f",
+  "logBytes": 114
+}
