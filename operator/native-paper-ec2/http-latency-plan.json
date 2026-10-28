@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
-  "classification": "post-c189-historical-v-fresh-floor-latency-v1",
+  "classification": "post-c189-history-page20-latency-v2",
   "endpoint": "https://api.mainnet.solana.com",
+  "historyPageLimit": 20,
   "pools": [
     {
       "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",

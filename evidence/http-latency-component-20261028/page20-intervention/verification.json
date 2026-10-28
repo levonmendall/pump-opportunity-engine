@@ -1,0 +1,55 @@
+{
+  "verifiedAt": "2026-10-28T22:06:08.257030+00:00",
+  "parentCommit": "ba1dcf873c4370e7b85c3cdcc42f9e9c0337d76c",
+  "experimentVersion": "post-c189-history-page20-latency-v2",
+  "focusedTests": 14,
+  "build": "PASS",
+  "marketRequests": 0,
+  "operatingAuditChanged": false,
+  "financialStateChanged": false,
+  "wrapperBytesUnchanged": true,
+  "oldEvidenceRewritten": false,
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/http-latency-probe.mjs",
+      "bytes": 15639,
+      "sha256": "d70507fd86c1eb1811b1c65ae71f12ff7ecef2a0e833fcd182a4032248a75cc7"
+    },
+    {
+      "path": "operator/native-paper-ec2/http-latency-plan.json",
+      "bytes": 1462,
+      "sha256": "8b009e50aa4695ea6ab4fe9dc998c65074e9e88a13dca68d778f49113adbbfea"
+    },
+    {
+      "path": "operator/native-paper-ec2/http-latency-run.py",
+      "bytes": 9174,
+      "sha256": "9f3befc3a691fb3d5f82e46e79d8359378e58219cce19454989fa5348098a946"
+    },
+    {
+      "path": "operator/native-paper-ec2/proposed-http-latency-workflow.yml",
+      "bytes": 2686,
+      "sha256": "f72a5bc52464fd0cf67513d0b73903659cf97685a532eea156e9d6264ff4e8f1"
+    },
+    {
+      "path": "test/http-latency-component.test.ts",
+      "bytes": 10488,
+      "sha256": "b535770dea5219e13ffae190a892ce00a31034aab03eaec4ea946cd739b48dec"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/page20-intervention/focused-tests.txt",
+      "bytes": 1701,
+      "sha256": "9d3da0ead9f78bb60d458b486de094070f111f7acdfbc831193ebdf776be2b3b"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/page20-intervention/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/page20-intervention/baseline100-summary.json",
+      "bytes": 3655,
+      "sha256": "1e7e7fc86b45da91eb2fa943f9c09168f292d842b0861401170d9d78090a14b7"
+    }
+  ],
+  "independentReview": "GO; independently14/14PASS, exact workflowpins match, no network/edits"
+}

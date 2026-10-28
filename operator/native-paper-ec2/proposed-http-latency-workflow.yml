@@ -26,8 +26,8 @@ jobs:
       - name: Verify source pins and run one bounded read-only component
         env:
           ACTUAL_RUNNER: ${{ runner.name }}
-          EXPECTED_PROBE_SHA256: e5cccf131586233029d1fba0a26e5b8586c9953c75f70a4c7edcda8de1aea8b0
-          EXPECTED_PLAN_SHA256: 0ae112efc0b428671e8f0f2070376a72291dbdb26a71b277389f9d23891ba4bb
+          EXPECTED_PROBE_SHA256: d70507fd86c1eb1811b1c65ae71f12ff7ecef2a0e833fcd182a4032248a75cc7
+          EXPECTED_PLAN_SHA256: 8b009e50aa4695ea6ab4fe9dc998c65074e9e88a13dca68d778f49113adbbfea
           EXPECTED_WRAPPER_SHA256: 9f3befc3a691fb3d5f82e46e79d8359378e58219cce19454989fa5348098a946
         shell: bash
         run: |
