@@ -230,3 +230,8 @@ test('read-only targeted logs management shares physical units and rejects finan
   for(const method of ['sendTransaction','signTransaction','simulateTransaction','trade','subscribeTokenTrade'])await assert.rejects(b.operate({transport:'ws',method},done),/OPERATION_DENIED/);assert.equal(b.newUnits,2);
  }finally{b.close();}
 });
+
+test('physical timeout diagnostics expose scheduled versus actual callback timing without releasing unknown occupancy',async t=>{
+ const f=fixture(t),rows:Array<{kind:string;data:any}>=[],b=new ComponentBudget({...f.options,record:(kind,data)=>rows.push({kind,data})});let release!:()=>void;
+ try{const pending=b.operate(HTTP,async()=>new Promise<void>(r=>{release=r;}),undefined,{timeoutMs:5});await assert.rejects(pending,/PHYSICAL_TIMEOUT/);const timer=rows.find(r=>r.kind==='component-physical-timeout');assert.equal(timer?.data.requestedTimeoutMs,5);assert.equal(timer?.data.scheduledDelayMs,5);assert.ok(timer?.data.callbackLatenessMs>=0);assert.equal(b.inFlight,1);assert.equal(b.usage().uncertainResponseBytes,2*MIB);assert.ok(b.usage().persistence.attempts>0);assert.ok(b.usage().persistence.totalMs>=0);release();for(let i=0;i<8&&b.inFlight;i++)await new Promise(r=>setImmediate(r));assert.equal(b.inFlight,0);}finally{b.close();}
+});

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {readFileSync} from 'node:fs';
 import WebSocket from 'ws';
+import {nativeCandidateWatchControlAdmission} from '../src/run-native-candidates.js';
 import bs58 from 'bs58';
 import {PilotFeeds,type PilotFeedControl,type PilotFeedsOptions} from '../src/pilot-feeds.js';
 import type {ComponentKind,ComponentOperation} from '../src/component-budget.js';
@@ -209,4 +210,10 @@ test('removing legacy scopes preserves an explicitly requested WATCH stream and 
 
 test('WATCH-only recovery honors its actual upgrade429 cooldown and performs no transaction enrichment',async()=>{
  const f=setup({watchOnly:true,refuseUpgrade:true});await assert.rejects(f.feeds.startWatchActivity(),/COMPONENT_HTTP_429/);assert.equal(f.sockets.length,1);assert.equal(f.feeds.usage().pumpApiConnected,false);await f.advance(14999);assert.equal(f.sockets.length,1);await f.advance(1);assert.equal(f.sockets.length,2);assert.equal(f.operations.length,2);assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);assert.equal(f.feeds.usage().candidates.length,0);await f.feeds.stop();
+});
+
+test('WATCH reconnect defers physical starts while selected native controls are due, then resumes through the same gate',async()=>{
+ let nativeDue=false;let f:ReturnType<typeof setup>;f=setup({watchOnly:true,admitControl:()=>nativeCandidateWatchControlAdmission(false,true,{nextServiceAt:nativeDue?f.now:Infinity},f.now)?{}:false});
+ await f.feeds.startWatchActivity();assert.equal(f.operations.length,1);nativeDue=true;f.sockets[0]!.drop();await f.advance(30000);assert.equal(f.operations.length,1,'due selected retirement/support keeps the service opportunity across repeated WATCH timer callbacks');assert.equal(f.feeds.usage().pumpApiConnected,false);
+ nativeDue=false;await f.advance(10000);assert.equal(f.operations.length,2);assert.equal(f.feeds.usage().pumpApiConnected,true);await f.feeds.stop();
 });

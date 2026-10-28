@@ -4,6 +4,7 @@ import {mkdtempSync,writeFileSync,readFileSync,rmSync,existsSync} from 'node:fs'
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
+import {nativeCandidateWatchControlRequest} from '../src/run-native-candidates.js';
 import {PilotRpc,PilotRpcUnavailable,type PilotRpcOptions,CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE} from '../src/pilot-rpc.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from '../src/research-baseline.js';
 const MIB=1024*1024,turn=()=>new Promise<void>(r=>setImmediate(r));
@@ -245,5 +246,15 @@ test('repeated rolling-minute pacing refusals reuse the unhalted chapter beyond3
   for(let i=0;i<40;i++)await assert.rejects(f.client.call('getSlot',[],undefined,{latestStartAt:at+1000}),/DISPATCH_EXPIRED/);
   const refused=f.client.usage();assert.equal(f.now(),at,'an expired pacing opportunity never performs a hidden wait or retry');assert.equal(refused.chapter,1);assert.equal(refused.newUnits,60);assert.equal(f.invocations.length,60);assert.equal(refused.fatal,null);assert.equal(refused.cooldownUntil,0);assert.equal(refused.controlCooldownUntil,0);assert.equal(refused.chapterUsage!.haltedReason,null);assert.equal(refused.uncertainResponseBytes,before.uncertainResponseBytes);assert.equal(refused.newAccountedResponseBytes,before.newAccountedResponseBytes);assert.deepEqual(readFileSync(chapter),book);assert.deepEqual(readFileSync(f.old),f.before);assert.equal(f.records.filter(r=>r.kind==='pilot-job-admission-refused').length,40);assert.equal(f.records.some(r=>r.kind==='pilot-rpc-unavailable'),false);
   f.advance(f.invocations[0]!.at+60000-f.now());assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,1,'the healthy chapter retains all32 chapter slots despite40 refused jobs');assert.equal(f.client.usage().newUnits,61);assert.equal(f.invocations.length,61);assert.equal(f.client.usage().automaticRequestRetries,0);assert.deepEqual(readFileSync(f.old),f.before);
+ }finally{f.close();}
+});
+
+test('WATCH pacing cannot hold the shared gate across the next native deadline or start after native becomes due',async()=>{
+ const f=fixture({maxStartsPer10s:20},true);try{
+  const next=f.now()+4000,request=nativeCandidateWatchControlRequest(()=>({busy:false,admissionOpen:true,flow:{nextServiceAt:next},at:f.now()}),f.now()+90000);assert.ok(request);const before=f.client.usage();let starts=0;
+  await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>{starts++;op.completeResponse();},undefined,request),/DISPATCH_EXPIRED/);
+  assert.equal(starts,0);assert.equal(f.now(),200000,'ten-second pacing cannot occupy the gate past native work');assert.equal(f.client.usage().newUnits,before.newUnits);assert.equal(f.client.usage().waitingOrOperating,false);assert.equal(f.client.usage().fatal,null);
+  f.advance(10000);let nativeNext=f.now()+4000;const later=nativeCandidateWatchControlRequest(()=>({busy:false,admissionOpen:true,flow:{nextServiceAt:nativeNext},at:f.now()}),f.now()+90000);assert.ok(later);nativeNext=f.now();const guarded=later;
+  await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>{starts++;op.completeResponse();},undefined,guarded),/ADMISSION_CLOSED/);assert.equal(starts,0);assert.equal(f.client.usage().newUnits,0);assert.equal(f.client.usage().waitingOrOperating,false);
  }finally{f.close();}
 });

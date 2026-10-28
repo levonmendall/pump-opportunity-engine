@@ -18,6 +18,7 @@ import {PilotWatch} from '../src/pilot-watch.js';
 import {canonicalPumpPoolPda} from '../src/sdk.js';
 const captured=JSON.parse(readFileSync('evidence/native-startup-20261028/retained-six-pool-startup.json','utf8'));
 class Socket extends EventEmitter{
+ readonly _receiver={writableLength:0,_state:0,_bufferedBytes:0,_fragmented:0};
  readonly _socket=Object.assign(new EventEmitter(),{bytesRead:200});readonly _sender={sendFrame:(_parts:Buffer[],cb?:()=>void)=>cb?.()};readyState:number=WebSocket.CONNECTING;readonly sent:any[]=[];
  open(){this.readyState=WebSocket.OPEN;this.emit('open');}
  frame(body:unknown){const raw=Buffer.from(JSON.stringify(body));this._socket.bytesRead+=raw.length+4;this._socket.emit('data',raw);this.emit('message',raw);}

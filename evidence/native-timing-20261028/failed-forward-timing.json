@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "classification": "ACTUAL_FAILED_FORWARD_TRACE_AND_SEPARATE_OFFLINE_COUNTEREXAMPLES",
+  "source": {
+    "commit": "bb6fd9fa899c6a4d07c19643e0cff86b42deb408",
+    "sha256": "ccb42f1d629aeaaa6760872064e98936692584608b1dd01b60da590ebf2b916a"
+  },
+  "githubRunId": 40633990901,
+  "artifactHashes": {
+    "run/events/events-001.ndjson": "b6f849e2608330da3097baf30651af05fcfee88d02f528b7b1b0a156b6162a86",
+    "run/status.json": "69c0bae77a47e1b1c68b5a5272aad0c9092479cf8acbdb7df595dd564910886a",
+    "supervisor.json": "1504e2d84ab93c6d65839af7d07832c544d43720ef4aeecf33603802c8518064"
+  },
+  "actual": {
+    "elapsedLastStatusMs": 413793,
+    "statusRunning": true,
+    "counters": {
+      "migrationHints": 1,
+      "verificationQueueRefusals": 0,
+      "verificationAttempts": 3,
+      "verifiedOrigins": 52,
+      "verificationRefusals": 1,
+      "normalizedEvents": 163,
+      "qualityGaps": 6,
+      "featureViews": 49,
+      "auditedWindows": 2,
+      "predictiveAssessments": 2,
+      "predictiveFailed": 2,
+      "predictiveNotRejected": 0,
+      "predictiveUnavailable": 0,
+      "auditUnavailable": 1,
+      "auditUnusable": 0,
+      "decisionDeadlineMisses": 0,
+      "uniqueEvaluated": 2
+    },
+    "nativeFatal": null,
+    "remainingCandidates": 0,
+    "retiringCandidates": 6,
+    "nativeConnected": true,
+    "ignoredAfterGap": 25602,
+    "lastMarketNotificationAt": 1793162765929,
+    "completedAudits": 2,
+    "request4731": {
+      "physicalStart": {
+        "schemaVersion": 1,
+        "sequence": 701,
+        "receivedAt": "2026-10-28T04:45:35.833Z",
+        "monotonicMs": 71678.82268,
+        "kind": "component-physical-start",
+        "data": {
+          "id": 4731,
+          "at": 1793162735826,
+          "enqueuedAt": 1793162735820,
+          "reservedAt": 1793162735820,
+          "kind": {
+            "transport": "http",
+            "method": "getSignaturesForAddress"
+          }
+        }
+      },
+      "headers": {
+        "schemaVersion": 1,
+        "sequence": 3253,
+        "receivedAt": "2026-10-28T04:45:52.583Z",
+        "monotonicMs": 88428.696675,
+        "kind": "http-headers",
+        "data": {
+          "id": 4731,
+          "method": "getSignaturesForAddress",
+          "status": 200,
+          "retryAfter": null,
+          "at": 1793162752583,
+          "byteAccounting": "measured-body; response-header-and-wire-overhead-unmeasured"
+        }
+      },
+      "timeout": {
+        "schemaVersion": 1,
+        "sequence": 3254,
+        "receivedAt": "2026-10-28T04:45:52.594Z",
+        "monotonicMs": 88439.882099,
+        "kind": "pilot-rpc-unavailable",
+        "data": {
+          "at": 1793162752594,
+          "code": "COMPONENT_PHYSICAL_TIMEOUT",
+          "cooldownUntil": 1793162754594,
+          "physicalSettled": false,
+          "reservationsRetained": 2097152
+        }
+      },
+      "physicalSettlement": {
+        "schemaVersion": 1,
+        "sequence": 3256,
+        "receivedAt": "2026-10-28T04:45:52.614Z",
+        "monotonicMs": 88460.124235,
+        "kind": "component-physical-settled",
+        "data": {
+          "id": 4731,
+          "at": 1793162752614,
+          "responseComplete": false,
+          "kind": {
+            "transport": "http",
+            "method": "getSignaturesForAddress"
+          },
+          "uncertainReservedBytes": 2097152
+        }
+      },
+      "startToTimeoutMonotonicMs": 16761.059,
+      "concurrentEventCounts": {
+        "component-physical-start": 1,
+        "native-flow-validated-events": 847,
+        "native-flow-raw-representative": 5,
+        "pilot-watch-activity": 847,
+        "native-flow-information-available": 847,
+        "pilot-watch-expired": 1,
+        "native-candidate-quality-gap": 1,
+        "pilot-watch-transition": 1,
+        "native-candidate-retired": 1,
+        "native-flow-refusal": 1,
+        "http-headers": 1,
+        "pilot-rpc-unavailable": 1
+      },
+      "declaredPhysicalTimeoutMs": 1500,
+      "meaning": "Application callbacks completed during the interval. This does not locate network arrival before the headers callback or establish provider saturation."
+    },
+    "laterFeedUpgradeStarts": [
+      {
+        "at": 1793162791428,
+        "id": 4732
+      },
+      {
+        "at": 1793162816405,
+        "id": 4733
+      },
+      {
+        "at": 1793162841386,
+        "id": 4734
+      },
+      {
+        "at": 1793162878869,
+        "id": 4735
+      },
+      {
+        "at": 1793162941195,
+        "id": 4736
+      },
+      {
+        "at": 1793162978429,
+        "id": 4737
+      },
+      {
+        "at": 1793163003424,
+        "id": 4738
+      },
+      {
+        "at": 1793163015872,
+        "id": 4739
+      },
+      {
+        "at": 1793163028451,
+        "id": 4740
+      },
+      {
+        "at": 1793163065809,
+        "id": 4741
+      }
+    ],
+    "lastSourceResources": {
+      "maximumRssBytes": 302518272,
+      "cpu": {
+        "user": 72559008,
+        "system": 6976854
+      },
+      "eventLoopDelayP95Ms": 29.016063,
+      "retainedEvidenceBytes": 5663726,
+      "evidenceSegments": 1
+    },
+    "supervisor": {
+      "failure": "NATIVE_RESEARCH_SOURCE_NOT_STOPPED",
+      "otherSupervisorFailure": "SUPERVISOR_FAILURE",
+      "runnerExit": null,
+      "ownedProcessGroupsSettled": true,
+      "sourcePhysicalSettlementConfirmed": false,
+      "finalStoppedReportAccepted": false
+    },
+    "limitations": [
+      "Original trace contains no passive-accounting persistence duration or timeout-callback scheduled/deadline telemetry. Disk delay versus parser/receiver callback batching versus other host scheduling cannot be precisely apportioned.",
+      "A low95th-percentile event-loop statistic does not bound a rare long stall.",
+      "SUPERVISOR_FAILURE sanitization omits the original Python exception, so an atomic-file race remains a reproduced possible cause until exact host evidence establishes it."
+    ]
+  },
+  "offlineCorrections": {
+    "websocketReceiver": "Pinned ws8.22 allowSynchronousEvents:false yields between callbacks from one transport chunk, preserving message order. Real Receiver synthetic stress verifies a timer runs before all120 messages complete.",
+    "receiptClock": "Conservative earliest application-transport timestamp survives queued/fragmented chunks until receiver framing state and Writable backlog drain. A six-second fragmented frame is not relabeled fresh. It is not an exact wire timestamp; sustained undrained batches may conservatively invalidate coverage.",
+    "reconnectPriority": "Candidate-only WATCH reconnect admission refuses while selected native service is due or its1500ms operation plus500ms planning reserve cannot fit before that service. latestStartAt is bounded by that service opportunity and the same priority check repeats at actual admission. A real PilotRpc rolling-window fixture proves no queued gate hold/request/charge across native due work. Unknown physical settlement still holds the shared gate; this is not a guarantee of cancellation latency.",
+    "instrumentation": "Bounded persistence attempt/total/maximum timings plus actual timeout callback lateness and event-loop maximum reveal the previously unmeasured local timing components; accounting and occupancy remain unchanged."
+  },
+  "notEstablished": [
+    "No corrected forward capacity or economic performance claim.",
+    "No proof that this run's entire16.77-second interval was caused by synchronous callback batching or storage.",
+    "No recovery of unknown unsupported-swap-label semantics from missing raw bytes.",
+    "No production change, network request, account write, entry activation or rerun in this repair."
+  ]
+}
