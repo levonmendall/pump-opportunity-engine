@@ -37,7 +37,10 @@ export function replayOvernightCorrection(records:RecordRow[],scope:ActiveScope,
   }
   need(removedMappingGaps.length===suppressible.size,'CORRECTION_GAP_PROOF_MISMATCH');
   timeline.sort((a,b)=>a.at-b.at||a.index-b.index);need(timeline.every(r=>Number.isSafeInteger(r.at)&&r.at>=openAt&&r.at<=closeAt),'OUTSIDE_OR_INVALID_TIMELINE');
-  let now=openAt;const emitted:RecordRow[]=[],core=new ActivePipeline({scope,now:()=>now,record:(kind,data)=>emitted.push({kind,recordedAt:now,data})}),active=new Map<string,ActiveHint>(),availability:Array<Record<string,unknown>>=[];
+  // Historical feature request times are replay inputs, not a promise about
+  // today's diagnostic recorder cadence. Evaluate every original sample even
+  // when equivalent current diagnostics are coalesced.
+  let now=openAt;const featureSamples:Array<NonNullable<ReturnType<ActivePipeline['snapshot']>['latestFeature']>>=[],emitted:RecordRow[]=[],core=new ActivePipeline({scope,now:()=>now,record:(kind,data)=>emitted.push({kind,recordedAt:now,data})}),active=new Map<string,ActiveHint>(),availability:Array<Record<string,unknown>>=[];
   for(const event of timeline){
     now=event.at;const d=event.data;
     switch(event.kind){
@@ -45,7 +48,7 @@ export function replayOvernightCorrection(records:RecordRow[],scope:ActiveScope,
       case'observe':core.observe(JSON.parse(d.payloadUtf8),now);break;
       case'start':{const hint=core.nextHint(now);need(hint&&hint.signature===d.hint.signature&&hint.receivedAt===d.hint.receivedAt,'ORIGINAL_REQUEST_IDENTITY_MISMATCH');active.set(d.hint.signature,hint!);break;}
       case'complete':{const hint=active.get(d.hint.signature);need(hint,'NO_ORIGINAL_REQUEST_START');const rows=core.completeHint(hint!,d.transaction,now);active.delete(d.hint.signature);availability.push({signature:d.hint.signature,providerReceivedAt:d.hint.receivedAt,originalRequestedAt:d.requestedAt,confirmedAvailableAt:now,normalizedAvailableAt:now,normalizedEvents:rows.length,sides:rows.map(r=>r.side),allExecutedTransfersPass:rows.every(r=>r.transferChecks.baseTransfer&&r.transferChecks.userQuoteTransfer)});break;}
-      case'tick':core.tick(now);break;
+      case'tick':{core.tick(now);const feature=core.snapshot(now,{recordFeatures:false}).latestFeature;if(feature)featureSamples.push(feature);break;}
       case'price':need(String(d.units)===String(scope.baseUnits),'QUOTE_SIZE_CHANGED');core.price(d.quote,now);break;
       case'gap':core.gap(d.reason,now);break;
       case'end':core.endObservation(now,d.reason);break;
@@ -54,8 +57,7 @@ export function replayOvernightCorrection(records:RecordRow[],scope:ActiveScope,
   }
   need(active.size===0,'UNRESOLVED_ORIGINAL_REQUEST');
   const state=core.snapshot(closeAt),unique=new Map<number,{firstAvailableAt:number;lastAvailableAt:number;samples:number;curve:unknown;user:unknown}>();
-  for(const row of emitted.filter(r=>r.kind==='research-feature-view')){
-    const d=row.data;if(d.at>=endAt||!d.fullyEnriched||!d.curve.sufficientlyObserved||!d.user.sufficientlyObserved||!d.curve.tradeCount||!d.user.tradeCount)continue;
+  for(const d of featureSamples){if(d.at>=endAt||!d.fullyEnriched||!d.curve.sufficientlyObserved||!d.user.sufficientlyObserved||!d.curve.tradeCount||!d.user.tradeCount)continue;
     const prior=unique.get(d.curve.windowEndAt);unique.set(d.curve.windowEndAt,{firstAvailableAt:prior?.firstAvailableAt??d.at,lastAvailableAt:d.at,samples:(prior?.samples??0)+1,curve:d.curve,user:d.user});
   }
   return {classification:'CORRECTED_COUNTERFACTUAL_CHRONOLOGICAL_REPLAY_NOT_FORWARD_ACCEPTANCE',openAt,endAt,closeAt,timelineEvents:timeline.length,excludedPrewarmOrPostwindowQuotes:outsideObservationQuotes,removedMappingGapsOnlyInCounterfactual:removedMappingGaps,informationAvailability:availability,normalizedEvents:state.normalizedEvents,normalizedBuys:state.normalizedBuys,normalizedSells:state.normalizedSells,failedTransactions:state.failedTransactions,pending:state.pending,remainingQualityGaps:state.qualityGaps,originalApplicationStopRetained:state.qualityGaps.some(g=>g.at===endAt&&g.reason==='COMPONENT_FIELD_APPLICATION_STOP'),rawEnrichedFeatureWarmSeconds:state.enrichedFeatureWarmSeconds,rawNoPendingFeatureWarmSeconds:state.noPendingFeatureWarmSeconds,uniqueCompleteClosedWindowEnds:[...unique].map(([windowEndAt,value])=>({windowEndAt,...value})),distinctRawWarmedWindowEnds:unique.size,quotes:{accepted:state.prices.accepted,rejected:state.prices.rejected,changes:state.prices.changes,freshCacheMs:state.prices.freshCacheMs,staleCacheMs:state.prices.staleCacheMs,timeEvidence:'Original confirmed same-batch bank Clock; never relabeled a block timestamp.',modeledHoldingOnly:true,exitTriggers:state.prices.triggerEvents},executedEvidence:state.executedEvidence,independentlyAuditedCompleteWindows:0,independentCoverage:'PENDING_SEPARATE_BOUNDED_AUDIT',forwardAcceptance:false,combinedAcceptance:false,entriesEnabled:false,paperTradesCreated:0,financialPnl:null,syntheticPrices:0,interpolatedPrices:0,networkRequests:0};
@@ -79,6 +81,8 @@ export function writeOvernightCorrection(directory=resolve('evidence/overnight-2
 /** Verify the existing historical artifact without rewriting it. A later
  * separately proved variant fix may change a source hash while leaving this
  * v2-only replay identical; compare semantics and disclose both source versions.
+ * Window samples use the original recorded feature-request times, independent
+ * of the current diagnostic coalescing policy; no timing/amount/gap is ignored.
  */
 export function verifyExistingOvernightCorrection(directory=resolve('evidence/overnight-20261027/11-combined')){
   const output=join(directory,'offline-corrected-replay.json'),storedBytes=readFileSync(output),stored=JSON.parse(storedBytes.toString('utf8'));
