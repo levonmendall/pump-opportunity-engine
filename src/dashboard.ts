@@ -260,10 +260,21 @@ function renderFunnel(f,intelligence=null,isObserver=false){
  const row=(key,label,value)=>{const line=add(outer,'div',undefined,'funnel-line');line.dataset.funnelStage=key;add(line,'div',label,'funnel-name');const track=add(line,'div',undefined,'funnel-track'),fill=add(track,'div',undefined,'funnel-fill');fill.style.width='0%';add(line,'div',value===null||value===undefined?'Unavailable':typeof value==='number'?value.toLocaleString('en-US'):String(value),'funnel-count');};
  if(intelligence){
   const c=intelligence.candidates;
-  [['migrationsReceived','Migrations received'],['known','Known market identities'],['watch','Lightweight watch'],['eligible','Eligible watch'],['queued','Waiting for deep observation'],['auditedWindows','Audited usable windows'],['uniqueAudited','Unique tokens audited'],['predictiveAssessments','Predictive assessments'],['predictivePasses','Predictive passes'],['predictiveFailures','Predictive failures']].forEach(([key,label])=>row(key,label,c[key]));
-  row('deepActive','Deep-analysis slots',(c.deepActive===null?'?':c.deepActive)+' / '+(c.deepMaximum===null?'?':c.deepMaximum));
-  [['qualified','Executable qualifications'],['attempted','PAPER attempts'],['paperFilled','PAPER fills'],['exited','PAPER exits']].forEach(([key,label])=>row(key,label,f[key]));
-  add(el,'p','Window and assessment totals may span source recoveries; unique tokens are counted within the current source generation. Overlapping windows are not independent coverage. A market-wide denominator has not been established.','panel-sub');
+  const candidateRows=[['migrationsReceived','Migrations received'],['known','Known market identities'],['watch','Lightweight watch'],['eligible','Eligible watch'],['queued','Waiting for deep observation'],['auditedWindows','Audited usable windows'],['uniqueAudited','Unique tokens audited'],['predictiveAssessments','Predictive assessments'],['predictivePasses','Predictive passes'],['predictiveFailures','Predictive failures']];
+  const financialRows=[['qualified','Executable qualifications'],['attempted','PAPER attempts'],['paperFilled','PAPER fills'],['exited','PAPER exits']];
+  const numeric=value=>Number.isSafeInteger(value)&&value>=0?value:null;
+  const ceiling=Math.max(1,...candidateRows.map(([key])=>numeric(c[key])??0),...financialRows.map(([key])=>numeric(f[key])??0));
+  const plotted=(key,label,value)=>{
+   row(key,label,value);
+   const count=numeric(value),fill=outer.lastElementChild.querySelector('.funnel-fill');
+   fill.style.width=count===null?'0%':(100*count/ceiling).toFixed(2)+'%';
+  };
+  candidateRows.forEach(([key,label])=>plotted(key,label,c[key]));
+  const active=numeric(c.deepActive),maximum=numeric(c.deepMaximum);
+  row('deepActive','Deep-analysis slots',(active===null?'?':active)+' / '+(maximum===null?'?':maximum));
+  if(active!==null&&maximum!==null&&maximum>0)outer.lastElementChild.querySelector('.funnel-fill').style.width=(100*Math.min(active,maximum)/maximum).toFixed(2)+'%';
+  financialRows.forEach(([key,label])=>plotted(key,label,f[key]));
+  add(el,'p','Bars show counts relative to the largest reported stage; deep-analysis slots show occupancy. Window and assessment totals may span source recoveries; unique tokens are counted within the current source generation. Overlapping windows are not independent coverage. A market-wide denominator has not been established.','panel-sub');
  }else{
   const fields=[['discovered','Discovered'],['supported','Supported'],['sufficientlyObserved','Sufficiently observed'],['evaluated','Financial evaluations'],['qualified','Qualified'],['attempted','Attempted'],['paperFilled','PAPER filled'],['exited','Exited'],['reconciled','Reconciled']];
   // Rank legacy event frequency; retain source order for ties and leave missing counts unavailable.
