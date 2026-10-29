@@ -1,0 +1,9 @@
+{
+  "previousObservationReceivedAt": 1793316715805,
+  "monitorRecoveryRequestedAt": 1793316983675,
+  "unobservedCloudSupervisionMsAtLeast": 267870,
+  "lastOriginalObservationSha256": "2f1963cac1ad36f3745079ed9d3046b1fb6afbb2bd3fb99d9c450f0620e87faa",
+  "runtimeStopped": false,
+  "runtimeAvailabilityDuringGap": "UNKNOWN: no Cloud supervision; no claim made about independent EC2 availability",
+  "scope": "Existing original Render read-only snapshot channel only"
+}

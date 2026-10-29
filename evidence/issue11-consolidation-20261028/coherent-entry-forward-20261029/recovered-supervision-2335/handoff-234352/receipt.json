@@ -1,0 +1,22 @@
+{
+  "kind": "FROZEN_PUBLIC_OBSERVATION_FILE_HASHES",
+  "createdAt": "2026-10-29T23:43:52.108000+00:00",
+  "files": {
+    "interval-summary.json": {
+      "sha256": "34eead4c97949576c2ed871f62e44f1d0f2cf8515a96be0f6bb244126b6cc72d",
+      "bytes": 6316
+    },
+    "last-public-source.json": {
+      "sha256": "619ea6ab32c142994bcb41555d01005007fc8349cbf0726046163e503dbb96f0",
+      "bytes": 20326
+    },
+    "monitor-recovery.json": {
+      "sha256": "e0b887e7c77d1c6ca63bbafc426d5badb0bace5f4ea1fc4e7e129312f6268363",
+      "bytes": 467
+    },
+    "source-observations.ndjson": {
+      "sha256": "3fc20e403c5df605745ae384c4ceaae76caf9dfb61ba97c3aaba9a4a6092f4b5",
+      "bytes": 609185
+    }
+  }
+}
