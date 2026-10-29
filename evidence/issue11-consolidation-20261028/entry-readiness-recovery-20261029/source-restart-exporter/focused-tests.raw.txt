@@ -1,0 +1,19 @@
+test_all_identity_components_are_required (__main__.Fixtures.test_all_identity_components_are_required) ... ok
+test_bound_run_result_error_without_financial_payload (__main__.Fixtures.test_bound_run_result_error_without_financial_payload) ... ok
+test_fixed_result_and_settlement_missingness_is_explicit (__main__.Fixtures.test_fixed_result_and_settlement_missingness_is_explicit) ... ok
+test_log_read_deadline_and_file_bound_are_explicit (__main__.Fixtures.test_log_read_deadline_and_file_bound_are_explicit) ... ok
+test_logs_drop_partial_and_oversized_fragments (__main__.Fixtures.test_logs_drop_partial_and_oversized_fragments) ... ok
+test_main_drops_before_private_read_has_no_path_arguments (__main__.Fixtures.test_main_drops_before_private_read_has_no_path_arguments) ... ok
+test_permanent_drop_removes_groups_and_saved_privileges (__main__.Fixtures.test_permanent_drop_removes_groups_and_saved_privileges) ... ok
+test_publication_is_atomic_and_refuses_symlink (__main__.Fixtures.test_publication_is_atomic_and_refuses_symlink) ... ok
+test_result_symlink_hardlink_mode_and_oversize_refuse (__main__.Fixtures.test_result_symlink_hardlink_mode_and_oversize_refuse) ... ok
+test_source_console_known_errors_and_unknown_strings_are_safe (__main__.Fixtures.test_source_console_known_errors_and_unknown_strings_are_safe) ... ok
+test_supervisor_precedes_noisy_source_and_preserves_known_recovery_reason (__main__.Fixtures.test_supervisor_precedes_noisy_source_and_preserves_known_recovery_reason) ... ok
+test_supervisor_timestamps_and_safe_scalars_only (__main__.Fixtures.test_supervisor_timestamps_and_safe_scalars_only) ... ok
+test_unknown_reason_is_hash_only (__main__.Fixtures.test_unknown_reason_is_hash_only) ... ok
+test_unsafe_error_prefix_suffix_and_unknown_case_do_not_leak (__main__.Fixtures.test_unsafe_error_prefix_suffix_and_unknown_case_do_not_leak) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.007s
+
+OK

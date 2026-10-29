@@ -1,0 +1,34 @@
+{
+  "kind": "independent-source-recovery-export-review-v1",
+  "reviewedAt": "2026-10-29T19:15:07.067884+00:00",
+  "state": "VERIFIED_DISPOSABLE_FILES_ONLY",
+  "source": {
+    "path": "operator/native-paper-ec2/export-source-recovery-forensics-20261029.py",
+    "sha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986",
+    "bytes": 30782
+  },
+  "testSourceSha256": "1e44cdcf7e975f840536ea05b396455124d33f7e8112214a903747b77eff311b",
+  "tests": {
+    "passed": 14,
+    "failed": 0,
+    "command": "python3 -B operator/native-paper-ec2/test-export-source-recovery-forensics-20261029.py",
+    "rawSha256": "0fa6e9196f096183c02cc2acc9c66c1dc944647981973bb5cc84a89647a36d1e",
+    "rawFile": "evidence/source-recovery-forensics-20261029/independent-review/focused-tests.txt"
+  },
+  "findings": [
+    "No SQLite, credential, financial-account, network or service-control API is used. Only fixed known source/run/diagnostic inputs and one sanitized public output are read/written.",
+    "Permanent original UID988/GID982 transition precedes every private input read; root branch closes inherited descriptors and clears supplementary groups.",
+    "Result account,inception,sourceSHA,commit,configuration,run,mode,and no-live flags are checked; source final-console fields are only bounded identity/bool metadata.",
+    "Fixed regular-file identity/ownership/mode/link/size guards and input mutation checks fail closed; growing log prefixes report changed status and discard trailing fragments.",
+    "Exact finite static error strings may be emitted; all unknown arbitrary strings become SHA256 only; no balances,wallets,provider endpoints,payloads or secrets are exported.",
+    "Timestamped supervisor facts receive priority over untimestamped source stderr; exact real f96 critical-resource/stale-runtime reason is retained.",
+    "Read/output/time/fact bounds and missingness are explicit; parent child timeout8s remains required. Output is atomic under the existing original-owned public directory."
+  ],
+  "limits": [
+    "Run result/settlement may be absent after an unhandled exit; unknown remains unknown.",
+    "Untimestamped stderr cannot be attributed to one run or exact historical time.",
+    "No live protected read or privileged execution was performed by this review.",
+    "This approval does not establish actual restart cause or operational acceptance."
+  ],
+  "blockingFindings": []
+}
