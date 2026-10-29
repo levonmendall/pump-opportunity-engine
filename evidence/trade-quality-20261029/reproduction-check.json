@@ -1,0 +1,6 @@
+{
+  "command": "python3 scripts/audit-retained-paper-trades.py --manifest evidence/trade-quality-20261029/input-manifest.json --output /tmp/poe-retained-trade-scorecard.json",
+  "exitCode": 0,
+  "byteIdentical": true,
+  "scorecardSha256": "2ee7988ee1654bbf5d951a6008464956d15179f567f5e525bff335a056a9a7a2"
+}
