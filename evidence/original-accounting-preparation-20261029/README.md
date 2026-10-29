@@ -19,3 +19,11 @@ node --import tsx --test test/prepare-original-accounting.test.ts
 python operator/native-paper-ec2/test-prepare-original-accounting.py
 npm run build
 ```
+
+## Host preparation refusal and narrow correction
+
+Host workflow 40792959630 refused before output-directory creation in approximately 0.05 seconds. Its original generic exception did not establish which precondition failed. `/opt/poe/node/bin/node` permission was a hypothesis, not a measured root cause. Preserve that refusal unchanged.
+
+The unprivileged preparer now reuses only `existing_node()` from the existing administration selector whose complete source hash is `23a6a1573bca181041ea9db55164f05197ad929e5a53ace89613f64011b7dd6b`. This chooses an already accessible Node 24.19+ executable from the existing runner's allowed locations. It does not install software, modify `/opt/poe`, change permissions or execute other selector actions. The existing `RUNNER_TEMP` variable must be passed through the wrapper's otherwise minimal environment. The source bundle and accounting helper are unchanged.
+
+Failure records now include a fixed phase enum, exception type, numeric errno and errno name. They omit exception messages and private paths. Six Python tests passed, including secret/path omission and rejection of arbitrary phase values. Actual corrected host preparation must establish the outcome; these tests alone do not resolve the original access failure.

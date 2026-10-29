@@ -40,4 +40,12 @@ class Tests(unittest.TestCase):
   with self.assertRaises(OSError):m.lock_existing(self.paths,os.getuid())
   self.assertEqual(target.read_bytes(),b'KEEP');self.paths[2].unlink();self.paths[2].write_bytes(b'');self.paths[2].chmod(0o644)
   with self.assertRaisesRegex(m.Guard,'EXISTING_PRIVATE_LEASE_REQUIRED'):m.lock_existing(self.paths,os.getuid())
+ def test_safe_failure_exposes_phase_and_errno_without_path_or_message(self):
+  m.phase('existing-runner-node');failure=m.safe_failure(PermissionError(13,'DO_NOT_EXPOSE','/private/financial-ledger'))
+  self.assertEqual(failure['phase'],'existing-runner-node');self.assertEqual(failure['errno'],13);self.assertEqual(failure['errnoName'],'EACCES')
+  self.assertNotIn('DO_NOT_EXPOSE',str(failure));self.assertNotIn('/private',str(failure));self.assertEqual(failure['exceptionType'],'PermissionError')
+ def test_fixed_phase_enum_refuses_payload_and_guard_reasons_stay_bounded(self):
+  with self.assertRaisesRegex(m.Guard,'INVALID_DIAGNOSTIC_PHASE'):m.phase('/private/path')
+  self.assertEqual(m.safe_failure(m.Guard('EXISTING_OWNER_STILL_ACTIVE'))['reason'],'EXISTING_OWNER_STILL_ACTIVE')
+  self.assertEqual(m.safe_failure(m.Guard('a path /secret'))['reason'],'LOCAL_ACCESS_OR_SETTLEMENT_FAILURE')
 if __name__=='__main__':unittest.main()
