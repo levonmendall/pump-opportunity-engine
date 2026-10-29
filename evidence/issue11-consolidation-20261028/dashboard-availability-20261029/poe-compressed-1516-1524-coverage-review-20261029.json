@@ -1,0 +1,175 @@
+{
+  "kind": "READ_ONLY_COMPRESSED_HISTORICAL_OBSERVATION_REVIEW",
+  "requestedInterval": {
+    "from": "2026-10-29T15:16:00.000Z",
+    "through": "2026-10-29T15:24:59.999Z"
+  },
+  "archiveCopiesEnumerated": 573,
+  "uniqueRelativePathSizeGroups": 97,
+  "method": "Enumerated archive paths/sizes; inspected small GitHub ZIP central directories before reading only job3 metadata/staging outputs. Older Oct28 retained tar/gzip evidence was not expanded indiscriminately. Later gzip transport index is a source/configuration bundle, not runtime evidence.",
+  "zipReads": [
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40886591669-1793282185.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T13:56:31.8716793Z",
+      "lastLoggedAt": "2026-10-29T13:56:31.9554401Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40886753576-1793282248.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T13:57:34.4877750Z",
+      "lastLoggedAt": "2026-10-29T13:57:34.5852636Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40887587200-1793282559.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T14:02:45.1771915Z",
+      "lastLoggedAt": "2026-10-29T14:02:45.2666348Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40889114255-1793283124.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T14:12:09.9493347Z",
+      "lastLoggedAt": "2026-10-29T14:12:10.0393876Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40891720782-1793284074.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T14:28:00.9653131Z",
+      "lastLoggedAt": "2026-10-29T14:28:01.0566958Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40893907369-1793284852.zip",
+      "member": "stage-verified-continuation/3_Stage reviewed original-service package without stopping the service.txt",
+      "firstLoggedAt": "2026-10-29T14:40:58.9826096Z",
+      "lastLoggedAt": "2026-10-29T14:40:59.2284271Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40894343166-1793285012.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T14:43:38.2732372Z",
+      "lastLoggedAt": "2026-10-29T14:43:38.3700092Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40895605234-1793285465.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T14:51:11.3290888Z",
+      "lastLoggedAt": "2026-10-29T14:51:11.4314594Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40896197367-1793285679.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T14:54:45.2423576Z",
+      "lastLoggedAt": "2026-10-29T14:54:45.3352641Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40899276799-1793286779.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T15:13:05.6253959Z",
+      "lastLoggedAt": "2026-10-29T15:13:05.7246103Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40899463759-1793286845.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T15:14:11.2251246Z",
+      "lastLoggedAt": "2026-10-29T15:14:11.3214030Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40906260650-1793289268.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T15:54:33.8671886Z",
+      "lastLoggedAt": "2026-10-29T15:54:33.9579343Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40906476551-1793289345.zip",
+      "member": "inspect/3_Verify and inspect fixed nonroot startup metadata only.txt",
+      "firstLoggedAt": "2026-10-29T15:55:50.4174000Z",
+      "lastLoggedAt": "2026-10-29T15:55:50.5203886Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40909139020-1793290301.zip",
+      "member": "stage-four-slot-configuration/3_Stage exact configuration package without changing the operating service.txt",
+      "firstLoggedAt": "2026-10-29T16:11:47.0289409Z",
+      "lastLoggedAt": "2026-10-29T16:11:47.1761491Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40909895325-1793290574.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T16:16:19.8399431Z",
+      "lastLoggedAt": "2026-10-29T16:16:19.9469309Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40912461049-1793291502.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T16:31:48.2284935Z",
+      "lastLoggedAt": "2026-10-29T16:31:48.3250717Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40913926864-1793292041.zip",
+      "member": "stage-verified-continuation/3_Stage reviewed original-service package without stopping the service.txt",
+      "firstLoggedAt": "2026-10-29T16:40:47.9342150Z",
+      "lastLoggedAt": "2026-10-29T16:40:48.1923038Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40915320922-1793292562.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T16:49:27.7337704Z",
+      "lastLoggedAt": "2026-10-29T16:49:27.8307156Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40916038733-1793292827.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T16:53:52.7063364Z",
+      "lastLoggedAt": "2026-10-29T16:53:52.8053426Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    },
+    {
+      "archive": "/tmp/gh-cli-cache/run-log-40917837359-1793293489.zip",
+      "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+      "firstLoggedAt": "2026-10-29T17:04:54.9946421Z",
+      "lastLoggedAt": "2026-10-29T17:04:55.0895098Z",
+      "intervalLoggedRows": [],
+      "embeddedIntervalMatches": []
+    }
+  ],
+  "knownShellHistoryFilesFound": [],
+  "meaningfulEarlierBracket": "/tmp/poe-151411-host-bracket-archive-review-20261029.json",
+  "conclusion": "No contemporaneous requested-interval observation found in retained compressed archives. Actual extra host bracket exists at15:14:11.310 UTC. Next saved compressed host-read is15:54:33.9 UTC. This does not establish runtime or reporting continuity during15:16\u201315:24."
+}

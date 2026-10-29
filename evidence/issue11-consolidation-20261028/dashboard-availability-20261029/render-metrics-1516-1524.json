@@ -1,0 +1,21 @@
+{
+  "query": {
+    "resourceId": "srv-daqon53tqb8s73bdceq0",
+    "httpPath": "/api/snapshot",
+    "startTime": "2026-10-29T15:16:00Z",
+    "endTime": "2026-10-29T15:24:00Z",
+    "resolution": 60
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"resourceId\":\"srv-daqon53tqb8s73bdceq0\",\"timeRange\":{\"start\":\"2026-10-29T15:16:00Z\",\"end\":\"2026-10-29T15:24:00Z\"},\"metrics\":[{\"type\":\"http_request_count\",\"data\":[]},{\"type\":\"http_latency\",\"data\":[]}]}"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  },
+  "interpretation": "Empty returned metric series. This does not establish absent requests, downtime, market coverage, or financial readiness.",
+  "recordedAt": "2026-10-29T17:36:04.014068+00:00"
+}
