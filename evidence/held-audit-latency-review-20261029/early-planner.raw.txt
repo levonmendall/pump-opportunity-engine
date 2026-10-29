@@ -1,0 +1,22 @@
+✔ ready concurrent pages outside completed-protection runway request an actual early financial turn (10.456122ms)
+✔ a fresh actual completed protection epoch opens the existing audit runway without another read (0.420604ms)
+✔ both rolling windows preserve the existing management reserve: rolling10SecondHeadroom (0.236761ms)
+✔ both rolling windows preserve the existing management reserve: rollingMinuteHeadroom (0.103804ms)
+✔ unknown or cold request cost is never represented as one cheap protection request (0.232595ms)
+✔ actual physical unavailability cannot trigger an early request: busy (0.153848ms)
+✔ actual physical unavailability cannot trigger an early request: provider (0.21565ms)
+✔ actual physical unavailability cannot trigger an early request: pacing (0.264973ms)
+✔ normal due protection and pending financial actions retain their existing precedence (0.223261ms)
+✔ an unfinished or incomplete inventory protection attempt cannot create a rapid retry loop (0.4585ms)
+✔ a single quiet target with ample original deadline stays on the ordinary protection cadence (0.137314ms)
+✔ expired, prospective, provider-cooling and already-unserviceable targets cannot create extra financial reads (0.107289ms)
+✔ original candidate and native service deadlines remain absolute (0.223331ms)
+✔ no ownership or healthy source admission means no scheduling optimization (0.183212ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1245.9805

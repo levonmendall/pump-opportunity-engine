@@ -1,0 +1,46 @@
+{
+  "charged-early.raw.txt": {
+    "bytes": 3997,
+    "sha256": "1eacd7b92da4d0755287ae23c27ed516d567dbd525cbe7685dafbe41384d3710"
+  },
+  "controlled-latencies.json": {
+    "bytes": 14890,
+    "sha256": "3c17043d119f9f5c9071a80e9ae0dc597434817eb95f3fac63bbda21402323f1"
+  },
+  "controlled-latencies.raw.txt": {
+    "bytes": 11091,
+    "sha256": "71e71ffc92ae5545ee200f310270294846db52144753df6a8a97a1e10ad83180"
+  },
+  "charged-early.json": {
+    "bytes": 3665,
+    "sha256": "d59cce86505ca931aaf555c00b5b1a033c6a74307284b622fbb24e990c24bb23"
+  },
+  "REVIEW.md": {
+    "bytes": 8878,
+    "sha256": "7552858bfeb175ec522d66da938d71d1cc32df124576eeced2d3c6d9b2fbfed2"
+  },
+  "build.raw.txt": {
+    "bytes": 55,
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "verification.json": {
+    "bytes": 1257,
+    "sha256": "8de0630cc5073c24736550f3930f09d63e1e757a26b9563b4a1e45412d1b645c"
+  },
+  "focused-final.raw.txt": {
+    "bytes": 25248,
+    "sha256": "ceec50fe15c5866d1eae4934695570830b6d19582cd6681d5b184b2e8c280c26"
+  },
+  "final-characterization.json": {
+    "bytes": 19718,
+    "sha256": "bb6fee9948031f82dc2303f71a5ac3566179b1f6bdf54c1754223aff50a741ed"
+  },
+  "early-planner.raw.txt": {
+    "bytes": 1526,
+    "sha256": "858a780b19f080ff553b6e0716e96b07d3434dea3f5e845bdc76d046eed395bf"
+  },
+  "build-final.raw.txt": {
+    "bytes": 55,
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  }
+}

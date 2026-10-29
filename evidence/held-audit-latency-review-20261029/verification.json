@@ -1,0 +1,24 @@
+{
+  "kind": "controlled-held-audit-latency-and-pure-planner-verification",
+  "at": "2026-10-29T22:43:53.712050+00:00",
+  "baseCommit": "f31967e866811e5f10019dd3ac4eea16d1cf8dac",
+  "deployedApplicationCommit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "applicationModified": false,
+  "newPureHelperImplemented": true,
+  "helperIntegratedIntoRuntime": false,
+  "liveValidation": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "testsPassed": 97,
+  "testsFailed": 0,
+  "buildPassed": true,
+  "files": {
+    "src/native-held-audit-scheduling.ts": "95c4816261a0606f5834bc1ffddb17c300b2c2422df750de768240ae167c50b8",
+    "test/native-held-audit-scheduling.test.ts": "dd2d44fae5dc1dbff0f18db6f040c2b7d943755a3f753170db99a209b11baac4",
+    "test/native-candidate-runner.test.ts": "3d4962a7226f3a7c693ee11b4875cdd83994973dabc7e69e04fb62f5dca40077",
+    "src/run-native-paper.ts": "c92bab0836116710c9ebf4a723242e3c48e4bf9ec1ca60cd7e96cf6d77d77b87",
+    "src/pilot.ts": "e7117f353b885407f30776adcf9948125279846f2639226222d806fc16c97a2d",
+    "src/native-candidate-runner.ts": "221303b8853cd4dc3d30e98eb1b8e1327bd2bde86e221cd8ada0dcf9a513d57d",
+    "src/pilot-rpc.ts": "acd18fb2f41124d23e2abb4dbd79d3bbd26a6a56f929b1d254f806f2ff1cec73"
+  }
+}

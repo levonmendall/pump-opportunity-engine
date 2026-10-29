@@ -13,6 +13,7 @@ import{auditNativeFlowWindow}from'../src/native-flow-audit.js';
 import{PilotRpc,type PilotRpcCallOptions}from'../src/pilot-rpc.js';
 import{pilotLowerPriorityAdmission}from'../src/pilot.js';
 import{nativePaperRequestOperationBound}from'../src/run-native-paper.js';
+import{nativeHeldAuditScheduling}from'../src/native-held-audit-scheduling.js';
 const original=readFileSync('evidence/integration-2026-10-26T23-32-41.255Z.ndjson','utf8').trim().split('\n').map(x=>JSON.parse(x)).find(x=>x.kind==='migration-transaction')!.data;
 const originalSignature=original.transaction.signatures[0] as string;
 const sig=(n:number)=>{const b=Buffer.alloc(64);b.writeUInt32LE(n);return bs58.encode(b);};
@@ -390,14 +391,14 @@ test('PLANNING CLOCK real future query cooling still yields to healthy peers und
 /** Actual shared RPC/budget/history validation over local injected responses.
  * Ownership and protection completion clocks below are explicit synthetic
  * scheduling inputs, not real held financial positions or provider evidence. */
-function attachActualHistory(f:ReturnType<typeof fixture>,wrap:(o:PilotRpcCallOptions)=>PilotRpcCallOptions=o=>o){
+function attachActualHistory(f:ReturnType<typeof fixture>,wrap:(o:PilotRpcCallOptions)=>PilotRpcCallOptions=o=>o,responseDelayMs=25){
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-audit-recovery-')),old=join(directory,'old.json');writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:0,bytes:0,lastObservedAt:f.now-100000,starts:[],pending:[]}),{mode:0o600});
- let fetches=0,active=0,maximumActive=0;const records:Array<{kind:string;data:any}>=[],optionsSeen:PilotRpcCallOptions[]=[];
- const client=new PilotRpc({directory:join(directory,'rpc'),runId:'offline-audit-recovery',baselinePaths:[old],priorPhysicalSettled:true,historyRoute:'publicnode-history-only-v1',now:()=>f.now,monotonic:()=>f.now,sleep:async ms=>f.advance(ms),record:(kind,data)=>records.push({kind,data:structuredClone(data)}),fetcher:(async(_url,init)=>{
-  fetches++;active++;maximumActive=Math.max(maximumActive,active);try{const request=JSON.parse(String(init?.body)),state=[...f.states.values()].find(s=>s.scope.pool===request.params[0])!;assert.ok(state);let rows=[...state.notes].reverse().map(n=>({signature:n.signature,slot:n.slot,err:null,blockTime:Math.floor(n.availableAt/1000),confirmationStatus:'confirmed'}));rows.push({signature:originalSignature,slot:original.slot,err:null,blockTime:original.blockTime,confirmationStatus:'finalized'});rows.sort((a,b)=>b.slot-a.slot);const before=request.params[1]?.before;if(before){const i=rows.findIndex(r=>r.signature===before);if(i>=0)rows=rows.slice(i+1);}f.advance(25);return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:rows.slice(0,request.params[1].limit)}));}finally{active--;}
+ let fetches=0,active=0,maximumActive=0,protectionFetches=0;const records:Array<{kind:string;data:any}>=[],optionsSeen:PilotRpcCallOptions[]=[];
+ const client=new PilotRpc({directory:join(directory,'rpc'),runId:'offline-audit-recovery',baselinePaths:[old],priorPhysicalSettled:true,maxStartsPerMinute:90,maxStartsPer10s:20,historyRoute:'publicnode-history-only-v1',now:()=>f.now,monotonic:()=>f.now,sleep:async ms=>f.advance(ms),record:(kind,data)=>records.push({kind,data:structuredClone(data)}),fetcher:(async(_url,init)=>{
+  fetches++;active++;maximumActive=Math.max(maximumActive,active);try{const request=JSON.parse(String(init?.body));if(request.method==='getMultipleAccounts'){protectionFetches++;f.advance(150);return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:{context:{slot:original.slot},value:[]}}));}const state=[...f.states.values()].find(s=>s.scope.pool===request.params[0])!;assert.ok(state);let rows=[...state.notes].reverse().map(n=>({signature:n.signature,slot:n.slot,err:null,blockTime:Math.floor(n.availableAt/1000),confirmationStatus:'confirmed'}));rows.push({signature:originalSignature,slot:original.slot,err:null,blockTime:original.blockTime,confirmationStatus:'finalized'});rows.sort((a,b)=>b.slot-a.slot);const before=request.params[1]?.before;if(before){const i=rows.findIndex(r=>r.signature===before);if(i>=0)rows=rows.slice(i+1);}f.advance(responseDelayMs);return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:rows.slice(0,request.params[1].limit)}));}finally{active--;}
  }) as typeof fetch});
  f.rpc.call=async<T>(method:string,params:unknown[]=[],signal?:AbortSignal,o:PilotRpcCallOptions={})=>{optionsSeen.push({...o});return client.call<T>(method,params,signal,wrap(o));};f.rpc.usage=(()=>client.usage()) as typeof f.rpc.usage;f.rpc.historyQueryReadyAt=(pool:string)=>client.historyQueryReadyAt(pool,f.now);
- return {client,records,optionsSeen,get fetches(){return fetches;},get maximumActive(){return maximumActive;},close(){client.close();rmSync(directory,{recursive:true,force:true});}};
+ return {client,records,optionsSeen,get fetches(){return fetches;},get protectionFetches(){return protectionFetches;},get maximumActive(){return maximumActive;},close(){client.close();rmSync(directory,{recursive:true,force:true});}};
 }
 
 test('HELD AUDIT operation-specific preflight retains an unexpired page until the completed-protection runway is available',async()=>{
@@ -439,4 +440,49 @@ test('HELD AUDIT deferred old generation and expired targets never spend a new r
 
 test('HELD AUDIT a supplied financial operation contract cannot enter the unvalidated optional batch path',async()=>{
  const f=fixture({maximumDeep:2,quietBatch:true,sourceWorkAdmission:()=>true});f.seed(1);f.seed(2);await f.steps(10);f.advance(70000);f.refresh();for(let i=0;i<12&&f.runner.status().counters.auditedWindows<2;i++){await f.runner.step();f.advance(50);}assert.equal(f.batchCalls.length,0);assert.equal(f.rpcCalls.length,2);assert.equal(f.runner.status().counters.auditedWindows,2);assert.equal(f.maximumInFlight,1);await f.runner.stop();
+});
+
+
+for(const responseDelayMs of [25,250,500,750,1200])test(`CONTROLLED held four-scope original-deadline characterization at ${responseDelayMs}ms history latency`,async()=>{
+ let enforce=false,lastUsable=0,nextPendingAt:number|null=null;
+ const completions:number[]=[],bounds:number[]=[];
+ const lower=(bound:number)=>pilotLowerPriorityAdmission({now:f.now,endAt:f.now+120000,held:1,lastUsable,nextPendingAt,operationBoundMs:bound});
+ const f=fixture({maximumDeep:4,forcePredictiveFeatures:true,sourceWorkAdmission:bound=>{bounds.push(bound);return !enforce||lower(bound).admitted;}});
+ const mints=Array.from({length:4},(_,i)=>f.seed(i+1));await f.steps(20);f.advance(70000);addBusyHistory(f,mints[0]!,3000);
+ const target=Math.floor(f.now/10000)*10000;lastUsable=f.now;enforce=true;
+ const actual=attachActualHistory(f,o=>{const bound=nativePaperRequestOperationBound(o),view=lower(bound);return {...o,latestStartAt:Math.min(o.latestStartAt??Infinity,view.latestStartAt),admissionOpen:()=>lower(bound).admitted&&(o.admissionOpen?.()??true)};},responseDelayMs);
+ try{
+  while(f.now<target+11000){if(f.now-lastUsable>=1800){f.advance(150);lastUsable=f.now;completions.push(lastUsable);}await f.runner.step();f.advance(50);}
+  const assessments=f.records.filter(r=>r.kind==='native-predictive-assessment'&&r.data.windowEndAt===target),expired=f.records.filter(r=>r.kind==='native-predictive-window-expired'&&r.data.windowEndAt===target);
+  const output={responseDelayMs,target,endedAt:f.now,targetDecisionDeadline:target+9999,completedAssessments:assessments.length,assessedMints:assessments.map(r=>r.data.mint),expiredTargets:expired.length,expired:expired.map(r=>({mint:r.data.mint,dispatchTrace:r.data.dispatchTrace})),physicalFetches:actual.fetches,physicalTimeouts:actual.records.filter(r=>r.kind==='component-physical-timeout').length,protectionCompletions:completions.length,maximumSyntheticProtectionGapMs:Math.max(0,...completions.map((at,i)=>i?at-completions[i-1]!:0)),counters:f.runner.status().counters,sourceAndPositions:'SYNTHETIC runner/RPC fixtures, no actual financial position or live-provider attribution'};
+  console.log('HELD_LATENCY_CHARACTERIZATION '+JSON.stringify(output));
+  assert.ok(assessments.every(r=>r.data.at<=target+9999));assert.equal(actual.maximumActive,1);assert.equal(output.physicalTimeouts,0);assert.ok(completions.every((at,i)=>!i||at-completions[i-1]!<=4000));
+ }finally{await f.runner.stop();actual.close();}
+});
+
+
+for(const responseDelayMs of [500,750,1200])for(const early of[false,true])test(`CONTROLLED charged shared-budget held epochs ${early?'early':'ordinary'} at ${responseDelayMs}ms history latency`,async()=>{
+ let enforce=false,lastUsable=0,lastProtectionStartedAt=0;
+ const completions:number[]=[],plans:Array<ReturnType<typeof nativeHeldAuditScheduling>>=[];
+ const lower=(bound:number)=>pilotLowerPriorityAdmission({now:f.now,endAt:f.now+120000,held:1,lastUsable,nextPendingAt:null,operationBoundMs:bound});
+ const f=fixture({maximumDeep:4,forcePredictiveFeatures:true,sourceWorkAdmission:bound=>!enforce||lower(bound).admitted});
+ const mints=Array.from({length:4},(_,i)=>f.seed(i+1));await f.steps(20);f.advance(70000);addBusyHistory(f,mints[0]!,3000);
+ const target=Math.floor(f.now/10000)*10000;lastUsable=f.now;lastProtectionStartedAt=f.now-150;enforce=true;
+ const actual=attachActualHistory(f,o=>{const bound=nativePaperRequestOperationBound(o),view=lower(bound);return {...o,latestStartAt:Math.min(o.latestStartAt??Infinity,view.latestStartAt),admissionOpen:()=>lower(bound).admitted&&(o.admissionOpen?.()??true)};},responseDelayMs);
+ // This charges one injected warm held batch to the REAL shared PilotRpc gate.
+ // It does not assert actual SDK quote decoding or a genuine financial position.
+ const protect=async()=>{lastProtectionStartedAt=f.now;await actual.client.call('getMultipleAccounts',[['OFFLINE-WHOLE-INVENTORY'],{encoding:'base64',commitment:'confirmed'}],undefined,{timeoutMs:1200});lastUsable=f.now;completions.push(lastUsable);};
+ try{
+  while(f.now<target+11000){
+   if(f.now-lastProtectionStartedAt>=2000)await protect();
+   else if(early){const usage=actual.client.usage(),gate=usage.rpcDispatchWindow??usage.dispatchWindow;
+    const plan=nativeHeldAuditScheduling({at:f.now,held:1,lastProtectionStartedAt,lastProtectionCompletedAt:lastUsable,inventoryProtectionComplete:true,nextPendingAt:null,candidateInformationOpen:true,currentAuditFinancialRunwayAvailable:lower(2125).admitted,deadlineView:f.runner.deadlineView(),physical:{available:actual.client.available(),busy:usage.waitingOrOperating||usage.inFlight>0,readyAt:gate?.readyAt??f.now,rolling10SecondHeadroom:20-(usage.chapterUsage?.rolling10SecondStarts??0),rollingMinuteHeadroom:90-(usage.chapterUsage?.rolling60SecondStarts??0)},protectionRequestStarts:1});plans.push(plan);if(plan.earlyProtection)await protect();
+   }
+   await f.runner.step();f.advance(50);
+  }
+  const assessments=f.records.filter(r=>r.kind==='native-predictive-assessment'&&r.data.windowEndAt===target),expired=f.records.filter(r=>r.kind==='native-predictive-window-expired'&&r.data.windowEndAt===target),usage=actual.client.usage();
+  const starts=actual.records.filter(r=>r.kind==='component-physical-start').map(r=>r.data.at as number),shortMaximum=Math.max(0,...starts.map(at=>starts.filter(n=>n>at-10000&&n<=at).length));
+  const output={responseDelayMs,early,target,completedAssessments:assessments.length,expiredTargets:expired.length,physicalFetches:actual.fetches,protectionFetches:actual.protectionFetches,historyFetches:actual.fetches-actual.protectionFetches,physicalTimeouts:actual.records.filter(r=>r.kind==='component-physical-timeout').length,earlyTurns:plans.filter(p=>p.earlyProtection).length,maximumStartsPer10SecondsObserved:shortMaximum,minuteStarts:usage.chapterUsage?.rolling60SecondStarts??null,protectionCompletions:completions.length,maximumSyntheticProtectionGapMs:Math.max(0,...completions.map((at,i)=>i?at-completions[i-1]!:0)),meaning:'CONTROLLED original-target timing; realPilotRpc20per10s/90perminute/250mspacing/onephysical; injected warmheldbatch150ms charged; sourcecontrols and genuine SDKquotes not modeled'};
+  console.log('HELD_CHARGED_EARLY_CHARACTERIZATION '+JSON.stringify(output));assert.ok(assessments.every(r=>r.data.at<=target+9999));assert.equal(actual.maximumActive,1);assert.equal(output.physicalTimeouts,0);assert.ok(shortMaximum<=20);assert.ok((output.minuteStarts??0)<=90);assert.ok(output.maximumSyntheticProtectionGapMs<=4000);
+ }finally{await f.runner.stop();actual.close();}
 });
