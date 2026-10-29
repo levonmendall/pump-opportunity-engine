@@ -1,0 +1,8 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+src/ledger.ts(362,9): error TS2304: Cannot find name 'record'.
+src/ledger.ts(363,9): error TS2304: Cannot find name 'record'.
+src/ledger.ts(363,40): error TS2304: Cannot find name 'record'.
+src/ledger.ts(365,148): error TS2304: Cannot find name 'record'.

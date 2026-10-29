@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-29T22:03:57.224545+00:00",
+  "authorization": "owner explicitly requested current daily-loss state removal",
+  "actionId": "owner-daily-loss-reset-20261029",
+  "releaseIndependentId": true,
+  "oneTime": true,
+  "soleExistingFinancialWriter": true,
+  "noDirectDatabaseEditByInstaller": true,
+  "newResetRequiresFlatSettledFreshSameDayEquity": true,
+  "noOpConsumesAuthorization": true,
+  "replayCannotWaiveLaterLoss": true,
+  "entriesRequireNormalFreshReadiness": true,
+  "accountHistoryPreserved": true,
+  "independentFocusedTestsPassed": 58,
+  "protocolTestsPassed": 7,
+  "buildPassed": true,
+  "installed": false,
+  "files": {
+    "src/ledger.ts": "3d15e3a56f5b8520fbcb95ca600fc1e0d356c297c64179c8c02ff9b1d1f54a06",
+    "src/native-account-control.ts": "e6caa81dd8f4b2abbe17224a977ac7b28889d45f02d5fffda6d2dad18d1ff547",
+    "src/run-native-paper.ts": "c92bab0836116710c9ebf4a723242e3c48e4bf9ec1ca60cd7e96cf6d77d77b87",
+    "test/owner-daily-loss-reset.test.ts": "c1110dd81b87c02b839820438078873e82969979f72ec5b52e2e79b05cce5762",
+    "test/native-account-control.test.ts": "7affe07cb9b3535d1c84170c2b26d6da6b86f9bad01520add8c63b70db5675a0",
+    "test/native-paper-readiness.test.ts": "84042e07177df663cb706966ece3bf0271899d885545d285050c9aa6c446d6d2"
+  }
+}

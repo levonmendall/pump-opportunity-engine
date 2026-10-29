@@ -14,6 +14,7 @@ import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {PILOT_VERSION,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
 import type {MigrationIdentity} from '../src/migration-identity.js';
 import type {PilotMarket} from '../src/pilot-market.js';
+import {ownerDailyLossReset} from '../src/native-account-control.js';
 
 function fixture(t:TestContext,strong=false){
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-cash-readiness-')),base=Date.parse('2026-10-29T03:00:00Z'),accountId='poe-pilot-offline-cash-readiness',mint=new PublicKey(Buffer.alloc(32,31)).toBase58(),pool=new PublicKey(Buffer.alloc(32,32)).toBase58();
@@ -108,4 +109,13 @@ test('actual interval runs local maintenance while an awaited source operation i
 test('current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission',t=>{
  const f=fixture(t);f.refresh();const state=f.ledger.state(),projection=f.projection(),safety=f.bridge.trader.entryReadinessSafety(),input={at:f.at,state,projection,safety},b=NATIVE_PAPER_ENTRY_BLOCKERS;
  assert.equal(nativePaperDerivedEntryBlocker({...input,manualPaused:true}),b.manual);assert.equal(nativePaperDerivedEntryBlocker({...input,manualPaused:true,safeStopRequested:true}),b.stop);assert.equal(nativePaperDerivedEntryBlocker({...input,providerAvailable:false}),b.provider);assert.equal(nativePaperDerivedEntryBlocker({...input,sourceAvailable:false}),b.source);assert.equal(nativePaperDerivedEntryBlocker({...input,monitoringAvailable:false}),b.monitoring);assert.equal(nativePaperDerivedEntryBlocker({...input,candidateEvidenceReady:false}),null,'normal candidate warming is not a withdrawal of financial permission');assert.equal(nativePaperDerivedEntryBlocker({...input,evidenceAvailable:false}),b.evidence);assert.equal(nativePaperDerivedEntryBlocker({...input,safety:{...safety,idle:false}}),b.uncertainty);assert.deepEqual(f.ledger.state(),state,'reporting never writes a financial pause or changes balances');assert.equal(projection.entriesEnabled,true);
+});
+
+test('explicit owner daily-loss reset recovers through ordinary fresh audited readiness without fabricating a qualification',t=>{
+ const f=fixture(t);f.refresh();assert.equal(f.projection().entriesEnabled,true);f.at+=1000;f.price={at:f.at,microUsdPerSol:'94000000',source:'OFFLINE observed USD decline'};f.refresh();assert.equal(f.blocker(),NATIVE_PAPER_ENTRY_BLOCKERS.loss);
+ const before=f.ledger.state(),calls={...f.calls};const result=ownerDailyLossReset({ledger:f.ledger,requestId:'owner-daily-loss-reset-20261029',authorizedDay:'2026-10-29',source:{commit:'a'.repeat(40),sha256:'b'.repeat(64)},runId:'OFFLINE-owner-reset',price:f.price,safety:f.bridge.trader.entryReadinessSafety(),work:'source',pauseForReadiness:()=>f.bridge.trader.pauseNewEntries('execution startup: fresh reconciliation/readiness required'),now:f.at});
+ assert.equal(result.ok,true);assert.equal(result.resetApplied,true);assert.equal(f.ledger.state().daily.lossPaused,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.deepEqual(f.calls,calls);
+ f.certificateAvailable=false;assert.equal(f.refresh().recovered,false);assert.equal(f.projection().entriesEnabled,false);
+ f.certificateAvailable=true;assert.equal(f.refresh().recovered,true);assert.equal(f.projection().entriesEnabled,true);assert.deepEqual(f.calls,calls);
+ assert.deepEqual(f.ledger.state().positions,{});assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().realizedLamports,before.realizedLamports);assert.equal(f.ledger.state().initialMicroUsd,before.initialMicroUsd);assert.equal(f.ledger.state().inceptionAt,before.inceptionAt);
 });

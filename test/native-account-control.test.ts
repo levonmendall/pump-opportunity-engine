@@ -73,3 +73,13 @@ test('native socket close retains a file that replaced its pathname',async()=>{
   assert.ok(f.warnings.includes('NATIVE_CONTROL_REPLACEMENT_RETAINED'));
  }finally{await server.close();f.remove();}
 });
+
+test('private reset command accepts only dated request identity and temporary refusals do not fail the control listener',async()=>{
+ const f=fixture(),requests:string[]=[],server=await serveNativeAccountControl({...f.options,resetDailyLoss:requestId=>{requests.push(requestId);return {ok:false,command:'reset-daily-loss',requestId,retryable:true,reasonCode:'OWNER_RESET_FRESH_RECONCILIATION_REQUIRED'};}});
+ try{
+  const id='owner-daily-loss-reset-20261029',response=JSON.parse(await raw(f.path,JSON.stringify({command:'reset-daily-loss',requestId:id})+'\n'));
+  assert.equal(response.retryable,true);assert.deepEqual(requests,[id]);assert.equal(f.warnings.length,0);
+  for(const request of [{command:'reset-daily-loss'},{command:'reset-daily-loss',requestId:id,reason:'untrusted override'},{command:'reset-daily-loss',requestId:'../bad'}])await raw(f.path,JSON.stringify(request)+'\n');
+  assert.deepEqual(requests,[id]);assert.equal((await runtimeCommand(f.path,'status')).running,true);
+ }finally{await server.close();f.remove();}
+});

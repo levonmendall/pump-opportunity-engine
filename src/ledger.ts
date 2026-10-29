@@ -59,7 +59,7 @@ export type ExecutionQuote = {
 };
 export type OrderOutcome = { status: 'filled' | 'failed' | 'expired'; reason: string; at: number };
 export type InternalShutdownRecoveryProof={verified:true;accountId:string;inceptionAt:number;stateRevision:number;lastSuccessfulResumeRevision:number;stops:Array<{revision:number;actionId:string;at:number}>;proofSha256:string}|{verified:false;reason:string};
-export type DailyLossResetReceipt={reset:true;accountId:string;inceptionAt:number;at:number;reason:string;revisionBefore:number;revisionAfter:number;previousDaily:LedgerState['daily'];currentEquityMicroUsd:string;nextDaily:LedgerState['daily'];price:UsdPrice;controlsPreserved:true;entryPermissionGranted:false;orderCreated:false};
+export type DailyLossResetReceipt={accountId:string;inceptionAt:number;at:number;reason:string;revisionBefore:number;revisionAfter:number;previousDaily:LedgerState['daily'];nextDaily:LedgerState['daily'];controlsPreserved:true;entryPermissionGranted:false;orderCreated:false}&({reset:true;alreadyClear:false;currentEquityMicroUsd:string;price:UsdPrice}|{reset:false;alreadyClear:true;currentEquityMicroUsd:null;price:null});
 /** Provenance only. Neither this bounded read nor its digest grants permission
  * to enter, changes a stop, or substitutes for fresh financial/market evidence. */
 const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v1',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
@@ -352,6 +352,34 @@ export class PaperLedger {
    * financial writer. Stable id+reason identifies the authorization; changing
    * observational time/price on a retry returns its ORIGINAL durable receipt,
    * never another waiver after a subsequent loss. No entry control is armed. */
+  dailyLossResetReceipt(id:string,reason:string):DailyLossResetReceipt|null{
+    const record=(value:unknown)=>!!value&&typeof value==='object'&&!Array.isArray(value);
+    if(!id||id.length>160||!boundedText(reason)||/[\u0000-\u001f]/.test(reason))throw Error('invalid owner reset authorization');
+    const prior=this.db.prepare('SELECT payload_hash,result FROM actions WHERE id=?').get(id)as{payload_hash:string;result:string}|undefined;
+    if(!prior)return null;
+    if(prior.payload_hash!==digest({kind:'owner-daily-loss-reset',payload:{reason}}))throw Error('idempotency conflict');
+    const result=JSON.parse(prior.result)as DailyLossResetReceipt,state=this.state();
+    const fields='reset alreadyClear accountId inceptionAt at reason revisionBefore revisionAfter previousDaily currentEquityMicroUsd nextDaily price controlsPreserved entryPermissionGranted orderCreated'.split(' ').sort().join('|'),dailyFields='day baselineMicroUsd paused lossPaused reconciledAt'.split(' ').sort().join('|');
+    if(!record(result)||Object.keys(result).sort().join('|')!==fields||typeof result.reset!=='boolean'||result.alreadyClear!==!result.reset||result.accountId!==this.accountId||result.inceptionAt!==state.inceptionAt||result.reason!==reason||result.entryPermissionGranted!==false||result.orderCreated!==false||result.controlsPreserved!==true||!Number.isSafeInteger(result.at)||result.at<state.inceptionAt||result.at>state.lastAt||!Number.isSafeInteger(result.revisionBefore)||result.revisionBefore<0||result.revisionAfter!==result.revisionBefore+1||result.revisionAfter>state.revision)throw Error('owner reset receipt unavailable');
+    if(!record(result.previousDaily)||!record(result.nextDaily)||Object.keys(result.previousDaily).sort().join('|')!==dailyFields||Object.keys(result.nextDaily).sort().join('|')!==dailyFields||result.previousDaily.day!==utcDay(result.at)||typeof result.previousDaily.paused!=='boolean'||!Number.isSafeInteger(result.previousDaily.reconciledAt)||result.previousDaily.reconciledAt<0||result.previousDaily.reconciledAt>result.at)throw Error('owner reset daily receipt unavailable');
+    amount(result.previousDaily.baselineMicroUsd);
+    if(result.reset){
+      amount(result.currentEquityMicroUsd);
+      if(result.previousDaily.lossPaused!==true||result.previousDaily.paused!==true||result.previousDaily.reconciledAt<=0||result.at-result.previousDaily.reconciledAt>MAX_QUOTE_AGE||!isDeepStrictEqual(result.nextDaily,{...result.previousDaily,baselineMicroUsd:result.currentEquityMicroUsd,lossPaused:false,paused:true})||!record(result.price)||Object.keys(result.price).sort().join('|')!=='at|microUsdPerSol|source')throw Error('owner reset observation receipt unavailable');
+      priceAt(result.price,result.at);
+    }else if(result.previousDaily.lossPaused!==false||result.currentEquityMicroUsd!==null||result.price!==null||!isDeepStrictEqual(result.previousDaily,result.nextDaily))throw Error('owner reset no-op receipt unavailable');
+    return result;
+  }
+  /** Even an already-clear reply consumes this ONE owner authorization before
+   * transmission, so a lost reply cannot later waive a new loss. */
+  consumeDailyLossResetNoop(id:string,now:number,reason:string):DailyLossResetReceipt{
+    if(!boundedText(reason)||/[\u0000-\u001f]/.test(reason))throw Error('explicit bounded owner daily-loss reset reason required');
+    return this.apply(id,'owner-daily-loss-reset',now,{reason},s=>{
+      if(s.daily.day!==utcDay(now)||s.daily.lossPaused)throw Error('owner reset no-op requires an already clear current day');
+      const daily=structuredClone(s.daily);
+      return {reset:false,alreadyClear:true,accountId:s.accountId,inceptionAt:s.inceptionAt,at:now,reason,revisionBefore:s.revision,revisionAfter:s.revision+1,previousDaily:daily,currentEquityMicroUsd:null,nextDaily:structuredClone(daily),price:null,controlsPreserved:true,entryPermissionGranted:false,orderCreated:false};
+    });
+  }
   resetDailyLoss(id:string,now:number,price:UsdPrice,marks:Record<string,Mark>,reason:string):DailyLossResetReceipt{
     if(!boundedText(reason)||/[\u0000-\u001f]/.test(reason))throw Error('explicit bounded owner daily-loss reset reason required');
     return this.apply(id,'owner-daily-loss-reset',now,{reason},s=>{
@@ -364,7 +392,7 @@ export class PaperLedger {
       // Ordinary authenticated readiness must still satisfy its current audit,
       // quote, owner/hard-stop, financial and provider conditions afterward.
       s.daily.paused=true;
-      return {reset:true,accountId:s.accountId,inceptionAt:s.inceptionAt,at:now,reason,revisionBefore:s.revision,revisionAfter:s.revision+1,previousDaily,currentEquityMicroUsd:equity.toString(),nextDaily:structuredClone(s.daily),price:structuredClone(price),controlsPreserved:true,entryPermissionGranted:false,orderCreated:false};
+      return {reset:true,alreadyClear:false,accountId:s.accountId,inceptionAt:s.inceptionAt,at:now,reason,revisionBefore:s.revision,revisionAfter:s.revision+1,previousDaily,currentEquityMicroUsd:equity.toString(),nextDaily:structuredClone(s.daily),price:structuredClone(price),controlsPreserved:true,entryPermissionGranted:false,orderCreated:false};
     });
   }
 
