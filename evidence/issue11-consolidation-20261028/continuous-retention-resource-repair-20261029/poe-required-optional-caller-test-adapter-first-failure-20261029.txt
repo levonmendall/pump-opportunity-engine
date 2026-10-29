@@ -1,0 +1,42 @@
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (1.690617ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.443698ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.33757ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (1.572051ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (9.013864ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.709512ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.332072ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.325212ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.451549ms)
+✔ only explicit supplementary representatives and local phase metrics may omit capacity diagnostics (0.261488ms)
+✔ an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow (0.334966ms)
+✔ required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations (0.395837ms)
+✖ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (2.585803ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1205.334609
+
+✖ failing tests:
+
+test at test/native-paper-service.test.ts:1:11566
+✖ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (2.585803ms)
+  AssertionError [ERR_ASSERTION]: actual compiled recovery closure is identified
+      at actualRecoveryBody (/workspace/pump-opportunity-engine/test/native-paper-service.test.ts:88:171)
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/native-paper-service.test.ts:93:18)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,71 @@
+{
+  "classification": "OFFLINE FIXTURES AND BUILD; NOT FORWARD PROVIDER CAPACITY OR INSTALLED SERVICE ACCEPTANCE",
+  "tests": {
+    "coherentFocused": {
+      "passed": 242,
+      "failed": 0
+    },
+    "serviceSelection": {
+      "passed": 29,
+      "failed": 0
+    }
+  },
+  "configuration": {
+    "stage": "single",
+    "deepSlots": 4,
+    "service": true,
+    "ledgerPath": "/var/lib/poe/state/ledger.sqlite",
+    "sha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae"
+  },
+  "logs": [
+    {
+      "file": "poe-required-optional-caller-tests-20261029.txt",
+      "bytes": 6243,
+      "sha256": "de7b04caaef79d525e173972b8aa3a6b0fadd82a2b4cc3852bea0d2c4502340d"
+    },
+    {
+      "file": "poe-required-optional-caller-build-20261029.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "poe-required-optional-caller-test-adapter-first-failure-20261029.txt",
+      "bytes": 2793,
+      "sha256": "a52159893cd06ca00e5760c041dd40af064d1dc3985d57084437e3969e775176"
+    },
+    {
+      "file": "poe-service-rpc90-focused-tests-20261029.txt",
+      "bytes": 3743,
+      "sha256": "3703b4436a3125df853ffb41a70181e58f6449763324b355d0d6d530e58f1b99"
+    },
+    {
+      "file": "poe-service-rpc90-build-20261029.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "poe-service-rpc90-fixture-first-failure-20261029.txt",
+      "bytes": 4774,
+      "sha256": "64d03d66e5d2b5b8dbcafe3d2d16d6cac5e5a9c0e648eb1fac52db60a7687955"
+    },
+    {
+      "file": "poe-resource-v2-coherent-focused-tests-20261029.txt",
+      "bytes": 29124,
+      "sha256": "9007c0b2e59bff1bf9d82ad4d35f726b74fb761d7e84de44597301e847e30a87"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "src/run-native-paper.ts",
+      "sha256": "8399ecec740d954602a6811ec2465a9caca94ea6e773dd645eafb76e85c4abcc"
+    },
+    {
+      "file": "src/paper-service-policy.ts",
+      "sha256": "a833a7e08f8b2b378bf2103cded61ea4fb066f216a9f90c33770a56cb7ef29f6"
+    },
+    {
+      "file": "test/native-paper-service.test.ts",
+      "sha256": "39fabe8a42fe661dd9efc8bce6c5275913d64d97c204425b618b3fa325429105"
+    }
+  ]
+}

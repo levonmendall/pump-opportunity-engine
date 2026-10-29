@@ -21,7 +21,7 @@ INCEPTION=1793052456212
 INCEPTION_ISO='2026-10-26T22:07:36.212Z'
 CONTRACT='confirmed-program-ordinary-flow-paper-v1'
 MIB=1024*1024
-POLICY={'version':'poe-authoritative-persistent-supervisor-v1','sampleSeconds':15,'statusStaleSeconds':90,'startupStatusSeconds':30,'minimumStartRamMiB':768,'minimumStartDiskMiB':512,'criticalRamMiB':256,'criticalDiskMiB':128,'sourceRssMiB':512,'publisherRssMiB':128,'parentRssMiB':128,'rollingCpuSeconds':60,'sourceCpuCloseCores':.5,'sourceCpuResumeCores':.35,'publisherCpuRestartCores':.2,'resumeHealthySamples':3,'maximumRecoveryBackoffSeconds':60,'gracefulSourceStopSeconds':30,'sourceHeapMiB':192,'diagnosticFileBytes':MIB,'diagnosticFiles':4,'resourceFileBytes':2*MIB,'resourceFiles':4}
+POLICY={'version':'poe-authoritative-persistent-supervisor-resource-v2','sampleSeconds':15,'statusStaleSeconds':90,'startupStatusSeconds':30,'minimumStartRamMiB':768,'minimumStartDiskMiB':512,'criticalRamMiB':256,'criticalDiskMiB':128,'candidateSourceRssMiB':1536,'resumeSourceRssMiB':1408,'sourceRssMiB':2048,'publisherRssMiB':256,'parentRssMiB':128,'rollingCpuSeconds':60,'cpuUtilizationAdmissionEnforced':False,'sourceCpuCloseCores':None,'sourceCpuResumeCores':None,'publisherCpuRestartCores':None,'resumeHealthySamples':3,'maximumRecoveryBackoffSeconds':60,'gracefulSourceStopSeconds':30,'sourceHeapMiB':1024,'publisherHeapMiB':128,'diagnosticFileBytes':MIB,'diagnosticFiles':4,'resourceFileBytes':2*MIB,'resourceFiles':4}
 RELEASE_FILES={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB}
 class Guard(RuntimeError):pass
 def need(v,code):
@@ -63,16 +63,16 @@ def validate_status(v,manifest,started_at,pid,now):
  need(type(v)is dict and v.get('accountId')==ACCOUNT_ID and v.get('inceptionAt')==INCEPTION and v.get('mode')=='paper'and v.get('authoritative')is True and v.get('experimental')is False and v.get('financialExecutionAuthorized')is True and v.get('liveTradingEnabled')is False,'ORIGINAL_PAPER_IDENTITY_REQUIRED')
  source=v.get('source',{});need(source.get('commit')==manifest['source']['commit']and source.get('sha256')==manifest['source']['sha256']and v.get('configurationSha256')==manifest['configurationSha256'],'FROZEN_SERVICE_SOURCE_REQUIRED')
  need(v.get('persistent')is True and v.get('operatingMode')=='persistent-service'and v.get('managementOnly')is False,'PERSISTENT_SERVICE_MODE_REQUIRED')
- need(integer(v.get('runtimePid'))and v['runtimePid']==pid and integer(v.get('startedAt'))and integer(v.get('generatedAt'))and started_at<=v['startedAt']<=v['generatedAt']<=now+5000 and now-v['generatedAt']<=90000,'FRESH_ACTUAL_PROCESS_REQUIRED')
+ need(integer(v.get('runtimePid'))and v['runtimePid']==pid and integer(v.get('startedAt'))and integer(v.get('generatedAt'))and started_at<=v['startedAt']<=v['generatedAt']<=now+5000 and now-v['generatedAt']<=POLICY['statusStaleSeconds']*1000,'FRESH_ACTUAL_PROCESS_REQUIRED')
  need(v.get('sourceRecovery')is None or type(v.get('sourceRecovery'))is dict,'SOURCE_RECOVERY_SCHEMA_REQUIRED')
  need(type(v.get('running'))is bool and type(v.get('runId'))is str and v['runId'].startswith('native-paper-')and len(v['runId'])<=64,'SOURCE_RUN_REQUIRED')
  need(type(v.get('positions'))is dict and type(v.get('pending'))is dict and len(v['positions'])<=3 and len(v['pending'])<=6,'OWNERSHIP_PROJECTION_REQUIRED');return v
 
-def source_args(node,release,manifest):return[node,'--max-old-space-size=192',str(release/'native-paper.mjs'),'--resume','--directory',str(ACCOUNT),'--ledger',str(LEDGER),'--input',str(ACCOUNT/'input.json'),'--paper-contract',CONTRACT,'--stage',manifest['stage'],'--deep-slots',str(manifest['deepSlots']),'--service']
+def source_args(node,release,manifest):return[node,'--max-old-space-size='+str(POLICY['sourceHeapMiB']),str(release/'native-paper.mjs'),'--resume','--directory',str(ACCOUNT),'--ledger',str(LEDGER),'--input',str(ACCOUNT/'input.json'),'--paper-contract',CONTRACT,'--stage',manifest['stage'],'--deep-slots',str(manifest['deepSlots']),'--service']
 def credential_path():
  value=os.environ.get('CREDENTIALS_DIRECTORY');need(value=='/run/credentials/poe-runtime.service','ORIGINAL_SYSTEMD_CREDENTIAL_REQUIRED');return pathlib.Path(value)/'poe-ingest-secret'
 def publisher_args(node,release,manifest,once=False):
- secret=credential_path();args=[node,'--permission','--allow-fs-read='+str(release/'snapshot-publisher.mjs'),'--allow-fs-read='+str(ACCOUNT/'snapshot.json'),'--allow-fs-read='+str(secret),'--max-old-space-size=64','--disable-proto=throw',str(release/'snapshot-publisher.mjs'),'--file',str(ACCOUNT/'snapshot.json'),'--account-id',ACCOUNT_ID,'--inception-at',INCEPTION_ISO,'--release',manifest['source']['commit'],'--strategy',manifest['strategy']]
+ secret=credential_path();args=[node,'--permission','--allow-fs-read='+str(release/'snapshot-publisher.mjs'),'--allow-fs-read='+str(ACCOUNT/'snapshot.json'),'--allow-fs-read='+str(secret),'--max-old-space-size='+str(POLICY['publisherHeapMiB']),'--disable-proto=throw',str(release/'snapshot-publisher.mjs'),'--file',str(ACCOUNT/'snapshot.json'),'--account-id',ACCOUNT_ID,'--inception-at',INCEPTION_ISO,'--release',manifest['source']['commit'],'--strategy',manifest['strategy']]
  args.append('--once'if once else'--watch')
  return args
 def spawn(args,publisher=False):
@@ -80,8 +80,8 @@ def spawn(args,publisher=False):
  def prepare():
   if ctypes.CDLL(None,use_errno=True).prctl(1,signal.SIGKILL)!=0 or os.getppid()!=parent:os._exit(1)
   # No cumulative CPU, file-size or elapsed limit. Systemd bounds cgroup memory
-  # and rolling CPU rate; this helper separately observes own process groups.
-  resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_NOFILE,(128,128));os.nice(19)
+  # while CPU utilization is observed, not a reason to stop healthy work.
+  resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_NOFILE,(128,128))
  env={'PATH':'/usr/bin:/bin','LANG':'C','TZ':'UTC'}
  if publisher:
   credential=credential_path();env['CREDENTIALS_DIRECTORY']=str(credential.parent);env['POE_PUBLISH_SECRET_FILE']=str(credential)
@@ -152,17 +152,18 @@ def recovery_delay(failures):return[2,5,10,20,40,60][min(max(failures-1,0),5)]
 def resource_state(views,ram,disk,parent_rss,source_cpu,publisher_cpu,source_expected=True,publisher_expected=True):
  source=views.get('source')or{};pub=views.get('publisher')or{}
  measured=not(source_expected and not views.get('source')or publisher_expected and not views.get('publisher'))
- critical=source.get('rssBytes',0)>512*MIB or parent_rss>128*MIB or ram<256*MIB or disk<128*MIB
- pressure=not measured or source.get('rssBytes',0)>384*MIB or ram<768*MIB or disk<512*MIB or source_cpu is not None and source_cpu>.5
- healthy=measured and source.get('rssBytes',0)<=368*MIB and ram>=768*MIB and disk>=512*MIB and(source_cpu is None or source_cpu<=.35)
- return{'critical':critical,'resourceMeasurementsAvailable':measured,'newRiskPressure':pressure,'healthy':healthy,'publisherRestart':pub.get('rssBytes',0)>128*MIB or publisher_cpu is not None and publisher_cpu>.2}
+ memory_known=integer(ram);disk_known=integer(disk);measured=measured and memory_known and disk_known
+ critical=source.get('rssBytes',0)>POLICY['sourceRssMiB']*MIB or parent_rss>POLICY['parentRssMiB']*MIB or memory_known and ram<POLICY['criticalRamMiB']*MIB or disk_known and disk<POLICY['criticalDiskMiB']*MIB
+ pressure=not measured or source.get('rssBytes',0)>POLICY['candidateSourceRssMiB']*MIB or ram<POLICY['minimumStartRamMiB']*MIB or disk<POLICY['minimumStartDiskMiB']*MIB
+ healthy=measured and source.get('rssBytes',0)<=POLICY['resumeSourceRssMiB']*MIB and ram>=POLICY['minimumStartRamMiB']*MIB and disk>=POLICY['minimumStartDiskMiB']*MIB
+ return{'critical':critical,'resourceMeasurementsAvailable':measured,'newRiskPressure':pressure,'healthy':healthy,'publisherRestart':pub.get('rssBytes',0)>POLICY['publisherRssMiB']*MIB,'cpuUtilizationAdmissionEnforced':False}
 
 def admission(source,ack,resources,healthy_samples,now):
  if source is None:return True,'source status unavailable'
  if not source.get('running'):return True,'source is stopped; recovery pending'
  if resources.get('critical')or resources.get('newRiskPressure'):return True,'rolling resource pressure; financial management retained'
  if not resources.get('healthy')or healthy_samples<POLICY['resumeHealthySamples']:return True,'resource recovery hysteresis; financial management retained'
- if not ack or not integer(ack.get('sourceAtMs'))or ack['sourceAtMs']<source['startedAt']or ack['sourceAtMs']>source['generatedAt']or not 0<=now-ack['sourceAtMs']<=90000:return True,'reporting source acceptance unavailable; financial management retained'
+ if not ack or not integer(ack.get('sourceAtMs'))or ack['sourceAtMs']<source['startedAt']or ack['sourceAtMs']>source['generatedAt']or not 0<=now-ack['sourceAtMs']<=POLICY['statusStaleSeconds']*1000:return True,'reporting source acceptance unavailable; financial management retained'
  return False,'fresh current-run reporting and rolling resource headroom verified'
 
 def marker(manifest,source,suspended,reason,now):return{'schemaVersion':1,'owner':'poe-runtime-service-supervisor','accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'source':manifest['source'],'runId':source['runId']if source else None,'generatedAt':now,'suspended':suspended,'reason':reason[:200]}
@@ -203,7 +204,7 @@ def publish_public_ack(manifest,source,ack,raw_body,accepted_count,now):
 
 class Supervisor:
  def __init__(self,manifest,helpers,logs):
-  self.manifest,self.helpers,self.logs=manifest,helpers,logs;self.selector=selectors.DefaultSelector();self.source=None;self.publisher=None;self.source_started=0;self.started=time.monotonic();self.last_source=None;self.last_ack=None;self.stopping=False;self.source_failures=0;self.publisher_failures=0;self.next_source=0;self.next_publisher=0;self.last_sample=-float('inf');self.healthy_samples=0;self.last_marker=0;self.resource={'critical':False,'newRiskPressure':False,'healthy':False,'publisherRestart':False};self.cpu={'source':RollingCpu(),'publisher':RollingCpu()};self.source_status_unavailable_since=None;self.source_group_unsettled=False;self.buffers={'source':b'','publisher':b''};self.restart_history=collections.deque(maxlen=32);self.bytes={'source':0,'publisher':0};self.output_errors=0;self.last_health=0;self.source_had_status=False;self.snapshot_cache=collections.OrderedDict();self.pending_acks=collections.deque(maxlen=4);self.accepted_source_count=0;self.last_accepted_fingerprint=None;self.snapshot_at=None;self.source_began_mono=0;self.publisher_began_mono=0
+  self.manifest,self.helpers,self.logs=manifest,helpers,logs;self.selector=selectors.DefaultSelector();self.source=None;self.publisher=None;self.source_started=0;self.started=time.monotonic();self.last_source=None;self.last_ack=None;self.stopping=False;self.source_failures=0;self.publisher_failures=0;self.next_source=0;self.next_publisher=0;self.last_sample=-float('inf');self.healthy_samples=0;self.last_marker=0;self.resource={'critical':False,'newRiskPressure':False,'healthy':False,'publisherRestart':False};self.cpu={'source':RollingCpu(POLICY['rollingCpuSeconds']),'publisher':RollingCpu(POLICY['rollingCpuSeconds'])};self.source_status_unavailable_since=None;self.source_group_unsettled=False;self.buffers={'source':b'','publisher':b''};self.restart_history=collections.deque(maxlen=32);self.bytes={'source':0,'publisher':0};self.output_errors=0;self.last_health=0;self.source_had_status=False;self.snapshot_cache=collections.OrderedDict();self.pending_acks=collections.deque(maxlen=4);self.accepted_source_count=0;self.last_accepted_fingerprint=None;self.snapshot_at=None;self.source_began_mono=0;self.publisher_began_mono=0
  def record(self,kind,data):
   try:self.logs['supervisor'].write((json.dumps({'at':int(time.time()*1000),'kind':kind,'data':data},separators=(',',':'))+'\n').encode())
   except OSError:self.output_errors+=1
@@ -269,7 +270,7 @@ class Supervisor:
   self.last_sample=mono
  def step(self,mono=None,now=None):
   mono=time.monotonic()if mono is None else mono;now=int(time.time()*1000)if now is None else now;self.drain()
-  if mono-self.last_sample>=15:self.sample(mono,now)
+  if mono-self.last_sample>=POLICY['sampleSeconds']:self.sample(mono,now)
   if self.source:
    try:self.last_source=validate_status(json.loads(read_file(ACCOUNT/'status.json',4*MIB)),self.manifest,self.source_started,self.source.pid,now);self.source_status_unavailable_since=None;self.source_had_status=True;self.cache_source_snapshot(now)
    except(OSError,ValueError,Guard):
@@ -278,7 +279,7 @@ class Supervisor:
    if self.source.poll()is not None:
     if self.source_stop('source exited; retained-obligation restart'):
      self.source_failures+=1;self.next_source=mono+recovery_delay(self.source_failures);self.restart_history.append({'at':now,'reason':'source-exit','restartNotBeforeAt':now+int(recovery_delay(self.source_failures)*1000)});self.last_source=None;self.healthy_samples=0
-   elif self.resource['critical']or self.last_source is not None and(self.last_source.get('sourceRecovery')or{}).get('restartRequired')is True or self.source_status_unavailable_since is not None and mono-self.source_status_unavailable_since>(90 if self.source_had_status else 30):
+   elif self.resource['critical']or self.last_source is not None and(self.last_source.get('sourceRecovery')or{}).get('restartRequired')is True or self.source_status_unavailable_since is not None and mono-self.source_status_unavailable_since>(POLICY['statusStaleSeconds']if self.source_had_status else POLICY['startupStatusSeconds']):
     if self.source_stop('critical resource or stale runtime; durable recovery required'):self.source_failures+=1;self.next_source=mono+recovery_delay(self.source_failures);self.last_source=None;self.healthy_samples=0
   if self.publisher and(self.publisher.poll()is not None or self.resource['publisherRestart']):
    if stop_child(self.publisher,5,drain=self.drain):self.publisher=None;self.publisher_failures+=1;self.next_publisher=mono+recovery_delay(self.publisher_failures);self.last_ack=None;self.buffers['publisher']=b''
@@ -309,7 +310,19 @@ class Supervisor:
    for key in list(self.selector.get_map().values()):key.fileobj.close()
    self.selector.close()
 
-def available_memory():return next(int(row.split()[1])*1024 for row in pathlib.Path('/proc/meminfo').read_text().splitlines()if row.startswith('MemAvailable:'))
+def available_memory():
+ # This is actual kernel headroom, not a guessed host allocation. Missing or
+ # malformed telemetry closes new-risk admission without inventing an outage.
+ try:
+  fd=os.open('/proc/meminfo',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+  try:raw=os.read(fd,16385)
+  finally:os.close(fd)
+  need(len(raw)<=16384,'HOST_MEMORY_METADATA_BOUND')
+  for row in raw.decode('ascii').splitlines():
+   if row.startswith('MemAvailable:'):
+    values=row.split();need(len(values)==3 and values[1].isdigit()and values[2]=='kB','HOST_MEMORY_METADATA_FORMAT');return int(values[1])*1024
+ except(OSError,ValueError,Guard):pass
+ return None
 def self_rss():return int(pathlib.Path('/proc/self/statm').read_text().split()[1])*os.sysconf('SC_PAGE_SIZE')
 
 def resource_process_views(source_group, publisher_group):
@@ -383,7 +396,7 @@ def main():
  helpers=types.SimpleNamespace(resource_process_views=resource_process_views,available_memory=available_memory,self_rss=self_rss)
  logsdir=SERVICE/'diagnostics'
  if not logsdir.exists():logsdir.mkdir(mode=0o700)
- private_dir(logsdir);logs={name:RotatingDiagnostic(logsdir,name,2*MIB if name=='supervisor'else MIB,4)for name in['source','publisher','supervisor']};controller=Supervisor(manifest,helpers,logs)
+ private_dir(logsdir);logs={name:RotatingDiagnostic(logsdir,name,POLICY['resourceFileBytes']if name=='supervisor'else POLICY['diagnosticFileBytes'],POLICY['resourceFiles']if name=='supervisor'else POLICY['diagnosticFiles'])for name in['source','publisher','supervisor']};controller=Supervisor(manifest,helpers,logs)
  def stop(_signal,_frame):controller.stopping=True
  signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
  atomic(SERVICE/'startup.json',{'at':int(time.time()*1000),'source':manifest['source'],'nodeVersion':version,'host':host,'localMetadataRequests':2,'accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'financialDatabaseRead':False,'providerRequests':0,'lifetimeStopBudgets':None})

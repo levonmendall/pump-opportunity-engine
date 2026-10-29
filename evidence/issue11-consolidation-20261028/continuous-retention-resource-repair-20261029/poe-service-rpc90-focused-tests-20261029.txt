@@ -1,0 +1,37 @@
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (2.264746ms)
+✔ actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates (66.372205ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.652116ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.305523ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (0.516565ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (7.511429ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.457798ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.212825ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.312743ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.51961ms)
+✔ only explicit supplementary representatives and local phase metrics may omit capacity diagnostics (0.179956ms)
+✔ an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow (0.196251ms)
+✔ required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations (0.405721ms)
+✔ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (2.676395ms)
+✔ actual continuous recorder optional omission preserves complete required proof and financial-essential recording through caller wiring (26.546973ms)
+✔ two-hour resource envelope requires explicit version selection and remains candidate-only (1.652078ms)
+✔ larger finite allowances do not raise request rate, concurrency, freshness or strategy windows (2.072221ms)
+✔ two-hour append-only accounting and disk envelopes keep explicit bounded headroom (0.206315ms)
+✔ profile provenance matches retained actual observations and labels six-pool scaling as a projection (1.867868ms)
+✔ explicit90/minute research is a different closed profile; every other existing two-hour resource stays unchanged (0.427123ms)
+✔ two-hour90 profile requires the explicit matching rate and old two-hour profile cannot be relabeled90 (0.975556ms)
+✔ actual offline RPC/native/watch constructor composition keeps default, two-hour60 and explicit two-hour90 identities coherent (67.738705ms)
+✔ service resource admission is rolling across days and never expires on cumulative CPU (505.0356ms)
+✔ healthy busy CPU remains telemetry while actual memory and disk pressure suspend admission and recover (2.241761ms)
+✔ host MemAvailable is measured independently of RSS and unknown memory cannot clear a prior measured shortage (0.995044ms)
+✔ kernel memory parsing is bounded and preserves unavailable data instead of deriving host headroom from process RSS (0.398019ms)
+✔ reporting supervision is account/source/run bound, recovers without owner approval and cannot freshen an older source (0.359853ms)
+✔ actual original Python supervisor marker authorizes only the exact current source and run in TypeScript (102.575555ms)
+✔ a mixed resident-memory incident cannot erase an unresolved host-memory shortage before actual recovery (0.75593ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1599.500232

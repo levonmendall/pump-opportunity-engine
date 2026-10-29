@@ -14,6 +14,12 @@ test('single channel duplicate/reordered semantics include intelligence immutabl
 
 test('current held protection uses actual completion age and primary availability, not a stale or cumulative risk classification',()=>{const s=status()as any;s.positions={mint:{units:'10'}};s.timing.lastCompletedProtectionAt=T-5000;assert.equal(projectOperatingIntelligence(s).protection.state,'degraded');s.timing.lastCompletedProtectionAt=T-1000;s.timing.protectionBreaches=3;s.timing.unavailableChecks=4;assert.equal(projectOperatingIntelligence(s).protection.state,'monitored');s.usage.rpc.cooldownUntil=T+1000;assert.equal(projectOperatingIntelligence(s).protection.state,'degraded');s.usage.rpc.cooldownUntil=0;assert.equal(projectOperatingIntelligence(s).protection.state,'monitored','history-only cooldown does not imply unavailable holding pricing');});
 
+test('flat portfolio retains measured protection history after a completed holding without inventing never-held measurements',()=>{
+ const raw=status()as any;raw.timing={...raw.timing,lastCompletedProtectionAt:T-120000,maximumCompletedGapMs:19446,maximumQuoteAgeAtUseMs:1952,protectionBreaches:4,unavailableChecks:14};
+ const projected=projectOperatingIntelligence(raw);assert.equal(projected.protection.state,'flat');assert.equal(projected.protection.lastCompletedAt,iso(T-120000));assert.equal(projected.protection.maximumCompletedGapMs,19446);assert.equal(projected.protection.maximumQuoteAgeAtUseMs,1952);assert.equal(projected.protection.breaches,4);assert.equal(projected.protection.unavailableChecks,14);validateOperatingIntelligence(projected,iso(T));const s=snapshot();s.intelligence=projected;validateSnapshot(s,identity,T);
+ delete raw.timing.lastCompletedProtectionAt;assert.equal(projectOperatingIntelligence(raw).protection.maximumCompletedGapMs,null);assert.equal(projectOperatingIntelligence(raw).protection.maximumQuoteAgeAtUseMs,null);raw.timing.lastCompletedProtectionAt=T+1;assert.equal(projectOperatingIntelligence(raw).protection.maximumCompletedGapMs,null);assert.equal(projectOperatingIntelligence(raw).protection.maximumQuoteAgeAtUseMs,null);
+});
+
 test('missing ownership is not projected as a flat account or an empty pending-action set',()=>{const s=status()as any;delete s.pending;assert.throws(()=>projectOperatingIntelligence(s),/OWNERSHIP/);s.pending={};delete s.positions;assert.throws(()=>projectOperatingIntelligence(s),/OWNERSHIP/);});
 
 test('optional admission diagnostics preserve legacy intelligence without fabricating readiness',()=>{

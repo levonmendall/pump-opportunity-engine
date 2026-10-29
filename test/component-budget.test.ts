@@ -67,6 +67,35 @@ test('timeout retains a stalled physical operation and uncertain bytes without a
   }finally{b.close();}
 });
 
+test('continuous accounting lets admitted physical work cross its chapter without shortening the caller timeout',async t=>{
+  const f=fixture(t),b=new ComponentBudget({...f.options,totalMs:20,continuousAccounting:true,limits:{maxCumulativeUnits:null,maxCumulativeBytes:null}});let release!:(value:string)=>void,settled=false;
+  try{
+    const result=b.operate(HTTP,async c=>{const value=await new Promise<string>(resolve=>{release=resolve;});c.chargeHttp(17);c.completeResponse();return value;},undefined,{timeoutMs:1000,latestStartAt:f.now+10}).then(value=>({value}),error=>({error})).finally(()=>{settled=true;});
+    await new Promise(resolve=>setImmediate(resolve));f.now+=21;await new Promise(resolve=>setTimeout(resolve,40));
+    assert.equal(settled,false,'a metadata chapter boundary must not cancel a still-timely physical request');assert.equal(b.inFlight,1);assert.equal(b.calls,21);assert.equal(b.usage().actualInvocations[0]!.at,100000);assert.equal(b.usage().pending.length,1);assert.equal(b.usage().haltedReason,null);
+    await assert.rejects(b.operate(SUB,done),/DISPATCH_BUSY/);release('complete after chapter');assert.deepEqual(await result,{value:'complete after chapter'});
+    assert.equal(b.inFlight,0);assert.equal(b.usage().httpBytes,17);assert.equal(b.usage().uncertainResponseBytes,0);assert.equal(f.read().lastObservedAt,100021);assert.equal(f.read().haltedReason,null);
+    await assert.rejects(b.operate(SUB,done),/TIME_CAP/);assert.equal(b.calls,21,'a settled chapter must roll over before another physical start');
+  }finally{release?.('cleanup');for(let i=0;i<8&&b.inFlight;i++)await new Promise(resolve=>setImmediate(resolve));b.close();}
+});
+
+test('continuous accounting preserves the actual timeout and occupied physical slot after its chapter expires',async t=>{
+  const f=fixture(t),records:Array<{kind:string;data:any}>=[],b=new ComponentBudget({...f.options,totalMs:20,continuousAccounting:true,limits:{maxCumulativeUnits:null,maxCumulativeBytes:null},record:(kind,data)=>records.push({kind,data})});let release!:()=>void;
+  try{
+    const request=b.operate(HTTP,async()=>{f.now+=21;return new Promise<void>(resolve=>{release=resolve;});},undefined,{timeoutMs:60});const rejected=assert.rejects(request,/COMPONENT_PHYSICAL_TIMEOUT/);await rejected;
+    const timeout=records.find(r=>r.kind==='component-physical-timeout')!.data;assert.equal(timeout.requestedTimeoutMs,60);assert.equal(timeout.scheduledDelayMs,60);assert.equal(b.usage().haltedReason,'COMPONENT_PHYSICAL_TIMEOUT');assert.equal(b.inFlight,1);assert.equal(b.usage().uncertainResponseBytes,2*MIB);assert.throws(()=>b.close(),/PHYSICAL_SLOT/);await assert.rejects(b.operate(SUB,done),/HALTED/);assert.equal(b.calls,21);
+    release();for(let i=0;i<8&&b.inFlight;i++)await new Promise(resolve=>setImmediate(resolve));assert.equal(b.inFlight,0);assert.equal(b.usage().uncertainResponseBytes,2*MIB);assert.equal(b.calls,21);
+  }finally{release?.();for(let i=0;i<8&&b.inFlight;i++)await new Promise(resolve=>setImmediate(resolve));b.close();}
+});
+
+test('bounded research still ends admitted work at its original chapter deadline',async t=>{
+  const f=fixture(t),records:Array<{kind:string;data:any}>=[],b=new ComponentBudget({...f.options,totalMs:20,record:(kind,data)=>records.push({kind,data})});let release!:()=>void;
+  try{
+    const request=b.operate(HTTP,async()=>{f.now+=21;return new Promise<void>(resolve=>{release=resolve;});},undefined,{timeoutMs:1000});await assert.rejects(request,/COMPONENT_TIME_CAP/);
+    assert.equal(records.find(r=>r.kind==='component-physical-timeout')!.data.scheduledDelayMs,20);assert.equal(b.inFlight,1);assert.equal(b.usage().uncertainResponseBytes,2*MIB);assert.equal(b.calls,21);release();for(let i=0;i<8&&b.inFlight;i++)await new Promise(resolve=>setImmediate(resolve));assert.equal(b.inFlight,0);assert.equal(b.usage().haltedReason,'COMPONENT_TIME_CAP');
+  }finally{release?.();for(let i=0;i<8&&b.inFlight;i++)await new Promise(resolve=>setImmediate(resolve));b.close();}
+});
+
 test('HTTP429 is charged once, stops the new grant and remains sticky without changing historical refusal',async t=>{
   const f=fixture(t),b=new ComponentBudget(f.options);let transports=0;
   try{

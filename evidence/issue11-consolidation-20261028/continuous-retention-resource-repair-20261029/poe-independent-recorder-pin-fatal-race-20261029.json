@@ -1,0 +1,23 @@
+{
+  "fixture": "OFFLINE controlled same-timestamp pin/fatal edge; no live-source claim",
+  "source": "pre-existing start-only fatal check and essential continuation",
+  "requiredAccepted": false,
+  "during": {
+    "candidateAdmissionAllowed": false,
+    "pressureReason": "RECORD_IO_OR_INTEGRITY_FAILURE",
+    "refusedRecords": 0
+  },
+  "pin": {
+    "complete": true,
+    "proofId": "OFFLINE-concurrent-required-failure",
+    "files": [
+      "proof-91591db2779f5f880dab9a40f5363892164d454d7611d7d312f60a150da4f363/diagnostic-000000000001.ndjson"
+    ],
+    "bytes": 313,
+    "manifestSha256": "b782227895437fb1fc19df854dfdf733f182b01e385bf709063ac7e4f50dc950"
+  },
+  "after": {
+    "candidateAdmissionAllowed": false,
+    "pressureReason": "RECORD_IO_OR_INTEGRITY_FAILURE"
+  }
+}

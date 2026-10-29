@@ -1,0 +1,53 @@
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (2.420877ms)
+✖ actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates (2.149225ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.627109ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.372021ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (1.328789ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (18.630332ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.482144ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.242008ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (3.407238ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (1.065319ms)
+✔ only explicit supplementary representatives and local phase metrics may omit capacity diagnostics (0.227828ms)
+✔ an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow (0.349197ms)
+✔ required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations (0.405661ms)
+✔ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (6.495584ms)
+✔ actual continuous recorder optional omission preserves complete required proof and financial-essential recording through caller wiring (53.985246ms)
+✔ two-hour resource envelope requires explicit version selection and remains candidate-only (1.591628ms)
+✔ larger finite allowances do not raise request rate, concurrency, freshness or strategy windows (1.12674ms)
+✔ two-hour append-only accounting and disk envelopes keep explicit bounded headroom (0.181389ms)
+✔ profile provenance matches retained actual observations and labels six-pool scaling as a projection (2.42256ms)
+✔ explicit90/minute research is a different closed profile; every other existing two-hour resource stays unchanged (0.422946ms)
+✔ two-hour90 profile requires the explicit matching rate and old two-hour profile cannot be relabeled90 (1.007603ms)
+✔ actual offline RPC/native/watch constructor composition keeps default, two-hour60 and explicit two-hour90 identities coherent (66.401787ms)
+✔ service resource admission is rolling across days and never expires on cumulative CPU (578.705343ms)
+✔ healthy busy CPU remains telemetry while actual memory and disk pressure suspend admission and recover (2.522025ms)
+✔ host MemAvailable is measured independently of RSS and unknown memory cannot clear a prior measured shortage (1.273827ms)
+✔ kernel memory parsing is bounded and preserves unavailable data instead of deriving host headroom from process RSS (0.433292ms)
+✔ reporting supervision is account/source/run bound, recovers without owner approval and cannot freshen an older source (0.388926ms)
+✔ actual original Python supervisor marker authorizes only the exact current source and run in TypeScript (80.651358ms)
+✔ a mixed resident-memory incident cannot erase an unresolved host-memory shortage before actual recovery (2.039801ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 28
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1566.349036
+
+✖ failing tests:
+
+test at test/native-paper-service.test.ts:1:2437
+✖ actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates (2.149225ms)
+  Error: RESEARCH_BASELINE_INVALID_LEGACY_BOOK
+      at need (/workspace/pump-opportunity-engine/src/research-baseline.ts:19:61)
+      at readResearchBaseline (/workspace/pump-opportunity-engine/src/research-baseline.ts:65:7)
+      at new PilotRpc (/workspace/pump-opportunity-engine/src/pilot-rpc.ts:66:18)
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/native-paper-service.test.ts:32:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

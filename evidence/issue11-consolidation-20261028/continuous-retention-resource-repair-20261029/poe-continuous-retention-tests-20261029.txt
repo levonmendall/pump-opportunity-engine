@@ -1,0 +1,45 @@
+✔ finite research Recorder still has its original capacity and append shape (2.837969ms)
+✔ young diagnostic pressure is explicit while durable financial proof continues (10.003524ms)
+✔ old closed diagnostics rotate with hash-linked receipts; new and historical files survive (16.942686ms)
+✔ wall-clock jumps cannot expire five-minute monotonic retention (6.946251ms)
+✔ full raw qualification and quote proof survives diagnostic eviction with no hardlinks (12.945698ms)
+✔ pending async pin owns its source files before maintenance can retire them (13.794727ms)
+✔ an absent historical range and identity-conflicting proof never become complete (7.488675ms)
+✔ restart recovers both diagnostic and essential append state and conservatively retains old files (194.582844ms)
+✔ foreign directories and symlink proof targets are refused without touching external files (3.798453ms)
+✔ tampered segment bytes cannot be promoted into a qualification proof (7.82177ms)
+✔ a torn diagnostic tail is retained opaque and cannot certify an old window (183.241777ms)
+✔ torn essential proof closes new-risk admission while financial recording and verified recovery continue (168.903464ms)
+✔ durably receipted deletion interrupted before checkpoint resumes without losing financial proof (11.491566ms)
+✔ missing diagnostics without a valid eviction receipt fail closed (8.217306ms)
+✔ the actual filesystem reserve blocks records honestly rather than consuming financial recovery space (3.226425ms)
+✔ a completed protected proof remains idempotently verifiable after its diagnostic source is retired (10.366724ms)
+✔ overlapping pins retain shared source files until both copies have settled (13.266974ms)
+✔ a foreign hardlinked legacy pending file is never opened for truncation (3.518638ms)
+✔ only one recorder writer can own a namespace and a settled writer permits restart (7.493117ms)
+✔ a pin arriving during asynchronous retirement verification prevents source deletion (9.47133ms)
+✔ every refused timestamp invalidates a requested proof range despite coalesced receipts (14.388887ms)
+✔ loss of an entire committed essential prefix blocks new risk even with a zero-byte surviving file (193.176836ms)
+✔ loss of an entire committed diagnostic prefix cannot certify its historical window (180.860505ms)
+✔ proactive verified retirement preserves capture admission across a mature-history hard-watermark crossing (7.520758ms)
+✔ proactive maintenance keeps young required evidence and the unchanged hard admission guard (6.166319ms)
+✔ bounded proactive passes verify at most two files and concurrent callers share one worker (10.437137ms)
+✔ mature segments owned by a pending proof cannot be retired by proactive maintenance (9.379294ms)
+✔ proactive retirement refuses corrupted files and small namespaces avoid maintenance below a segment (7.364822ms)
+✔ continuous service sizes young mandatory flow from actual disk headroom without changing the legacy base policy (10.0076ms)
+✔ continuous service grants bounded legacy working room on restart without pretending old diagnostics have matured (10.332818ms)
+✔ continuous rotation retires verified mature diagnostics below the old capacity trigger while retaining financial proof (12.272359ms)
+✔ adaptive capacity is bounded by its explicit maximum and cannot consume the actual filesystem reserve (9.104461ms)
+✔ the adaptive allocation uses a bounded fraction of a measured disk snapshot and accounts for pending proof reservations (3.821462ms)
+✔ continuous retirement remains limited to two verified files per pass even below every occupancy threshold (11.935039ms)
+✔ explicit optional capacity omissions cannot grow allocation, close capture, or invalidate a complete mandatory-flow proof (20.801553ms)
+✔ adaptive proof larger than the legacy base remains verifiable after its raw diagnostic source rotates (17.947154ms)
+✔ an optional append with partial filesystem failure is unavailable rather than a harmless diagnostic omission (6.53485ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1476.480818

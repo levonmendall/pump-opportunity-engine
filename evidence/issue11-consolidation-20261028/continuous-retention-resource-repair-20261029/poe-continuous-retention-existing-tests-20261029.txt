@@ -1,0 +1,36 @@
+✔ finite research Recorder still has its original capacity and append shape (2.014728ms)
+✔ young diagnostic pressure is explicit while durable financial proof continues (10.622414ms)
+✔ old closed diagnostics rotate with hash-linked receipts; new and historical files survive (17.798281ms)
+✔ wall-clock jumps cannot expire five-minute monotonic retention (4.691698ms)
+✔ full raw qualification and quote proof survives diagnostic eviction with no hardlinks (9.149069ms)
+✔ pending async pin owns its source files before maintenance can retire them (12.010302ms)
+✔ an absent historical range and identity-conflicting proof never become complete (6.516434ms)
+✔ restart recovers both diagnostic and essential append state and conservatively retains old files (261.730428ms)
+✔ foreign directories and symlink proof targets are refused without touching external files (4.636156ms)
+✔ tampered segment bytes cannot be promoted into a qualification proof (9.05537ms)
+✔ a torn diagnostic tail is retained opaque and cannot certify an old window (200.603579ms)
+✔ torn essential proof closes new-risk admission while financial recording and verified recovery continue (190.095791ms)
+✔ durably receipted deletion interrupted before checkpoint resumes without losing financial proof (25.522201ms)
+✔ missing diagnostics without a valid eviction receipt fail closed (14.065209ms)
+✔ the actual filesystem reserve blocks records honestly rather than consuming financial recovery space (7.442217ms)
+✔ a completed protected proof remains idempotently verifiable after its diagnostic source is retired (19.370783ms)
+✔ overlapping pins retain shared source files until both copies have settled (15.468801ms)
+✔ a foreign hardlinked legacy pending file is never opened for truncation (3.989367ms)
+✔ only one recorder writer can own a namespace and a settled writer permits restart (9.388118ms)
+✔ a pin arriving during asynchronous retirement verification prevents source deletion (13.768113ms)
+✔ every refused timestamp invalidates a requested proof range despite coalesced receipts (5.966608ms)
+✔ loss of an entire committed essential prefix blocks new risk even with a zero-byte surviving file (230.18505ms)
+✔ loss of an entire committed diagnostic prefix cannot certify its historical window (232.25135ms)
+✔ proactive verified retirement preserves capture admission across a mature-history hard-watermark crossing (14.042051ms)
+✔ proactive maintenance keeps young required evidence and the unchanged hard admission guard (13.067717ms)
+✔ bounded proactive passes verify at most two files and concurrent callers share one worker (15.567213ms)
+✔ mature segments owned by a pending proof cannot be retired by proactive maintenance (10.834585ms)
+✔ proactive retirement refuses corrupted files and small namespaces avoid maintenance below a segment (10.902747ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1627.405

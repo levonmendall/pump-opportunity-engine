@@ -1,6 +1,15 @@
+import {mkdtempSync,readFileSync,writeFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {BoundedRotatingRecorder} from '../src/recorder.js';
+import {runInNewContext} from 'node:vm';
+import {PilotNativeFlow} from '../src/pilot-native-flow.js';
+import {PilotRpc} from '../src/pilot-rpc.js';
+import {PAPER_SERVICE_POLICY} from '../src/paper-service-policy.js';
+import {NATIVE_TWO_HOUR_RESEARCH_PROFILE,NATIVE_TWO_HOUR_90_RESEARCH_PROFILE} from '../src/native-research-profile.js';
 /** OFFLINE policy and proof-retention checks. No account, provider or credentials. */
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {parseNativePaperArgs,nativePaperConfigurationSha256,nativePaperManagementReserve,nativePaperRecoveryInputs,NativePaperProofPreparation,nativePaperEssentialEvidence,nativePaperRecordServiceEvidence,nativePaperRetainRunIndex} from '../src/run-native-paper.js';
+import {parseNativePaperArgs,nativePaperConfigurationSha256,nativePaperManagementReserve,nativePaperRecoveryInputs,NativePaperProofPreparation,nativePaperEssentialEvidence,nativePaperRecordServiceEvidence,nativePaperRequiredEvidence,nativePaperRetainRunIndex,nativePaperRpcConfiguration,runNativePaper} from '../src/run-native-paper.js';
 import {POE_OPERATING_ACCOUNT,assertPoeOperatingAccount,assertNativePaperAccount} from '../src/poe-operating-account.js';
 import {nativePaperRootReleasePath} from '../src/native-paper-bundle.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION} from '../src/native-paper-contract.js';
@@ -14,6 +23,21 @@ test('persistent original service is explicit and cannot hide a finite duration 
  assert.notEqual(nativePaperConfigurationSha256(service),nativePaperConfigurationSha256(finite));
  assert.throws(()=>nativePaperConfigurationSha256({...service,ledgerPath:'/tmp/other.sqlite'}),/ORIGINAL_LEDGER/);
  assert.throws(()=>nativePaperConfigurationSha256({...service,durationMs:120000}),/SERVICE_DURATION_CONFLICT/);
+});
+test('actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates',async()=>{
+ assert.equal(PAPER_SERVICE_POLICY.rpcProfile,NATIVE_TWO_HOUR_90_RESEARCH_PROFILE.version);assert.equal(PAPER_SERVICE_POLICY.rpcStartsPerMinute,90);
+ for(const service of [false,true]){
+  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-service-rpc-')),baseline=join(directory,'prior.json');writeFileSync(baseline,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:2,bytes:100,lastObservedAt:1000,starts:[900,1000],pending:[]}),{mode:0o600});const prior=readFileSync(baseline);let at=200000,requests=0;
+  const selected=nativePaperRpcConfiguration(service),expectedProfile=service?NATIVE_TWO_HOUR_90_RESEARCH_PROFILE.version:NATIVE_TWO_HOUR_RESEARCH_PROFILE.version,expectedMinute=service?90:60;
+  const rpc=new PilotRpc({...selected,directory:join(directory,'rpc'),runId:'offline-runtime-rpc-profile',baselinePaths:[baseline],priorPhysicalSettled:true,durationMs:1800000,maxUnits:1500,maxResponseBytes:256*1024*1024,maxChapters:64,now:()=>at,monotonic:()=>at,sleep:async ms=>{at+=ms;},fetcher:(async(_url,options)=>{requests++;const request=JSON.parse(String(options?.body));return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:123}));}) as typeof fetch});
+  try{
+   assert.equal(await rpc.call('getSlot'),123);assert.equal(requests,1);
+   const usage=rpc.usage(),authorization=JSON.parse(readFileSync(join(directory,'rpc/authorization.json'),'utf8')),chapter=JSON.parse(readFileSync(usage.activeChapterPath!,'utf8'));
+   assert.equal(usage.profile,expectedProfile);assert.equal(authorization.profile,expectedProfile);assert.equal(chapter.profile,expectedProfile);assert.equal(usage.persistent,service);assert.equal(usage.lifetimeCapsEnabled,!service);assert.equal(authorization.lifetimeCapsEnabled,!service);
+   const physical={maxStartsPerMinute:expectedMinute,maxStartsPer10s:20,maxGetTransactionStartsPer10s:8,minSpacingMs:250,physicalInFlight:1};assert.deepEqual(usage.requestLimits,physical);assert.deepEqual(authorization.requestLimits,physical);assert.equal(chapter.limits.maxStartsPerMinute,expectedMinute);assert.equal(chapter.limits.maxStartsPer10s,20);assert.equal(chapter.limits.minSpacingMs,250);assert.equal(usage.automaticRequestRetries,0);assert.equal(usage.inFlight,0);assert.equal(usage.cooldownUntil,0);assert.equal(usage.uncertainResponseBytes,0);assert.ok(usage.newAccountedResponseBytes>0,'the larger local minute allowance never bypasses byte accounting');
+   const reserve=nativePaperManagementReserve({...usage,chapterUsage:{...usage.chapterUsage!,rolling60SecondStarts:expectedMinute-6}},true);assert.equal(reserve.entryAllowed,true);assert.equal(nativePaperManagementReserve({...usage,chapterUsage:{...usage.chapterUsage!,rolling60SecondStarts:expectedMinute-3}},true).candidateWorkWithExposureAllowed,false,'the existing financial request headroom remains relative to the selected rolling rate');
+  }finally{rpc.close();assert.deepEqual(readFileSync(baseline),prior,'historical consumed usage is unchanged');rmSync(directory,{recursive:true,force:true});}
+ }
 });
 test('original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account',()=>{
  const original={...POE_OPERATING_ACCOUNT,mode:'PAPER'};assert.doesNotThrow(()=>assertPoeOperatingAccount(original));assert.doesNotThrow(()=>assertNativePaperAccount(original));
@@ -57,4 +81,47 @@ test('candidate diagnostic pressure and recorder failure close new risk without 
 test('restart run-index rotation preserves the last referenced current-market recovery checkpoint',()=>{
  const directory='/offline',runs=Array.from({length:130},(_,i)=>'run-'+i),checkpoint=directory+'/runs/run-0/watch-checkpoint.json';
  const index=nativePaperRetainRunIndex(runs,checkpoint,directory);assert.equal(index.retained.length,128);assert.ok(index.retained.includes('run-0'));assert.ok(index.retained.includes('run-129'));assert.deepEqual(index.archived,['run-1','run-2']);assert.equal(runs.length,130);
+});
+
+
+test('only explicit supplementary representatives and local phase metrics may omit capacity diagnostics',()=>{
+ assert.equal(nativePaperRequiredEvidence('native-paper-local-phase',{elapsedMs:2}),false);assert.equal(nativePaperRequiredEvidence('native-flow-raw-representative',{supplementaryOnly:true}),false);
+ for(const [kind,data]of [['native-flow-raw-representative',{}],['native-flow-raw-representative',{supplementaryOnly:'true'}],['native-flow-validated-packet',{supplementaryOnly:true}],['native-flow-raw-refusal',{supplementaryOnly:true}],['native-paper-local-phase-overrun',{}],['trader-quote',{}],['native-paper-entry-proof-pinned',{}]]as const)assert.equal(nativePaperRequiredEvidence(kind,data),true,kind);
+ assert.equal(nativePaperRequiredEvidence('native-paper-local-phase',{},true),true,'financial essential evidence remains required even if labeled with an optional diagnostic kind');
+});
+
+test('an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow',()=>{
+ let healthy=true,requiredGaps=0;const calls:any[]=[];const recorder={record(kind:string,data:unknown,options:any){calls.push({kind,data,options});return false;},recordOutcome:()=>({kind:'optional-capacity-omitted' as const,reason:'OPTIONAL_DIAGNOSTIC_CAPACITY'})};
+ const accepted=nativePaperRecordServiceEvidence(recorder,'native-paper-local-phase',{elapsedMs:4},false,()=>{healthy=false;requiredGaps++;},false);assert.equal(accepted,false,'omitted metadata never appears retained');assert.equal(healthy,true);assert.equal(requiredGaps,0);assert.deepEqual(calls[0].options,{essential:false,required:false});
+});
+
+test('required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations',()=>{
+ const position={mint:'existing-held',units:'100'},pending={id:'unresolved-exit',side:'sell'};let pauses=0;
+ for(const recorder of [{record:()=>false,recordOutcome:()=>({kind:'unavailable' as const,reason:'RECORD_IO_OR_INTEGRITY_FAILURE'})},{record:()=>false},{record:()=>{throw Error('IO failure');},recordOutcome:()=>({kind:'optional-capacity-omitted' as const,reason:'stale prior outcome'})},{record:()=>false,recordOutcome:()=>{throw Error('outcome unavailable');}}]){
+  assert.equal(nativePaperRecordServiceEvidence(recorder,'native-paper-local-phase',{},false,()=>pauses++,false),false);
+ }
+ assert.equal(pauses,4);
+ const optionalOutcome={record:(_kind:string,_data:unknown,options:any)=>{assert.equal(options.required,true);return false;},recordOutcome:()=>({kind:'optional-capacity-omitted' as const,reason:'incorrect outcome for required record'})};
+ assert.equal(nativePaperRecordServiceEvidence(optionalOutcome,'native-flow-validated-packet',{},false,()=>pauses++),false);assert.equal(nativePaperRecordServiceEvidence(optionalOutcome,'trader-quote',{},true,()=>pauses++,false),false);assert.equal(pauses,6);assert.deepEqual(position,{mint:'existing-held',units:'100'});assert.deepEqual(pending,{id:'unresolved-exit',side:'sell'});
+});
+
+/** Execute the actual private recovery closure with injected, nonfinancial
+ * components. This avoids starting the real account merely to reach recovery. */
+function actualRecoveryBody(){const source=runNativePaper.toString(),start=source.search(/const\s+recoverSources\s*=/),rest=source.slice(start),end=rest.search(/;\s*finalReport\s*=/);assert.ok(start>=0&&end>0,'actual compiled recovery closure is identified');return rest.slice(0,end)+';recoverSources();';}
+test('a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset',async()=>{
+ const state:any={__name:(fn:unknown)=>fn,service:true,serviceRecoveryReason:'prior outage',serviceClosingSettled:true,serviceRecoveryAt:0,managementOnly:false,admissionPausePath:'/OFFLINE/no-marker',existsSync:()=>false,serviceResources:{view:()=>({candidateAdmissionAllowed:true})},serviceRecorder:{usage:()=>({candidateAdmissionAllowed:true})},currentRpc:{usage:()=>({fatal:null,inFlight:0,waitingOrOperating:false})},currentNative:{usage:()=>({physicalTransportsSettled:true})},currentFeeds:{usage:()=>({physicalTransportsSettled:true})},engineStatus:()=>({counters:{}}),serviceEngineTotals:{},serviceNativeTotals:{},serviceFeedTotals:{},nativeCounterKeys:[],feedCounterKeys:[],nativeUsage:()=>({}),feedUsage:()=>({}),serviceGeneration:0,serviceEvidenceHealthy:false,recoveredCheckpoint:null,sourceStartupIndex:2,sourceClosing:null,sourceClosed:true};let recordCalls=0;
+ const recorder={record:()=>++recordCalls!==1,recordOutcome:()=>({kind:'unavailable' as const,reason:'RECORD_IO_OR_INTEGRITY_FAILURE'})};state.record=(kind:string,data:unknown)=>{const essential=nativePaperEssentialEvidence(kind,'source',false,data);return nativePaperRecordServiceEvidence(recorder,kind,data,essential,()=>{state.serviceEvidenceHealthy=false;},nativePaperRequiredEvidence(kind,data,essential));};
+ state.makeNative=()=>new PilotNativeFlow({persistent:true,control:{operateData(){throw Error('OFFLINE_NETWORK_FORBIDDEN');},accountControlBytes(){},noteThrottle(){return 0;}},support:{validateMany(){throw Error('OFFLINE_NETWORK_FORBIDDEN');}},record:state.record,onTrade(){throw Error('OFFLINE_TRADE_FORBIDDEN');},onGap(){}},{setTimer(){return 1;},clearTimer(){}});state.makeEngine=()=>({fixture:true});state.makeFeeds=()=>({fixture:true});
+ runInNewContext(actualRecoveryBody(),state,{timeout:1000});assert.equal(state.serviceGeneration,1);assert.ok(recordCalls>=2,'constructor failure is followed by a successfully retained recovery marker');assert.equal(state.serviceEvidenceHealthy,false,'failed required constructor evidence remains latched after the actual recovery closure');assert.equal(state.sourceStartupIndex,0);await state.native.stop('OFFLINE recovery test complete');
+});
+
+
+test('actual continuous recorder optional omission preserves complete required proof and financial-essential recording through caller wiring',async()=>{
+ const now=1793290000000,directory=join(mkdtempSync(join(tmpdir(),'poe-OFFLINE-optional-caller-')),'evidence'),recorder=new BoundedRotatingRecorder({directory,segmentBytes:4096,diagnosticBytes:16384,minRetentionMs:300000,minimumDiskReserveBytes:0,continuousRotation:true,maximumDiagnosticBytes:65536,capacityDiskFraction:1/32,now:()=>now,monotonic:()=>0});let healthy=true;
+ const write=(kind:string,data:unknown,essential=false)=>nativePaperRecordServiceEvidence(recorder,kind,data,essential,()=>{healthy=false;},nativePaperRequiredEvidence(kind,data,essential));
+ try{
+  assert.equal(write('native-flow-validated-packet',{fixture:'REQUIRED_FLOW_ONE',raw:'x'.repeat(3000)}),true);assert.equal(write('native-flow-validated-packet',{fixture:'REQUIRED_FLOW_TWO',raw:'y'.repeat(3000)}),true);
+  assert.equal(write('native-paper-local-phase',{elapsedMs:10}),false);assert.equal(recorder.recordOutcome().kind,'optional-capacity-omitted');assert.equal(healthy,true);assert.equal(recorder.usage().optionalOmittedRecords,1);assert.equal(recorder.usage().refusedRecords,0);assert.deepEqual(recorder.usage().refusalIntervals,[]);
+  assert.equal(write('trader-quote',{fixture:'HELD_FINANCIAL_QUOTE_RETAINED'},true),true);const proof=await recorder.pinRange('OFFLINE-current-required-window',now,now);assert.equal(proof.complete,true);const raw=proof.files.map(file=>readFileSync(join(directory,file),'utf8')).join('');assert.match(raw,/REQUIRED_FLOW_ONE/);assert.match(raw,/REQUIRED_FLOW_TWO/);assert.equal(healthy,true);
+ }finally{await recorder.close();}
 });

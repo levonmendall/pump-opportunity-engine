@@ -1,0 +1,21 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'cb4f53d3afc6253ff7f9b9cc79515a04c058a86c'
+- 'b881dc9a5d671c7e529cd83eed3191021d6f1538'
+
+    at file:///workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/four-slot-configuration-20261029/verify-four-slot-browser.mjs:5:68
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'cb4f53d3afc6253ff7f9b9cc79515a04c058a86c',
+  expected: 'b881dc9a5d671c7e529cd83eed3191021d6f1538',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

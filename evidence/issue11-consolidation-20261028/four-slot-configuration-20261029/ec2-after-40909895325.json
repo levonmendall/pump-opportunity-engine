@@ -1,0 +1,646 @@
+{
+  "kind": "POE_ORIGINAL_CUTOVER_REFUSAL_READ_ONLY",
+  "checkedAt": 1793290579926,
+  "service": {
+    "Restart": "always",
+    "MainPID": "2458160",
+    "ControlPID": "0",
+    "Result": "success",
+    "NRestarts": "0",
+    "OOMPolicy": "stop",
+    "ExecMainStartTimestamp": "Thu 2026-10-29 16:15:35 UTC",
+    "ExecMainExitTimestamp": "",
+    "ExecMainPID": "2458160",
+    "ExecMainCode": "0",
+    "ExecMainStatus": "0",
+    "ControlGroup": "/system.slice/poe-runtime.service",
+    "TasksCurrent": "22",
+    "CPUWeight": "10",
+    "CPUQuotaPerSecUSec": "500ms",
+    "CPUQuotaPeriodUSec": "100ms",
+    "AllowedCPUs": "",
+    "IOWeight": "[not set]",
+    "MemoryHigh": "671088640",
+    "MemoryMax": "805306368",
+    "MemorySwapMax": "0",
+    "TasksMax": "64",
+    "LimitNOFILE": "256",
+    "LimitAS": "infinity",
+    "RootDirectory": "",
+    "RootImage": "",
+    "Nice": "19",
+    "CPUAffinity": "",
+    "User": "poe-runtime",
+    "Group": "poe-runtime",
+    "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public",
+    "ReadOnlyPaths": "",
+    "InaccessiblePaths": "",
+    "PrivateTmp": "yes",
+    "PrivateMounts": "no",
+    "ProtectSystem": "strict",
+    "BindPaths": "",
+    "BindReadOnlyPaths": "",
+    "TemporaryFileSystem": "",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running",
+    "StateChangeTimestamp": "Thu 2026-10-29 16:15:35 UTC",
+    "ActiveEnterTimestamp": "Thu 2026-10-29 16:15:35 UTC",
+    "InactiveEnterTimestamp": "Thu 2026-10-29 16:15:34 UTC",
+    "Job": ""
+  },
+  "runtimeIdentity": {
+    "name": "poe-runtime",
+    "uid": 988,
+    "primaryGid": 982,
+    "primaryGroupName": "poe-runtime",
+    "supervisor": {
+      "pid": 2458160,
+      "ownerUid": 988,
+      "uids": [
+        988,
+        988,
+        988,
+        988
+      ],
+      "gids": [
+        982,
+        982,
+        982,
+        982
+      ]
+    },
+    "protectedReportingMetadata": {
+      "publicDirectory": {
+        "uid": 988,
+        "gid": 982,
+        "modeOctal": "0o755",
+        "regular": false,
+        "links": 2,
+        "bytes": 4096,
+        "contentRead": false
+      },
+      "publisher": {
+        "available": false,
+        "errno": 13,
+        "contentRead": false
+      },
+      "manifest": {
+        "available": false,
+        "errno": 13,
+        "contentRead": false
+      }
+    }
+  },
+  "reportingRepair": {
+    "available": true,
+    "sha256": "b93b8a182da1de501b837833a0c5ca0368922707ee113256660a70dc82f402c6",
+    "value": {
+      "kind": "POE_ORIGINAL_REPORTING_ONLY_REPAIR",
+      "at": 1793244274039,
+      "action": "apply",
+      "financialSource": "5e55d8b939de99698ddb311a282461931fcbc957",
+      "reporterSource": "5735db2ca8abc6af6f99bb0ad855c19cdebaf864",
+      "repairDriverSha256": "b2fbce1a36bc047cc5c8047ae4091ed8cb3a4798c91edf2c7d9c6da1e43766fc",
+      "runtimeIdentity": {
+        "uid": 988,
+        "gid": 982,
+        "pid": 2437741
+      },
+      "beforePublisherSha256": "4d80782c1cf6d31aec51c56f088283360f2f90760dd7489d621bbe124cb3df3f",
+      "afterPublisherSha256": "2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa",
+      "beforeManifestSha256": "8a5b08b27a313a5efc8fb8b15f091f43f3dc639cb1ca0155ab36b8a09cc18555",
+      "afterManifestSha256": "605c5a1e76dbcfc65f1374d74ff54037293fe32b4cc4aa1e7396f613215500c7",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "serviceBefore": {
+        "MainPID": "2437741",
+        "NRestarts": "163",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "financialDatabaseOpened": false,
+      "financialHistoryReset": false,
+      "serviceControlOperations": 0,
+      "credentialContentsRead": false,
+      "phase": "reporting-installed-delivery-not-yet-verified",
+      "serviceAfter": {
+        "MainPID": "2437741",
+        "NRestarts": "163",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "financialLedgerInodeUnchanged": true,
+      "diagnostics": {
+        "health": {
+          "generatedAt": 1793244365684,
+          "sourcePid": 2440527,
+          "publisherPid": 2442604,
+          "lastAcceptedSourceAt": null,
+          "matchedSourceAcknowledgements": 0,
+          "outputErrors": 0,
+          "resource": {
+            "critical": false,
+            "resourceMeasurementsAvailable": true,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          }
+        },
+        "publicStatus": {
+          "generatedAt": "2026-10-29T03:26:04.401Z",
+          "release": "5e55d8b939de99698ddb311a282461931fcbc957",
+          "strategy": "persistent-buying-pilot-v1",
+          "entriesDisabled": true,
+          "flowVerified": false,
+          "shortlistCount": 6,
+          "feedConnected": true,
+          "blocker": "execution startup: fresh reconciliation/readiness required"
+        },
+        "publisherFailureCounts": {
+          "PRIVATE_PUBLISHER_FILE": 0,
+          "ORIGINAL_PUBLISHER_CREDENTIAL_FORMAT": 0,
+          "EACCES": 0,
+          "EPERM": 0,
+          "ENOENT": 0,
+          "ERR_ACCESS_DENIED": 0,
+          "PUBLISHER_STARTUP_UNAVAILABLE": 0
+        }
+      },
+      "acceptedSources": [],
+      "serviceAfterObservation": {
+        "MainPID": "2437741",
+        "NRestarts": "163",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "sameSupervisor": true,
+      "operationalAcceptance": false
+    }
+  },
+  "acceptedSource": {
+    "available": true,
+    "sha256": "ff51848fa49390610dc852f288dc8bfa1eccd45d8a0c9cfb1f7aeb7fbdde3364",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "poe-original-snapshot-delivery-receipt-v1",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+        "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+      },
+      "runId": "native-paper-20261029161536720",
+      "sourceAtMs": 1793290553353,
+      "sequence": "8948",
+      "fingerprint": "718951bd44bed8dc92bfb7ac20408334b68e1cad16028a26e5e508eae708f1d6",
+      "rawSourceSha256": "a70cd41a1bd87e2fa9afba52964bce347095c22665b926302990cb5295fd4e35",
+      "acknowledgedAtMs": 1793290566620,
+      "observedBySupervisorAtMs": 1793290566652,
+      "acceptedDistinctSourcesThisSupervisor": 2,
+      "meaning": "Duplicate metadata of an already matched original-channel Render acknowledgement; source timestamp is unchanged. No financial or market evidence is replaced."
+    }
+  },
+  "upgradeVerification": {
+    "available": true,
+    "sha256": "8cc53dcb92f1d3d27f5e4c664568be4cdaec0ca0531fbc132f040ba5cf7f0829",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "POE_ORIGINAL_FORWARD_UPGRADE_RESULT",
+      "phase": "new-source-post-start-prefix-verified-render-gate-pending",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+        "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+      },
+      "previousSource": {
+        "commit": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+        "sha256": "a44243b03673f29061db4030524b326b4f8929ff2a7bf5b057807ec1d0af049d"
+      },
+      "complete": true,
+      "verification": {
+        "schemaVersion": 1,
+        "kind": "poe-original-upgrade-verification-v1",
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+          "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+        },
+        "configurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+        "installedInputSha256": "ba042dfcdc9974395c0f20b94a2facf0bb0471d4af36e903f4af1eeeed7628ed",
+        "verifiedAt": 1793285414662,
+        "complete": true,
+        "newPublicSource": {
+          "available": true,
+          "sourceTimestamp": "2026-10-29T14:50:14.153Z",
+          "statusSha256": "df761727ea6b529dce8625c66ee1bdda22a4967c290d44242116bb09815296ac",
+          "observedAt": 1793285414303,
+          "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+          "inceptionAt": "2026-10-26T22:07:36.212Z",
+          "release": "239a00ea9fbc0a25ebcf318631d26618d941c899"
+        },
+        "financialVerification": {
+          "identityAndInceptionPreserved": true,
+          "initialFundingAndRoundingPreserved": true,
+          "journalAndActionPrefixPreserved": true,
+          "priorRevision": 45736,
+          "currentRevision": 45737,
+          "currentStateBodySha256": "48dabe737e1c26c7da4a8c7aad7ccc37cfcb2c2018d5f0b09580ff7935097a54",
+          "prefix": {
+            "actions": {
+              "priorRows": 45736,
+              "exactPriorRowsRetained": true,
+              "currentRows": 45737
+            },
+            "journal": {
+              "priorRows": 45737,
+              "exactPriorRowsRetained": true,
+              "currentRows": 45738
+            }
+          },
+          "comparison": "whole-column-ordered-exact-prefix",
+          "originalSqliteOwnerUid": 988,
+          "financialDatabaseWrites": 0,
+          "backupRestored": false
+        },
+        "errors": [],
+        "elapsedMs": 2861,
+        "newAdmissionsSuspended": false,
+        "admissionPolicy": "existing-supervisor-fresh-reporting-and-financial-validity-gates",
+        "financialManagementStopped": false,
+        "financialDatabaseWrites": 0,
+        "backupRestored": false,
+        "operationalAcceptance": false,
+        "meaning": "One bounded read-only post-start identity and historical-prefix check. Not trading, protection, Render parity, profitability or sustained-operation acceptance."
+      },
+      "interruption": {
+        "stopRequestedAt": 1793285408363,
+        "physicalStopVerifiedAt": 1793285411537,
+        "startRequestedAt": 1793285411778,
+        "localVerificationAt": 1793285414674,
+        "stopToStartMs": 241,
+        "observedNewSource": {
+          "available": true,
+          "sourceTimestamp": "2026-10-29T14:50:14.153Z",
+          "statusSha256": "df761727ea6b529dce8625c66ee1bdda22a4967c290d44242116bb09815296ac",
+          "observedAt": 1793285414303,
+          "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+          "inceptionAt": "2026-10-26T22:07:36.212Z",
+          "release": "239a00ea9fbc0a25ebcf318631d26618d941c899"
+        },
+        "continuousCoverageClaimed": false
+      },
+      "renderReadinessGate": "Update and verify the SAME Render receiver expected financial source, then prove fresh original-channel acceptance. This helper does not contact Render or certify operations.",
+      "financialHistoryReset": false,
+      "backupRestored": false,
+      "operationalAcceptance": false
+    }
+  },
+  "fourSlotVerification": {
+    "available": true,
+    "sha256": "e791b34fdf2d34c2ba230aabc6db281e751d00ae1da966ac3fa494a8c959765b",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "POE_ORIGINAL_FOUR_SLOT_RECONFIGURATION_RESULT",
+      "complete": true,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+        "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+      },
+      "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+      "deepSlots": 4,
+      "manifestSha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b",
+      "runtime": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": 1793052456212,
+        "runId": "native-paper-20261029161536720",
+        "runtimePid": 2458163,
+        "generatedAt": 1793290538342,
+        "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+        "entriesEnabled": false,
+        "source": {
+          "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+          "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+        },
+        "maximumCandidates": 4,
+        "activeCandidates": 0,
+        "watchMaximumDeep": 4,
+        "feedMaximumCandidates": 4,
+        "process": {
+          "runtimePid": 2458163,
+          "inOriginalUnitCgroup": true,
+          "immutableSourceArgumentMatched": true,
+          "ownerUid": 988,
+          "previousRuntimePid": 2454443,
+          "differentRuntimePidVerified": true,
+          "observedAt": 1793290538612
+        }
+      },
+      "financialPrefix": {
+        "identityAndInceptionPreserved": true,
+        "initialFundingAndRoundingPreserved": true,
+        "journalAndActionPrefixPreserved": true,
+        "priorRevision": 47123,
+        "currentRevision": 47124,
+        "currentStateBodySha256": "727c741bd610420384248a5332601f057a197dece98aa2d6676d865e75e9d890",
+        "prefix": {
+          "actions": {
+            "priorRows": 47123,
+            "exactPriorRowsRetained": true,
+            "currentRows": 47124
+          },
+          "journal": {
+            "priorRows": 47124,
+            "exactPriorRowsRetained": true,
+            "currentRows": 47125
+          }
+        },
+        "comparison": "whole-column-ordered-exact-prefix",
+        "originalSqliteOwnerUid": 988,
+        "financialDatabaseWrites": 0,
+        "backupRestored": false
+      },
+      "service": {
+        "LoadState": "loaded",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running",
+        "MainPID": "2458160",
+        "ControlPID": "0",
+        "KillMode": "mixed",
+        "Restart": "always",
+        "NoNewPrivileges": "yes",
+        "PrivateTmp": "yes",
+        "ProtectSystem": "strict",
+        "ProtectHome": "yes",
+        "UMask": "0077",
+        "TimeoutStopUSec": "1min"
+      },
+      "financialHistoryReset": false,
+      "backupRestored": false,
+      "codeInputAndUnitUnchanged": true,
+      "continuousCoverageClaimed": false,
+      "operationalAcceptance": false
+    }
+  },
+  "lastExecStop": {},
+  "effectiveExecStart": {
+    "executable": "/usr/bin/python3",
+    "nativeSupervisorEntrypoint": true,
+    "obsoleteObserverEntrypoint": false,
+    "valueSha256": "7b67ea32571fb244b44aad2cb58480ffa632ad7eff6db0d95747cd960a3e84dc",
+    "argumentsExported": false
+  },
+  "dropInBasenames": [
+    "00-legacy-entrypoint.conf",
+    "90-native-engine.conf",
+    "reporting.conf"
+  ],
+  "repairMetadataMissingKeys": [
+    "ExecStop"
+  ],
+  "execStopTypedProperty": {
+    "available": true,
+    "type": "a(sasbttttuii)",
+    "entries": 0,
+    "verifiedEmptyCommandArray": true,
+    "argumentsExported": false
+  },
+  "execStopTypedReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 36,
+    "stderrBytes": 0,
+    "stdoutSha256": "a8796853c7e18d8b5c0c3fa8272c20fa384b1ef8806f573aa7b73d215ba371f9",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "serviceReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 1462,
+    "stderrBytes": 0,
+    "stdoutSha256": "a19f46ba2d6b75a9cbb38466e8748fe0951cd3f598c96872f35b96b3565e205f",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "publicStatus": {
+    "sha256": "5a5a0bcbb2048336fbdbe85fec6fce4c08aed0342957a3f5576c62a85993edf0",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+    "strategy": "persistent-buying-pilot-v1",
+    "generatedAt": "2026-10-29T16:16:09.172Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "execution startup: fresh reconciliation/readiness required",
+    "shortlistCount": 4,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-29T16:16:08.619Z",
+    "lastReconciledAt": "2026-10-29T16:16:08.619Z",
+    "lastMigrationReceivedAt": null,
+    "reportingConfigured": true
+  },
+  "currentReleaseLink": null,
+  "currentCgroup": {
+    "available": true,
+    "pids": [
+      2458160,
+      2458163,
+      2458164
+    ]
+  },
+  "ownedProcessRoles": [
+    {
+      "pid": 2458160,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 0.45,
+      "rssBytes": 31305728,
+      "nice": 19,
+      "explicitMaxOldSpaceSizeMiB": [],
+      "argvExported": false
+    },
+    {
+      "pid": 2458163,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 7.4,
+      "rssBytes": 260136960,
+      "nice": 19,
+      "explicitMaxOldSpaceSizeMiB": [
+        192
+      ],
+      "argvExported": false
+    },
+    {
+      "pid": 2458164,
+      "role": "original-publisher",
+      "ownerUid": 988,
+      "cpuSeconds": 0.46,
+      "rssBytes": 91959296,
+      "nice": 19,
+      "explicitMaxOldSpaceSizeMiB": [
+        64
+      ],
+      "argvExported": false
+    }
+  ],
+  "hostResourceUsage": {
+    "sampleAt": 1793290579927,
+    "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+    "serviceScope": "poe-runtime.service cgroup, including owned children",
+    "hostMemory": {
+      "available": true,
+      "totalBytes": 8153255936,
+      "availableBytes": 6985285632
+    },
+    "rootFilesystem": {
+      "available": true,
+      "capacityBytes": 331712798720,
+      "availableBytes": 288898191360
+    },
+    "serviceCpu": {
+      "available": true,
+      "usage_usec": 8363757,
+      "user_usec": 7611127,
+      "system_usec": 752629,
+      "nr_periods": 442,
+      "nr_throttled": 55,
+      "throttled_usec": 5390588
+    },
+    "serviceMemory": {
+      "current": {
+        "available": true,
+        "bytes": 303919104,
+        "unlimited": false
+      },
+      "max": {
+        "available": true,
+        "bytes": 805306368,
+        "unlimited": false
+      },
+      "peak": {
+        "available": true,
+        "bytes": 307879936,
+        "unlimited": false
+      }
+    },
+    "hostNetwork": {
+      "available": true,
+      "scope": "HOST-AGGREGATE; not POE-attributable",
+      "interfaceCount": 2,
+      "truncated": false,
+      "interfaces": [
+        {
+          "interface": "lo",
+          "receivedBytes": 562577770,
+          "receivedPackets": 3789808,
+          "transmittedBytes": 562577770,
+          "transmittedPackets": 3789808
+        },
+        {
+          "interface": "ens5",
+          "receivedBytes": 85880299613,
+          "receivedPackets": 71282226,
+          "transmittedBytes": 10663480688,
+          "transmittedPackets": 26766644
+        }
+      ]
+    }
+  },
+  "effectivePerformanceControls": {
+    "sampleAt": 1793290579927,
+    "logicalCpuCount": 4,
+    "systemd": {
+      "CPUQuotaPerSecUSec": "500ms",
+      "CPUQuotaPeriodUSec": "100ms",
+      "CPUWeight": "10",
+      "Nice": "19",
+      "MemoryHigh": "671088640",
+      "MemoryMax": "805306368",
+      "MemorySwapMax": "0",
+      "TasksMax": "64",
+      "LimitNOFILE": "256",
+      "LimitAS": "infinity",
+      "OOMPolicy": "stop",
+      "IOWeight": "[not set]",
+      "CPUAffinity": "",
+      "AllowedCPUs": "",
+      "ProtectSystem": "strict",
+      "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public"
+    },
+    "systemdMissingProperties": [],
+    "cgroupCpuMax": {
+      "available": true,
+      "unlimited": false,
+      "quotaUsec": 50000,
+      "periodUsec": 100000,
+      "equivalentCpuCores": 0.5
+    },
+    "cgroupCpuWeight": {
+      "available": true,
+      "value": 10
+    },
+    "cgroupMemory": {
+      "high": {
+        "available": true,
+        "unlimited": false,
+        "bytes": 671088640
+      },
+      "max": {
+        "available": true,
+        "unlimited": false,
+        "bytes": 805306368
+      }
+    },
+    "cgroupMemoryEvents": {
+      "available": true,
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "privateDiagnosticAccess": {
+    "supervisorHealth": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "publisherDiagnostic": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "reportingCredentialMetadata": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    }
+  },
+  "managerJournal": [],
+  "journalReceipt": {
+    "exitCode": 1,
+    "stdoutBytes": 0,
+    "stderrBytes": 62,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "69290b924ebefd68d1806a463f5c072523b1c5ed4c35e4096eee215ff5916e2e"
+  },
+  "financialDatabaseOpened": false,
+  "credentialReads": 0,
+  "serviceChanges": 0,
+  "providerRequests": 0
+}

@@ -40,6 +40,45 @@ class Tests(unittest.TestCase):
   code='import os,resource,json;print(json.dumps({"keys":sorted(os.environ),"cpu":resource.getrlimit(resource.RLIMIT_CPU),"file":resource.getrlimit(resource.RLIMIT_FSIZE)}))'
   with patch.dict(os.environ,{'SECRET_SENTINEL':'NO_EXPORT','NODE_OPTIONS':'--bad','HOME':'/PRIVATE'},clear=False):p=m.spawn([sys.executable,'-c',code]);raw,_=p.communicate(timeout=5)
   v=json.loads(raw);self.assertTrue(set(v['keys'])<={'LANG','LC_CTYPE','PATH','TZ'});self.assertTrue({'LANG','PATH','TZ'}<=set(v['keys']));self.assertEqual(v['cpu'],list(resource.getrlimit(resource.RLIMIT_CPU)));self.assertEqual(v['file'],list(resource.getrlimit(resource.RLIMIT_FSIZE)));self.assertNotIn(b'SECRET_SENTINEL',raw)
+ def test_resource_v2_cpu_is_telemetry_only_and_profile_drives_actual_heap_arguments(self):
+  self.assertEqual(m.POLICY['version'],'poe-authoritative-persistent-supervisor-resource-v2');self.assertFalse(m.POLICY['cpuUtilizationAdmissionEnforced'])
+  with patch.dict(m.os.environ,{'CREDENTIALS_DIRECTORY':'/run/credentials/poe-runtime.service'},clear=True):
+   source=m.source_args('/opt/poe/node/bin/node',pathlib.Path('/release'),manifest());publisher=m.publisher_args('/opt/poe/node/bin/node',pathlib.Path('/release'),manifest());self.assertIn('--max-old-space-size=1024',source);self.assertIn('--max-old-space-size=128',publisher)
+   changed={**m.POLICY,'sourceHeapMiB':1100,'publisherHeapMiB':160}
+   with patch.object(m,'POLICY',changed):self.assertIn('--max-old-space-size=1100',m.source_args('/node',pathlib.Path('/release'),manifest()));self.assertIn('--max-old-space-size=160',m.publisher_args('/node',pathlib.Path('/release'),manifest()))
+  views={'source':{'rssBytes':300*m.MIB},'publisher':{'rssBytes':100*m.MIB}}
+  for source_cpu,publisher_cpu in[(.7,.3),(3.5,2.5),(None,None)]:
+   with self.subTest(source_cpu=source_cpu):
+    result=m.resource_state(views,6*1024*m.MIB,10*1024*m.MIB,50*m.MIB,source_cpu,publisher_cpu);self.assertTrue(result['healthy']);self.assertFalse(result['newRiskPressure']);self.assertFalse(result['publisherRestart']);self.assertFalse(result['critical']);self.assertFalse(result['cpuUtilizationAdmissionEnforced'])
+ def test_unknown_host_headroom_closes_new_risk_without_fabricating_low_memory_or_stopping_existing_manager(self):
+  views={'source':{'rssBytes':300*m.MIB},'publisher':{'rssBytes':100*m.MIB}}
+  for ram,disk in[(None,10*1024*m.MIB),(6*1024*m.MIB,None)]:
+   r=m.resource_state(views,ram,disk,50*m.MIB,1,.7);self.assertTrue(r['newRiskPressure']);self.assertFalse(r['healthy']);self.assertFalse(r['critical']);self.assertFalse(r['resourceMeasurementsAvailable'])
+  with patch.object(m.os,'open',side_effect=OSError('unavailable kernel metric')):self.assertIsNone(m.available_memory())
+  for raw in[b'MemAvailable: 1234 kB\n',b'MemAvailable: unknown kB\n',b'Other: 2 kB\n',b'x'*16385]:
+   with patch.object(m.os,'open',return_value=23),patch.object(m.os,'read',return_value=raw),patch.object(m.os,'close'):
+    self.assertEqual(m.available_memory(),1234*1024 if b'1234'in raw else None)
+ def test_child_inherits_reviewed_unit_priority_instead_of_forcing_nice19(self):
+  child=m.spawn([sys.executable,'-c','import os;print(os.getpriority(os.PRIO_PROCESS,0))']);raw,_=child.communicate(timeout=5);self.assertEqual(int(raw),os.getpriority(os.PRIO_PROCESS,0))
+ def test_memory_and_disk_guards_use_resource_v2_policy_and_preserve_hysteresis(self):
+  views={'source':{'rssBytes':1536*m.MIB},'publisher':{'rssBytes':256*m.MIB}};args=(6*1024*m.MIB,10*1024*m.MIB,50*m.MIB,3.5,.8)
+  r=m.resource_state(views,*args);self.assertFalse(r['newRiskPressure']);self.assertFalse(r['healthy'],'resume requires the lower RSS watermark');self.assertFalse(r['critical']);self.assertFalse(r['publisherRestart'])
+  views['source']['rssBytes']+=1;r=m.resource_state(views,*args);self.assertTrue(r['newRiskPressure']);self.assertFalse(r['critical'])
+  views['source']['rssBytes']=2048*m.MIB+1;self.assertTrue(m.resource_state(views,*args)['critical'])
+  views['source']['rssBytes']=1408*m.MIB;r=m.resource_state(views,*args);self.assertTrue(r['healthy']);self.assertFalse(r['newRiskPressure'])
+  views['publisher']['rssBytes']+=1;self.assertTrue(m.resource_state(views,*args)['publisherRestart']);views['publisher']['rssBytes']=128*m.MIB
+  r=m.resource_state(views,6*1024*m.MIB,256*m.MIB,50*m.MIB,2,.8);self.assertTrue(r['newRiskPressure']);self.assertFalse(r['critical']);self.assertFalse(r['healthy'])
+  self.assertTrue(m.resource_state(views,6*1024*m.MIB,127*m.MIB,50*m.MIB,2,.8)['critical'])
+  self.assertTrue(m.resource_state(views,6*1024*m.MIB,10*1024*m.MIB,129*m.MIB,2,.8)['critical'])
+  changed={**m.POLICY,'candidateSourceRssMiB':1000,'resumeSourceRssMiB':900}
+  with patch.object(m,'POLICY',changed):
+   views['source']['rssBytes']=1100*m.MIB;self.assertTrue(m.resource_state(views,*args)['newRiskPressure']);views['source']['rssBytes']=900*m.MIB;self.assertTrue(m.resource_state(views,*args)['healthy'])
+ def test_resource_profile_is_exact_and_unit_removes_only_the_reviewed_performance_restrictions(self):
+  v=manifest();self.assertEqual(m.validate_manifest(v),v);old=copy.deepcopy(v);old['policy']['version']='poe-authoritative-persistent-supervisor-v1'
+  with self.assertRaisesRegex(m.Guard,'REVIEWED_SERVICE_POLICY'):m.validate_manifest(old)
+  text=p.with_name('poe-runtime-persistent.conf').read_text();fields={line.split('=',1)[0]:line.split('=',1)[1]for line in text.splitlines()if '='in line and not line.startswith('#')}
+  self.assertEqual(fields['CPUQuota'],'');self.assertEqual(fields['CPUWeight'],'100');self.assertEqual(fields['Nice'],'0');self.assertEqual(fields['MemoryHigh'],'2560M');self.assertEqual(fields['MemoryMax'],'3072M')
+  for key,value in{'KillMode':'mixed','Restart':'always','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitCORE':'0','LimitNOFILE':'256','MemorySwapMax':'0','TasksMax':'64','NoNewPrivileges':'yes','PrivateTmp':'yes','ProtectSystem':'strict','ProtectHome':'yes','ReadWritePaths':'/var/lib/poe /run/poe -/var/lib/poe-public','UMask':'0077'}.items():self.assertEqual(fields[key],value,key)
  def test_actual_publisher_child_environment_matches_typescript_credential_boundary_fixture(self):
   with patch.dict(os.environ,{'CREDENTIALS_DIRECTORY':'/run/credentials/poe-runtime.service','SECRET_SENTINEL':'NEVER_EXPORT'},clear=False):
    child=m.spawn([sys.executable,'-c','import os,json;print(json.dumps(dict(os.environ)))'],publisher=True);raw,_=child.communicate(timeout=5)
@@ -55,7 +94,7 @@ class Tests(unittest.TestCase):
  def test_rolling_cpu_rejects_membership_resets_and_does_not_care_about_lifetime_total(self):
   r=m.RollingCpu();self.assertIsNone(r.observe(0,1000000,'a'));self.assertAlmostEqual(r.observe(60,1000012,'a'),.2);self.assertIsNone(r.observe(75,1,'b'));self.assertIsNone(r.observe(90,2,'b'));self.assertAlmostEqual(r.observe(135,13,'b'),.2)
  def test_resource_pressure_closes_risk_but_only_critical_headroom_needs_process_recovery(self):
-  views={'source':{'rssBytes':300*m.MIB},'publisher':{'rssBytes':80*m.MIB}};r=m.resource_state(views,6*1024*m.MIB,10*1024*m.MIB,50*m.MIB,.7,.001);self.assertTrue(r['newRiskPressure']);self.assertFalse(r['critical']);self.assertFalse(r['publisherRestart']);r=m.resource_state(views,128*m.MIB,10*1024*m.MIB,50*m.MIB,.1,.001);self.assertTrue(r['critical'])
+  views={'source':{'rssBytes':1600*m.MIB},'publisher':{'rssBytes':80*m.MIB}};r=m.resource_state(views,6*1024*m.MIB,10*1024*m.MIB,50*m.MIB,.7,.001);self.assertTrue(r['newRiskPressure']);self.assertFalse(r['critical']);self.assertFalse(r['publisherRestart']);views['source']['rssBytes']=1408*m.MIB;r=m.resource_state(views,6*1024*m.MIB,10*1024*m.MIB,50*m.MIB,2.5,.7);self.assertTrue(r['healthy']);self.assertFalse(r['newRiskPressure']);self.assertFalse(r['publisherRestart']);r=m.resource_state(views,128*m.MIB,10*1024*m.MIB,50*m.MIB,.1,.001);self.assertTrue(r['critical'])
  def test_current_source_acceptance_and_resource_hysteresis_are_both_required(self):
   at=m.INCEPTION+100000;v=status(at);healthy={'critical':False,'newRiskPressure':False,'healthy':True};a=ack(at);self.assertFalse(m.admission(v,a,healthy,3,at+100)[0]);self.assertTrue(m.admission(v,a,healthy,2,at+100)[0]);self.assertTrue(m.admission(v,ack(v['startedAt']-1),healthy,3,at+100)[0]);self.assertTrue(m.admission(v,a,healthy,3,at+91000)[0]);self.assertTrue(m.admission(v,None,healthy,3,at+100)[0])
  def test_ack_identity_order_and_fingerprint_are_validated_without_secret_output(self):

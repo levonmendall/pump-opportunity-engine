@@ -60,7 +60,7 @@ test('a foreign hardlinked legacy pending file is never opened for truncation',a
 
 test('only one recorder writer can own a namespace and a settled writer permits restart',async()=>{const f=fixture(),r=f.open();r.record('original',{raw:'A'});assert.throws(()=>f.open(),/WRITER_EXISTS/);assert.equal(r.record('original-after-rejected-second-writer',{raw:'B'}),true);await r.close();const next=f.open();assert.equal(next.record('same-namespace-restart',{raw:'C'}),true);await next.close();});
 
-test('a pin arriving during asynchronous retirement verification prevents source deletion',async()=>{const f=fixture(),r=f.open(),start=f.at;for(let i=0;i<6;i++)assert.equal(r.record('raw',payload()),true);f.advance(300001);let releaseMaintenance!:()=>void,maintenanceReached!:()=>void,releasePin!:()=>void,pinReached!:()=>void;const maintenanceGate=new Promise<void>(resolve=>releaseMaintenance=resolve),seenMaintenance=new Promise<void>(resolve=>maintenanceReached=resolve),pinGate=new Promise<void>(resolve=>releasePin=resolve),seenPin=new Promise<void>(resolve=>pinReached=resolve);const internal=r as any,original=internal.verifyFile.bind(r);let paused=false,pinPaused=false;internal.verifyFile=async(m:any,destination?:string)=>{if(!destination&&!paused){paused=true;await original(m,destination);maintenanceReached();await maintenanceGate;return;}if(destination&&!pinPaused){pinPaused=true;pinReached();await pinGate;}return original(m,destination);};const maintenance=r.maintenance();await seenMaintenance;const files=readdirSync(f.directory).filter(x=>/^diagnostic-.*ndjson$/.test(x)),pinTask=r.pinRange('arriving-during-retirement',start,f.at);await seenPin;releaseMaintenance();await maintenance;assert.deepEqual(files.filter(x=>!existsSync(join(f.directory,x))),[]);releasePin();assert.equal((await pinTask).complete,true);await r.close();});
+test('a pin arriving during asynchronous retirement verification prevents source deletion',async()=>{const f=fixture(),r=f.open(),start=f.at;for(let i=0;i<6;i++)assert.equal(r.record('raw',payload()),true);await r.maintenance();f.advance(300001);let releaseMaintenance!:()=>void,maintenanceReached!:()=>void,releasePin!:()=>void,pinReached!:()=>void;const maintenanceGate=new Promise<void>(resolve=>releaseMaintenance=resolve),seenMaintenance=new Promise<void>(resolve=>maintenanceReached=resolve),pinGate=new Promise<void>(resolve=>releasePin=resolve),seenPin=new Promise<void>(resolve=>pinReached=resolve);const internal=r as any,original=internal.verifyFile.bind(r);let paused=false,pinPaused=false;internal.verifyFile=async(m:any,destination?:string)=>{if(!destination&&!paused){paused=true;await original(m,destination);maintenanceReached();await maintenanceGate;return;}if(destination&&!pinPaused){pinPaused=true;pinReached();await pinGate;}return original(m,destination);};const maintenance=r.maintenance();await seenMaintenance;const files=readdirSync(f.directory).filter(x=>/^diagnostic-.*ndjson$/.test(x)),pinTask=r.pinRange('arriving-during-retirement',start,f.at);await seenPin;releaseMaintenance();await maintenance;assert.deepEqual(files.filter(x=>!existsSync(join(f.directory,x))),[]);releasePin();assert.equal((await pinTask).complete,true);await r.close();});
 
 test('every refused timestamp invalidates a requested proof range despite coalesced receipts',async()=>{const f=fixture(),r=f.open();fill(r);await r.maintenance();f.advance(50);assert.equal(r.record('required-selected-event',payload()),false);await r.maintenance();f.advance(300001);await r.maintenance();assert.equal(r.record('fresh-later',{}),true);const pin=await r.pinRange('actual-refusal-inside',1000001,1000100);assert.equal(pin.complete,false);assert.ok(['RANGE_CONTAINS_REFUSAL','RANGE_NOT_RETAINED'].includes(pin.reason!));assert.ok(r.usage().refusalIntervals.some(v=>v.fromAt<=1000050&&v.toAt>=1000050));await r.close();});
 
@@ -68,3 +68,134 @@ test('every refused timestamp invalidates a requested proof range despite coales
 test('loss of an entire committed essential prefix blocks new risk even with a zero-byte surviving file',async()=>{const f=fixture();crashed(f,`r.record('financial-checkpoint',{full:'ESSENTIAL_MUST_SURVIVE'},{essential:true})`);const before=JSON.parse(readFileSync(join(f.directory,'state.json'),'utf8')),meta=before.activeEssential;assert.ok(meta.bytes>0);writeFileSync(join(f.directory,meta.file),'');const r=f.open();assert.equal(r.usage().requiresCriticalRecovery,true);assert.equal(r.usage().candidateAdmissionAllowed,false);const recovered=receipts(f).find(v=>v.kind==='recovered-segment'&&v.data.kind==='essential');assert.equal(recovered.data.bytes,0);assert.equal(recovered.data.unusableTailBytes,0);assert.equal(recovered.data.invalidCommittedPrefix.expectedBytes,meta.bytes);assert.equal(recovered.data.invalidCommittedPrefix.expectedSha256,meta.prefixSha256);assert.equal(recovered.data.fullEssentialBytesPreserved,false);assert.ok(r.record('current-held-evaluation',{quote:'CURRENT'},{essential:true}));await r.close();const next=f.open();assert.equal(next.usage().requiresCriticalRecovery,true,'restart must preserve unresolved financial evidence loss');await next.close();});
 
 test('loss of an entire committed diagnostic prefix cannot certify its historical window',async()=>{const f=fixture();crashed(f,`r.record('native-flow-raw-log',{full:'SELECTED_FLOW_MUST_SURVIVE'});r.record('financial-checkpoint',{}, {essential:true})`);const before=JSON.parse(readFileSync(join(f.directory,'state.json'),'utf8')),meta=before.activeDiagnostic;assert.ok(meta.bytes>0);writeFileSync(join(f.directory,meta.file),'');const r=f.open();assert.equal(r.usage().requiresCriticalRecovery,false,'diagnostic loss does not claim financial journal loss');const proof=await r.pinRange('lost-committed-flow',f.at,f.at);assert.equal(proof.complete,false);assert.equal(proof.reason,'RANGE_NOT_RETAINED');const recovered=receipts(f).find(v=>v.kind==='recovered-segment'&&v.data.kind==='diagnostic');assert.equal(recovered.data.invalidCommittedPrefix.expectedBytes,meta.bytes);assert.equal(recovered.data.invalidCommittedPrefix.expectedSha256,meta.prefixSha256);assert.ok(r.record('new-fresh-flow',{}));await r.close();});
+
+test('proactive verified retirement preserves capture admission across a mature-history hard-watermark crossing',async()=>{
+ const f=fixture(),r=f.open();assert.equal(r.record('held-financial-proof',{retain:'IRREPLACEABLE'},{essential:true}),true);
+ for(let i=0;i<4;i++)assert.equal(r.record('required-selected-packet',payload()),true);await r.maintenance();
+ const before=r.usage(),hard=before.diagnosticLimitBytes-4096;assert.equal(before.candidateAdmissionAllowed,true);assert.ok(before.diagnosticBytes< hard);
+ f.advance(300001);await r.maintenance();
+ assert.ok(r.usage().retiredBytes>0,'eligible history is verified/retired before the existing hard admission boundary');
+ assert.equal(r.record('required-selected-packet',payload()),true);assert.equal(r.usage().candidateAdmissionAllowed,true,'the actual runtime pressure term stays false; no source quarantine is required');assert.equal(r.usage().refusedRecords,0);
+ const current=await r.pinRange('fresh-current-proof',f.at,f.at);assert.equal(current.complete,true);assert.ok(current.files.some(file=>readFileSync(join(f.directory,file),'utf8').includes('required-selected-packet')));
+ await r.close();const essential=readdirSync(f.directory).filter(n=>/^essential-.*\.ndjson$/.test(n)).map(n=>readFileSync(join(f.directory,n),'utf8')).join('');assert.match(essential,/IRREPLACEABLE/);
+});
+
+test('proactive maintenance keeps young required evidence and the unchanged hard admission guard',async()=>{
+ const f=fixture(),r=f.open();for(let i=0;i<5;i++)assert.equal(r.record('required-selected-packet',payload()),true);await r.maintenance();assert.equal(r.usage().candidateAdmissionAllowed,false);assert.equal(r.usage().pressureReason,'DIAGNOSTIC_HEADROOM');assert.equal(r.usage().retiredBytes,0);assert.equal(r.usage().refusedRecords,0);
+ f.advance(299999);await r.maintenance();assert.equal(r.usage().retiredBytes,0);assert.equal(r.usage().candidateAdmissionAllowed,false);
+ f.advance(1);await r.maintenance();assert.equal(r.usage().candidateAdmissionAllowed,true);assert.ok(r.usage().retiredBytes>0);await r.close();
+});
+
+test('bounded proactive passes verify at most two files and concurrent callers share one worker',async()=>{
+ const f=fixture({diagnosticBytes:40960}),r=f.open();for(let i=0;i<20;i++)assert.equal(r.record('raw',payload(1530)),true);await r.maintenance();assert.equal(r.usage().candidateAdmissionAllowed,true);f.advance(300001);
+ const internal=r as any,verify=internal.verifyFile.bind(r);let verifications=0,release!:()=>void,reached!:()=>void;const gate=new Promise<void>(resolve=>release=resolve),seen=new Promise<void>(resolve=>reached=resolve);
+ internal.verifyFile=async(...args:any[])=>{verifications++;if(verifications===1){reached();await gate;}return verify(...args);};
+ const first=r.maintenance();await seen;const second=r.maintenance();assert.equal(verifications,1,'a pending verification is not duplicated by a second caller');assert.equal(r.record('held-financial-proof',{current:'PRESERVED'},{essential:true}),true);
+ release();await Promise.all([first,second]);assert.equal(verifications,2);assert.ok(r.usage().retiredBytes>0);assert.equal(r.usage().candidateAdmissionAllowed,true);assert.ok(r.usage().diagnosticBytes>40960-3*4096,'a pass remains bounded even when a third eligible file would reach the target');await r.close();
+});
+
+test('mature segments owned by a pending proof cannot be retired by proactive maintenance',async()=>{
+ const f=fixture(),r=f.open(),start=f.at;for(let i=0;i<6;i++)assert.equal(r.record('required-packet',payload()),true);await r.maintenance();f.advance(300001);
+ const internal=r as any,verify=internal.verifyFile.bind(r);let release!:()=>void,reached!:()=>void,blocked=false;const gate=new Promise<void>(resolve=>release=resolve),seen=new Promise<void>(resolve=>reached=resolve);
+ internal.verifyFile=async(m:any,destination?:string)=>{if(destination&&!blocked){blocked=true;reached();await gate;}return verify(m,destination);};
+ const proof=r.pinRange('pending-qualification',start,f.at);await seen;await r.maintenance();assert.equal(r.usage().retiredBytes,0);assert.equal(r.usage().candidateAdmissionAllowed,false,'pin ownership cannot be bypassed to restore admission');assert.equal(r.record('held-financial-proof',{current:'CONTINUES'},{essential:true}),true);
+ release();assert.equal((await proof).complete,true);await r.maintenance();assert.ok(r.usage().retiredBytes>0);assert.equal(r.usage().candidateAdmissionAllowed,true);await r.close();
+});
+
+test('proactive retirement refuses corrupted files and small namespaces avoid maintenance below a segment',async()=>{
+ const small=fixture({diagnosticBytes:8192}),tiny=small.open(),tinyInternal=tiny as any,tinyRefresh=tinyInternal.refreshDisk.bind(tiny);let forcedChecks=0;
+ tinyInternal.refreshDisk=(force?:boolean)=>{if(force)forcedChecks++;return tinyRefresh(force);};assert.equal(tiny.record('small-current-diagnostic',{v:1}),true);await Promise.resolve();assert.equal(forcedChecks,0,'a valid two-segment namespace does not run maintenance on every small record');await tiny.close();
+ const f=fixture(),r=f.open();for(let i=0;i<4;i++)assert.equal(r.record('required-packet',payload()),true);await r.maintenance();const file=readdirSync(f.directory).find(n=>/^diagnostic-.*\.ndjson$/.test(n))!,raw=readFileSync(join(f.directory,file));writeFileSync(join(f.directory,file),Buffer.alloc(raw.length,120));f.advance(300001);await r.maintenance();assert.equal(r.usage().candidateAdmissionAllowed,false);assert.equal(r.usage().pressureReason,'RETENTION_IO_OR_INTEGRITY_FAILURE');assert.equal(r.usage().retiredBytes,0);assert.equal(existsSync(join(f.directory,file)),true);assert.equal(r.record('new-unverified-input',{}),false);assert.equal(r.record('current-financial-proof',{retained:true},{essential:true}),true);await r.close();
+});
+
+test('continuous service sizes young mandatory flow from actual disk headroom without changing the legacy base policy',async()=>{
+ const f=fixture({diagnosticBytes:24576,continuousRotation:true,maximumDiagnosticBytes:131072}),r=f.open();
+ for(let i=0;i<40;i++)assert.equal(r.record('required-executed-flow',payload()),true);await r.maintenance();
+ const u=r.usage();assert.ok(u.diagnosticBytes>u.baseDiagnosticLimitBytes);assert.equal(u.candidateAdmissionAllowed,true);assert.equal(u.refusedRecords,0);assert.equal(u.retiredBytes,0,'young raw evidence remains lossless');assert.equal(u.baseDiagnosticLimitBytes,24576);assert.ok(u.diagnosticLimitBytes>=u.diagnosticBytes+4096);assert.ok(u.diagnosticLimitBytes<=131072);assert.ok(u.diagnosticLimitBytes<=u.baseDiagnosticLimitBytes+Math.floor((u.availableDiskBytes-2*u.minimumDiskReserveBytes)/32));
+ assert.equal(JSON.parse(readFileSync(join(f.directory,'state.json'),'utf8')).policy.diagnosticBytes,24576);await r.close();
+});
+
+test('continuous service grants bounded legacy working room on restart without pretending old diagnostics have matured',async()=>{
+ const f=fixture(),legacy=f.open();for(let i=0;i<6;i++)assert.equal(legacy.record('required-legacy-flow',payload()),true);await legacy.close();
+ const before=JSON.parse(readFileSync(join(f.directory,'state.json'),'utf8'));f.jumpWall(86400000);
+ const r=new BoundedRotatingRecorder({...f.config,continuousRotation:true,maximumDiagnosticBytes:65536});const restored=r.usage();assert.equal(restored.diagnosticBytes,before.diagnostics.reduce((n:number,m:any)=>n+m.bytes,0));assert.equal(restored.candidateAdmissionAllowed,true);assert.ok(restored.diagnosticLimitBytes>restored.baseDiagnosticLimitBytes);assert.equal(restored.retiredBytes,0);
+ await r.maintenance();f.advance(299999);await r.maintenance();assert.equal(r.usage().retiredBytes,0,'restart still requires the full monotonic retention horizon');
+ f.advance(1);await r.maintenance();assert.ok(r.usage().retiredBytes>0);await r.maintenance();assert.equal(r.usage().diagnosticBytes,0);assert.equal(r.usage().diagnosticLimitBytes,12288,'working allocation shrinks to the unchanged base after old flow expires');await r.close();
+});
+
+test('continuous rotation retires verified mature diagnostics below the old capacity trigger while retaining financial proof',async()=>{
+ const f=fixture({diagnosticBytes:40960,continuousRotation:true,maximumDiagnosticBytes:131072}),r=f.open(),start=f.at;
+ for(let i=0;i<4;i++)assert.equal(r.record('required-flow',payload()),true);await r.maintenance();const proof=await r.pinRange('durable-before-continuous-expiry',start,f.at);assert.equal(proof.complete,true);assert.equal(r.record('held-accounting',{retain:'FINANCIAL'},{essential:true}),true);
+ assert.ok(r.usage().diagnosticBytes<40960-2*4096);f.advance(300000);await r.maintenance();assert.equal(r.usage().diagnosticBytes,0);assert.ok(r.usage().retiredBytes>0);for(const file of proof.files)assert.ok(existsSync(join(f.directory,file)));assert.equal((await r.pinRange('durable-before-continuous-expiry',start,start)).complete,true);await r.close();
+ const control=fixture({diagnosticBytes:40960}),bounded=control.open();for(let i=0;i<4;i++)assert.equal(bounded.record('required-flow',payload()),true);await bounded.maintenance();control.advance(300000);await bounded.maintenance();assert.equal(bounded.usage().retiredBytes,0,'finite research retains the legacy bounded occupancy policy');await bounded.close();
+});
+
+test('adaptive capacity is bounded by its explicit maximum and cannot consume the actual filesystem reserve',async()=>{
+ const f=fixture({diagnosticBytes:12288,continuousRotation:true,maximumDiagnosticBytes:32768}),r=f.open();let accepted=0;while(accepted<50&&r.record('required-flow',payload()))accepted++;assert.ok(accepted>6&&accepted<50);assert.equal(r.usage().diagnosticLimitBytes,32768);assert.equal(r.usage().candidateAdmissionAllowed,false);assert.ok(r.usage().refusedRecords>0);assert.equal(r.recordOutcome().kind,'unavailable');assert.equal((await r.pinRange('mandatory-gap',f.at,f.at)).complete,false);await r.close();
+ const blocked=fixture({diagnosticBytes:12288,continuousRotation:true,maximumDiagnosticBytes:65536,minimumDiskReserveBytes:Number.MAX_SAFE_INTEGER}),noDisk=blocked.open();assert.equal(noDisk.usage().diagnosticLimitBytes,12288);assert.equal(noDisk.record('required-flow',payload()),false);assert.equal(noDisk.recordOutcome().kind,'unavailable');assert.equal(noDisk.usage().pressureReason,'FILESYSTEM_RESERVE');assert.equal(noDisk.usage().retiredBytes,0);await noDisk.close();
+});
+
+test('the adaptive allocation uses a bounded fraction of a measured disk snapshot and accounts for pending proof reservations',async()=>{
+ const f=fixture({diagnosticBytes:12288,continuousRotation:true,maximumDiagnosticBytes:65536}),r=f.open(),internal=r as any;
+ // Synthetic pressure snapshot only; the preceding test exercises the actual
+ // statfs reserve. No filesystem is filled or provider resource consumed here.
+ internal.refreshDisk=()=>{internal.availableBytes=131072;};for(let i=0;i<4;i++)assert.equal(r.record('required-flow',payload()),true);await r.maintenance();assert.ok(r.usage().diagnosticLimitBytes<=12288+131072/32);assert.ok(r.usage().diagnosticLimitBytes>12288);
+ internal.pendingPinBytes=65536;assert.ok(r.usage().diagnosticLimitBytes<=12288+(131072-65536)/32);internal.pendingPinBytes=0;const before=r.usage().diagnosticLimitBytes;assert.equal(r.record('optional-never-expands',payload(3900),{required:false}),false);assert.equal(r.recordOutcome().kind,'optional-capacity-omitted');assert.equal(r.usage().diagnosticLimitBytes,before);await r.close();
+});
+
+test('continuous retirement remains limited to two verified files per pass even below every occupancy threshold',async()=>{
+ const f=fixture({diagnosticBytes:131072,continuousRotation:true,maximumDiagnosticBytes:262144}),r=f.open();for(let i=0;i<12;i++)assert.equal(r.record('required-flow',payload()),true);await r.maintenance();await r.pinRange('bounded-continuous-retirement-proof',f.at,f.at);f.advance(300000);
+ const internal=r as any,verify=internal.verifyFile.bind(r);let checked=0;internal.verifyFile=async(...args:any[])=>{checked++;return verify(...args);};const before=r.usage().diagnosticSegments;assert.ok(before>2);await r.maintenance();assert.equal(checked,2);assert.equal(r.usage().diagnosticSegments,before-2);await r.close();
+});
+
+test('explicit optional capacity omissions cannot grow allocation, close capture, or invalidate a complete mandatory-flow proof',async()=>{
+ const f=fixture({diagnosticBytes:24576,continuousRotation:true,maximumDiagnosticBytes:131072}),r=f.open(),start=f.at;
+ for(let i=0;i<18;i++)assert.equal(r.record('required-selected-trade',payload()),true);await r.maintenance();const before=r.usage();
+ assert.equal(r.record('optional-repeated-trace',payload(),{required:false}),false);assert.deepEqual(r.recordOutcome(),{kind:'optional-capacity-omitted',reason:'OPTIONAL_DIAGNOSTIC_HEADROOM'});const after=r.usage();assert.equal(after.optionalOmittedRecords,1);assert.ok(after.optionalOmittedBytes>0);assert.equal(after.diagnosticBytes,before.diagnosticBytes);assert.equal(after.diagnosticLimitBytes,before.diagnosticLimitBytes);assert.equal(after.refusedRecords,0);assert.deepEqual(after.refusalIntervals,[]);assert.equal(after.candidateAdmissionAllowed,true);
+ const proof=await r.pinRange('mandatory-complete-despite-optional-trace-omission',start,f.at);assert.equal(proof.complete,true);const manifest=JSON.parse(readFileSync(join(f.directory,proof.files[0]!.split('/')[0]!,'manifest.json'),'utf8'));assert.equal(manifest.optionalDiagnostics.omittedRecords,1);assert.equal(manifest.optionalDiagnostics.requiredTradingFlowUnaffected,true);assert.match(manifest.optionalDiagnostics.meaning,/not missing executed trading flow/);await r.close();
+ const reopened=new BoundedRotatingRecorder({...f.config,continuousRotation:true,maximumDiagnosticBytes:131072});assert.equal(reopened.usage().optionalOmittedRecords,1);assert.equal(reopened.usage().refusedRecords,0);await reopened.close();
+});
+
+test('adaptive proof larger than the legacy base remains verifiable after its raw diagnostic source rotates',async()=>{
+ const f=fixture({diagnosticBytes:12288,continuousRotation:true,maximumDiagnosticBytes:131072}),r=f.open(),start=f.at;
+ for(let i=0;i<12;i++)assert.equal(r.record('required-full-market-flow',payload()),true);await r.maintenance();const proof=await r.pinRange('greater-than-legacy-cap-proof',start,f.at);assert.equal(proof.complete,true);assert.ok(proof.bytes>12288);f.advance(300000);for(let i=0;i<4;i++)await r.maintenance();assert.equal(r.usage().diagnosticBytes,0);assert.equal(r.usage().diagnosticLimitBytes,12288);
+ const revalidated=await r.pinRange('greater-than-legacy-cap-proof',start,start);assert.equal(revalidated.complete,true);assert.equal(revalidated.manifestSha256,proof.manifestSha256);assert.deepEqual(revalidated.files,proof.files);await r.close();
+});
+
+test('an optional append with partial filesystem failure is unavailable rather than a harmless diagnostic omission',async()=>{
+ const f=fixture({diagnosticBytes:24576,continuousRotation:true,maximumDiagnosticBytes:131072}),r=f.open();assert.equal(r.record('held-financial-proof',{retain:'FINANCIAL'},{essential:true}),true);assert.equal(r.record('required-flow',{}),true);await r.maintenance();
+ const internal=r as any,write=internal.write.bind(r);let fail=true;internal.write=(fd:number,raw:Buffer)=>{if(fail){fail=false;write(fd,raw.subarray(0,7));throw Error('OFFLINE injected partial write');}return write(fd,raw);};assert.equal(r.record('optional-trace',{v:1},{required:false}),false);assert.equal(r.recordOutcome().kind,'unavailable');assert.equal(r.usage().optionalOmittedRecords,0);assert.equal(r.usage().candidateAdmissionAllowed,false);assert.equal(r.usage().pressureReason,'RECORD_IO_OR_INTEGRITY_FAILURE');assert.equal((await r.pinRange('partial-io-cannot-certify',f.at,f.at)).complete,false);assert.equal(r.record('held-financial-proof',{current:'CONTINUES'},{essential:true}),true);await r.close();
+ const invalid=fixture(),forbidden=invalid.open();assert.equal(forbidden.record('financial-must-be-required',{}, {essential:true,required:false}),false);assert.equal(forbidden.recordOutcome().kind,'unavailable');assert.equal(forbidden.usage().optionalOmittedRecords,0);assert.equal(forbidden.usage().candidateAdmissionAllowed,false);await forbidden.close();
+});
+
+test('required refusals and integrity failures during raw-copy or manifest awaits cannot publish a complete proof; optional omissions remain distinct',async()=>{
+ // Regression for a pre-existing race found by independent review, not an
+ // observed live qualification failure. Same-millisecond capture can extend a
+ // refusal interval while a requested upper boundary is being copied.
+ for(const phase of ['copy','manifest'] as const)for(const incident of ['required-refusal','integrity-failure','optional-omission'] as const){
+  const f=fixture({diagnosticBytes:24576,continuousRotation:true,maximumDiagnosticBytes:131072}),r=f.open(),internal=r as any,label=phase+':'+incident;assert.equal(r.record('required-executed-flow',{signature:'EXACT_REQUIRED_FLOW'}),true);await r.maintenance();
+  let release!:()=>void,reached!:()=>void,paused=false;const gate=new Promise<void>(resolve=>release=resolve),seen=new Promise<void>(resolve=>reached=resolve);
+  if(phase==='copy'){const verify=internal.verifyFile.bind(r);internal.verifyFile=async(m:any,destination?:string)=>{if(destination&&!paused){paused=true;reached();await gate;}return verify(m,destination);};}
+  else{const stage=internal.stageProofManifest.bind(r);internal.stageProofManifest=async(...args:any[])=>{const pending=await stage(...args);reached();await gate;return pending;};}
+  const task=r.pinRange('independent-review-race:'+label,f.at,f.at);await seen;
+  if(incident==='required-refusal'){assert.equal(r.record('required-flow-cannot-fit',payload(5000)),false,label);assert.equal(r.usage().refusalIntervals.length,1,label);}
+  else if(incident==='integrity-failure'){const write=internal.write.bind(r);internal.write=()=>{throw Error('OFFLINE injected capture I/O failure');};assert.equal(r.record('required-capture-io',{}),false,label);internal.write=write;assert.equal(r.usage().pressureReason,'RECORD_IO_OR_INTEGRITY_FAILURE',label);}
+  else{assert.equal(r.record('optional-oversized-trace',payload(5000),{required:false}),false,label);assert.equal(r.recordOutcome().kind,'optional-capacity-omitted',label);assert.equal(r.usage().refusalIntervals.length,0,label);}
+  release();const proof=await task,proofDirectory=join(f.directory,'proof-'+sha('independent-review-race:'+label));
+  if(incident==='optional-omission'){assert.equal(proof.complete,true,label);assert.equal(existsSync(join(proofDirectory,'manifest.json')),true,label);}
+  else{assert.equal(proof.complete,false,label);assert.equal(proof.reason,incident==='required-refusal'?'RANGE_CONTAINS_REFUSAL':'RECORDER_INTEGRITY_UNAVAILABLE',label);assert.equal(existsSync(join(proofDirectory,'manifest.json')),false,label);if(phase==='manifest')assert.ok(readdirSync(proofDirectory).some(name=>/^manifest-.*\.pending$/.test(name)),'unaccepted staged evidence remains preserved');}
+  await r.close();
+ }
+});
+
+test('protected-proof revalidation rechecks concurrent mandatory loss without deleting the original historical proof',async()=>{
+ for(const incident of ['required-refusal','integrity-failure','optional-omission'] as const){
+  const f=fixture({diagnosticBytes:24576,continuousRotation:true,maximumDiagnosticBytes:131072}),r=f.open(),internal=r as any,id='revalidation-race:'+incident;assert.equal(r.record('required-flow',{signature:'ORIGINAL'}),true);await r.maintenance();const original=await r.pinRange(id,f.at,f.at);assert.equal(original.complete,true);const manifest=join(f.directory,original.files[0]!.split('/')[0]!,'manifest.json'),originalBytes=readFileSync(manifest);
+  let release!:()=>void,reached!:()=>void,paused=false;const gate=new Promise<void>(resolve=>release=resolve),seen=new Promise<void>(resolve=>reached=resolve),verify=internal.verifyFile.bind(r);internal.verifyFile=async(m:any,destination?:string)=>{if(m.file.startsWith('proof-')&&!paused){paused=true;reached();await gate;}return verify(m,destination);};
+  const task=r.pinRange(id,f.at,f.at);await seen;
+  if(incident==='required-refusal')assert.equal(r.record('missing-required-flow',payload(5000)),false);
+  else if(incident==='integrity-failure'){const write=internal.write.bind(r);internal.write=()=>{throw Error('OFFLINE injected revalidation I/O failure');};assert.equal(r.record('required-flow',{}),false);internal.write=write;}
+  else assert.equal(r.record('optional-trace',payload(5000),{required:false}),false);
+  release();const checked=await task;assert.equal(checked.complete,incident==='optional-omission',incident);if(incident!=='optional-omission')assert.equal(checked.reason,incident==='required-refusal'?'RANGE_CONTAINS_REFUSAL':'RECORDER_INTEGRITY_UNAVAILABLE');assert.deepEqual(readFileSync(manifest),originalBytes,'already committed historical evidence is preserved');await r.close();
+ }
+});

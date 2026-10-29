@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-29T16:34:37.797362+00:00",
+  "reviewer": "trace_zero_rpc_startup",
+  "result": "PASS",
+  "reviewedRunSha256": "8399ecec740d954602a6811ec2465a9caca94ea6e773dd645eafb76e85c4abcc",
+  "reviewedPolicySha256": "a833a7e08f8b2b378bf2103cded61ea4fb066f216a9f90c33770a56cb7ef29f6",
+  "requiredEvidenceProtected": true,
+  "explicitOptionalAllowlistOnly": true,
+  "constructorFailuresRemainLatched": true,
+  "boundedResearchUnchanged": true,
+  "physicalPacingAndFinancialLimitsUnchanged": true,
+  "forwardVerificationRequired": true
+}

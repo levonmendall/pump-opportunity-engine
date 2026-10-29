@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import{createRequire}from'node:module';import{writeFileSync,mkdirSync}from'node:fs';
 const require=createRequire('/opt/codex/runtimes/codex-primary-runtime/dependencies/node/package.json'),{chromium}=require('playwright');
-const base='https://meme-machine-dashboard-staging.onrender.com',expected='b881dc9a5d671c7e529cd83eed3191021d6f1538',out='/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/four-slot-configuration-20261029';mkdirSync(out,{recursive:true});
+const base='https://meme-machine-dashboard-staging.onrender.com',expected='cb4f53d3afc6253ff7f9b9cc79515a04c058a86c',out='/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/four-slot-configuration-20261029';mkdirSync(out,{recursive:true});
 const health=await fetch(base+'/healthz').then(r=>r.json());assert.equal(health.dashboardRelease,expected);assert.equal(health.unifiedPortfolio,true);
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});let networkRequests=0;const results=[];
 try{for(const viewport of[{width:390,height:844},{width:1280,height:900}]){

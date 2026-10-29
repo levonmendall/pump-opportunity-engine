@@ -225,11 +225,11 @@ test('persistent discovery survives elapsed/evidence and reconnect-count researc
  for(let i=0;i<1000;i++){const bytes=Buffer.alloc(64,17);bytes.writeUInt32BE(i,0);f.sockets.at(-1)!.frame({txType:'migrate',signature:bs58.encode(bytes),mint:scope.mint});}
  const u=f.feeds.usage();assert.equal(u.stopped,false);assert.equal(u.persistent,true);assert.ok(u.recordedBytes>65536);assert.ok(u.connections.discovery>9);assert.equal(f.migrations.length,1000);assert.equal(u.firstFailure,'COMPONENT_WS_TRANSPORT','planned drops remain truthful history');assert.ok(!f.gaps.some(g=>/DURATION_LIMIT|RECONNECT_LIMIT|EVIDENCE_CAP/.test(g.reason)));await f.feeds.stop();
 });
-test('persistent broad WATCH rolling pressure pauses only its transport and automatically recovers after the rolling window',async()=>{
- const f=setup({persistent:true,watchOnly:true,maxPumpApiBytes:4*1024*1024});await f.feeds.startDiscovery();await f.feeds.startWatchActivity();const socket=f.sockets.at(-1)!;
- for(let i=0;i<65;i++)socket.frame('irrelevant',2*1024*1024);
- await f.advance(1);assert.equal(f.feeds.usage().pumpApiDesired,true);assert.equal(f.feeds.usage().pumpApiConnected,false);assert.equal(f.feeds.usage().discoveryConnected,true);assert.ok(f.gaps.some(g=>g.reason==='PILOT_PUMPAPI_ROLLING_TRAFFIC_PRESSURE'));assert.ok(f.feeds.usage().rollingTraffic.pumpapi.pressure);
- await f.advance(62000);assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.feeds.usage().rollingTraffic.pumpapi.pressure,false);assert.ok(f.feeds.usage().pumpApiSocketBytes>128*1024*1024);assert.equal(f.feeds.usage().stopped,false);await f.feeds.stop();
+test('persistent broad WATCH and discovery keep healthy capture above old rolling byte thresholds with all bytes counted',async()=>{
+ const f=setup({persistent:true,watchOnly:true,maxPumpApiBytes:4*1024*1024});await f.feeds.startDiscovery();await f.feeds.startWatchActivity();const socket=f.sockets.at(-1)!,discovery=f.sockets[0]!;
+ for(let i=0;i<65;i++)socket.frame('irrelevant',2*1024*1024);discovery.frame({message:'unrelated'},3*1024*1024);
+ await f.advance(1);const u=f.feeds.usage();assert.equal(u.pumpApiDesired,true);assert.equal(u.pumpApiConnected,true);assert.equal(u.discoveryConnected,true);assert.ok(u.rollingTraffic.pumpapi.pressure);assert.ok(u.rollingTraffic.discovery.pressure);assert.equal(u.rollingTraffic.pumpapi.admissionEnforced,false);assert.equal(u.rollingTraffic.discovery.admissionEnforced,false);assert.ok(!f.gaps.some(g=>/ROLLING_TRAFFIC_PRESSURE/.test(g.reason)));assert.equal(u.pumpApiSocketBytes,socket._socket.bytesRead);assert.equal(u.discoverySocketBytes,discovery._socket.bytesRead);
+ for(let i=0;i<4;i++){await f.advance(15000);socket.frame('unrelated traffic');discovery.frame({message:'unrelated'});}await f.advance(2000);assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.feeds.usage().rollingTraffic.pumpapi.pressure,false);assert.ok(f.feeds.usage().pumpApiSocketBytes>128*1024*1024);assert.equal(f.feeds.usage().stopped,false);await f.feeds.stop();
 });
 
 

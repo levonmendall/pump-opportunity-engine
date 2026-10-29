@@ -493,3 +493,9 @@ test('persistent native capture has no research lifetime, cumulative CPU, receiv
  socket._socket.bytesRead+=2*1024*1024;socket._socket.emit('data',Buffer.alloc(0));await f.advance(200);const u=f.flow.usage();assert.equal(u.persistent,true);assert.equal(u.lifetimeCapsEnabled,false);assert.equal(u.fatal,null);assert.equal(u.stopped,false);assert.ok(u.recordedBytes>65536,JSON.stringify({bytes:u.recordedBytes,trades:f.trades.length,gaps:f.gaps,records:f.records.map(r=>r.kind),fatal:u.fatal}));assert.ok(u.socketBytes>1024*1024);assert.ok(f.trades.length>0);assert.equal(f.gaps.length,0);assert.equal(u.rollingTraffic.pressure,false);await f.flow.stop();
  const later=setup({persistent:true,durationMs:1000});later.elapseWithoutTimers(1800001);await later.flow.addCandidate(scope);await later.drive();assert.equal(later.supportCalls.length,1,'a new candidate receives a current support read after the old research lifetime');assert.equal(later.flow.usage().fatal,null);assert.equal(later.flow.usage().stopped,false);assert.equal(later.trades.length,0,'no stale historical trade was invented after the clock jump');await later.flow.stop();
 });
+
+
+test('persistent native rolling bytes are telemetry and every received byte remains charged above the old rate threshold',async()=>{
+ const f=setup({persistent:true,maximumRssBytes:1536*1024*1024}),socket=await f.open();const before=f.controlBytes;
+ socket._socket.bytesRead+=65*1024*1024;socket._socket.emit('data',Buffer.alloc(0));await f.advance(200);const u=f.flow.usage();assert.equal(u.connected,true);assert.equal(u.fatal,null);assert.equal(u.stopped,false);assert.equal(u.rollingTraffic.pressure,true);assert.equal(u.rollingTraffic.admissionEnforced,false);assert.equal(f.controlBytes,socket._socket.bytesRead);assert.ok(f.controlBytes-before>=65*1024*1024);assert.equal(f.gaps.length,0);await f.flow.stop();
+});

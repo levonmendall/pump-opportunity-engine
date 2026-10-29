@@ -21,6 +21,11 @@ export type BoundedRecorderOptions = {
     diagnosticBytes?: number;
     minRetentionMs?: number;
     minimumDiskReserveBytes?: number;
+    /** Persistent service only: retain a rolling horizon and grow its working
+     * allocation from observed mandatory bytes within verified disk headroom. */
+    continuousRotation?: boolean;
+    maximumDiagnosticBytes?: number;
+    capacityDiskFraction?: number;
     now?: () => number;
     monotonic?: () => number;
 };
@@ -74,6 +79,8 @@ type State = {
     protectedBytes: number;
     refusedRecords: number;
     refusedBytes: number;
+    optionalOmittedRecords: number;
+    optionalOmittedBytes: number;
     nextReceipt: number;
     lastAt: number;
     evictedThroughAt: number;
@@ -100,6 +107,7 @@ export type EvidencePinResult = {
     manifestSha256: string | null;
     reason?: string;
 };
+export type RecorderRecordOutcome = {kind: 'accepted' | 'optional-capacity-omitted' | 'unavailable';reason: string | null};
 /** A separate service API; finite research Recorder remains unchanged. */
 export class BoundedRotatingRecorder {
     private readonly directory: string;
@@ -108,6 +116,15 @@ export class BoundedRotatingRecorder {
     private readonly now: () => number;
     private readonly mono: () => number;
     private readonly reserve: number;
+    private readonly maintenanceTriggerBytes: number;
+    private readonly maintenanceTargetBytes: number;
+    private readonly continuousRotation: boolean;
+    private readonly maximumDiagnosticBytes: number;
+    private readonly capacityDiskFraction: number;
+    private effectiveDiagnosticBytes: number;
+    private lastOutcome: RecorderRecordOutcome = {kind:'unavailable',reason:'NO_RECORD_ATTEMPT'};
+    private optionalOmissionDirty = false;
+    private optionalOmissionLastCheckpoint = -Infinity;
     private state: State;
     private diagnostic: Active | null = null;
     private essential: Active | null = null;
@@ -124,6 +141,7 @@ export class BoundedRotatingRecorder {
     }>();
     private pendingPinBytes = 0;
     private maintenanceTask: Promise<void> | null = null;
+    private lastMaintenanceAt = -Infinity;
     private readonly pinTasks = new Set<Promise<EvidencePinResult>>();
     private availableBytes = Infinity;
     private diskCheckedMono = -Infinity;
@@ -134,6 +152,17 @@ export class BoundedRotatingRecorder {
         this.reserve = options.minimumDiskReserveBytes ?? 128 * MIB;
         const policy = { segmentBytes: options.segmentBytes ?? 8 * MIB, diagnosticBytes: options.diagnosticBytes ?? 128 * MIB, minRetentionMs: options.minRetentionMs ?? 300000 };
         need(integer(policy.segmentBytes) && policy.segmentBytes >= 4096 && policy.segmentBytes <= 8 * MIB && integer(policy.diagnosticBytes) && policy.diagnosticBytes >= 2 * policy.segmentBytes && policy.diagnosticBytes <= 1024 * MIB && policy.diagnosticBytes / policy.segmentBytes <= 512 && integer(policy.minRetentionMs) && policy.minRetentionMs >= 300000 && integer(this.reserve), 'POLICY');
+        // Begin verified retirement before the unchanged one-segment admission
+        // reserve is consumed. Small namespaces keep at least one segment before
+        // triggering maintenance; neither the
+        // total cap nor the minimum age/pin/integrity conditions are relaxed.
+        this.maintenanceTriggerBytes = Math.max(policy.segmentBytes, policy.diagnosticBytes - 2 * policy.segmentBytes);
+        this.maintenanceTargetBytes = Math.max(0, policy.diagnosticBytes - 3 * policy.segmentBytes);
+        this.continuousRotation = options.continuousRotation ?? false;
+        this.maximumDiagnosticBytes = options.maximumDiagnosticBytes ?? policy.diagnosticBytes;
+        this.capacityDiskFraction = options.capacityDiskFraction ?? 1 / 32;
+        this.effectiveDiagnosticBytes = policy.diagnosticBytes;
+        need(typeof this.continuousRotation === 'boolean' && integer(this.maximumDiagnosticBytes) && this.maximumDiagnosticBytes >= policy.diagnosticBytes && this.maximumDiagnosticBytes <= 4 * 1024 * MIB && this.maximumDiagnosticBytes <= 512 * policy.segmentBytes && (this.continuousRotation || this.maximumDiagnosticBytes === policy.diagnosticBytes) && Number.isFinite(this.capacityDiskFraction) && this.capacityDiskFraction > 0 && this.capacityDiskFraction <= 1 / 32, 'SERVICE_CAPACITY_POLICY');
         need(realpathSync(dirname(this.directory)) === dirname(this.directory), 'CANONICAL_PARENT');
         try {
             const s = lstatSync(this.directory);
@@ -191,6 +220,8 @@ export class BoundedRotatingRecorder {
                 this.state.refusalIntervals ??= [];
                 this.state.refusalOpen = false;
                 this.state.refusalIntervalsCoalesced ??= 0;
+                this.state.optionalOmittedRecords ??= 0;
+                this.state.optionalOmittedBytes ??= 0;
                 this.validateState();
                 for (const m of this.state.diagnostics)
                     this.retentionStarted.set(m.file, this.mono());
@@ -207,10 +238,14 @@ export class BoundedRotatingRecorder {
                 const names = requireDirectoryNames(this.directory).filter(n => !['owner-namespace.txt', 'writer.lock'].includes(n) && !/^checkpoint-[0-9]+-[a-f0-9-]+\.pending$/.test(n));
                 need(names.length === 0, 'FOREIGN_DIRECTORY');
                 const at = this.time();
-                this.state = { version: VERSION, startedAt: at, policy, nextDiagnostic: 1, nextEssential: 1, diagnosticHead: ZERO, essentialHead: ZERO, activeDiagnostic: null, activeEssential: null, diagnostics: [], receiptAnchor: { throughSequence: 0, sha256: ZERO }, receipts: [], totalRecordedBytes: 0, retiredBytes: 0, protectedBytes: 0, refusedRecords: 0, refusedBytes: 0, nextReceipt: 1, lastAt: at, evictedThroughAt: 0, requiresCriticalRecovery: false, refusalIntervals: [], refusalOpen: false, refusalIntervalsCoalesced: 0 };
+                this.state = { version: VERSION, startedAt: at, policy, nextDiagnostic: 1, nextEssential: 1, diagnosticHead: ZERO, essentialHead: ZERO, activeDiagnostic: null, activeEssential: null, diagnostics: [], receiptAnchor: { throughSequence: 0, sha256: ZERO }, receipts: [], totalRecordedBytes: 0, retiredBytes: 0, protectedBytes: 0, refusedRecords: 0, refusedBytes: 0, optionalOmittedRecords: 0, optionalOmittedBytes: 0, nextReceipt: 1, lastAt: at, evictedThroughAt: 0, requiresCriticalRecovery: false, refusalIntervals: [], refusalOpen: false, refusalIntervalsCoalesced: 0 };
                 this.receipt('created', { policy, financialFilesRead: false, protectedProofNeverEvicted: true });
             }
             this.refreshDisk(true);
+            // Legacy retained bytes have unknown per-record purpose. Preserve
+            // every one and reserve fresh capture room; never fake their age.
+            if (this.continuousRotation)
+                this.rebalanceCapacity(0, true);
             this.save();
         }
         catch (error) {
@@ -252,7 +287,7 @@ export class BoundedRotatingRecorder {
         need(integer(m.invalidCommittedPrefix.expectedBytes) && sha(m.invalidCommittedPrefix.expectedSha256), 'COMMITTED_PREFIX_FAILURE_STATE'); need(new RegExp('^' + kind + '-[0-9]{12}\\.ndjson$').test(m.file) && integer(m.sequence) && integer(m.startedAt) && integer(m.endedAt) && integer(m.bytes) && m.bytes <= this.state.policy.segmentBytes && integer(m.records) && sha(m.previousSha256) && sha(m.lastRecordHash) && sha(m.prefixSha256), 'SEGMENT_STATE'); }
     private validateState() {
         const s = this.state;
-        for (const k of ['startedAt', 'nextDiagnostic', 'nextEssential', 'totalRecordedBytes', 'retiredBytes', 'protectedBytes', 'refusedRecords', 'refusedBytes', 'nextReceipt', 'lastAt', 'evictedThroughAt'] as const)
+        for (const k of ['startedAt', 'nextDiagnostic', 'nextEssential', 'totalRecordedBytes', 'retiredBytes', 'protectedBytes', 'refusedRecords', 'refusedBytes', 'optionalOmittedRecords', 'optionalOmittedBytes', 'nextReceipt', 'lastAt', 'evictedThroughAt'] as const)
             need(integer(s[k]), 'STATE_COUNTER');
         need(typeof s.requiresCriticalRecovery === 'boolean' && typeof s.refusalOpen === 'boolean' && integer(s.refusalIntervalsCoalesced) && Array.isArray(s.refusalIntervals) && s.refusalIntervals.length <= 128, 'CRITICAL_RECOVERY_STATE');
         for (const r of s.refusalIntervals)
@@ -321,6 +356,8 @@ export class BoundedRotatingRecorder {
         }
         renameSync(p, this.path('state.json'));
         this.syncDirectory();
+        this.optionalOmissionDirty = false;
+        this.optionalOmissionLastCheckpoint = this.mono();
     }
     private syncDirectory() { fsyncSync(this.directoryFd); }
     private receipt(kind: string, data: unknown) {
@@ -447,7 +484,32 @@ export class BoundedRotatingRecorder {
         this.diskCheckedMono = mono;
     }
     private retainedBytes() { return this.state.diagnostics.reduce((n, m) => n + m.bytes, 0) + (this.diagnostic?.meta.bytes ?? 0); }
+    private diskCapacityLimit() {
+        if (!this.continuousRotation)
+            return this.state.policy.diagnosticBytes;
+        const headroom = Math.max(0, this.availableBytes - 2 * this.reserve - this.pendingPinBytes);
+        return Math.min(this.maximumDiagnosticBytes, this.state.policy.diagnosticBytes + Math.floor(headroom * this.capacityDiskFraction));
+    }
+    private rebalanceCapacity(incomingRequiredBytes: number, mayGrow: boolean) {
+        if (!this.continuousRotation)
+            return;
+        const desired = Math.max(this.state.policy.diagnosticBytes, this.retainedBytes() + incomingRequiredBytes + 3 * this.state.policy.segmentBytes), permitted = this.diskCapacityLimit();
+        this.effectiveDiagnosticBytes = mayGrow ? Math.min(permitted, Math.max(this.effectiveDiagnosticBytes, desired)) : Math.min(this.effectiveDiagnosticBytes, desired, permitted);
+    }
+    recordOutcome(): RecorderRecordOutcome { return {...this.lastOutcome}; }
+    private omitOptional(bytes: number, reason: string) {
+        this.state.optionalOmittedRecords++;
+        this.state.optionalOmittedBytes += bytes;
+        this.optionalOmissionDirty = true;
+        // Optional tracing cannot create per-message fsync pressure. Counts are
+        // included in ordinary checkpoints, maintenance and graceful close.
+        if (this.mono() - this.optionalOmissionLastCheckpoint >= 1000)
+            this.save();
+        this.lastOutcome = {kind:'optional-capacity-omitted',reason};
+        return false;
+    }
     private refusal(bytes: number, reason: string) {
+        this.lastOutcome = {kind:'unavailable',reason};
         const at = this.time();
         this.state.refusedRecords++;
         this.state.refusedBytes += bytes;
@@ -481,7 +543,9 @@ export class BoundedRotatingRecorder {
     }
     record(kind: string, data: unknown, options: {
         essential?: boolean;
+        required?: boolean;
     } = {}): boolean {
+        this.lastOutcome = {kind:'unavailable',reason:'RECORDER_UNAVAILABLE'};
         if (this.closed || this.closing)
             return false;
         if (this.fatal && !options.essential)
@@ -489,6 +553,7 @@ export class BoundedRotatingRecorder {
         let raw: Buffer;
         try {
             need(typeof kind === 'string' && kind.length > 0 && kind.length <= 128 && !/[\u0000-\u001f]/.test(kind), 'EVENT_KIND');
+            need((options.required === undefined || typeof options.required === 'boolean') && !(options.essential && options.required === false), 'ESSENTIAL_REQUIRES_REQUIRED');
             const role = options.essential ? 'essential' : 'diagnostic';
             this.refreshDisk();
             if (this.availableBytes < (options.essential ? this.reserve : 2 * this.reserve))
@@ -496,15 +561,24 @@ export class BoundedRotatingRecorder {
             let a = role === 'diagnostic' ? this.diagnostic : this.essential;
             const base = { schemaVersion: 1, sequence: (a?.meta.records ?? 0) + 1, receivedAt: new Date(this.time()).toISOString(), monotonicMs: this.mono(), kind, data, previousRecordHash: a?.meta.lastRecordHash ?? (role === 'diagnostic' ? this.state.diagnosticHead : this.state.essentialHead) }, line = () => Buffer.from(encode({ ...base, recordSha256: digest(encode(base)) }) + '\n');
             raw = line();
-            if (raw.length > this.state.policy.segmentBytes)
+            if (raw.length > this.state.policy.segmentBytes) {
+                if (options.required === false)
+                    return this.omitOptional(raw.length, 'OPTIONAL_RECORD_BOUND');
                 return this.refusal(raw.length, 'RECORD_BOUND');
+            }
+            if (role === 'diagnostic' && options.required === false && this.retainedBytes() + raw.length > Math.max(0, Math.min(this.state.policy.diagnosticBytes, this.effectiveDiagnosticBytes) - 3 * this.state.policy.segmentBytes))
+                return this.omitOptional(raw.length, 'OPTIONAL_DIAGNOSTIC_HEADROOM');
+            if (role === 'diagnostic' && options.required !== false)
+                this.rebalanceCapacity(raw.length, true);
             if (role === 'diagnostic')
                 this.state.refusalOpen = false;
-            if (role === 'diagnostic' && this.retainedBytes() + raw.length > this.state.policy.diagnosticBytes) {
+            if (role === 'diagnostic' && this.retainedBytes() + raw.length > this.effectiveDiagnosticBytes) {
                 void this.maintenance();
                 return this.refusal(raw.length, 'YOUNG_DIAGNOSTIC_CAPACITY');
             }
             if (role === 'diagnostic' && (!a || a.meta.bytes + raw.length > this.state.policy.segmentBytes) && this.state.diagnostics.length >= 511) {
+                if (options.required === false)
+                    return this.omitOptional(raw.length, 'OPTIONAL_SEGMENT_CAPACITY');
                 void this.maintenance();
                 return this.refusal(raw.length, 'YOUNG_SEGMENT_CAPACITY');
             }
@@ -530,12 +604,16 @@ export class BoundedRotatingRecorder {
             }
             if (role === 'diagnostic')
                 this.state.refusalOpen = false;
-            if (role === 'diagnostic' && this.retainedBytes() <= this.state.policy.diagnosticBytes - this.state.policy.segmentBytes && this.state.diagnostics.length < 511)
+            if (role === 'diagnostic' && this.retainedBytes() <= this.effectiveDiagnosticBytes - this.state.policy.segmentBytes && this.state.diagnostics.length < 511)
                 this.pressure = null;
+            if (role === 'diagnostic' && (this.continuousRotation || this.retainedBytes() >= this.maintenanceTriggerBytes) && this.mono() - this.lastMaintenanceAt >= 1000)
+                void this.maintenance();
+            this.lastOutcome = {kind:'accepted',reason:null};
             return true;
         }
         catch {
             this.fatal = 'RECORD_IO_OR_INTEGRITY_FAILURE';
+            this.lastOutcome = {kind:'unavailable',reason:this.fatal};
             return false;
         }
     }
@@ -543,24 +621,32 @@ export class BoundedRotatingRecorder {
         try {
             if (!this.closed)
                 this.refreshDisk();
+            this.rebalanceCapacity(0, false);
         }
         catch {
             this.fatal = 'FILESYSTEM_UNAVAILABLE';
         }
-        const bytes = this.retainedBytes(), pressure = this.fatal ?? (this.availableBytes < 2 * this.reserve ? 'FILESYSTEM_RESERVE' : bytes > this.state.policy.diagnosticBytes - this.state.policy.segmentBytes ? 'DIAGNOSTIC_HEADROOM' : this.state.diagnostics.length >= 511 ? 'DIAGNOSTIC_SEGMENT_HEADROOM' : this.pressure);
-        return { version: VERSION, candidateAdmissionAllowed: !this.closed && !this.closing && !this.state.requiresCriticalRecovery && !pressure, pressureReason: this.state.requiresCriticalRecovery ? 'INTERRUPTED_ESSENTIAL_PROOF' : pressure, requiresCriticalRecovery: this.state.requiresCriticalRecovery, diagnosticBytes: bytes, diagnosticLimitBytes: this.state.policy.diagnosticBytes, diagnosticSegments: this.state.diagnostics.length + (this.diagnostic ? 1 : 0), maximumDiagnosticSegments: 512, minRetentionMs: this.state.policy.minRetentionMs, retiredBytes: this.state.retiredBytes, totalRecordedBytes: this.state.totalRecordedBytes, protectedBytes: this.state.protectedBytes, protectedBytesMeaning: 'Tracked completed raw proof, essential records and manifests; interrupted copies may add unaccounted bytes. Actual filesystem headroom is authoritative.', refusedRecords: this.state.refusedRecords, refusedBytes: this.state.refusedBytes, refusalIntervals: this.state.refusalIntervals.map(r => ({ ...r })), refusalIntervalsCoalesced: this.state.refusalIntervalsCoalesced, availableDiskBytes: this.availableBytes, minimumDiskReserveBytes: this.reserve, pinOperations: this.pinTasks.size, protectedProofNeverEvicted: true, financialFilesRead: false, receiptAnchor: { ...this.state.receiptAnchor }, receiptHead: this.state.receipts.at(-1)?.sha256 ?? this.state.receiptAnchor.sha256, retainedReceipts: this.state.receipts.length };
+        const bytes = this.retainedBytes(), pressure = this.fatal ?? (this.availableBytes < 2 * this.reserve ? 'FILESYSTEM_RESERVE' : bytes > this.effectiveDiagnosticBytes - this.state.policy.segmentBytes ? 'DIAGNOSTIC_HEADROOM' : this.state.diagnostics.length >= 511 ? 'DIAGNOSTIC_SEGMENT_HEADROOM' : this.pressure);
+        return { version: VERSION, candidateAdmissionAllowed: !this.closed && !this.closing && !this.state.requiresCriticalRecovery && !pressure, pressureReason: this.state.requiresCriticalRecovery ? 'INTERRUPTED_ESSENTIAL_PROOF' : pressure, requiresCriticalRecovery: this.state.requiresCriticalRecovery, diagnosticBytes: bytes, diagnosticLimitBytes: this.effectiveDiagnosticBytes, baseDiagnosticLimitBytes: this.state.policy.diagnosticBytes, maximumDiagnosticBytes: this.maximumDiagnosticBytes, continuousRotation: this.continuousRotation, capacityDiskFraction: this.capacityDiskFraction, diagnosticSegments: this.state.diagnostics.length + (this.diagnostic ? 1 : 0), maximumDiagnosticSegments: 512, minRetentionMs: this.state.policy.minRetentionMs, retiredBytes: this.state.retiredBytes, totalRecordedBytes: this.state.totalRecordedBytes, protectedBytes: this.state.protectedBytes, protectedBytesMeaning: 'Tracked completed raw proof, essential records and manifests; interrupted copies may add unaccounted bytes. Actual filesystem headroom is authoritative.', refusedRecords: this.state.refusedRecords, refusedBytes: this.state.refusedBytes, optionalOmittedRecords: this.state.optionalOmittedRecords, optionalOmittedBytes: this.state.optionalOmittedBytes, optionalOmissionsMeaning: 'Capacity omissions of explicitly optional diagnostics only; never trading-flow completeness or financial evidence.', refusalIntervals: this.state.refusalIntervals.map(r => ({ ...r })), refusalIntervalsCoalesced: this.state.refusalIntervalsCoalesced, availableDiskBytes: this.availableBytes, minimumDiskReserveBytes: this.reserve, pinOperations: this.pinTasks.size, protectedProofNeverEvicted: true, financialFilesRead: false, receiptAnchor: { ...this.state.receiptAnchor }, receiptHead: this.state.receipts.at(-1)?.sha256 ?? this.state.receiptAnchor.sha256, retainedReceipts: this.state.receipts.length };
     }
     async maintenance() {
         if (this.maintenanceTask)
             return this.maintenanceTask;
+        this.lastMaintenanceAt = this.mono();
         const run = async () => {
             if (this.closed)
                 return;
+            const retire = this.retainedBytes() >= this.maintenanceTriggerBytes || this.state.diagnostics.length >= 511;
+            let verifications = 0;
             for (const m of [...this.state.diagnostics]) {
-                if (this.retainedBytes() <= this.state.policy.diagnosticBytes - this.state.policy.segmentBytes && this.state.diagnostics.length < 511)
+                if ((!this.continuousRotation && (!retire || this.retainedBytes() <= this.maintenanceTargetBytes && this.state.diagnostics.length < 511)) || verifications >= 2)
                     break;
                 if (this.pinned.has(m.file) || this.mono() - (this.retentionStarted.get(m.file) ?? this.mono()) < this.state.policy.minRetentionMs)
                     continue;
+                // Streaming/hash verification remains real source-process work.
+                // A bounded pass yields to protection and current capture even
+                // when many historical segments become eligible together.
+                verifications++;
                 await this.verifyFile(m);
                 if (this.pinned.has(m.file))
                     continue;
@@ -574,8 +660,11 @@ export class BoundedRotatingRecorder {
                 this.save();
             }
             this.refreshDisk(true);
-            if (this.retainedBytes() <= this.state.policy.diagnosticBytes - this.state.policy.segmentBytes && this.state.diagnostics.length < 511 && this.availableBytes >= 2 * this.reserve)
+            this.rebalanceCapacity(0, false);
+            if (this.retainedBytes() <= this.effectiveDiagnosticBytes - this.state.policy.segmentBytes && this.state.diagnostics.length < 511 && this.availableBytes >= 2 * this.reserve)
                 this.pressure = null;
+            if (this.optionalOmissionDirty)
+                this.save();
         };
         const task = run().catch(() => { this.fatal = 'RETENTION_IO_OR_INTEGRITY_FAILURE'; });
         this.maintenanceTask = task;
@@ -622,6 +711,20 @@ export class BoundedRotatingRecorder {
         }
     }
     private privateProofDirectory(directory: string) { const s = lstatSync(directory); need(s.isDirectory() && !s.isSymbolicLink() && s.uid === process.getuid?.() && (s.mode & 0o077) === 0, 'PRIVATE_PROOF_DIRECTORY'); }
+    private requiredProofFailure(fromAt: number, toAt: number, afterRefusedRecords?: number) {
+        return this.fatal ? 'RECORDER_INTEGRITY_UNAVAILABLE' : (afterRefusedRecords === undefined || this.state.refusedRecords > afterRefusedRecords) && this.state.refusalIntervals.some(r => r.fromAt <= toAt && r.toAt >= fromAt) ? 'RANGE_CONTAINS_REFUSAL' : null;
+    }
+    private async stageProofManifest(directory: string, raw: Buffer) {
+        const pending = join(directory, 'manifest-' + randomUUID() + '.pending'), target = await openAsync(pending, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
+        try {
+            await target.writeFile(raw);
+            await target.sync();
+        }
+        finally {
+            await target.close();
+        }
+        return pending;
+    }
     private trackPin(id: string, fromAt: number, toAt: number, task: Promise<EvidencePinResult>) { this.pinTasks.add(task); this.pinById.set(id, { fromAt, toAt, task }); void task.then(() => { this.pinTasks.delete(task); this.pinById.delete(id); }, () => { this.pinTasks.delete(task); this.pinById.delete(id); }); return task; }
     pinRecent(proofId: string) { return this.pinRange(proofId, Math.max(this.state.startedAt, this.time() - this.state.policy.minRetentionMs), this.time()); }
     pinRange(proofId: string, fromAt: number, toAt: number): Promise<EvidencePinResult> {
@@ -653,17 +756,25 @@ export class BoundedRotatingRecorder {
                 return Promise.resolve(failed('PRIVATE_PROOF_DIRECTORY'));
         }
         if (existing) {
-            const raw = existing;
+            const raw = existing, refusedBeforeRevalidation = this.state.refusedRecords;
             const verify = async () => {
                 try {
                     const old = JSON.parse(raw.toString());
-                    need(old.version === VERSION && old.proofId === proofId && old.fromAt === fromAt && old.toAt === toAt && old.complete === true && Array.isArray(old.files) && old.files.length <= 514 && integer(old.bytes) && old.bytes <= this.state.policy.diagnosticBytes && old.bytes === old.files.reduce((n: number, m: Meta) => n + m.bytes, 0), 'PROOF_ID_CONFLICT');
+                    need(old.version === VERSION && old.proofId === proofId && old.fromAt === fromAt && old.toAt === toAt && old.complete === true && Array.isArray(old.files) && old.files.length <= 514 && integer(old.bytes) && old.bytes <= this.maximumDiagnosticBytes && old.bytes === old.files.reduce((n: number, m: Meta) => n + m.bytes, 0), 'PROOF_ID_CONFLICT');
+                    if (old.optionalDiagnostics !== undefined)
+                        need(integer(old.optionalDiagnostics.omittedRecords) && integer(old.optionalDiagnostics.omittedBytes) && old.optionalDiagnostics.requiredTradingFlowUnaffected === true, 'PROOF_OPTIONAL_DIAGNOSTICS');
                     for (const m of old.files) {
                         this.validateMeta(m, 'diagnostic');
                         need(sha(m.sha256), 'PROOF_HASH');
                         need(!m.invalidCommittedPrefix && !(m.unusableTailBytes ?? 0), 'PROOF_UNUSABLE');
                         await this.verifyFile({ ...m, file: join(prefix, m.file) });
                     }
+                    // An immutable earlier proof is not rewritten by later
+                    // failures sharing its millisecond timestamp. Failures
+                    // newly arising during this verification still fail closed.
+                    const revalidationFailure = this.requiredProofFailure(fromAt, toAt, refusedBeforeRevalidation);
+                    if (revalidationFailure)
+                        return failed(revalidationFailure);
                     need(this.record('qualification-proof-revalidated', { proofId, fromAt, toAt, manifestSha256: digest(raw), fullBytesRetained: true }, { essential: true }), 'PIN_REFERENCE_NOT_DURABLE');
                     return { complete: true, proofId, files: old.files.map((m: Meta) => join(prefix, m.file)), bytes: old.bytes, manifestSha256: digest(raw) };
                 }
@@ -675,10 +786,10 @@ export class BoundedRotatingRecorder {
         }
         this.seal('diagnostic');
         const selected = this.state.diagnostics.filter(m => m.startedAt <= toAt && m.endedAt >= fromAt);
-        if (fromAt <= this.state.evictedThroughAt || selected.some(m => !!m.invalidCommittedPrefix || (m.unusableTailBytes ?? 0) > 0) || fromAt < this.state.startedAt || !selected.length || fromAt < Math.min(...this.state.diagnostics.map(m => m.startedAt)))
-            return Promise.resolve(failed('RANGE_NOT_RETAINED'));
-        if (this.state.refusalIntervals.some(r => r.fromAt <= toAt && r.toAt >= fromAt))
-            return Promise.resolve(failed('RANGE_CONTAINS_REFUSAL'));
+        const rangeFailure = () => this.requiredProofFailure(fromAt, toAt) ?? (fromAt <= this.state.evictedThroughAt || selected.some(m => !!m.invalidCommittedPrefix || (m.unusableTailBytes ?? 0) > 0) || fromAt < this.state.startedAt || !selected.length || fromAt < Math.min(...this.state.diagnostics.map(m => m.startedAt)) ? 'RANGE_NOT_RETAINED' : null);
+        const initialFailure = rangeFailure();
+        if (initialFailure)
+            return Promise.resolve(failed(initialFailure));
         for (const m of selected)
             this.pinned.set(m.file, (this.pinned.get(m.file) ?? 0) + 1);
         const required = selected.reduce((n, m) => n + m.bytes, 0);
@@ -724,18 +835,25 @@ export class BoundedRotatingRecorder {
                     files.push(join(prefix, m.file));
                     bytes += m.bytes;
                 }
-                const manifest = { version: VERSION, proofId, fromAt, toAt, complete: true, bytes, files: selected.map(m => ({ ...m })), meaning: 'Full raw recorded segments intersecting the requested available-information interval; qualification still requires its independent data contract and original timestamps.' }, raw = Buffer.from(encode(manifest) + '\n');
+                const copiedFailure = rangeFailure();
+                if (copiedFailure)
+                    return failed(copiedFailure);
+                const manifest = { version: VERSION, proofId, fromAt, toAt, complete: true, bytes, files: selected.map(m => ({ ...m })), optionalDiagnostics: {omittedRecords:this.state.optionalOmittedRecords,omittedBytes:this.state.optionalOmittedBytes,requiredTradingFlowUnaffected:true,meaning:'Cumulative capacity omissions of caller-declared optional diagnostics, not missing executed trading flow. Mandatory refusal intervals still invalidate this proof range.'}, meaning: 'Full raw recorded segments intersecting the requested available-information interval; qualification still requires its independent data contract and original timestamps.' }, raw = Buffer.from(encode(manifest) + '\n');
                 need(raw.length <= MAX_STATE, 'PROOF_MANIFEST_BOUND');
-                const target = await openAsync(join(dir, 'manifest.json'), constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
-                try {
-                    await target.writeFile(raw);
-                    await target.sync();
-                }
-                finally {
-                    await target.close();
-                }
+                // Capture can record a required refusal or integrity failure
+                // during either awaited raw copying or manifest I/O. Keep the
+                // staged bytes for diagnosis; only publish the accepted name
+                // after the final check, with no yield before its durable
+                // reference. Optional omissions never enter this gap check.
+                const pendingManifest = await this.stageProofManifest(dir, raw);
                 const d = openSync(dir, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
                 try {
+                    const publicationFailure = rangeFailure();
+                    if (publicationFailure)
+                        return failed(publicationFailure);
+                    const acceptedName = join(dir, 'manifest.json'), accepted = openSync(acceptedName, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
+                    closeSync(accepted);
+                    renameSync(pendingManifest, acceptedName);
                     fsyncSync(d);
                 }
                 finally {

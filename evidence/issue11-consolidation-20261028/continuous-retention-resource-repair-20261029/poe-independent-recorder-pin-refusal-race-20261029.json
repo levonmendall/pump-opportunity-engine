@@ -1,0 +1,25 @@
+{
+  "fixture": "OFFLINE controlled same-timestamp pin/refusal edge; no live-source claim",
+  "source": "pre-existing check-before-copy behavior",
+  "requiredAccepted": false,
+  "usageAtRefusal": {
+    "refusedRecords": 1,
+    "refusalIntervals": [
+      {
+        "fromAt": 1000000,
+        "toAt": 1000000,
+        "records": 1,
+        "bytes": 5305
+      }
+    ]
+  },
+  "pin": {
+    "complete": true,
+    "proofId": "OFFLINE-concurrent-required-refusal",
+    "files": [
+      "proof-6fc7b4714a5cecfb0b11629468ab54629ce8b963be2aa9fde11bccc08dee9605/diagnostic-000000000001.ndjson"
+    ],
+    "bytes": 313,
+    "manifestSha256": "22c79eafc74a7fd10890dd89b773ff2952c93fe8987d893acc5289ad704286fe"
+  }
+}
