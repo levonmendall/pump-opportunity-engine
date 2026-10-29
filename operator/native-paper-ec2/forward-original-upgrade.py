@@ -90,6 +90,7 @@ def forensic_preflight(raw):
  need(type(raw)is bytes and 0<len(raw)<=BOUNDS[FORENSIC_FILE]and hashed(FORENSIC_SHA)and sha(raw)==FORENSIC_SHA,'INDEPENDENT_VERIFIED_FORENSIC_EXPORTER_REQUIRED')
  bootstrap="""import os,sys,resource,hashlib
 os.umask(0o077)
+os.nice(10) # Discretionary diagnostics yield CPU to the financial owner.
 resource.setrlimit(resource.RLIMIT_CPU,(3,3))
 resource.setrlimit(resource.RLIMIT_AS,(128*1024*1024,128*1024*1024))
 resource.setrlimit(resource.RLIMIT_NOFILE,(64,64))
