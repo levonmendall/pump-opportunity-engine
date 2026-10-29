@@ -1,0 +1,64 @@
+{
+  "kind": "independent-final-entry-control-forensic-package-review",
+  "reviewer": "/root/entry_control_forensics/review_entry_control_export",
+  "reviewedAt": "2026-10-29T18:07:36.897743+00:00",
+  "files": {
+    "/workspace/poe-entry-control-forensics/operator/native-paper-ec2/export-reporting-forensics-20261029.py": {
+      "bytes": 24379,
+      "sha256": "0c1fb02a080568945de79aa9569177a2e56ab2b4a5f659de13f95abbc13f4aec"
+    },
+    "/workspace/poe-entry-control-forensics/operator/native-paper-ec2/test-export-reporting-forensics-20261029.py": {
+      "bytes": 16804,
+      "sha256": "a751fc743b2cb1eb231ef104a0b2f71f0c98cd4f3c51492b1d2537e41283c2a8"
+    },
+    "/workspace/poe-entry-control-forensics-admin/operator/native-paper-ec2/stage-reporting-forensics.py": {
+      "bytes": 11041,
+      "sha256": "57ab69e52127d7367a020554000c12e204d6208a8566e8a00ee02babaf763905"
+    },
+    "/workspace/poe-entry-control-forensics-admin/operator/native-paper-ec2/test-stage-reporting-forensics.py": {
+      "bytes": 8812,
+      "sha256": "4befd3562681c3ffcb1a8ccb73aadbd206caaaeb8c19606d1e56efe6185196c5"
+    },
+    "/workspace/poe-entry-control-forensics-admin/operator/native-paper-ec2/reporting-forensics-package/index.json": {
+      "bytes": 424,
+      "sha256": "4fcdfd7273242ffc6269b5e433d454ca53f8bbd0cb20b42aac8cc8a37691742b"
+    },
+    "/workspace/poe-entry-control-forensics-admin/operator/native-paper-ec2/reporting-forensics-package/OWNER_READ_ONLY.txt": {
+      "bytes": 597,
+      "sha256": "c9393bb9b222269cc55e198eda5fb7fe5b608624905949370ce95aa8b3d9e0e3"
+    }
+  },
+  "sourceHashesUnchangedThroughTests": true,
+  "offlineVerification": {
+    "independent-final-exporter-tests.raw.txt": {
+      "tests": 24,
+      "pass": 24,
+      "fail": 0,
+      "sha256": "734075b80417a5f65946e47d00885e1614b859bd72be8dd0c6227f64e933be2e"
+    },
+    "independent-final-admin-tests.raw.txt": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "sha256": "e9a4d6c31d69431e8432f93432170caac9a16492d67387428ea721ba8dc6ee60"
+    }
+  },
+  "pinsSyntaxDiffAndOwnerCommand": "PASS",
+  "findingsResolved": [
+    "Malformed or inconsistent control mutation result no longer falls through to an older enabled state.",
+    "Malformed latest reconciliation remains independently unavailable without invalidating separately established raw controls.",
+    "Retrieval rejects pause-as-enabled and pause-as-stop-setter contradictions."
+  ],
+  "preserved": [
+    "Permanent UID988/GID982 drop before original private reads.",
+    "Fixed read-only SQLite/query_only/trusted_schema-off transaction; time/row/byte bounds and original account/inode checks.",
+    "Fixed original public artifact; new one-off staging directory retains earlier staged bytes.",
+    "No current financial control state is substituted for historical facts; exact source target timestamps, ties and missingness are explicit.",
+    "No service control, account creation, financial write, credential access or owner execution."
+  ],
+  "limits": [
+    "Offline fixture review only; actual protected financial facts still require owner-executed read-only export.",
+    "Event-time reconstruction cannot establish an unrecorded financial revision binding for public snapshots."
+  ],
+  "verdict": "PASS_FINAL_PACKAGE_OFFLINE"
+}
