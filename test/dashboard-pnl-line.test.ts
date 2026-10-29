@@ -55,7 +55,7 @@ test('same-timestamp null P&L placeholders do not break the verified line',()=>{
  assert.deepEqual(Array.from(merged,p=>p.tradingUsd),[-8.4,-8.45,-8.5]);
  v.api.plot(p);
  assert.equal(v.paths().length,1,'three verified observations produce one visible line');
- const d=v.paths()[0]!.attributes.d;
+ const d=v.paths()[0]!.attributes.d??'';
  assert.ok((d.match(/L/g)||[]).length===2,'line joins consecutive verified points');
  assert.equal(v.paths()[0]!.attributes.fill,'none','pure line graph, no area fill');
  assert.equal(v.endpoints().length,1,'one endpoint marker, not a scatter chart');
@@ -71,7 +71,7 @@ test('distinct missing timestamp and long unsampled intervals preserve honest ga
   row(260,-8.5),row(275,-8.6),
  ]);
  assert.equal(v.paths().length,3,'missing timestamp and >90s silence break the line');
- assert.ok(v.paths().every(p=>(p.attributes.d.match(/L/g)||[]).length===1));
+ assert.ok(v.paths().every(p=>((p.attributes.d??'').match(/L/g)||[]).length===1));
  assert.equal(v.endpoints().length,3);
  assert.ok(!v.chart.children.some(p=>p.tag==='path'&&p.attributes.fill!=='none'));
 });
@@ -99,7 +99,7 @@ test('default recent line is readable while full history remains available on re
  assert.equal(v.toggle.attributes['aria-pressed'],'false');
  assert.match(v.label.textContent,/RECENT 24H.*ZOOMED VALUE SCALE/);
  assert.equal(v.paths().length,1);
- const line=v.paths()[0]!.attributes.d;
+ const line=v.paths()[0]!.attributes.d??'';
  assert.match(line,/^M58[., ]/,'recent line starts at the left chart margin on mobile');
  new Script("chartRange='all'").runInContext(v.context);
  v.api.plot(history);
