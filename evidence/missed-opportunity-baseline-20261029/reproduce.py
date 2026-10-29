@@ -61,18 +61,22 @@ for path in paths:
         "opportunityRecall": None,
     })
 
-tools = [
-    "scripts/select-independent-pool-reference.mjs",
-    "scripts/analyze-independent-cohort-ohlcv.mjs",
-    "scripts/evaluate-frongus-quote-feasibility.mjs",
-    "scripts/audit-opportunity-counterfactuals.mjs",
-    "scripts/capture-independent-two-hour-reference.ts",
-    "scripts/capture-forward-reference.ts",
-    "scripts/capture-age-reference.ts",
-]
+# Historical metadata must describe retained historical bytes, never whichever
+# tool implementation happens to be in the mutable current scripts directory.
+snapshots = HERE / "inputs/tool-snapshots"
+manifest_raw = (snapshots / "manifest.json").read_bytes()
+assert hashlib.sha256(manifest_raw).hexdigest() == (
+    "aa942bd668b7b42160f38c92c7c67b70380a46796bf7ddfdb195de64273dd4e2"
+), "Historical tool manifest changed"
+tools = json.loads(manifest_raw)["files"]
 tool_inventory = []
-for relative in tools:
-    raw = (ROOT / relative).read_bytes()
+for tool in tools:
+    relative = tool["originalPath"]
+    assert Path(tool["storedFile"]).name == tool["storedFile"]
+    raw = (snapshots / tool["storedFile"]).read_bytes()
+    assert len(raw) == tool["bytes"] and hashlib.sha256(raw).hexdigest() == (
+        tool["sha256"]
+    ), "Historical tool source changed: " + relative
     tool_inventory.append({"path": relative, "bytes": len(raw),
                            "sha256": hashlib.sha256(raw).hexdigest(),
                            "networkCapable": "/capture-" in relative,

@@ -19,6 +19,19 @@ source/run boundaries, pre-outcome cohort identities and tool hashes. The
 recovery-native receipt was an existing retained but uncommitted artifact; the
 `inputs/` copy preserves its original bytes for this reproducible catalog.
 
+Historical tool metadata now reads the exact retained source blobs in
+`inputs/tool-snapshots/`, verified against a pinned manifest and each original
+hash/size. These blobs came from `14d3d89`; they are archival evidence and are
+never executed by this catalog. Current scripts may improve independently
+without changing the historical baseline. The updated reproducer still emits
+the original byte-identical baseline SHA256
+`21376bf54389fee95734c9dafc35aa2a02cb30f964bb3db48d1fc573ee1b3c5f`
+on the new checkout; no old checkout or network access is required. The prior
+reproducer bytes and original verification receipt remain preserved. The new
+verification is in `immutable-provenance-verification.json`. Current persistent
+sampler source/test hashes remain separately recorded under
+`evidence/persistent-independent-reference-20261029/`.
+
 The independent historical population contains 160 unique current-indexed pools
 on eight GeckoTerminal PumpSwap pages, 50 canonical-address SOL matches and nine
 main-period provisional leads. SI is an additional owner-nominated case. This is

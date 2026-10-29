@@ -1,0 +1,24 @@
+{
+  "kind": "immutable-historical-tool-provenance-verification-v1",
+  "baseCommit": "00fb5a0",
+  "baselineUnchanged": true,
+  "baselineSha256": "21376bf54389fee95734c9dafc35aa2a02cb30f964bb3db48d1fc573ee1b3c5f",
+  "reproducedBytesIdentical": true,
+  "marketInputsAndOutcomesUnchanged": true,
+  "historicalToolSnapshotCount": 7,
+  "historicalManifestSha256": "aa942bd668b7b42160f38c92c7c67b70380a46796bf7ddfdb195de64273dd4e2",
+  "reproducerSha256": "bf4d63032a2a804366d166a8b0c05add9894f83758127135e53c2e40373a268b",
+  "currentSamplerAndTestsUnchanged": {
+    "scripts/capture-independent-two-hour-reference.ts": "b27840c0895ff285f308ffadace4ebdd3ae0e245bbf23f18cf3ff357aa1fc668",
+    "test/independent-two-hour-reference.test.ts": "028b6b6d67b1541651f2f2b07c57359f847b3d68038a9e23c753147fe365e44d",
+    "test/persistent-independent-reference.test.ts": "7cccdcc79de62e2981cc001333f4c7151fabb5ca155b3c9c37f1b9c0b04759f9"
+  },
+  "focusedTests": {
+    "passed": 25,
+    "failed": 0,
+    "rawSha256": "df38eaed5af33935e66dfba1438b91b115de99339adfa966e69fa46e92ea08f9"
+  },
+  "networkRequests": 0,
+  "runtimeOperations": 0,
+  "financialDatabaseOpened": false
+}

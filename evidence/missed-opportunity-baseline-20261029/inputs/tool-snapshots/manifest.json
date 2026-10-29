@@ -1,0 +1,63 @@
+{
+  "kind": "immutable-historical-reference-tool-source-v1",
+  "sourceCommit": "14d3d89ec433aa8690855e07f24cdc2b7a4b2ec1",
+  "baselineSha256": "21376bf54389fee95734c9dafc35aa2a02cb30f964bb3db48d1fc573ee1b3c5f",
+  "meaning": "Archived source bytes describe historical tool inventory only. Never executed by catalog; current sampler provenance is separately versioned.",
+  "files": [
+    {
+      "originalPath": "scripts/select-independent-pool-reference.mjs",
+      "storedFile": "select-independent-pool-reference.mjs",
+      "bytes": 6108,
+      "sha256": "bec96ff31fa6224509f2dca50e4b043eb7b35ffc7b353d6144398ce8d7f415c2",
+      "executed": false
+    },
+    {
+      "originalPath": "scripts/analyze-independent-cohort-ohlcv.mjs",
+      "storedFile": "analyze-independent-cohort-ohlcv.mjs",
+      "bytes": 8563,
+      "sha256": "b1c2630572c9ce57fb1e45eaf81b5c13b5ccd6e0df1f6c5bc83a6fec0d715b48",
+      "executed": false
+    },
+    {
+      "originalPath": "scripts/evaluate-frongus-quote-feasibility.mjs",
+      "storedFile": "evaluate-frongus-quote-feasibility.mjs",
+      "bytes": 13918,
+      "sha256": "68d2e5b44e954f3926b6e5ef1f9b6c64b1a76912a7f4af90e726821a9f2b8d86",
+      "executed": false
+    },
+    {
+      "originalPath": "scripts/audit-opportunity-counterfactuals.mjs",
+      "storedFile": "audit-opportunity-counterfactuals.mjs",
+      "bytes": 13191,
+      "sha256": "8aa8a14ebe175888a1693f5b3bc8aced43b2510dc1dca956731bb396cfa51347",
+      "executed": false
+    },
+    {
+      "originalPath": "scripts/capture-independent-two-hour-reference.ts",
+      "storedFile": "capture-independent-two-hour-reference.ts",
+      "bytes": 24772,
+      "sha256": "61eafc5af5fe929f6430e77ccf13a80de8096048a2f4afa28c3b98f5dbea8488",
+      "executed": false
+    },
+    {
+      "originalPath": "scripts/capture-forward-reference.ts",
+      "storedFile": "capture-forward-reference.ts",
+      "bytes": 15213,
+      "sha256": "6713a511f2d994f3454d0c86d8c829c51af7b2aaafbb278326cdde2fe0e6b021",
+      "executed": false
+    },
+    {
+      "originalPath": "scripts/capture-age-reference.ts",
+      "storedFile": "capture-age-reference.ts",
+      "bytes": 12547,
+      "sha256": "fe70c6fe21d9075fa81d93523efb06948018ed5a2563c8624ecbdf3b321e4ca0",
+      "executed": false
+    }
+  ],
+  "priorReproducer": {
+    "storedFile": "reproduce-before-immutable-tools.py",
+    "bytes": 5705,
+    "sha256": "6d4bbd0a0fa1c81c8c4cc072e6af3652befd99942fda190c1ba839ad37e15bbf",
+    "executed": false
+  }
+}
