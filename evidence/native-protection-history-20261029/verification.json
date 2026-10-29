@@ -1,0 +1,16 @@
+{
+  "baseSource": "fc3098d7acbf1888acd21867f94162140fb2ceac",
+  "verifiedAt": "2026-10-29T23:07:55.483464+00:00",
+  "sourceSha256": {
+    "src/native-protection-history.ts": "1a9b9f72619634dd99240459ee2405ce8044e48f1b1a13266fae6649a28685db",
+    "test/native-protection-history.test.ts": "e368644e20891b05d48d1bf7dc3b98ff1aefc1a7266140609a2bfd27777e3da2"
+  },
+  "testsPassed": 26,
+  "testsFailed": 0,
+  "buildPassed": true,
+  "launcherIntegrated": false,
+  "providerRequests": 0,
+  "originalFinancialFilesOpened": false,
+  "financialPermissionChanged": false,
+  "serviceChanges": 0
+}
