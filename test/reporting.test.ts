@@ -235,6 +235,63 @@ test('bounded exports contain no configuration secrets; HTML uses safe DOM and m
   assert.match(html, /LIVE EXECUTION DISABLED/); assert.match(html, /Recorded from accepted Portfolio Equity reports/); assert.match(html, /UTC/);
 });
 
+test('original positions and PAPER trades render safe token-chart links with no external requests', async t => {
+  const app = await serve(t);
+  const html = await app.get('/').then(r => r.text());
+  const start = html.indexOf('function dexScreenerUrl('), end = html.indexOf('\nfunction renderFunnel(', start);
+  assert.ok(start > 0 && end > start, 'link helper and table renderer exist in authoritative dashboard');
+  assert.match(html, /s\.positions\.map\(p=>p\.mint\),0\)/);
+  assert.match(html, /s\.trades\.map\(t=>t\.mint\),1\)/);
+  assert.doesNotMatch(html, /fetch\(['"]https:\/\/dexscreener/);
+  class Cell {
+    readonly children: Cell[] = [];
+    textContent = '';
+    className = '';
+    href = '';
+    target = '';
+    rel = '';
+    readonly attributes: Record<string, string> = {};
+    constructor(readonly tag: string) {}
+    append(...nodes: Cell[]) { this.children.push(...nodes); }
+    replaceChildren() { this.children.length = 0; }
+    setAttribute(name: string, value: string) { this.attributes[name] = value; }
+    all(tag: string): Cell[] { return [...(this.tag === tag ? [this] : []), ...this.children.flatMap(child => child.all(tag))]; }
+  }
+  const roots = new Map([['positions', new Cell('div')], ['trades', new Cell('div')], ['decisions', new Cell('div')]]);
+  const byId = (id: string) => roots.get(id)!;
+  const add = (parent: Cell, tag: string, text?: string, css?: string) => {
+    const cell = new Cell(tag);
+    if(text !== undefined)cell.textContent = String(text);
+    if(css)cell.className = css;
+    parent.append(cell);
+    return cell;
+  };
+  const renderers = new Function('byId','add',html.slice(start, end)+';return {renderTable,dexScreenerUrl};')(byId,add) as {
+    dexScreenerUrl: (mint: unknown) => string | null;
+    renderTable: (id: string, headers: string[], rows: string[][], emptyTitle: string, emptyBody: string, mints?: string[], column?: number) => void;
+  };
+  const mint='qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump';
+  const href='https://dexscreener.com/solana/'+mint;
+  assert.equal(renderers.dexScreenerUrl(mint),href);
+  for(const fake of ['', 'fixture-mint', '<img src=x onerror=alert(1)>', 'https://evil.example/path', '11111111111111111111111111111111/evil', 'O'.repeat(44), 42])
+    assert.equal(renderers.dexScreenerUrl(fake), null, 'invalid mint yields no link');
+  renderers.renderTable('positions',['Token','Cost'],[[mint+' / 123','50'],['<script>alert(1)</script>','40']], 'EMPTY','No positions',[mint,'<script>alert(1)</script>'],0);
+  const positionAnchors=roots.get('positions')!.all('a');
+  assert.equal(positionAnchors.length,1);
+  assert.equal(positionAnchors[0]!.href,href);
+  assert.equal(positionAnchors[0]!.textContent,'View on DEX Screener ↗');
+  assert.equal(positionAnchors[0]!.target,'_blank');
+  assert.equal(positionAnchors[0]!.rel,'noopener noreferrer');
+  assert.match(positionAnchors[0]!.attributes['aria-label']!,/opens a new tab/);
+  assert.ok(roots.get('positions')!.all('td').some(c=>c.textContent.includes('<script>')),'unsafe labels remain text, never HTML');
+  renderers.renderTable('trades',['Time','Mint','Value'],[['12:00',mint+' / 123','$50']], 'EMPTY','No trades',[mint],1);
+  assert.equal(roots.get('trades')!.all('a')[0]!.href,href);
+  renderers.renderTable('decisions',['Mint'],[[mint]],'EMPTY','No decisions');
+  assert.equal(roots.get('decisions')!.all('a').length,0,'other tables gain no unsolicited links');
+  renderers.renderTable('positions',['Token'],[],'EMPTY','No positions',[],0);
+  assert.equal(roots.get('positions')!.all('a').length,0,'stale links disappear on refresh');
+});
+
 test('publisher does not send on construction; outages retain only latest snapshot and recover independently', async () => {
   const cache = new SnapshotCache(config); const deliveries: string[] = []; let fail = true;
   let delivered!: () => void;
