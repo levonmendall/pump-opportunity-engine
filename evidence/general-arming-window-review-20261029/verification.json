@@ -1,0 +1,26 @@
+{
+  "reviewedExecutableSource": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "reviewBase": "f31967e866811e5f10019dd3ac4eea16d1cf8dac",
+  "focusedTestsPassed": 29,
+  "buildPassed": true,
+  "applicationImplementationChanged": false,
+  "providerRequests": 0,
+  "operatingFinancialReads": 0,
+  "operatingFinancialWrites": 0,
+  "persistentArmingFailureProven": false,
+  "liveEntriesEnabledObservedByParent": "2026-10-29T22:22:27.976Z",
+  "files": {
+    "focused.raw.txt": {
+      "bytes": 3148,
+      "sha256": "cd1c44376fed4b83b79cad2354111786f13bdca3503d9707a3166b81fc46e744"
+    },
+    "REVIEW.md": {
+      "bytes": 6927,
+      "sha256": "797b448211f2f2cd4c3317fe1b594a9e759647d0613fa6132e3482d91ee989dc"
+    },
+    "build.raw.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  }
+}

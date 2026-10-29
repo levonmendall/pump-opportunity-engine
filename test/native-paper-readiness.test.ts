@@ -119,3 +119,19 @@ test('explicit owner daily-loss reset recovers through ordinary fresh audited re
  f.certificateAvailable=true;assert.equal(f.refresh().recovered,true);assert.equal(f.projection().entriesEnabled,true);assert.deepEqual(f.calls,calls);
  assert.deepEqual(f.ledger.state().positions,{});assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().realizedLamports,before.realizedLamports);assert.equal(f.ledger.state().initialMicroUsd,before.initialMicroUsd);assert.equal(f.ledger.state().inceptionAt,before.inceptionAt);
 });
+
+test('controlled arming boundary distinguishes valid audited decision windows from two-second general-permission cutoff',async t=>{
+ for(const ageMs of[1500,3000])await t.test(String(ageMs)+'ms original audited cutoff',st=>{
+  const f=fixture(st);f.at+=ageMs;f.price={...f.price!,at:f.at};
+  const features=f.bridge.trader.candidateFeatures(f.mint,f.at)!;
+  assert.equal(features.windowEndAt,f.base+60000);
+  assert.equal(f.bridge.ready(f.mint,f.at),true,'original complete audited certificate remains valid inside its decision deadline');
+  assert.notEqual(assessPredictiveBuying(features,f.at).status,'not-rejected','a predictive pass is not required for general permission');
+  const result=f.refresh();assert.equal(result.kind,'reconciled');
+  assert.equal(f.ledger.state().daily.reconciledAt,f.at,'the financial reconciliation itself is genuinely current');
+  assert.equal(f.bridge.valuation().price!.at,f.at,'the USD observation itself is genuinely current');
+  assert.equal(result.recovered,ageMs<=2000,'current policy separately constrains the original market window end');
+  assert.equal(f.projection().entriesEnabled,ageMs<=2000);
+  assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});assert.deepEqual(f.ledger.state().pending,{});assert.deepEqual(f.ledger.state().positions,{});
+ });
+});
