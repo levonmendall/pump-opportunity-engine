@@ -54,18 +54,18 @@ test('experimental financial sequence persists across run counters and rejects f
  const replay=structuredClone(next);replay.generatedAt++;replay.accounting!.at=replay.generatedAt;assert.equal(c.accept(replay),'accepted');assert.equal(c.read().snapshot!.portfolio!.times.generatedAt,iso(now));
  assert.equal(createPilotTelemetryChannel(config,()=>now+1000).read().snapshot,null,'receiver restart seeds no experimental balances');
 });
-test('original financial cache and pilot portfolio authentication remain independent over HTTP',async t=>{
+test('retired pilot portfolio route cannot mutate the original financial cache over HTTP',async t=>{
  const keys=['POE_PILOT_INGEST_SECRET','POE_PILOT_ACCOUNT_ID','POE_PILOT_INCEPTION_AT']as const,before=keys.map(k=>process.env[k]);
  process.env.POE_PILOT_INGEST_SECRET=config.secret;process.env.POE_PILOT_ACCOUNT_ID=accountId;process.env.POE_PILOT_INCEPTION_AT=String(inceptionAt);
  t.after(()=>keys.forEach((k,i)=>before[i]===undefined?delete process.env[k]:process.env[k]=before[i]));
  const original='fixture-original-reporting-key-'.repeat(3),app=createDashboard({ingestionSecret:original,publicViewer:true,viewerUser:'',viewerPassword:''});
  await new Promise<void>(r=>app.server.listen(0,'127.0.0.1',r));t.after(()=>new Promise<void>(r=>app.server.close(()=>r())));const address=app.server.address();assert.ok(address&&typeof address==='object');const url='http://127.0.0.1:'+address.port;
  const post=(path:string,key:string)=>fetch(url+path,{method:'POST',headers:{authorization:'Bearer '+key,'content-type':'application/json'},body:JSON.stringify(projectPilotStatus(raw()))});
- assert.equal((await post('/api/pilot',original)).status,401);assert.equal((await post('/api/snapshot',config.secret)).status,401);
- assert.equal((await post('/api/pilot',config.secret)).status,200);assert.equal(app.cache.read(),null);
- const read=await fetch(url+'/api/pilot').then(r=>r.json());assert.equal(read.snapshot.portfolio.account.id,accountId);assert.equal(read.snapshot.portfolio.positions[0].netLiquidationUsd,null);
+ assert.equal((await post('/api/pilot',original)).status,410);assert.equal((await post('/api/snapshot',config.secret)).status,401);
+ assert.equal((await post('/api/pilot',config.secret)).status,410);assert.equal(app.cache.read(),null);
+ const read=await fetch(url+'/api/pilot').then(r=>r.json());assert.equal(read.error,'retired-channel');assert.equal(read.snapshot,undefined);
  const html=await fetch(url+'/').then(r=>r.text());assert.doesNotMatch(html,/id="experimental-portfolio"/);assert.doesNotMatch(html,/id="pilot-telemetry-panel"/);assert.doesNotMatch(html,new RegExp(config.secret));assert.doesNotMatch(html,new RegExp(original));
- const body=html.match(/function renderFunnel\(f\)\{([\s\S]*?)\nfunction renderMetrics/);assert.ok(body);const labels:string[]=[];const element={replaceChildren(){},style:{width:''},dataset:{}};const render=new Function('byId','add','return function(f){'+body[1]+';')(()=>element,(_parent:unknown,_tag:string,value:unknown)=>{if(value!==undefined)labels.push(String(value));return element;});assert.doesNotThrow(()=>render(projectPilotStatus(raw()).funnel));assert.ok(labels.includes('Not reported'),'nullable diagnostic counts remain unavailable, never a broken refresh');
+ const start=html.indexOf('function renderFunnel('),end=html.indexOf('\nfunction renderMetrics(',start);assert.ok(start>=0&&end>start);const labels:string[]=[];const element={replaceChildren(){},style:{width:''},dataset:{},classList:{add(){}},get lastElementChild(){return this;},querySelector(){return this;}};const render=new Function('byId','add',html.slice(start,end)+';return renderFunnel;')(()=>element,(_parent:unknown,_tag:string,value:unknown)=>{if(value!==undefined)labels.push(String(value));return element;});assert.doesNotThrow(()=>render(projectPilotStatus(raw()).funnel));assert.ok(labels.includes('Not reported'),'nullable diagnostic counts remain unavailable, never a broken refresh');
 });
 
 class Element {textContent='';children:Element[]=[];attrs:Record<string,string>={};className='';classList={toggle:()=>{}};append(...e:Element[]){this.children.push(...e);}replaceChildren(...e:Element[]){this.children=e;}setAttribute(k:string,v:string){this.attrs[k]=v;}set innerHTML(_v:string){throw Error('HTML forbidden');}}

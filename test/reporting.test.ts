@@ -257,29 +257,32 @@ test('observer connectivity exposes inactive stages without altering accepted fi
   const fixture = sample(); fixture.source.strategy = observerConfig.strategy;
   const before = JSON.stringify(fixture);
   assert.equal((await app.post(fixture)).status, 200);
-  const response = await app.get('/api/connections');
-  assert.equal(response.status, 200);
-  const report = await response.json();
+  assert.equal((await app.get('/api/connections')).status,404,'obsolete diagnostics route is retired');
+  const {connectionReport}=await import('../src/dashboard-connectivity.js');
+  const report=connectionReport(app.cache);
   assert.equal(report.sourceConfigured, true);
   assert.equal(report.sourceRole, 'discovery-observer');
   assert.equal(report.connection, 'receiving');
   assert.equal(report.capabilities.candidatePipeline, 'not-implemented-in-source');
   assert.equal(report.capabilities.decisionTrace, 'not-implemented-in-source');
   assert.equal(report.experimentalPilot.connected, false);
+  assert.ok(report.source);
   assert.equal(report.source.accountId, config.accountId);
   assert.equal(report.source.inceptionAt, config.inceptionAt);
   assert.equal(report.source.sequence, fixture.sequence);
   assert.ok(!JSON.stringify(report).includes(config.ingestionSecret));
   const snapshot = await app.get('/api/snapshot').then(r=>r.json());
   assert.equal(JSON.stringify(snapshot.snapshot), before);
-  assert.equal(snapshot.connections.sourceRole, 'discovery-observer');
+  assert.equal(snapshot.connections,undefined,'one original snapshot supplies the dashboard');
   assert.equal((await app.post(fixture,'Bearer invalid')).status,401);
 });
 
 test('connectivity is read-only, obeys viewer auth, and never invents a source', async t => {
   const privateApp = await serve(t);
   assert.equal((await privateApp.get('/api/connections')).status,401);
-  const report = await privateApp.get('/api/connections',viewer).then(r=>r.json());
+  assert.equal((await privateApp.get('/api/connections',viewer)).status,404);
+  const {connectionReport}=await import('../src/dashboard-connectivity.js');
+  const report=connectionReport(privateApp.cache);
   assert.equal(report.connection,'awaiting-source');
   assert.equal(report.source,null);
   assert.equal(report.sourceRole,'unknown');
@@ -303,29 +306,27 @@ test('connectivity diagnostics age cached source data and do not refresh on dupl
 test('dashboard explains observer placeholders, supports mobile refresh, and has valid scripts', async t => {
   const app=await serve(t,{...config,publicViewer:true});
   const html=await app.get('/').then(r=>r.text());
-  assert.match(html,/Source &amp; pipeline status/);
+  assert.match(html,/Runtime, source &amp; reporting health/);
   assert.doesNotMatch(html,/id="pilot-telemetry-panel"/);assert.doesNotMatch(html,/id="experimental-portfolio"/);
   assert.match(html,/NOT ACTIVE/);
   assert.match(html,/EVALUATION ENGINE NOT CONNECTED/);
   assert.match(html,/visibilitychange/);
   assert.match(html,/setInterval\(refresh,15000\)/);
   assert.match(html,/refreshInFlight/);
-  assert.match(html,/maximumFractionDigits:decimals/);
+  assert.match(html,/value===null\|\|value===undefined\?'Unavailable'/);
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length,2);
+  assert.equal(scripts.length,1);
   for(const match of scripts)assert.doesNotThrow(()=>new Function(match[1]!));
-  assert.equal((await app.get('/healthz').then(r=>r.json())).connectivityDiagnostics,1);
+  assert.equal((await app.get('/healthz').then(r=>r.json())).unifiedPortfolio,true);
 });
 
 
 test('candidate progression sorts counts descending, updates dynamically, and preserves observer stage masking', async t => {
   const app = await serve(t, { ...config, viewerUser: '', viewerPassword: '', publicViewer: true });
   const html = await (await app.get('/')).text();
-  const start = html.indexOf('function renderFunnel(f){');
-  const end = html.indexOf('\nfunction renderMetrics(m,source){', start);
-  const wrapperStart = html.indexOf('const originalFunnel=renderFunnel;');
-  const wrapperEnd = html.indexOf('\nrenderMetrics=function(m,source){', wrapperStart);
-  assert.ok(start >= 0 && end > start && wrapperStart > end && wrapperEnd > wrapperStart, 'real browser-rendering functions are present');
+  const start = html.indexOf('function renderFunnel(');
+  const end = html.indexOf('\nfunction renderMetrics(', start);
+  assert.ok(start >= 0 && end > start, 'real browser-rendering function is present');
   class Node {
     textContent = '';
     className = '';
@@ -334,6 +335,7 @@ test('candidate progression sorts counts descending, updates dynamically, and pr
     children: Node[] = [];
     readonly classes = new Set<string>();
     readonly classList = { add: (name: string) => { this.classes.add(name); }, contains: (name: string) => this.classes.has(name) };
+    get lastElementChild() { return this.children.at(-1)!; }
     append(...items: Node[]) { this.children.push(...items); }
     replaceChildren(...items: Node[]) { this.children = items; }
     querySelectorAll(selector: string): Node[] {
@@ -356,15 +358,15 @@ test('candidate progression sorts counts descending, updates dynamically, and pr
     document: { getElementById: () => root },
     observer: () => observerActive, latest: {}, note: () => {},
   });
-  new Script(html.slice(start,end) + '\n' + html.slice(wrapperStart,wrapperEnd)).runInContext(context);
+  new Script(html.slice(start,end)).runInContext(context);
   const render = (counts: Record<string,number|null>) =>
-    new Script('renderFunnel(' + JSON.stringify(counts) + ')').runInContext(context);
+    new Script('renderFunnel(' + JSON.stringify(counts) + ',null,'+observerActive+')').runInContext(context);
   const rows = () => root.querySelectorAll('.funnel-line');
   const labels = () => rows().map(node => node.querySelector('.funnel-name')!.textContent);
   const count = (key: string) => rows().find(row => row.dataset.funnelStage === key)!.querySelector('.funnel-count')!.textContent;
   const order = ['supported','reconciled','evaluated','paperFilled','exited','qualified','discovered','sufficientlyObserved','attempted'];
   render({discovered:0,supported:15,sufficientlyObserved:null,evaluated:7,qualified:1,attempted:null,paperFilled:2,exited:2,reconciled:10});
-  assert.deepEqual(labels(), ['Supported','Reconciled','Evaluated','PAPER filled','Exited','Qualified','Discovered','Sufficiently observed','Attempted']);
+  assert.deepEqual(labels(), ['Supported','Reconciled','Financial evaluations','PAPER filled','Exited','Qualified','Discovered','Sufficiently observed','Attempted']);
   assert.deepEqual(rows().map(row => row.dataset.funnelStage),order);
   assert.equal(count('supported'),'15');
   assert.equal(count('attempted'),'Not reported');
@@ -393,14 +395,14 @@ test('compact command view keeps the original portfolio, permanent P&L chart and
   assert.equal((await app.post(sampleReport)).status,200);
   const snapshot=await app.get('/api/snapshot').then(r=>r.json());
   assert.deepEqual(snapshot.snapshot,sampleReport);
-  for(const id of ['portfolio','cards','performance','chart','positions','trades','funnel','reportingConnections','sourceConnection','refreshNow','metrics','decisions','sourceLabel','stateTitle']){
+  for(const id of ['portfolio','cards','performance','chart','positions','trades','funnel','reporting-status','refreshNow','metrics','decisions','sourceLabel','stateTitle']){
     assert.equal((html.match(new RegExp('id="'+id+'"','g'))??[]).length,1,'original source node retained: '+id);
   }
   for(const id of ['experimental-portfolio','experimental-portfolio-cards','pilot-telemetry-panel','pilot-funnel','pilot-watch','pilot-decisions','pilotConnection']){
     assert.doesNotMatch(html,new RegExp('id="'+id+'"'),'separate experimental panel removed: '+id);
   }
   assert.match(html,/function compactCommandView\(\)/);
-  assert.match(html,/panelFold\('#reportingConnections'/);
+  assert.match(html,/panelFold\('section\[aria-labelledby="metricsTitle"\]'/);
   assert.doesNotMatch(html,/panelFold\('#performance'/,'P&L graph always visible');
   assert.match(html,/panelFold\('section\[aria-labelledby="decisionsTitle"\]'/);
   assert.match(html,/document\.createElement\('details'\)/);
@@ -414,8 +416,29 @@ test('compact command view keeps the original portfolio, permanent P&L chart and
   assert.match(html,/class="holo-object"/);
   assert.match(html,/class="holo-index"/);
   assert.match(html,/LIVE EXECUTION DISABLED/);
-  assert.match(html,/financial source|FINANCIAL SOURCE OF TRUTH/i);
+  assert.match(html,/source-reported P&amp;L convention|TOKEN TRADING P&L/);
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length,2);
+  assert.equal(scripts.length,1);
   for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
+});
+
+test('source funnel distinguishes observer placeholders, predictive assessments, actual financial decisions and unavailable unique counts',async t=>{
+ const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text()),start=html.indexOf('function renderFunnel('),end=html.indexOf('\nfunction renderMetrics(',start);assert.ok(start>=0&&end>start);
+ class Node{textContent='';className='';dataset:Record<string,string>={};style={width:''};classList={add:()=>{}};children:Node[]=[];get lastElementChild(){return this.children.at(-1)!;}querySelector(selector:string){return this.query(selector.replace(/^\./,''))[0]!;}append(...v:Node[]){this.children.push(...v);}replaceChildren(){this.children=[];}query(selector:string):Node[]{return this.children.flatMap(c=>[...(c.className===selector?[c]:[]),...c.query(selector)]);}}
+ const root=new Node(),add=(p:Node,_t:string,text?:unknown,cls='')=>{const n=new Node();n.textContent=text===undefined?'':String(text);n.className=cls;p.append(n);return n;};const context=createContext({byId:()=>root,add,Number,String,Math});new Script(html.slice(start,end)).runInContext(context);
+ const render=(f:unknown,i:unknown,observer=false)=>new Script('renderFunnel('+JSON.stringify(f)+','+JSON.stringify(i)+','+observer+')').runInContext(context);const value=(key:string)=>root.query('funnel-line').find(r=>r.dataset.funnelStage===key)!.query('funnel-count')[0]!.textContent;
+ render(sample().funnel,null,true);assert.equal(value('discovered'),'12');assert.equal(value('evaluated'),'NOT ACTIVE');
+ render({...sample().funnel,qualified:0,paperFilled:0},{candidates:{migrationsReceived:12,known:100,watch:94,eligible:8,queued:5,auditedWindows:20,uniqueAudited:null,predictiveAssessments:20,predictivePasses:0,predictiveFailures:20,deepActive:3,deepMaximum:6}});assert.equal(value('predictiveAssessments'),'20');assert.equal(value('uniqueAudited'),'Unavailable');assert.equal(value('qualified'),'0');assert.equal(value('paperFilled'),'0');assert.equal(value('deepActive'),'3 / 6');
+});
+
+
+test('first snapshot paint immediately preserves stopped and stale source truth',async t=>{
+ const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text()),show=html.slice(html.indexOf('function showSnapshot('),html.indexOf('\nlet refreshInFlight=')),freshness=html.slice(html.indexOf('function paintFreshness('),html.indexOf('\nclock();setInterval('));const signals:string[][]=[];
+ const noop=()=>{},context=createContext({Date,Math,latest:null,latestReceivedAt:null,readFailure:null,renderCards:noop,put:noop,renderTable:noop,renderCandidateIntelligence:noop,renderMetrics:noop,plot:noop,money:noop,byId:()=>({hidden:true}),signal:(...args:string[])=>signals.push(args)});new Script(show+'\n'+freshness).runInContext(context);
+ const paint=(snapshot:Snapshot,state:string)=>new Script('showSnapshot('+JSON.stringify(snapshot)+','+JSON.stringify(iso(NOW))+','+JSON.stringify({state})+')').runInContext(context);
+ const stopped=sample();stopped.status.runtime='stopped';paint(stopped,'unavailable');assert.equal(signals.at(-1)![0],'STOPPED');assert.equal(signals.at(-1)![3],'warning');
+ new Script("readFailure='REPORTING_HTTP_503';paintFreshness()").runInContext(context);assert.match(signals.at(-1)![0]!,/Data link interrupted.*STOPPED/);assert.match(signals.at(-1)![1]!,/Browser snapshot read failed \(REPORTING_HTTP_503\)/);assert.equal(signals.at(-1)![3],'error');
+ paint(sample('2',NOW-100000),'stale');assert.equal(signals.at(-1)![0],'STALE SOURCE SNAPSHOT');assert.equal(signals.at(-1)![3],'warning');
+ new Script("readFailure='REPORTING_HTTP_503';paintFreshness()").runInContext(context);assert.match(signals.at(-1)![0]!,/Data link interrupted.*STALE SOURCE SNAPSHOT/);assert.equal(signals.at(-1)![2],'DASHBOARD READ FAILED');assert.equal(signals.at(-1)![3],'error');
+ paint(sample('3'),'fresh');assert.equal(signals.at(-1)![3],'connected');assert.equal(new Script('readFailure').runInContext(context),null);
 });
