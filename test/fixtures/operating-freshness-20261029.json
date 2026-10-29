@@ -1,0 +1,4741 @@
+{
+  "kind": "poe-render-freshness-forward-replay-v1",
+  "provenance": {
+    "sourcePath": "evidence/issue11-consolidation-20261028/continuous-retention-resource-repair-20261029/forward-01/snapshots.ndjson",
+    "sourceSha256": "149e3ff8686e7513a092c1feaae347c9a00b33fd67605b78f50b2db12eb9024b",
+    "scope": "Sanitized reporting-field projection of 57 actual forward observations; not the historical 15:16\u201315:24 interval. Source and receipt timestamps are unchanged."
+  },
+  "rows": [
+    {
+      "observedAt": 1793292714628,
+      "receiverAt": "2026-10-29T16:51:42.756Z",
+      "responseSha256": "08ebbaa797b8ae0b711b099c547f1d6182838ce6f8971a36df14b7b03ee7d98b",
+      "sequence": "9088",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:51:15.759Z",
+        "marketAt": "2026-10-29T16:51:12.273Z",
+        "reconciledAt": "2026-10-29T16:51:11.227Z",
+        "usefulProgressAt": "2026-10-29T16:51:11.227Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1006.272839,
+        "solPriceUsd": 101.835
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": false,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 130922312,
+          "evidenceDiagnosticLimitBytes": 156088136,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292729813,
+      "receiverAt": "2026-10-29T16:51:57.860Z",
+      "responseSha256": "1a1fae388647ece0bdc27743881b8960524bae11230ac38f55805709efc2da52",
+      "sequence": "9089",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:51:30.794Z",
+        "marketAt": "2026-10-29T16:51:27.375Z",
+        "reconciledAt": "2026-10-29T16:51:26.380Z",
+        "usefulProgressAt": "2026-10-29T16:51:26.380Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1005.581141,
+        "solPriceUsd": 101.765
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 131794841,
+          "evidenceDiagnosticLimitBytes": 156960665,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292744960,
+      "receiverAt": "2026-10-29T16:52:12.971Z",
+      "responseSha256": "da83388e35cd60fb01c794dfa6a79f871dea1abc404be2f1c0954d23bcf397bf",
+      "sequence": "9090",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:51:45.818Z",
+        "marketAt": "2026-10-29T16:51:42.411Z",
+        "reconciledAt": "2026-10-29T16:51:41.421Z",
+        "usefulProgressAt": "2026-10-29T16:51:41.421Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1005.581141,
+        "solPriceUsd": 101.765
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 132679305,
+          "evidenceDiagnosticLimitBytes": 157845129,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292760141,
+      "receiverAt": "2026-10-29T16:52:28.061Z",
+      "responseSha256": "7f590ff5b1f11af5765ad315a6150ef64f7d0abcfb816870647fd5aff5318abc",
+      "sequence": "9091",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:52:00.826Z",
+        "marketAt": "2026-10-29T16:51:57.521Z",
+        "reconciledAt": "2026-10-29T16:51:57.090Z",
+        "usefulProgressAt": "2026-10-29T16:51:57.090Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1005.729362,
+        "solPriceUsd": 101.78
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 133508241,
+          "evidenceDiagnosticLimitBytes": 158674065,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292775271,
+      "receiverAt": "2026-10-29T16:52:43.167Z",
+      "responseSha256": "04c6e7d14a4a9a360abceae0e54e3596db2f025814a9c0d1f3db5ff81edf18c5",
+      "sequence": "9092",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:52:15.839Z",
+        "marketAt": "2026-10-29T16:52:12.729Z",
+        "reconciledAt": "2026-10-29T16:52:12.624Z",
+        "usefulProgressAt": "2026-10-29T16:52:12.624Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1006.075211,
+        "solPriceUsd": 101.815
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 135644243,
+          "evidenceDiagnosticLimitBytes": 160810067,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292790510,
+      "receiverAt": "2026-10-29T16:52:58.265Z",
+      "responseSha256": "d8e1c061fa1689db83b60fa13207b429e421ed924776652adfecc446dc97ab7b",
+      "sequence": "9093",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:52:31.201Z",
+        "marketAt": "2026-10-29T16:52:27.994Z",
+        "reconciledAt": "2026-10-29T16:52:29.403Z",
+        "usefulProgressAt": "2026-10-29T16:52:29.403Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1006.025804,
+        "solPriceUsd": 101.81
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 139748774,
+          "evidenceDiagnosticLimitBytes": 164914598,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793292805707,
+      "receiverAt": "2026-10-29T16:53:13.343Z",
+      "responseSha256": "1d9a524b117f8762341673cea722e02cf1a31b66335408923c50cf248e3408e6",
+      "sequence": "9094",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:52:46.408Z",
+        "marketAt": "2026-10-29T16:52:43.191Z",
+        "reconciledAt": "2026-10-29T16:52:46.100Z",
+        "usefulProgressAt": "2026-10-29T16:52:46.100Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1006.025804,
+        "solPriceUsd": 101.81
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 146367998,
+          "evidenceDiagnosticLimitBytes": 171533822,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793292820884,
+      "receiverAt": "2026-10-29T16:53:28.444Z",
+      "responseSha256": "1f00010f386ff8296a67a7bab287296924e9e4676d31d7d41f4ec86e81d3a460",
+      "sequence": "9095",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:53:01.454Z",
+        "marketAt": "2026-10-29T16:52:58.058Z",
+        "reconciledAt": "2026-10-29T16:52:56.462Z",
+        "usefulProgressAt": "2026-10-29T16:52:56.462Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1006.470467,
+        "solPriceUsd": 101.855
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 152276635,
+          "evidenceDiagnosticLimitBytes": 177442459,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292836068,
+      "receiverAt": "2026-10-29T16:53:43.523Z",
+      "responseSha256": "e94d076cc7493e3309eaaba96f4f9801fe9cc0dc098558c1982220f10b98b821",
+      "sequence": "9096",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:53:16.902Z",
+        "marketAt": "2026-10-29T16:53:14.256Z",
+        "reconciledAt": "2026-10-29T16:53:16.848Z",
+        "usefulProgressAt": "2026-10-29T16:53:16.848Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1006.569281,
+        "solPriceUsd": 101.865
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 159231054,
+          "evidenceDiagnosticLimitBytes": 184396878,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793292851218,
+      "receiverAt": "2026-10-29T16:53:58.632Z",
+      "responseSha256": "8950c2f0069248329dd4783490f09c9ff4757c427bdff1b8c58db33ab1db24b4",
+      "sequence": "9097",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:53:32.082Z",
+        "marketAt": "2026-10-29T16:53:29.302Z",
+        "reconciledAt": "2026-10-29T16:53:27.853Z",
+        "usefulProgressAt": "2026-10-29T16:53:32.018Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "execution startup: fresh reconciliation/readiness required"
+      },
+      "balances": {
+        "equityUsd": 1006.174025,
+        "solPriceUsd": 101.825
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 164144114,
+          "evidenceDiagnosticLimitBytes": 189309938,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292866380,
+      "receiverAt": "2026-10-29T16:54:13.734Z",
+      "responseSha256": "2182e468480d0f110a3bfa4b40f943571f23c9568833d4084791bf52640685c5",
+      "sequence": "9098",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:53:48.094Z",
+        "marketAt": "2026-10-29T16:53:46.344Z",
+        "reconciledAt": "2026-10-29T16:53:48.088Z",
+        "usefulProgressAt": "2026-10-29T16:53:48.088Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "balances": {
+        "equityUsd": 1006.272126,
+        "solPriceUsd": 101.835
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 86056580,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "observing-with-zero-trades"
+    },
+    {
+      "observedAt": 1793292881564,
+      "receiverAt": "2026-10-29T16:54:28.837Z",
+      "responseSha256": "f49bbb358f146e8b1e6c7208d41067c1c1fcba9efd2267691390ba16922e93f7",
+      "sequence": "9099",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:54:03.139Z",
+        "marketAt": "2026-10-29T16:54:02.417Z",
+        "reconciledAt": "2026-10-29T16:53:58.322Z",
+        "usefulProgressAt": "2026-10-29T16:53:58.322Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1006.519161,
+        "solPriceUsd": 101.86
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 52240639,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292896725,
+      "receiverAt": "2026-10-29T16:54:43.936Z",
+      "responseSha256": "6331a85f0f791355cee3c2f3adbba21ee45067c6a42707a5c03a056b213faf2a",
+      "sequence": "9100",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:54:18.644Z",
+        "marketAt": "2026-10-29T16:54:13.219Z",
+        "reconciledAt": "2026-10-29T16:54:17.471Z",
+        "usefulProgressAt": "2026-10-29T16:54:17.471Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "balances": {
+        "equityUsd": 1006.519161,
+        "solPriceUsd": 101.86
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 58628809,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "observing-with-zero-trades"
+    },
+    {
+      "observedAt": 1793292912031,
+      "receiverAt": "2026-10-29T16:54:59.015Z",
+      "responseSha256": "c007a5737201fa46a8014abd548f97c81fb7812ffd039cab73644a37eece3338",
+      "sequence": "9101",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:54:33.696Z",
+        "marketAt": "2026-10-29T16:54:28.747Z",
+        "reconciledAt": "2026-10-29T16:54:32.598Z",
+        "usefulProgressAt": "2026-10-29T16:54:32.598Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "balances": {
+        "equityUsd": 1006.222719,
+        "solPriceUsd": 101.83
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 58713883,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "observing-with-zero-trades"
+    },
+    {
+      "observedAt": 1793292927222,
+      "receiverAt": "2026-10-29T16:55:14.125Z",
+      "responseSha256": "f9a02b3dd3966d1e12ea974b9e99737a38659d6e81db5fc315377145adc72159",
+      "sequence": "9102",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:54:50.469Z",
+        "marketAt": "2026-10-29T16:54:48.957Z",
+        "reconciledAt": "2026-10-29T16:54:47.645Z",
+        "usefulProgressAt": "2026-10-29T16:54:47.645Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1006.272126,
+        "solPriceUsd": 101.835
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 58811022,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292942526,
+      "receiverAt": "2026-10-29T16:55:29.239Z",
+      "responseSha256": "d637acf19594e22f03021426041386680b99ddcf11d6ff64ae7d873bf4c33f30",
+      "sequence": "9103",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:55:05.521Z",
+        "marketAt": "2026-10-29T16:55:04.069Z",
+        "reconciledAt": "2026-10-29T16:55:02.768Z",
+        "usefulProgressAt": "2026-10-29T16:55:02.768Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1006.025091,
+        "solPriceUsd": 101.81
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 58881620,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292957688,
+      "receiverAt": "2026-10-29T16:55:44.361Z",
+      "responseSha256": "0839a35d69fcbb6f7b9be4b1a257d0aae46b172e45933d245624ab112d08cec9",
+      "sequence": "9104",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:55:20.896Z",
+        "marketAt": "2026-10-29T16:55:19.220Z",
+        "reconciledAt": "2026-10-29T16:55:17.855Z",
+        "usefulProgressAt": "2026-10-29T16:55:17.855Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1006.025091,
+        "solPriceUsd": 101.81
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 59019394,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292973064,
+      "receiverAt": "2026-10-29T16:55:59.470Z",
+      "responseSha256": "b8f15b40198c4d99ab0a3bc80e79faa8a400157d014826ab189d814bd7ebfda5",
+      "sequence": "9105",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:55:36.044Z",
+        "marketAt": "2026-10-29T16:55:34.209Z",
+        "reconciledAt": "2026-10-29T16:55:32.921Z",
+        "usefulProgressAt": "2026-10-29T16:55:32.921Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1005.827463,
+        "solPriceUsd": 101.79
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 59135657,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793292988375,
+      "receiverAt": "2026-10-29T16:56:14.567Z",
+      "responseSha256": "38e1abeae0e3b500020e26221c7cf5ccb921305ff83337c235fe169b5e909f01",
+      "sequence": "9106",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:55:51.134Z",
+        "marketAt": "2026-10-29T16:55:45.257Z",
+        "reconciledAt": "2026-10-29T16:55:48.018Z",
+        "usefulProgressAt": "2026-10-29T16:55:48.018Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1005.827463,
+        "solPriceUsd": 101.79
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 59228707,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293003559,
+      "receiverAt": "2026-10-29T16:56:29.637Z",
+      "responseSha256": "4abae84898fb9b7cfb6de2be3f890c97d9ad5d38f7db63b3794ff8559bd3cb16",
+      "sequence": "9107",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:56:06.359Z",
+        "marketAt": "2026-10-29T16:56:01.302Z",
+        "reconciledAt": "2026-10-29T16:56:03.076Z",
+        "usefulProgressAt": "2026-10-29T16:56:03.076Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1006.123905,
+        "solPriceUsd": 101.82
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": false
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 59344153,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293018698,
+      "receiverAt": "2026-10-29T16:56:44.742Z",
+      "responseSha256": "f8c3c544bdeaaceb2a302a11564076b74a6193ce2258c096d27f4cbb243a3933",
+      "sequence": "9108",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:56:21.378Z",
+        "marketAt": "2026-10-29T16:56:16.444Z",
+        "reconciledAt": "2026-10-29T16:56:18.122Z",
+        "usefulProgressAt": "2026-10-29T16:56:18.122Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1005.87687,
+        "solPriceUsd": 101.795
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": false
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 51081264,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293033864,
+      "receiverAt": "2026-10-29T16:56:59.856Z",
+      "responseSha256": "b51ce87f3629fa0bfa3a7aa3fb2c2fdfe3aa98c619e1468b33f5d8e56ed9fcf4",
+      "sequence": "9109",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:56:36.407Z",
+        "marketAt": "2026-10-29T16:56:31.963Z",
+        "reconciledAt": "2026-10-29T16:56:33.748Z",
+        "usefulProgressAt": "2026-10-29T16:56:33.748Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1005.679242,
+        "solPriceUsd": 101.775
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 51400290,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293049033,
+      "receiverAt": "2026-10-29T16:57:14.998Z",
+      "responseSha256": "88f4751916d734acab8258a36d2f25e63b6b8621d8b6465e0b9c8bc4e21c4cdb",
+      "sequence": "9110",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:56:51.422Z",
+        "marketAt": "2026-10-29T16:56:47.082Z",
+        "reconciledAt": "2026-10-29T16:56:49.118Z",
+        "usefulProgressAt": "2026-10-29T16:56:49.118Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1005.728649,
+        "solPriceUsd": 101.78
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 51809525,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293064309,
+      "receiverAt": "2026-10-29T16:57:30.106Z",
+      "responseSha256": "c3455e025dbb9154cdc5ef1ef1d0caaca55f3a19fbfbbdd82af79aaef064c7bc",
+      "sequence": "9111",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:57:06.433Z",
+        "marketAt": "2026-10-29T16:57:02.203Z",
+        "reconciledAt": "2026-10-29T16:57:04.204Z",
+        "usefulProgressAt": "2026-10-29T16:57:04.204Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "balances": {
+        "equityUsd": 1005.728649,
+        "solPriceUsd": 101.78
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 52138513,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293079517,
+      "receiverAt": "2026-10-29T16:57:45.211Z",
+      "responseSha256": "b45fd31b0e8a65ba5412c053f9e117148ec34f9ddd1d96c04c4a3b6d17af7549",
+      "sequence": "9113",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:57:36.490Z",
+        "marketAt": "2026-10-29T16:57:32.951Z",
+        "reconciledAt": "2026-10-29T16:57:34.535Z",
+        "usefulProgressAt": "2026-10-29T16:57:34.535Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.629835,
+        "solPriceUsd": 101.77
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 44885672,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293094708,
+      "receiverAt": "2026-10-29T16:58:00.329Z",
+      "responseSha256": "a3581d2d763b32fcba573bda61015d5a0f0e705aeecff5ee1d6eb4c112067a5b",
+      "sequence": "9114",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:57:51.528Z",
+        "marketAt": "2026-10-29T16:57:47.917Z",
+        "reconciledAt": "2026-10-29T16:57:51.082Z",
+        "usefulProgressAt": "2026-10-29T16:57:51.082Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.987545,
+        "solPriceUsd": 101.705
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 37231887,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293109878,
+      "receiverAt": "2026-10-29T16:58:15.431Z",
+      "responseSha256": "5de2d8e8cf262c0440946384d7453368121ee70d1c17dd03f073620c1e3b0276",
+      "sequence": "9115",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:58:06.547Z",
+        "marketAt": "2026-10-29T16:58:03.208Z",
+        "reconciledAt": "2026-10-29T16:58:06.159Z",
+        "usefulProgressAt": "2026-10-29T16:58:06.159Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.333394,
+        "solPriceUsd": 101.74
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 38027141,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293125048,
+      "receiverAt": "2026-10-29T16:58:30.542Z",
+      "responseSha256": "47ac710a6bb3676b6ff99b2c92185e23b183d8c8f316deb63026248b35e874fe",
+      "sequence": "9116",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:58:21.578Z",
+        "marketAt": "2026-10-29T16:58:18.396Z",
+        "reconciledAt": "2026-10-29T16:58:16.894Z",
+        "usefulProgressAt": "2026-10-29T16:58:16.894Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.283987,
+        "solPriceUsd": 101.735
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 28296226,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293140335,
+      "receiverAt": "2026-10-29T16:58:45.648Z",
+      "responseSha256": "7be51cacb4821a7842ad9fb296a2aa92a1a2272085450f5e74e8830790eb0008",
+      "sequence": "9117",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:58:36.594Z",
+        "marketAt": "2026-10-29T16:58:33.457Z",
+        "reconciledAt": "2026-10-29T16:58:31.972Z",
+        "usefulProgressAt": "2026-10-29T16:58:31.972Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.283987,
+        "solPriceUsd": 101.735
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 22284858,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293155685,
+      "receiverAt": "2026-10-29T16:59:00.757Z",
+      "responseSha256": "0448c29e52c6db2efb27bb914e141a4037aceec9fc6a3908c9921cb20ca83b78",
+      "sequence": "9118",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:58:51.648Z",
+        "marketAt": "2026-10-29T16:58:48.569Z",
+        "reconciledAt": "2026-10-29T16:58:47.084Z",
+        "usefulProgressAt": "2026-10-29T16:58:47.084Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.432208,
+        "solPriceUsd": 101.75
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 18519087,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293170863,
+      "receiverAt": "2026-10-29T16:59:15.859Z",
+      "responseSha256": "4c0e0874d4149af885e35005438a4f539e50be1bf68e4724811b384d7a6536d1",
+      "sequence": "9119",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:59:06.693Z",
+        "marketAt": "2026-10-29T16:59:03.668Z",
+        "reconciledAt": "2026-10-29T16:59:02.346Z",
+        "usefulProgressAt": "2026-10-29T16:59:02.346Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.789917,
+        "solPriceUsd": 101.685
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 19868491,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293186193,
+      "receiverAt": "2026-10-29T16:59:46.095Z",
+      "responseSha256": "9ca7aedc2bd9c7a432b697703a711084c898c28de6bcb90e082f8ce3bcea3665",
+      "sequence": "9121",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:59:36.846Z",
+        "marketAt": "2026-10-29T16:59:33.960Z",
+        "reconciledAt": "2026-10-29T16:59:34.577Z",
+        "usefulProgressAt": "2026-10-29T16:59:35.153Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.839324,
+        "solPriceUsd": 101.69
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 12880861,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293201389,
+      "receiverAt": "2026-10-29T17:00:01.203Z",
+      "responseSha256": "3af1b955ca5012ff1fd6a5976da440f719aae54436095fef76af6da86a28d7fd",
+      "sequence": "9122",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T16:59:51.876Z",
+        "marketAt": "2026-10-29T16:59:49.046Z",
+        "reconciledAt": "2026-10-29T16:59:49.621Z",
+        "usefulProgressAt": "2026-10-29T16:59:49.621Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.135766,
+        "solPriceUsd": 101.72
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13163094,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293216542,
+      "receiverAt": "2026-10-29T17:00:16.313Z",
+      "responseSha256": "d05579430c9991f7ff6426c3087a266853141f73f1cbe71ffa35dc66bbfb5674",
+      "sequence": "9123",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:00:07.728Z",
+        "marketAt": "2026-10-29T17:00:04.078Z",
+        "reconciledAt": "2026-10-29T17:00:04.643Z",
+        "usefulProgressAt": "2026-10-29T17:00:04.643Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.185173,
+        "solPriceUsd": 101.725
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13229056,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293231716,
+      "receiverAt": "2026-10-29T17:00:31.432Z",
+      "responseSha256": "d3cce723a366b69048cd5351a4bd4d7956299d86051e4c26dce3369c5617a79f",
+      "sequence": "9124",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:00:22.770Z",
+        "marketAt": "2026-10-29T17:00:19.156Z",
+        "reconciledAt": "2026-10-29T17:00:20.298Z",
+        "usefulProgressAt": "2026-10-29T17:00:20.298Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.87687,
+        "solPriceUsd": 101.795
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13581909,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293247179,
+      "receiverAt": "2026-10-29T17:00:46.556Z",
+      "responseSha256": "529e7f2512a657329466480dfed16a86257ab9d4226e1dab99889a6f14390532",
+      "sequence": "9125",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:00:37.963Z",
+        "marketAt": "2026-10-29T17:00:34.195Z",
+        "reconciledAt": "2026-10-29T17:00:35.318Z",
+        "usefulProgressAt": "2026-10-29T17:00:35.318Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.778056,
+        "solPriceUsd": 101.785
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13612900,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293262425,
+      "receiverAt": "2026-10-29T17:01:01.665Z",
+      "responseSha256": "49bb2439a5d695f5898d3e80b0c2121a1827675f0fffcb0a1c41483f96b2314f",
+      "sequence": "9126",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:00:54.845Z",
+        "marketAt": "2026-10-29T17:00:54.438Z",
+        "reconciledAt": "2026-10-29T17:00:51.171Z",
+        "usefulProgressAt": "2026-10-29T17:00:51.171Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.185173,
+        "solPriceUsd": 101.725
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13813778,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293277602,
+      "receiverAt": "2026-10-29T17:01:16.755Z",
+      "responseSha256": "0a639ca1c4a3785b5b55ecd78ab110e4e29bb3d7b907d0b638265bae4a4a90bf",
+      "sequence": "9127",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:01:10.082Z",
+        "marketAt": "2026-10-29T17:01:09.519Z",
+        "reconciledAt": "2026-10-29T17:01:06.263Z",
+        "usefulProgressAt": "2026-10-29T17:01:06.263Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.778056,
+        "solPriceUsd": 101.785
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13856342,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293292822,
+      "receiverAt": "2026-10-29T17:01:31.854Z",
+      "responseSha256": "a5f26c35d6eebbae52a1fcabb6d3469a37ee0bb9011e958901fefeacb4a5defe",
+      "sequence": "9128",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:01:25.112Z",
+        "marketAt": "2026-10-29T17:01:24.602Z",
+        "reconciledAt": "2026-10-29T17:01:23.253Z",
+        "usefulProgressAt": "2026-10-29T17:01:23.253Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.926277,
+        "solPriceUsd": 101.8
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13991358,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293308034,
+      "receiverAt": "2026-10-29T17:01:46.953Z",
+      "responseSha256": "d4199508db4fe1989a4e0b92dc0bb0f8e33be892e42f589a710deec09ddc69d6",
+      "sequence": "9129",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:01:40.114Z",
+        "marketAt": "2026-10-29T17:01:39.715Z",
+        "reconciledAt": "2026-10-29T17:01:38.908Z",
+        "usefulProgressAt": "2026-10-29T17:01:38.908Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.580428,
+        "solPriceUsd": 101.765
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 14038122,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293323210,
+      "receiverAt": "2026-10-29T17:02:02.032Z",
+      "responseSha256": "6c0a2ae88245dec08e7a646cc5828097bb319369586fc647ed8b4ef865de8966",
+      "sequence": "9130",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:01:55.148Z",
+        "marketAt": "2026-10-29T17:01:54.858Z",
+        "reconciledAt": "2026-10-29T17:01:54.234Z",
+        "usefulProgressAt": "2026-10-29T17:01:54.234Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.086359,
+        "solPriceUsd": 101.715
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 17902506,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293338394,
+      "receiverAt": "2026-10-29T17:02:17.122Z",
+      "responseSha256": "7e37ce5512839763a37ed894315732ea41888aa2454ce43d2b15d582767ff5d3",
+      "sequence": "9131",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:02:10.149Z",
+        "marketAt": "2026-10-29T17:02:09.936Z",
+        "reconciledAt": "2026-10-29T17:02:09.769Z",
+        "usefulProgressAt": "2026-10-29T17:02:09.769Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.086359,
+        "solPriceUsd": 101.715
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 19562605,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293353713,
+      "receiverAt": "2026-10-29T17:02:32.266Z",
+      "responseSha256": "72fe6f0ff63105f888f45c782bdf31194556025c91511d13a0c75faeb3dc4464",
+      "sequence": "9132",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:02:25.162Z",
+        "marketAt": "2026-10-29T17:02:25.020Z",
+        "reconciledAt": "2026-10-29T17:02:25.050Z",
+        "usefulProgressAt": "2026-10-29T17:02:25.050Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.185173,
+        "solPriceUsd": 101.725
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 19776460,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293368873,
+      "receiverAt": "2026-10-29T17:02:47.382Z",
+      "responseSha256": "2d1df99b608e661045226f83f415458ad8cd9616dafe640d6661447fd37237ed",
+      "sequence": "9133",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:02:40.184Z",
+        "marketAt": "2026-10-29T17:02:35.074Z",
+        "reconciledAt": "2026-10-29T17:02:37.931Z",
+        "usefulProgressAt": "2026-10-29T17:02:37.931Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.778056,
+        "solPriceUsd": 101.785
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 12969875,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293384155,
+      "receiverAt": "2026-10-29T17:03:02.486Z",
+      "responseSha256": "f07bee53fa168a8d356caefde6eb27bad395d7272daf9be258c08911bb385362",
+      "sequence": "9134",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:02:55.558Z",
+        "marketAt": "2026-10-29T17:02:51.141Z",
+        "reconciledAt": "2026-10-29T17:02:53.726Z",
+        "usefulProgressAt": "2026-10-29T17:02:54.448Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.679242,
+        "solPriceUsd": 101.775
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13688731,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293399302,
+      "receiverAt": "2026-10-29T17:03:17.587Z",
+      "responseSha256": "efa88b3931007316de1b9c3158f5912bb44044e2f35b0ca3e3dc0bc088448fe3",
+      "sequence": "9135",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:03:10.571Z",
+        "marketAt": "2026-10-29T17:03:06.243Z",
+        "reconciledAt": "2026-10-29T17:03:09.856Z",
+        "usefulProgressAt": "2026-10-29T17:03:09.856Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.827463,
+        "solPriceUsd": 101.79
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13825576,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "entry-paused"
+    },
+    {
+      "observedAt": 1793293414456,
+      "receiverAt": "2026-10-29T17:03:32.687Z",
+      "responseSha256": "8bacfa32f362b6c20d9ce73fb64dcc06e92c8e106d0f7f32ba5fd9e7e7b93a09",
+      "sequence": "9136",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:03:27.259Z",
+        "marketAt": "2026-10-29T17:03:26.352Z",
+        "reconciledAt": "2026-10-29T17:03:24.947Z",
+        "usefulProgressAt": "2026-10-29T17:03:24.947Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1006.420347,
+        "solPriceUsd": 101.85
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 13945358,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293429604,
+      "receiverAt": "2026-10-29T17:03:47.787Z",
+      "responseSha256": "bcd266643ee4ad8e882642fa820973f2e92474907277feab80b6a5d88951b909",
+      "sequence": "9137",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:03:42.298Z",
+        "marketAt": "2026-10-29T17:03:41.538Z",
+        "reconciledAt": "2026-10-29T17:03:40.049Z",
+        "usefulProgressAt": "2026-10-29T17:03:40.049Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1006.420347,
+        "solPriceUsd": 101.85
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 14347499,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293445032,
+      "receiverAt": "2026-10-29T17:04:02.916Z",
+      "responseSha256": "469d2f6ab8e670f210f3b92e769122d66ca6337fe44645790b0a3c52c96bde87",
+      "sequence": "9138",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:03:57.452Z",
+        "marketAt": "2026-10-29T17:03:56.543Z",
+        "reconciledAt": "2026-10-29T17:03:55.133Z",
+        "usefulProgressAt": "2026-10-29T17:03:55.133Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.629835,
+        "solPriceUsd": 101.77
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 14642876,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293460220,
+      "receiverAt": "2026-10-29T17:04:18.028Z",
+      "responseSha256": "8915fcffb8f9e9134dfab30674f02d7d3a1750f160a62f6040998b313a1fef24",
+      "sequence": "9139",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:04:14.228Z",
+        "marketAt": "2026-10-29T17:04:11.747Z",
+        "reconciledAt": "2026-10-29T17:04:11.050Z",
+        "usefulProgressAt": "2026-10-29T17:04:11.050Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1005.036952,
+        "solPriceUsd": 101.71
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 15432427,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293475384,
+      "receiverAt": "2026-10-29T17:04:33.113Z",
+      "responseSha256": "39e28f7d126d5fd0ab3782a97d0c0997871cbdbf5d3771c77d80f967ec769997",
+      "sequence": "9140",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:04:29.261Z",
+        "marketAt": "2026-10-29T17:04:26.868Z",
+        "reconciledAt": "2026-10-29T17:04:26.148Z",
+        "usefulProgressAt": "2026-10-29T17:04:26.148Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.987545,
+        "solPriceUsd": 101.705
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 15855625,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293490548,
+      "receiverAt": "2026-10-29T17:04:48.230Z",
+      "responseSha256": "98fca6fde91b63fcf46742a8da6256f8cb638381c588f48d9afe72a80dd8885c",
+      "sequence": "9141",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:04:44.838Z",
+        "marketAt": "2026-10-29T17:04:41.939Z",
+        "reconciledAt": "2026-10-29T17:04:41.238Z",
+        "usefulProgressAt": "2026-10-29T17:04:41.238Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.888731,
+        "solPriceUsd": 101.695
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 16414426,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293505929,
+      "receiverAt": "2026-10-29T17:05:03.352Z",
+      "responseSha256": "23279e8d875f0946d99070bcbb3a7c07fcb19e3c3fb2ae154ede80173a63765b",
+      "sequence": "9142",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:04:59.880Z",
+        "marketAt": "2026-10-29T17:04:57.051Z",
+        "reconciledAt": "2026-10-29T17:04:56.340Z",
+        "usefulProgressAt": "2026-10-29T17:04:56.340Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.888731,
+        "solPriceUsd": 101.695
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 16785648,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293521126,
+      "receiverAt": "2026-10-29T17:05:18.442Z",
+      "responseSha256": "34ba3e62d6771067724df7eff07df6ed2f5824aaf39e8a3611983b619f492101",
+      "sequence": "9143",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:05:14.990Z",
+        "marketAt": "2026-10-29T17:05:12.153Z",
+        "reconciledAt": "2026-10-29T17:05:11.558Z",
+        "usefulProgressAt": "2026-10-29T17:05:14.924Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.691103,
+        "solPriceUsd": 101.675
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 17794407,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293536358,
+      "receiverAt": "2026-10-29T17:05:33.526Z",
+      "responseSha256": "7fabfa02a3841f42cf0c80349133c0cb18581c0f1f9e5d53883c1444a00a3f71",
+      "sequence": "9144",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:05:30.024Z",
+        "marketAt": "2026-10-29T17:05:27.566Z",
+        "reconciledAt": "2026-10-29T17:05:26.696Z",
+        "usefulProgressAt": "2026-10-29T17:05:26.696Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.888731,
+        "solPriceUsd": 101.695
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 18023556,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293551546,
+      "receiverAt": "2026-10-29T17:05:48.634Z",
+      "responseSha256": "4b0c61584ae1bd01dacbe932062145a746f083b9e1329cf56c9ea199d461e3b7",
+      "sequence": "9145",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:05:45.071Z",
+        "marketAt": "2026-10-29T17:05:42.736Z",
+        "reconciledAt": "2026-10-29T17:05:41.793Z",
+        "usefulProgressAt": "2026-10-29T17:05:41.793Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1004.098219,
+        "solPriceUsd": 101.615
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 18096672,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    },
+    {
+      "observedAt": 1793293566737,
+      "receiverAt": "2026-10-29T17:06:03.747Z",
+      "responseSha256": "4d702bdfdb491d0547cfc833e3c37cdae0b1f9e51e3f7f7cadf8fd2c018f9469",
+      "sequence": "9146",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "times": {
+        "generatedAt": "2026-10-29T17:06:00.099Z",
+        "marketAt": "2026-10-29T17:05:58.161Z",
+        "reconciledAt": "2026-10-29T17:05:56.918Z",
+        "usefulProgressAt": "2026-10-29T17:05:56.918Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "balances": {
+        "equityUsd": 1003.900591,
+        "solPriceUsd": 101.595
+      },
+      "positions": [],
+      "paperFilled": 0,
+      "intelligence": {
+        "version": "poe-operating-intelligence-v1",
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "quality": {
+          "captureConnected": true
+        },
+        "provider": {
+          "discoveryConnected": true,
+          "watchConnected": true
+        },
+        "resources": {
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 18370284,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        }
+      },
+      "previousState": "unavailable"
+    }
+  ]
+}

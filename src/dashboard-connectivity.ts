@@ -26,7 +26,7 @@ export function connectionReport(cache: SnapshotCache, now = Date.now(), pilot?:
     sourceAgeMs, receivedAgeMs, source,
     sourceRole: !snapshot ? 'unknown' : observerOnly ? 'discovery-observer' : 'runtime-reported',
     capabilities: {
-      discovery: !snapshot ? 'unavailable' : snapshot.status.market === 'observing' ? 'reported' : 'unavailable',
+      discovery: !snapshot ? 'unavailable' : snapshot.intelligence ? snapshot.intelligence.provider.discoveryConnected === true ? 'reported' : snapshot.intelligence.provider.discoveryConnected === false ? 'unavailable' : 'unknown' : snapshot.status.market === 'observing' ? 'reported' : 'unavailable',
       candidatePipeline: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
       decisionTrace: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
       selectedTokenRpc: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',

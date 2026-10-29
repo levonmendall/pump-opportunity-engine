@@ -5,13 +5,15 @@ import {once} from 'node:events';
 import type {AddressInfo} from 'node:net';
 import {holographicDashboard,HOLOGRAPHIC_VERSION} from '../src/dashboard-holographic.js';
 import {createDashboard} from '../src/dashboard.js';
+import {operatingSnapshotFreshness} from '../src/reporting.js';
 
 const source=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8');
 const marker='const HTML = String.raw`';
 const start=source.indexOf(marker)+marker.length;
 const end=source.indexOf('`;\n',start);
 assert.ok(start>=marker.length && end>start,'actual dashboard template must exist');
-const original=source.slice(start,end);
+// Resolve the same static function interpolation used by the served template.
+const original=source.slice(start,end).replace('${operatingSnapshotFreshness.toString()}',operatingSnapshotFreshness.toString());
 const full=()=>holographicDashboard(original);
 const ids=(s:string)=>Array.from(s.matchAll(/\bid="([^"]+)"/g),m=>m[1]!);
 const scripts=(s:string)=>Array.from(s.matchAll(/<script>([\s\S]*?)<\/script>/g),m=>m[1]!);

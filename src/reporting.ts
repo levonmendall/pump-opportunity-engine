@@ -116,6 +116,73 @@ function canonical(value: unknown): string {
 }
 const hash = (s: Snapshot) => createHash('sha256').update(canonical(s)).digest('hex');
 
+/** Reporting interpretation only. Financial validity and entry permission remain source facts.
+ * Kept self-contained so the API and browser run the exact same classifier. */
+export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: string | null, now = Date.now()) {
+  const i = snapshot.intelligence;
+  if (!i) return null; // Legacy sources retain their existing combined validity semantics.
+  const sourceAgeMs = Math.max(0, now - Date.parse(snapshot.times.generatedAt));
+  const receivedAgeMs = receivedAt === null ? null : Math.max(0, now - Date.parse(receivedAt));
+  const valuationAgeMs = snapshot.times.marketAt === null ? null : Math.max(0, now - Date.parse(snapshot.times.marketAt));
+  const reconciliationAgeMs = snapshot.times.reconciledAt === null ? null : Math.max(0, now - Date.parse(snapshot.times.reconciledAt));
+  const reasonCodes: string[] = [];
+  const sourceStale = sourceAgeMs > 90_000;
+  const publisherStale = receivedAgeMs === null || receivedAgeMs > 90_000;
+  if (sourceStale) reasonCodes.push('SOURCE_STALE');
+  if (publisherStale) reasonCodes.push('PUBLISHER_STALE');
+  if (snapshot.status.runtime === 'stopped') reasonCodes.push('RUNTIME_STOPPED');
+  else if (snapshot.status.runtime === 'unavailable') reasonCodes.push('RUNTIME_UNAVAILABLE');
+  const selectedCapture = i.quality.captureConnected;
+  const discovery = i.provider.discoveryConnected;
+  const watch = i.provider.watchConnected;
+  if (selectedCapture === false) reasonCodes.push('SELECTED_CAPTURE_LOST');
+  else if (selectedCapture === null) reasonCodes.push('SELECTED_CAPTURE_UNKNOWN');
+  if (discovery === false) reasonCodes.push('DISCOVERY_LOST');
+  else if (discovery === null) reasonCodes.push('DISCOVERY_UNKNOWN');
+  if (watch === false) reasonCodes.push('WATCH_LOST');
+  else if (watch === null) reasonCodes.push('WATCH_UNKNOWN');
+  const usdAvailable = snapshot.balances.equityUsd !== null && snapshot.balances.solPriceUsd !== null;
+  if (!usdAvailable) reasonCodes.push('USD_VALUATION_UNAVAILABLE');
+  if (valuationAgeMs === null) reasonCodes.push('VALUATION_UNAVAILABLE');
+  else if (valuationAgeMs > 90_000) reasonCodes.push('VALUATION_STALE');
+  if (!snapshot.status.reconciled) reasonCodes.push('RECONCILIATION_NOT_CURRENT');
+  if (reconciliationAgeMs === null) reasonCodes.push('RECONCILIATION_UNAVAILABLE');
+  else if (reconciliationAgeMs > 90_000) reasonCodes.push('RECONCILIATION_STALE');
+  let entryRestriction: string | null = null;
+  if (snapshot.status.entries !== 'enabled' && snapshot.status.blocker !== null) {
+    if (snapshot.status.blocker === 'execution startup: fresh reconciliation/readiness required' || snapshot.status.blocker === 'startup: observation only; explicit runtime readiness required') entryRestriction = 'ENTRY_READINESS_REQUIRED';
+    else if (snapshot.status.blocker === 'explicit verified runtime readiness') entryRestriction = 'CURRENT_ENTRY_GATE_NOT_SATISFIED';
+    else if (snapshot.status.blocker === 'operator paused new entries' || snapshot.status.blocker === 'owner paused new entries') entryRestriction = 'OWNER_ENTRY_PAUSE';
+    else if (snapshot.status.blocker === 'safe stop requested' || snapshot.status.blocker === 'owner requested safe stop') entryRestriction = 'SAFE_STOP_REQUESTED';
+    else entryRestriction = 'OTHER_SOURCE_RESTRICTION';
+    reasonCodes.push(entryRestriction);
+  }
+  const protection = i.protection;
+  // Protection is assessed at source generation, never extrapolated from a 15s browser poll.
+  const completedAgeAtSourceMs = protection.lastCompletedAt === null ? null : Math.max(0, Date.parse(snapshot.times.generatedAt) - Date.parse(protection.lastCompletedAt));
+  const held = snapshot.positions.length > 0 || protection.state !== 'flat';
+  if (held && (protection.state === 'unavailable' || protection.state === 'flat' || completedAgeAtSourceMs === null)) reasonCodes.push('PROTECTION_UNAVAILABLE');
+  else if (held && protection.state === 'degraded') reasonCodes.push('PROTECTION_DEGRADED');
+  if (held && completedAgeAtSourceMs !== null && protection.completedEvaluationBoundaryMs !== null && completedAgeAtSourceMs > protection.completedEvaluationBoundaryMs) reasonCodes.push('PROTECTION_OVERDUE');
+  if (i.admission?.evidenceAdmissionAllowed === false || i.admission?.evidenceRequiresCriticalRecovery === true) reasonCodes.push('EVIDENCE_PRESSURE');
+  if (i.admission?.candidateResourceAdmissionAllowed === false || i.resources.state === 'pressure') reasonCodes.push('RESOURCE_PRESSURE');
+  if (i.admission?.sourceRecoveryReasonCode || i.admission?.sourceRestartRequired === true) reasonCodes.push('SOURCE_RECOVERY');
+  const market = selectedCapture === true ? snapshot.status.market === 'warming' ? 'warming' : 'observing' : selectedCapture === false ? 'unavailable' : 'unknown';
+  const state = sourceStale || publisherStale ? 'stale'
+    : snapshot.status.runtime !== 'running' || selectedCapture !== true ? 'unavailable'
+    : market === 'warming' ? 'warming'
+    : snapshot.status.entries === 'paused' ? 'entry-paused'
+    : snapshot.funnel.paperFilled === 0 ? 'observing-with-zero-trades' : 'fresh';
+  return {
+    kind: 'operating-source-v1', state, market,
+    reporting: sourceStale ? 'source-stale' : publisherStale ? 'publisher-stale' : 'current',
+    sourceAgeMs, receivedAgeMs, selectedCapture, discovery, watch, entryRestriction,
+    financial: { usdValuation: usdAvailable ? 'available' : 'unavailable', reconciled: snapshot.status.reconciled, valuationAgeMs, reconciliationAgeMs },
+    protection: { state: protection.state, completedAt: protection.lastCompletedAt, completedAgeAtSourceMs, boundaryMs: protection.completedEvaluationBoundaryMs },
+    reasonCodes,
+  };
+}
+
 export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
   constructor(readonly identity: ReportingIdentity | null = null) { if (identity !== null) validateIdentity(identity); }
@@ -142,6 +209,8 @@ export class SnapshotCache {
     const age = (at: string | null) => at === null ? null : Math.max(0, now - Date.parse(at));
     const sourceAgeMs = age(c.snapshot.times.generatedAt)!;
     const marketAgeMs = age(c.snapshot.times.marketAt), reconciliationAgeMs = age(c.snapshot.times.reconciledAt);
+    const operating = operatingSnapshotFreshness(c.snapshot, c.receivedAt, now);
+    if (operating) return { state: operating.state, receivedAt: c.receivedAt, ...c.snapshot.times, sourceAgeMs, marketAgeMs, reconciliationAgeMs, operating };
     const stale = Math.max(sourceAgeMs, marketAgeMs ?? 0, reconciliationAgeMs ?? 0) > 90_000;
     const unavailable = !c.snapshot.status.reconciled || c.snapshot.balances.equityUsd === null || marketAgeMs === null || reconciliationAgeMs === null;
     const state = stale ? 'stale' : c.snapshot.status.runtime !== 'running' || c.snapshot.status.market === 'unavailable' ? 'unavailable' : c.snapshot.status.market === 'warming' ? 'warming' : unavailable ? 'unavailable' : c.snapshot.status.entries === 'paused' ? 'entry-paused' : c.snapshot.funnel.paperFilled === 0 ? 'observing-with-zero-trades' : 'fresh';

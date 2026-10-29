@@ -3,7 +3,7 @@ import { timingSafeEqual, createHash } from 'node:crypto';
 import {holographicDashboard} from './dashboard-holographic.js';
 import {ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION} from './operating-intelligence.js';
 import { fileURLToPath } from 'node:url';
-import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
+import { MAX_SNAPSHOT_BYTES, SnapshotCache, operatingSnapshotFreshness, type ReportingIdentity } from './reporting.js';
 
 const equal = (a: string, b: string) => timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest());
 export type DashboardConfig = Partial<ReportingIdentity> & { viewerUser: string; viewerPassword: string; ingestionSecret: string; publicViewer?: boolean };
@@ -209,6 +209,7 @@ body.poe-compact-view .compact-folded{min-height:0}
 </div></div>
 <script>
 'use strict';
+const classifyOperatingSnapshot = ${operatingSnapshotFreshness.toString()};
 const byId=id=>document.getElementById(id);
 const money=n=>n===null?'Unavailable':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
 const put=(id,value)=>{byId(id).textContent=String(value)};
@@ -347,11 +348,13 @@ function showSnapshot(s,received,f){
  put('chartBasis',s.intelligence?'Net token trading result translated at current SOL/USD; not historical realized USD profit':'Legacy equity change includes passive SOL/USD; do not interpret as pure trading profit');put('chartLegend',s.intelligence?'TOKEN TRADING · CURRENT USD':'LEGACY EQUITY CHANGE · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
  put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED SERIES':'HISTORY UNAVAILABLE');
- put('freshness','Generated '+s.times.generatedAt+' · Market '+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
+ put('freshness','Generated '+s.times.generatedAt+(s.intelligence?' · Financial valuation ':' · Market ')+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
  put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps.');
- const state=String(f.state).toUpperCase();
- const bad=f.state==='stale'||f.state==='unavailable';
- signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
+ if(!s.intelligence){
+  const state=String(f.state).toUpperCase();
+  const bad=f.state==='stale'||f.state==='unavailable';
+  signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
+ }
  byId('exportLink').hidden=false;
  paintFreshness();
 }
@@ -376,6 +379,22 @@ async function refresh(){
 document.querySelectorAll('.rail-link').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.rail-link').forEach(n=>n.classList.remove('selected'));link.classList.add('selected')}));
 function paintFreshness(){
  if(!latest)return;
+ const operating=latest.intelligence?classifyOperatingSnapshot(latest,latestReceivedAt,Date.now()):null;
+ if(operating){
+  const stale=operating.state==='stale',stopped=latest.status.runtime==='stopped';
+  if(readFailure){signal('Data link interrupted'+(stale?' · STALE SOURCE SNAPSHOT':stopped?' · STOPPED':''),'Browser snapshot read failed ('+readFailure+'). Last received data is retained for inspection; do not treat it as current. Runtime '+latest.status.runtime+' · account '+latest.account.id,'DASHBOARD READ FAILED','error','RECEIVER · '+latestReceivedAt);return;}
+  const messages={SOURCE_STALE:'Source snapshot is over 90 seconds old',PUBLISHER_STALE:'No accepted publisher delivery within 90 seconds',RUNTIME_STOPPED:'Runtime stopped; positions and unresolved actions remain as reported',RUNTIME_UNAVAILABLE:'Runtime reports unavailable',SELECTED_CAPTURE_LOST:'Selected-candidate capture is disconnected; valid observation is interrupted',SELECTED_CAPTURE_UNKNOWN:'Selected-candidate capture status is unavailable',DISCOVERY_LOST:'Broad migration discovery is disconnected',DISCOVERY_UNKNOWN:'Broad migration discovery status is unavailable',WATCH_LOST:'Lightweight watch activity is disconnected',WATCH_UNKNOWN:'Lightweight watch activity status is unavailable',USD_VALUATION_UNAVAILABLE:'USD valuation is unavailable; financial amounts remain unavailable',VALUATION_UNAVAILABLE:'Current financial valuation timestamp is unavailable',VALUATION_STALE:'Financial valuation timestamp is over 90 seconds old',RECONCILIATION_NOT_CURRENT:'Financial reconciliation is not current; entry permission remains as reported',RECONCILIATION_UNAVAILABLE:'Financial reconciliation timestamp is unavailable',RECONCILIATION_STALE:'Financial reconciliation timestamp is over 90 seconds old',PROTECTION_UNAVAILABLE:'Held-position protection is unavailable as of this source snapshot',PROTECTION_DEGRADED:'Held-position protection is degraded as of this source snapshot',PROTECTION_OVERDUE:'Held-position protection exceeded its reported completion boundary at source generation',EVIDENCE_PRESSURE:'Evidence pressure restricts candidate admission',RESOURCE_PRESSURE:'Resource pressure restricts candidate admission',SOURCE_RECOVERY:'Candidate-source recovery is pending',ENTRY_READINESS_REQUIRED:'Fresh financial reconciliation and runtime readiness are required before entries',CURRENT_ENTRY_GATE_NOT_SATISFIED:'Current entry gates are not satisfied; the source retains a prior readiness reason',OWNER_ENTRY_PAUSE:'The owner paused new entries',SAFE_STOP_REQUESTED:'A safe stop was requested; existing obligations remain',OTHER_SOURCE_RESTRICTION:'New entries are restricted by another source-reported condition'};
+  const warnings=operating.reasonCodes.map(code=>messages[code]).filter(Boolean);
+  const capture=operating.market==='unavailable'?'SELECTED CAPTURE UNAVAILABLE':operating.market==='unknown'?'CAPTURE UNKNOWN':operating.market.toUpperCase();
+  let title=latest.status.runtime==='running'?'RUNNING · '+capture:latest.status.runtime.toUpperCase();
+  if(stale)title=(stopped?'STOPPED · ':'')+'STALE SOURCE SNAPSHOT';
+  else if(operating.reasonCodes.includes('PROTECTION_UNAVAILABLE'))title+=' · PROTECTION UNAVAILABLE';
+  else if(operating.reasonCodes.includes('PROTECTION_OVERDUE'))title+=' · PROTECTION OVERDUE';
+  const discovery=operating.selectedCapture===false&&operating.discovery===true?' · Broad discovery continues':'';
+  const detail='PAPER entries '+latest.status.entries+' · source reporting '+operating.reporting+discovery+(warnings.length?' · '+warnings.join(' · '):'')+' · account '+latest.account.id+' · sequence '+latest.sequence;
+  signal(title,detail,stale?'CHECK SOURCE FRESHNESS':stopped?'MONITORING INTERRUPTED':warnings.length?'SOURCE CURRENT · WARNINGS':'SOURCE CURRENT',warnings.length||stale?'warning':'connected','RECEIVER · '+latestReceivedAt);
+  return;
+ }
  const age=at=>at===null?0:Math.max(0,Date.now()-Date.parse(at));
  const stale=Math.max(age(latest.times.generatedAt),age(latest.times.marketAt),age(latest.times.reconciledAt))>90000;
  const stopped=latest.status.runtime==='stopped';
