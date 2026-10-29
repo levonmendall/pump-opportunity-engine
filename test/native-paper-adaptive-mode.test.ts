@@ -15,11 +15,11 @@ test('active adaptive native mode is explicit, versioned, two positions and four
  const hash=nativePaperConfigurationSha256(args);assert.match(hash,/^[a-f0-9]{64}$/);assert.notEqual(hash,nativePaperConfigurationSha256({service:true,stage:'two',deepSlots:4}));
 });
 
-test('baseline rollback selection and its configuration remain unchanged when strategy is omitted',()=>{
+test('baseline strategy selection remains equivalent while upgraded operating safeguards receive a new configuration identity',()=>{
  const old=parseNativePaperArgs([...base,'--stage','two','--deep-slots','4','--service']);
  assert.equal(Object.hasOwn(old,'strategy'),false);assert.equal(resolveNativePaperStrategy('two').contract.version,'persistent-buying-pilot-concurrent-stage-2-v1');
  assert.equal(nativePaperConfigurationSha256(old),nativePaperConfigurationSha256({...old,strategy:'baseline'}));
- assert.equal(nativePaperConfigurationSha256(old),'7e1d449a053a8cad89ff7b5e9dc84c01f118cbeeeaeea9958473b75f6a547292');
+ assert.notEqual(nativePaperConfigurationSha256(old),'7e1d449a053a8cad89ff7b5e9dc84c01f118cbeeeaeea9958473b75f6a547292','financial-only recovery and held-audit scheduling are versioned operating changes, including for baseline rollback');
 });
 
 test('unknown or mismatched adaptive strategy controls refuse before account access',()=>{
