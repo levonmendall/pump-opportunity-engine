@@ -48,7 +48,7 @@ test('activity navigation opens trades, refresh does not replace disclosure, and
  assert.ok(!dashboardSource.includes("panelFold('section[aria-labelledby=\"tradesTitle\"]'"),'do not add a second folding layer');
  assert.ok(!dashboardSource.includes("panelFold('#performance'"),'P&L chart must remain visible');
  assert.match(dashboardSource,/id="chart" viewBox=/);
- assert.match(dashboardSource,/\.paper-trades-panel\{min-height:0;align-self:start\}/);
+ assert.match(dashboardSource,/\.data-panel\.paper-trades-panel\{min-height:0;align-self:start\}/);
  assert.match(dashboardSource,/@media print\{\.paper-trades-disclosure>\.paper-trades-body\{display:block!important\}\}/);
 });
 
