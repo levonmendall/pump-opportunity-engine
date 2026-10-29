@@ -1,0 +1,66 @@
+{
+  "kind": "actual-forward-four-slot-config-only-not-acceptance",
+  "run": "native-paper-20261029161536720",
+  "source": {
+    "release": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+  "intendedDurationSeconds": 900,
+  "firstSourceAt": "2026-10-29T16:15:38.342Z",
+  "lastSourceAt": "2026-10-29T16:30:33.032Z",
+  "samples": 57,
+  "snapshotsSha256": "52c0bef479445a9512f02d39b80ef5641b1bb6dd677e456037cbaf4ad528d7f6",
+  "maximumDeepObserved": 4,
+  "configuredDeepMaximum": 4,
+  "financialPositionLimit": 1,
+  "nativeCaptureDisconnectedSamples": 35,
+  "discoveryDisconnectedSamples": 25,
+  "newCumulativeCounters": {
+    "migrations": 5,
+    "verifiedOrigins": 4,
+    "completeWindows": 3,
+    "auditedWindows": 3,
+    "predictiveAssessments": 3,
+    "predictivePasses": 1,
+    "qualityGaps": 37,
+    "auditUnavailable": 1,
+    "auditUnusable": 1,
+    "decisionDeadlineMisses": 1,
+    "httpTimeouts": 7,
+    "httpErrors": 0,
+    "throttles": 0,
+    "rpcRequests": 448,
+    "rpcResponseBytes": 74308056,
+    "nativeStreamBytes": 12677466,
+    "broadWatchBytes": 658415970
+  },
+  "observedPredictiveMintsLowerBound": [
+    "VwPwQ55MDR6c2HyySzJvig5pG36PWE7PRpezgKLpump",
+    "YEurBji8cCciF5R9nHVWfjqERyS6pQY7cyRcHKxpump"
+  ],
+  "maximumQueue": 33,
+  "protection": {
+    "priorRunBreaches": 5,
+    "priorRunUnavailable": 17,
+    "currentRunBreaches": 2,
+    "currentRunUnavailable": 5,
+    "maximumCompletedGapMsObserved": 13500,
+    "restartHeldPositionPreserved": true,
+    "autonomousExitAt": "2026-10-29T16:23:37.938Z"
+  },
+  "resources": {
+    "sourceRssPeakBytes": 298106880,
+    "cpuOneCoreFractionP50": 0.10081983381746944,
+    "cpuOneCoreFractionPeak": 0.17928885390809468,
+    "eventLoopLagP95Ms": 48.791551,
+    "minimumAvailableDiskBytes": 288891719680
+  },
+  "limits": [
+    "Polling does not establish exact notification-gap duration or a full-market coverage denominator.",
+    "Window/assessment deltas can overlap and are not distinct minutes or distinct tokens.",
+    "Unique-evaluated counters reset with source generations; observed decision-mint union is only a lower bound.",
+    "This unchanged239a four-slot segment still has legacy evidence-storage interruptions; it is not V2 repair evidence.",
+    "No claim that a later price increase was an executable missed profitable trade."
+  ]
+}

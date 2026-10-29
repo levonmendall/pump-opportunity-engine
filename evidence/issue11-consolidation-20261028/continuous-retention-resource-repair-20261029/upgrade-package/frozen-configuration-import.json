@@ -1,0 +1,14 @@
+{
+  "kind": "FROZEN_NATIVE_FOUR_SLOT_CONFIGURATION_IMPORT",
+  "source": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "nativeSha256": "77d671b39664cbd30006fe5997e2b0e73077f8e18111d80ebac3a1704ea7a7e1",
+  "nativeBytes": 5062505,
+  "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+  "stage": "single",
+  "deepSlots": 4,
+  "service": true,
+  "ledgerPath": "/var/lib/poe/state/ledger.sqlite",
+  "runtimeStarted": false,
+  "providerRequests": 0,
+  "financialFilesRead": false
+}
