@@ -12,7 +12,7 @@ import {PilotMarket} from '../src/pilot-market.js';
 import type {PoolWireAccount} from '../src/pool.js';
 
 const signal=()=>new AbortController().signal;
-function fixture(t:TestContext,timeoutMs=1000){
+function fixture(t:TestContext,timeoutMs=1000,cooperative=false){
   const runs=['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'];
   const captures=runs.map(run=>{
     const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));
@@ -21,7 +21,7 @@ function fixture(t:TestContext,timeoutMs=1000){
   });
   let at=Date.parse(captures[1]!.proof.quote.validatedAt),slot=Math.max(...captures.map(c=>c.state.context.slot)),rentOffset=0;
   const oldNow=Date.now;Date.now=()=>at;
-  const records:Array<{kind:string;data:any}>=[],calls:Array<{method:string;params:any[];at:number}>=[];let recordHook:((kind:string)=>void)|undefined;
+  const records:Array<{kind:string;data:any}>=[],calls:Array<{method:string;params:any[];at:number}>=[];let recordHook:((kind:string)=>void)|undefined,preparationHook:((input:{method:string;signal:AbortSignal})=>Promise<void>)|undefined;
   const accounts=new Map<string,PoolWireAccount>();
   for(const {state}of captures)for(let i=0;i<state.addresses.length;i++)accounts.set(state.addresses[i],state.value[i]);
   const root=mkdtempSync(join(tmpdir(),'poe-DISPOSABLE-pilot-market-')),path=join(root,'fixture.sqlite'),ledger=new DisposableLedger(path,'fixture-pilot-market-mechanics');
@@ -39,11 +39,11 @@ function fixture(t:TestContext,timeoutMs=1000){
     const clock:PoolWireAccount={data:[raw.toString('base64'),'base64'],owner:'Sysvar1111111111111111111111111111111111111',lamports:1169280,executable:false,rentEpoch:0};
     return {context:{slot},value:addresses.map(address=>address===SYSVAR_CLOCK_PUBKEY.toBase58()?clock:structuredClone(accounts.get(address)??null))}as T;
   },usage:()=>({calls:calls.length})};
-  const market=new PilotMarket({rpc,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
+  const market=new PilotMarket({rpc,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
   for(const c of captures)market.registerPool({mint:c.proof.quote.mint,migrationVerified:true,migrationSlot:c.proof.origin.slot,evidence:'retained actual migration; synthetic current timing'});
   const coordinator=new PaperExecutionCoordinator({ledger,now:()=>at,timeoutMs:1000,context:s=>market.context(ledger.state().positions,s),quote:market.executionQuote});
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
-  return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;}};
+  return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
 }
 
 test('fresh supported account lengths and current rent define deposits; every entry repeats rent checks',async t=>{
@@ -177,4 +177,64 @@ test('a timed-out uncooperative buy read retains market ownership until physical
   assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.calls.length,calls);
   assert.throws(()=>f.market.unregisterPool(mint),/READ_IN_FLIGHT/);release();await new Promise<void>(r=>setImmediate(r));
   assert.ok(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()));
+});
+
+test('entry preparation can yield between real SDK reads to fresh whole-inventory pricing without reentrant entry work',async t=>{
+  const f=fixture(t,1000,true),block=signal();
+  for(const [i,c]of f.captures.entries()){
+    const mint=c.proof.quote.mint,plan=await f.market.prepareEntryCosts(mint,block),q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},block);assert.ok(q);
+    const prior=await f.market.context(f.ledger.state().positions,block);
+    f.coordinator.reserve({id:'yield-buy:'+i,side:'buy',mint,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas:'7000',deposit:plan.depositLamports,maxSpend:'10000000',minReceive:'1',decisionEvidence:q.evidence},prior);
+    f.advance(1000);assert.equal((await f.coordinator.runDue()).results[0]!.status,'filled');
+  }
+  const inventory=f.ledger.state().positions;assert.equal(Object.keys(inventory).length,2);
+  await f.market.context(inventory,block);const before=structuredClone(f.ledger.state()),seen:string[]=[];
+  f.beforePreparationRead(async({method,signal})=>{
+    seen.push(method);f.advance(1000);const calls=f.calls.length,current=await f.market.context(inventory,signal);
+    assert.equal(f.calls.length-calls,1,'both actual-size holdings use one warm coherent batch');
+    for(const [mint,p]of Object.entries(inventory)){assert.equal(current.marks[mint]!.pricedBaseUnits,p.units);assert.equal(current.marks[mint]!.at,f.now());}
+    assert.equal(await f.market.quote({mint:f.captures[0]!.proof.quote.mint,side:'buy',inputUnits:'1'},signal),null,'yield does not grant a concurrent entry read');
+  });
+  await f.market.prepareEntryCosts(f.captures[0]!.proof.quote.mint,block);
+  assert.ok(seen.length>=1);assert.deepEqual(f.ledger.state(),before,'pricing/yield never creates an order or changes financial state');
+  const yields=seen.length;assert.ok(await f.market.quote({mint:f.captures[0]!.proof.quote.mint,side:'buy',inputUnits:'10000000'},block));
+  assert.equal(seen.length,yields,'decision/execution entry quotes cannot reenter a trader protection tick through the preparation hook');
+});
+
+test('whole preparation timeout retains uncooperative physical ownership and cannot publish a late plan',async t=>{
+  const f=fixture(t,25),mint=f.captures[1]!.proof.quote.mint;let release!:()=>void;
+  f.pause(new Promise<void>(resolve=>{release=resolve;}));
+  await assert.rejects(f.market.prepareEntryCosts(mint,signal(),{maximumMs:20}),/PREPARATION_ABORTED/);
+  assert.equal(f.market.retirementReady(),false);
+  const calls=f.calls.length;assert.throws(()=>f.market.unregisterPool(mint),/READ_IN_FLIGHT/);
+  await assert.rejects(f.market.prepareEntryCosts(mint,signal()),/PREPARATION_UNAVAILABLE/);
+  assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.calls.length,calls);
+  release();await new Promise<void>(resolve=>setImmediate(resolve));
+  assert.equal(f.market.retirementReady(),true);
+  assert.equal(f.market.usage().preparedEntryCostPlans,0,'late settled work cannot become a usable plan');
+  const plan=await f.market.prepareEntryCosts(mint,signal(),{maximumMs:1000});assert.ok(plan);assert.equal(f.market.usage().preparedEntryCostPlans,1);
+  assert.deepEqual(f.ledger.state().positions,{});assert.deepEqual(f.ledger.state().pending,{});
+});
+
+test('cancellation at a preparation yield prevents the next physical request and cannot create a plan',async t=>{
+ const f=fixture(t,1000,true),controller=new AbortController(),mint=f.captures[1]!.proof.quote.mint,before=f.ledger.state();
+ f.beforePreparationRead(async()=>{controller.abort();});
+ await assert.rejects(f.market.prepareEntryCosts(mint,controller.signal),/PREPARATION_ABORTED|aborted/);
+ await new Promise<void>(resolve=>setImmediate(resolve));
+ assert.equal(f.calls.length,0);assert.equal(f.market.retirementReady(),true);assert.equal(f.market.usage().preparedEntryCostPlans,0);assert.deepEqual(f.ledger.state(),before);
+});
+
+test('an unrelated candidate bank cannot raise a holding slot floor; the holding own known floor remains mandatory',async t=>{
+  const f=fixture(t),mint=f.captures[0]!.proof.quote.mint,other=f.captures[1]!.proof.quote.mint,block=signal();
+  const plan=await f.market.prepareEntryCosts(mint,block),q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},block);assert.ok(q);
+  f.coordinator.reserve({id:'bank-separated-buy',side:'buy',mint,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas:'7000',deposit:plan.depositLamports,maxSpend:'10000000',minReceive:'1',decisionEvidence:q.evidence},{price:f.price(),marks:{}});
+  f.advance(1000);assert.equal((await f.coordinator.runDue()).results[0]!.status,'filled');
+  const inventory=f.ledger.state().positions,heldSlot=f.slot();assert.ok((await f.market.context(inventory,block)).marks[mint]);
+  f.setSlot(heldSlot+100);await f.market.prepareEntryCosts(other,block);assert.equal(f.market.usage().entryPricing.highestVerifiedSlot,heldSlot+100);
+  // Synthetic independently responding banks: holding data is no older than
+  // any fact previously accepted for THIS holding and keeps a fresh Clock.
+  f.setSlot(heldSlot);const context=await f.market.context(inventory,block);assert.equal(context.marks[mint]!.pricedBaseUnits,inventory[mint]!.units);
+  assert.equal(f.market.usage().held.highestVerifiedSlot,heldSlot);
+  f.market.minimumSlot(mint,heldSlot+1);assert.deepEqual((await f.market.context(inventory,block)).marks,{});
+  assert.equal(f.market.usage().holdingDiagnostics.lastContext!.reasonCode,'HELD_PRICING_SLOT_UNAVAILABLE');
 });
