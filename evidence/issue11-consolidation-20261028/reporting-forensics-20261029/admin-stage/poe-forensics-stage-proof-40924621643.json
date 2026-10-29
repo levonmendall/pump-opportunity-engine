@@ -1,0 +1,32 @@
+{
+  "kind": "POE_ORIGINAL_REPORTING_FORENSICS_STAGED_NOT_EXECUTED",
+  "at": 1793296034592,
+  "readerUid": 994,
+  "directory": "/var/tmp/poe-original-reporting-forensics-20261029",
+  "directoryMode": "0755",
+  "files": [
+    {
+      "file": "index.json",
+      "bytes": 424,
+      "sha256": "abd5363307fc4fbb1627f92ef88d401cfea4d34bb8a2cc26c4ff71817c6bfe97",
+      "mode": "0600"
+    },
+    {
+      "file": "export-reporting-forensics-20261029.py",
+      "bytes": 19155,
+      "sha256": "30b3d1675ceca968f1749aa389a4225410e2881bf01779d82e1fe321c926a891",
+      "mode": "0600"
+    },
+    {
+      "file": "OWNER_READ_ONLY.txt",
+      "bytes": 913,
+      "sha256": "c6cb7619c9682562f244df3979352d2dd69bf94464e419c8d95a23229375f3df",
+      "mode": "0600"
+    }
+  ],
+  "exporterSha256": "30b3d1675ceca968f1749aa389a4225410e2881bf01779d82e1fe321c926a891",
+  "privateLedgerReads": 0,
+  "serviceChanges": 0,
+  "credentialReads": 0,
+  "ownerExecutionRequired": true
+}

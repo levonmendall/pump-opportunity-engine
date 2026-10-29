@@ -1,0 +1,1882 @@
+{
+  "kind": "POE_EXACT_PUBLIC_ENTRY_READINESS_CORRELATION",
+  "sourceCommit": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "archiveManifestSha256": "09e1cca065dad14e19e99451cee6241927cad5998db51ada202db4b1c9a07f10",
+  "archiveInputs": [
+    {
+      "file": "material-transitions.ndjson",
+      "bytes": 2079286,
+      "sha256": "e38ac4ff5c23e877dfa839bc51abcb9d5ab2ab3cf1da1a729366f25faaa971bc"
+    },
+    {
+      "file": "routine-0.ndjson",
+      "bytes": 1043903,
+      "sha256": "1b0122a0405ad4cd939326f6af3e0b21ece9771b0ba52923f5a44b4c7147c559"
+    },
+    {
+      "file": "routine-1.ndjson",
+      "bytes": 1044980,
+      "sha256": "9584ab50c1a04c5bfd8c3ad6fcd836817f9e55057870ce3472a14cb5160f988e"
+    },
+    {
+      "file": "routine-2.ndjson",
+      "bytes": 1041064,
+      "sha256": "69f8e737af1c212069d6ae0e5c4fe6088a7e02c7e5268cd1af88afa278128669"
+    },
+    {
+      "file": "routine-3.ndjson",
+      "bytes": 1035830,
+      "sha256": "6d386e44ff663f7149a2bf4054812d101500fb13254d10f557fff41ff186a810"
+    },
+    {
+      "file": "routine-4.ndjson",
+      "bytes": 1033964,
+      "sha256": "0234f8dea72eabb6f1c7609a91fc023823b23ce0bc0b3ed7ae89796fb3f1c730"
+    },
+    {
+      "file": "routine-5.ndjson",
+      "bytes": 451270,
+      "sha256": "0d810d92725e60ab0406e187ce64a08b978f35851634a4a461f3b41fc850a32d"
+    },
+    {
+      "file": "latest.json",
+      "bytes": 16241,
+      "sha256": "38072495fd78db3f4bf73d5613089af5c6647690824886801809ede24e418cba"
+    }
+  ],
+  "frozenRows": {
+    "file": "snapshots.ndjson",
+    "rows": 11,
+    "bytes": 178692,
+    "sha256": "34d7e9b2aeb48d62697f82d968b5c48cb8f6e96d3743fde9eeedbb626f24ad8a"
+  },
+  "locations": {
+    "9305": [
+      {
+        "file": "material-transitions.ndjson",
+        "line": 183,
+        "rawLineSha256": "db0f0604a7b1b237e11b505ec5783d3f25f53fbaa58ec27a11e130f54edf8bfd",
+        "coreSnapshotSha256": "3c4ce526d832e066549199b6587264dac33da0b6b66139ef3753bc71cdf08422"
+      },
+      {
+        "file": "routine-4.ndjson",
+        "line": 64,
+        "rawLineSha256": "db0f0604a7b1b237e11b505ec5783d3f25f53fbaa58ec27a11e130f54edf8bfd",
+        "coreSnapshotSha256": "3c4ce526d832e066549199b6587264dac33da0b6b66139ef3753bc71cdf08422"
+      }
+    ],
+    "9306": [
+      {
+        "file": "material-transitions.ndjson",
+        "line": 184,
+        "rawLineSha256": "143b7d7f55d1b4fcfd880342b7d6f3058e081c3cbebb45fa44761d505477ad94",
+        "coreSnapshotSha256": "bd14acaa3c0e234ddc84db86f3887bd6dc728f3b15497ca059aec66153b48849"
+      },
+      {
+        "file": "routine-4.ndjson",
+        "line": 65,
+        "rawLineSha256": "143b7d7f55d1b4fcfd880342b7d6f3058e081c3cbebb45fa44761d505477ad94",
+        "coreSnapshotSha256": "bd14acaa3c0e234ddc84db86f3887bd6dc728f3b15497ca059aec66153b48849"
+      }
+    ],
+    "9309": [
+      {
+        "file": "material-transitions.ndjson",
+        "line": 185,
+        "rawLineSha256": "74235d70797d58dff5849f7f3abc3abec6fc11f8f5d1b9c94574b54ff8b97643",
+        "coreSnapshotSha256": "3df81ca9c708009c52855fa01f4b5d9360c1b6d6703c705e2c9e6011e961edf6"
+      },
+      {
+        "file": "routine-5.ndjson",
+        "line": 3,
+        "rawLineSha256": "74235d70797d58dff5849f7f3abc3abec6fc11f8f5d1b9c94574b54ff8b97643",
+        "coreSnapshotSha256": "3df81ca9c708009c52855fa01f4b5d9360c1b6d6703c705e2c9e6011e961edf6"
+      }
+    ],
+    "9313": [
+      {
+        "file": "material-transitions.ndjson",
+        "line": 186,
+        "rawLineSha256": "9d67f9f2086b8f443e448463929c8f67750aa6cfc1374e0ce09ad325c5bf0534",
+        "coreSnapshotSha256": "ae978a7903b72bf1b90549c9aa2e4236f7485cefe09cd919c2a300b789d6a2f1"
+      },
+      {
+        "file": "routine-5.ndjson",
+        "line": 7,
+        "rawLineSha256": "9d67f9f2086b8f443e448463929c8f67750aa6cfc1374e0ce09ad325c5bf0534",
+        "coreSnapshotSha256": "ae978a7903b72bf1b90549c9aa2e4236f7485cefe09cd919c2a300b789d6a2f1"
+      }
+    ],
+    "9314": [
+      {
+        "file": "material-transitions.ndjson",
+        "line": 187,
+        "rawLineSha256": "a1e97e09afa0e44ad3c53827c89f4efb011494eabdfbdf9ed493f3372e7f3f88",
+        "coreSnapshotSha256": "4ccecaef929d79539fcac53fa111c4cc61ab12a991c1d4411851b1c0822e127c"
+      },
+      {
+        "file": "routine-5.ndjson",
+        "line": 8,
+        "rawLineSha256": "a1e97e09afa0e44ad3c53827c89f4efb011494eabdfbdf9ed493f3372e7f3f88",
+        "coreSnapshotSha256": "4ccecaef929d79539fcac53fa111c4cc61ab12a991c1d4411851b1c0822e127c"
+      }
+    ],
+    "9304": [
+      {
+        "file": "routine-4.ndjson",
+        "line": 63,
+        "rawLineSha256": "31d4ead61b6075b32948e19817c5e47c919f9fff48ef10c9b5bd88da22fea9bf",
+        "coreSnapshotSha256": "8668a29cc7bbe4e124e20620b0084e92abe8858e75867b3821cabb75f9f51186"
+      }
+    ],
+    "9307": [
+      {
+        "file": "routine-5.ndjson",
+        "line": 1,
+        "rawLineSha256": "29153fb1f3b0a20eaf7c9cba1d2f637b32013d24d1f705f5372b34881bdce4e2",
+        "coreSnapshotSha256": "305d81bbd9ed8b31f573924b4128a5849f5732a625394d19bf8d072ff80ae35b"
+      }
+    ],
+    "9308": [
+      {
+        "file": "routine-5.ndjson",
+        "line": 2,
+        "rawLineSha256": "1a298ea345340896f88461777e4941458e2fc999cb12f7399d3bb5c551ac6855",
+        "coreSnapshotSha256": "ceabf33cec338ab21ca86b9c3d21703ed8d8b756bd60701d5f604626b8586ac2"
+      }
+    ],
+    "9310": [
+      {
+        "file": "routine-5.ndjson",
+        "line": 4,
+        "rawLineSha256": "5846380a55bbda5100a181818f0e561f8d9dd07b1fb12c825685a7a103c3de1e",
+        "coreSnapshotSha256": "62896ae19a92780aa2e971b91d4fbc59c1dc07219013f35da1ca1f567d63ff5a"
+      }
+    ],
+    "9311": [
+      {
+        "file": "routine-5.ndjson",
+        "line": 5,
+        "rawLineSha256": "a87941e315c86120b39f6765cf0e2d0675d95bc37be4af800a69ec45666baa5c",
+        "coreSnapshotSha256": "b7e49303a031faa2a195c41a7859414cca2bb8751b12ffdfa2c1246fc2c939a6"
+      }
+    ],
+    "9312": [
+      {
+        "file": "routine-5.ndjson",
+        "line": 6,
+        "rawLineSha256": "f4e8ed1472b83cf2780d9ffc0d0fd4ccbcd1390c432ea1cfc73f0984d25141e8",
+        "coreSnapshotSha256": "b0a175e58e12784d6b2eaf7706611706a3cf9afab07be0fb271d8d401ec2ffdf"
+      }
+    ]
+  },
+  "duplicateSourceSnapshots": [
+    {
+      "sequence": "9305",
+      "file": "routine-4.ndjson",
+      "line": 64,
+      "rawLineSha256": "db0f0604a7b1b237e11b505ec5783d3f25f53fbaa58ec27a11e130f54edf8bfd",
+      "coreSnapshotSha256": "3c4ce526d832e066549199b6587264dac33da0b6b66139ef3753bc71cdf08422"
+    },
+    {
+      "sequence": "9306",
+      "file": "routine-4.ndjson",
+      "line": 65,
+      "rawLineSha256": "143b7d7f55d1b4fcfd880342b7d6f3058e081c3cbebb45fa44761d505477ad94",
+      "coreSnapshotSha256": "bd14acaa3c0e234ddc84db86f3887bd6dc728f3b15497ca059aec66153b48849"
+    },
+    {
+      "sequence": "9309",
+      "file": "routine-5.ndjson",
+      "line": 3,
+      "rawLineSha256": "74235d70797d58dff5849f7f3abc3abec6fc11f8f5d1b9c94574b54ff8b97643",
+      "coreSnapshotSha256": "3df81ca9c708009c52855fa01f4b5d9360c1b6d6703c705e2c9e6011e961edf6"
+    },
+    {
+      "sequence": "9313",
+      "file": "routine-5.ndjson",
+      "line": 7,
+      "rawLineSha256": "9d67f9f2086b8f443e448463929c8f67750aa6cfc1374e0ce09ad325c5bf0534",
+      "coreSnapshotSha256": "ae978a7903b72bf1b90549c9aa2e4236f7485cefe09cd919c2a300b789d6a2f1"
+    },
+    {
+      "sequence": "9314",
+      "file": "routine-5.ndjson",
+      "line": 8,
+      "rawLineSha256": "a1e97e09afa0e44ad3c53827c89f4efb011494eabdfbdf9ed493f3372e7f3f88",
+      "coreSnapshotSha256": "4ccecaef929d79539fcac53fa111c4cc61ab12a991c1d4411851b1c0822e127c"
+    }
+  ],
+  "conflictingSourceSnapshots": [],
+  "malformedLines": [],
+  "sourceCode": {
+    "src/run-native-paper.ts": {
+      "sha256": "8399ecec740d954602a6811ec2465a9caca94ea6e773dd645eafb76e85c4abcc",
+      "matchedLines": [
+        {
+          "line": 245,
+          "text": "   try{const valuation={at,state,projection,price,marks,sourceValidUntil:context.sourceValidUntil},reconciled=pilotPortfolioReconciled(valuation);projectionStage='history';const pnl=operatingPnlReporting({at,projection,price,valuationUsable:reconciled});let history=currentLedger.getOperatingReportingHistory();for(const point of pilotReportingPoints(history,{at,inceptionAt:state.inceptionAt,running,reconciled,tradingMicroUsd:pnl.currentUsdTranslationMicroUsd,economicMicroUsd:pnl.tokenTradingAfterOperatingCostsMicroUsd}))history=currentLedger.recordOperatingReportingPoint(point,at);projectionStage='trades';const journal=currentLedger.exportJournal(50),actionResults=new Map<string,unknown>();for(const raw of journal){const row=raw as {kind:string;action_id:string};if(row.kind==='attempt')actionResults.set(row.action_id,currentLedger.actionResult(row.action_id));}const tradeCache=currentLedger.recordReportingTrades(projectPilotFilledTrades({at,state,journal,actionResults}).trades);projectionStage='portfolio';experimentalPortfolio=buildPilotPortfolio({authoritativeOperating:true,at,running,state,projection,identity:{accountId:state.accountId,inceptionAt:new Date(state.inceptionAt).toISOString(),release:source.commit,strategy:configuration.contract.version},sequence:currentLedger.nextSnapshotSequence(),price,marks,sourceValidUntil:context.sourceValidUntil,history,journal,actionResults,tradeCache,decisions:currentBridge.trader.decisions(),funnel:{...currentBridge.trader.funnel},connected:currentNative.usage().connected,warming:engine.counters.auditedWindows===0,usefulProgressAt:Math.max(state.daily.reconciledAt,engine.lastPredictiveAt??0)||null,blocker:projection.entriesEnabled?null:state.controls.reason,metrics:{eventLoopLagMs:lag.percentile(95)/1e6,processingLagMs:currentNative.usage().queueAgeMs.maximum,providerEvents:currentNative.usage().receivedBoundNotifications,rpcRequests:u.newUnits,rpcAvailable:currentRpc.available()}});projectionStage='accounting';experimentalAccounting=pilotExperimentalAccounting(valuation);financialProjectionReady=true;}catch(error){experimentalPortfolio=null;experimentalAccounting=null;experimentalPortfolioProjectionFailure=pilotPortfolioProjectionFailure(projectionStage,error);experimentalPortfolioUnavailableReason='validated financial projection unavailable at '+experimentalPortfolioProjectionFailure.stage+' ('+experimentalPortfolioProjectionFailure.code+'); exposure retained';}"
+        },
+        {
+          "line": 272,
+          "text": "   if(!held&&!Object.keys(currentLedger.state().pending).length&&Date.now()-lastProtectionStart>=5000&&(service?localAdmission(250):optionalAdmission(250))){lastProtectionStart=Date.now();work='protection';try{await currentBridge.protection();}finally{work='idle';}}"
+        }
+      ]
+    },
+    "src/pilot-reporting.ts": {
+      "sha256": "6be4421b5332154ec4ea14fe5131212ea9d82cc0cc14365a3d5dbc83112bc00e",
+      "matchedLines": [
+        {
+          "line": 59,
+          "text": " const marketAt=!marksUsable?null:markTimes.length?Math.min(...markTimes,input.sourceValidUntil!-30000):currentPrice===null?null:input.price!.at;"
+        },
+        {
+          "line": 60,
+          "text": " const reconciled=s.daily.day===iso(at).slice(0,10)&&s.daily.reconciledAt>0&&s.daily.reconciledAt<=at&&at-s.daily.reconciledAt<=2000&&p.equityMicroUsd!==null&&!p.unknownMarks&&currentPrice!==null&&marksUsable;"
+        },
+        {
+          "line": 85,
+          "text": "  status:{runtime:input.running?'running':'stopped',market:!input.connected||marketAt===null?'unavailable':input.warming?'warming':'observing',entries:p.entriesEnabled&&reconciled?'enabled':'paused',reconciled,blocker:input.blocker},"
+        }
+      ]
+    },
+    "src/ledger.ts": {
+      "sha256": "002fd214389a748d5c8e08127ac61be749dccd5c7daf6d66f6bc48cef99c93bb",
+      "matchedLines": [
+        {
+          "line": 321,
+          "text": "      s.controls = { entriesEnabled: true, reason: 'explicit verified runtime readiness', changedAt: now, readinessVersion: readiness.version, stopRequested: false };"
+        },
+        {
+          "line": 661,
+          "text": "    const dayFresh = s.daily.day === utcDay(now) && s.daily.reconciledAt > 0 && now >= s.daily.reconciledAt && now - s.daily.reconciledAt <= MAX_QUOTE_AGE;"
+        },
+        {
+          "line": 675,
+          "text": "      entriesEnabled: s.controls.entriesEnabled && !s.controls.stopRequested && !s.daily.paused && dayFresh && equityMicroUsd !== null,"
+        }
+      ]
+    }
+  },
+  "focus": [
+    {
+      "sequence": "9307",
+      "sourceGeneratedAt": "2026-10-29T17:46:40.848Z",
+      "renderReceivedAt": "2026-10-29T17:47:05.682Z",
+      "cloudRequestedAt": "2026-10-29T17:47:13.627Z",
+      "cloudReceivedAt": "2026-10-29T17:47:13.779Z",
+      "sourceAgeAtRenderReceiptMs": 24834,
+      "sourceAgeAtCloudObservationMs": 32931,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "reconciledAt": "2026-10-29T17:46:40.794Z",
+      "reconciliationAgeAtSourceMs": 54,
+      "reconciliationWithin2000ms": true,
+      "marketAt": "2026-10-29T17:46:38.023Z",
+      "marketAgeAtSourceMs": 2825,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2825,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.93,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1534,
+        "rpcResponseBytes": 292937971,
+        "nativeStreamBytes": 610634362,
+        "broadWatchBytes": 36596580864,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 26,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21085209,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:46:02.919Z",
+        "freshSupportAt": "2026-10-29T17:46:24.285Z",
+        "bankClockAt": "2026-10-29T17:46:23.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:46:40.794Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:46:40.569Z",
+        "cpuOneCoreFraction": 0.11872721158211565,
+        "rssBytes": 456462336,
+        "availableMemoryBytes": 6770929664,
+        "availableDiskBytes": 288750198784,
+        "eventLoopLagMs": 26.099711,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 776
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9310",
+      "sourceGeneratedAt": "2026-10-29T17:47:26.469Z",
+      "renderReceivedAt": "2026-10-29T17:47:51.004Z",
+      "cloudRequestedAt": "2026-10-29T17:47:59.306Z",
+      "cloudReceivedAt": "2026-10-29T17:47:59.470Z",
+      "sourceAgeAtRenderReceiptMs": 24535,
+      "sourceAgeAtCloudObservationMs": 33001,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:47:21.419Z",
+      "reconciliationAgeAtSourceMs": 5050,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:47:23.220Z",
+      "marketAgeAtSourceMs": 3249,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 3249,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.805,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1542,
+        "rpcResponseBytes": 292990739,
+        "nativeStreamBytes": 610655262,
+        "broadWatchBytes": 36658339333,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 9,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21298753,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:47:14.406Z",
+        "freshSupportAt": "2026-10-29T17:47:12.245Z",
+        "bankClockAt": "2026-10-29T17:47:11.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:47:21.419Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:47:25.831Z",
+        "cpuOneCoreFraction": 0.12523181795398727,
+        "rssBytes": 456450048,
+        "availableMemoryBytes": 6735511552,
+        "availableDiskBytes": 288749670400,
+        "eventLoopLagMs": 26.066943,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 784
+      },
+      "rawLedgerControlsAvailable": false
+    }
+  ],
+  "brackets": [
+    {
+      "sequence": "9304",
+      "sourceGeneratedAt": "2026-10-29T17:45:55.756Z",
+      "renderReceivedAt": "2026-10-29T17:46:20.371Z",
+      "cloudRequestedAt": "2026-10-29T17:46:28.064Z",
+      "cloudReceivedAt": "2026-10-29T17:46:28.206Z",
+      "sourceAgeAtRenderReceiptMs": 24615,
+      "sourceAgeAtCloudObservationMs": 32450,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:45:52.691Z",
+      "reconciliationAgeAtSourceMs": 3065,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:45:52.806Z",
+      "marketAgeAtSourceMs": 2950,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2950,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.97,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 961,
+        "auditUnavailable": 40,
+        "auditUnusable": 108,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 961,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1511,
+        "rpcResponseBytes": 290653868,
+        "nativeStreamBytes": 610603575,
+        "broadWatchBytes": 36534240425,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 284,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 8,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:44:49.048Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 20529153,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:45:55.650Z",
+        "freshSupportAt": "2026-10-29T17:45:42.235Z",
+        "bankClockAt": "2026-10-29T17:45:41.000Z",
+        "auditAt": "2026-10-29T17:44:52.593Z",
+        "predictiveAt": "2026-10-29T17:44:52.593Z",
+        "reconciliationAt": "2026-10-29T17:45:52.691Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:45:55.755Z",
+        "cpuOneCoreFraction": 0.12428618266191405,
+        "rssBytes": 456458240,
+        "availableMemoryBytes": 6764830720,
+        "availableDiskBytes": 288750772224,
+        "eventLoopLagMs": 26.148863,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 173,
+        "supported": 173,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 767
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9305",
+      "sourceGeneratedAt": "2026-10-29T17:46:10.769Z",
+      "renderReceivedAt": "2026-10-29T17:46:35.472Z",
+      "cloudRequestedAt": "2026-10-29T17:46:43.215Z",
+      "cloudReceivedAt": "2026-10-29T17:46:43.393Z",
+      "sourceAgeAtRenderReceiptMs": 24703,
+      "sourceAgeAtCloudObservationMs": 32624,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:46:07.766Z",
+      "reconciliationAgeAtSourceMs": 3003,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:46:07.943Z",
+      "marketAgeAtSourceMs": 2826,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2826,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 101.005,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1517,
+        "rpcResponseBytes": 292822125,
+        "nativeStreamBytes": 610634001,
+        "broadWatchBytes": 36553901321,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 13,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 20713930,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:46:02.919Z",
+        "freshSupportAt": "2026-10-29T17:46:03.729Z",
+        "bankClockAt": "2026-10-29T17:46:03.000Z",
+        "auditAt": "2026-10-29T17:46:04.360Z",
+        "predictiveAt": "2026-10-29T17:44:52.593Z",
+        "reconciliationAt": "2026-10-29T17:46:07.766Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:46:10.002Z",
+        "cpuOneCoreFraction": 0.12253615690252768,
+        "rssBytes": 456458240,
+        "availableMemoryBytes": 6764367872,
+        "availableDiskBytes": 288750579712,
+        "eventLoopLagMs": 26.132479,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 173,
+        "supported": 173,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 770
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9306",
+      "sourceGeneratedAt": "2026-10-29T17:46:25.812Z",
+      "renderReceivedAt": "2026-10-29T17:46:50.561Z",
+      "cloudRequestedAt": "2026-10-29T17:46:58.404Z",
+      "cloudReceivedAt": "2026-10-29T17:46:58.617Z",
+      "sourceAgeAtRenderReceiptMs": 24749,
+      "sourceAgeAtCloudObservationMs": 32805,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "reconciledAt": "2026-10-29T17:46:25.646Z",
+      "reconciliationAgeAtSourceMs": 166,
+      "reconciliationWithin2000ms": true,
+      "marketAt": "2026-10-29T17:46:22.992Z",
+      "marketAgeAtSourceMs": 2820,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2820,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.99,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1533,
+        "rpcResponseBytes": 292937958,
+        "nativeStreamBytes": 610634351,
+        "broadWatchBytes": 36574801856,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 26,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21047530,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:46:02.919Z",
+        "freshSupportAt": "2026-10-29T17:46:24.285Z",
+        "bankClockAt": "2026-10-29T17:46:23.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:46:25.646Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:46:24.878Z",
+        "cpuOneCoreFraction": 0.12120983888364568,
+        "rssBytes": 456458240,
+        "availableMemoryBytes": 6762450944,
+        "availableDiskBytes": 288750256128,
+        "eventLoopLagMs": 26.116095,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 773
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9307",
+      "sourceGeneratedAt": "2026-10-29T17:46:40.848Z",
+      "renderReceivedAt": "2026-10-29T17:47:05.682Z",
+      "cloudRequestedAt": "2026-10-29T17:47:13.627Z",
+      "cloudReceivedAt": "2026-10-29T17:47:13.779Z",
+      "sourceAgeAtRenderReceiptMs": 24834,
+      "sourceAgeAtCloudObservationMs": 32931,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "reconciledAt": "2026-10-29T17:46:40.794Z",
+      "reconciliationAgeAtSourceMs": 54,
+      "reconciliationWithin2000ms": true,
+      "marketAt": "2026-10-29T17:46:38.023Z",
+      "marketAgeAtSourceMs": 2825,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2825,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.93,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1534,
+        "rpcResponseBytes": 292937971,
+        "nativeStreamBytes": 610634362,
+        "broadWatchBytes": 36596580864,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 26,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21085209,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:46:02.919Z",
+        "freshSupportAt": "2026-10-29T17:46:24.285Z",
+        "bankClockAt": "2026-10-29T17:46:23.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:46:40.794Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:46:40.569Z",
+        "cpuOneCoreFraction": 0.11872721158211565,
+        "rssBytes": 456462336,
+        "availableMemoryBytes": 6770929664,
+        "availableDiskBytes": 288750198784,
+        "eventLoopLagMs": 26.099711,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 776
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9308",
+      "sourceGeneratedAt": "2026-10-29T17:46:56.222Z",
+      "renderReceivedAt": "2026-10-29T17:47:20.804Z",
+      "cloudRequestedAt": "2026-10-29T17:47:28.789Z",
+      "cloudReceivedAt": "2026-10-29T17:47:29.142Z",
+      "sourceAgeAtRenderReceiptMs": 24582,
+      "sourceAgeAtCloudObservationMs": 32920,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "reconciledAt": "2026-10-29T17:46:56.164Z",
+      "reconciliationAgeAtSourceMs": 58,
+      "reconciliationWithin2000ms": true,
+      "marketAt": "2026-10-29T17:46:53.068Z",
+      "marketAgeAtSourceMs": 3154,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 3154,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.855,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1538,
+        "rpcResponseBytes": 292961092,
+        "nativeStreamBytes": 610641429,
+        "broadWatchBytes": 36617237929,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 27,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21172713,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:46:49.800Z",
+        "freshSupportAt": "2026-10-29T17:46:48.175Z",
+        "bankClockAt": "2026-10-29T17:46:47.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:46:56.164Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:46:55.574Z",
+        "cpuOneCoreFraction": 0.11831438697382059,
+        "rssBytes": 456425472,
+        "availableMemoryBytes": 6774751232,
+        "availableDiskBytes": 288750075904,
+        "eventLoopLagMs": 26.099711,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 779
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9309",
+      "sourceGeneratedAt": "2026-10-29T17:47:11.248Z",
+      "renderReceivedAt": "2026-10-29T17:47:35.902Z",
+      "cloudRequestedAt": "2026-10-29T17:47:44.151Z",
+      "cloudReceivedAt": "2026-10-29T17:47:44.302Z",
+      "sourceAgeAtRenderReceiptMs": 24654,
+      "sourceAgeAtCloudObservationMs": 33054,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:47:06.242Z",
+      "reconciliationAgeAtSourceMs": 5006,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:47:08.146Z",
+      "marketAgeAtSourceMs": 3102,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 3102,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.88,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1539,
+        "rpcResponseBytes": 292967761,
+        "nativeStreamBytes": 610648096,
+        "broadWatchBytes": 36637521774,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 22,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21218582,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:47:06.006Z",
+        "freshSupportAt": "2026-10-29T17:46:48.175Z",
+        "bankClockAt": "2026-10-29T17:46:47.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:47:06.242Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:47:11.193Z",
+        "cpuOneCoreFraction": 0.12078561640359337,
+        "rssBytes": 456450048,
+        "availableMemoryBytes": 6778880000,
+        "availableDiskBytes": 288750022656,
+        "eventLoopLagMs": 26.083327,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 781
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9310",
+      "sourceGeneratedAt": "2026-10-29T17:47:26.469Z",
+      "renderReceivedAt": "2026-10-29T17:47:51.004Z",
+      "cloudRequestedAt": "2026-10-29T17:47:59.306Z",
+      "cloudReceivedAt": "2026-10-29T17:47:59.470Z",
+      "sourceAgeAtRenderReceiptMs": 24535,
+      "sourceAgeAtCloudObservationMs": 33001,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:47:21.419Z",
+      "reconciliationAgeAtSourceMs": 5050,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:47:23.220Z",
+      "marketAgeAtSourceMs": 3249,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 3249,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.805,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1542,
+        "rpcResponseBytes": 292990739,
+        "nativeStreamBytes": 610655262,
+        "broadWatchBytes": 36658339333,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 9,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21298753,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:47:14.406Z",
+        "freshSupportAt": "2026-10-29T17:47:12.245Z",
+        "bankClockAt": "2026-10-29T17:47:11.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:47:21.419Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:47:25.831Z",
+        "cpuOneCoreFraction": 0.12523181795398727,
+        "rssBytes": 456450048,
+        "availableMemoryBytes": 6735511552,
+        "availableDiskBytes": 288749670400,
+        "eventLoopLagMs": 26.066943,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 784
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9311",
+      "sourceGeneratedAt": "2026-10-29T17:47:41.521Z",
+      "renderReceivedAt": "2026-10-29T17:48:06.100Z",
+      "cloudRequestedAt": "2026-10-29T17:48:14.473Z",
+      "cloudReceivedAt": "2026-10-29T17:48:19.593Z",
+      "sourceAgeAtRenderReceiptMs": 24579,
+      "sourceAgeAtCloudObservationMs": 38072,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:47:37.004Z",
+      "reconciliationAgeAtSourceMs": 4517,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:47:38.256Z",
+      "marketAgeAtSourceMs": 3265,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 3265,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.85,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1544,
+        "rpcResponseBytes": 293023569,
+        "nativeStreamBytes": 610672278,
+        "broadWatchBytes": 36687106050,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 10,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21398152,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:47:39.401Z",
+        "freshSupportAt": "2026-10-29T17:47:36.857Z",
+        "bankClockAt": "2026-10-29T17:47:36.000Z",
+        "auditAt": "2026-10-29T17:46:22.892Z",
+        "predictiveAt": "2026-10-29T17:46:22.892Z",
+        "reconciliationAt": "2026-10-29T17:47:37.004Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:47:41.079Z",
+        "cpuOneCoreFraction": 0.1270339450157962,
+        "rssBytes": 456339456,
+        "availableMemoryBytes": 6755610624,
+        "availableDiskBytes": 288749563904,
+        "eventLoopLagMs": 26.050559,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 177,
+        "supported": 177,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 787
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9312",
+      "sourceGeneratedAt": "2026-10-29T17:47:56.532Z",
+      "renderReceivedAt": "2026-10-29T17:48:21.200Z",
+      "cloudRequestedAt": "2026-10-29T17:48:34.605Z",
+      "cloudReceivedAt": "2026-10-29T17:48:34.782Z",
+      "sourceAgeAtRenderReceiptMs": 24668,
+      "sourceAgeAtCloudObservationMs": 38250,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:47:52.298Z",
+      "reconciliationAgeAtSourceMs": 4234,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:47:53.901Z",
+      "marketAgeAtSourceMs": 2631,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2631,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.645,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 962,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 962,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1566,
+        "rpcResponseBytes": 293316955,
+        "nativeStreamBytes": 610699109,
+        "broadWatchBytes": 36711896845,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 28,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 22005184,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:47:56.393Z",
+        "freshSupportAt": "2026-10-29T17:47:54.542Z",
+        "bankClockAt": "2026-10-29T17:47:53.000Z",
+        "auditAt": "2026-10-29T17:47:52.927Z",
+        "predictiveAt": "2026-10-29T17:47:52.927Z",
+        "reconciliationAt": "2026-10-29T17:47:52.298Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:47:56.531Z",
+        "cpuOneCoreFraction": 0.12710155715406313,
+        "rssBytes": 456339456,
+        "availableMemoryBytes": 6751334400,
+        "availableDiskBytes": 288749010944,
+        "eventLoopLagMs": 26.066943,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 181,
+        "supported": 181,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 790
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9313",
+      "sourceGeneratedAt": "2026-10-29T17:48:11.555Z",
+      "renderReceivedAt": "2026-10-29T17:48:36.298Z",
+      "cloudRequestedAt": "2026-10-29T17:48:49.786Z",
+      "cloudReceivedAt": "2026-10-29T17:48:50.088Z",
+      "sourceAgeAtRenderReceiptMs": 24743,
+      "sourceAgeAtCloudObservationMs": 38533,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "reconciledAt": "2026-10-29T17:48:08.081Z",
+      "reconciliationAgeAtSourceMs": 3474,
+      "reconciliationWithin2000ms": false,
+      "marketAt": "2026-10-29T17:48:09.361Z",
+      "marketAgeAtSourceMs": 2194,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2194,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.705,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 963,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 963,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1572,
+        "rpcResponseBytes": 294191680,
+        "nativeStreamBytes": 611557392,
+        "broadWatchBytes": 36733070687,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 33,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 25263631,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:48:10.441Z",
+        "freshSupportAt": "2026-10-29T17:48:09.206Z",
+        "bankClockAt": "2026-10-29T17:48:08.000Z",
+        "auditAt": "2026-10-29T17:47:52.927Z",
+        "predictiveAt": "2026-10-29T17:47:52.927Z",
+        "reconciliationAt": "2026-10-29T17:48:08.081Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:48:11.332Z",
+        "cpuOneCoreFraction": 0.20627051290737855,
+        "rssBytes": 456380416,
+        "availableMemoryBytes": 6754365440,
+        "availableDiskBytes": 288745639936,
+        "eventLoopLagMs": 26.066943,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 182,
+        "supported": 182,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 793
+      },
+      "rawLedgerControlsAvailable": false
+    },
+    {
+      "sequence": "9314",
+      "sourceGeneratedAt": "2026-10-29T17:48:26.589Z",
+      "renderReceivedAt": "2026-10-29T17:48:51.407Z",
+      "cloudRequestedAt": "2026-10-29T17:49:05.098Z",
+      "cloudReceivedAt": "2026-10-29T17:49:05.371Z",
+      "sourceAgeAtRenderReceiptMs": 24818,
+      "sourceAgeAtCloudObservationMs": 38782,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "reconciledAt": "2026-10-29T17:48:24.717Z",
+      "reconciliationAgeAtSourceMs": 1872,
+      "reconciliationWithin2000ms": true,
+      "marketAt": "2026-10-29T17:48:24.391Z",
+      "marketAgeAtSourceMs": 2198,
+      "flatMarketTimestampIsActualUsdPriceTimestamp": true,
+      "usdPriceAgeAtSourceMs": 2198,
+      "usdPriceWithin10000ms": true,
+      "solPriceUsd": 100.73,
+      "usdEquityAvailable": true,
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "heldPositions": 0,
+      "pendingOrders": 0,
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 963,
+        "auditUnavailable": 40,
+        "auditUnusable": 109,
+        "decisionDeadlineMisses": 52,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 963,
+        "capacityExclusions": 0,
+        "structuralExclusions": 34,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 1573,
+        "rpcResponseBytes": 294238823,
+        "nativeStreamBytes": 611604533,
+        "broadWatchBytes": 36753446672,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 285,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 31,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T17:46:03.063Z",
+        "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+        "controlCooldownUntil": null
+      },
+      "primaryCooldownActiveAtSource": false,
+      "historyCooldownActiveAtSource": false,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 25341121,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "sourceTimes": {
+        "marketNotificationAt": "2026-10-29T17:48:25.733Z",
+        "freshSupportAt": "2026-10-29T17:48:09.206Z",
+        "bankClockAt": "2026-10-29T17:48:08.000Z",
+        "auditAt": "2026-10-29T17:47:52.927Z",
+        "predictiveAt": "2026-10-29T17:47:52.927Z",
+        "reconciliationAt": "2026-10-29T17:48:24.717Z"
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T17:48:25.820Z",
+        "cpuOneCoreFraction": 0.2060995015752888,
+        "rssBytes": 456380416,
+        "availableMemoryBytes": 6755069952,
+        "availableDiskBytes": 288745574400,
+        "eventLoopLagMs": 26.066943,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+        "maximumCompletedGapMs": 2555,
+        "maximumQuoteAgeAtUseMs": 72,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "runId": "native-paper-20261029164842357",
+      "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+      "financialFunnel": {
+        "discovered": 182,
+        "supported": 182,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 796
+      },
+      "rawLedgerControlsAvailable": false
+    }
+  ],
+  "conclusions": [
+    "The user-reported17:47:05/17:47:51 times are Render receipt times, not source generation times.",
+    "9307 was generated54ms after reconciliation;9310 was generated5050ms after reconciliation and therefore correctly fails the unchanged2000ms financial gate.",
+    "Both snapshots are flat with no pending orders; their marketAt fields are consequently the actual USD price timestamps. Price ages2825ms/3249ms remain within the existing10000ms rule.",
+    "HTTP timeout/error/throttle and quality-gap/audit-failure counters did not increase between these two source snapshots. Provider cooldowns shown in both were already expired.",
+    "Capture, broad discovery, watch and public resource/evidence/supervision gates are healthy in both snapshots. These snapshots do not prove the absence of unsampled incidents.",
+    "Installed source flat maintenance is discretionary at>=5000ms; actual order/projection financial gates require reconciliation age<=2000ms. This is a demonstrated scheduling mismatch, not a reason to relax the guard.",
+    "Public status.entries is derived from projection.entriesEnabled AND portfolio reconciliation validity. It is not a direct export of durable controls.entriesEnabled.",
+    "The11bracketing snapshots include7entry-paused states; all7have reconciliation ages>2000ms while every USD price age is<10000ms. Reconciliation counters generally rise3per15s, consistent with the installed5s flat cadence.",
+    "The paused snapshot reuses controls.reason from the last recorded state; explicit verified runtime readiness is a successful resume label, not proof that a new technical pause occurred.",
+    "The exact durable controls/daily-loss state and any pause/resume journal events were not read. Do not infer a private ledger transition solely from these public fields."
+  ],
+  "limitations": [
+    "No network, provider requests, original financial database reads, service controls or code modifications.",
+    "Snapshots are samples; overlapping observations do not establish continuous financial readiness.",
+    "Financial amounts remain original source projections. No profitable opportunity or execution miss is inferred."
+  ]
+}

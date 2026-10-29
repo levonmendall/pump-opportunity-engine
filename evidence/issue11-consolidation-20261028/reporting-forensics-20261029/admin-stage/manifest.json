@@ -1,0 +1,48 @@
+{
+  "kind": "POE_FORENSIC_NONROOT_STAGING_EVIDENCE",
+  "adminCommit": "09e0010a5095f21031ba65cd0064b0ca16302abd",
+  "workflowRun": 40924621643,
+  "exporterSha256": "30b3d1675ceca968f1749aa389a4225410e2881bf01779d82e1fe321c926a891",
+  "stageVerified": true,
+  "ownerExecuted": false,
+  "privateLedgerRead": false,
+  "currentPrivateStatusAdditionIncluded": false,
+  "sourcePath": "operator/native-paper-ec2/export-reporting-forensics-20261029.py",
+  "files": [
+    {
+      "file": "poe-forensics-stage-run-40924621643.json",
+      "bytes": 1039,
+      "sha256": "990a5cbc46f1bb324de59f4ee42f3bf1bea207c236abbb6c4c157b2addf36d74"
+    },
+    {
+      "file": "poe-forensics-stage-run-40924621643.log",
+      "bytes": 24258,
+      "sha256": "e24398729495acb946ff869b11d6e80ad811a1fce12df8f6e31022f7484e5e94"
+    },
+    {
+      "file": "poe-forensics-stage-proof-40924621643.json",
+      "bytes": 958,
+      "sha256": "eb3c0237db5463fca0beedc7915c3c5dbf3bfdb7c128a7e2001389b8d53f48b3"
+    },
+    {
+      "file": "poe-reporting-forensics-exporter-tests-20261029.txt",
+      "bytes": 2145,
+      "sha256": "efb72669ce34e0c7cf0a2ddbf41ab1aafe02be127f320b1ad90a42e201b8a228"
+    },
+    {
+      "file": "poe-independent-reporting-forensics-review-tests-20261029.txt",
+      "bytes": 2145,
+      "sha256": "efb72669ce34e0c7cf0a2ddbf41ab1aafe02be127f320b1ad90a42e201b8a228"
+    },
+    {
+      "file": "poe-forensics-admin-stage-tests-20261029.txt",
+      "bytes": 1172,
+      "sha256": "5d048ddfd243e64ef9c04cd153730af33e1d670c298efb864ea5940db44095e2"
+    },
+    {
+      "file": "poe-independent-forensics-stage-review-tests-20261029.txt",
+      "bytes": 1172,
+      "sha256": "13ede13186b098cfe09ad6339c9436686388f9cfe5b19e554ac88f9d15f44814"
+    }
+  ]
+}
