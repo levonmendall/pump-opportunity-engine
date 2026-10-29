@@ -1,0 +1,12 @@
+{
+  "kind": "root-independent-owner-command-review-v1",
+  "at": "2026-10-29T19:39:07.793803+00:00",
+  "driverSha256": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346",
+  "ownerCommandSha256": "61a79c230ab9b0b38471eb9a0b628dfa091177307ba78f7dfde84b89ae61618c",
+  "shellRoundtrip": true,
+  "pythonASTValid": true,
+  "expectedHashAndIndexPinned": true,
+  "executed": false,
+  "serviceOperations": 0,
+  "financialAccountRead": false
+}
