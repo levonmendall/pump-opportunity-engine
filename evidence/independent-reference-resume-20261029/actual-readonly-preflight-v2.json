@@ -1,0 +1,57 @@
+{
+  "kind": "actual-independent-reference-resume-readonly-preflight-v2",
+  "at": 1793307546404,
+  "previousCollectorPid": 108957,
+  "previousCollector": {
+    "state": "terminated-zombie",
+    "procState": "Z",
+    "statSha256": "e12e9acee8e6f1d0479ebf1217c18fe31a090af48a7eea8de2b4b9ea6e714a6e",
+    "openDescriptors": null,
+    "descriptorVisibility": "unavailable",
+    "meaning": "Kernel Z/X state is already exited, never an active collector; unreadable FD metadata is not asserted empty."
+  },
+  "sourceObservation": {
+    "observedAt": 1793307546404,
+    "state": "matching",
+    "reason": "PUBLIC_RUNTIME_CURRENT",
+    "sourceAt": 1793307520532,
+    "receivedAt": 1793307544748,
+    "snapshotSha256": "98e297c05bbed470f8e446a3fd696da216a8797a153f3ad37f976f7dec9413ca",
+    "sequence": "10070",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "sourceCommit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "runId": "native-paper-20261029194223241",
+    "runtimeStartedAt": 1793302943241,
+    "captureConnected": true,
+    "discoveryConnected": true,
+    "watchConnected": true
+  },
+  "measurement": {
+    "startedAt": 1793304761728,
+    "plannedEndAt": 1793311961728,
+    "sourceSnapshotPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/latest.json"
+  },
+  "originalRuntime": {
+    "runId": "native-paper-20261029194223241",
+    "sourceCommit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "startedAt": 1793302943241
+  },
+  "requests": 6,
+  "completedPasses": [
+    1
+  ],
+  "selected": 5,
+  "cumulative": {
+    "requestStarts": 64,
+    "measuredBodyBytes": 1905339,
+    "uncertainBodyBytes": 262416
+  },
+  "rawBytes": 216622,
+  "priorCheckpointSha256": "89960f0d10b26e0b1d7cd5dce267e388c2f9ae93e2e6a064caf272da72fc8774",
+  "priorPlanSha256": "272dd087af416996c4b90d69c8407d6583922c80419426b32dcc259e757fc553",
+  "logSha256": "1e4ac3c65d51eff6c544ef544e668380d3dd1af6b6e9b4f25b7612665778f2b9",
+  "requestsMade": 0,
+  "sourceOperations": 0,
+  "financialOperations": 0
+}

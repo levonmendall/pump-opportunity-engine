@@ -1,0 +1,59 @@
+{
+  "kind": "independent-reference-checkpoint-resume-review-v1",
+  "state": "OFFLINE_APPROVED_WITH_ACTUAL_READ_ONLY_CHECKPOINT_VALIDATION",
+  "reviewedAt": "2026-10-29T20:59:48.352172+00:00",
+  "baseCommit": "1db6b6b",
+  "files": {
+    "scripts/capture-independent-two-hour-reference.ts": "43141c6aaa0c69e5100085edb10ec5ffd3eaaa643614b16013f477c1a98541b5",
+    "test/independent-reference-resume.test.ts": "b88ef88f2a5c4291ecf80fef45c6439ea5478148b1d43e5045825c361750f54d",
+    "test/independent-two-hour-reference.test.ts": "028b6b6d67b1541651f2f2b07c57359f847b3d68038a9e23c753147fe365e44d",
+    "test/persistent-independent-reference.test.ts": "7cccdcc79de62e2981cc001333f4c7151fabb5ca155b3c9c37f1b9c0b04759f9"
+  },
+  "focusedTests": {
+    "passed": 32,
+    "failed": 0,
+    "exitCode": 0,
+    "sha256": "d89755d1f588417633e178cb072694772e0792dc514ed1a3b85190e3de2c80a4"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "actualReadOnlyPreflight": {
+    "file": "actual-checkpoint-read-only-preflight.json",
+    "sha256": "9d1a22139c3870b59f0a854bf7edea6cc282d7df71657067f9fe1744fd4839c4",
+    "requests": 6,
+    "rows": 120,
+    "selected": 5,
+    "completedPasses": [
+      1
+    ],
+    "captured": 0
+  },
+  "issuesCorrectedDuringReview": [
+    "Require exactly six unique enrollment labels and reproduce rows/selection from hash-validated raw bodies at original bounded availability times.",
+    "Use shared bounded NoFollow reads for checkpoint, prior usage, public snapshot and end attestations.",
+    "Recognize authoritative exited kernel Z/X state without requiring unavailable descriptor privileges; never assert unreadable descriptor directory empty.",
+    "Validate and preserve captured outcome availability and prevent duplicate provider retrieval."
+  ],
+  "verifiedProperties": [
+    "Exclusive same-directory flock prevents concurrent resumed collectors; a live or unknown previous process cannot resume.",
+    "Original plan/measurement/source interval and cumulative actual plus uncertain provider accounting remain unchanged.",
+    "Settled complete phases and captured outcomes are reused; uncertain invocations and partial enrollments refuse without retry.",
+    "Prior checkpoint is archived; actual Cloud collector gap and old/new collector source hashes remain explicit.",
+    "Original runtime source change prevents further enrollment while frozen independent outcomes remain recoverable without runtime-performance credit.",
+    "Thirty-two mocked focused tests and TypeScript build passed on exact unchanged source.",
+    "Actual retained measurement-2012 checkpoint passes read-only validation with six settled GETs, 120 rows and five frozen leads; previous PID108957 is verified Z with descriptor visibility unavailable."
+  ],
+  "blockingFindings": [],
+  "limitations": [
+    "Reviewer did not resume collection or send any provider request. Root must start the committed pinned collector and verify live checkpoint progress.",
+    "Kernel Z/X proves an exited collector; it does not prove market-source continuity during the Cloud gap.",
+    "Independent index outcomes remain indicative prices, not executable returns or whole-market opportunity recall."
+  ],
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "runtimeOperations": 0,
+  "collectionResumed": false
+}

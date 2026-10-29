@@ -1,0 +1,23 @@
+{
+  "kind": "independent-reference-resume-verification-v1",
+  "baseCommit": "1db6b6b",
+  "files": {
+    "scripts/capture-independent-two-hour-reference.ts": "43141c6aaa0c69e5100085edb10ec5ffd3eaaa643614b16013f477c1a98541b5",
+    "test/independent-reference-resume.test.ts": "b88ef88f2a5c4291ecf80fef45c6439ea5478148b1d43e5045825c361750f54d",
+    "test/independent-two-hour-reference.test.ts": "028b6b6d67b1541651f2f2b07c57359f847b3d68038a9e23c753147fe365e44d",
+    "test/persistent-independent-reference.test.ts": "7cccdcc79de62e2981cc001333f4c7151fabb5ca155b3c9c37f1b9c0b04759f9"
+  },
+  "focusedTests": {
+    "passed": 32,
+    "failed": 0,
+    "rawSha256": "1bf90311c4d520024b0b5f05ebdba4f9ee383f1527131070c0adbddbe34b2abb"
+  },
+  "build": {
+    "passed": true,
+    "rawSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "networkRequests": 0,
+  "runtimeOperations": 0,
+  "financialDatabaseOpened": false,
+  "collectionResumed": false
+}

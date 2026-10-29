@@ -1,0 +1,40 @@
+✔ resume preserves six completed enrollments and accounting, waits for original second pass, then collects outcomes once (779.461548ms)
+✔ uncertain invocation, tampered evidence or changed identity cannot be reset into a fresh provider allowance (264.418974ms)
+✔ an existing collector and an elapsed measurement cannot be restarted or extended (8.182996ms)
+✔ same-directory flock excludes a concurrent resumed collector without duplicate requests (79.198491ms)
+✔ a changed runtime on resume prevents additional enrollment while preserving frozen independent outcomes (386.600701ms)
+✔ a verified zombie with no descriptors is terminated while live, malformed or descriptor-owning processes remain blocked (0.937391ms)
+✔ an already captured outcome survives resume and its provider request is never repeated (818.92135ms)
+✔ retained independent OHLC schema stays token-bound, chronological and distinct from executable returns (3.14575ms)
+✔ canonical SOL indexed0–24h leads are selection hints while wrong DEX/quote/address/age rows never enter either control group (18.743304ms)
+✔ prospective selection fixes four active and four low-activity controls without using subsequent price appreciation (46.377949ms)
+✔ unknown index metrics remain unavailable and cannot fabricate active or quiet controls (2.816131ms)
+✔ outcome diagnostics include only fully contained candles and leave missing minutes unavailable (0.483528ms)
+✔ append-only prior usage accepts historical ISO and current numeric receipts while preserving cooldown and uncertainty (0.439562ms)
+✔ two prospective passes and final outcomes stay independent, paced, single-operation and append-only without a source-end credit (355.952829ms)
+✔ graceful cancellation keeps the settled checkpoint and never fabricates an actual source end (38.722784ms)
+✔ actual source-end attestation stops new admissions and stays separate from reference completion/planned end (35.872353ms)
+✔ provider429 stops once before reading its error body and retains prior plus current uncertainty (5.442929ms)
+✔ declared and delivered listing overflow stop without a retry and resource pressure blocks admission (9.557256ms)
+✔ no prospective indexed cohort is an explicit bounded refusal after both listing passes (22.9881ms)
+✔ frozen bounds and arithmetic overflow are explicit instead of silent nonfinite JSON conversions (0.496006ms)
+✔ in-flight graceful stop preserves the actual invocation checkpoint and waits for physical settlement (12.515581ms)
+✔ post-invocation checkpoint failure aborts but does not release a pending physical fetch or erase its durable uncertainty (5.318634ms)
+✔ a fresh measurement inside an older persistent runtime uses measurement timing without inventing a restart or end (404.17982ms)
+✔ source-change: preserve frozen-cohort outcomes but exclude later enrollment and never fabricate an exact runtime end (196.022997ms)
+✔ stopped: preserve frozen-cohort outcomes but exclude later enrollment and never fabricate an exact runtime end (171.005079ms)
+✔ actual-end: preserve frozen-cohort outcomes but exclude later enrollment and never fabricate an exact runtime end (185.829107ms)
+✔ actual-end-disappears: preserve frozen-cohort outcomes but exclude later enrollment and never fabricate an exact runtime end (170.999937ms)
+✔ identity change while an enrollment request is pending prevents the next page and retains partial-cohort outcomes (127.655143ms)
+✔ capture-gap: retain temporary loss and fresh recovery without inventing continuous coverage (255.647591ms)
+✔ stale-gap: retain temporary loss and fresh recovery without inventing continuous coverage (295.327479ms)
+✔ wrong original account, source, run, start, stale observation or measurement clock refuses before any provider call (4.058003ms)
+✔ existing prior-provider cooldown and uncertainty remain authoritative in persistent measurement mode (0.783874ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3034.30484

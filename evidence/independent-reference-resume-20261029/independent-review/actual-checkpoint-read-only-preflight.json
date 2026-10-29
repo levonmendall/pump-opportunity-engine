@@ -1,0 +1,32 @@
+{
+  "kind": "actual-independent-checkpoint-read-only-preflight-v1",
+  "observedAt": 1793307588311,
+  "requests": 6,
+  "rows": 120,
+  "selected": 5,
+  "completedPasses": [
+    1
+  ],
+  "captured": 0,
+  "measurement": {
+    "startedAt": 1793304761728,
+    "plannedEndAt": 1793311961728,
+    "sourceSnapshotPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/latest.json"
+  },
+  "source": {
+    "runId": "native-paper-20261029194223241",
+    "sourceCommit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "startedAt": 1793302943241
+  },
+  "previousCollector": {
+    "state": "terminated-zombie",
+    "procState": "Z",
+    "statSha256": "e12e9acee8e6f1d0479ebf1217c18fe31a090af48a7eea8de2b4b9ea6e714a6e",
+    "openDescriptors": null,
+    "descriptorVisibility": "unavailable",
+    "meaning": "Kernel Z/X state is already exited, never an active collector; unreadable FD metadata is not asserted empty."
+  },
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "runtimeOperations": 0
+}
