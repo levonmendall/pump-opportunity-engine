@@ -10,5 +10,12 @@
   "liveFinancialAccountRead": false,
   "providerRequests": 0,
   "installed": false,
-  "actualLiveFailureAttribution": "UNKNOWN"
+  "actualLiveFailureAttribution": "UNKNOWN",
+  "verifiedSourceCommit": "f879aeaf738bf74b0c4243e32c5c29b54d56123b",
+  "testsPassed": 55,
+  "buildPassed": true,
+  "rawVerification": {
+    "evidence/protection-sdk-continuations-20261029/build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "evidence/protection-sdk-continuations-20261029/targeted.raw.txt": "c726d3569c35517c48d5afde5ebb70217dd6bb12794ae8627432ce0b136e89d0"
+  }
 }
