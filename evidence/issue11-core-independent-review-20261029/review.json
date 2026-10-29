@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "decision": "GO FOR OFFLINE TESTED FINANCIAL AND INTEGRATION SCOPE",
+  "sourceCommit": "f4f6a43f289e99b2182d932cea0f01b410d539ad",
+  "reviewedAt": "2026-10-29T00:06:48.514602+00:00",
+  "files": [
+    {
+      "path": "src/run-native-paper.ts",
+      "sha256": "2cfd9e75aaa2fdf721930bb6bc95dc9a39b06f421d72290960de5a502a47d98e"
+    },
+    {
+      "path": "src/native-paper.ts",
+      "sha256": "1cd7d787e9d58923b8fcb30bb789f9562e5e1f928b14a007134e257951e4a4c6"
+    },
+    {
+      "path": "src/trader.ts",
+      "sha256": "8eddd35fd1140ea3204b694b8534fd9423d34422b2cc9c35977e6f555ae7845a"
+    },
+    {
+      "path": "src/pilot-reporting.ts",
+      "sha256": "6be4421b5332154ec4ea14fe5131212ea9d82cc0cc14365a3d5dbc83112bc00e"
+    },
+    {
+      "path": "src/backup.ts",
+      "sha256": "b22ea1bdd80373e2a69f44dbcbf2b7bcf8248ae9abdb5dd5e0bd02d8177c1116"
+    },
+    {
+      "path": "src/native-paper-bundle.ts",
+      "sha256": "cdb15ecd6bc67b9de65b7c4dde61d0d5b27cf417dde4bc60a3633c321565624f"
+    },
+    {
+      "path": "src/paper-service-policy.ts",
+      "sha256": "7b6919225cb90c2b82c4e52752d75f02f712c851614ffd7bf7afb55a456913c4"
+    },
+    {
+      "path": "src/poe-operating-account.ts",
+      "sha256": "d4744f8f762ecc3a88ba4abe6abe9958db068027aaafca7ca87ea4429068282d"
+    },
+    {
+      "path": "scripts/build-native-paper-ec2.mjs",
+      "sha256": "fab840422054ef7cd72be5e09f6adacbde01abab183297e1d85cba424b6277a6"
+    }
+  ],
+  "verification": {
+    "command": "node --import tsx --test test/native-paper-service.test.ts test/paper-service-policy.test.ts test/native-paper-integration.test.ts test/native-paper-launcher.test.ts test/pilot-reporting.test.ts test/backup.test.ts test/operating-pnl-reporting.test.ts",
+    "exitCode": 0,
+    "testsPassed": 69,
+    "buildCommand": "npm run build",
+    "buildExitCode": 0
+  },
+  "reviewedInvariants": [
+    "Exact original account/id/inception/funding and ledger path, with no initialize/reseed or inception-rate replacement.",
+    "One private financial owner and same account across restart; metadata reporting v2 leaves legacy financial and reporting history intact.",
+    "Trading SOL at current USD is separate from passive initial SOL valuation; absent costs remain unknown.",
+    "Qualification raw proof is prepared asynchronously before new risk; required validation and current certificate remain mandatory.",
+    "Diagnostic recorder refusal closes new risk and quarantines candidate evidence without throwing through owned financial work.",
+    "Backup validation includes optional operating v2 metadata and preserves good recovery generations.",
+    "Root-owned immutable release path requires root ownership of each file, without weakening legacy fixture ownership.",
+    "Restart run-index compaction preserves the referenced current-market recovery checkpoint.",
+    "Public presentation is bounded independently of durable financial history and retains every open position."
+  ],
+  "limitations": [
+    "No original private ledger access or modification.",
+    "No real-market request, account cutover, deployment, or live PAPER order/position management verified by this review.",
+    "Provider sustainability, actual publisher identity/parity and source operation must be measured after legitimate original-account installation."
+  ]
+}
