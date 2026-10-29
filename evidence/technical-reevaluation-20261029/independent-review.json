@@ -1,0 +1,21 @@
+{
+  "reviewer": "/root/audit_rpc_scheduler_limits/provider_evidence_review",
+  "classification": "READ_ONLY_CODE_AND_BOUNDARY_REVIEW",
+  "sourceFiles": {
+    "src/pilot-watch.ts": "90345f697b7fc646267c38533ee45c654aefe36f5cdaed9a0fcf95248fe50e61",
+    "src/native-candidate-runner.ts": "2a649d70683b1f1bbfe754f064088e994b46b9faf6505202e300a2ed8f91a6ea",
+    "src/native-paper.ts": "9136f3f2f1b453bb7102df1b881dd6d4ccf4f851491bb3adc220c17b504f1bcc",
+    "src/run-native-paper.ts": "a90a17356ee20ea1008d90acd6f026fe8d3347fa10afae3500bcaef978dd71f7"
+  },
+  "conclusion": "No additional material defect or financial protection bypass found after correction of the two recorded review edges.",
+  "checks": [
+    "consumed claim rearmed on transient checkpoint/readiness loss without episode renewal",
+    "legitimate capacity/risk rejection ends special priority",
+    "age-expired ownership resolution retires normally",
+    "old certificate invalidation and strictly newer audited window preserved",
+    "claim checkpoint precedes financial work",
+    "unresolved pending ownership prevents duplicate entry",
+    "failed attempt gas and durable no-reentry preserved"
+  ],
+  "runtimeAcceptanceClaimed": false
+}

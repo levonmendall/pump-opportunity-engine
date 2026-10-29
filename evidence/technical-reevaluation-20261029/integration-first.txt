@@ -1,0 +1,22 @@
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (26.368772ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (17.033929ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (21.799552ms)
+✔ status/report work cannot backdate the next certificate read or extend an expired certificate (10.755824ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (7.585165ms)
+✔ resolved unfilled entry keeps genuinely continuous observation but invalidates the old certificate before a new audited decision (10.521697ms)
+✔ entry cost and exact-size quote evidence survives diagnostic rotation without protecting unrelated diagnostics (0.481635ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (430.925147ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (22.57657ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (64.525396ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (17.668781ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (47.616098ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (55.229681ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves loss and requires a later full decision (41.186955ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1614.386911

@@ -9,13 +9,19 @@ export type CapacityCoverage={status:'AWAITING_CAPACITY'|'PROBE_READY'|'OBSERVIN
  * protection, pending actions, current candidates and audit reservations. */
 export type CapacityProbeContext={at:number;capacityObservedAt:number;windowMs:number;freeEnrichmentStarts:number;freeSharedStarts:number;globalCooldownUntil:number;protectionPending:boolean};
 export type WatchHistory={at:number;state:WatchState;reason:string};
+export type TechnicalReevaluationReason='entry-preparation-unavailable'|'entry-quote-unavailable'|'entry-attempt-data-unavailable'|'entry-action-expired';
+/** Scheduling metadata only. No flow, financial outcome or entry permission is
+ * established by requesting or claiming another fresh-window evaluation. */
+export type TechnicalReevaluation={reason:TechnicalReevaluationReason;requestedAt:number;failedWindowEndAt:number;notBefore:number;expiresAt:number;attempts:number;lastClaimedWindowEndAt:number|null;state:'WAITING'|'CLAIMED'|'EXHAUSTED'|'EXPIRED'|'FINISHED'};
+export const TECHNICAL_REEVALUATION_POLICY=Object.freeze({version:'bounded-fresh-window-technical-reevaluation-v1',maximumAttempts:3,lifetimeMs:300000,backoffMs:Object.freeze([5000,15000,30000] as const),restartDelayMs:5000});
+const TECHNICAL_REEVALUATION_REASONS:readonly TechnicalReevaluationReason[]=['entry-preparation-unavailable','entry-quote-unavailable','entry-attempt-data-unavailable','entry-action-expired'];
 export type WatchRow={
   signature:string;feedMint:string|null;mint:string|null;pool:string|null;
   migrationAt:number|null;verifiedAt:number|null;firstSeenAt:number;
   state:WatchState;reason:string;lastActivityAt:number|null;lastActivityEvidence:string|null;
   lastDemotedAt:number|null;deepSince:number|null;deferUntil:number;waitingSince:number;
   promotions:number;repromotions:number;demotions:number;completeWindows:number;
-  everHadWindow:boolean;lastWindowAt:number|null;history:WatchHistory[];capacityCoverage?:CapacityCoverage;olderResearch?:{selectedAt:number;activityAt:number;evidence:string};
+  everHadWindow:boolean;lastWindowAt:number|null;history:WatchHistory[];capacityCoverage?:CapacityCoverage;olderResearch?:{selectedAt:number;activityAt:number;evidence:string};technicalReevaluation?:TechnicalReevaluation;
 };
 export type WatchIdentityMetadata=Pick<WatchRow,'mint'|'pool'|'signature'|'migrationAt'|'verifiedAt'|'state'>&{olderResearch:boolean};
 type Counters={discovered:number;duplicates:number;verified:number;promoted:number;repromoted:number;demoted:number;expired:number;capacityExclusions:number;structuralExclusions:number;completeWindows:number;evicted:number;activityHints:number;promotionWaitTotalMs:number;promotionWaitMaximumMs:number};
@@ -80,6 +86,9 @@ export class PilotWatch {
   }
 
   private history(r:WatchRow,at:number,state:WatchState,reason:string){r.state=state;r.reason=reason;r.history.push({at,state,reason});if(r.history.length>16)r.history.shift();}
+  private refreshTechnicalReevaluation(r:WatchRow,at:number){
+    const t=r.technicalReevaluation;if(t&&['WAITING','CLAIMED'].includes(t.state)&&at>=t.expiresAt){t.state='EXPIRED';this.emit('pilot-watch-technical-reevaluation-expired',{mint:r.mint,at,...copy(t),ordinaryWatchPreserved:true,financialPermission:false});}return t;
+  }
   private expire(at:number){
     for(const r of this.rows.values())if(r.state!=='HELD'&&r.state!=='ENTRY_PENDING'&&r.state!=='EXPIRED'&&r.state!=='PERMANENTLY_UNSUPPORTED'&&at>=(r.migrationAt===null?r.firstSeenAt+UNVERIFIED_RETENTION:observationExpiryAt(r.migrationAt,r.olderResearch!==undefined,this.observationAgePolicy))){
       this.history(r,at,'EXPIRED',r.migrationAt===null?'unverified identity retention elapsed; migration time unavailable':'existing observation-age horizon elapsed');r.deepSince=null;this.counters.expired++;this.emit('pilot-watch-expired',{signature:r.signature,mint:r.mint,at,reason:r.reason});
@@ -125,6 +134,39 @@ export class PilotWatch {
     if(state==='PERMANENTLY_UNSUPPORTED'&&r.state!=='PERMANENTLY_UNSUPPORTED')this.counters.structuralExclusions++;
     if(r.capacityCoverage){if(state==='DEEP_OBSERVATION')r.capacityCoverage.status='OBSERVING';else if(['WATCH','DEFERRED'].includes(state)&&reason!==r.capacityCoverage.reason&&!['VALID_WINDOW','AWAITING_CAPACITY','PROBE_READY'].includes(r.capacityCoverage.status))r.capacityCoverage.status='OTHER_UNAVAILABLE';}
     this.capacityAdmissions.delete(r.signature);r.deferUntil=options.deferUntil??0;this.history(r,at,state,reason);this.emit('pilot-watch-transition',{mint:r.mint,signature:r.signature,at,state,requestedState,reason,deferUntil:r.deferUntil,deepAllocated:deep(r),capacityStatus:r.capacityCoverage?.status??null});return copy(r);
+  }
+  /** Only an uninterrupted, caller-verified scope can retain its allocation
+   * after an unfilled owned action. Restarted scopes have deepSince=null and
+   * must instead retire and warm a new complete window through normal admission. */
+  resumeContinuousObservation(mint:string,reason:string,at=this.clock()):WatchRow{
+    this.at(at);need(at<=this.clock()&&text(reason),'PILOT_WATCH_CONTINUOUS_OBSERVATION');const r=this.row(mint);
+    need(r&&r.state==='ENTRY_PENDING'&&r.deepSince!==null&&r.deepSince<=at&&this.observable(r,at),'PILOT_WATCH_CONTINUOUS_OBSERVATION_REQUIRED');
+    return this.transition(mint,'DEEP_OBSERVATION',reason,at);
+  }
+  requestTechnicalReevaluation(mint:string,input:{reason:TechnicalReevaluationReason;failedWindowEndAt:number},at=this.clock()):boolean{
+    this.at(at);need(at<=this.clock()&&input&&TECHNICAL_REEVALUATION_REASONS.includes(input.reason)&&integer(input.failedWindowEndAt)&&input.failedWindowEndAt<=at&&integer(at+TECHNICAL_REEVALUATION_POLICY.lifetimeMs),'PILOT_WATCH_TECHNICAL_REEVALUATION_REQUEST');
+    const r=this.row(mint);need(r&&this.verified(r),'PILOT_WATCH_TECHNICAL_REEVALUATION_IDENTITY');
+    if(!this.observable(r,at)||r.state==='HELD')return false;
+    const prior=this.refreshTechnicalReevaluation(r,at);
+    if(prior){
+      // A repeated failure never buys a new allowance or renews the episode.
+      if(prior.state!=='CLAIMED')return false;
+      if(prior.attempts>=TECHNICAL_REEVALUATION_POLICY.maximumAttempts){prior.state='EXHAUSTED';this.emit('pilot-watch-technical-reevaluation-exhausted',{mint:r.mint,at,...copy(prior),ordinaryWatchPreserved:true,financialPermission:false});return false;}
+      prior.state='WAITING';prior.reason=input.reason;prior.notBefore=at+TECHNICAL_REEVALUATION_POLICY.backoffMs[prior.attempts]!;
+    }else r.technicalReevaluation={reason:input.reason,requestedAt:at,failedWindowEndAt:input.failedWindowEndAt,notBefore:at+TECHNICAL_REEVALUATION_POLICY.backoffMs[0],expiresAt:at+TECHNICAL_REEVALUATION_POLICY.lifetimeMs,attempts:0,lastClaimedWindowEndAt:null,state:'WAITING'};
+    this.emit('pilot-watch-technical-reevaluation-requested',{mint:r.mint,at,...copy(r.technicalReevaluation!),freshFullCurrentWindowRequired:true,financialPermission:false});return true;
+  }
+  technicalReevaluation(mint:string,at=this.clock()):TechnicalReevaluation|null{
+    this.at(at);need(at<=this.clock(),'PILOT_WATCH_TECHNICAL_REEVALUATION_TIME');const r=this.row(mint);return r?copy(this.refreshTechnicalReevaluation(r,at)??null):null;
+  }
+  claimTechnicalReevaluation(mint:string,windowEndAt:number,at=this.clock()):boolean{
+    this.at(at);need(at<=this.clock()&&integer(windowEndAt)&&windowEndAt<=at,'PILOT_WATCH_TECHNICAL_REEVALUATION_WINDOW');const r=this.row(mint),t=r&&this.refreshTechnicalReevaluation(r,at);
+    if(!r||!t||t.state!=='WAITING'||at<t.notBefore||t.attempts>=TECHNICAL_REEVALUATION_POLICY.maximumAttempts||windowEndAt<=t.failedWindowEndAt||t.lastClaimedWindowEndAt!==null&&windowEndAt<=t.lastClaimedWindowEndAt||['HELD','ENTRY_PENDING'].includes(r.state)||!this.observable(r,at)||at<r.deferUntil||r.capacityCoverage?.status==='AWAITING_CAPACITY')return false;
+    t.attempts++;t.lastClaimedWindowEndAt=windowEndAt;t.state='CLAIMED';this.emit('pilot-watch-technical-reevaluation-claimed',{mint:r.mint,at,...copy(t),freshFullCurrentWindowRequired:true,financialPermission:false});return true;
+  }
+  finishTechnicalReevaluation(mint:string,at=this.clock(),reason='technical reevaluation completed'):boolean{
+    this.at(at);need(at<=this.clock()&&text(reason),'PILOT_WATCH_TECHNICAL_REEVALUATION_FINISH');const r=this.row(mint),t=r&&this.refreshTechnicalReevaluation(r,at);if(!r||!t||!['WAITING','CLAIMED'].includes(t.state))return false;
+    t.state='FINISHED';this.emit('pilot-watch-technical-reevaluation-finished',{mint:r.mint,at,reason,technicalReevaluation:copy(t),ordinaryWatchPreserved:true,financialPermission:false});return true;
   }
   selectOlderResearch(mint:string,activity:{observedAt:number;evidence:string},at=this.clock()):WatchRow{
     this.at(at);need(activity&&integer(activity.observedAt)&&activity.observedAt<=at&&at-activity.observedAt<=OBSERVATION_AGE_POLICY.olderActivityMaximumAgeMs&&text(activity.evidence,256),'PILOT_WATCH_OLDER_ACTIVITY');this.expire(at);const r=this.row(mint);
@@ -205,6 +247,8 @@ export class PilotWatch {
   next(at:number,excluded:ReadonlySet<string>):WatchRow|null{
     this.at(at);this.expire(at);this.refreshProbeReadiness(at);
     const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil&&this.observable(r,at)&&this.olderDeepAvailable(r,at));
+    const technical=ready.filter(r=>{const t=this.refreshTechnicalReevaluation(r,at);return t?.state==='WAITING'&&at>=t.notBefore;});
+    technical.sort((a,b)=>a.technicalReevaluation!.notBefore-b.technicalReevaluation!.notBefore||a.technicalReevaluation!.requestedAt-b.technicalReevaluation!.requestedAt||a.signature.localeCompare(b.signature));if(technical[0])return copy(technical[0]);
     // Allocation only: new post-demotion activity and never-deep identities
     // precede inactive revisits. Four durable promotion phases give fresh work
     // one guaranteed turn and inactive revisits at most one when both wait;
@@ -242,9 +286,11 @@ export class PilotWatch {
       need(r&&text(r.signature,100)&&!this.rows.has(r.signature)&&(r.feedMint===null||text(r.feedMint,96))&&(r.mint===null||text(r.mint,96))&&(r.pool===null||text(r.pool,96))&&STATES.includes(r.state)&&text(r.reason)&&integer(r.firstSeenAt)&&integer(r.deferUntil)&&integer(r.waitingSince)&&[r.migrationAt,r.verifiedAt,r.lastActivityAt,r.lastDemotedAt,r.deepSince,r.lastWindowAt].every(n=>n===null||integer(n))&&[r.promotions,r.repromotions,r.demotions,r.completeWindows].every(integer)&&typeof r.everHadWindow==='boolean'&&(r.lastActivityEvidence===null||text(r.lastActivityEvidence,256))&&Array.isArray(r.history)&&r.history.length<=16&&r.history.every(h=>integer(h.at)&&STATES.includes(h.state)&&text(h.reason)),'PILOT_WATCH_CHECKPOINT_ROW');
       if(r.olderResearch!==undefined){const o=r.olderResearch;need(o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).sort().join(',')==='activityAt,evidence,selectedAt'&&integer(o.selectedAt)&&integer(o.activityAt)&&o.activityAt<=o.selectedAt&&o.selectedAt-o.activityAt<=OBSERVATION_AGE_POLICY.olderActivityMaximumAgeMs&&text(o.evidence,256)&&r.migrationAt!==null&&o.selectedAt>=r.migrationAt+MAX_AGE&&o.selectedAt<observationExpiryAt(r.migrationAt,true,checkpointPolicy)&&o.selectedAt<=this.clock(),'PILOT_WATCH_CHECKPOINT_OLDER_RESEARCH');}
       if(r.capacityCoverage!==undefined){const c=r.capacityCoverage;need(c&&typeof c==='object'&&!Array.isArray(c)&&Object.keys(c).sort().join(',')==='lastDemand,lostAt,probeAdmissions,reason,reassessAt,status'&&['AWAITING_CAPACITY','PROBE_READY','OBSERVING','VALID_WINDOW','OTHER_UNAVAILABLE'].includes(c.status)&&text(c.reason)&&integer(c.lostAt)&&integer(c.reassessAt)&&c.reassessAt>=c.lostAt&&(c.lastDemand===null||validDemand(c.lastDemand)&&c.lastDemand.observedAt<=this.clock())&&Array.isArray(c.probeAdmissions)&&c.probeAdmissions.length<=2&&c.probeAdmissions.every((at,i)=>integer(at)&&at<=this.clock()&&(i===0||at>c.probeAdmissions[i-1]!))&&r.verifiedAt!==null,'PILOT_WATCH_CHECKPOINT_CAPACITY');}
+      if(r.technicalReevaluation!==undefined){const t=r.technicalReevaluation;need(t&&typeof t==='object'&&!Array.isArray(t)&&Object.keys(t).sort().join(',')==='attempts,expiresAt,failedWindowEndAt,lastClaimedWindowEndAt,notBefore,reason,requestedAt,state'&&TECHNICAL_REEVALUATION_REASONS.includes(t.reason)&&integer(t.requestedAt)&&r.verifiedAt!==null&&t.requestedAt>=r.verifiedAt&&t.requestedAt<=this.clock()&&integer(t.failedWindowEndAt)&&t.failedWindowEndAt<=t.requestedAt&&integer(t.notBefore)&&t.notBefore>=t.requestedAt+TECHNICAL_REEVALUATION_POLICY.backoffMs[0]&&integer(t.expiresAt)&&t.expiresAt===t.requestedAt+TECHNICAL_REEVALUATION_POLICY.lifetimeMs&&integer(t.attempts)&&t.attempts<=TECHNICAL_REEVALUATION_POLICY.maximumAttempts&&['WAITING','CLAIMED','EXHAUSTED','EXPIRED','FINISHED'].includes(t.state)&&(t.attempts===0?t.lastClaimedWindowEndAt===null:integer(t.lastClaimedWindowEndAt)&&t.lastClaimedWindowEndAt>t.failedWindowEndAt&&t.lastClaimedWindowEndAt<=this.clock())&&(t.state!=='CLAIMED'||t.attempts>0)&&(t.state!=='EXHAUSTED'||t.attempts===TECHNICAL_REEVALUATION_POLICY.maximumAttempts)&&(t.state!=='WAITING'||t.attempts<TECHNICAL_REEVALUATION_POLICY.maximumAttempts),'PILOT_WATCH_CHECKPOINT_TECHNICAL_REEVALUATION');}
       need((r.verifiedAt===null)===(r.migrationAt===null)&&(r.verifiedAt===null)===(r.mint===null)&&(r.verifiedAt===null)===(r.pool===null)&&(!r.mint||!mints.has(r.mint)),'PILOT_WATCH_CHECKPOINT_IDENTITY');if(r.mint)mints.add(r.mint);
       if(r.verifiedAt!==null)need(r.migrationAt!<=r.verifiedAt&&r.verifiedAt<=this.clock(),'PILOT_WATCH_CHECKPOINT_TIME');
       const restored=copy(r);if(['DEEP_OBSERVATION','QUALIFIED'].includes(restored.state)){this.history(restored,this.clock(),'DEFERRED','research process restarted; previous flow is unavailable; fresh full window required');restored.deepSince=null;restored.lastDemotedAt=this.clock();restored.waitingSince=this.clock();restored.deferUntil=this.clock();if(restored.capacityCoverage){restored.capacityCoverage.status='AWAITING_CAPACITY';restored.capacityCoverage.reason=restored.reason;restored.capacityCoverage.reassessAt=this.clock()+5000;}restored.demotions++;this.counters.demoted++;this.emit('pilot-watch-recovery-demotion',{mint:restored.mint,at:this.clock(),priorState:r.state,freshFullWindowRequired:true});}if(restored.state==='ENTRY_PENDING'){restored.deepSince=null;this.emit('pilot-watch-owned-recovery',{mint:restored.mint,at:this.clock(),state:'ENTRY_PENDING',freshFlowUnavailable:true,financialObligationRetained:true});}
+      const technical=this.refreshTechnicalReevaluation(restored,this.clock());if(technical?.state==='CLAIMED'){technical.state=technical.attempts>=TECHNICAL_REEVALUATION_POLICY.maximumAttempts?'EXHAUSTED':'WAITING';technical.notBefore=Math.max(technical.notBefore,this.clock()+TECHNICAL_REEVALUATION_POLICY.restartDelayMs);this.emit('pilot-watch-technical-reevaluation-recovered',{mint:restored.mint,at:this.clock(),...copy(technical),claimConsumedBeforeRestart:true,newerWindowRequired:true,financialOutcomeUnknown:true,financialPermission:false});}
       // Older versions could erase a technical resource gate merely by changing
       // its WATCH/DEFERRED reason. No valid replacement window was established.
       if(['WATCH','DEFERRED'].includes(restored.state)&&restored.capacityCoverage?.status==='OTHER_UNAVAILABLE'){const c=restored.capacityCoverage;c.status='AWAITING_CAPACITY';c.reassessAt=Math.max(c.reassessAt,this.clock()+5000);restored.deferUntil=Math.max(restored.deferUntil,c.reassessAt);this.history(restored,this.clock(),'DEFERRED','restored technical gap requires current resource reassessment');this.emit('pilot-watch-capacity-gate-recovered',{mint:restored.mint,at:this.clock(),priorStatus:r.capacityCoverage!.status,priorReason:r.reason,currentReason:restored.reason,freshFullWindowRequired:true});}

@@ -65,6 +65,21 @@ test('financial ownership survives source retirement and age expiry without dele
  const f=runnerFixture();await f.runner.step();f.owned='HELD';f.runner.syncFinancialOwnership();assert.equal(f.runner.status().candidates.length,0);assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'HELD');assert.deepEqual(f.retirements,[identity.baseMint]);f.at+=25*60*60*1000;const checkpoint=f.runner.checkpoint();assert.equal(checkpoint.origins.length,1);assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'HELD');assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);assert.equal(checkpoint.financialWriterOpened,false);await f.runner.stop();
 });
 
+test('resolved unfilled entry keeps genuinely continuous observation but invalidates the old certificate before a new audited decision',async()=>{
+ const f=runnerFixture();await f.runner.step();f.warm();for(let n=0;n<4&&!f.certificates.length;n++)await f.runner.step();const old=f.runner.currentAuditCertificate(identity.baseMint)!;assert.ok(old);
+ f.owned='ENTRY_PENDING';f.runner.syncFinancialOwnership();assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'ENTRY_PENDING');f.owned=null;f.runner.syncFinancialOwnership();
+ assert.equal(f.runner.status().candidates.length,1);assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'DEEP_OBSERVATION','a continuously captured allocation must not become a non-deep deferred row');assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.deepSince,old.openedAt);assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null,'the failed action cannot reuse an earlier qualification');assert.deepEqual(f.retirements,[]);
+ f.at+=10000;for(let n=0;n<4&&f.certificates.length<2;n++)await f.runner.step();assert.equal(f.certificates.length,2);assert.ok(f.certificates[1]!.windowEndAt>old.windowEndAt);assert.equal(f.certificates[1]!.openedAt,old.openedAt,'no missing data or fresh60s warming is invented for a continuous subscription');assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&String(r.data.reason).includes('PILOT_WATCH_WINDOW_REQUIRES_DEEP')),false);await f.runner.stop();
+});
+
+test('resolved entry after a real observation gap cannot preserve the former subscription or old certificate',async()=>{
+ const f=runnerFixture();await f.runner.step();f.warm();for(let n=0;n<4&&!f.certificates.length;n++)await f.runner.step();assert.ok(f.runner.currentAuditCertificate(identity.baseMint));f.owned='ENTRY_PENDING';f.runner.syncFinancialOwnership();f.runner.onGap({mint:identity.baseMint,at:f.at,reason:'OFFLINE actual notification gap'});f.owned=null;f.runner.syncFinancialOwnership();assert.equal(f.runner.status().candidates.length,0);assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'DEFERRED');assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.deepSince,null);assert.deepEqual(f.retirements,[identity.baseMint]);await f.runner.stop();
+});
+
+test('an unfilled pending action resolving after observation age expires retires normally rather than restoring ineligible deep state',async()=>{
+ const f=runnerFixture();await f.runner.step();f.warm();for(let n=0;n<4&&!f.certificates.length;n++)await f.runner.step();f.owned='ENTRY_PENDING';f.runner.syncFinancialOwnership();f.at=identity.chainBlockTime*1000+25*60*60*1000;f.owned=null;assert.doesNotThrow(()=>f.runner.syncFinancialOwnership());assert.equal(f.runner.status().candidates.length,0);assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'EXPIRED');await f.runner.stop();
+});
+
 
 test('entry cost and exact-size quote evidence survives diagnostic rotation without protecting unrelated diagnostics',()=>{
  for(const kind of ['pilot-entry-cost-preparation','rpc-market-quote']){

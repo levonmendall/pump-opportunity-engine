@@ -1,0 +1,31 @@
+✖ resolved unfilled entry keeps genuinely continuous observation but invalidates the old certificate before a new audited decision (29.775272ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1140.477382
+
+✖ failing tests:
+
+test at test/native-paper-hooks.test.ts:1:13512
+✖ resolved unfilled entry keeps genuinely continuous observation but invalidates the old certificate before a new audited decision (29.775272ms)
+  AssertionError [ERR_ASSERTION]: a continuously captured allocation must not become a non-deep deferred row
+  + actual - expected
+  
+  + 'DEFERRED'
+  - 'DEEP_OBSERVATION'
+       ^
+  
+      at TestContext.<anonymous> (/workspace/poe-technical-reevaluation-repair/test/native-paper-hooks.test.ts:71:61)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'DEFERRED',
+    expected: 'DEEP_OBSERVATION',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
