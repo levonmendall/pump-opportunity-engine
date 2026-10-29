@@ -1,0 +1,1 @@
+{"actualTypeScriptCredentialBoundary":"PASS","actualPythonChildFixture":"PASS","positiveOriginalPath":true,"omittedDirectoryRefused":true,"foreignDirectoryRefused":true,"credentialContentsRead":false,"providerRequests":0}
