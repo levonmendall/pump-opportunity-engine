@@ -120,7 +120,11 @@ def validate_host(auditor,supervisor):
  supervisor.verify_host()
  for p in[ETC,RELEASES,CURRENT.parent]:directory(p,0)
  for p in[ROOT,LEDGER.parent]:directory(p,uid,True)
- for p in[HERE/'audit-original-account.py',HERE/'run-authoritative-service.py',pathlib.Path('/usr/bin/flock')]:need(p.lstat().st_uid==0 and not p.lstat().st_mode&0o022,'REVIEWED_ROOT_CODE_AND_EXISTING_FLOCK_REQUIRED')
+ for p in[HERE/'audit-original-account.py',HERE/'run-authoritative-service.py',pathlib.Path('/usr/bin/flock')]:need(stat.S_ISREG(p.lstat().st_mode)and p.lstat().st_uid==0 and not p.lstat().st_mode&0o022,'REVIEWED_ROOT_CODE_AND_EXISTING_FLOCK_REQUIRED')
+ need(os.access('/usr/bin/flock',os.X_OK),'EXISTING_FLOCK_EXECUTABLE_REQUIRED');node=pathlib.Path('/opt/poe/node/bin/node')
+ for folder in[node.parent,node.parent.parent]:directory(folder,0)
+ ns=node.lstat();need(stat.S_ISREG(ns.st_mode)and ns.st_uid==0 and ns.st_nlink==1 and not ns.st_mode&0o022 and node.resolve(strict=True)==node and os.access(node,os.X_OK),'EXISTING_IMMUTABLE_NODE_REQUIRED')
+ version=subprocess.run([str(node),'--print','JSON.stringify({version:process.version,modules:process.versions.modules})'],capture_output=True,text=True,timeout=5,check=True,user=uid,group=gid,extra_groups=[],env={'PATH':'/usr/bin:/bin','LANG':'C'});need(len(version.stdout)<=256 and len(version.stderr)<=256,'NODE_VERSION_RESPONSE_BOUND');nv=json.loads(version.stdout);need(nv.get('version')=='v24.19.0'and nv.get('modules')=='137','EXISTING_NODE24_ABI137_REQUIRED')
  need(CURRENT.is_symlink()and CURRENT.resolve(strict=True).parent==RELEASES,'EXISTING_RELEASE_LINK_REQUIRED');status=auditor.service_status();need(status.get('User')=='poe-runtime','EXISTING_ORIGINAL_SERVICE_REQUIRED');return uid,gid,status
 def transition_input(prepared,stopped_at):
  need(type(stopped_at)is int and stopped_at>=INCEPTION,'ACTUAL_STOP_TIMESTAMP_REQUIRED');value=json.loads(prepared);before=value['priorCooldownUntil'];need(type(before)is int and before>=0,'PREPARED_PROVIDER_COOLDOWN_REQUIRED');value['priorCooldownUntil']=max(before,stopped_at+60000);raw=(json.dumps(value,separators=(',',':'))+'\n').encode();return raw,{'preparedInputSha256':sha(prepared),'installedInputSha256':sha(raw),'field':'priorCooldownUntil','preparedValue':before,'installedValue':value['priorCooldownUntil'],'actualOriginalStopVerifiedAt':stopped_at,'reason':'Original observer physical RPC starts are unknown; preserve one conservative rolling minute after its verified flat stop. No existing exposure is delayed.'}
