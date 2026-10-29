@@ -66,7 +66,7 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
   for(const [mint,raw]of Object.entries(positions).slice(0,3)){
    if(!bounded(mint,96))continue;const position=rec(raw),strategy=rec(position.strategy);
    if(strategy.version!=='adaptive-momentum-v2-paper-v1'){strategyRows.push(`${mint}: legacy holding retains its original exit rules; new entries use Adaptive Momentum v2.`);continue;}
-   const peak=typeof strategy.highWaterNetLamports==='string'&&/^(0|[1-9]\d{0,38})$/.test(strategy.highWaterNetLamports)?BigInt(strategy.highWaterNetLamports):null,peakAt=time(strategy.highWaterAt);
+   const peak=typeof strategy.highWaterNetLamports==='string'&&/^(0|[1-9]\d{0,38})$/.test(strategy.highWaterNetLamports)?BigInt(strategy.highWaterNetLamports):null,enteredAt=count(position.enteredAt),peakTime=count(strategy.highWaterAt),peakAt=enteredAt!==null&&enteredAt>=Date.parse(ORIGINAL_POE_INCEPTION)&&enteredAt<=at&&peakTime!==null&&peakTime>=enteredAt?time(peakTime):null;
    const value=peak!==null&&peak>0n&&peakAt?`${peak/1000000000n}.${(peak%1000000000n).toString().padStart(9,'0')} SOL at ${peakAt}`:'unavailable';
    strategyRows.push(`${mint}: Adaptive Momentum v2 historical executable net peak ${value}; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit.`);
   }

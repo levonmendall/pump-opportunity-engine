@@ -1,0 +1,30 @@
+✔ original reporting carries two verified historical peaks without another schema or private strategy data (3.232281ms)
+✔ unavailable or future peaks remain unavailable and legacy holding semantics stay explicit (0.493483ms)
+✔ strategy reporting remains bounded and does not relabel baseline source (0.483939ms)
+✔ active adaptive profile preserves immutable baseline rollback and PAPER boundary (1.328889ms)
+✔ adaptive binding refuses arbitrary hashes, positions, stages and inherited baseline identity (0.590305ms)
+✔ active profile transition preserves original manifest identity/history and permits explicit baseline rollback (1.501545ms)
+✔ one authoritative projection preserves unavailable facts and separates predictive from financial evaluation (4.743355ms)
+✔ experimental account, wrong inception and incoherent strategy cannot enter original intelligence (1.354682ms)
+✔ pending orders retain exact ledger reservation integers and future modeled execution without marking a fill (4.549848ms)
+✔ source timestamps cannot be freshened by telemetry and snapshot heartbeats do not conceal stale market state (12.100193ms)
+✔ unknown diagnostic fields, secret-shaped extras, oversized arrays, counters and invalid protection ownership fail closed (1.394942ms)
+✔ single channel duplicate/reordered semantics include intelligence immutably without refreshing receipt (2.53164ms)
+✔ current held protection uses actual completion age and primary availability, not a stale or cumulative risk classification (0.341427ms)
+✔ flat portfolio retains measured protection history after a completed holding without inventing never-held measurements (0.880037ms)
+✔ missing ownership is not projected as a flat account or an empty pending-action set (0.202511ms)
+✔ optional admission diagnostics preserve legacy intelligence without fabricating readiness (4.499213ms)
+✔ normal CPU and memory do not conceal a separate evidence admission refusal or source recovery (1.265029ms)
+✔ missing or invalid admission values remain unavailable while valid zero counters and false gates are retained (0.225745ms)
+✔ admission reasons export only known static codes and never provider text, credentials or local paths (0.569937ms)
+✔ receiver rejects malformed admission groups, secret-shaped extras and unsupported reason or proof codes (0.967337ms)
+✔ proof preparation states distinguish not-started from pending, completed and failed without implying financial readiness (1.267322ms)
+✔ internal checkpoint proof verdict uses the existing bounded public refusal list without financial IDs or a schema change (0.692448ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1220.520104
