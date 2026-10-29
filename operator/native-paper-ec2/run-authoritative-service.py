@@ -20,6 +20,7 @@ ACCOUNT_ID='poe-3123e352-4581-455b-85db-acd7e825e99e'
 INCEPTION=1793052456212
 INCEPTION_ISO='2026-10-26T22:07:36.212Z'
 CONTRACT='confirmed-program-ordinary-flow-paper-v1'
+ADAPTIVE_STRATEGY='adaptive-momentum-v2-paper-v1'
 MIB=1024*1024
 POLICY={'version':'poe-authoritative-persistent-supervisor-resource-v2','sampleSeconds':15,'statusStaleSeconds':90,'startupStatusSeconds':30,'minimumStartRamMiB':768,'minimumStartDiskMiB':512,'criticalRamMiB':256,'criticalDiskMiB':128,'candidateSourceRssMiB':1536,'resumeSourceRssMiB':1408,'sourceRssMiB':2048,'publisherRssMiB':256,'parentRssMiB':128,'rollingCpuSeconds':60,'cpuUtilizationAdmissionEnforced':False,'sourceCpuCloseCores':None,'sourceCpuResumeCores':None,'publisherCpuRestartCores':None,'resumeHealthySamples':3,'maximumRecoveryBackoffSeconds':60,'gracefulSourceStopSeconds':30,'sourceHeapMiB':1024,'publisherHeapMiB':128,'diagnosticFileBytes':MIB,'diagnosticFiles':4,'resourceFileBytes':2*MIB,'resourceFiles':4}
 RELEASE_FILES={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB}
@@ -55,6 +56,7 @@ def validate_manifest(v):
  need(type(v['source'])is dict and set(v['source'])=={'commit','sha256'}and hashed(v['source']['commit'],40)and hashed(v['source']['sha256']),'PINNED_PAPER_SOURCE_REQUIRED')
  need(hashed(v['configurationSha256']),'PINNED_CONFIG_REQUIRED');need(v['stage']in['single','shadow','two','three']and type(v['deepSlots'])is int and 1<=v['deepSlots']<=6,'SUPPORTED_FROZEN_STAGE_REQUIRED')
  need(type(v['strategy'])is str and 1<=len(v['strategy'])<=128 and all(32<=ord(c)<=126 for c in v['strategy']),'VERSIONED_STRATEGY_REQUIRED')
+ if v['strategy']==ADAPTIVE_STRATEGY:need(v['stage']=='two'and v['deepSlots']==4,'ADAPTIVE_STRATEGY_REQUIRES_TWO_POSITION_FOUR_SLOT_PROFILE')
  need(type(v['files'])is list and len(v['files'])==len(RELEASE_FILES)and{r.get('file')for r in v['files']if type(r)is dict}==set(RELEASE_FILES),'PINNED_IMMUTABLE_RELEASE_REQUIRED')
  for row in v['files']:need(set(row)=={'file','bytes','sha256'}and integer(row['bytes'])and 0<row['bytes']<=RELEASE_FILES[row['file']]and hashed(row['sha256']),'PINNED_RELEASE_FILE_REQUIRED')
  return v
@@ -68,7 +70,12 @@ def validate_status(v,manifest,started_at,pid,now):
  need(type(v.get('running'))is bool and type(v.get('runId'))is str and v['runId'].startswith('native-paper-')and len(v['runId'])<=64,'SOURCE_RUN_REQUIRED')
  need(type(v.get('positions'))is dict and type(v.get('pending'))is dict and len(v['positions'])<=3 and len(v['pending'])<=6,'OWNERSHIP_PROJECTION_REQUIRED');return v
 
-def source_args(node,release,manifest):return[node,'--max-old-space-size='+str(POLICY['sourceHeapMiB']),str(release/'native-paper.mjs'),'--resume','--directory',str(ACCOUNT),'--ledger',str(LEDGER),'--input',str(ACCOUNT/'input.json'),'--paper-contract',CONTRACT,'--stage',manifest['stage'],'--deep-slots',str(manifest['deepSlots']),'--service']
+def source_args(node,release,manifest):
+ args=[node,'--max-old-space-size='+str(POLICY['sourceHeapMiB']),str(release/'native-paper.mjs'),'--resume','--directory',str(ACCOUNT),'--ledger',str(LEDGER),'--input',str(ACCOUNT/'input.json'),'--paper-contract',CONTRACT,'--stage',manifest['stage'],'--deep-slots',str(manifest['deepSlots']),'--service']
+ # Legacy source564 has no strategy flag. Derive the new opt-in only from the
+ # exact reviewed profile; a rollback retains its original command unchanged.
+ if manifest['strategy']==ADAPTIVE_STRATEGY:args.extend(['--strategy','adaptive-momentum-v2'])
+ return args
 def credential_path():
  value=os.environ.get('CREDENTIALS_DIRECTORY');need(value=='/run/credentials/poe-runtime.service','ORIGINAL_SYSTEMD_CREDENTIAL_REQUIRED');return pathlib.Path(value)/'poe-ingest-secret'
 def publisher_args(node,release,manifest,once=False):

@@ -32,6 +32,17 @@ class Tests(unittest.TestCase):
    with self.assertRaisesRegex(m.Guard,'EXACT_SERVICE_MANIFEST'):m.validate_manifest(bad)
  def test_source_command_preserves_actual_original_ledger_and_service_mode(self):
   args=m.source_args('/opt/poe/node/bin/node',pathlib.Path('/opt/poe/releases')/SOURCE['commit'],manifest());self.assertIn('--service',args);self.assertNotIn('--duration-seconds',args);self.assertEqual(args[args.index('--ledger')+1],'/var/lib/poe/state/ledger.sqlite');self.assertEqual(args[args.index('--directory')+1],'/var/lib/poe/native-engine');self.assertFalse(any('poe-pilot'in v for v in args));self.assertNotIn('init',args)
+ def test_active_adaptive_profile_selects_explicit_native_strategy_without_changing_account_or_service(self):
+  v=manifest();v.update(stage='two',deepSlots=4,strategy='adaptive-momentum-v2-paper-v1');self.assertEqual(m.validate_manifest(v),v);args=m.source_args('/opt/poe/node/bin/node',pathlib.Path('/opt/poe/releases')/SOURCE['commit'],v);self.assertEqual(args[-2:],['--strategy','adaptive-momentum-v2']);self.assertEqual(args.count('--strategy'),1);self.assertEqual(args[args.index('--stage')+1],'two');self.assertEqual(args[args.index('--deep-slots')+1],'4');self.assertEqual(args[args.index('--ledger')+1],'/var/lib/poe/state/ledger.sqlite');self.assertIn('--resume',args);self.assertIn('--service',args);self.assertNotIn('init',args)
+ def test_rollback_and_baseline_profiles_do_not_receive_new_strategy_argument(self):
+  for stage,strategy in [('single','persistent-buying-pilot-v1'),('two','persistent-buying-pilot-concurrent-stage-2-v1'),('two','adaptive-momentum-v2-paper-v1-unreviewed')]:
+   with self.subTest(stage=stage,strategy=strategy):
+    v=manifest();v.update(stage=stage,deepSlots=4,strategy=strategy);args=m.source_args('/opt/poe/node/bin/node',pathlib.Path('/opt/poe/releases')/SOURCE['commit'],v);self.assertNotIn('--strategy',args);self.assertEqual(args[-1],'--service')
+ def test_active_adaptive_profile_rejects_wrong_position_stage_or_observation_capacity(self):
+  for stage,deep in [('single',4),('shadow',4),('three',4),('two',3),('two',6)]:
+   with self.subTest(stage=stage,deep=deep):
+    v=manifest();v.update(stage=stage,deepSlots=deep,strategy='adaptive-momentum-v2-paper-v1')
+    with self.assertRaisesRegex(m.Guard,'ADAPTIVE_STRATEGY_REQUIRES_TWO_POSITION_FOUR_SLOT_PROFILE'):m.validate_manifest(v)
  def test_original_credential_is_only_attached_to_the_original_publisher_channel(self):
   with patch.dict(m.os.environ,{'CREDENTIALS_DIRECTORY':'/run/credentials/poe-runtime.service'},clear=True):
    args=m.publisher_args('/opt/poe/node/bin/node',pathlib.Path('/opt/poe/releases')/SOURCE['commit'],manifest());self.assertIn('--watch',args);self.assertIn(m.ACCOUNT_ID,args);self.assertIn(m.INCEPTION_ISO,args);self.assertTrue(any('poe-ingest-secret'in v for v in args));self.assertFalse(any('pilot-ingest'in v or'/api/pilot'in v for v in args));once=m.publisher_args('/opt/poe/node/bin/node',pathlib.Path('/opt/poe/releases')/SOURCE['commit'],manifest(),once=True);self.assertIn('--once',once);self.assertNotIn('--watch',once)
