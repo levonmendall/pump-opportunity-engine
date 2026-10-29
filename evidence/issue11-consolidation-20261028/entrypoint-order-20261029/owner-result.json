@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-10-29T01:55:52.505299+00:00",
+  "kind": "owner-screenshot-transcription-not-protected-receipt",
+  "financialProofShown": {
+    "journalAndActionPrefixPreserved": true,
+    "actions": {
+      "priorRows": 36834,
+      "exactPriorRowsRetained": true,
+      "currentRows": 36834
+    },
+    "journal": {
+      "priorRows": 36835,
+      "exactPriorRowsRetained": true,
+      "currentRows": 36835
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "postStartErrors": [
+    "NEW_ORIGINAL_PUBLIC_STATUS_NOT_VERIFIED_WITHIN_30_SECONDS"
+  ],
+  "elapsedMs": 30261,
+  "newAdmissionsSuspended": false,
+  "financialManagementStopped": false,
+  "operationalAcceptance": false,
+  "refusal": "POST_START_VERIFICATION_INCOMPLETE_NEW_FINANCIAL_SOURCE_RETAINED",
+  "interpretation": "The driver retained the new source/configuration and did not intentionally stop it. This is not evidence that the financial manager remained alive; actual host inspection found the legacy ExecStart selected and a restart loop."
+}

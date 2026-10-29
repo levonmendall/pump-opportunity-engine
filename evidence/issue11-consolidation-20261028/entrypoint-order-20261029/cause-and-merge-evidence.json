@@ -1,0 +1,51 @@
+{
+  "recordedAt": "2026-10-29T01:59:27.765052+00:00",
+  "actualHostRun": 40803189057,
+  "adminSource": "952c2e98c6d8e8856312dba040bc70cb8f796cfb",
+  "actualEffectiveEntrypoint": "legacy Node dist/src/runtime.js, not native Python",
+  "actualDropInNames": [
+    "90-native-engine.conf",
+    "entrypoint.conf",
+    "reporting.conf"
+  ],
+  "legacyBodyBytes": 250,
+  "legacyBodySha256": "309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df",
+  "nativeBodySha256": "02086524f05593a85034bf13626f0c2c0a4caac2379cc4ae76cfa92d93d4b682",
+  "offlineMergeDemonstration": {
+    "scope": "Only ExecStart/ExecStop reset semantics in these two exact local files; not a complete systemd parser or host execution",
+    "before": {
+      "ExecStart": [
+        "/opt/poe/node/bin/node --preserve-symlinks-main --use-env-proxy /opt/poe/current/dist/src/runtime.js run"
+      ],
+      "ExecStop": [
+        "/opt/poe/node/bin/node --preserve-symlinks-main /opt/poe/current/dist/src/runtime.js safe-stop"
+      ]
+    },
+    "afterRename": {
+      "ExecStart": [
+        "/usr/bin/python3 -B -I /opt/poe/current/operator/native-paper-ec2/run-authoritative-service.py"
+      ],
+      "ExecStop": []
+    },
+    "observerRollbackAfterRemoving90Native": {
+      "ExecStart": [
+        "/opt/poe/node/bin/node --preserve-symlinks-main --use-env-proxy /opt/poe/current/dist/src/runtime.js run"
+      ],
+      "ExecStop": [
+        "/opt/poe/node/bin/node --preserve-symlinks-main /opt/poe/current/dist/src/runtime.js safe-stop"
+      ]
+    },
+    "checksPassed": 3
+  },
+  "rootCause": "Preserved entrypoint.conf sorts after90-native-engine.conf and resets both commands to obsolete observer paths. Frozen5e bundled release has no dist/src/runtime.js. This explains immediate unit exit1 before Python supervisor starts.",
+  "repairRequirements": [
+    "Validate actual protected file hashes and all drop-ins",
+    "Preserve original account and financial history",
+    "Rename unchanged legacy file earlier; keep canonical90native/index/manifest/runtime unchanged",
+    "Verify actual merged Python launch and no obsolete ExecStop before start",
+    "Require actual source/public/history/reporting receipts; offline checks alone are not runtime success"
+  ],
+  "actualRepairApplied": false,
+  "financialManagerCurrentlyHealthy": false,
+  "publicDashboard": "Oldbce snapshot honestly stale; no newsource accepted yet"
+}
