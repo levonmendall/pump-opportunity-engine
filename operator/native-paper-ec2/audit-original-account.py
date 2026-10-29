@@ -49,8 +49,10 @@ def process_ownership(database,owner_lock,uid,proc=pathlib.Path('/proc')):
     cg=(path/'cgroup').read_text();need(len(cg)<=8192,'PROCESS_CGROUP_BOUND');rows.append({'pid':int(path.name),'hasDatabaseFd':has_db,'hasOwnerLockFd':has_lock,'sameOriginalServiceCgroup':'/system.slice/poe-runtime.service'in cg})
   except(FileNotFoundError,ProcessLookupError,PermissionError):unavailable+=1
  return {'processes':rows,'unavailableOwnedProcesses':unavailable,'databaseAndOwnerFdCandidates':sum(r['hasDatabaseFd']and r['hasOwnerLockFd']for r in rows),'meaning':'Own-user descriptor metadata, not process environment or command contents. Flock probe separately establishes whether some owner holds the lease.'}
-def audit_snapshot(db):
- db.execute('PRAGMA query_only=ON');db.execute('PRAGMA trusted_schema=OFF');db.execute('PRAGMA busy_timeout=1000');db.execute('BEGIN')
+def audit_snapshot(db,existing_transaction=False):
+ db.execute('PRAGMA query_only=ON');db.execute('PRAGMA trusted_schema=OFF');db.execute('PRAGMA busy_timeout=1000')
+ if existing_transaction:need(db.in_transaction,'EXISTING_READ_ONLY_SNAPSHOT_REQUIRED')
+ else:db.execute('BEGIN')
  try:
   need(db.execute('PRAGMA query_only').fetchone()==(1,),'READ_ONLY_CONNECTION_REQUIRED');need(db.execute('PRAGMA quick_check').fetchone()==('ok',),'ORIGINAL_LEDGER_QUICK_CHECK_FAILED')
   tables={r[0]for r in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")};need(tables=={'financial_state','actions','journal','metadata'},'ORIGINAL_LEDGER_SCHEMA_MISMATCH')
@@ -63,7 +65,8 @@ def audit_snapshot(db):
   controls=state.get('controls');daily=state.get('daily');need(type(controls)is dict and type(daily)is dict and type(controls.get('entriesEnabled'))is bool and type(controls.get('stopRequested'))is bool,'CONTROL_STATE_INVALID')
   result={'accountId':ACCOUNT,'inceptionAt':INCEPTION,'inceptionIso':INCEPTION_ISO,'initialMicroUsd':'1000000000','mode':'PAPER','revision':revision,'stateBodySha256':digest(raw),'stateBodyBytes':len(raw),'tableCounts':counts,'quickCheck':'ok','journalRangeContiguous':True,'actionJournalLinksValid':True,'inceptionPriceSha256':digest(json.dumps(price,sort_keys=True,separators=(',',':')).encode()),'inceptionLamports':str(initial_lamports),'roundingResidualMicroUsd':state['roundingResidualMicroUsd'],'cashLamports':state['lamports'],'reservedLamports':str(reserved),'lockedDepositLamports':str(locked),'openPositions':len(positions),'pendingActions':len(pending),'positionsStateSha256':digest(json.dumps(positions,sort_keys=True,separators=(',',':')).encode()),'pendingStateSha256':digest(json.dumps(pending,sort_keys=True,separators=(',',':')).encode()),'realizedLamports':str(amount(state['realizedLamports'],True)),'executionCostsLamports':str(amount(state['executionCosts'])),'gasReserveLamports':str(amount(state['gasReserve'])),'financialControls':{key:controls.get(key)for key in['entriesEnabled','stopRequested','changedAt','readinessVersion']},'controlReasonSha256':digest(str(controls.get('reason','')).encode()),'dailyControls':{key:daily.get(key)for key in['day','paused','lossPaused','reconciledAt']},'flatAtSnapshot':not positions and not pending and reserved==0,'metadataValuesExported':False,'rawStateExported':False,'walletFilesRead':False}
   return result
- finally:db.execute('ROLLBACK')
+ finally:
+  if not existing_transaction:db.execute('ROLLBACK')
 def main():
  need(len(sys.argv)==1,'AUDIT_ACCEPTS_NO_ALTERNATE_ACCOUNT_OR_PATH');uid=pwd.getpwnam('poe-runtime').pw_uid;need(uid!=0 and os.getuid()in[0,uid],'EXISTING_OWNER_ACCESS_REQUIRED');before=service_status();need(before.get('User')=='poe-runtime','ORIGINAL_SERVICE_USER_MISMATCH');need(DB.resolve(strict=True)==DB and DB.parent.resolve(strict=True)==DB.parent,'ORIGINAL_LEDGER_CANONICAL_PATH_REQUIRED');parent=DB.parent.lstat();need(stat.S_ISDIR(parent.st_mode)and parent.st_uid==uid and stat.S_IMODE(parent.st_mode)==0o700,'ORIGINAL_LEDGER_DIRECTORY_REQUIRED');dbmeta=file_metadata(DB,uid,True);need(dbmeta['exists'],'ORIGINAL_LEDGER_MUST_ALREADY_EXIST')
  fd=os.open(DB,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)

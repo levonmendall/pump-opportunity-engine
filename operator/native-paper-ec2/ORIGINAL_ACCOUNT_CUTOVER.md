@@ -88,8 +88,31 @@ importing any code, then promotes the cached bytes into root-owned directories.
 - Records append-only phase receipts plus the current transition under
   `/etc/poe/cutovers/<commit>`. Every interruption remains an actual gap.
 
-A successful final driver receipt means **start requested**, not validated
-operation, reporting, opportunity capture, PAPER trading or acceptance.
+The same owner command then waits at most 30 seconds for the existing public
+status to identify the new original-account source. It verifies one live
+read-only WAL snapshot against the hash-verified stopped backup: original
+funding, inception, inception-price hash and rounding remain unchanged, revision
+does not decrease, and every column of every old `actions` and `journal` row is
+retained. New appended records are allowed. The prefix query has a five-second
+progress deadline and a 64 MiB SQLite heap bound; it never restores a backup.
+
+Root-private append-only phase receipts retain the detailed financial audit.
+One nonsecret receipt, `/var/lib/poe-public/upgrade-verification.json`, is written
+root-owned mode 0644 so the existing unprivileged administration path can read
+the result without a second sudo action. It contains source/time/checksums and
+row counts, not ledger bodies or credential data. This is a one-time upgrade
+receipt, not another reporting process or account channel.
+
+A financial identity/prefix failure suspends new candidates using the existing
+admission marker and leaves the new financial manager running. A public-status
+startup delay alone remains an incomplete result but preserves ordinary
+supervised freshness gates and automatic recovery. It does not create a new
+manual financial-authorization requirement. Neither failure automatically
+downgrades code, stops financial management or overwrites financial history.
+
+Even a complete final driver receipt proves only these bounded local checks,
+not Render parity, protection, opportunity capture, PAPER trading, profitability
+or sustained operational acceptance.
 
 ## Validate the resulting service
 

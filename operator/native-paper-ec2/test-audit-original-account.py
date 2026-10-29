@@ -11,6 +11,10 @@ class Tests(unittest.TestCase):
   db,state=self.fixture();before=db.total_changes;r=m.audit_snapshot(db);self.assertEqual(r['revision'],0);self.assertEqual(r['cashLamports'],'10000000000');self.assertEqual(db.total_changes,before);self.assertNotIn('SECRET_SENTINEL',json.dumps(r));self.assertTrue(r['flatAtSnapshot']);self.assertEqual(db.execute('SELECT value FROM metadata').fetchone(),('SECRET_SENTINEL',))
   with self.assertRaises(sqlite3.OperationalError):db.execute('DELETE FROM financial_state')
   db.close()
+ def test_existing_read_only_transaction_remains_open_for_same_snapshot_prefix_comparison(self):
+  db,state=self.fixture();db.execute('PRAGMA query_only=ON');db.execute('BEGIN');revision=m.audit_snapshot(db,existing_transaction=True)['revision'];self.assertEqual(revision,0);self.assertTrue(db.in_transaction)
+  with self.assertRaises(sqlite3.OperationalError):db.execute('DELETE FROM financial_state')
+  self.assertEqual(db.execute('SELECT count(*) FROM financial_state').fetchone(),(1,));db.execute('ROLLBACK');db.close()
  def test_wrong_account_inception_and_second_funding_are_refused(self):
   for values in[{'accountId':'poe-pilot-TEST_ONLY'},{'inceptionAt':m.INCEPTION+1},{'initialMicroUsd':'2000000000'}]:
    db,state=self.fixture();self.change(db,state,**values)

@@ -5,7 +5,7 @@ The root-owned package is prepared/reviewed before this command is used. This
 file deliberately provides no sudo installation, remote command, provider,
 secret, financial import, or alternate account/path mechanism.
 """
-import fcntl,hashlib,importlib.util,json,os,pathlib,pwd,sqlite3,stat,subprocess,sys,time
+import datetime,fcntl,hashlib,importlib.util,json,os,pathlib,pwd,sqlite3,stat,subprocess,sys,time
 
 HERE=pathlib.Path(__file__).resolve().parent
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
@@ -22,6 +22,7 @@ RELEASES=pathlib.Path('/opt/poe/releases')
 CURRENT=pathlib.Path('/opt/poe/current')
 DROPIN=pathlib.Path('/etc/systemd/system/poe-runtime.service.d/90-native-engine.conf')
 MANIFEST=ETC/'native-engine.json'
+PUBLIC_STATUS=pathlib.Path('/var/lib/poe-public/status.json')
 ORIGINAL='bce3d22bb434eb429aafacb788a18f39ec189c1b'
 ACCOUNT_ID='poe-3123e352-4581-455b-85db-acd7e825e99e'
 INCEPTION=1793052456212
@@ -165,7 +166,51 @@ def upgrade(expected_hash,auditor,supervisor):
   make_dir(DROPIN.parent,0,0,0o755);atomic(DROPIN,data['poe-runtime-persistent.conf'],0,0,0o644);switch_current(target);systemctl('daemon-reload');transition.update(phase='new-source-installed-not-started',installedAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition)
  stopped_phase(stopped_install,recover_original_before_new_start)
  # The sole runtime acquires the unchanged original DB owner lease itself.
- systemctl('start','poe-runtime.service');transition.update(phase='new-service-start-requested-runtime-and-render-verification-required',startRequestedAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition);print(json.dumps(transition,separators=(',',':')))
+ transition.update(phase='new-service-start-requested-runtime-and-render-verification-required',startRequestedAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition);systemctl('start','poe-runtime.service');verification,financial_proof=post_start_verification(manifest,transition,auditor,uid,gid);transition.update(phase='post-start-read-only-verified-render-and-operation-still-unverified'if verification['complete']else'post-start-verification-incomplete-new-financial-source-retained',postStartVerification=verification,postStartFinancial=financial_proof);write_json(record_dir/'transition.json',transition);public_dir=pathlib.Path('/var/lib/poe-public');directory(public_dir,uid);need(stat.S_IMODE(public_dir.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');atomic(public_dir/'upgrade-verification.json',(json.dumps(verification,separators=(',',':'))+'\n').encode(),0,0,0o644);print(json.dumps(verification,separators=(',',':')))
+ need(verification['complete'],'POST_START_VERIFICATION_INCOMPLETE_NEW_FINANCIAL_SOURCE_RETAINED')
+def verify_live_financial_prefix(auditor,stopped,backup,deadline_seconds=5):
+ """One read-only WAL snapshot; compare every historical financial row."""
+ backup_path=pathlib.Path(backup['file']);need(backup_path.resolve(strict=True)==backup_path and backup_path.parent.parent==BACKUPS and backup_path.name=='ledger.sqlite','EXACT_STOPPED_BACKUP_PATH_REQUIRED');raw=read(backup_path,128*MIB);need(sha(raw)==backup['sha256']and len(raw)==backup['bytes'],'VERIFIED_STOPPED_BACKUP_CHANGED')
+ uid=pwd.getpwnam('poe-runtime').pw_uid;need(LEDGER.resolve(strict=True)==LEDGER,'CANONICAL_ORIGINAL_LEDGER_REQUIRED');meta=auditor.file_metadata(LEDGER,uid,True);need(meta['exists'],'EXISTING_ORIGINAL_LEDGER_REQUIRED');identity=(meta['device'],meta['inode']);fd=os.open(LEDGER,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK);db=None
+ try:
+  need((os.fstat(fd).st_dev,os.fstat(fd).st_ino)==identity,'ORIGINAL_LEDGER_OPEN_IDENTITY_CHANGED');db=sqlite3.connect('file:'+str(LEDGER)+'?mode=ro',uri=True,timeout=1);deadline=time.monotonic()+deadline_seconds;db.set_progress_handler(lambda:1 if time.monotonic()>deadline else 0,1000);db.execute('PRAGMA busy_timeout=1000');db.execute('PRAGMA trusted_schema=OFF');db.execute('PRAGMA cache_size=-8192');db.execute('PRAGMA temp_store=MEMORY');db.execute('PRAGMA hard_heap_limit=67108864');db.execute('PRAGMA query_only=ON');db.execute('ATTACH DATABASE ? AS prior',('file:'+str(backup_path)+'?mode=ro',));db.execute('BEGIN');current=auditor.audit_snapshot(db,existing_transaction=True)
+  unchanged=['accountId','inceptionAt','initialMicroUsd','inceptionPriceSha256','inceptionLamports','roundingResidualMicroUsd'];need(all(current[k]==stopped[k]for k in unchanged)and current['revision']>=stopped['revision'],'ORIGINAL_FUNDING_INCEPTION_OR_REVISION_CHANGED');prefix={}
+  for table in['actions','journal']:
+   columns=db.execute('PRAGMA main.table_info('+table+')').fetchall();prior_columns=db.execute('PRAGMA prior.table_info('+table+')').fetchall();need(columns==prior_columns and len(columns)>0,'FINANCIAL_PREFIX_SCHEMA_CHANGED');count=db.execute('SELECT count(*) FROM prior.'+table).fetchone()[0];need(count==stopped['tableCounts'][table],'STOPPED_BACKUP_ROW_COUNT_CHANGED');missing=db.execute('SELECT count(*) FROM (SELECT * FROM prior.'+table+' EXCEPT SELECT * FROM main.'+table+')').fetchone()[0];need(missing==0,'OLD_FINANCIAL_ROWS_MISSING_OR_MUTATED');prefix[table]={'priorRows':count,'exactPriorRowsRetained':True,'currentRows':current['tableCounts'][table]}
+  need(db.total_changes==0 and db.execute('PRAGMA query_only').fetchone()==(1,),'READ_ONLY_FINANCIAL_VERIFICATION_REQUIRED');need(time.monotonic()<=deadline,'FINANCIAL_PREFIX_VERIFICATION_DEADLINE');named=LEDGER.lstat();need((named.st_dev,named.st_ino)==identity,'ORIGINAL_LEDGER_INODE_CHANGED');return {'identityAndInceptionPreserved':True,'initialFundingAndRoundingPreserved':True,'journalAndActionPrefixPreserved':True,'priorRevision':stopped['revision'],'currentRevision':current['revision'],'currentStateBodySha256':current['stateBodySha256'],'prefix':prefix,'financialDatabaseWrites':0,'backupRestored':False,'financial':current}
+ finally:
+  if db is not None:
+   if db.in_transaction:db.execute('ROLLBACK')
+   db.close()
+  os.close(fd)
+def wait_for_new_public_status(commit,uid,not_before,maximum_seconds=30):
+ deadline=time.monotonic()+maximum_seconds
+ while True:
+  try:
+   path=PUBLIC_STATUS;s=path.lstat();need(stat.S_IMODE(s.st_mode)==0o644,'PUBLIC_STATUS_MODE_REQUIRED');raw=read(path,4096,uid);value=json.loads(raw);at=int(datetime.datetime.fromisoformat(value['generatedAt'].replace('Z','+00:00')).timestamp()*1000);now=int(time.time()*1000)
+   need(value.get('accountId')==ACCOUNT_ID and value.get('inceptionAt')=='2026-10-26T22:07:36.212Z'and value.get('release')==commit and value.get('mode')=='PAPER'and value.get('liveTrading')is False and not_before<=at<=now+5000 and now-at<=30000,'NEW_ORIGINAL_SOURCE_NOT_YET_VISIBLE');return {'available':True,'sourceTimestamp':value['generatedAt'],'statusSha256':sha(raw),'observedAt':now,'accountId':ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','release':commit}
+  except(OSError,ValueError,KeyError,TypeError,Refused):
+   if time.monotonic()>=deadline:return {'available':False,'reason':'NEW_ORIGINAL_PUBLIC_STATUS_NOT_VERIFIED_WITHIN_30_SECONDS'}
+  time.sleep(min(.25,max(0,deadline-time.monotonic())))
+def post_start_verification(manifest,transition,auditor,uid,gid,maximum_status_wait=30):
+ started=time.monotonic();proof=None;errors=[];public=wait_for_new_public_status(manifest['source']['commit'],uid,transition['startRequestedAt'],maximum_status_wait)
+ if not public['available']:errors.append(public['reason'])
+ try:proof=verify_live_financial_prefix(auditor,transition['stoppedFinancial'],transition['backup'])
+ except Exception as error:
+  code=str(error);errors.append(code if code and len(code)<=128 and all(c in'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'for c in code)else'READ_ONLY_FINANCIAL_IDENTITY_OR_PREFIX_NOT_VERIFIED')
+ complete=not errors;admission_suspended=False
+ if proof is None:
+  # Use the EXISTING candidate-admission marker ONLY when financial identity
+  # or historical prefix cannot be verified. A public-status startup delay
+  # must retain ordinary supervised freshness gates and automatic recovery.
+  # Never pause financial management, change the ledger, downgrade code or manufacture an exit.
+  try:
+   gate=ACCOUNT/'admission-suspension.request'
+   if not gate.exists():atomic(gate,(json.dumps({'schemaVersion':1,'owner':'poe-original-cutover-postcheck','accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'source':manifest['source'],'at':int(time.time()*1000),'reason':'post-start original-account verification unavailable; preserve exposure; new entries suspended'},separators=(',',':'))+'\n').encode(),uid,gid)
+   admission_suspended=gate.exists()
+  except(OSError,Refused):pass
+ public_proof=None if proof is None else{k:v for k,v in proof.items()if k!='financial'}
+ return {'schemaVersion':1,'kind':'poe-original-upgrade-verification-v1','accountId':ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','source':manifest['source'],'configurationSha256':manifest['configurationSha256'],'installedInputSha256':transition['inputTransition']['installedInputSha256'],'verifiedAt':int(time.time()*1000),'complete':complete,'newPublicSource':public,'financialVerification':public_proof,'errors':errors,'elapsedMs':round((time.monotonic()-started)*1000),'newAdmissionsSuspended':admission_suspended,'admissionPolicy':'existing-supervisor-fresh-reporting-and-financial-validity-gates'if proof is not None else'financial-verification-unavailable-existing-candidate-pause','financialManagementStopped':False,'financialDatabaseWrites':0,'backupRestored':False,'operationalAcceptance':False,'meaning':'One bounded read-only post-start identity and historical-prefix check. Not trading, protection, Render parity, profitability or sustained-operation acceptance.'},proof
 def rollback(commit,auditor,supervisor):
  uid,gid,status=validate_host(auditor,supervisor);need(hashed(commit,40),'EXACT_ROLLBACK_SOURCE_REQUIRED');record_dir=RECORDS/commit;directory(record_dir,0,True);transition=json.loads(read(record_dir/'transition.json',128*1024));need(transition.get('source',{}).get('commit')==commit and transition.get('previousRelease')==ORIGINAL and CURRENT.resolve(strict=True)==RELEASES/commit,'RECORDED_ORIGINAL_CUTOVER_REQUIRED')
  # Never restore a backup over current financial history. Old observer cannot
@@ -215,4 +260,4 @@ def main():
  finally:os.close(op)
 if __name__=='__main__':
  try:main()
- except(Refused,OSError,ValueError,sqlite3.Error,subprocess.SubprocessError)as e:print(json.dumps({'kind':'POE_ORIGINAL_CUTOVER_REFUSED','reason':str(e)if isinstance(e,Refused)else'HOST_PRECONDITION_OR_OPERATION_UNAVAILABLE','financialHistoryReset':False,'backupRestored':False,'ownerActionMayBeRequired':True}),flush=True);raise SystemExit(1)
+ except(RuntimeError,OSError,ValueError,sqlite3.Error,subprocess.SubprocessError)as e:print(json.dumps({'kind':'POE_ORIGINAL_CUTOVER_REFUSED','reason':str(e)if isinstance(e,Refused)else'HOST_PRECONDITION_OR_OPERATION_UNAVAILABLE','financialHistoryReset':False,'backupRestored':False,'ownerActionMayBeRequired':True}),flush=True);raise SystemExit(1)
