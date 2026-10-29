@@ -27,5 +27,6 @@
     "crosscomponentLatest": 15,
     "countsOverlap": true,
     "productionAcceptance": false
-  }
+  },
+  "disposableFixtureAccountsOnly": true
 }

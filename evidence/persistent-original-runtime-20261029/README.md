@@ -6,7 +6,7 @@ Source `f4f6a43f289e99b2182d932cea0f01b410d539ad` integrates persistent manageme
 
 Measured offline results (overlapping scopes, not additive): **104/104** focused core/financial/backup checks; independent **69/69**; **23/23** local-public/runtime checks; **15/15** latest cross-component checks; TypeScript passed. The f4 immutable 5-file executable/publisher closure built and passed the network-disabled disposable backup/idempotency/reopen smoke. The large backup regression used a real 78,913,536-byte disposable database: persistent mode passed without a research-size ceiling; worker timer-gap observations are Cloud test evidence, not EC2 capacity.
 
-Actual original-account audit, privileged cutover, final combined-repository release, real provider recovery, original-account natural PAPER trades and sustained EC2 operation remain unverified here. No real ledger, credential or provider was read, no account was created, and no deployment was performed by this component work. Earlier raw failures remain in parent evidence; no historical forward failure is reclassified by these offline tests.
+Actual original-account audit, privileged cutover, final combined-repository release, real provider recovery, original-account natural PAPER trades and sustained EC2 operation remain unverified here. No real ledger, credential or provider was read, no new operating account was created, and no deployment was performed by this component work. Earlier raw failures remain in parent evidence; no historical forward failure is reclassified by these offline tests.
 
 Reproduce on integrated reviewed source:
 
