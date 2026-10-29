@@ -1,6 +1,7 @@
 /** Frozen isolated PAPER pilot contract. No signer, provider or account owner. */
 import {createHash} from 'node:crypto';
 import {PROVISIONAL_RULE} from './strategy.js';
+import {ADAPTIVE_MOMENTUM_V2_POLICY,ADAPTIVE_MOMENTUM_V2_SHA256,ADAPTIVE_MOMENTUM_V2_VERSION} from './adaptive-momentum-v2.js';
 
 export const PILOT_VERSION='persistent-buying-pilot-v1' as const;
 const baseline=Object.freeze({version:'persistent-buying-v0-unfrozen',windowMs:60000,bucketMs:10000,minimumAgeMs:300000,maximumAgeMs:7200000,minimumNetBuyLamports:'1000000000',minimumPositiveBuckets:4,minimumBuyers:5,maximumLargestBuyerBps:3500,maximumSizeToLiquidityBps:500,maximumInitialCostMicroUsd:'50000000',maximumHoldingMs:900000,stopLossBps:1500,takeProfitBps:3000,modeledDelayMs:1000,orderExpiryMs:5000,maximumQuoteAgeMs:2000});
@@ -17,19 +18,32 @@ export const CONCURRENT_PILOTS=Object.freeze({
   3:Object.freeze({contract:stage3,contractSha256:'ebec988c7b87a5be0cdc2e9ddcc0d9ff42a35363418dd528dc3eb9e26d7474dd'})
 });
 for(const spec of Object.values(CONCURRENT_PILOTS))if(createHash('sha256').update(JSON.stringify(spec.contract)).digest('hex')!==spec.contractSha256)throw Error('frozen concurrent pilot contract hash mismatch');
+/** Owner-authorized active PAPER variant. The original contracts above remain
+ * byte-identical rollback/benchmark profiles. Dollar limits are an explicitly
+ * reported temporary accounting fallback, never an appreciation/sale ceiling. */
+export const ADAPTIVE_PILOT_CONTRACT=Object.freeze({...PILOT_CONTRACT,version:ADAPTIVE_MOMENTUM_V2_VERSION,stage:2 as const,risk:Object.freeze({...PILOT_CONTRACT.risk,maximumSimultaneousPositions:2 as const,reentry:true}),adaptive:Object.freeze({policy:ADAPTIVE_MOMENTUM_V2_POLICY,policySha256:ADAPTIVE_MOMENTUM_V2_SHA256,activation:'owner-authorized-active-paper; no economic promotion gate',legacyRiskFallback:'initial $50 entry/$150 aggregate; no appreciation ceiling; preserve actual daily loss control',capacity:'two holdings/four deep; further capacity requires operational serviceability'})});
+// The hash binds the bundled immutable policy; callers cannot supply settings.
+export const ADAPTIVE_PILOT_CONTRACT_SHA256=createHash('sha256').update(JSON.stringify(ADAPTIVE_PILOT_CONTRACT)).digest('hex');
+export const ADAPTIVE_PILOT_BINDING=Object.freeze({version:ADAPTIVE_MOMENTUM_V2_VERSION,stage:2 as const,contractSha256:ADAPTIVE_PILOT_CONTRACT_SHA256,maxPositions:2 as const});
 type SinglePilotBinding={version:typeof PILOT_VERSION;contractSha256:string;maxPositions:1};
 type ConcurrentPilotBinding={[S in ConcurrentPilotStage]:{version:(typeof CONCURRENT_PILOTS)[S]['contract']['version'];stage:S;contractSha256:string;maxPositions:S}}[ConcurrentPilotStage];
-export type PilotBinding=SinglePilotBinding|ConcurrentPilotBinding;
-type PilotContract=typeof PILOT_CONTRACT|(typeof CONCURRENT_PILOTS)[ConcurrentPilotStage]['contract'];
+export type PilotBinding=SinglePilotBinding|ConcurrentPilotBinding|typeof ADAPTIVE_PILOT_BINDING;
+type PilotContract=typeof PILOT_CONTRACT|(typeof CONCURRENT_PILOTS)[ConcurrentPilotStage]['contract']|typeof ADAPTIVE_PILOT_CONTRACT;
 export type ResolvedPilotBinding={version:PilotBinding['version'];stage:ConcurrentPilotStage|null;contract:PilotContract;contractSha256:string;maxPositions:1|2|3};
 /** Resolve only the three known frozen contracts, never arbitrary settings. */
 export function resolvePilotBinding(value:unknown):Readonly<ResolvedPilotBinding>|null{
   if(!value||typeof value!=='object'||Array.isArray(value))return null;
   const p=value as Record<string,unknown>;
   if(p.version===PILOT_VERSION&&p.contractSha256===PILOT_CONTRACT_SHA256&&p.maxPositions===1&&!Object.hasOwn(p,'stage'))return Object.freeze({version:PILOT_VERSION,stage:null,contract:PILOT_CONTRACT,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1});
+  if(p.version===ADAPTIVE_PILOT_BINDING.version&&p.stage===2&&p.maxPositions===2&&p.contractSha256===ADAPTIVE_PILOT_CONTRACT_SHA256)return Object.freeze({version:ADAPTIVE_PILOT_BINDING.version,stage:2,contract:ADAPTIVE_PILOT_CONTRACT,contractSha256:ADAPTIVE_PILOT_CONTRACT_SHA256,maxPositions:2});
   if(p.stage!==2&&p.stage!==3)return null;
   const spec=CONCURRENT_PILOTS[p.stage];
   return p.version===spec.contract.version&&p.contractSha256===spec.contractSha256&&p.maxPositions===p.stage?Object.freeze({version:spec.contract.version,stage:p.stage,contract:spec.contract,contractSha256:spec.contractSha256,maxPositions:p.stage}):null;
+}
+
+export function resolveAdaptivePilotBinding(stage:2=2):Readonly<ResolvedPilotBinding>{
+ if(stage!==2)throw Error('ADAPTIVE_TWO_POSITION_STAGE_REQUIRED');
+ return resolvePilotBinding(ADAPTIVE_PILOT_BINDING)!;
 }
 
 /** A later global strategy change cannot silently alter this frozen pilot. */

@@ -12,7 +12,7 @@ import {SelectionRejections} from './selection-rejections.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';
 import {PilotRpc} from './pilot-rpc.js';
 import {PilotFeeds,PILOT_FEED_MAXIMUM_RECORDED_BYTES} from './pilot-feeds.js';
-import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256,PILOT_VERSION,CONCURRENT_PILOTS,type PilotBinding} from './pilot-contract.js';
+import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256,PILOT_VERSION,CONCURRENT_PILOTS,ADAPTIVE_PILOT_CONTRACT_SHA256,resolvePilotBinding,type PilotBinding} from './pilot-contract.js';
 import {chooseProtectedResearchWork,type ResearchJob} from './research-dispatch.js';
 import {fetchPublicUsdPrice} from './valuation.js';
 import {FinancialBackupStore} from './backup.js';
@@ -109,8 +109,10 @@ export function resolvePilotStage(value:unknown,candidateLimit?:number,deepSlots
   return {stage,maximumCandidates:observationLimit(stage==='shadow'?2:1),maximumPositions:1,concurrent:stage==='shadow',contract:PILOT_CONTRACT,contractSha256:PILOT_CONTRACT_SHA256,binding:{version:PILOT_VERSION,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1} as PilotBinding};
 }
 
-export function recordPilotStageTransition<T extends {contractSha256:string;stageHistory?:Array<{runId:string;at:number;stage:PilotStage;contractSha256:string;previousContractSha256:string}>}>(manifest:T,stage:PilotStage,runId:string,at:number){
-  const configuration=resolvePilotStage(stage),known=[PILOT_CONTRACT_SHA256,...Object.values(CONCURRENT_PILOTS).map(s=>s.contractSha256)] as string[];
+export function recordPilotStageTransition<T extends {contractSha256:string;stageHistory?:Array<{runId:string;at:number;stage:PilotStage;contractSha256:string;previousContractSha256:string}>}>(manifest:T,stage:PilotStage,runId:string,at:number,bindingOverride?:PilotBinding){
+  const base=resolvePilotStage(stage),resolved=bindingOverride===undefined?null:resolvePilotBinding(bindingOverride);
+  need(bindingOverride===undefined||!!resolved&&stage==='two'&&resolved.version==='adaptive-momentum-v2-paper-v1'&&resolved.maxPositions===2,'PILOT_EXPLICIT_ADAPTIVE_BINDING_REQUIRED');
+  const configuration=resolved?{...base,contract:resolved.contract,contractSha256:resolved.contractSha256,binding:bindingOverride!}:base,known=[PILOT_CONTRACT_SHA256,...Object.values(CONCURRENT_PILOTS).map(s=>s.contractSha256),ADAPTIVE_PILOT_CONTRACT_SHA256] as string[];
   need(known.includes(manifest.contractSha256)&&/^[a-z0-9-]{1,60}$/.test(runId)&&Number.isSafeInteger(at)&&at>=0,'PILOT_STAGE_TRANSITION_BINDING');
   const previous=manifest.stageHistory??[];need(previous.length<64&&(!previous.length||at>=previous.at(-1)!.at),'PILOT_STAGE_HISTORY_BOUND');
   manifest.stageHistory=[...previous,{runId,at,stage,contractSha256:configuration.contractSha256,previousContractSha256:manifest.contractSha256}];manifest.contractSha256=configuration.contractSha256;return configuration;

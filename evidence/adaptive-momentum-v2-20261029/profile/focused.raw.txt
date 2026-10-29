@@ -1,0 +1,11 @@
+✔ active adaptive profile preserves immutable baseline rollback and PAPER boundary (1.054253ms)
+✔ adaptive binding refuses arbitrary hashes, positions, stages and inherited baseline identity (0.629723ms)
+✔ active profile transition preserves original manifest identity/history and permits explicit baseline rollback (1.372094ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1138.437964
