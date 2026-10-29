@@ -73,6 +73,10 @@
     "raw/14.json": {
       "bytes": 118429,
       "sha256": "24c8f487b642fb22ba1cdd789be3c297e95e286bdae4fea99b4ba960b4700e33"
+    },
+    "process-settlement.json": {
+      "bytes": 192,
+      "sha256": "2269d9293002d9ac0c5c45ad06765dcba06e4cfa784f5060431db4542c625ce8"
     }
   },
   "newProviderRequestsDuringFinalRecovery": 0,
