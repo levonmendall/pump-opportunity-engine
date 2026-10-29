@@ -3,46 +3,54 @@
 
 API: apply <transport-index-sha256>. The same command resumes interrupted work.
 The transport index has schemaVersion, kind, sourceCommit, previousSource,
-compatibility and files. Its nine exact files are BOUNDS below. Review and pin
+compatibility and files. Its ten exact files are BOUNDS below. Review and pin
 the index and this driver independently before root executes verified bytes.
 No bootstrap, account initialization, DB restore, secret access or Render call.
 """
 import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
 
-OLD_SOURCE={'commit':'cdba9d483fdcef105e74e3053a8d4bbf28bdff0c','sha256':'77d671b39664cbd30006fe5997e2b0e73077f8e18111d80ebac3a1704ea7a7e1'}
+OLD_SOURCE={'commit':'f96f02eeccd56dda6ce811bdc4405f237224c54f','sha256':'b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9'}
 OLD_INDEX='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
-PRIOR_INDEX='4f29d5e6691da319cfa3ec1714da71e71a0aeb5140a81b58e2c8c4d88a7b0e86'
+PRIOR_INDEX='98345ee89aded191b3035aa2c1a03377885169975db1a126c77a060c97411c7b'
 PRIOR_RECORD='forward-'+OLD_SOURCE['commit']
-PRIOR_FORWARD_DRIVER_SHA='d2da791da20014bc0dbda54dfb8a1859bd2356586fc189d8b3b374c2cc190b60'
-OLD_MANIFEST='bf3a377b2adc28900fc3c10df7b89023cccb52e8b0936c5740197bd5efb6a59a'
+PRIOR_FORWARD_DRIVER_SHA='e5437db739e8b346e08c340970c6f5365707f86c33a2624d36dbb2dc52c465ae'
+OLD_MANIFEST='8a5d4bac098bfc4cb09e2e58e5b465510082a0ce7863739718f6ad8abe61292c'
 # Root-indexed validation helper and current financial release have distinct pins.
 INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
 OLD_SUPERVISOR='025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed'
 CORE_SHA='2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab'
 AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
-# Reporting, supervision, backup and SQLite ABI remain byte-identical to the
+# Reporting, supervision and SQLite ABI remain byte-identical to the
 # independently pinned installed financial source; no credential change is allowed.
 OLD_REPORTER='29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f'
-UNCHANGED={'backup-worker.mjs':'53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34','better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
+OLD_BACKUP_WORKER_SHA='53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34'
+NEW_BACKUP_WORKER_SHA='815f2a215111d09a9216f3fa2235481865e6f22f76773636e2f10022957ac656'
+UNCHANGED={'better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
 UNCHANGED.update({'snapshot-publisher.mjs':OLD_REPORTER,'run-authoritative-service.py':OLD_SUPERVISOR})
-COMPATIBILITY={'scope':'native-financial-readiness-and-bounded-technical-reevaluation','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
+COMPATIBILITY={'scope':'native-proven-internal-stop-recovery-and-fresh-flow-entry-arming','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
-STAGE=pathlib.Path('/var/tmp/poe-original-entry-readiness-upgrade')
+STAGE=pathlib.Path('/var/tmp/poe-original-entry-arming-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
 NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
 NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
-OLD_CONFIGURATION_SHA='44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae'
-# Final source f96f02e: 1777/1777 tests and exact immutable bundle verified.
-NEW_CONFIGURATION_SHA='acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf'
+OLD_CONFIGURATION_SHA='acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf'
+# Source5648606:1799 full tests PASS; exact native/worker closure frozen.
+NEW_CONFIGURATION_SHA='96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c'
+# A read-only diagnostic is verified/frozen with the package, never installed
+# in RELEASE_FILES and never executed with maintenance/root privileges.
+FORENSIC_FILE='export-source-recovery-forensics-20261029.py'
+FORENSIC_SHA='4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986'
+FORENSIC_OUTPUT='/var/lib/poe-public/source-recovery-forensics-20261029.json'
+FORENSIC_UID,FORENSIC_GID=988,982
 OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
 RESOURCE_AFTER=dict(RESOURCE_BEFORE)
 UID,GID,RUNNER=988,982,994
 MIB=1024*1024
-BOUNDS={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB,'run-authoritative-service.py':128*1024,'forward-original-upgrade.py':128*1024,'service.json':128*1024,'poe-runtime-persistent.conf':8192}
+BOUNDS={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB,'run-authoritative-service.py':128*1024,'forward-original-upgrade.py':128*1024,'service.json':128*1024,'poe-runtime-persistent.conf':8192,FORENSIC_FILE:64*1024}
 class Refused(RuntimeError):pass
 def need(value,code):
  if not value:raise Refused(code)
@@ -68,6 +76,48 @@ def load_helpers():
  auditor=reviewed_module('poe_forward_pinned_audit',TOOLS/'audit-original-account.py',AUDITOR_SHA)
  supervisor=reviewed_module('poe_forward_old_supervisor',TOOLS/'run-authoritative-service.py',INDEXED_SUPERVISOR)
  attach_stop_observer(m);return m,auditor,supervisor
+def forensic_preflight(raw):
+ """Run only reviewed bytes after Popen drops all root/supplementary identity.
+
+ A failed diagnostic never changes a financial gate or stops the old source.
+ The receipt is metadata only; private inputs/stdout/stderr are never copied.
+ """
+ need(type(raw)is bytes and 0<len(raw)<=BOUNDS[FORENSIC_FILE]and hashed(FORENSIC_SHA)and sha(raw)==FORENSIC_SHA,'INDEPENDENT_VERIFIED_FORENSIC_EXPORTER_REQUIRED')
+ bootstrap="""import os,sys,resource,hashlib
+os.umask(0o077)
+resource.setrlimit(resource.RLIMIT_CPU,(3,3))
+resource.setrlimit(resource.RLIMIT_AS,(128*1024*1024,128*1024*1024))
+resource.setrlimit(resource.RLIMIT_NOFILE,(64,64))
+resource.setrlimit(resource.RLIMIT_CORE,(0,0))
+resource.setrlimit(resource.RLIMIT_FSIZE,(1024*1024,1024*1024))
+assert os.getuid()==988 and os.getgid()==982 and os.getgroups()==[]
+b=sys.stdin.buffer.read(65537)
+assert 0<len(b)<=65536 and hashlib.sha256(b).hexdigest()==%r
+p='hash-verified-source-recovery-exporter.py'
+sys.argv=[p]
+exec(compile(b,p,'exec'),{'__name__':'__main__','__file__':p})
+"""%FORENSIC_SHA
+ base={'schemaVersion':1,'kind':'POE_SOURCE_RECOVERY_PREFLIGHT','status':'UNKNOWN','financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0,'requestedAt':now(),'scriptSha256':FORENSIC_SHA,'childUid':FORENSIC_UID,'childGid':FORENSIC_GID,'timeoutSeconds':8}
+ try:
+  result=subprocess.run(['/usr/bin/python3','-B','-I','-c',bootstrap],input=raw,capture_output=True,check=False,close_fds=True,timeout=8,user=FORENSIC_UID,group=FORENSIC_GID,extra_groups=[],env={'PATH':'/usr/bin:/bin','LANG':'C'})
+  base.update(completedAt=now(),returncode=result.returncode if type(result.returncode)is int and -256<=result.returncode<=256 else None)
+  if result.returncode!=0:return {**base,'reasonCode':'UNPRIVILEGED_FORENSIC_EXPORT_FAILED'}
+  if type(result.stdout)is not bytes or type(result.stderr)is not bytes or len(result.stdout)>8192 or len(result.stderr)>4096:return {**base,'reasonCode':'FORENSIC_RECEIPT_BOUND_EXCEEDED'}
+  value=json.loads(result.stdout)
+  expected={'kind','readerUid','readerGid','financialDatabaseOpened','financialWrites','serviceChanges','path','bytes','sha256'}
+  valid=type(value)is dict and set(value)==expected and value['kind']=='POE_SOURCE_RECOVERY_EXPORT_RECEIPT'and type(value['readerUid'])is int and value['readerUid']==FORENSIC_UID and type(value['readerGid'])is int and value['readerGid']==FORENSIC_GID and value['financialDatabaseOpened']is False and type(value['financialWrites'])is int and value['financialWrites']==0 and type(value['serviceChanges'])is int and value['serviceChanges']==0 and value['path']==FORENSIC_OUTPUT and type(value['bytes'])is int and 0<value['bytes']<=512*1024 and hashed(value['sha256'])
+  if not valid:return {**base,'reasonCode':'FORENSIC_RECEIPT_NOT_VERIFIED'}
+  return {**base,'status':'EXPORTED','receipt':value}
+ except subprocess.TimeoutExpired:return {**base,'completedAt':now(),'reasonCode':'UNPRIVILEGED_FORENSIC_EXPORT_TIMEOUT'}
+ except Exception:return {**base,'completedAt':now(),'reasonCode':'UNPRIVILEGED_FORENSIC_EXPORT_UNAVAILABLE'}
+def retain_forensic_preflight(m,record_dir,record,raw):
+ # Package/hash validation remains fatal; a read-only export failure is not a
+ # financial reason to strand the running old service or block its upgrade.
+ need(type(raw)is bytes and 0<len(raw)<=BOUNDS[FORENSIC_FILE]and hashed(FORENSIC_SHA)and sha(raw)==FORENSIC_SHA,'INDEPENDENT_VERIFIED_FORENSIC_EXPORTER_REQUIRED')
+ keep_file(m,record_dir/FORENSIC_FILE,raw)
+ if 'forensicPreflight'not in record:
+  record['forensicPreflightRequestedAt']=now();m.write_json(record_dir/'transition.json',record)
+  record['forensicPreflight']=forensic_preflight(raw);m.write_json(record_dir/'transition.json',record)
 def policy_sha(value):return sha(json.dumps(value,sort_keys=True,separators=(',',':')).encode())
 def release_supervisor(data):
  # All package bytes, including this reviewed code, are index-verified before
@@ -86,7 +136,9 @@ def bundle(path,uid,expected,driver_sha,supervisor):
  for row in rows:
   name=row['file'];need(set(row)=={'file','bytes','sha256'}and type(row['bytes'])is int and 0<row['bytes']<=BOUNDS[name]and hashed(row['sha256']),'BOUNDED_FORWARD_FILE_PIN_REQUIRED');body=read(path/name,BOUNDS[name],uid);need(len(body)==row['bytes']and sha(body)==row['sha256'],'FORWARD_PACKAGE_FILE_HASH_REQUIRED');data[name]=body
  need(hashed(driver_sha)and sha(data['forward-original-upgrade.py'])==driver_sha,'INDEPENDENT_VERIFIED_FORWARD_DRIVER_REQUIRED')
+ need(hashed(FORENSIC_SHA)and sha(data[FORENSIC_FILE])==FORENSIC_SHA,'INDEPENDENT_VERIFIED_FORENSIC_EXPORTER_REQUIRED')
  for name,digest in UNCHANGED.items():need(sha(data[name])==digest,'PRESERVED_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED')
+ need(sha(data['backup-worker.mjs'])==NEW_BACKUP_WORKER_SHA,'EXACT_NEW_COMPILED_BACKUP_WORKER_REQUIRED')
  need(sha(data['poe-runtime-persistent.conf'])==NEW_NATIVE_DROPIN_SHA,'REVIEWED_NEW_RESOURCE_DROPIN_REQUIRED');new_supervisor=release_supervisor(data)
  manifest=new_supervisor.validate_manifest(json.loads(data['service.json']));need(manifest['deepSlots']==4 and manifest['stage']=='single','APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED');need(manifest['configurationSha256']==NEW_CONFIGURATION_SHA,'PINNED_RESOURCE_CONFIGURATION_REQUIRED');need(manifest['source']=={'commit':index['sourceCommit'],'sha256':sha(data['native-paper.mjs'])},'COMPILED_FORWARD_SOURCE_REQUIRED')
  rows={r['file']:r for r in manifest['files']}
@@ -100,6 +152,7 @@ def preserved_manifest(old,new):
  need(old.get('configurationSha256')==OLD_CONFIGURATION_SHA and new.get('configurationSha256')==NEW_CONFIGURATION_SHA,'EXACT_RESOURCE_CONFIGURATION_TRANSITION_REQUIRED')
  need(policy_sha(old.get('policy'))==OLD_POLICY_SHA and policy_sha(new.get('policy'))==NEW_POLICY_SHA,'EXACT_RESOURCE_POLICY_TRANSITION_REQUIRED')
  need(next((r['sha256']for r in old['files']if r['file']=='snapshot-publisher.mjs'),None)==OLD_REPORTER,'CURRENT_REPORTER_HOTFIX_REQUIRED')
+ need(next((r['sha256']for r in old['files']if r['file']=='backup-worker.mjs'),None)==OLD_BACKUP_WORKER_SHA and next((r['sha256']for r in new['files']if r['file']=='backup-worker.mjs'),None)==NEW_BACKUP_WORKER_SHA,'EXACT_OLD_AND_NEW_COMPILED_BACKUP_WORKERS_REQUIRED')
  for name,digest in UNCHANGED.items():
   if name!='run-authoritative-service.py':need(next((r['sha256']for r in old['files']if r['file']==name),None)==digest,'CURRENT_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED')
 def source_input(raw,old,new,baseline,m):
@@ -224,7 +277,7 @@ def recover_old(m,auditor,supervisor,record_dir,record,expected_inode):
   finally:os.close(owner)
  need(m.CURRENT.resolve(strict=True)==m.RELEASES/OLD_SOURCE['commit']and read(m.MANIFEST,128*1024,0,GID,0o640)==read(record_dir/'before-service.json',128*1024)and read(m.ACCOUNT/'input.json',MIB,UID,GID,0o600)==read(record_dir/'before-input.json',MIB),'OLD_FINANCIAL_RECOVERY_IMAGES_MUST_BE_EXACT');m.original_audit(auditor,expected_inode);need(resource_profile(unit())==RESOURCE_BEFORE,'RESTORED_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');m.systemctl('start','poe-runtime.service');record.update(phase='old-financial-source-resumed-before-new-start',recoveredAt=now(),oldFinancialSource=OLD_SOURCE,reporterHotfixPreserved=True);m.write_json(record_dir/'transition.json',record)
 def apply(expected,m,auditor,indexed_supervisor,driver_sha):
- need(os.getuid()==0 and hashed(driver_sha),'INDEPENDENT_OWNER_ROOT_DRIVER_PIN_REQUIRED');need(hashed(NEW_CONFIGURATION_SHA),'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED');merged=local_preflight(m,auditor,indexed_supervisor);supervisor=current_release_supervisor(m)
+ need(os.getuid()==0 and hashed(driver_sha),'INDEPENDENT_OWNER_ROOT_DRIVER_PIN_REQUIRED');need(hashed(NEW_CONFIGURATION_SHA),'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED');need(hashed(FORENSIC_SHA),'FINAL_REVIEWED_FORENSIC_PIN_REQUIRED');merged=local_preflight(m,auditor,indexed_supervisor);supervisor=current_release_supervisor(m)
  # Read the staged index before choosing the fixed root destination. A frozen
  # copy makes recovery independent of runner files after first preparation.
  choices=[]
@@ -250,7 +303,7 @@ def apply(expected,m,auditor,indexed_supervisor,driver_sha):
   m.make_dir(record_dir,0,0,0o700)
   for name,raw in [('before-service.json',old_raw),('after-service.json',data['service.json']),('before-input.json',before_input),('after-input.json',after_input),('before-research-baseline.json',baseline),('before-native-dropin.conf',read(m.DROPIN,8192)),('after-native-dropin.conf',data['poe-runtime-persistent.conf']),('before-legacy-entrypoint.conf',read(UNITDIR/'00-legacy-entrypoint.conf',8192))]:keep_file(m,record_dir/name,raw)
   before_operating=read(record_dir/'before-operating.json',8*MIB)if os.path.lexists(record_dir/'before-operating.json')else operating_image(m);keep_file(m,record_dir/'before-operating.json',before_operating);copied=copy_records(m,prior_dir,record_dir/'prior-root-records');record={'schemaVersion':1,'kind':'poe-original-forward-upgrade-v1','accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'previousSource':OLD_SOURCE,'source':manifest['source'],'packageIndexSha256':expected,'driverSha256':driver_sha,'at':now(),'phase':'root-before-and-after-images-retained','ledgerIdentity':list(expected_inode),'ledgerPath':str(m.LEDGER),'beforeFinancial':financial,'originalFinancialPrefix':prefix,'priorTransitionSha256':sha(prior_raw),'copiedPriorRootRecords':copied,'unitBefore':merged,'selectedRuntimeBefore':selected_runtime(m),'beforeOperatingSha256':sha(before_operating),'operatingHistoryRestored':False,'compatibility':COMPATIBILITY,'resourceTransition':{'beforeDropinSha256':NATIVE_DROPIN_SHA,'afterDropinSha256':NEW_NATIVE_DROPIN_SHA,'beforeConfigurationSha256':OLD_CONFIGURATION_SHA,'afterConfigurationSha256':NEW_CONFIGURATION_SHA,'beforePolicySha256':OLD_POLICY_SHA,'afterPolicySha256':NEW_POLICY_SHA,'effectiveBefore':resource_profile(merged),'reviewedAfter':RESOURCE_AFTER,'accountAndSandboxUnchanged':True},'hostIdentityMetadataRequests':2,'providerRequests':0,'financialHistoryReset':False,'backupRestored':False,'capitalInitialized':False,'operationalAcceptance':False,'inputTransition':{'preparedInputSha256':sha(before_input),'installedInputSha256':sha(after_input),'field':'source','allOtherInputFieldsPreserved':True},'subsequentCodexReadinessGate':'Update and verify the SAME Render receiver expected financial source, then prove fresh original-channel acceptance. This helper does not contact Render or certify operations.'};m.write_json(record_dir/'transition.json',record)
- freeze(m,frozen,index_raw,data);release(m,target,data,manifest,new_supervisor)
+ freeze(m,frozen,index_raw,data);retain_forensic_preflight(m,record_dir,record,data[FORENSIC_FILE]);release(m,target,data,manifest,new_supervisor)
  # A durable start intent is never cleared. Even a start timeout can mean that
  # financial effects occurred, so subsequent runs only retain/check new code.
  if record.get('startRequestedAt'):
@@ -279,9 +332,9 @@ def apply(expected,m,auditor,indexed_supervisor,driver_sha):
   m.stopped_phase(install,recover)
   record.update(phase='new-financial-source-start-intent',startRequestedAt=now());m.write_json(record_dir/'transition.json',record);m.systemctl('start','poe-runtime.service')
  need((m.LEDGER.lstat().st_dev,m.LEDGER.lstat().st_ino)==expected_inode,'ORIGINAL_LEDGER_INODE_CHANGED');post_record=dict(record);post_record['startRequestedAt']=max(record['startRequestedAt'],record.get('verificationNotBefore',0));verification,post=m.post_start_verification(manifest,post_record,auditor,UID,GID);post_unit=unit();process_owner(post_unit);need(resource_profile(post_unit)==RESOURCE_AFTER,'NEW_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');record.update(phase='new-source-post-start-prefix-verified-render-gate-pending'if verification['complete']else'new-source-retained-post-start-verification-incomplete',postStartVerification=verification,postStartFinancial=post,unitAfter=post_unit,selectedRuntimeAfter=selected_runtime(m),verifiedAt=now());record['interruption']={'stopRequestedAt':record.get('stopRequestedAt'),'physicalStopVerifiedAt':record.get('stoppedAt'),'startRequestedAt':record['startRequestedAt'],'localVerificationAt':record['verifiedAt'],'stopToStartMs':None if not record.get('stoppedAt')else record['startRequestedAt']-record['stoppedAt'],'observedNewSource':verification.get('newPublicSource'),'continuousCoverageClaimed':False};m.write_json(record_dir/'transition.json',record)
- result={'schemaVersion':1,'kind':'POE_ORIGINAL_FORWARD_UPGRADE_RESULT','phase':record['phase'],'accountId':m.ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','source':manifest['source'],'previousSource':OLD_SOURCE,'complete':verification['complete'],'verification':verification,'interruption':record['interruption'],'resourceTransition':{**record['resourceTransition'],'effectiveAfter':resource_profile(post_unit)},'renderReadinessGate':record['subsequentCodexReadinessGate'],'financialHistoryReset':False,'backupRestored':False,'operationalAcceptance':False};raw=encoded(result);need(len(raw)<=16384,'BOUNDED_PUBLIC_FORWARD_RECEIPT_REQUIRED');m.directory(m.PUBLIC_STATUS.parent,UID);need(stat.S_IMODE(m.PUBLIC_STATUS.parent.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');m.atomic(m.PUBLIC_STATUS.parent/'upgrade-verification.json',raw,0,0,0o644);print(raw.decode(),end='',flush=True);need(verification['complete'],'NEW_FINANCIAL_MANAGER_RETAINED_POST_START_VERIFICATION_INCOMPLETE');return result
+ result={'schemaVersion':1,'kind':'POE_ORIGINAL_FORWARD_UPGRADE_RESULT','phase':record['phase'],'accountId':m.ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','source':manifest['source'],'previousSource':OLD_SOURCE,'complete':verification['complete'],'verification':verification,'interruption':record['interruption'],'resourceTransition':{**record['resourceTransition'],'effectiveAfter':resource_profile(post_unit)},'renderReadinessGate':record['subsequentCodexReadinessGate'],'forensicPreflight':record['forensicPreflight'],'financialHistoryReset':False,'backupRestored':False,'operationalAcceptance':False};raw=encoded(result);need(len(raw)<=16384,'BOUNDED_PUBLIC_FORWARD_RECEIPT_REQUIRED');m.directory(m.PUBLIC_STATUS.parent,UID);need(stat.S_IMODE(m.PUBLIC_STATUS.parent.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');m.atomic(m.PUBLIC_STATUS.parent/'upgrade-verification.json',raw,0,0,0o644);print(raw.decode(),end='',flush=True);need(verification['complete'],'NEW_FINANCIAL_MANAGER_RETAINED_POST_START_VERIFICATION_INCOMPLETE');return result
 def main():
- need(os.getuid()==0 and len(sys.argv)==3 and sys.argv[1]=='apply'and hashed(sys.argv[2]),'EXPLICIT_ROOT_FORWARD_OPERATION_AND_INDEX_PIN_REQUIRED');need(hashed(NEW_CONFIGURATION_SHA),'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED');driver_sha=globals().get('__poe_verified_driver_sha256__');need(hashed(driver_sha),'INDEPENDENT_IN_MEMORY_DRIVER_VERIFICATION_REQUIRED');os.umask(0o077);m,auditor,supervisor=load_helpers();m.directory(m.ETC,0);fd=os.open(m.ETC/'cutover.owner.lock',os.O_RDWR|os.O_NOFOLLOW|os.O_NONBLOCK)
+ need(os.getuid()==0 and len(sys.argv)==3 and sys.argv[1]=='apply'and hashed(sys.argv[2]),'EXPLICIT_ROOT_FORWARD_OPERATION_AND_INDEX_PIN_REQUIRED');need(hashed(NEW_CONFIGURATION_SHA),'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED');need(hashed(FORENSIC_SHA),'FINAL_REVIEWED_FORENSIC_PIN_REQUIRED');driver_sha=globals().get('__poe_verified_driver_sha256__');need(hashed(driver_sha),'INDEPENDENT_IN_MEMORY_DRIVER_VERIFICATION_REQUIRED');os.umask(0o077);m,auditor,supervisor=load_helpers();m.directory(m.ETC,0);fd=os.open(m.ETC/'cutover.owner.lock',os.O_RDWR|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
   s=os.fstat(fd);need(stat.S_ISREG(s.st_mode)and s.st_nlink==1 and s.st_uid==0 and s.st_gid==0 and stat.S_IMODE(s.st_mode)==0o600,'EXISTING_ROOT_MAINTENANCE_LOCK_REQUIRED');fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);apply(sys.argv[2],m,auditor,supervisor,driver_sha)
  finally:os.close(fd)

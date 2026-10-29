@@ -1,0 +1,8 @@
+Independent local-only verification
+HEAD=84bd3f09995fcbd347710cae5c1ddb8c5f517157
+{"/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "b8aacc70cb6e246e5049e7b3a71adfa999ae6b391886f125bc02e22c9506cb47", "/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "b4f6b136f9159647c00e2bcdcad9f9f52695ec38b078de427d9ac641013440a9", "/workspace/poe-source-restart-forensics/operator/native-paper-ec2/export-source-recovery-forensics-20261029.py": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986"}
+..................................................
+----------------------------------------------------------------------
+Ran 50 tests in 3.644s
+
+OK

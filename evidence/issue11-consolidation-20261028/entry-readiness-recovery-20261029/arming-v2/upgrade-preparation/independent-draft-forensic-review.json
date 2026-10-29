@@ -1,0 +1,33 @@
+{
+  "completedAt": 1793301562000,
+  "deploymentReady": false,
+  "diffCheckExitCode": 0,
+  "elapsedSeconds": 3.973,
+  "hashesAfter": {
+    "/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "b8aacc70cb6e246e5049e7b3a71adfa999ae6b391886f125bc02e22c9506cb47",
+    "/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "b4f6b136f9159647c00e2bcdcad9f9f52695ec38b078de427d9ac641013440a9",
+    "/workspace/poe-source-restart-forensics/operator/native-paper-ec2/export-source-recovery-forensics-20261029.py": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986"
+  },
+  "hashesBefore": {
+    "/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "b8aacc70cb6e246e5049e7b3a71adfa999ae6b391886f125bc02e22c9506cb47",
+    "/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "b4f6b136f9159647c00e2bcdcad9f9f52695ec38b078de427d9ac641013440a9",
+    "/workspace/poe-source-restart-forensics/operator/native-paper-ec2/export-source-recovery-forensics-20261029.py": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986"
+  },
+  "hashesUnchanged": true,
+  "head": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "kind": "POE_INDEPENDENT_ARMING_FORENSIC_ADAPTER_REVIEW",
+  "localOnly": true,
+  "productionActions": false,
+  "runtimeExportVerified": false,
+  "structuralChecks": [
+    "target configuration remains None",
+    "exporter matches independent approved pin",
+    "ten indexed artifacts and 64KiB exporter bound",
+    "service-control calls unchanged from HEAD",
+    "financial preservation functions AST-identical",
+    "main/apply unfrozen guards precede helpers/preflight"
+  ],
+  "testsExitCode": 0,
+  "testsLog": "/tmp/poe-independent-entry-arming-forensic-helper-tests-20261029.txt",
+  "testsLogSha256": "543d9aae25e5aa4eb898d161d104fd84ed90a1f0f35f2bfbd7cfd7a633249c5f"
+}
