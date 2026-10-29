@@ -32,7 +32,7 @@ OLD_STAGE,NEW_STAGE='two','two'
 OLD_STRATEGY='adaptive-momentum-v2-paper-v1'
 NEW_STRATEGY='adaptive-momentum-v2-paper-v1'
 UNCHANGED={'better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
-COMPATIBILITY={'scope':'active-adaptive-momentum-v2-protection-recovery','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False}
+COMPATIBILITY={'scope':'active-adaptive-momentum-v2-protection-recovery','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
 STAGE=pathlib.Path('/var/tmp/poe-original-v2-protection-upgrade')
@@ -275,6 +275,9 @@ def known_images(m,record_dir):
  for path,name,limit,uid,gid,mode in[(m.MANIFEST,'service.json',128*1024,0,GID,0o640),(m.ACCOUNT/'input.json','input.json',MIB,UID,GID,0o600),(m.DROPIN,'native-dropin.conf',8192,0,0,0o644)]:
   body=read(path,limit,uid,gid,mode);need(body in[read(record_dir/('before-'+name),limit),read(record_dir/('after-'+name),limit)],'UNKNOWN_CURRENT_CONFIGURATION_REFUSED')
 def recover_old(m,auditor,supervisor,record_dir,record,expected_inode):
+ # A new runtime can durably create schema-v2 prefunded provider leases before
+ # its first fill. The ba33 executable cannot read those uncertainty tails.
+ # Possible start, not financial activity, permanently forbids old-code rollback.
  need(not record.get('startRequestedAt')and not record.get('possibleNewSourceStart'),'NEW_SOURCE_MAY_HAVE_RUN_RETAIN_NEW_FINANCIAL_MANAGER');known_images(m,record_dir)
  current=m.CURRENT.resolve(strict=True);need(current in[m.RELEASES/OLD_SOURCE['commit'],m.RELEASES/record['source']['commit']],'UNKNOWN_CURRENT_RELEASE_REFUSED')
  # This recovery is used only within an attempt which has not requested a new
