@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "5b2bc28e83ee5c1aedb4eddbefe33b0203a0cae3",
+  "headUnchanged": true,
+  "sourceBytesUnchanged": true,
+  "results": {
+    "npm-test": {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-29T21:06:18.303096+00:00",
+      "finishedAt": "2026-10-29T21:07:56.277451+00:00",
+      "exitCode": 0,
+      "sha256": "92d69912750949c0e815fc230d3101b9c8dc074e40b56c9b43929f392bd7e94b"
+    },
+    "build": {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-29T21:07:56.278266+00:00",
+      "finishedAt": "2026-10-29T21:08:05.892024+00:00",
+      "exitCode": 0,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  },
+  "financialAccountRead": false,
+  "providerRequests": 0,
+  "liveOperationalAcceptance": false
+}
