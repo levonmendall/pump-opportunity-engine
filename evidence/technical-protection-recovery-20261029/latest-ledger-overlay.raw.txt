@@ -1,0 +1,22 @@
+✔ known technical hard pause requires a full new measured held interval before revision-bound recovery (99.785531ms)
+✔ polling/reused quotes cannot replace completed held protection and source faults reset the whole interval (98.065717ms)
+✔ a missing-quote cannot be hidden inside the recovery interval (75.091318ms)
+✔ a gap cannot be hidden inside the recovery interval (78.753106ms)
+✔ a new-technical-failure cannot be hidden inside the recovery interval (69.23202ms)
+✔ recovery does not clear owner-pause (52.796888ms)
+✔ recovery does not clear owner-stop (61.005704ms)
+✔ recovery does not clear unknown-hard (51.28721ms)
+✔ recovery does not clear pending-exit (53.115023ms)
+✔ a required recovery record failure retains the safety latch after a financial resume (59.184034ms)
+✔ closed inventory recovers only through new durable cash checks without invented held evaluations (44.747158ms)
+✔ both holdings must complete fresh protection; a partial inventory cannot accumulate recovery credit (119.486731ms)
+✔ an owner stop arriving after the resume commit cannot be cleared by late proof completion (59.249756ms)
+✔ a slow post-resume evidence phase closes permission again rather than consuming expired protection proof (53.267024ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1310.087023
