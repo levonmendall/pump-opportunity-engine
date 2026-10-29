@@ -1,0 +1,7 @@
+Independent supervisor-only AdaptiveMomentumV2 review
+{"/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/run-authoritative-service.py": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e", "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-authoritative-service.py": "b76ee3444e0ad58d528c9fcebe3e53b3feb7f52ebec44cc902aef58f5bfa7403"}
+...................................
+----------------------------------------------------------------------
+Ran 35 tests in 0.490s
+
+OK

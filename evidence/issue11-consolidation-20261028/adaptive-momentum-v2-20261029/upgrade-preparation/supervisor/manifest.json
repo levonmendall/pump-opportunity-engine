@@ -1,0 +1,26 @@
+{
+  "operator/native-paper-ec2/run-authoritative-service.py": {
+    "bytes": 37955,
+    "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e"
+  },
+  "operator/native-paper-ec2/test-authoritative-service.py": {
+    "bytes": 28384,
+    "sha256": "b76ee3444e0ad58d528c9fcebe3e53b3feb7f52ebec44cc902aef58f5bfa7403"
+  },
+  "evidence/issue11-consolidation-20261028/adaptive-momentum-v2-20261029/upgrade-preparation/supervisor/README.md": {
+    "bytes": 522,
+    "sha256": "fe8d379c09b1ba467ac21c7b085d0c6cf7982801b8f5f3c9aa87864d40e2c8df"
+  },
+  "evidence/issue11-consolidation-20261028/adaptive-momentum-v2-20261029/upgrade-preparation/supervisor/independent-review.json": {
+    "bytes": 1618,
+    "sha256": "5fafcc0bf3f370f3a3b75f5da748711de6aa9a234560da4234de9ffb677e2dd3"
+  },
+  "evidence/issue11-consolidation-20261028/adaptive-momentum-v2-20261029/upgrade-preparation/supervisor/independent-tests.raw.txt": {
+    "bytes": 532,
+    "sha256": "eae47df3a87a618c2a866e27c86d6f72c27e04735edb9d14a2bdcbe975ffc8c7"
+  },
+  "evidence/issue11-consolidation-20261028/adaptive-momentum-v2-20261029/upgrade-preparation/supervisor/tests.raw.txt": {
+    "bytes": 134,
+    "sha256": "382cba4adb6b278940881a8d0ab5119f96c144fa4de40e9088df951b87534434"
+  }
+}
