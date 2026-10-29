@@ -9,17 +9,21 @@ No bootstrap, account initialization, DB restore, secret access or Render call.
 """
 import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
 
-OLD_SOURCE={'commit':'5e55d8b939de99698ddb311a282461931fcbc957','sha256':'531012e82b6cb86149350ec4478c1f7a7b87b6f35f08f3b1f32447f05cd31eaa'}
+OLD_SOURCE={'commit':'a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5','sha256':'a44243b03673f29061db4030524b326b4f8929ff2a7bf5b057807ec1d0af049d'}
 OLD_INDEX='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
-OLD_MANIFEST='605c5a1e76dbcfc65f1374d74ff54037293fe32b4cc4aa1e7396f613215500c7'
-OLD_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
+PRIOR_INDEX='0a98a283f798021cb164048123254046fc560fc32927aabd761c15f93125e44d'
+PRIOR_RECORD='forward-'+OLD_SOURCE['commit']
+OLD_MANIFEST='e7a0c6b95808151c4e1ebd4d6298fe8903068c0779767390d6e609cbd7a9332b'
+# Root-indexed validation helper and current financial release have distinct pins.
+INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
+OLD_SUPERVISOR='1c993f89ec08c2ec6b8dfa05c5657bd2d572636361c8f32bff3febbeae729a79'
 CORE_SHA='2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab'
 AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 UNCHANGED={'snapshot-publisher.mjs':'2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa','backup-worker.mjs':'53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34','better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
-COMPATIBILITY={'scope':'native-timing-and-supervisor-receipt-only','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
+COMPATIBILITY={'scope':'native-coherent-entry-quotes-and-admission-telemetry-only','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
-STAGE=pathlib.Path('/var/tmp/poe-original-forward-upgrade')
+STAGE=pathlib.Path('/var/tmp/poe-original-entry-clock-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
 NATIVE_DROPIN_SHA='02086524f05593a85034bf13626f0c2c0a4caac2379cc4ae76cfa92d93d4b682'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
@@ -46,10 +50,10 @@ def load_helpers():
  for path in[PACKAGE.parent,PACKAGE,TOOLS.parent,TOOLS]:
   s=path.lstat();need(path.resolve(strict=True)==path and stat.S_ISDIR(s.st_mode)and s.st_uid==0 and not s.st_mode&0o022,'CANONICAL_ROOT_HELPER_DIRECTORY_REQUIRED')
  raw=read(PACKAGE/'index.json',128*1024);need(sha(raw)==OLD_INDEX,'PRESERVED_ORIGINAL_PACKAGE_INDEX_REQUIRED');index=json.loads(raw);pins={r['file']:r for r in index['files']}
- for name,digest in [('cutover-original-service.py',CORE_SHA),('audit-original-account.py',AUDITOR_SHA),('run-authoritative-service.py',OLD_SUPERVISOR)]:need(pins[name]['sha256']==digest,'ORIGINAL_HELPER_INDEX_BINDING_REQUIRED')
+ for name,digest in [('cutover-original-service.py',CORE_SHA),('audit-original-account.py',AUDITOR_SHA),('run-authoritative-service.py',INDEXED_SUPERVISOR)]:need(pins[name]['sha256']==digest,'ORIGINAL_HELPER_INDEX_BINDING_REQUIRED')
  m=reviewed_module('poe_forward_pinned_core',TOOLS/'cutover-original-service.py',CORE_SHA);m.HERE=TOOLS
  auditor=reviewed_module('poe_forward_pinned_audit',TOOLS/'audit-original-account.py',AUDITOR_SHA)
- supervisor=reviewed_module('poe_forward_old_supervisor',TOOLS/'run-authoritative-service.py',OLD_SUPERVISOR)
+ supervisor=reviewed_module('poe_forward_old_supervisor',TOOLS/'run-authoritative-service.py',INDEXED_SUPERVISOR)
  attach_stop_observer(m);return m,auditor,supervisor
 def bundle(path,uid,expected,driver_sha,supervisor):
  raw=read(path/'index.json',128*1024,uid);need(hashed(expected)and sha(raw)==expected,'REVIEWED_FORWARD_INDEX_PIN_REQUIRED');index=json.loads(raw)
@@ -198,8 +202,8 @@ def apply(expected,m,auditor,supervisor,driver_sha):
  need(len(choices)<=1,'ONE_EXACT_RETAINED_FORWARD_PACKAGE_REQUIRED')
  if choices:index,manifest,data,index_raw=bundle(choices[0],0,expected,driver_sha,supervisor)
  else:m.directory(STAGE,RUNNER,True);index,manifest,data,index_raw=bundle(STAGE,RUNNER,expected,driver_sha,supervisor)
- commit=index['sourceCommit'];target=m.RELEASES/commit;frozen=PACKAGE.parent/('forward-'+commit);record_dir=m.RECORDS/('forward-'+commit);prior_dir=m.RECORDS/OLD_SOURCE['commit'];m.directory(prior_dir,0,True);prior_raw=read(prior_dir/'transition.json',128*1024);prior=json.loads(prior_raw)
- need(prior.get('accountId')==m.ACCOUNT_ID and prior.get('inceptionAt')==m.INCEPTION and prior.get('source')==OLD_SOURCE and prior.get('packageIndexSha256')==OLD_INDEX,'PRESERVED_ORIGINAL_CUTOVER_RECORD_REQUIRED');inode=m.LEDGER.lstat();expected_inode=(inode.st_dev,inode.st_ino)
+ commit=index['sourceCommit'];target=m.RELEASES/commit;frozen=PACKAGE.parent/('forward-'+commit);record_dir=m.RECORDS/('forward-'+commit);prior_dir=m.RECORDS/PRIOR_RECORD;m.directory(prior_dir,0,True);prior_raw=read(prior_dir/'transition.json',128*1024);prior=json.loads(prior_raw)
+ need(prior.get('kind')=='poe-original-forward-upgrade-v1'and prior.get('accountId')==m.ACCOUNT_ID and prior.get('inceptionAt')==m.INCEPTION and prior.get('source')==OLD_SOURCE and prior.get('packageIndexSha256')==PRIOR_INDEX,'PRESERVED_PREVIOUS_FORWARD_RECORD_REQUIRED');inode=m.LEDGER.lstat();expected_inode=(inode.st_dev,inode.st_ino)
  prefix=m.verify_live_financial_prefix(auditor,prior['stoppedFinancial'],prior['backup']);financial=m.original_audit(auditor,expected_inode)
  m.directory(m.BACKUPS,0,True);need(os.statvfs(m.ROOT).f_bavail*os.statvfs(m.ROOT).f_frsize>=1024*MIB,'FORWARD_UPGRADE_DISK_HEADROOM_REQUIRED')
  existing=os.path.lexists(record_dir/'transition.json')

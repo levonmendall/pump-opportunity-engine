@@ -1,0 +1,12 @@
+✔ native bridge retains every same-packet event when callback recording advances the clock (24.622703ms)
+✔ full frozen position capacity avoids proof/rent/quote work while holding protection continues (13.639832ms)
+✔ pending buys occupy capacity without cancellation or unneeded candidate preparation (9.388102ms)
+✔ a free concurrent-stage slot still permits preparation and feature-only assessment without forcing a fill (13.141428ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 440.322494

@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {PublicKey,SYSVAR_CLOCK_PUBKEY,type AccountInfo} from '@solana/web3.js';
 import {NATIVE_MINT} from '@solana/spl-token';
 import {PUMP_AMM_SDK,PUMP_AMM_PROGRAM_ID,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,canonicalPumpPoolPda,type Pool} from './sdk.js';
-import {decodeSupportedPoolAccounts,positionSellFromState,type PoolWireAccount,type PositionSellRequest} from './pool.js';
+import {decodeSupportedPoolAccounts,positionSellFromState,buyFromState,type PoolWireAccount,type PositionSellRequest} from './pool.js';
 import type {ReadOnlyRpc} from './network.js';
 import type {Recorder} from './recorder.js';
 
@@ -43,6 +43,8 @@ export function decodeResearchBankClock(wire:PoolWireAccount|null|undefined,slot
 
 type ClockSummary=ReturnType<typeof decodeSupportedPoolAccounts>['summary']&ReturnType<typeof decodeResearchBankClock>&{validatedAt:string;researchOnly:true};
 export type ResearchClockQuote=ReturnType<typeof positionSellFromState<ClockSummary>>;
+export type ResearchClockBuyQuote=ReturnType<typeof buyFromState<ClockSummary>>;
+export type ResearchClockBuyRequest={mint:PublicKey;buyLamports:bigint;minSlot?:number};
 export type ResearchClockObservationRequest={mint:PublicKey;minSlot?:number};
 export type ResearchClockObservationSupport={mint:string;pool:string;at:number;sourceSlot:number;evidence:string;summary:ClockSummary};
 export type ResearchClockObservationBatch={validations:Record<string,ResearchClockObservationSupport>;unavailable:Record<string,string>;context:ResearchClockQuoteBatch['context']};
@@ -51,8 +53,8 @@ function refusal(error:unknown){const message=error instanceof Error?error.messa
 
 export class ResearchClockPositionPricer {
   private readonly cached=new Map<string,{first:Pool;slot:number}>();
-  private readonly holdingSlots=new Map<string,number>();private readonly observationSlots=new Map<string,number>();
-  private heldActive=new Set<string>();private observationActive=new Set<string>();private highestSlot=0;private busy=false;
+  private readonly holdingSlots=new Map<string,number>();private readonly observationSlots=new Map<string,number>();private readonly buySlots=new Map<string,number>();
+  private heldActive=new Set<string>();private observationActive=new Set<string>();private buyActive=new Set<string>();private highestSlot=0;private busy=false;
   private networkCalls=0;private linkHits=0;private invalidations=0;
   constructor(private readonly rpc:Rpc,private readonly rec:Rec){}
   invalidate(reason='explicit-research-invalidation'){
@@ -63,12 +65,24 @@ export class ResearchClockPositionPricer {
     this.cached.delete(mint);this.invalidations++;
     this.rec.record('research-clock-cache-invalidation',{at:Date.now(),mint,reason});
   }
-  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,invalidations:this.invalidations,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),cachePoolCapacity:9,dependencyAccountCapacity:40,cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
+  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,invalidations:this.invalidations,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:9,dependencyAccountCapacity:40,cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
   /** Compatibility API: one holding either yields one fresh quote or refuses. */
   async quote(request:PositionSellRequest,signal?:AbortSignal):Promise<ResearchClockQuote>{
     const name=request.mint.toBase58(),batch=await this.quoteMany([request],signal),quote=batch.quotes[name];
     if(!quote)throw Error(batch.unavailable[name]??'RESEARCH_CLOCK_POOL_UNAVAILABLE');
     return quote;
+  }
+  /** Fresh actual-input buy state. Only validated dependency links may be
+   * reused; every call obtains new reserve/config/mint/vault and Clock bytes.
+   * This does not change either existing held or observation working set. */
+  async quoteBuy(request:ResearchClockBuyRequest,signal?:AbortSignal,admission?:Admission):Promise<ResearchClockBuyQuote>{
+    need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
+    const mint=new PublicKey(request.mint),minSlot=request.minSlot??0;
+    need(Number.isSafeInteger(minSlot)&&minSlot>=0,'INVALID_MINIMUM_SLOT');
+    need(typeof request.buyLamports==='bigint'&&request.buyLamports>10n&&request.buyLamports<=1_000_000_000n,'INTEGRATION_SIZE_OUT_OF_RANGE');
+    const result=await this.readMany([{mint,minSlot,buyLamports:request.buyLamports}],'buy',signal,admission),name=mint.toBase58();
+    if(!result.buys[name])throw Error(result.unavailable[name]??'RESEARCH_CLOCK_POOL_UNAVAILABLE');
+    return result.buys[name]!;
   }
   /** One fresh union batch for1–3 hypothetical holdings. Only dependency links
    * are reused. Every quoted pool/config/fee/mint/vault and the common Clock is
@@ -96,9 +110,9 @@ export class ResearchClockPositionPricer {
     const result=await this.readMany(selected,'observation',signal,admission);
     return {validations:result.validations,unavailable:result.unavailable,context:result.context};
   }
-  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint}[],purpose:'quote'|'observation',signal?:AbortSignal,admission?:Admission){
+  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint;buyLamports?:bigint}[],purpose:'quote'|'observation'|'buy',signal?:AbortSignal,admission?:Admission){
     this.busy=true;let sourceReadAttempted=false;const names=selected.map(r=>r.mint.toBase58());
-    const quotes:Record<string,ResearchClockQuote>={},validations:Record<string,ResearchClockObservationSupport>={},unavailable:Record<string,string>={};
+    const quotes:Record<string,ResearchClockQuote>={},buys:Record<string,ResearchClockBuyQuote>={},validations:Record<string,ResearchClockObservationSupport>={},unavailable:Record<string,string>={};
     try{
       signal?.throwIfAborted();
       const checkAdmission=()=>need(!admission||admission.admissionOpen()&&Date.now()<=admission.latestStartAt,'RESEARCH_CLOCK_ADMISSION_CLOSED');
@@ -106,11 +120,17 @@ export class ResearchClockPositionPricer {
       checkAdmission();
       // Separate bounded working sets preserve links across alternating held and
       // observation calls. Only links survive; reserve/fee/price bytes never do.
-      if(purpose==='quote')this.heldActive=new Set(names);else this.observationActive=new Set(names);
-      const active=new Set([...this.heldActive,...this.observationActive]);need(active.size<=9,'RESEARCH_CLOCK_POOL_CACHE_CAPACITY');
+      const held=purpose==='quote'?new Set(names):this.heldActive,observed=purpose==='observation'?new Set(names):this.observationActive;
+      let buying=purpose==='buy'?new Set(names):this.buyActive,active=new Set([...held,...observed,...buying]);
+      // Replaceable entry links cannot evict the established held/observation
+      // working sets. If they need all nine slots, only entry links give way.
+      if(purpose!=='buy'&&active.size>9){buying=new Set();active=new Set([...held,...observed]);}
+      need(active.size<=9,'RESEARCH_CLOCK_POOL_CACHE_CAPACITY');
+      this.heldActive=held;this.observationActive=observed;this.buyActive=buying;
+      for(const mint of this.buySlots.keys())if(!buying.has(mint))this.buySlots.delete(mint);
       for(const mint of this.cached.keys())if(!active.has(mint))this.cached.delete(mint);
-      const slots=purpose==='quote'?this.holdingSlots:this.observationSlots;for(const mint of slots.keys())if(!names.includes(mint))slots.delete(mint);
-      let floor=Math.max(this.highestSlot,...selected.map(r=>Math.max(r.minSlot,this.holdingSlots.get(r.mint.toBase58())??0,this.observationSlots.get(r.mint.toBase58())??0)));
+      const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;for(const mint of slots.keys())if(!names.includes(mint))slots.delete(mint);
+      let floor=Math.max(this.highestSlot,...selected.map(r=>Math.max(r.minSlot,this.holdingSlots.get(r.mint.toBase58())??0,this.observationSlots.get(r.mint.toBase58())??0,this.buySlots.get(r.mint.toBase58())??0)));
       const missing=selected.filter(r=>!this.cached.has(r.mint.toBase58()));
       const discovered=new Map<string,Pool>();
       if(missing.length){
@@ -130,7 +150,7 @@ export class ResearchClockPositionPricer {
         const key=canonicalPumpPoolPda(request.mint),addresses=[key,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,request.mint,NATIVE_MINT,first.poolBaseTokenAccount,first.poolQuoteTokenAccount].map(a=>a.toBase58());
         return [{request,name,key,first,addresses}];
       });
-      if(!holdings.length)return {quotes,validations,unavailable,context:null};
+      if(!holdings.length)return {quotes,buys,validations,unavailable,context:null};
       const addresses=[...new Set([...holdings.flatMap(h=>h.addresses),SYSVAR_CLOCK_PUBKEY.toBase58()])];
       need(addresses.length<=40,'RESEARCH_CLOCK_DEPENDENCY_CAP');
       const requestedAt=new Date(Date.now()).toISOString();this.networkCalls++;
@@ -143,26 +163,26 @@ export class ResearchClockPositionPricer {
       // unavailable. Later recovery cannot borrow an older favorable snapshot.
       this.highestSlot=Math.max(this.highestSlot,batch.context.slot);
       const pendingCache=new Map<string,Pool>();
-      const fresh=()=>{checkAdmission();const now=Date.now();need(now-Date.parse(receivedAt)>=0&&now-Date.parse(receivedAt)<=2000,purpose==='quote'?'RESEARCH_CLOCK_QUOTE_AGE_AT_USE':'RESEARCH_CLOCK_SUPPORT_AGE_AT_USE');need(timing.marketClockUnixSeconds*1000<=now&&now-timing.marketClockUnixSeconds*1000<=30_000,'RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS');};
+      const fresh=()=>{checkAdmission();const now=Date.now();need(now-Date.parse(receivedAt)>=0&&now-Date.parse(receivedAt)<=2000,purpose!=='observation'?'RESEARCH_CLOCK_QUOTE_AGE_AT_USE':'RESEARCH_CLOCK_SUPPORT_AGE_AT_USE');need(timing.marketClockUnixSeconds*1000<=now&&now-timing.marketClockUnixSeconds*1000<=30_000,'RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS');};
       for(const h of holdings){
-        signal?.throwIfAborted();let quote:ResearchClockQuote|undefined,support:ResearchClockObservationSupport|undefined;
+        signal?.throwIfAborted();let quote:ResearchClockQuote|undefined,buy:ResearchClockBuyQuote|undefined,support:ResearchClockObservationSupport|undefined;
         try{
           const state=decodeSupportedPoolAccounts(h.request.mint,h.key,h.first,h.addresses.map(a=>indexed.get(a)??null),batch.context,requestedAt,receivedAt);
           const summary:ClockSummary={...state.summary,...timing,validatedAt:new Date(Date.now()).toISOString(),researchOnly:true};
-          if(purpose==='quote'){need(h.request.units!==undefined,'POSITION_SELL_SIZE_OUT_OF_RANGE');quote=positionSellFromState({...state,summary},h.request.units,{record(){}},signal);}else{const at=Date.now(),evidence='research-clock-observation-support:'+createHash('sha256').update(JSON.stringify({mint:h.name,summary,accounts:h.addresses.map(a=>indexed.get(a)),clock:indexed.get(SYSVAR_CLOCK_PUBKEY.toBase58())})).digest('hex');support={mint:h.name,pool:h.key.toBase58(),at,sourceSlot:batch.context.slot,evidence,summary};}
+          if(purpose==='quote'){need(h.request.units!==undefined,'POSITION_SELL_SIZE_OUT_OF_RANGE');quote=positionSellFromState({...state,summary},h.request.units,{record(){}},signal);}else if(purpose==='buy'){need(h.request.buyLamports!==undefined,'INTEGRATION_SIZE_OUT_OF_RANGE');buy=buyFromState({...state,summary},h.request.buyLamports,{record(){}},signal);}else{const at=Date.now(),evidence='research-clock-observation-support:'+createHash('sha256').update(JSON.stringify({mint:h.name,summary,accounts:h.addresses.map(a=>indexed.get(a)),clock:indexed.get(SYSVAR_CLOCK_PUBKEY.toBase58())})).digest('hex');support={mint:h.name,pool:h.key.toBase58(),at,sourceSlot:batch.context.slot,evidence,summary};}
           // Only exact bytes validated by the shared decoder can seed future
           // address discovery. No cached reserve/fee/value becomes a fresh mark.
           pendingCache.set(h.name,PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))));
         }catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[h.name]=reason;this.invalidatePool(h.name,reason);continue;}
-        fresh();if(quote){this.rec.record('research-clock-position-sell-quote',quote);fresh();quotes[h.name]=quote;}else if(support){this.rec.record('research-clock-observation-support',support);fresh();validations[h.name]=support;}
+        fresh();if(quote){this.rec.record('research-clock-position-sell-quote',quote);fresh();quotes[h.name]=quote;}else if(buy){this.rec.record('research-clock-buy-quote',buy);fresh();buys[h.name]=buy;}else if(support){this.rec.record('research-clock-observation-support',support);fresh();validations[h.name]=support;}
       }
       // A slow recorder cannot make earlier per-pool results fresh. Nothing is
       // returned or cached if this common availability condition has expired.
       fresh();signal?.throwIfAborted();
-      for(const [mint,first] of pendingCache){this.cached.set(mint,{first,slot:batch.context.slot});const slots=purpose==='quote'?this.holdingSlots:this.observationSlots;slots.set(mint,Math.max(slots.get(mint)??0,batch.context.slot));}
+      for(const [mint,first] of pendingCache){this.cached.set(mint,{first,slot:batch.context.slot});const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;slots.set(mint,Math.max(slots.get(mint)??0,batch.context.slot));}
       if(pendingCache.size)this.highestSlot=Math.max(this.highestSlot,batch.context.slot);
-      return {quotes,validations,unavailable,context:{slot:batch.context.slot,requestedAt,receivedAt,marketClockUnixSeconds:timing.marketClockUnixSeconds}};
-    }catch(error){if(sourceReadAttempted)this.invalidate(purpose==='quote'?'quote-unavailable':'observation-support-unavailable');throw error;}
+      return {quotes,buys,validations,unavailable,context:{slot:batch.context.slot,requestedAt,receivedAt,marketClockUnixSeconds:timing.marketClockUnixSeconds}};
+    }catch(error){if(sourceReadAttempted)this.invalidate(purpose!=='observation'?'quote-unavailable':'observation-support-unavailable');throw error;}
     finally{this.busy=false;}
   }
 }

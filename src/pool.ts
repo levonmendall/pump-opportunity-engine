@@ -111,7 +111,14 @@ function decodeSupportedPool(mint:PublicKey,key:PublicKey,first:Pool,values:(Wir
 
 export async function quotePool(rpc:ReadOnlyRpc,mint:PublicKey,buyLamports:bigint,rec:EvidenceRecorder,minSlot=0,signal?:AbortSignal){
   need(typeof buyLamports==='bigint'&&buyLamports>10n && buyLamports<=1_000_000_000n,'INTEGRATION_SIZE_OUT_OF_RANGE');
-  const {opts,summary}=await readSupportedPool(rpc,mint,rec,minSlot,signal);
+  const state=await readSupportedPool(rpc,mint,rec,minSlot,signal);
+  return buyFromState(state,buyLamports,rec,signal);
+}
+
+/** Identical exact-input SDK buy math over independently validated state. Clock
+ * callers retain their own source evidence; no block timestamp is invented. */
+export function buyFromState<S extends ReturnType<typeof decodeSupportedPoolAccounts>['summary']>({opts,summary}:{opts:ReturnType<typeof decodeSupportedPoolAccounts>['opts'];summary:S},buyLamports:bigint,rec:EvidenceRecorder,signal?:AbortSignal){
+  need(typeof buyLamports==='bigint'&&buyLamports>10n&&buyLamports<=1_000_000_000n,'INTEGRATION_SIZE_OUT_OF_RANGE');
   signal?.throwIfAborted();
   const buy=buyQuoteInput({...opts,quote:n(buyLamports)});need(buy.base.gtn(0),'ZERO_BUY_OUTPUT');
   const sell=sellBaseInput({...opts,base:buy.base});

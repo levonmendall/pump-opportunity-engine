@@ -12,7 +12,7 @@ import {PilotMarket} from '../src/pilot-market.js';
 import type {PoolWireAccount} from '../src/pool.js';
 
 const signal=()=>new AbortController().signal;
-function fixture(t:TestContext){
+function fixture(t:TestContext,timeoutMs=1000){
   const runs=['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'];
   const captures=runs.map(run=>{
     const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));
@@ -39,7 +39,7 @@ function fixture(t:TestContext){
     const clock:PoolWireAccount={data:[raw.toString('base64'),'base64'],owner:'Sysvar1111111111111111111111111111111111111',lamports:1169280,executable:false,rentEpoch:0};
     return {context:{slot},value:addresses.map(address=>address===SYSVAR_CLOCK_PUBKEY.toBase58()?clock:structuredClone(accounts.get(address)??null))}as T;
   },usage:()=>({calls:calls.length})};
-  const market=new PilotMarket({rpc,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs:1000});
+  const market=new PilotMarket({rpc,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
   for(const c of captures)market.registerPool({mint:c.proof.quote.mint,migrationVerified:true,migrationSlot:c.proof.origin.slot,evidence:'retained actual migration; synthetic current timing'});
   const coordinator=new PaperExecutionCoordinator({ledger,now:()=>at,timeoutMs:1000,context:s=>market.context(ledger.state().positions,s),quote:market.executionQuote});
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
@@ -51,12 +51,12 @@ test('fresh supported account lengths and current rent define deposits; every en
   const plan=await f.market.prepareEntryCosts(mint,signal());
   assert.deepEqual(plan.accountLengths,{base:170,quote:165});
   assert.equal(plan.depositLamports,'2000335');assert.equal(plan.accountPlan.baseExists,false);assert.equal(plan.accountPlan.quoteExists,false);
-  assert.deepEqual(f.calls.map(c=>c.method),['getMultipleAccounts','getMultipleAccounts','getBlockTime','getMinimumBalanceForRentExemption','getMinimumBalanceForRentExemption']);
+  assert.deepEqual(f.calls.map(c=>c.method),['getMultipleAccounts','getMultipleAccounts','getMinimumBalanceForRentExemption','getMinimumBalanceForRentExemption']);
   const q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(q);
   assert.equal(q.requiredDepositLamports,plan.depositLamports);assert.match(q.depositEvidence!,/^pilot-entry-validated-costs:/);
-  assert.equal(f.calls.length,10);assert.equal(q.outputUnits,f.captures[1]!.proof.quote.buy.outputBaseUnits);
+  assert.equal(f.calls.length,7);assert.equal(q.outputUnits,f.captures[1]!.proof.quote.buy.outputBaseUnits);
   // A sizing plan can remain old, but every used quote still reads current rent.
-  f.advance(10001);const newer=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(newer);assert.equal(newer.at,f.now());assert.equal(f.calls.length,15);
+  f.advance(10001);const newer=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(newer);assert.equal(newer.at,f.now());assert.equal(f.calls.length,10);
   f.rentChanged();assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);
   assert.equal(f.ledger.state().lockedDeposits[mint],undefined);assert.equal(Object.keys(f.ledger.state().positions).length,0);
 });
@@ -68,7 +68,7 @@ test('real decoder quotes complete a disposable delayed buy and full-size exit w
   f.coordinator.reserve(order,{price:f.price(),marks:{}});
   // No pre-delay fill and no use of the original estimate as future execution.
   assert.equal(await f.market.executionQuote({order:f.ledger.state().pending[order.id]!,attemptedAt:f.now(),fullPositionBaseUnits:null},signal()),null);
-  const before=f.calls.length;f.advance(1000);const filled=await f.coordinator.runDue();assert.equal(filled.results[0]!.status,'filled');assert.equal(f.calls.length-before,5);
+  const before=f.calls.length;f.advance(1000);const filled=await f.coordinator.runDue();assert.equal(filled.results[0]!.status,'filled');assert.equal(f.calls.length-before,3);
   const position=f.ledger.state().positions[mint]!;assert.equal(position.units,q.outputUnits);assert.equal(position.deposit,plan.depositLamports);assert.equal(f.ledger.state().lockedDeposits[mint],plan.depositLamports);
   const context=await f.market.context(f.ledger.state().positions,signal()),sell=await f.market.quote({mint,side:'sell',inputUnits:position.units},signal());assert.ok(sell);
   assert.equal(context.marks[mint]!.netLamports,(BigInt(sell.outputUnits)-7000n).toString());assert.equal(sell.refundedDepositLamports,undefined);
@@ -77,7 +77,7 @@ test('real decoder quotes complete a disposable delayed buy and full-size exit w
   const end=f.ledger.state();assert.deepEqual(end.positions,{});assert.deepEqual(end.pending,{});assert.equal(end.executionCosts,'14000');assert.equal(end.lockedDeposits[mint],plan.depositLamports);
   const pnl=BigInt(sell.outputUnits)-10000000n-14000n;
   assert.equal(end.realizedLamports,pnl.toString());assert.equal(BigInt(end.lamports)+BigInt(end.lockedDeposits[mint]!)-BigInt(initial.lamports),pnl);assert.equal(end.inceptionAt,initial.inceptionAt);
-  const beforeExisting=f.calls.length,existing=await f.market.prepareEntryCosts(mint,signal());assert.equal(existing.depositLamports,'0');assert.equal(existing.accountPlan.baseExists,true);assert.equal(existing.accountPlan.quoteExists,true);assert.equal(f.calls.length-beforeExisting,3);
+  const beforeExisting=f.calls.length,existing=await f.market.prepareEntryCosts(mint,signal());assert.equal(existing.depositLamports,'0');assert.equal(existing.accountPlan.baseExists,true);assert.equal(existing.accountPlan.quoteExists,true);assert.equal(f.calls.length-beforeExisting,1);
 });
 
 test('changed rent, unknown account plan, cancellation and invalidation refuse entry without changing account',async t=>{
@@ -149,4 +149,32 @@ test('candidate-only support refuses stale records, invalidation, newer slot flo
   f.onRecord(()=>{});const controller=new AbortController();controller.abort();const calls=f.calls.length;
   await assert.rejects(f.market.validateObservationPool(mint,controller.signal),/PREPARATION_UNAVAILABLE/);assert.equal(f.calls.length,calls);
   assert.equal(f.calls.some(c=>c.method==='getMinimumBalanceForRentExemption'),false);
+});
+
+
+test('coherent entry preparation and quote leave held dependency links warm and read every rent again',async t=>{
+  const f=fixture(t),mint=f.captures[1]!.proof.quote.mint,plan=await f.market.prepareEntryCosts(mint,signal());
+  const before=f.calls.length;await f.market.context({},signal());
+  const quote=await f.market.quote({mint,side:'buy',inputUnits:'50000000',requiredDepositLamports:plan.depositLamports},signal());assert.ok(quote);
+  assert.equal(f.calls.length-before,3);assert.equal(quote.inputUnits,'50000000');assert.equal(quote.requiredDepositLamports,plan.depositLamports);
+  assert.equal(f.calls.filter(c=>c.method==='getMinimumBalanceForRentExemption').length,4);
+  assert.equal(f.calls.some(c=>c.method==='getBlockTime'),false);
+  const source=f.records.findLast(r=>r.kind==='rpc-market-quote')!.data.source;
+  assert.equal(source.timeEvidence,'confirmed-bank-clock');assert.equal(source.clockSlot,quote.slot);assert.equal('marketBlockTime' in source,false);
+});
+
+test('a slow final recorder cannot refresh an earlier Clock buy into a valid decision or change accounting',async t=>{
+  const f=fixture(t),mint=f.captures[1]!.proof.quote.mint;await f.market.prepareEntryCosts(mint,signal());const before=f.ledger.state();
+  f.onRecord(kind=>{if(kind==='rpc-market-quote')f.advance(2001);});
+  assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.deepEqual(f.ledger.state(),before);
+});
+
+test('a timed-out uncooperative buy read retains market ownership until physical work settles',async t=>{
+  const f=fixture(t,20),mint=f.captures[1]!.proof.quote.mint;await f.market.prepareEntryCosts(mint,signal());
+  let release!:()=>void;f.pause(new Promise<void>(r=>{release=r;}));
+  const pending=f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.equal(await pending,null);
+  const calls=f.calls.length;assert.deepEqual(await f.market.context({},signal()),{price:null,marks:{}});
+  assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.calls.length,calls);
+  assert.throws(()=>f.market.unregisterPool(mint),/READ_IN_FLIGHT/);release();await new Promise<void>(r=>setImmediate(r));
+  assert.ok(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()));
 });

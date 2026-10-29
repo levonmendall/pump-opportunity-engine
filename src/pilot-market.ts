@@ -6,9 +6,9 @@ import type {ExecutionContext,QuoteRequest} from './execution.js';
 import type {ExecutionQuote,Order,Position,UsdPrice} from './ledger.js';
 import type {ReadOnlyRpc} from './network.js';
 import {quotePool} from './pool.js';
-import {ResearchClockPositionPricer} from './research-clock-pricing.js';
+import {ResearchClockPositionPricer,type ResearchClockBuyQuote} from './research-clock-pricing.js';
 import {ResearchHeldMarket} from './research-held-market.js';
-import {RpcMarket,type PaperAccountPlan,type VerifiedMarketPool} from './rpc-market.js';
+import type {PaperAccountPlan,VerifiedMarketPool} from './rpc-market.js';
 import type {SizeQuote,SizeRequest} from './trader.js';
 
 export type PilotRpc={call<T>(method:string,params?:unknown[],signal?:AbortSignal):Promise<T>;usage?:()=>unknown};
@@ -112,7 +112,8 @@ export class PilotMarket {
     need(!this.active&&!signal.aborted&&this.pools.has(mint),'PILOT_MARKET_PREPARATION_UNAVAILABLE');
     this.active=true;const generation=this.generation;
     try{
-      const state=await quotePool(this.options.rpc as ReadOnlyRpc,new PublicKey(mint),10000000n,this.options.recorder,this.floor(mint),signal);
+      const supported=await this.pricer.validateMany([{mint:new PublicKey(mint),minSlot:this.floor(mint)}],signal),support=supported.validations[mint];
+      need(support,'PILOT_MARKET_ENTRY_SUPPORT_UNAVAILABLE');const state=support.summary;
       const lengths={base:state.baseAssociatedAccount.accountLengthBytes,quote:state.quoteAssociatedAccount.accountLengthBytes};
       for(const bytes of Object.values(lengths))need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
       const locked=this.locked(mint),exists=integer(locked)>0n,rents:Record<string,string>={};let deposit=0n;
@@ -120,35 +121,57 @@ export class PilotMarket {
         if(rents[bytes]===undefined){const rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
         deposit+=integer(rents[bytes]!);
       }
-      signal.throwIfAborted();const at=this.clock(),received=Date.parse(state.receivedAt);
-      need(generation===this.generation&&locked===this.locked(mint)&&state.slot>=this.floor(mint)&&received<=at&&at-received<=2000&&state.marketBlockTime*1000<=at&&at-state.marketBlockTime*1000<=30000,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+      signal.throwIfAborted();const at=this.clock();this.freshClock(state,mint,signal);
+      need(generation===this.generation&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
       const body={mint,depositLamports:deposit.toString(),at,accountModel:MODEL,accountLengths:lengths,rentLamportsByBytes:rents,sourceSlot:state.slot,lockedDepositLamports:locked};
       const evidence='pilot-entry-costs:'+hash({...body,poolEvidence:this.pools.get(mint)!.evidence,gas:this.options.gas});
       const plan:PilotEntryCosts={...body,evidence,accountPlan:{baseExists:exists,quoteExists:exists,at,evidence}};
-      this.options.recorder.record('pilot-entry-cost-preparation',{...plan,classification:'simulated account inventory; actual read-only rent and supported account lengths',requests:'Three current pool/block-time reads plus one rent read per distinct missing-account length; no requests omitted from the shared RPC budget.',depositRefund:'Not assumed; retained locked capital after exit.'});
+      this.options.recorder.record('pilot-entry-cost-preparation',{...plan,classification:'simulated account inventory; actual read-only rent and supported account lengths',requests:'One current coherent Clock/state batch plus cold dependency discovery if needed, and one rent read per distinct missing-account length; every physical request uses the shared RPC budget.',depositRefund:'Not assumed; retained locked capital after exit.'});
       need(this.clock()-at<=10000&&generation===this.generation&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
       this.minimumSlot(mint,state.slot);this.plans.set(mint,structuredClone(plan));this.prepared++;
       return structuredClone(plan);
     }finally{this.active=false;}
   }
+  /** Keep Clock provenance explicit; a received source keeps its original
+   * timestamp after rent reads, validation and recorder callbacks. */
+  private freshClock(state:Pick<ResearchClockBuyQuote,'slot'|'requestedAt'|'receivedAt'|'validatedAt'|'commitment'|'timeEvidence'|'clockSlot'|'marketClockUnixSeconds'>,mint:string,signal:AbortSignal){
+    signal.throwIfAborted();const at=this.clock(),requested=Date.parse(state.requestedAt),received=Date.parse(state.receivedAt),validated=Date.parse(state.validatedAt);
+    need(state.commitment==='confirmed'&&state.timeEvidence==='confirmed-bank-clock'&&state.clockSlot===state.slot&&Number.isSafeInteger(state.slot)&&state.slot>=this.floor(mint)&&Number.isSafeInteger(requested)&&Number.isSafeInteger(received)&&Number.isSafeInteger(validated)&&requested<=received&&received<=validated&&validated<=at&&received<=at&&at-received<=2000&&Number.isSafeInteger(state.marketClockUnixSeconds)&&state.marketClockUnixSeconds*1000<=at&&at-state.marketClockUnixSeconds*1000<=30000,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+    return received;
+  }
   private async entryQuote(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>{
     if(this.active||signal.aborted)return null;
-    this.active=true;const generation=this.generation;
+    this.active=true;const generation=this.generation,controller=new AbortController(),combined=AbortSignal.any([signal,controller.signal]);
+    const operation=this.readEntryQuote(request,combined,generation);void operation.then(()=>{this.active=false;},()=>{this.active=false;});
+    let timer:ReturnType<typeof setTimeout>|undefined,listener:(()=>void)|undefined;
+    try{return await Promise.race([operation,new Promise<null>(resolve=>{listener=()=>resolve(null);combined.addEventListener('abort',listener,{once:true});timer=setTimeout(()=>controller.abort(),this.options.timeoutMs??3000);if(combined.aborted)listener();})]);}
+    finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();}
+  }
+  private async readEntryQuote(request:SizeRequest,signal:AbortSignal,generation:number):Promise<PilotSizeQuote|null>{
     try{
       const plan=this.freshPlan(request.mint),pool=this.pools.get(request.mint);need(pool&&request.side==='buy','PILOT_MARKET_ENTRY_POOL_REQUIRED');
       const expected=(request as SizeRequest&{requiredDepositLamports?:string}).requiredDepositLamports;
       need(expected===undefined||expected===plan.depositLamports,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
-      const market=new RpcMarket({rpc:this.options.rpc as ReadOnlyRpc,recorder:this.options.recorder,now:this.now,timeoutMs:this.options.timeoutMs??3000,gas:this.options.gas,usd:this.options.price,accountPlan:()=>{
-        this.freshPlan(request.mint);return {...plan.accountPlan,at:this.clock()};
-      },entryDepositLamports:plan.depositLamports});
-      market.registerPool(pool);
-      const q=await market.quote({...request,minSlot:this.floor(request.mint,request.minSlot??0)},signal);
-      need(q&&!signal.aborted&&generation===this.generation&&this.freshPlan(request.mint).evidence===plan.evidence&&q.slot!==undefined&&q.slot>=this.floor(request.mint,request.minSlot??0),'PILOT_MARKET_ENTRY_STATE_CHANGED');
-      this.minimumSlot(request.mint,q!.slot!);this.entryEstimates++;
-      const result={...q!,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-entry-validated-costs:'+hash({preparation:plan.evidence,quote:q!.evidence,deposit:plan.depositLamports})};
-      this.entrySnapshots.set(request.mint,structuredClone(result));return result;
+      const input={mint:request.mint,side:'buy' as const,inputUnits:request.inputUnits,minSlot:this.floor(request.mint,request.minSlot??0)};
+      const state=await this.pricer.quoteBuy({mint:new PublicKey(input.mint),buyLamports:integer(input.inputUnits),minSlot:input.minSlot},signal);
+      // As before, every decision/execution quote reads current required rent.
+      // Preparation is sizing only; it never substitutes for this fresh check.
+      const accountPlan={...plan.accountPlan,at:this.clock()},rents:Record<string,string>={};let required=0n;
+      for(const [exists,bytes]of [[accountPlan.baseExists,state.baseAssociatedAccount.accountLengthBytes],[accountPlan.quoteExists,state.quoteAssociatedAccount.accountLengthBytes]]as const){
+        if(exists)continue;need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
+        if(rents[bytes]===undefined){const rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
+        required+=integer(rents[bytes]!);
+      }
+      need(required.toString()===plan.depositLamports&&this.clock()-accountPlan.at<=10000,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
+      const at=this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
+      const costs={depositLamports:required.toString(),plan:accountPlan,rents,gas:this.options.gas,gasLamports:this.gasLamports,classification:'simulated' as const};
+      const evidence='rpc-market:'+hash({request:input,state,costs,gas:this.options.gas,migrationEvidence:pool.evidence});
+      const q:PilotSizeQuote={...input,outputUnits:state.buy.outputBaseUnits,at,evidence,slot:state.slot,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-entry-validated-costs:'+hash({preparation:plan.evidence,quote:evidence,deposit:plan.depositLamports})};
+      this.options.recorder.record('rpc-market-quote',{request:input,quote:q,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,timeEvidence:state.timeEvidence,clockSlot:state.clockSlot,marketClockUnixSeconds:state.marketClockUnixSeconds,migrationSlot:pool.migrationSlot},costs});
+      this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
+      this.minimumSlot(input.mint,state.slot);this.entryEstimates++;
+      this.entrySnapshots.set(input.mint,structuredClone(q));return q;
     }catch{return null;}
-    finally{this.active=false;}
   }
   readonly context=async(positions:Readonly<Record<string,Position>>,signal:AbortSignal):Promise<ExecutionContext>=>{
     if(this.active||signal.aborted)return {price:null,marks:{}};

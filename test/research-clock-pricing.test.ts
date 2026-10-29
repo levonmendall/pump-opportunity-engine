@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {PublicKey,SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
-import {quotePositionsSell,type PoolWireAccount} from '../src/pool.js';
+import {quotePositionsSell,quotePool,type PoolWireAccount} from '../src/pool.js';
 import type {ReadOnlyRpc} from '../src/network.js';
 import {ResearchClockPositionPricer,decodeResearchBankClock} from '../src/research-clock-pricing.js';
 
@@ -313,3 +313,54 @@ test('observation invalid cardinality, duplicate identities, minimum slots, abor
 }));
 
 test('an observation refusal before source admission does not evict validated held dependency links',async()=>withObservationTime(async f=>{const p=new ResearchClockPositionPricer(f.rpc,f.rec),held=f.requests.slice(0,3).map(r=>({...r,fullBaseUnits:1_000_000_000n}));await p.validateMany(f.requests);await p.quoteMany(held);const before=f.calls.length,cache=copy(p.usage().cachedPoolSlots);await assert.rejects(p.validateMany(f.requests,undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>false}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,before);assert.deepEqual(p.usage().cachedPoolSlots,cache);await p.quoteMany(held);assert.equal(f.calls.length-before,1);}));
+
+
+test('coherent actual-input buy preserves retained SDK amounts and fees with2cold/1warm reads',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),request={mint:f.request.mint,buyLamports:BigInt(f.proof.quote.buy.inputLamports),minSlot:f.request.minSlot};
+  let before=f.calls.length;const first=await p.quoteBuy(request);assert.equal(f.calls.length-before,2);
+  before=f.calls.length;const second=await p.quoteBuy(request);assert.equal(f.calls.length-before,1);
+  const initialLegacy=await quotePool(f.rpc as ReadOnlyRpc,request.mint,request.buyLamports,f.rec,request.minSlot);
+  for(const q of[first,second]){assert.deepEqual(q.buy,f.proof.quote.buy);assert.deepEqual(q.correspondingSell,f.proof.quote.correspondingSell);assert.deepEqual(q.feeBps,f.proof.quote.feeBps);assert.deepEqual(q.embeddedCosts,initialLegacy.embeddedCosts);assert.equal(q.timeEvidence,'confirmed-bank-clock');assert.equal(q.clockSlot,q.slot);assert.equal('marketBlockTime'in q,false);}
+  const reserve=Buffer.from(f.state.value[6].data[0],'base64');reserve.writeBigUInt64LE(reserve.readBigUInt64LE(64)+10000000n,64);f.state.value[6].data[0]=reserve.toString('base64');f.moveSlot();
+  const changed=await p.quoteBuy(request),legacy=await quotePool(f.rpc as ReadOnlyRpc,request.mint,request.buyLamports,f.rec,request.minSlot);
+  assert.notEqual(changed.buy.outputBaseUnits,first.buy.outputBaseUnits);assert.deepEqual(changed.buy,legacy.buy);assert.deepEqual(changed.embeddedCosts,legacy.embeddedCosts);
+  const size=await p.quoteBuy({...request,buyLamports:50000000n});assert.equal(size.buy.inputLamports,'50000000');assert.notEqual(size.buy.outputBaseUnits,changed.buy.outputBaseUnits);
+}));
+
+test('buy admission, aborts, invalid amounts and unsupported state refuse without partial success',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),request={mint:f.request.mint,buyLamports:10000000n,minSlot:f.request.minSlot};
+  for(const buyLamports of[0n,10n,1000000001n])await assert.rejects(p.quoteBuy({...request,buyLamports}),/SIZE_OUT_OF_RANGE/);
+  const controller=new AbortController();controller.abort();await assert.rejects(p.quoteBuy(request,controller.signal));
+  await assert.rejects(p.quoteBuy(request,undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>false}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,0);
+  await p.quoteBuy(request);f.state.value[5].owner=PublicKey.default.toBase58();
+  await assert.rejects(p.quoteBuy(request));assert.deepEqual(p.usage().cachedPoolSlots,{});
+}));
+
+test('buy validation retains the original receive time through slow recording and bank expiry',async()=>withTime(async f=>{
+  let now=Date.now();Date.now=()=>now;
+  const p=new ResearchClockPositionPricer(f.rpc,{record(kind,data){f.rec.record(kind,data);if(kind==='research-clock-buy-quote')now+=2001;}});
+  await assert.rejects(p.quoteBuy({mint:f.request.mint,buyLamports:10000000n}),/QUOTE_AGE_AT_USE/);assert.deepEqual(p.usage().cachedPoolSlots,{});
+  const fresh=new ResearchClockPositionPricer(f.rpc,f.rec);now+=30001;
+  await assert.rejects(fresh.quoteBuy({mint:f.request.mint,buyLamports:10000000n}),/NOT_CURRENT_WITHIN_30_SECONDS/);
+}));
+
+test('alternating buys, three held quotes and six observations preserves their existing dependency working sets',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),held=f.requests.slice(0,3).map(r=>({...r,fullBaseUnits:1000000000n})),buy={...f.requests[4]!,buyLamports:10000000n};
+  await p.validateMany(f.requests);let before=f.calls.length;await p.quoteMany(held);assert.equal(f.calls.length-before,1);
+  for(let i=0;i<3;i++){before=f.calls.length;await p.quoteBuy(buy);await p.quoteMany(held);await p.validateMany(f.requests);assert.equal(f.calls.length-before,3);assert.equal(Object.keys(p.usage().cachedPoolSlots).length,6);assert.equal(Object.keys(p.usage().highestHoldingSlots).length,3);assert.equal(Object.keys(p.usage().highestObservationSlots).length,6);assert.equal(Object.keys(p.usage().highestBuySlots).length,1);}
+  for(const r of f.requests)await p.quoteBuy({...r,buyLamports:10000000n});assert.equal(Object.keys(p.usage().highestBuySlots).length,1);assert.ok(Object.keys(p.usage().cachedPoolSlots).length<=9);
+}));
+
+
+test('nine reserved working identities refuse a tenth buy without poisoning higher-priority observation',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests);
+  // Explicitly unsupported additional held fixtures exercise retained ownership
+  // and cache bounds; no valid protection quote is claimed for these identities.
+  const missing=[221,222,223].map(n=>({mint:new PublicKey(Buffer.alloc(32,n)),fullBaseUnits:1000000000n}));
+  const unavailable=await p.quoteMany(missing);assert.equal(Object.keys(unavailable.unavailable).length,3);
+  const buy={...f.requests[0]!,buyLamports:10000000n};await p.quoteBuy(buy);
+  const before=f.calls.length,cache=copy(p.usage().cachedPoolSlots),heldSlots=copy(p.usage().highestHoldingSlots),observationSlots=copy(p.usage().highestObservationSlots);
+  await assert.rejects(p.quoteBuy({mint:new PublicKey(Buffer.alloc(32,224)),buyLamports:10000000n}),/POOL_CACHE_CAPACITY/);
+  assert.equal(f.calls.length,before);assert.deepEqual(p.usage().cachedPoolSlots,cache);assert.deepEqual(p.usage().highestHoldingSlots,heldSlots);assert.deepEqual(p.usage().highestObservationSlots,observationSlots);
+  const supported=await p.validateMany(f.requests);assert.equal(Object.keys(supported.validations).length,6);assert.equal(f.calls.length-before,1);assert.ok(Object.keys(p.usage().cachedPoolSlots).length<=9);
+}));

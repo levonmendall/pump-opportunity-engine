@@ -1,0 +1,132 @@
+{
+  "type": "OFFLINE_SYNTHETIC_RECORDER_REOPEN_PRESSURE",
+  "source": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+  "directory": "/tmp/poe-OFFLINE-restart-pressure-5WbHkA/service",
+  "rows": 6,
+  "before": {
+    "version": "poe-owned-rotating-evidence-v1",
+    "candidateAdmissionAllowed": false,
+    "pressureReason": "DIAGNOSTIC_HEADROOM",
+    "requiresCriticalRecovery": false,
+    "diagnosticBytes": 10860,
+    "diagnosticLimitBytes": 12288,
+    "diagnosticSegments": 3,
+    "maximumDiagnosticSegments": 512,
+    "minRetentionMs": 300000,
+    "retiredBytes": 0,
+    "totalRecordedBytes": 10860,
+    "protectedBytes": 0,
+    "protectedBytesMeaning": "Tracked completed raw proof, essential records and manifests; interrupted copies may add unaccounted bytes. Actual filesystem headroom is authoritative.",
+    "refusedRecords": 1,
+    "refusedBytes": 1810,
+    "refusalIntervals": [
+      {
+        "fromAt": 1000000,
+        "toAt": 1000000,
+        "records": 1,
+        "bytes": 1810
+      }
+    ],
+    "refusalIntervalsCoalesced": 0,
+    "availableDiskBytes": 9438879744,
+    "minimumDiskReserveBytes": 0,
+    "pinOperations": 0,
+    "protectedProofNeverEvicted": true,
+    "financialFilesRead": false,
+    "receiptAnchor": {
+      "throughSequence": 0,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "receiptHead": "9dfbb1452372c6239ecd6eeef3e50b86896b83945abbe8badbe96e37425e0a39",
+    "retainedReceipts": 7
+  },
+  "at299999": {
+    "version": "poe-owned-rotating-evidence-v1",
+    "candidateAdmissionAllowed": false,
+    "pressureReason": "DIAGNOSTIC_HEADROOM",
+    "requiresCriticalRecovery": false,
+    "diagnosticBytes": 10860,
+    "diagnosticLimitBytes": 12288,
+    "diagnosticSegments": 3,
+    "maximumDiagnosticSegments": 512,
+    "minRetentionMs": 300000,
+    "retiredBytes": 0,
+    "totalRecordedBytes": 10860,
+    "protectedBytes": 0,
+    "protectedBytesMeaning": "Tracked completed raw proof, essential records and manifests; interrupted copies may add unaccounted bytes. Actual filesystem headroom is authoritative.",
+    "refusedRecords": 1,
+    "refusedBytes": 1810,
+    "refusalIntervals": [
+      {
+        "fromAt": 1000000,
+        "toAt": 1000000,
+        "records": 1,
+        "bytes": 1810
+      }
+    ],
+    "refusalIntervalsCoalesced": 0,
+    "availableDiskBytes": 9438879744,
+    "minimumDiskReserveBytes": 0,
+    "pinOperations": 0,
+    "protectedProofNeverEvicted": true,
+    "financialFilesRead": false,
+    "receiptAnchor": {
+      "throughSequence": 0,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "receiptHead": "9dfbb1452372c6239ecd6eeef3e50b86896b83945abbe8badbe96e37425e0a39",
+    "retainedReceipts": 7
+  },
+  "at300000": {
+    "version": "poe-owned-rotating-evidence-v1",
+    "candidateAdmissionAllowed": true,
+    "pressureReason": null,
+    "requiresCriticalRecovery": false,
+    "diagnosticBytes": 7240,
+    "diagnosticLimitBytes": 12288,
+    "diagnosticSegments": 2,
+    "maximumDiagnosticSegments": 512,
+    "minRetentionMs": 300000,
+    "retiredBytes": 3620,
+    "totalRecordedBytes": 10860,
+    "protectedBytes": 0,
+    "protectedBytesMeaning": "Tracked completed raw proof, essential records and manifests; interrupted copies may add unaccounted bytes. Actual filesystem headroom is authoritative.",
+    "refusedRecords": 1,
+    "refusedBytes": 1810,
+    "refusalIntervals": [
+      {
+        "fromAt": 1000000,
+        "toAt": 1000000,
+        "records": 1,
+        "bytes": 1810
+      }
+    ],
+    "refusalIntervalsCoalesced": 0,
+    "availableDiskBytes": 9438883840,
+    "minimumDiskReserveBytes": 0,
+    "pinOperations": 0,
+    "protectedProofNeverEvicted": true,
+    "financialFilesRead": false,
+    "receiptAnchor": {
+      "throughSequence": 0,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "receiptHead": "928527b1b846ff85260fd6214e48e0f2fe5c942f5056a918512a9e6259c972c7",
+    "retainedReceipts": 8
+  },
+  "restartReceipt": {
+    "sequence": 7,
+    "at": 87400000,
+    "kind": "restart",
+    "data": {
+      "diagnosticsRetained": 3,
+      "conservativeRetentionRestartMs": 300000,
+      "financialFilesRead": false
+    },
+    "previousSha256": "0ef3d7d9e9eb7d6530d763d962c502a5b28ac1d5443fcfd73f1275aa97225cc8",
+    "sha256": "9dfbb1452372c6239ecd6eeef3e50b86896b83945abbe8badbe96e37425e0a39"
+  },
+  "liveAttribution": "Not established: actual private recorder usage/receipts must identify whether this condition occurred on EC2.",
+  "financialStateUsed": false,
+  "networkUsed": false
+}

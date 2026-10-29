@@ -15,3 +15,40 @@ test('single channel duplicate/reordered semantics include intelligence immutabl
 test('current held protection uses actual completion age and primary availability, not a stale or cumulative risk classification',()=>{const s=status()as any;s.positions={mint:{units:'10'}};s.timing.lastCompletedProtectionAt=T-5000;assert.equal(projectOperatingIntelligence(s).protection.state,'degraded');s.timing.lastCompletedProtectionAt=T-1000;s.timing.protectionBreaches=3;s.timing.unavailableChecks=4;assert.equal(projectOperatingIntelligence(s).protection.state,'monitored');s.usage.rpc.cooldownUntil=T+1000;assert.equal(projectOperatingIntelligence(s).protection.state,'degraded');s.usage.rpc.cooldownUntil=0;assert.equal(projectOperatingIntelligence(s).protection.state,'monitored','history-only cooldown does not imply unavailable holding pricing');});
 
 test('missing ownership is not projected as a flat account or an empty pending-action set',()=>{const s=status()as any;delete s.pending;assert.throws(()=>projectOperatingIntelligence(s),/OWNERSHIP/);s.pending={};delete s.positions;assert.throws(()=>projectOperatingIntelligence(s),/OWNERSHIP/);});
+
+test('optional admission diagnostics preserve legacy intelligence without fabricating readiness',()=>{
+ const legacy=projectOperatingIntelligence(status());assert.equal(Object.hasOwn(legacy,'admission'),false);validateOperatingIntelligence(legacy,iso(T));
+ const raw={...status(),reporting:{}};const current=projectOperatingIntelligence(raw);assert.ok(current.admission);for(const value of Object.values(current.admission!))assert.equal(value,null);validateOperatingIntelligence(current,iso(T));
+ const s=snapshot();s.intelligence=current;validateSnapshot(s,identity,T);
+});
+
+test('normal CPU and memory do not conceal a separate evidence admission refusal or source recovery',()=>{
+ const raw={...status(),entriesEnabled:true,status:'legacy financial reason',resources:{state:'normal',sampleAt:T-10,cpuFraction:.12,rssBytes:250000000},reporting:{financialProjectionReady:true},serviceSupervision:{newRiskAllowed:true},resourceControl:{candidateAdmissionAllowed:true},evidenceRetention:{candidateAdmissionAllowed:false,pressureReason:'DIAGNOSTIC_HEADROOM',diagnosticBytes:126000000,diagnosticLimitBytes:134217728,requiresCriticalRecovery:false,refusedRecords:7},sourceRecovery:{generation:3,failures:3,reason:'rolling resource or evidence pressure',retryAt:T+10000,closingSettled:true,restartRequired:false},proofPreparation:null};
+ const projected=projectOperatingIntelligence(raw);assert.equal(projected.resources.state,'normal');assert.deepEqual(projected.admission,{financialProjectionReady:true,supervisedNewRiskAllowed:true,candidateResourceAdmissionAllowed:true,evidenceAdmissionAllowed:false,evidencePressureReasonCode:'DIAGNOSTIC_HEADROOM',evidenceDiagnosticBytes:126000000,evidenceDiagnosticLimitBytes:134217728,evidenceRequiresCriticalRecovery:false,evidenceRefusedRecords:7,sourceRecoveryGeneration:3,sourceRecoveryFailures:3,sourceRecoveryReasonCode:'ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE',sourceRecoveryRetryAt:iso(T+10000),sourceRecoveryClosingSettled:true,sourceRestartRequired:false,proofPreparationState:'not-started'});validateOperatingIntelligence(projected,iso(T));
+ assert.equal(raw.entriesEnabled,true,'projection does not alter entry permission');assert.equal(raw.sourceRecovery.retryAt,T+10000,'projection does not alter recovery timing');
+});
+
+test('missing or invalid admission values remain unavailable while valid zero counters and false gates are retained',()=>{
+ const raw={...status(),reporting:{financialProjectionReady:'true'},serviceSupervision:{newRiskAllowed:false},resourceControl:{candidateAdmissionAllowed:null},evidenceRetention:{candidateAdmissionAllowed:'false',diagnosticBytes:-1,diagnosticLimitBytes:NaN,requiresCriticalRecovery:true,refusedRecords:0},sourceRecovery:{generation:0,failures:-2,retryAt:0,closingSettled:false,restartRequired:false},proofPreparation:{state:'unknown'}};
+ const a=projectOperatingIntelligence(raw).admission!;assert.equal(a.financialProjectionReady,null);assert.equal(a.supervisedNewRiskAllowed,false);assert.equal(a.candidateResourceAdmissionAllowed,null);assert.equal(a.evidenceAdmissionAllowed,null);assert.equal(a.evidenceDiagnosticBytes,null);assert.equal(a.evidenceDiagnosticLimitBytes,null);assert.equal(a.evidenceRequiresCriticalRecovery,true);assert.equal(a.evidenceRefusedRecords,0);assert.equal(a.sourceRecoveryGeneration,0);assert.equal(a.sourceRecoveryFailures,null);assert.equal(a.sourceRecoveryRetryAt,null);assert.equal(a.sourceRecoveryClosingSettled,false);assert.equal(a.sourceRestartRequired,false);assert.equal(a.proofPreparationState,null);
+});
+
+test('admission reasons export only known static codes and never provider text, credentials or local paths',()=>{
+ const secret='https://provider.example/rpc?api-key=DO_NOT_EXPORT';
+ const raw={...status(),reporting:{},evidenceRetention:{pressureReason:secret},sourceRecovery:{reason:'candidate/provider failure: '+secret},proofPreparation:{state:'failed',proofId:'/private/'+secret,error:secret}};
+ let i=projectOperatingIntelligence(raw);assert.equal(i.admission!.evidencePressureReasonCode,'OTHER_UNEXPORTED_REASON');assert.equal(i.admission!.sourceRecoveryReasonCode,'CANDIDATE_PROVIDER_FAILURE');assert.equal(i.admission!.proofPreparationState,'failed');assert.equal(JSON.stringify(i).includes('DO_NOT_EXPORT'),false);assert.equal(JSON.stringify(i).includes('/private/'),false);validateOperatingIntelligence(i,iso(T));
+ raw.sourceRecovery.reason='candidate step unavailable: '+secret;i=projectOperatingIntelligence(raw);assert.equal(i.admission!.sourceRecoveryReasonCode,'CANDIDATE_STEP_UNAVAILABLE');
+ raw.sourceRecovery.reason=secret;i=projectOperatingIntelligence(raw);assert.equal(i.admission!.sourceRecoveryReasonCode,'OTHER_UNEXPORTED_REASON');
+});
+
+test('receiver rejects malformed admission groups, secret-shaped extras and unsupported reason or proof codes',()=>{
+ const raw={...status(),reporting:{},sourceRecovery:{},proofPreparation:null};const i=projectOperatingIntelligence(raw);
+ for(const [key,value,reason]of[['evidenceDiagnosticBytes',-1,/NUMBER/],['financialProjectionReady','false',/BOOLEAN/],['evidencePressureReasonCode','https://secret.example',/PRESSURE_CODE/],['sourceRecoveryReasonCode','A'.repeat(10000),/REASON_CODE/],['proofPreparationState','finished',/PROOF_PREPARATION/],['sourceRecoveryRetryAt','not-a-time',/TIME/]]as const){const invalid=structuredClone(i)as any;invalid.admission[key]=value;assert.throws(()=>validateOperatingIntelligence(invalid,iso(T)),reason);}
+ const extras=structuredClone(i)as any;extras.admission.apiKey='DO_NOT_EXPORT';assert.throws(()=>validateOperatingIntelligence(extras,iso(T)),/FIELDS/);
+ const partial=structuredClone(i)as any;delete partial.admission.sourceRecoveryFailures;assert.throws(()=>validateOperatingIntelligence(partial,iso(T)),/FIELDS/);
+});
+
+test('proof preparation states distinguish not-started from pending, completed and failed without implying financial readiness',()=>{
+ for(const state of ['pending','complete','failed']){const i=projectOperatingIntelligence({...status(),proofPreparation:{state,deadlineAt:T+100,availableAt:T-1},reporting:{financialProjectionReady:false}});assert.equal(i.admission!.proofPreparationState,state);assert.equal(i.admission!.financialProjectionReady,false);validateOperatingIntelligence(i,iso(T));}
+ const i=projectOperatingIntelligence({...status(),proofPreparation:null});assert.equal(i.admission!.proofPreparationState,'not-started');validateOperatingIntelligence(i,iso(T));
+});

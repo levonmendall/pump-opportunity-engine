@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-29T14:24:59.420462+00:00",
+  "baseCommit": "592dd97c5600d0f132b67116616db73f75307c39",
+  "patchSha256": "502bf8aeb01c993de84b727917ff2532a73911970e1177bb06e44ede5bb272e5",
+  "files": {
+    "src/native-paper.ts": "8fc6cf276f4fd7aa742417f75b25b418c22f0726832a825dc210f934994a16bc",
+    "src/operating-intelligence.ts": "4741d8fc1cab09cf2be7a49c6c9e10fcbd9cd3e439c2445e93292dae14230a3c",
+    "src/pilot-market.ts": "c463e89554a36d7ea9eb07b7f61dfc294b26f84bf0a104d8dd957456ec6cd3fc",
+    "src/pool.ts": "7ddfafe502647d54d51b82e233be47a5de3e6c9c2a79ec6d242943615ae21774",
+    "src/research-clock-pricing.ts": "fae5af159cae4c813e8503c63bb371fab877bbae2e4b272de72b88c941d2cae1",
+    "src/run-native-paper.ts": "5e3a888c46ae92bfac72473296bbf8178ba0edb087b0ccf120d6397c425329d1",
+    "test/native-paper.test.ts": "2fcf69b8e638b65d14218273d2be7c55927ce91bec7dee9b0c8283d5d67fc4c6",
+    "test/native-paper-hooks.test.ts": "9cd648913c28ec8208a7b642d6f737483b80dd6522a89bcfa19e46674dba1ebf",
+    "test/operating-intelligence.test.ts": "38d3f899a3f10b460b21cc8a843607f1be55bf37f0ac83cebb30546c89b38a3c",
+    "test/pilot-market.test.ts": "23c07cdba89aeabbc99e5baa754c206f5546d024806fbfebfda0555ccb49400a",
+    "test/research-clock-pricing.test.ts": "897f1d43a7efa65b67a7a749c32cf39ea021ed1884cd608eabef1fa5885859b1"
+  },
+  "liveSourceUnchanged": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+  "financialHistoryUnchanged": true,
+  "priorFailure": "Initial full suite compiled the new fixture before its optional timestamp type correction; raw failure retained. Product sources unchanged."
+}

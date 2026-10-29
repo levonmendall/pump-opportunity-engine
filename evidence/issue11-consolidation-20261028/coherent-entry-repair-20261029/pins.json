@@ -1,0 +1,17 @@
+{
+  "offlineOnly": true,
+  "committed": false,
+  "deployed": false,
+  "files": [
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 37761,
+      "sha256": "c996ca50b7aaeb311888d85516f6e26aa85d4bc2f2fa3b3e156d28b99f20eeaf"
+    },
+    {
+      "file": "test-forward-original-upgrade.py",
+      "bytes": 34698,
+      "sha256": "ab75f5f927857e89af233580658a6157fa924e8492beb49d4ba78d06a34744e0"
+    }
+  ]
+}

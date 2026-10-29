@@ -14,7 +14,7 @@ import {NativeCandidateRunner,type NativeAuditCertificate} from '../src/native-c
 import {decodeMigrationIdentity} from '../src/migration-identity.js';
 import {PUMP_AMM_PROGRAM_ID} from '../src/sdk.js';
 import type {NativeNotification} from '../src/pilot-native-flow.js';
-import {nativePaperCurrentCertificates} from '../src/run-native-paper.js';
+import {nativePaperCurrentCertificates,nativePaperEssentialEvidence} from '../src/run-native-paper.js';
 const T=Date.parse('2026-10-27T12:00:00Z'),MINT=bs58.encode(Buffer.alloc(32,41));
 function traderFixture(t:TestContext,inject?:(kind:string,data:any,trader:PaperTrader)=>void){
  const dir=mkdtempSync(join(tmpdir(),'poe-OFFLINE-native-hooks-')),ledger=new PaperLedger(join(dir,'fixture.sqlite'),'poe-pilot-native-hooks-fixture');let at=T,trader:PaperTrader;const rows:Array<{kind:string;data:any}>=[];
@@ -63,4 +63,16 @@ test('status/report work cannot backdate the next certificate read or extend an 
 
 test('financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof',async()=>{
  const f=runnerFixture();await f.runner.step();f.owned='HELD';f.runner.syncFinancialOwnership();assert.equal(f.runner.status().candidates.length,0);assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'HELD');assert.deepEqual(f.retirements,[identity.baseMint]);f.at+=25*60*60*1000;const checkpoint=f.runner.checkpoint();assert.equal(checkpoint.origins.length,1);assert.equal(f.runner.watch.lookupIdentity(identity.baseMint,f.at)!.state,'HELD');assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);assert.equal(checkpoint.financialWriterOpened,false);await f.runner.stop();
+});
+
+
+test('entry cost and exact-size quote evidence survives diagnostic rotation without protecting unrelated diagnostics',()=>{
+ for(const kind of ['pilot-entry-cost-preparation','rpc-market-quote']){
+  assert.equal(nativePaperEssentialEvidence(kind,'candidate',false),true);
+  assert.equal(nativePaperEssentialEvidence(kind,'pending',true),true);
+  assert.equal(nativePaperEssentialEvidence(kind,'protection',true),true);
+  assert.equal(nativePaperEssentialEvidence(kind,'idle',false),false);
+  assert.equal(nativePaperEssentialEvidence(kind,'source',false),false);
+ }
+ assert.equal(nativePaperEssentialEvidence('provider-diagnostic','candidate',false),false);
 });

@@ -19,10 +19,10 @@ export type NativeQualificationProof={proofId:string;mint:string;startAt:number;
 export type NativePaperOptions={ledger:PaperLedger;market:PilotMarket;binding:PilotBinding;source:Pick<PilotNativeFlow,'snapshot'|'usage'>;certificate:(mint:string,at:number)=>NativeAuditCertificate|null;record:RecordSource['record'];withProtectionWork?:<T>(work:()=>Promise<T>)=>Promise<T>;admitNewRisk?:(at:number)=>boolean;now?:()=>number;restoredPools?:Readonly<Record<string,NativePaperPool>>;fixtureAccountBinding?:OperatingAccountBinding;pinQualification?:(proof:NativeQualificationProof)=>void};
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
 export class NativePaper {
- readonly trader:PaperTrader;private readonly now:()=>number;private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
+ readonly trader:PaperTrader;private readonly now:()=>number;private readonly maximumPositions:PilotBinding['maxPositions'];private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
  private context:ExecutionContext={price:null,marks:{}};
  constructor(private readonly options:NativePaperOptions){
-  this.now=options.now??Date.now;const state=options.ledger.state();assertNativePaperAccount(state,options.fixtureAccountBinding);
+  this.now=options.now??Date.now;this.maximumPositions=options.binding.maxPositions;const state=options.ledger.state();assertNativePaperAccount(state,options.fixtureAccountBinding);
   for(const [mint,pool]of Object.entries(options.restoredPools??{}))if(state.positions[mint]||Object.values(state.pending).some(o=>o.mint===mint))this.register(pool.identity,pool.evidence);
   for(const mint of new Set([...Object.keys(state.positions),...Object.values(state.pending).map(o=>o.mint)]))need(this.pools.has(mint),'NATIVE_PAPER_OWNED_POOL_PROOF_REQUIRED');
   // Ordinary ticks validate/sanitize this read and reconcile in PaperTrader.
@@ -45,6 +45,7 @@ export class NativePaper {
  gap=(row:{mint?:string;at:number;reason:string})=>{const mints=row.mint?[row.mint]:[...this.pools.keys()];for(const mint of mints)if(this.trader.hasCandidate(mint))this.trader.candidateGap(mint,row.reason);};
  retiredCandidate=(mint:string,reason:string)=>{this.gap({mint,at:this.now(),reason});this.retired.add(mint);};
  ownership=(mint:string):'HELD'|'ENTRY_PENDING'|null=>{const state=this.options.ledger.state();return state.positions[mint]?'HELD':Object.values(state.pending).some(o=>o.mint===mint)?'ENTRY_PENDING':null;};
+ private entryCapacity(){const state=this.options.ledger.state(),heldPositions=Object.keys(state.positions).length,pendingBuyOrders=Object.values(state.pending).filter(o=>o.side==='buy').length;return {heldPositions,pendingBuyOrders,maximumPositions:this.maximumPositions,available:heldPositions+pendingBuyOrders<this.maximumPositions};}
  ready(mint:string,at=this.now()){
   const view=this.options.source.snapshot(mint,at),certificate=this.options.certificate(mint,at),pool=this.pools.get(mint),features=this.trader.candidateFeatures(mint,at);
   return !!(view&&pool&&nativePaperEvidenceReady({contractVersion:NATIVE_PAPER_DATA_CONTRACT_VERSION,certificate,at,mint,pool:pool.identity.pool,dataContract:view.dataContract,openedAt:view.openedAt,connectionId:view.connectionId,subscriptionId:view.subscription,features,connected:view.connected,sourceSupportFresh:view.sourceSupportFresh,hasQualityLoss:view.hasQualityLoss}));
@@ -57,11 +58,15 @@ export class NativePaper {
  candidateDue(mint:string,at=this.now()){const features=this.trader.candidateFeatures(mint,at),pool=this.pools.get(mint);return !!(features&&pool&&entryAgeEligible(pool.identity.chainBlockTime*1000,at)&&this.ready(mint,at)&&this.lastCandidateBucket.get(mint)!==features.windowEndAt);}
  qualificationProof(mint:string,at=this.now()):NativeQualificationProof|null{
   const pool=this.pools.get(mint),features=this.trader.candidateFeatures(mint,at),certificate=this.options.certificate(mint,at);
-  if(!pool||!features||!certificate||this.ownership(mint)||!entryAgeEligible(pool.identity.chainBlockTime*1000,at)||!this.ready(mint,at)||assessPredictiveBuying(features,at).status!=='not-rejected')return null;
+  if(!pool||!features||!certificate||!this.entryCapacity().available||this.ownership(mint)||!entryAgeEligible(pool.identity.chainBlockTime*1000,at)||!this.ready(mint,at)||assessPredictiveBuying(features,at).status!=='not-rejected')return null;
   return {proofId:['entry',mint,features.windowEndAt,certificate.admittedAt,certificate.featuresSha256].join(':'),mint,startAt:features.windowStartAt,throughAt:at,windowEndAt:features.windowEndAt,featuresSha256:certificate.featuresSha256,certificateAt:certificate.admittedAt,deadlineAt:certificate.deadlineAt};
  }
  async candidate(mint:string,admitNewRisk:boolean){
   const at=this.now(),pool=this.pools.get(mint),features=this.trader.candidateFeatures(mint,at);if(!pool||!features||!this.ready(mint,at)||this.lastCandidateBucket.get(mint)===features.windowEndAt)return {kind:'unavailable' as const};
+  // Required position slots are already committed by held exposure and pending
+  // buys. A full account must not consume proof/rent/quote work or cancel an
+  // existing action merely to reject another candidate later in PaperTrader.
+  const capacity=this.entryCapacity();if(!capacity.available){this.options.record('native-paper-entry-unavailable',{mint,at,windowEndAt:features.windowEndAt,reason:'simulated-position-capacity-reserved',...capacity,predictiveOnly:true,executableQualification:false,orderCreated:false,existingFinancialActionsPreserved:true});this.lastCandidateBucket.set(mint,features.windowEndAt);return {kind:'capacity-refused' as const};}
   if(!admitNewRisk||this.options.admitNewRisk?.(at)!==true){this.trader.pauseNewEntries('monitoring capacity unavailable for new risk');this.options.record('native-paper-entry-unavailable',{mint,at,windowEndAt:features.windowEndAt,reason:'monitoring/time/request/response or pending-action reserve unavailable',predictiveOnly:true,executableQualification:false,orderCreated:false});this.lastCandidateBucket.set(mint,features.windowEndAt);return {kind:'capacity-refused' as const};}
   const assessment=assessPredictiveBuying(features,at);
   if(assessment.status==='not-rejected'&&entryAgeEligible(pool.identity.chainBlockTime*1000,at)&&!this.ownership(mint)){
