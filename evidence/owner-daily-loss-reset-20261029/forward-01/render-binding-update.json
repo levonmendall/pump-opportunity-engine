@@ -1,0 +1,14 @@
+{
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "workspaceId": "tea-daqk6h8jo6nc73eojtp0",
+  "mode": "merge",
+  "changedKeys": {
+    "POE_RUNTIME_RELEASE": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "POE_STRATEGY_VERSION": "adaptive-momentum-v2-paper-v1"
+  },
+  "deploymentId": "dep-dbhsc88ae00c739mhjr0",
+  "dashboardSource": "464e50560a380788390a68abeabca9fb1c422acc",
+  "financialServiceRestartedForDashboard": false,
+  "secretsPrintedOrStored": false,
+  "hostProofRun": 40964701519
+}

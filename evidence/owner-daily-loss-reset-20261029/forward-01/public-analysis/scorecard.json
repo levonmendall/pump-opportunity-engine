@@ -1,0 +1,355 @@
+{
+  "kind": "settled-bounded-public-forward-scorecard",
+  "sourceCommit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+  "runId": "native-paper-20261029221651345",
+  "analyzerStartedAt": "2026-10-29T22:20:28.166924+00:00",
+  "analyzerCompletedAt": "2026-10-29T22:32:28.438784+00:00",
+  "firstSourceAt": "2026-10-29T22:20:12.161Z",
+  "lastSourceAt": "2026-10-29T22:32:05.763Z",
+  "targetPublicFrames": 47,
+  "sourceSpanMs": 713602,
+  "deepMaximumValues": [
+    4
+  ],
+  "deepActiveMaximum": 4,
+  "stateTransitions": [
+    {
+      "observedAt": "2026-10-29T22:19:33.355000+00:00",
+      "sourceAt": null,
+      "release": null,
+      "sequence": null,
+      "status": null,
+      "unavailable": true,
+      "capture": null,
+      "positions": 0,
+      "pending": 0,
+      "tradeFills": 0
+    },
+    {
+      "observedAt": "2026-10-29T22:20:33.747000+00:00",
+      "sourceAt": "2026-10-29T22:20:12.161Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10394",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 0,
+      "pending": 0,
+      "tradeFills": 12
+    },
+    {
+      "observedAt": "2026-10-29T22:22:50.526000+00:00",
+      "sourceAt": "2026-10-29T22:22:27.976Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10403",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 0,
+      "pending": 0,
+      "tradeFills": 12
+    },
+    {
+      "observedAt": "2026-10-29T22:23:05.752000+00:00",
+      "sourceAt": "2026-10-29T22:22:42.977Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10404",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 0,
+      "pending": 0,
+      "tradeFills": 12
+    },
+    {
+      "observedAt": "2026-10-29T22:23:20.907000+00:00",
+      "sourceAt": "2026-10-29T22:22:58.026Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10405",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 0,
+      "pending": 0,
+      "tradeFills": 12
+    },
+    {
+      "observedAt": "2026-10-29T22:23:36.149000+00:00",
+      "sourceAt": "2026-10-29T22:23:14.393Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10406",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 0,
+      "pending": 1,
+      "tradeFills": 12
+    },
+    {
+      "observedAt": "2026-10-29T22:23:51.319000+00:00",
+      "sourceAt": "2026-10-29T22:23:29.406Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10407",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 0,
+      "pending": 0,
+      "tradeFills": 12
+    },
+    {
+      "observedAt": "2026-10-29T22:24:06.669000+00:00",
+      "sourceAt": "2026-10-29T22:23:44.746Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10408",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 1,
+      "pending": 0,
+      "tradeFills": 13
+    },
+    {
+      "observedAt": "2026-10-29T22:24:37.002000+00:00",
+      "sourceAt": "2026-10-29T22:24:15.245Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10410",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 1,
+      "pending": 0,
+      "tradeFills": 13
+    },
+    {
+      "observedAt": "2026-10-29T22:30:27.251000+00:00",
+      "sourceAt": "2026-10-29T22:30:23.179Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10434",
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "unavailable": false,
+      "capture": false,
+      "positions": 1,
+      "pending": 0,
+      "tradeFills": 13
+    },
+    {
+      "observedAt": "2026-10-29T22:30:57.603000+00:00",
+      "sourceAt": "2026-10-29T22:30:48.842Z",
+      "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sequence": "10435",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_FINANCIAL_PAUSED"
+      },
+      "unavailable": false,
+      "capture": true,
+      "positions": 1,
+      "pending": 0,
+      "tradeFills": 13
+    }
+  ],
+  "deltas": {
+    "completeWindows": 43,
+    "auditedWindows": 43,
+    "predictiveAssessments": 43,
+    "predictivePasses": 27,
+    "qualityGaps": 12,
+    "auditUnavailable": 0,
+    "auditUnusable": 3,
+    "decisionDeadlineMisses": 18,
+    "httpTimeouts": 3,
+    "rpcRequests": 659,
+    "rpcResponseBytes": 96332999,
+    "nativeStreamBytes": 35243477
+  },
+  "firstFinancialFunnel": {
+    "observedAt": 1793312433747,
+    "sourceAt": "2026-10-29T22:20:12.161Z",
+    "sequence": "10394",
+    "funnel": {
+      "discovered": 12,
+      "supported": 12,
+      "sufficientlyObserved": 0,
+      "evaluated": 0,
+      "qualified": 0,
+      "attempted": 0,
+      "paperFilled": 0,
+      "exited": 0,
+      "reconciled": 201
+    }
+  },
+  "lastFinancialFunnel": {
+    "observedAt": 1793313133687,
+    "sourceAt": "2026-10-29T22:32:05.763Z",
+    "sequence": "10440",
+    "funnel": {
+      "discovered": 43,
+      "supported": 43,
+      "sufficientlyObserved": 4,
+      "evaluated": 4,
+      "qualified": 4,
+      "attempted": 4,
+      "paperFilled": 1,
+      "exited": 0,
+      "reconciled": 657
+    }
+  },
+  "newTradeFills": [
+    {
+      "id": "paper-fill:1a0c8cd86cd25f090f0307fb06d5f232",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "side": "buy",
+      "quantity": "65278155",
+      "at": "2026-10-29T22:23:36.537Z",
+      "valueUsd": 49.707332,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:61596:1793312614906"
+    }
+  ],
+  "finalPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 49.609798,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "finalPendingOrders": [],
+  "finalStatus": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "paused",
+    "reconciled": true,
+    "blocker": "POE_ENTRY_FINANCIAL_PAUSED"
+  },
+  "finalProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-29T22:32:04.695Z",
+    "maximumCompletedGapMs": 12329,
+    "maximumQuoteAgeAtUseMs": 56,
+    "breaches": 1,
+    "unavailableChecks": 3
+  },
+  "resources": {
+    "cpuOneCoreFraction": {
+      "min": 0.1277180035412421,
+      "max": 0.2219534211587579,
+      "median": 0.16620893101525672,
+      "first": 0.15081591753970935,
+      "last": 0.19676742177976433
+    },
+    "rssBytes": {
+      "min": 371806208,
+      "max": 423886848,
+      "median": 414142464,
+      "first": 371806208,
+      "last": 417579008
+    },
+    "availableMemoryBytes": {
+      "min": 6773186560,
+      "max": 6963859456,
+      "median": 6873559040,
+      "first": 6952091648,
+      "last": 6841212928
+    },
+    "availableDiskBytes": {
+      "min": 288122978304,
+      "max": 288231215104,
+      "median": 288153112576,
+      "first": 288226988032,
+      "last": 288132870144
+    },
+    "eventLoopLagMs": {
+      "min": 25.935871,
+      "max": 38.469631,
+      "median": 33.783807,
+      "first": 25.935871,
+      "last": 38.469631
+    }
+  },
+  "evidenceRefusedMaximum": 0,
+  "evidenceCriticalRecoveryObserved": false,
+  "providerThrottlesDelta": 0,
+  "networkRequestsByAnalyzer": 0,
+  "ledgerWritesByAnalyzer": 0,
+  "serviceControlsByAnalyzer": 0,
+  "acceptance": false,
+  "remainingBlockers": [
+    "Actual12.329secondcompletedprotectionfailureand3unavailablechecks; hardfinancialpausemustnotbeclearedwithoutrootcause/recoveryproof.",
+    "Candidatedeadlineexclusionsandcandidate-localquality/auditunusableeventsremain.",
+    "Noactualtwoheldconcurrentprotectionorexitlifecycleobservedinthisinterval.",
+    "Per-requestphysicaltimingsandfailedattemptreasonsnotexposedinthepublicsnapshot."
+  ],
+  "limitations": [
+    "Public data does not expose per-request physical start/completion latency; causal attribution remains unknown without native evidence.",
+    "Configured/predictive passes are not executable qualification or PAPER fills.",
+    "Flat state is not evidence of two-held protection reliability.",
+    "Analyzer interval does not bound the persistent EC2 service."
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "sourceCommit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "complete": true,
+  "collectorSession": 44397,
+  "collectorExitCode": 0,
+  "financialRuntimeStillIndependent": true,
+  "files": {
+    "observations.ndjson": {
+      "bytes": 779526,
+      "sha256": "61d70df29ab933dc37f2a56ce98ff20e3920d8db11679a25d992928a7fc0bb93"
+    },
+    "summary.json": {
+      "bytes": 42324,
+      "sha256": "98e40b6c41ef0c34316019418978be7ab4eb815a831962009c6aa330cb48b285"
+    },
+    "scorecard.json": {
+      "bytes": 10388,
+      "sha256": "0a067c30234e4006ef40f3725c388978f7da17db37a3e0e0c3247a8c27e4c6df"
+    },
+    "readiness-source-trace.md": {
+      "bytes": 1526,
+      "sha256": "6be5858f4ffec9c23502e52e9042a2f0bb651e60c19a1de0422aac18353bc422"
+    },
+    "financial-funnel-from-retained-root.json": {
+      "bytes": 17951,
+      "sha256": "3e4053a288c01f8cd0e911496a43a9c802c7c38bba44bde56c87fd1d9690e2e0"
+    },
+    "follow-retained-source.py": {
+      "bytes": 5224,
+      "sha256": "d84b969f5bb5622f9a07f2cd84294a90f036a63321242d593a654fd5a7352eec"
+    },
+    "protection-breach-2230.json": {
+      "bytes": 38361,
+      "sha256": "f43dbf59944eaf04e889002919739640f7171a99a46d1142237aded7da1def8b"
+    },
+    "audited-window-cutoff-timing.json": {
+      "bytes": 24175,
+      "sha256": "3041f39b0c14ab4157d596357337dc2786336d86d3bdbad2f847968e28a30fa5"
+    },
+    "material-public-frames.ndjson": {
+      "bytes": 176404,
+      "sha256": "07448f1164c97dbfac12ce55db6836b8334a64547fec1904fea67cf2c805f8ae"
+    },
+    "read-errors.ndjson": {
+      "bytes": 390,
+      "sha256": "9775f59e7da386f6dcbb147ff43ffae54184c1a2d028c8df8e5e6d0de4e4d6df"
+    }
+  }
+}

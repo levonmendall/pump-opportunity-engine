@@ -1,0 +1,213 @@
+{
+  "kind": "original-service-real-resource-pair-v1",
+  "source": {
+    "commit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+  },
+  "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+  "workflowRuns": [
+    "40964701519",
+    "40965851417"
+  ],
+  "sampleBeforeAt": 1793312249692,
+  "sampleAfterAt": 1793312779272,
+  "elapsedMs": 529580,
+  "elapsedSeconds": 529.58,
+  "samePhysicalServiceAndNativePids": true,
+  "serviceRestartCount": 0,
+  "counterResetDetected": false,
+  "cpu": {
+    "scope": "original POE service cgroup",
+    "delta": {
+      "usage_usec": 93974581,
+      "user_usec": 88022066,
+      "system_usec": 5952515,
+      "nr_periods": 0,
+      "nr_throttled": 0,
+      "throttled_usec": 0
+    },
+    "meanCpuCores": 0.1774511518561879,
+    "logicalCpuCount": 4,
+    "logicalCapacityFraction": 0.044362787964046975
+  },
+  "io": {
+    "scope": "original POE service cgroup kernel cumulative physical I/O; NOT retained disk growth",
+    "deviceSet": [
+      "259:0"
+    ],
+    "delta": {
+      "rbytes": 17047552,
+      "wbytes": 761188352,
+      "rios": 540,
+      "wios": 22316,
+      "dbytes": 0,
+      "dios": 0
+    },
+    "meanWriteBytesPerSecond": 1437343.46463235,
+    "meanReadBytesPerSecond": 32190.70206578798
+  },
+  "processes": [
+    {
+      "role": "original-supervisor",
+      "pid": 2474047,
+      "cpuSecondsDelta": 4.08,
+      "meanCpuCores": 0.007704218437252161,
+      "rssBeforeBytes": 31412224,
+      "rssAfterBytes": 31424512,
+      "rssChangeBytes": 12288
+    },
+    {
+      "role": "native-source",
+      "pid": 2474050,
+      "cpuSecondsDelta": 87.27000000000001,
+      "meanCpuCores": 0.16479096642622457,
+      "rssBeforeBytes": 303366144,
+      "rssAfterBytes": 418426880,
+      "rssChangeBytes": 115060736
+    },
+    {
+      "role": "original-publisher",
+      "pid": 2474051,
+      "cpuSecondsDelta": 2.58,
+      "meanCpuCores": 0.004871785188262396,
+      "rssBeforeBytes": 93483008,
+      "rssAfterBytes": 128864256,
+      "rssChangeBytes": 35381248
+    }
+  ],
+  "serviceMemory": {
+    "before": {
+      "current": {
+        "available": true,
+        "bytes": 372203520,
+        "unlimited": false
+      },
+      "max": {
+        "available": true,
+        "bytes": 3221225472,
+        "unlimited": false
+      },
+      "peak": {
+        "available": true,
+        "bytes": 391626752,
+        "unlimited": false
+      }
+    },
+    "after": {
+      "current": {
+        "available": true,
+        "bytes": 650371072,
+        "unlimited": false
+      },
+      "max": {
+        "available": true,
+        "bytes": 3221225472,
+        "unlimited": false
+      },
+      "peak": {
+        "available": true,
+        "bytes": 671567872,
+        "unlimited": false
+      }
+    },
+    "eventsDelta": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "hostMemoryAvailable": {
+    "beforeBytes": 6930296832,
+    "afterBytes": 6797619200,
+    "scope": "HOST AGGREGATE; unrelated services and admin runner included"
+  },
+  "rootFilesystemAvailable": {
+    "beforeBytes": 288228835328,
+    "afterBytes": 288150413312,
+    "changeBytes": -78422016,
+    "scope": "HOST AGGREGATE; not POE-attributable disk growth"
+  },
+  "hostNetwork": {
+    "scope": "HOST AGGREGATE; not POE-attributable",
+    "interfaces": [
+      {
+        "interface": "lo",
+        "delta": {
+          "receivedBytes": 98409,
+          "receivedPackets": 864,
+          "transmittedBytes": 98409,
+          "transmittedPackets": 864
+        },
+        "receivedBytesPerSecond": 185.82461573322254,
+        "transmittedBytesPerSecond": 185.82461573322254
+      },
+      {
+        "interface": "ens5",
+        "delta": {
+          "receivedBytes": 777543975,
+          "receivedPackets": 599356,
+          "transmittedBytes": 12360382,
+          "transmittedPackets": 143952
+        },
+        "receivedBytesPerSecond": 1468227.6048944446,
+        "transmittedBytesPerSecond": 23339.971298009743
+      }
+    ]
+  },
+  "currentOriginalChannelAcknowledgment": {
+    "source": {
+      "commit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+    },
+    "runId": "native-paper-20261029221651345",
+    "sourceAtMs": 1793312763985,
+    "sequence": "10417",
+    "acknowledgedAtMs": 1793312769229,
+    "observedBySupervisorAtMs": 1793312769702,
+    "acceptedDistinctSourcesThisSupervisor": 27,
+    "sourceToAcknowledgmentMs": 5244
+  },
+  "lastPublicStatus": {
+    "sha256": "ec57583e4f4ccf1e514e097978f9a53156e6936bee2bdc07abfe56ec5785bb3c",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "strategy": "adaptive-momentum-v2-paper-v1",
+    "generatedAt": "2026-10-29T22:26:03.985Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "POE_ENTRY_READINESS_REQUIRED",
+    "shortlistCount": 1,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-29T22:26:03.971Z",
+    "lastReconciledAt": "2026-10-29T22:26:03.971Z",
+    "lastMigrationReceivedAt": "2026-10-29T22:25:47.687Z",
+    "reportingConfigured": true
+  },
+  "dailyReset": {
+    "historicalUpgradeReceiptStillPresent": true,
+    "originalResetAppliedAt": 1793312215020,
+    "originalResetLossPausedAfter": false,
+    "currentLiveDailyStateExported": false
+  },
+  "limitations": [
+    "This pair covers529.580 real seconds after source startup; it is not sustained24h acceptance or a memory-leak proof.",
+    "Memory growth includes startup/warmup and changing workload; two endpoints do not establish steady-state growth.",
+    "Kernel physical write bytes are not evidence-store retained bytes; filesystem/network metrics include unrelated host work.",
+    "The upgrade financial/reset receipt is historical. This read-only report does not reopen the ledger or export current positions/daily baseline; do not treat the old flat snapshot as current.",
+    "The current public blocker is readiness required with fresh reconciliation. This sample alone does not identify its underlying candidate/provider reason or prove permanent entry pause.",
+    "No two-position live reliability claim is established."
+  ],
+  "measurementActions": {
+    "financialDatabaseOpened": false,
+    "financialWrites": 0,
+    "serviceChanges": 0,
+    "extraProviderRequests": 0
+  }
+}
