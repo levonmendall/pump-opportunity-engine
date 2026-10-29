@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Offline disposable-account tests; never reaches host systemd or providers."""
-import contextlib,copy,importlib.util,io,json,os,pathlib,sqlite3,subprocess,tempfile,types,unittest
+import contextlib,copy,datetime,importlib.util,io,json,os,pathlib,socket,sqlite3,struct,subprocess,tempfile,threading,types,unittest
 from unittest.mock import patch
 HERE=pathlib.Path(__file__).resolve().parent
 def module(name,file):
@@ -12,7 +12,7 @@ def pinned_core():
  value=types.ModuleType('forward_test_pinned_core');value.__file__=str(path);exec(compile(raw,str(path),'exec'),value.__dict__);f.attach_stop_observer(value);return value
 def pinned_old_supervisor():
  raw=subprocess.run(['git','show','cd43ecf:operator/native-paper-ec2/run-authoritative-service.py'],cwd=HERE,capture_output=True,check=True).stdout;assert f.sha(raw)==f.INDEXED_SUPERVISOR,'Tests require the original d90 policy validator';value=types.ModuleType('forward_test_legacy_supervisor');value.__file__=str(HERE/'indexed-v1-supervisor.py');exec(compile(raw,value.__file__,'exec'),value.__dict__);return value
-f=module('forward_test_driver','forward-original-upgrade.py');m=pinned_core();a=module('forward_test_auditor','audit-original-account.py');s=module('forward_test_supervisor','run-authoritative-service.py');fixture=module('forward_test_fixture','test-audit-original-account.py');legacy=pinned_old_supervisor()
+f=module('forward_test_driver','forward-original-upgrade.py');m=pinned_core();a=module('forward_test_auditor','audit-original-account.py');s=module('forward_test_supervisor','run-authoritative-service.py');fixture=module('forward_test_fixture','test-audit-original-account.py');legacy=pinned_old_supervisor();owner_reset_impl=f.owner_daily_loss_reset;RESET_AT=int(datetime.datetime(2026,10,29,21,tzinfo=datetime.timezone.utc).timestamp()*1000)
 class Tests(unittest.TestCase):
  @contextlib.contextmanager
  def prepared(self,exposure=False,rows=3):
@@ -45,7 +45,7 @@ class Tests(unittest.TestCase):
     return target
    fake_supervisor=types.SimpleNamespace(validate_manifest=s.validate_manifest,RELEASE_FILES=s.RELEASE_FILES,release_verified=release_verified);new_supervisor=types.SimpleNamespace(validate_manifest=s.validate_manifest,RELEASE_FILES=s.RELEASE_FILES,release_verified=release_verified)
    with contextlib.ExitStack()as stack:
-    stack.enter_context(patch.multiple(m,ROOT=home,ACCOUNT=account,SERVICE=service,LEDGER=ledger,ETC=etc,RECORDS=records,BACKUPS=backups,RELEASES=releases,CURRENT=current,MANIFEST=manifest,DROPIN=dropin,PUBLIC_STATUS=public/'status.json'));stack.enter_context(patch.multiple(f,UID=os.getuid(),GID=os.getgid(),RUNNER=os.getuid(),STAGE=stage,PACKAGE=oldpackage,UNITDIR=unit_dir,OLD_MANIFEST=f.sha(old_raw),OLD_SUPERVISOR=f.sha(old_supervisor),OLD_REPORTER=f.sha(old_bodies['snapshot-publisher.mjs']),NATIVE_DROPIN_SHA=f.sha(dropin.read_bytes()),NEW_NATIVE_DROPIN_SHA=f.sha(bodies['poe-runtime-persistent.conf']),UNCHANGED=unchanged,OLD_BACKUP_WORKER_SHA=f.sha(old_bodies['backup-worker.mjs']),NEW_BACKUP_WORKER_SHA=f.sha(bodies['backup-worker.mjs']),NEW_REPORTER=f.sha(bodies['snapshot-publisher.mjs']),NEW_SUPERVISOR=f.sha(bodies['run-authoritative-service.py']),FORENSIC_OUTPUT=str(historical_path),FORENSIC_ARTIFACT_SHA=f.sha(historical),FORENSIC_ARTIFACT_BYTES=len(historical)));stack.enter_context(patch.object(f,'current_release_supervisor',return_value=fake_supervisor));stack.enter_context(patch.object(f,'release_supervisor',return_value=new_supervisor));stack.enter_context(patch.object(f,'read',side_effect=owner_read));stack.enter_context(patch.object(f,'local_preflight',side_effect=lambda *args:effective_unit()));stack.enter_context(patch.object(f,'process_owner'));stack.enter_context(patch.object(f,'unit',side_effect=effective_unit));stack.enter_context(patch.object(m,'read',side_effect=lambda path,limit,uid=0:core_read(path,limit,test_uid)));stack.enter_context(patch.object(m,'directory',side_effect=lambda path,uid,private=False:real_directory(path,test_uid,private)));stack.enter_context(patch.object(m,'make_dir',side_effect=create_dir));stack.enter_context(patch.object(m,'atomic',side_effect=save));stack.enter_context(patch.object(m.pwd,'getpwnam',return_value=owner));stack.enter_context(patch.object(m,'systemctl',side_effect=ctl));stack.enter_context(patch.object(m,'observe_stopped_writer',return_value=proof));stack.enter_context(patch.object(m,'wait_for_new_public_status',return_value={'available':True,'observedAt':f.now(),'release':'a'*40}));stack.enter_context(patch.object(f.os,'getuid',return_value=0));stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+    stack.enter_context(patch.multiple(m,ROOT=home,ACCOUNT=account,SERVICE=service,LEDGER=ledger,ETC=etc,RECORDS=records,BACKUPS=backups,RELEASES=releases,CURRENT=current,MANIFEST=manifest,DROPIN=dropin,PUBLIC_STATUS=public/'status.json'));stack.enter_context(patch.multiple(f,UID=os.getuid(),GID=os.getgid(),RUNNER=os.getuid(),STAGE=stage,PACKAGE=oldpackage,UNITDIR=unit_dir,OLD_MANIFEST=f.sha(old_raw),OLD_SUPERVISOR=f.sha(old_supervisor),OLD_REPORTER=f.sha(old_bodies['snapshot-publisher.mjs']),NATIVE_DROPIN_SHA=f.sha(dropin.read_bytes()),NEW_NATIVE_DROPIN_SHA=f.sha(bodies['poe-runtime-persistent.conf']),UNCHANGED=unchanged,OLD_BACKUP_WORKER_SHA=f.sha(old_bodies['backup-worker.mjs']),NEW_BACKUP_WORKER_SHA=f.sha(bodies['backup-worker.mjs']),NEW_REPORTER=f.sha(bodies['snapshot-publisher.mjs']),NEW_SUPERVISOR=f.sha(bodies['run-authoritative-service.py']),FORENSIC_OUTPUT=str(historical_path),FORENSIC_ARTIFACT_SHA=f.sha(historical),FORENSIC_ARTIFACT_BYTES=len(historical)));stack.enter_context(patch.object(f,'owner_daily_loss_reset',side_effect=lambda core,manifest,record_dir,record:record.update(ownerDailyLossReset={'complete':True,'reasonCode':'FIXTURE_NATIVE_CONTROL_NOT_EXECUTED','attempts':[]})or record['ownerDailyLossReset']));stack.enter_context(patch.object(f,'current_release_supervisor',return_value=fake_supervisor));stack.enter_context(patch.object(f,'release_supervisor',return_value=new_supervisor));stack.enter_context(patch.object(f,'read',side_effect=owner_read));stack.enter_context(patch.object(f,'local_preflight',side_effect=lambda *args:effective_unit()));stack.enter_context(patch.object(f,'process_owner'));stack.enter_context(patch.object(f,'unit',side_effect=effective_unit));stack.enter_context(patch.object(m,'read',side_effect=lambda path,limit,uid=0:core_read(path,limit,test_uid)));stack.enter_context(patch.object(m,'directory',side_effect=lambda path,uid,private=False:real_directory(path,test_uid,private)));stack.enter_context(patch.object(m,'make_dir',side_effect=create_dir));stack.enter_context(patch.object(m,'atomic',side_effect=save));stack.enter_context(patch.object(m.pwd,'getpwnam',return_value=owner));stack.enter_context(patch.object(m,'systemctl',side_effect=ctl));stack.enter_context(patch.object(m,'observe_stopped_writer',return_value=proof));stack.enter_context(patch.object(m,'wait_for_new_public_status',return_value={'available':True,'observedAt':f.now(),'release':'a'*40}));stack.enter_context(patch.object(f.os,'getuid',return_value=0));stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
     yield types.SimpleNamespace(root=root,home=home,account=account,ledger=ledger,writer=writer,state=state,financial=financial,old=old,current=current,target=releases/('a'*40),record_dir=record_dir,manifest=manifest,old_raw=old_raw,before_input=before_input,bodies=bodies,index=index,expected=expected,driver_sha=driver_sha,events=events,proof=proof,baseline=baseline,prior_dir=prior_dir,oldpackage=oldpackage,stage=stage,backups=backups,inode=before_inode,supervisor=fake_supervisor,historical=historical,historical_path=historical_path)
    writer.close()
  def run_apply(self,value):return f.apply(value.expected,m,a,value.supervisor,value.driver_sha)
@@ -110,6 +110,130 @@ class Tests(unittest.TestCase):
  def test_readonly_prefix_verifier_preserves_v2_position_strategy_and_round_trip_metadata(self):
   with self.prepared(exposure=True)as value:
    self.run_apply(value);value.events.clear();state=copy.deepcopy(value.state);state['revision']=4;state['positions']['KEEP_POSITION']['strategy']={'version':'adaptive-momentum-v2-paper-v1','cycle':2,'windowStartAt':1793306700000,'windowEndAt':1793306760000,'assessedAt':1793306760500,'signalId':'fixture-audited-signal','roundTripId':'fixture-second-entry','highWaterNetLamports':'500000000','highWaterAt':1793306800000};state['pending']['KEEP_PENDING']['entryStrategy']={k:v for k,v in state['positions']['KEEP_POSITION']['strategy'].items()if k not in ['roundTripId','highWaterNetLamports','highWaterAt']};value.writer.execute('UPDATE financial_state SET body=?',(json.dumps(state),));value.writer.execute('INSERT INTO actions VALUES(?,?,?)',('new-v2-action','KEEP_V2_HASH','KEEP_V2_RESULT'));value.writer.execute('INSERT INTO journal VALUES(?,?,?)',(4,'new-v2-action','KEEP_V2_DETAIL'));value.writer.execute('INSERT INTO metadata VALUES(?,?)',('paper_round_trip_v2:KEEP_POSITION',json.dumps({'schemaVersion':1,'mint':'KEEP_POSITION','cycle':2,'entryOrderId':'fixture-second-entry','entryWindowEndAt':1793306760000,'closedAt':None,'exitOrderId':None,'legacyEntryCutoff':False})));before=next(value.writer.execute('SELECT body FROM financial_state'))[0];metadata=list(value.writer.execute('SELECT * FROM metadata ORDER BY key'));result=self.run_apply(value);self.assertTrue(result['verification']['financialVerification']['journalAndActionPrefixPreserved']);self.assertEqual(next(value.writer.execute('SELECT body FROM financial_state'))[0],before);self.assertEqual(list(value.writer.execute('SELECT * FROM metadata ORDER BY key')),metadata);self.assertEqual(value.events,[('start','poe-runtime.service')]);self.assertEqual(value.current.resolve(),value.target);self.assertEqual((value.ledger.stat().st_dev,value.ledger.stat().st_ino),value.inode)
+ @contextlib.contextmanager
+ def control_fixture(self):
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-control-')as directory:
+   root=pathlib.Path(directory);private=root/'private';private.mkdir(mode=0o700);run=root/'run';run.mkdir(mode=0o700);path=run/'control.sock';listener=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM);listener.bind(str(path));path.chmod(0o600);listener.listen(1);manifest={'source':{'commit':'a'*40,'sha256':'b'*64},'configurationSha256':'c'*64};context=types.SimpleNamespace(ACCOUNT=private,ACCOUNT_ID=m.ACCOUNT_ID,INCEPTION=m.INCEPTION);status={'source':manifest['source'],'configurationSha256':manifest['configurationSha256'],'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'runtimePid':os.getpid(),'running':True,'generatedAt':f.now()};(private/'status.json').write_bytes(f.encoded(status));(private/'status.json').chmod(0o600)
+   with patch.multiple(f,CONTROL_SOCKET=path,UID=os.getuid(),GID=os.getgid()):
+    try:yield types.SimpleNamespace(path=path,listener=listener,manifest=manifest,context=context,status=status,private=private)
+    finally:listener.close()
+ def test_control_exchange_uses_only_current_verified_native_owner_unix_peer(self):
+  with self.control_fixture()as value:
+   seen=[]
+   def server():
+    connection,_=value.listener.accept()
+    with connection:seen.append(connection.recv(2048));connection.sendall(b'{"ok":true,"command":"reset-daily-loss"}\n')
+   worker=threading.Thread(target=server);worker.start();request={'command':'reset-daily-loss','requestId':'fixed-owner-action'};answer=f.owner_control_exchange(value.context,value.manifest,request);worker.join(2);self.assertFalse(worker.is_alive());self.assertEqual(answer,{'ok':True,'command':'reset-daily-loss'});self.assertEqual(seen,[f.encoded(request)]);self.assertEqual(json.loads((value.private/'status.json').read_bytes()),value.status)
+ def test_control_exchange_rejects_foreign_socket_and_wrong_current_source_before_connect(self):
+  with self.control_fixture()as value:
+   with patch.object(f.socket,'socket')as connection:
+    value.path.chmod(0o666)
+    with self.assertRaisesRegex(f.Refused,'EXACT_NATIVE_CONTROL_SOCKET_REQUIRED'):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+    value.path.chmod(0o600);changed=copy.deepcopy(value.status);changed['source']['commit']='0'*40;(value.private/'status.json').write_bytes(f.encoded(changed))
+    with self.assertRaisesRegex(f.Refused,'VERIFIED_NATIVE_CONTROL_OWNER_IDENTITY_REQUIRED'):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+    connection.assert_not_called()
+ def test_control_exchange_rejects_wrong_peer_oversize_and_incomplete_responses(self):
+  class Client:
+   def __init__(self,peer,parts):self.peer=peer;self.parts=list(parts);self.sent=[]
+   def __enter__(self):return self
+   def __exit__(self,*args):pass
+   def settimeout(self,value):pass
+   def connect(self,path):pass
+   def getsockopt(self,*args):return struct.pack('3i',*self.peer)
+   def sendall(self,raw):self.sent.append(raw)
+   def recv(self,maximum):
+    if not self.parts:return b''
+    part=self.parts.pop(0);self.assert_bound=maximum
+    if len(part)>maximum:self.parts.insert(0,part[maximum:]);part=part[:maximum]
+    return part
+  with self.control_fixture()as value:
+   for peer,parts,code in [((os.getpid()+1,os.getuid(),os.getgid()),[b'{}\n'],'CURRENT_NATIVE_CONTROL_PEER_REQUIRED'),((os.getpid(),os.getuid(),os.getgid()),[b'x'*(128*1024+1)],'OWNER_CONTROL_RESPONSE_BOUND'),((os.getpid(),os.getuid(),os.getgid()),[b'{}'],'OWNER_CONTROL_COMPLETE_SINGLE_RESPONSE_REQUIRED')]:
+    client=Client(peer,parts)
+    with self.subTest(code=code),patch.object(f.socket,'socket',return_value=client),self.assertRaisesRegex(f.Refused,code):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+    if code=='CURRENT_NATIVE_CONTROL_PEER_REQUIRED':self.assertEqual(client.sent,[])
+ def test_control_exchange_absolute_deadline_rejects_slow_trickle_without_renewing_timeout(self):
+  class Client:
+   def __init__(self):self.timeouts=[];self.reads=0
+   def __enter__(self):return self
+   def __exit__(self,*args):pass
+   def settimeout(self,value):self.timeouts.append(value)
+   def connect(self,path):pass
+   def getsockopt(self,*args):return struct.pack('3i',os.getpid(),os.getuid(),os.getgid())
+   def sendall(self,raw):pass
+   def recv(self,maximum):self.reads+=1;return b'x'
+  with self.control_fixture()as value:
+   client=Client();clock={'at':-.49}
+   def tick():clock['at']+=.49;return clock['at']
+   with patch.object(f.socket,'socket',return_value=client),patch.object(f.time,'monotonic',side_effect=tick),self.assertRaisesRegex(f.Refused,'OWNER_CONTROL_EXCHANGE_DEADLINE'):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+   self.assertEqual(client.reads,2);self.assertEqual(len(client.timeouts),4);self.assertTrue(all(a>b for a,b in zip(client.timeouts,client.timeouts[1:])))
+ def reset_response(self,manifest,kind='recorded',reason=None):
+  at=int(datetime.datetime(2026,10,29,21,tzinfo=datetime.timezone.utc).timestamp()*1000);previous={'day':'2026-10-29','baselineMicroUsd':'1012000000','lossPaused':True,'paused':True,'reconciledAt':at-500};following={**previous,'baselineMicroUsd':'960000000','lossPaused':False};receipt={'reset':True,'alreadyClear':False,'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'at':at,'reason':f.OWNER_RESET_REASON,'revisionBefore':3,'revisionAfter':4,'previousDaily':previous,'currentEquityMicroUsd':'960000000','nextDaily':following,'price':{'microUsdPerSol':'96000000','at':at-1000,'source':'disposable-fixture-usd'},'controlsPreserved':True,'entryPermissionGranted':False,'orderCreated':False};
+  if kind=='clear':receipt.update(reset=False,alreadyClear=True,previousDaily=copy.deepcopy(following),nextDaily=copy.deepcopy(following),currentEquityMicroUsd=None,price=None)
+  current={**following,'entriesEnabled':False,'stopRequested':False,'revision':4};ok=kind in['recorded','replay','clear'];reason=reason or({'recorded':'OWNER_RESET_RECORDED_FRESH_READINESS_REQUIRED','replay':'OWNER_RESET_REPLAYED','clear':'OWNER_RESET_ALREADY_CLEAR'}.get(kind,'OWNER_RESET_FRESH_RECONCILIATION_REQUIRED'));return {'ok':ok,'command':'reset-daily-loss','requestId':f.OWNER_RESET_ID,'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'source':manifest['source'],'runId':'native-paper-20261029210000000','reasonCode':reason,'retryable':reason in f.OWNER_RESET_RETRYABLE,'resetApplied':kind=='recorded','alreadyClear':kind=='clear','replayed':kind=='replay','receipt':receipt if kind in['recorded','replay','clear']else None,'current':current}
+ def reset_record(self,value):
+  self.run_apply(value);value.events.clear();record=json.loads((value.record_dir/'transition.json').read_bytes());record.pop('ownerDailyLossReset');return record,json.loads(value.manifest.read_bytes())
+ def test_owner_reset_records_exact_intent_before_native_action_and_never_repeats_completed_authorization(self):
+  with self.prepared(exposure=True)as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest);before=next(value.writer.execute('SELECT body FROM financial_state'))[0]
+   def exchange(core,target,request,**options):
+    saved=json.loads((value.record_dir/'transition.json').read_bytes())['ownerDailyLossReset'];self.assertEqual(saved['request'],{'command':'reset-daily-loss','requestId':'owner-daily-loss-reset-20261029'});self.assertEqual(saved['source'],manifest['source']);self.assertEqual(saved['accountId'],m.ACCOUNT_ID);self.assertFalse(saved['complete']);return response
+   with patch.object(f,'owner_control_exchange',side_effect=exchange)as control,patch.object(f,'now',return_value=RESET_AT):
+    first=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(first['complete']);second=owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(first,second);self.assertEqual(control.call_count,1)
+   self.assertEqual(value.events,[]);self.assertEqual(next(value.writer.execute('SELECT body FROM financial_state'))[0],before);self.assertEqual(first['financialDatabaseWritesByDriver'],0);self.assertFalse(first['entryPermissionGranted'])
+ def test_owner_reset_replay_reports_new_loss_without_granting_another_waiver(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest,'replay');response['current'].update(lossPaused=True,paused=True,stopRequested=True,revision=9)
+   with patch.object(f,'owner_control_exchange',return_value=response)as control,patch.object(f,'now',return_value=RESET_AT):result=owner_reset_impl(m,manifest,value.record_dir,record)
+   self.assertTrue(result['complete']);self.assertFalse(result['response']['resetApplied']);self.assertTrue(result['response']['replayed']);self.assertTrue(result['response']['current']['lossPaused']);self.assertTrue(result['response']['current']['stopRequested']);self.assertEqual(control.call_count,1);public=f.owner_reset_public_result(result,{'financial':{'dailyControls':{'lossPaused':True},'financialControls':{'stopRequested':True},'revision':9}});self.assertTrue(public['postVerificationDailyControls']['lossPaused']);self.assertTrue(public['nativeControlResponseIsHistorical']);self.assertFalse(public['entryPermissionGranted'])
+ def test_owner_reset_already_clear_is_consumed_without_rebase_or_future_retry(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest,'clear')
+   with patch.object(f,'owner_control_exchange',return_value=response)as control,patch.object(f,'now',return_value=RESET_AT):
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(result['complete']);self.assertFalse(result['response']['receipt']['reset']);self.assertTrue(result['response']['receipt']['alreadyClear']);owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,1)
+ def test_owner_reset_retries_only_temporary_failure_with_same_request_then_stops_on_terminal(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);temporary=self.reset_response(manifest,'failure');terminal=self.reset_response(manifest,'failure','OWNER_RESET_ACTION_UNAVAILABLE')
+   with patch.object(f,'owner_control_exchange',side_effect=[temporary,terminal])as control,patch.object(f.time,'sleep')as sleep,patch.object(f,'now',return_value=RESET_AT):
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertFalse(result['complete']);self.assertEqual(result['reasonCode'],'OWNER_RESET_ACTION_UNAVAILABLE');self.assertEqual(len(result['attempts']),2);self.assertEqual(control.call_args_list[0].args[2],control.call_args_list[1].args[2]);sleep.assert_called_once_with(2);owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,2);self.assertEqual(len(result['attempts']),2)
+ def test_owner_reset_invalid_identity_is_terminal_across_installer_resume(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest);response['requestId']='wrong-authorization'
+   with patch.object(f,'owner_control_exchange',return_value=response)as control,patch.object(f,'now',return_value=RESET_AT),patch.object(f.time,'sleep')as sleep:
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertFalse(result['complete']);self.assertFalse(result['retryable']);self.assertEqual(result['reasonCode'],'EXACT_OWNER_RESET_RESPONSE_IDENTITY_REQUIRED');owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,1);sleep.assert_not_called()
+ def test_owner_reset_recovers_stale_local_status_within_same_bounded_authorization(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest)
+   with patch.object(f,'owner_control_exchange',side_effect=[f.Refused('FRESH_NATIVE_CONTROL_OWNER_STATUS_REQUIRED'),response])as control,patch.object(f,'now',return_value=RESET_AT),patch.object(f.time,'sleep')as sleep:
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(result['complete']);self.assertEqual(control.call_count,2);self.assertEqual(control.call_args_list[0].args[2],control.call_args_list[1].args[2]);sleep.assert_called_once_with(2)
+ def test_owner_reset_lost_durable_noop_reply_replays_without_clearing_new_loss(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest,'clear');receipt=copy.deepcopy(response['receipt']);response.update(reasonCode='OWNER_RESET_REPLAYED',alreadyClear=False,replayed=True);response['current'].update(lossPaused=True,paused=True,revision=9)
+   with patch.object(f,'owner_control_exchange',side_effect=[OSError('lost first noop reply'),response])as control,patch.object(f,'now',return_value=RESET_AT),patch.object(f.time,'sleep')as sleep:
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(result['complete']);self.assertEqual(result['response']['receipt'],receipt);self.assertTrue(result['response']['current']['lossPaused']);self.assertFalse(result['response']['resetApplied']);self.assertTrue(result['response']['replayed']);self.assertEqual(control.call_count,2);owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,2)
+ def test_owner_reset_expired_day_refuses_before_any_socket_request(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);future=int(datetime.datetime(2026,10,30,1,tzinfo=datetime.timezone.utc).timestamp()*1000)
+   with patch.object(f,'now',return_value=future),patch.object(f,'owner_control_exchange')as control:result=owner_reset_impl(m,manifest,value.record_dir,record)
+   self.assertFalse(result['complete']);self.assertEqual(result['reasonCode'],'OWNER_RESET_AUTHORIZATION_DAY_EXPIRED');control.assert_not_called();self.assertEqual(value.events,[])
+ def test_owner_reset_mismatched_receipt_or_waiver_flags_are_rejected(self):
+  manifest={'source':{'commit':'a'*40,'sha256':'b'*64}}
+  for change in [('requestId','a-different-authorization'),('source',{'commit':'0'*40,'sha256':'b'*64}),('retryable',True)]:
+   response=self.reset_response(manifest);response[change[0]]=change[1]
+   with self.subTest(change=change),self.assertRaises(f.Refused):f.validate_owner_reset_response(m,manifest,response)
+  for change in [('entryPermissionGranted',True),('controlsPreserved',False),('orderCreated',True),('reason','changed owner authorization')]:
+   response=self.reset_response(manifest);response['receipt'][change[0]]=change[1]
+   with self.subTest(receiptChange=change),self.assertRaises(f.Refused):f.validate_owner_reset_response(m,manifest,response)
+ def test_owner_reset_durable_noop_wrong_day_and_reset_unpaused_baseline_are_rejected(self):
+  manifest={'source':{'commit':'a'*40,'sha256':'b'*64}};noop=self.reset_response(manifest,'clear');noop['receipt']['previousDaily']['day']='2026-10-28';noop['receipt']['nextDaily']['day']='2026-10-28'
+  with self.assertRaisesRegex(f.Refused,'EXACT_DATED_OWNER_RESET_BASELINES_REQUIRED'):f.validate_owner_reset_response(m,manifest,noop)
+  reset=self.reset_response(manifest);reset['receipt']['previousDaily']['paused']=False
+  with self.assertRaisesRegex(f.Refused,'OWNER_RESET_REBASE_AND_READINESS_PROOF_REQUIRED'):f.validate_owner_reset_response(m,manifest,reset)
+ def test_owner_reset_hook_occurs_only_after_verified_new_source_and_keeps_new_manager_if_unavailable(self):
+  with self.prepared()as value:
+   def reset(core,manifest,record_dir,record):
+    self.assertEqual(value.current.resolve(),value.target);self.assertEqual(value.events[-1],('start','poe-runtime.service'));record['ownerDailyLossReset']={'complete':False,'reasonCode':'OWNER_RESET_ACTION_UNAVAILABLE','attempts':[]};return record['ownerDailyLossReset']
+   with patch.object(f,'owner_daily_loss_reset',side_effect=reset),self.assertRaisesRegex(f.Refused,'NEW_FINANCIAL_MANAGER_RETAINED_OWNER_RESET_NOT_VERIFIED'):self.run_apply(value)
+   self.assertEqual(value.current.resolve(),value.target);self.assertEqual(value.events.count(('stop','poe-runtime.service')),1);self.assertEqual(value.events[-1],('start','poe-runtime.service'));record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertTrue(record['postStartVerification']['complete']);self.assertTrue(record['postStartVerification']['ownerResetFinancialPrefixReverified']);self.assertTrue(record['postStartFinancial']['journalAndActionPrefixPreserved']);public=json.loads((value.root/'public/upgrade-verification.json').read_bytes());self.assertTrue(public['installationVerified']);self.assertFalse(public['complete']);self.assertFalse(public['ownerDailyLossReset']['complete'])
  def test_full_previous_47662_row_prefix_plus_new_rows_verified(self):
   with self.prepared(rows=47662)as value:
    value.state['revision']=47663;value.writer.execute('UPDATE financial_state SET body=?',(json.dumps(value.state),));value.writer.execute('INSERT INTO actions VALUES(?,?,?)',('new-after-native','NEW_HASH','NEW_RESULT'));value.writer.execute('INSERT INTO journal VALUES(?,?,?)',(47663,'new-after-native','NEW_DETAIL'));self.run_apply(value);record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertEqual(record['originalFinancialPrefix']['prefix']['actions']['priorRows'],47662);self.assertEqual(record['originalFinancialPrefix']['prefix']['journal']['priorRows'],47663);self.assertEqual(record['beforeStopVerifiedBackup']['financial']['revision'],47663);self.assertEqual(record['postStartFinancial']['prefix']['actions']['priorRows'],47663)

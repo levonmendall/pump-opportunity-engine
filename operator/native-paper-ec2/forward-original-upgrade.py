@@ -7,7 +7,7 @@ compatibility and files. Its nine exact files are BOUNDS below. Review and pin
 the index and this driver independently before root executes verified bytes.
 No bootstrap, account initialization, DB restore, secret access or Render call.
 """
-import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
+import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,socket,sqlite3,stat,struct,subprocess,sys,time,types
 
 OLD_SOURCE={'commit':'5648606bf78f6687c47632be5c789af5e7f19772','sha256':'cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb'}
 OLD_INDEX='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
@@ -25,9 +25,9 @@ AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 # Old/new reporters and backup closures are separately pinned; no credential change.
 OLD_REPORTER='29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f'
 OLD_BACKUP_WORKER_SHA='815f2a215111d09a9216f3fa2235481865e6f22f76773636e2f10022957ac656'
-NEW_BACKUP_WORKER_SHA=None
-NEW_REPORTER=None
-NEW_SUPERVISOR=None
+NEW_BACKUP_WORKER_SHA='7ff2e950011cf10fb2d3b820f31099e3acac46fcf64abcf8d5bf800abba43062'
+NEW_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
+NEW_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
 OLD_STAGE,NEW_STAGE='single','two'
 OLD_STRATEGY='persistent-buying-pilot-v1'
 NEW_STRATEGY='adaptive-momentum-v2-paper-v1'
@@ -41,9 +41,9 @@ NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa2646
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
 NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 OLD_CONFIGURATION_SHA='96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c'
-# Target pins are unset until the lead freezes the owner-reset-capable source.
-# The reviewed source8410390 package is retained only as superseded evidence.
-NEW_CONFIGURATION_SHA=None
+# Target pins are frozen with owner-reset-capable sourceba33ee5.
+# The reviewed source8410390 package remains superseded historical evidence.
+NEW_CONFIGURATION_SHA='797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511'
 # Historical source-exit diagnostics were already exported under the previous
 # reviewed owner command. Reuse the exact root-bound proof; never rerun it.
 FORENSIC_ARTIFACT_SHA='4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e'
@@ -51,6 +51,12 @@ FORENSIC_ARTIFACT_BYTES=10694
 FORENSIC_SHA='4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986'
 FORENSIC_OUTPUT='/var/lib/poe-public/source-recovery-forensics-20261029.json'
 FORENSIC_UID,FORENSIC_GID=988,982
+CONTROL_SOCKET=pathlib.Path('/run/poe/control.sock')
+OWNER_RESET_DAY='2026-10-29'
+OWNER_RESET_ID='owner-daily-loss-reset-20261029'
+OWNER_RESET_REASON='owner directive 2026-10-29: remove current daily loss state; one-time reference reset; preserve original financial history'
+OWNER_RESET_RETRYABLE={'OWNER_RESET_CLOCK_UNAVAILABLE','OWNER_RESET_FINANCIAL_WORK_UNAVAILABLE','OWNER_RESET_OWNED_OBLIGATIONS_ACTIVE','OWNER_RESET_FRESH_RECONCILIATION_REQUIRED','OWNER_RESET_REQUIREMENTS_UNAVAILABLE'}
+OWNER_RESET_TERMINAL={'OWNER_RESET_AUTHORIZATION_MISMATCH','OWNER_RESET_AUTHORIZATION_DAY_EXPIRED','OWNER_RESET_ACTION_UNAVAILABLE','OWNER_RESET_HARD_CONTROL_CONFLICT','OWNER_RESET_LOSS_REOCCURRED_AFTER_AUTHORIZATION'}
 OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
@@ -98,6 +104,88 @@ def retain_prior_forensic_proof(m,record_dir,record,prior):
   raw=read(pathlib.Path(FORENSIC_OUTPUT),FORENSIC_ARTIFACT_BYTES,FORENSIC_UID,FORENSIC_GID,0o644);need(len(raw)==FORENSIC_ARTIFACT_BYTES and sha(raw)==FORENSIC_ARTIFACT_SHA,'EXACT_HISTORICAL_FORENSIC_ARTIFACT_REQUIRED');keep_file(m,record_dir/'historical-source-recovery-forensics.json',raw);proof=pre;reuse['verified']=True
  except(OSError,ValueError,TypeError,KeyError,Refused):pass
  record['forensicPreflight']=proof;record['forensicPreflightReuse']=reuse;m.write_json(record_dir/'transition.json',record)
+def owner_control_exchange(m,manifest,request,deadline=None):
+ # Only the existing verified native financial owner can receive this local
+ # request. The upgrade process never opens a second writable ledger.
+ exchange_deadline=time.monotonic()+2
+ if deadline is not None:exchange_deadline=min(exchange_deadline,deadline)
+ raw=encoded(request);need(len(raw)<=2048,'OWNER_CONTROL_REQUEST_BOUND')
+ parent=CONTROL_SOCKET.parent;ps=parent.lstat();need(parent.resolve(strict=True)==parent and stat.S_ISDIR(ps.st_mode)and not stat.S_ISLNK(ps.st_mode)and ps.st_uid==UID and ps.st_gid==GID and stat.S_IMODE(ps.st_mode)==0o700,'EXACT_PRIVATE_NATIVE_CONTROL_DIRECTORY_REQUIRED')
+ before=CONTROL_SOCKET.lstat();need(stat.S_ISSOCK(before.st_mode)and before.st_nlink==1 and before.st_uid==UID and before.st_gid==GID and stat.S_IMODE(before.st_mode)==0o600,'EXACT_NATIVE_CONTROL_SOCKET_REQUIRED')
+ value=json.loads(read(m.ACCOUNT/'status.json',4*MIB,UID,GID,0o600));source=value.get('source');current=now();pid=value.get('runtimePid');need(type(source)is dict and {k:source.get(k)for k in['commit','sha256']}==manifest['source']and value.get('configurationSha256')==manifest['configurationSha256']and value.get('accountId')==m.ACCOUNT_ID and value.get('inceptionAt')==m.INCEPTION and type(pid)is int and pid>0,'VERIFIED_NATIVE_CONTROL_OWNER_IDENTITY_REQUIRED');need(value.get('running')is True and type(value.get('generatedAt'))is int and current-30000<=value['generatedAt']<=current+5000,'FRESH_NATIVE_CONTROL_OWNER_STATUS_REQUIRED')
+ with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM|socket.SOCK_CLOEXEC)as client:
+  def set_remaining():
+   remaining=exchange_deadline-time.monotonic();need(remaining>0,'OWNER_CONTROL_EXCHANGE_DEADLINE');client.settimeout(remaining)
+  set_remaining();client.connect(str(CONTROL_SOCKET));peer=struct.unpack('3i',client.getsockopt(socket.SOL_SOCKET,socket.SO_PEERCRED,struct.calcsize('3i')));need(peer==(pid,UID,GID),'CURRENT_NATIVE_CONTROL_PEER_REQUIRED');after=CONTROL_SOCKET.lstat();need((before.st_dev,before.st_ino)==(after.st_dev,after.st_ino),'NATIVE_CONTROL_SOCKET_CHANGED');set_remaining();client.sendall(raw);parts=[];size=0
+  while True:
+   set_remaining();part=client.recv(min(16384,128*1024+1-size))
+   if not part:break
+   size+=len(part);need(size<=128*1024,'OWNER_CONTROL_RESPONSE_BOUND');parts.append(part)
+   if b'\n'in part:break
+  body=b''.join(parts);need(body.endswith(b'\n')and body.count(b'\n')==1,'OWNER_CONTROL_COMPLETE_SINGLE_RESPONSE_REQUIRED');response=json.loads(body);need(type(response)is dict,'OWNER_CONTROL_OBJECT_RESPONSE_REQUIRED');need(time.monotonic()<=exchange_deadline,'OWNER_CONTROL_EXCHANGE_DEADLINE');return response
+def validate_owner_reset_response(m,manifest,value):
+ keys={'ok','command','requestId','accountId','inceptionAt','source','runId','reasonCode','retryable','resetApplied','alreadyClear','replayed','receipt','current'}
+ need(type(value)is dict and set(value)==keys and value['command']=='reset-daily-loss'and value['requestId']==OWNER_RESET_ID and value['accountId']==m.ACCOUNT_ID and value['inceptionAt']==m.INCEPTION and value['source']==manifest['source']and type(value['runId'])is str and re.fullmatch('native-paper-[0-9]{17}',value['runId'])is not None,'EXACT_OWNER_RESET_RESPONSE_IDENTITY_REQUIRED')
+ need(all(type(value[k])is bool for k in['ok','retryable','resetApplied','alreadyClear','replayed']),'OWNER_RESET_BOOLEAN_RESULT_REQUIRED')
+ current=value['current'];need(type(current)is dict and set(current)=={'day','baselineMicroUsd','lossPaused','paused','reconciledAt','entriesEnabled','stopRequested','revision'}and type(current['day'])is str and re.fullmatch('[0-9]{4}-[0-9]{2}-[0-9]{2}',current['day'])is not None and type(current['baselineMicroUsd'])is str and re.fullmatch('[0-9]{1,40}',current['baselineMicroUsd'])is not None and all(type(current[k])is bool for k in['lossPaused','paused','entriesEnabled','stopRequested'])and all(type(current[k])is int and current[k]>=0 for k in['reconciledAt','revision']),'EXACT_OWNER_RESET_CURRENT_PROJECTION_REQUIRED')
+ receipt=value['receipt']
+ if receipt is not None:
+  need(type(receipt)is dict and set(receipt)=={'reset','alreadyClear','accountId','inceptionAt','at','reason','revisionBefore','revisionAfter','previousDaily','currentEquityMicroUsd','nextDaily','price','controlsPreserved','entryPermissionGranted','orderCreated'}and type(receipt['reset'])is bool and type(receipt['alreadyClear'])is bool and receipt['reset']!=receipt['alreadyClear']and receipt['accountId']==m.ACCOUNT_ID and receipt['inceptionAt']==m.INCEPTION and receipt['reason']==OWNER_RESET_REASON and receipt['controlsPreserved']is True and receipt['entryPermissionGranted']is False and receipt['orderCreated']is False,'EXACT_JOURNALED_OWNER_RESET_RECEIPT_REQUIRED')
+  need(all(type(receipt[k])is int and receipt[k]>=0 for k in['at','revisionBefore','revisionAfter'])and receipt['revisionAfter']==receipt['revisionBefore']+1 and current['revision']>=receipt['revisionAfter']and receipt['at']<=now()+5000 and time.strftime('%Y-%m-%d',time.gmtime(receipt['at']/1000))==OWNER_RESET_DAY,'DATED_OWNER_RESET_REVISION_REQUIRED')
+  for daily in[receipt['previousDaily'],receipt['nextDaily']]:need(type(daily)is dict and set(daily)=={'day','baselineMicroUsd','lossPaused','paused','reconciledAt'}and daily['day']==OWNER_RESET_DAY and type(daily['baselineMicroUsd'])is str and re.fullmatch('[0-9]{1,40}',daily['baselineMicroUsd'])is not None and type(daily['lossPaused'])is bool and type(daily['paused'])is bool and type(daily['reconciledAt'])is int and 0<=daily['reconciledAt']<=receipt['at'],'EXACT_DATED_OWNER_RESET_BASELINES_REQUIRED')
+  if receipt['reset']:
+   need(receipt['previousDaily']['day']==receipt['nextDaily']['day']==OWNER_RESET_DAY and receipt['previousDaily']['lossPaused']is True and receipt['previousDaily']['paused']is True and receipt['nextDaily']['lossPaused']is False and receipt['nextDaily']['paused']is True and receipt['nextDaily']['reconciledAt']==receipt['previousDaily']['reconciledAt']and receipt['previousDaily']['reconciledAt']>0 and receipt['at']-receipt['previousDaily']['reconciledAt']<=2000 and type(receipt['currentEquityMicroUsd'])is str and re.fullmatch('[0-9]{1,40}',receipt['currentEquityMicroUsd'])is not None and receipt['nextDaily']['baselineMicroUsd']==receipt['currentEquityMicroUsd'],'OWNER_RESET_REBASE_AND_READINESS_PROOF_REQUIRED')
+   price=receipt['price'];need(type(price)is dict and set(price)=={'microUsdPerSol','at','source'}and type(price['microUsdPerSol'])is str and re.fullmatch('[0-9]{1,40}',price['microUsdPerSol'])is not None and int(price['microUsdPerSol'])>0 and type(price['at'])is int and 0<=receipt['at']-price['at']<=10000 and type(price['source'])is str and 1<=len(price['source'])<=512,'OWNER_RESET_EXECUTABLE_USD_REFERENCE_REQUIRED')
+  else:need(receipt['previousDaily']==receipt['nextDaily']and receipt['previousDaily']['lossPaused']is False and receipt['currentEquityMicroUsd']is None and receipt['price']is None,'OWNER_RESET_DURABLE_NOOP_CANNOT_REBASE')
+ if value['ok']:
+  need(value['retryable']is False,'SUCCESSFUL_OWNER_RESET_CANNOT_RETRY')
+  if value['reasonCode']=='OWNER_RESET_REPLAYED':need(value['replayed']is True and value['resetApplied']is False and value['alreadyClear']is False and receipt is not None,'OWNER_RESET_REPLAY_CANNOT_REPEAT_AUTHORIZATION')
+  elif value['reasonCode']=='OWNER_RESET_ALREADY_CLEAR':need(value['alreadyClear']is True and value['resetApplied']is False and value['replayed']is False and receipt is not None and receipt['reset']is False and receipt['alreadyClear']is True and current['lossPaused']is False,'OWNER_RESET_NOOP_CANNOT_REBASE')
+  else:need(value['reasonCode']=='OWNER_RESET_RECORDED_FRESH_READINESS_REQUIRED'and value['resetApplied']is True and value['alreadyClear']is False and value['replayed']is False and receipt is not None and receipt['reset']is True and current['lossPaused']is False,'OWNER_RESET_FRESH_WRITER_SUCCESS_REQUIRED')
+ else:need(value['reasonCode']in OWNER_RESET_RETRYABLE|OWNER_RESET_TERMINAL and value['retryable']==(value['reasonCode']in OWNER_RESET_RETRYABLE)and value['resetApplied']is False and value['alreadyClear']is False and value['replayed']is False and ((value['reasonCode']=='OWNER_RESET_LOSS_REOCCURRED_AFTER_AUTHORIZATION'and receipt is not None)or(value['reasonCode']!='OWNER_RESET_LOSS_REOCCURRED_AFTER_AUTHORIZATION'and receipt is None)),'OWNER_RESET_CLASSIFIED_REFUSAL_REQUIRED')
+ return value
+
+def owner_daily_loss_reset(m,manifest,record_dir,record):
+ request={'command':'reset-daily-loss','requestId':OWNER_RESET_ID};identity={'kind':'POE_OWNER_AUTHORIZED_DAILY_LOSS_RESET','authorizationDay':OWNER_RESET_DAY,'request':request,'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'source':manifest['source'],'configurationSha256':manifest['configurationSha256']}
+ saved=record.get('ownerDailyLossReset')
+ if saved is None:
+  saved={**identity,'intentAt':now(),'complete':False,'attempts':[],'financialDatabaseWritesByDriver':0,'nativeFinancialWriterOnly':True,'entryPermissionGranted':False};record['ownerDailyLossReset']=saved;m.write_json(record_dir/'transition.json',record)
+ need(type(saved)is dict and all(saved.get(k)==v for k,v in identity.items())and type(saved.get('attempts'))is list and len(saved['attempts'])<=30,'EXACT_ONE_TIME_OWNER_RESET_INTENT_REQUIRED')
+ if saved.get('complete')is True:
+  response=validate_owner_reset_response(m,manifest,saved['response']);need(response['ok']is True or response['reasonCode']=='OWNER_RESET_LOSS_REOCCURRED_AFTER_AUTHORIZATION'and response['receipt']is not None,'RETAINED_OWNER_RESET_RECEIPT_REQUIRED');return saved
+ if saved.get('retryable')is False:
+  if saved.get('response')is not None:validate_owner_reset_response(m,manifest,saved['response'])
+  need(type(saved.get('reasonCode'))is str and re.fullmatch('[A-Z0-9_]{1,128}',saved['reasonCode'])is not None,'RETAINED_TERMINAL_OWNER_RESET_REFUSAL_REQUIRED');return saved
+ if time.strftime('%Y-%m-%d',time.gmtime(now()/1000))!=OWNER_RESET_DAY:
+  saved.update(reasonCode='OWNER_RESET_AUTHORIZATION_DAY_EXPIRED',retryable=False);m.write_json(record_dir/'transition.json',record);return saved
+ deadline=time.monotonic()+60
+ while len(saved['attempts'])<30 and time.monotonic()<deadline:
+  # The unchanged request identity was durably recorded above before any
+  # transmission. Retries use that same ID; each settled attempt is retained
+  # once, leaving room for financial/recovery phase receipts.
+  attempt={'at':now(),'number':len(saved['attempts'])+1,'status':'REQUEST_INTENT'};saved['attempts'].append(attempt)
+  try:
+   response=validate_owner_reset_response(m,manifest,owner_control_exchange(m,manifest,request,deadline=deadline));attempt.update(status='RESPONSE',reasonCode=response['reasonCode'],retryable=response['retryable']);saved.update(response=response,reasonCode=response['reasonCode'],retryable=response['retryable'])
+   if response['ok']or response['reasonCode']=='OWNER_RESET_LOSS_REOCCURRED_AFTER_AUTHORIZATION'and response['receipt']is not None:saved.update(complete=True,completedAt=now())
+  except Refused as error:
+   code=str(error);retryable=code in{'OWNER_CONTROL_EXCHANGE_DEADLINE','NATIVE_CONTROL_SOCKET_CHANGED','FRESH_NATIVE_CONTROL_OWNER_STATUS_REQUIRED'};attempt.update(status='REFUSED',reasonCode=code,retryable=retryable);saved.update(reasonCode=code,retryable=retryable)
+  except PermissionError:attempt.update(status='REFUSED',reasonCode='OWNER_RESET_CONTROL_ACCESS_REQUIRED',retryable=False);saved.update(reasonCode=attempt['reasonCode'],retryable=False)
+  except OSError:attempt.update(status='UNAVAILABLE',reasonCode='OWNER_RESET_VERIFIED_LOCAL_CONTROL_UNAVAILABLE',retryable=True);saved.update(reasonCode=attempt['reasonCode'],retryable=True)
+  except(ValueError,TypeError,KeyError):attempt.update(status='INVALID_RESPONSE',reasonCode='OWNER_RESET_INVALID_CONTROL_RESPONSE',retryable=False);saved.update(reasonCode=attempt['reasonCode'],retryable=False)
+  m.write_json(record_dir/'transition.json',record)
+  if saved.get('complete')or saved.get('retryable')is False:break
+  if len(saved['attempts'])<30 and time.monotonic()+2<deadline:time.sleep(2)
+  else:break
+ return saved
+
+def owner_reset_public_result(saved,post=None):
+ if not saved:return {'required':True,'complete':False,'reasonCode':'OWNER_RESET_REQUIRES_VERIFIED_NEW_SOURCE'}
+ result={k:saved[k]for k in['authorizationDay','request','complete','reasonCode','completedAt','financialDatabaseWritesByDriver','nativeFinancialWriterOnly','entryPermissionGranted']if k in saved};result['attemptCount']=len(saved.get('attempts',[]));response=saved.get('response')
+ if response:
+  result.update({k:response[k]for k in['resetApplied','alreadyClear','replayed','receipt']});result['stateAtNativeControlResponse']=response['current'];result['nativeControlResponseIsHistorical']=True
+ if post:
+  financial=post.get('financial',{});result['postVerificationDailyControls']=financial.get('dailyControls');result['postVerificationFinancialControls']=financial.get('financialControls');result['postVerificationFinancialRevision']=financial.get('revision')
+ result['currentEntryPermissionNotGrantedByReset']=True;return result
 def policy_sha(value):return sha(json.dumps(value,sort_keys=True,separators=(',',':')).encode())
 def release_supervisor(data):
  # All package bytes, including this reviewed code, are index-verified before
@@ -312,8 +400,11 @@ def apply(expected,m,auditor,indexed_supervisor,driver_sha):
    known_images(m,record_dir);need(read(m.ACCOUNT/'research-baseline.json',512*1024,UID,GID,0o600)==read(record_dir/'before-research-baseline.json',512*1024),'ACCOUNTING_BASELINE_CHANGED');record.update(phase='configuration-install-intent',configurationMutationIntent=True);m.write_json(record_dir/'transition.json',record);install_images(m,record_dir,True);m.switch_current(target);m.systemctl('daemon-reload');need(resource_profile(unit())==RESOURCE_AFTER,'NEW_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');record.update(phase='new-source-installed-not-started',installedAt=now());m.write_json(record_dir/'transition.json',record)
   m.stopped_phase(install,recover)
   record.update(phase='new-financial-source-start-intent',startRequestedAt=now());m.write_json(record_dir/'transition.json',record);m.systemctl('start','poe-runtime.service')
- need((m.LEDGER.lstat().st_dev,m.LEDGER.lstat().st_ino)==expected_inode,'ORIGINAL_LEDGER_INODE_CHANGED');post_record=dict(record);post_record['startRequestedAt']=max(record['startRequestedAt'],record.get('verificationNotBefore',0));verification,post=m.post_start_verification(manifest,post_record,auditor,UID,GID);post_unit=unit();process_owner(post_unit);need(resource_profile(post_unit)==RESOURCE_AFTER,'NEW_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');record.update(phase='new-source-post-start-prefix-verified-render-gate-pending'if verification['complete']else'new-source-retained-post-start-verification-incomplete',postStartVerification=verification,postStartFinancial=post,unitAfter=post_unit,selectedRuntimeAfter=selected_runtime(m),verifiedAt=now());record['interruption']={'stopRequestedAt':record.get('stopRequestedAt'),'physicalStopVerifiedAt':record.get('stoppedAt'),'startRequestedAt':record['startRequestedAt'],'localVerificationAt':record['verifiedAt'],'stopToStartMs':None if not record.get('stoppedAt')else record['startRequestedAt']-record['stoppedAt'],'observedNewSource':verification.get('newPublicSource'),'continuousCoverageClaimed':False};m.write_json(record_dir/'transition.json',record)
- result={'schemaVersion':1,'kind':'POE_ORIGINAL_FORWARD_UPGRADE_RESULT','phase':record['phase'],'accountId':m.ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','source':manifest['source'],'previousSource':OLD_SOURCE,'complete':verification['complete'],'verification':verification,'interruption':record['interruption'],'resourceTransition':{**record['resourceTransition'],'effectiveAfter':resource_profile(post_unit)},'renderReadinessGate':record['subsequentCodexReadinessGate'],'forensicPreflight':record['forensicPreflight'],'forensicPreflightReuse':record['forensicPreflightReuse'],'financialHistoryReset':False,'backupRestored':False,'operationalAcceptance':False};raw=encoded(result);need(len(raw)<=16384,'BOUNDED_PUBLIC_FORWARD_RECEIPT_REQUIRED');m.directory(m.PUBLIC_STATUS.parent,UID);need(stat.S_IMODE(m.PUBLIC_STATUS.parent.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');m.atomic(m.PUBLIC_STATUS.parent/'upgrade-verification.json',raw,0,0,0o644);print(raw.decode(),end='',flush=True);need(verification['complete'],'NEW_FINANCIAL_MANAGER_RETAINED_POST_START_VERIFICATION_INCOMPLETE');return result
+ need((m.LEDGER.lstat().st_dev,m.LEDGER.lstat().st_ino)==expected_inode,'ORIGINAL_LEDGER_INODE_CHANGED');post_record=dict(record);post_record['startRequestedAt']=max(record['startRequestedAt'],record.get('verificationNotBefore',0));verification,post=m.post_start_verification(manifest,post_record,auditor,UID,GID)
+ if verification['complete']:
+  owner_daily_loss_reset(m,manifest,record_dir,record);post=m.verify_live_financial_prefix(auditor,record['stoppedFinancial'],record['backup']);verification['financialVerification']=post;verification['ownerResetFinancialPrefixReverified']=True
+ post_unit=unit();process_owner(post_unit);need(resource_profile(post_unit)==RESOURCE_AFTER,'NEW_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');record.update(phase='new-source-post-start-prefix-verified-render-gate-pending'if verification['complete']else'new-source-retained-post-start-verification-incomplete',postStartVerification=verification,postStartFinancial=post,unitAfter=post_unit,selectedRuntimeAfter=selected_runtime(m),verifiedAt=now());record['interruption']={'stopRequestedAt':record.get('stopRequestedAt'),'physicalStopVerifiedAt':record.get('stoppedAt'),'startRequestedAt':record['startRequestedAt'],'localVerificationAt':record['verifiedAt'],'stopToStartMs':None if not record.get('stoppedAt')else record['startRequestedAt']-record['stoppedAt'],'observedNewSource':verification.get('newPublicSource'),'continuousCoverageClaimed':False};m.write_json(record_dir/'transition.json',record)
+ result={'schemaVersion':1,'kind':'POE_ORIGINAL_FORWARD_UPGRADE_RESULT','phase':record['phase'],'accountId':m.ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','source':manifest['source'],'previousSource':OLD_SOURCE,'complete':verification['complete']and record.get('ownerDailyLossReset',{}).get('complete')is True,'installationVerified':verification['complete'],'verification':verification,'interruption':record['interruption'],'resourceTransition':{**record['resourceTransition'],'effectiveAfter':resource_profile(post_unit)},'renderReadinessGate':record['subsequentCodexReadinessGate'],'forensicPreflight':record['forensicPreflight'],'forensicPreflightReuse':record['forensicPreflightReuse'],'ownerDailyLossReset':owner_reset_public_result(record.get('ownerDailyLossReset'),post),'financialHistoryReset':False,'backupRestored':False,'operationalAcceptance':False};raw=encoded(result);need(len(raw)<=16384,'BOUNDED_PUBLIC_FORWARD_RECEIPT_REQUIRED');m.directory(m.PUBLIC_STATUS.parent,UID);need(stat.S_IMODE(m.PUBLIC_STATUS.parent.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');m.atomic(m.PUBLIC_STATUS.parent/'upgrade-verification.json',raw,0,0,0o644);print(raw.decode(),end='',flush=True);need(verification['complete'],'NEW_FINANCIAL_MANAGER_RETAINED_POST_START_VERIFICATION_INCOMPLETE');need(record.get('ownerDailyLossReset',{}).get('complete')is True,'NEW_FINANCIAL_MANAGER_RETAINED_OWNER_RESET_NOT_VERIFIED');return result
 def main():
  need(os.getuid()==0 and len(sys.argv)==3 and sys.argv[1]=='apply'and hashed(sys.argv[2]),'EXPLICIT_ROOT_FORWARD_OPERATION_AND_INDEX_PIN_REQUIRED');need(hashed(NEW_CONFIGURATION_SHA),'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED');need(hashed(NEW_REPORTER)and hashed(NEW_BACKUP_WORKER_SHA)and hashed(NEW_SUPERVISOR),'FINAL_REVIEWED_OPERATIONAL_HELPER_PINS_REQUIRED');driver_sha=globals().get('__poe_verified_driver_sha256__');need(hashed(driver_sha),'INDEPENDENT_IN_MEMORY_DRIVER_VERIFICATION_REQUIRED');os.umask(0o077);m,auditor,supervisor=load_helpers();m.directory(m.ETC,0);fd=os.open(m.ETC/'cutover.owner.lock',os.O_RDWR|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
