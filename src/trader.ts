@@ -1,3 +1,4 @@
+import {assertPoeOperatingAccount} from './poe-operating-account.js';
 import {PaperLedger,type ExecutionQuote,type Mark,type Position} from './ledger.js';
 import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,type QuoteRequest} from './execution.js';
 import {FlowWindow,copyEventIdentity,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
@@ -29,6 +30,8 @@ export type TraderOptions={
   /** Frozen research mode: no financial recovery, contexts, quotes or execution. */
   candidateEvaluationOnly?:true;
   experimentalPilot?:PilotBinding;
+  /** Exact original account identity; historical fixture path remains separate. */
+  operatingAccount?:true;
   pilotExecution?:{context:(positions:Readonly<Record<string,Position>>,signal:AbortSignal)=>Promise<ExecutionContext>;quote:(request:PilotQuoteRequest,signal:AbortSignal)=>Promise<PilotExecutionQuote|null>};
   timeoutMs?:number;
 };
@@ -78,7 +81,7 @@ export class PaperTrader{
     if(this.candidateEvaluationOnly&&(!this.pilot||options.predictiveDiagnostics!==true))throw Error('candidate-only mode requires isolated predictive diagnostics');
     this.pilotConfig=this.pilot?resolvePilotBinding(options.experimentalPilot):null;
     if(options.predictiveDiagnostics===true&&!this.pilot)throw Error('predictive diagnostics require the isolated pilot contract');
-    if(this.pilot){const state=options.ledger.state();assertPilotBaseline();if(!this.pilotConfig||state.mode!=='PAPER'||!/^poe-pilot-[a-z0-9-]+$/.test(state.accountId)||options.costs.gasLamports!=='7000'||options.costs.slippageBps!==100||(options.timeoutMs??3000)>3000||typeof options.pilotExecution?.context!=='function'||typeof options.pilotExecution?.quote!=='function')throw Error('isolated pilot identity, frozen contract and fresh execution adapters required');}
+    if(this.pilot){const state=options.ledger.state();if(options.operatingAccount===true)assertPoeOperatingAccount(state);assertPilotBaseline();if(!this.pilotConfig||state.mode!=='PAPER'||!(options.operatingAccount===true||/^poe-pilot-[a-z0-9-]+$/.test(state.accountId))||options.costs.gasLamports!=='7000'||options.costs.slippageBps!==100||(options.timeoutMs??3000)>3000||typeof options.pilotExecution?.context!=='function'||typeof options.pilotExecution?.quote!=='function')throw Error('isolated pilot identity, frozen contract and fresh execution adapters required');}
     else if(options.pilotExecution)throw Error('pilot execution adapters require the isolated pilot contract');
     // Match evaluatePrimary's existing 128-character evidence contract before
     // any observation starts, rather than silently rejecting every pilot bin.

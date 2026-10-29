@@ -157,7 +157,7 @@ test('async pending maintenance preserves uncertainty and completes only a valid
 });
 
 test('large artifact validation runs off the live event loop while the sole writer can advance', {timeout:60_000},async t=>{
-  const f=setup(t),store=new FinancialBackupStore({...f.options,maxBytes:256*1024*1024});
+  const f=setup(t),store=new FinancialBackupStore({...f.options,persistent:true});
   // Only disposable fixture generation groups public ledger actions in its
   // existing connection. No second source connection/writer is created.
   (f.ledger as unknown as {db:Database.Database}).db.transaction(()=>{
@@ -260,4 +260,12 @@ test('COHERENT backup continuation rechecks shared deadlines after asynchronous 
  const f=setup(t);let stateReads=0,measured=0;const source={state:()=>{stateReads++;return f.ledger.state();},backup:(path:string)=>f.ledger.backup(path)};const before=f.ledger.state();
  await assert.rejects(f.store.create(source,{admission:()=>false,measure:run=>{measured++;return run();}}),/BACKUP_RUNTIME_PREPARATION_DEFERRED/);assert.equal(stateReads,0);assert.equal(measured,0);assert.deepEqual(f.ledger.state(),before);
  const result=await f.store.create(source,{admission:()=>true,measure:run=>{measured++;return run();}});assert.equal(stateReads,1);assert.equal(measured,1);assert.equal(result.revision,before.revision,'ordinary deferral releases the lease for a later admissible consistent backup');assert.deepEqual(readState(result.path),before);
+});
+
+
+test('optional operating v2 chart metadata survives backup and restore while corrupt copies cannot displace valid financial recovery',async t=>{
+ const f=setup(t),initial=f.ledger.state(),legacy=f.ledger.getReportingHistory();f.ledger.recordOperatingReportingPoint({at:AT+1000,tradingMicroUsd:'0',economicMicroUsd:null},AT+1000);const v2=f.ledger.getOperatingReportingHistory();const first=await f.store.create(f.ledger);
+ assert.deepEqual(f.ledger.state(),initial);assert.deepEqual(f.ledger.getReportingHistory(),legacy);const second=await f.store.create(f.ledger);
+ const corrupt=new Database(second.path);corrupt.prepare("UPDATE metadata SET value=? WHERE key='reporting_history_operating_v2'").run(JSON.stringify({...v2,basis:'false-profit-from-passive-SOL'}));corrupt.close();
+ const selected=f.store.latest();assert.equal(selected.backup?.path,first.path);assert.ok(selected.rejected.some(r=>r.file===second.path.split('/').at(-1)));assert.deepEqual(f.ledger.getOperatingReportingHistory(),v2);assert.deepEqual(f.ledger.state(),initial);
 });

@@ -1,13 +1,15 @@
 /** Bounded, pure projection of the isolated PAPER account. No provider, writer or publisher. */
+import {assertPoeOperatingAccount} from './poe-operating-account.js';
+import {operatingPnlReporting} from './operating-pnl-reporting.js';
 import {createHash} from 'node:crypto';
-import type {LedgerState,Mark,PaperLedger,ReportingHistory,ReportingPoint,UsdPrice} from './ledger.js';
+import {validateOperatingReportingHistory,type LedgerState,type Mark,type PaperLedger,type ReportingHistory,type ReportingPoint,type UsdPrice} from './ledger.js';
 import {validateSnapshot,validateReportingTradeCache,reportingFilledTrade,type ReportingFilledTrade,type ReportingTradeCache,type ReportingIdentity,type Snapshot} from './reporting.js';
 
 type Projection=ReturnType<PaperLedger['projection']>;
 type JournalRow={revision:number;action_id:string;at:number;kind:string;detail:string};
 type Decision={mint:string;at:number;stage:string;reason:string};
 export type PilotPortfolioInput={
- at:number;running:boolean;state:Readonly<LedgerState>;projection:Projection;identity:ReportingIdentity;sequence:string;
+ authoritativeOperating?:true;at:number;running:boolean;state:Readonly<LedgerState>;projection:Projection;identity:ReportingIdentity;sequence:string;
  price:UsdPrice|null;marks:Readonly<Record<string,Mark>>;sourceValidUntil?:number;history:ReportingHistory;
  journal:readonly unknown[];actionResults:ReadonlyMap<string,unknown>;tradeCache?:ReportingTradeCache;decisions:readonly Decision[];
  funnel:Snapshot['funnel'];connected:boolean;warming:boolean;usefulProgressAt:number|null;blocker:string|null;
@@ -61,10 +63,19 @@ function portfolioValidity(input:ValuationInput){const {state:s,projection:p,at}
 export function pilotPortfolioReconciled(input:ValuationInput){return portfolioValidity(input).reconciled;}
 export function pilotExperimentalAccounting(input:ValuationInput){const {state:s,projection:p,at}=input,total=portfolioValidity(input).marksUsable?p.totalPnlLamports:null;return {schemaVersion:1 as const,at,totalPnlLamports:total,realizedLamports:s.realizedLamports,unrealizedLamports:total===null?null:(BigInt(total)-BigInt(s.realizedLamports)).toString(),executionCostsLamports:s.executionCosts,lockedDepositLamports:p.lockedDepositLamports};}
 
+/** Bound only the public view. Durable financial history and fill cache are
+ * unchanged; omitted samples remain an explicit chart gap after inception. */
+export function boundOperatingSnapshot(snapshot:Snapshot):Snapshot{
+ if(Buffer.byteLength(JSON.stringify(snapshot))<=96*1024)return snapshot;
+ const last=snapshot.pnl.slice(-180),initial=snapshot.pnl.slice(0,2),pnl=[...new Map([...initial,...last].map(p=>[p.at,p])).values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+ return {...snapshot,decisions:snapshot.decisions.slice(-20),trades:snapshot.trades.slice(0,20),pnl,history:{...snapshot.history,downsampled:true,label:'PUBLIC WINDOW LIMITED; durable ledger retained. Actual samples, explicit gaps. Trading SOL at current USD; passive SOL separate. Pre-cutover and historical USD/gas unknown. Latest bounded fills/decisions.'}};
+}
+
 export function buildPilotPortfolio(input:PilotPortfolioInput):Snapshot {
  const {state:s,projection:p,identity,at}=input;
- need(integer(at)&&s.mode==='PAPER'&&/^poe-pilot-[a-z0-9-]+$/.test(s.accountId)&&p.accountId===s.accountId&&identity.accountId===s.accountId&&identity.inceptionAt===iso(s.inceptionAt)&&p.inceptionAt===s.inceptionAt&&s.initialMicroUsd==='1000000000','PILOT_REPORTING_IDENTITY');
- const {currentPrice,validMark,marksUsable,marketAt,reconciled}=portfolioValidity(input);
+ if(input.authoritativeOperating){assertPoeOperatingAccount(s);validateOperatingReportingHistory(input.history,s.inceptionAt);}
+ need(integer(at)&&s.mode==='PAPER'&&(input.authoritativeOperating===true||/^poe-pilot-[a-z0-9-]+$/.test(s.accountId))&&p.accountId===s.accountId&&identity.accountId===s.accountId&&identity.inceptionAt===iso(s.inceptionAt)&&p.inceptionAt===s.inceptionAt&&s.initialMicroUsd==='1000000000','PILOT_REPORTING_IDENTITY');
+ const {currentPrice,validMark,marksUsable,marketAt,reconciled}=portfolioValidity(input),operating=input.authoritativeOperating?operatingPnlReporting({at,projection:p,price:input.price,valuationUsable:marksUsable}):null;
  const history=input.history.points.map(point=>({at:iso(point.at),tradingUsd:micro(point.tradingMicroUsd),economicUsd:micro(point.economicMicroUsd)}));
  const projected=projectPilotFilledTrades(input),unresolvedFilledRows=projected.unresolvedFilledRows;
  const cached=input.tradeCache?validateReportingTradeCache(input.tradeCache,s.accountId,s.inceptionAt,at).trades:projected.trades;const trades=cached.map(({actionId,...trade})=>trade);
@@ -72,15 +83,15 @@ export function buildPilotPortfolio(input:PilotPortfolioInput):Snapshot {
   account:{id:s.accountId,inceptionAt:identity.inceptionAt,initialUsd:1000},sequence:input.sequence,source:{release:identity.release,strategy:identity.strategy},
   times:{generatedAt:iso(at),marketAt:marketAt===null?null:iso(marketAt),reconciledAt:s.daily.reconciledAt?iso(s.daily.reconciledAt):null,usefulProgressAt:input.usefulProgressAt===null?null:iso(input.usefulProgressAt)},
   status:{runtime:input.running?'running':'stopped',market:!input.connected||marketAt===null?'unavailable':input.warming?'warming':'observing',entries:p.entriesEnabled&&reconciled?'enabled':'paused',reconciled,blocker:input.blocker},
-  balances:{cashSol:sol(p.cashLamports),reservedSol:sol(p.reservedLamports),equitySol:p.equityLamports===null||!marksUsable?null:sol(p.equityLamports),equityUsd:currentPrice===null||!marksUsable?null:micro(p.equityMicroUsd),realizedUsd:null,unrealizedUsd:null,tradingPnlUsd:currentPrice===null||!marksUsable?null:micro(p.totalPnlMicroUsd),economicPnlUsd:currentPrice===null||!marksUsable?null:micro(p.economicPnlMicroUsd),positionCostUsd:micro(p.positionCostMicroUsd)!,markedExposureUsd:currentPrice===null||!marksUsable||p.positionLiquidationLamports===null?null:usd(p.positionLiquidationLamports,currentPrice),drawdownUsd:null,executionCostsUsd:s.executionCosts==='0'?0:null,operatingCostsUsd:micro(p.operatingCostsMicroUsd),passiveSolEquityUsd:micro(p.passiveSolEquityMicroUsd),solPriceUsd:currentPrice===null?null:Number(currentPrice)/1e6},
+  balances:{cashSol:sol(p.cashLamports),reservedSol:sol(p.reservedLamports),equitySol:p.equityLamports===null||!marksUsable?null:sol(p.equityLamports),equityUsd:currentPrice===null||!marksUsable?null:micro(p.equityMicroUsd),realizedUsd:operating&&currentPrice!==null?usd(s.realizedLamports,currentPrice):null,unrealizedUsd:operating&&currentPrice!==null&&operating.netTokenTradingLamports!==null?usd((BigInt(operating.netTokenTradingLamports)-BigInt(s.realizedLamports)).toString(),currentPrice):null,tradingPnlUsd:operating?micro(operating.currentUsdTranslationMicroUsd):currentPrice===null||!marksUsable?null:micro(p.totalPnlMicroUsd),economicPnlUsd:operating?micro(operating.tokenTradingAfterOperatingCostsMicroUsd):currentPrice===null||!marksUsable?null:micro(p.economicPnlMicroUsd),positionCostUsd:micro(p.positionCostMicroUsd)!,markedExposureUsd:currentPrice===null||!marksUsable||p.positionLiquidationLamports===null?null:usd(p.positionLiquidationLamports,currentPrice),drawdownUsd:null,executionCostsUsd:s.executionCosts==='0'?0:null,operatingCostsUsd:micro(p.operatingCostsMicroUsd),passiveSolEquityUsd:micro(p.passiveSolEquityMicroUsd),solPriceUsd:currentPrice===null?null:Number(currentPrice)/1e6},
   costLabels:{execution:'simulated',operating:p.operatingCostClassification},
   positions:Object.values(s.positions).map(position=>({mint:position.mint,label:position.mint,quantity:position.units,enteredAt:iso(position.enteredAt),entryCostUsd:micro(position.costMicroUsd)!,netLiquidationUsd:currentPrice!==null&&validMark(position.mint)?usd(input.marks[position.mint]!.netLamports,currentPrice):null,executionCostsUsd:Number(BigInt(position.costMicroUsd)*BigInt(position.entryGas)/(BigInt(position.entryGas)+BigInt(position.entryLamports)))/1e6,status:'PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)'})),
   trades,decisions:input.decisions.slice(-50).map(d=>({id:shortId('decision',JSON.stringify([d.at,d.mint,d.stage,d.reason])),mint:d.mint,at:iso(d.at),stage:d.stage,reason:d.reason})),pnl:history,
-  history:{windowStartAt:history[0]?.at??null,downsampled:input.history.downsampled,label:`${input.history.windowLimited?'WINDOW LIMITED. ':''}${input.tradeCache?.windowLimited?'TRADE WINDOW LIMITED. ':''}Actual samples; >15s/stopped/unreconciled gaps; max720. Max50 durable fills cached; ${unresolvedFilledRows} recent fills lack order context. Historical USD P&L/gas unverified; portfolio change includes passive SOL/USD.`},
+  history:{windowStartAt:history[0]?.at??null,downsampled:input.history.downsampled,label:input.authoritativeOperating?`${input.history.windowLimited?'WINDOW LIMITED. ':''}${input.tradeCache?.windowLimited?'FILLS LIMITED. ':''}Actual samples; explicit gaps. Trading SOL at current USD; passive SOL separate. Pre-cutover unknown. ${unresolvedFilledRows} fills lack context; historical USD/gas unverified.`:`${input.history.windowLimited?'WINDOW LIMITED. ':''}${input.tradeCache?.windowLimited?'TRADE WINDOW LIMITED. ':''}Actual samples; >15s/stopped/unreconciled gaps; max720. Max50 durable fills cached; ${unresolvedFilledRows} recent fills lack order context. Historical USD P&L/gas unverified; portfolio change includes passive SOL/USD.`},
   // Operational funnels may also contain reservation and diagnostic counters.
   // The authenticated financial snapshot has an exact nine-counter schema.
-  funnel:{discovered:input.funnel.discovered,supported:input.funnel.supported,sufficientlyObserved:input.funnel.sufficientlyObserved,evaluated:input.funnel.evaluated,qualified:input.funnel.qualified,attempted:input.funnel.attempted,paperFilled:input.funnel.paperFilled,exited:input.funnel.exited,reconciled:input.funnel.reconciled},metrics:{processingLagMs:input.metrics.processingLagMs,eventLoopLagMs:input.metrics.eventLoopLagMs,providerEvents:input.metrics.providerEvents,rpcRequests:input.metrics.rpcRequests,projectedDailyDataSol:null,budgetRemainingSol:null,budgetStatus:input.metrics.rpcAvailable?'available':'degraded',coverage:'Current-run counters; experimental admitted candidates only; raw feed messages and shared physical operation counts. No independent full-market denominator. Held actual-size marks require fresh coherent validated state.',latency:'Held market time is the oldest validated bank Clock, not getBlockTime. No real transaction landing claim.'}};
- return validateSnapshot(snapshot,identity,at);
+  funnel:{discovered:input.funnel.discovered,supported:input.funnel.supported,sufficientlyObserved:input.funnel.sufficientlyObserved,evaluated:input.funnel.evaluated,qualified:input.funnel.qualified,attempted:input.funnel.attempted,paperFilled:input.funnel.paperFilled,exited:input.funnel.exited,reconciled:input.funnel.reconciled},metrics:{processingLagMs:input.metrics.processingLagMs,eventLoopLagMs:input.metrics.eventLoopLagMs,providerEvents:input.metrics.providerEvents,rpcRequests:input.metrics.rpcRequests,projectedDailyDataSol:null,budgetRemainingSol:null,budgetStatus:input.metrics.rpcAvailable?'available':'degraded',coverage:'Current-run source counters; bounded admitted candidates only; raw feed messages and shared physical operation counts. No independent full-market denominator. Held actual-size marks require fresh coherent validated state.',latency:'Held market time is the oldest validated bank Clock, not getBlockTime. No real transaction landing claim.'}};
+ return validateSnapshot(input.authoritativeOperating?boundOperatingSnapshot(snapshot):snapshot,identity,at);
 }
 
 

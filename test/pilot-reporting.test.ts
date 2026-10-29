@@ -8,8 +8,10 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PaperLedger,type Mark,type UsdPrice} from '../src/ledger.js';
 import {PaperTrader} from '../src/trader.js';
-import {buildPilotPortfolio,pilotReportingPoints,pilotPortfolioReconciled,pilotExperimentalAccounting,projectPilotFilledTrades,pilotPortfolioProjectionFailure,type PilotPortfolioInput} from '../src/pilot-reporting.js';
+import {buildPilotPortfolio,boundOperatingSnapshot,pilotReportingPoints,pilotPortfolioReconciled,pilotExperimentalAccounting,projectPilotFilledTrades,pilotPortfolioProjectionFailure,type PilotPortfolioInput} from '../src/pilot-reporting.js';
 import {validateSnapshot} from '../src/reporting.js';
+import {POE_OPERATING_ACCOUNT} from '../src/poe-operating-account.js';
+import {OPERATING_REPORTING_BASIS} from '../src/ledger.js';
 const T=Date.parse('2026-10-27T12:00:00Z'),MINT='fixture-reporting-mint';
 const price=(at:number,value='100000000'):UsdPrice=>({at,microUsdPerSol:value,source:'ISOLATED timestamped USD fixture'});
 function fixture(t:TestContext){
@@ -107,4 +109,21 @@ test('projection failures expose their bounded stage and known reason without ex
  for(const error of [Error('SECRET_PROVIDER_KEY /private/ledger.sqlite payload=DO_NOT_EXPORT'),{message:'unexpected/missing fields'},null]){
   const diagnostic=pilotPortfolioProjectionFailure('trades',error);assert.deepEqual(diagnostic,{stage:'trades',code:'projection-unavailable'});assert.ok(!JSON.stringify(diagnostic).includes('DO_NOT_EXPORT'));
  }
+});
+
+
+test('original operating projection keeps passive SOL gains out of trading PnL and refuses legacy financial chart reinterpretation',t=>{
+ const f=fixture(t),at=T+1000,p=price(at,'200000000'),base=f.input(at,{},p),id=POE_OPERATING_ACCOUNT;
+ const state={...base.state,accountId:id.accountId,inceptionAt:id.inceptionAt},projection={...base.projection,accountId:id.accountId,inceptionAt:id.inceptionAt};
+ const history={schemaVersion:2 as const,basis:OPERATING_REPORTING_BASIS,cutoverAt:at,firstObservedAt:at,windowLimited:false,downsampled:false,points:[{at:id.inceptionAt,tradingMicroUsd:'0',economicMicroUsd:null},{at:id.inceptionAt+1,tradingMicroUsd:null,economicMicroUsd:null},{at,tradingMicroUsd:'0',economicMicroUsd:null}]};
+ const input={...base,state,projection,authoritativeOperating:true as const,history,identity:{...base.identity,accountId:id.accountId,inceptionAt:new Date(id.inceptionAt).toISOString()}};
+ const snapshot=buildPilotPortfolio(input);assert.equal(snapshot.balances.equityUsd,2000);assert.equal(snapshot.balances.tradingPnlUsd,0);assert.equal(snapshot.balances.economicPnlUsd,null);assert.equal(snapshot.balances.passiveSolEquityUsd,2000);assert.deepEqual(snapshot.pnl.map(x=>x.tradingUsd),[0,null,0]);assert.match(snapshot.history.label,/Passive|passive/);assert.ok(snapshot.history.label.length<=256);
+ assert.throws(()=>buildPilotPortfolio({...input,history:{points:history.points,windowLimited:false,downsampled:false}}),/operating reporting history/);
+});
+
+
+test('large public view stays bounded without removing financial positions or durable-history input',t=>{
+ const f=fixture(t),input=f.input(),small=buildPilotPortfolio(input),at=input.at,base={...small,times:{...small.times,generatedAt:new Date(at+720000).toISOString()}};
+ const large={...base,pnl:Array.from({length:720},(_,i)=>({at:new Date(at+i*1000).toISOString(),tradingUsd:i===1?null:0,economicUsd:null})),decisions:Array.from({length:50},(_,i)=>({id:'decision-'+i,mint:'fixture',at:new Date(at).toISOString(),stage:'strategy-rejection',reason:'r'.repeat(512)})),trades:Array.from({length:50},(_,i)=>({id:'trade-'+i,mint:'fixture',side:'buy' as const,quantity:'1',at:new Date(at).toISOString(),valueUsd:1,executionCostsUsd:0,status:'filled',reason:'r'.repeat(512)}))};
+ const before=JSON.stringify(large),publicView=boundOperatingSnapshot(large);assert.ok(Buffer.byteLength(before)>96*1024);assert.ok(Buffer.byteLength(JSON.stringify(publicView))<96*1024);assert.equal(JSON.stringify(large),before,'input/durable history is untouched');assert.deepEqual(publicView.positions,large.positions);assert.deepEqual(publicView.account,large.account);assert.deepEqual(publicView.times,large.times);assert.equal(publicView.trades.length,20);assert.equal(publicView.decisions.length,20);assert.equal(publicView.pnl[0]!.at,large.pnl[0]!.at);assert.equal(publicView.pnl[1]!.tradingUsd,null);assert.match(publicView.history.label,/PUBLIC WINDOW LIMITED/);
 });

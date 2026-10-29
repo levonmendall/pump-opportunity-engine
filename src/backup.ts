@@ -1,11 +1,11 @@
 import Database from 'better-sqlite3';
 import {isDeepStrictEqual} from 'node:util';
 import {validateReportingTradeCache,reportingFilledTrade} from './reporting.js';
-import {chmodSync,closeSync,constants,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,unlinkSync,type Stats} from 'node:fs';
+import {chmodSync,closeSync,constants,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,statfsSync,unlinkSync,type Stats} from 'node:fs';
 import {basename,dirname,join,resolve} from 'node:path';
 import {spawn,spawnSync} from 'node:child_process';
 import {Worker} from 'node:worker_threads';
-import {validateFinancialState,type LedgerMode,type LedgerState,type PaperLedger,type ReportingHistory} from './ledger.js';
+import {validateFinancialState,validateOperatingReportingHistory,REPORTING_OPERATING_HISTORY_KEY,type LedgerMode,type LedgerState,type PaperLedger,type ReportingHistory} from './ledger.js';
 import {validateOperatingCosts,type OperatingCostState} from './costs.js';
 
 export type BackupIdentity={accountId:string;mode:LedgerMode;inceptionAt:number};
@@ -14,7 +14,7 @@ export type BackupSelection={backup:FinancialBackup|null;rejected:{file:string;r
 type Source=Pick<PaperLedger,'state'|'backup'>;
 export class BackupPreparationDeferred extends Error{constructor(){super('BACKUP_RUNTIME_PREPARATION_DEFERRED');}}
 export type BackupRuntimePreparation={admission:()=>boolean;measure:<T>(work:()=>T)=>T};
-type Options={directory:string;sourcePath:string;identity:BackupIdentity;maxBytes?:number};
+type Options={directory:string;sourcePath:string;identity:BackupIdentity;maxBytes?:number;persistent?:boolean;minimumFreeBytes?:number};
 export type BackupArtifactTask={task:'prepare';minimumRevision:number}|{task:'finish'|'abort'|'recover'};
 const PREFIX='poe-financial-',PENDING='poe-financial-pending.sqlite';
 const OPERATION_LOCK='.poe-backup.lock';
@@ -56,14 +56,15 @@ export class FinancialBackupStore{
   readonly identity:BackupIdentity;
   private readonly sourcePath:string;
   private readonly maxBytes:number;
+  private readonly persistent:boolean;private readonly minimumFreeBytes:number;
   private staged:{path:string;own:Stats;completed:FinancialBackup[];minimumRevision:number;validated:boolean}|undefined;
   constructor(options:Options){
     this.directory=resolve(options.directory);
     const source=resolve(options.sourcePath);let sourceParent=dirname(source);
     try{sourceParent=realpathSync(sourceParent);}catch(error){if(!(error instanceof Error&&'code' in error&&['ENOENT','EACCES'].includes(String(error.code))))throw error;}
     this.sourcePath=join(sourceParent,basename(source));
-    this.identity={...options.identity};this.maxBytes=options.maxBytes??64*1024*1024;
-    if(!Number.isSafeInteger(this.maxBytes)||this.maxBytes<4096||this.maxBytes>1024*1024*1024)throw new Error('bounded backup size required');
+    this.identity={...options.identity};this.persistent=options.persistent===true;this.minimumFreeBytes=options.minimumFreeBytes??256*1024*1024;this.maxBytes=this.persistent?Number.MAX_SAFE_INTEGER:options.maxBytes??64*1024*1024;
+    if(options.persistent!==undefined&&typeof options.persistent!=='boolean'||!Number.isSafeInteger(this.minimumFreeBytes)||this.minimumFreeBytes<1024*1024||!Number.isSafeInteger(this.maxBytes)||this.maxBytes<4096||!this.persistent&&this.maxBytes>1024*1024*1024)throw new Error('bounded backup size required');
     if(!Number.isSafeInteger(this.identity.inceptionAt)||this.identity.inceptionAt<0||!['PAPER','DISPOSABLE_PAPER'].includes(this.identity.mode)||!this.identity.accountId)throw new Error('actual backup identity required');
     if(this.sourcePath.startsWith(this.directory+'/'))throw new Error('backup directory must not contain source financial state');
     if(realpathSync(dirname(this.directory))!==dirname(this.directory))throw new Error('canonical backup parent required');
@@ -83,6 +84,10 @@ export class FinancialBackupStore{
     let size=this.privateFile(this.sourcePath).size;
     try{size+=this.privateFile(this.sourcePath+'-wal').size;}catch(error){if(!(error instanceof Error&&'code' in error&&error.code==='ENOENT'))throw error;}
     if(size>this.maxBytes)throw new Error('source database and active WAL exceed backup size limit');
+    // A growing durable journal is not a reason to abandon the operating
+    // account. Keep two complete same-account generations, and require room for
+    // the next standalone copy plus an actual financial-write disk reserve.
+    if(this.persistent){const disk=statfsSync(this.directory),free=disk.bavail*disk.bsize;if(!Number.isSafeInteger(free)||free<size+this.minimumFreeBytes)throw new Error('backup disk headroom unavailable; financial source and prior backups retained');}
   }
   private scan(){
     this.checkDirectory();const dir=opendirSync(this.directory),completed:{name:string;generation:string}[]=[],unknown:string[]=[];let pending=false;
@@ -135,7 +140,7 @@ export class FinancialBackupStore{
       if(db.prepare('SELECT action_id FROM journal WHERE revision>0 EXCEPT SELECT id FROM actions LIMIT 1').get())throw new Error('backup financial action identity mismatch');
       const inception=db.prepare('SELECT at,kind FROM journal WHERE revision=0').get() as {at:number;kind:string}|undefined;
       if(inception?.kind!=='inception'||inception.at!==state.inceptionAt)throw new Error('backup inception mismatch');
-      const metadata=db.prepare("SELECT key,length(value) size FROM metadata WHERE key IN ('reporting_history','snapshot_sequence','reporting_trades')").all() as {key:string;size:number}[];
+      const metadata=db.prepare("SELECT key,length(value) size FROM metadata WHERE key IN ('reporting_history','reporting_history_operating_v2','snapshot_sequence','reporting_trades')").all() as {key:string;size:number}[];
       if(metadata.some(x=>x.size>262_144))throw new Error('backup metadata bound exceeded');
       const historyRow=db.prepare("SELECT value FROM metadata WHERE key='reporting_history'").get() as {value:string}|undefined;
       if(!historyRow)throw new Error('backup inception history absent');
@@ -143,6 +148,8 @@ export class FinancialBackupStore{
       if(!history||typeof history!=='object'||Object.keys(history).sort().join(',')!=='downsampled,points,windowLimited'||!Array.isArray(history.points)||history.points.length>720||typeof history.windowLimited!=='boolean'||typeof history.downsampled!=='boolean')throw new Error('backup reporting history malformed');
       for(const point of history.points){if(!point||Object.keys(point).sort().join(',')!=='at,economicMicroUsd,tradingMicroUsd'||!Number.isSafeInteger(point.at)||point.at<=previous||point.at<state.inceptionAt||![point.tradingMicroUsd,point.economicMicroUsd].every(v=>v===null||typeof v==='string'&&/^-?(0|[1-9][0-9]{0,38})$/.test(v)&&BigInt(v.replace(/^-/,''))<=(1n<<127n)-1n))throw new Error('backup reporting history chronology/value mismatch');previous=point.at;}
       if(!history.windowLimited&&(history.points[0]?.at!==state.inceptionAt||history.points[0]?.tradingMicroUsd!=='0'))throw new Error('backup reporting inception mismatch');
+      const operatingHistoryRow=db.prepare('SELECT value FROM metadata WHERE key=?').get(REPORTING_OPERATING_HISTORY_KEY) as {value:string}|undefined;
+      if(operatingHistoryRow)validateOperatingReportingHistory(JSON.parse(operatingHistoryRow.value),state.inceptionAt);
       const tradesRow=db.prepare("SELECT value FROM metadata WHERE key='reporting_trades'").get() as {value:string}|undefined;
       if(tradesRow){
         const cache=validateReportingTradeCache(JSON.parse(tradesRow.value),state.accountId,state.inceptionAt,state.lastAt);
@@ -231,7 +238,7 @@ export class FinancialBackupStore{
       throw error;
     }finally{try{await worker?.close();}finally{closeSync(operation);}}
   }
-  private artifactWorker(){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.maxBytes});}
+  private artifactWorker(){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes});}
   /** Runtime-safe pending maintenance; all SQLite artifact work runs off-thread. */
   async maintainPending():Promise<FinancialBackup|null>{
     const operation=await this.acquireOperationAsync();let worker:ArtifactWorker|undefined;
