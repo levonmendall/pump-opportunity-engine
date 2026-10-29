@@ -1,0 +1,1426 @@
+{
+  "kind": "retained-public-counter-attribution-v1",
+  "createdAt": "2026-10-29T19:02:56.307058+00:00",
+  "inputPrefixSha256": "a87c0a38faf0e3cd3448d1d5e05e1fa26e3bd1c7da9105c8f276e963f8dfc618",
+  "inputBytes": 874698,
+  "frozenSha256": "78738dbdc9138d0e05404ac650fbcdf766d5a20021b90b0c5c534b2618499a10",
+  "frozenBytes": 120281,
+  "frozenFile": "counter-78-restart-brackets.snapshots.ndjson",
+  "finding": "Counter77 to78 first appears in first retained restarted-run frame9564 at18:50:52.107, not19:00. Public decisions do not identify a corresponding newly accepted candidate. No new-run PAPER qualification,attempt,fill is evidenced.",
+  "limitations": [
+    "Public counters may include inherited historical totals; no whole-run exact action provenance is supplied by public snapshots.",
+    "Run transition is an actual segment boundary; no uninterrupted interval claimed.",
+    "No private ledger, service, provider, network or account access was performed."
+  ],
+  "brackets": [
+    {
+      "sequence": "9560",
+      "generatedAt": "2026-10-29T18:50:02.686Z",
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 77,
+      "decisions": [
+        {
+          "id": "native-paper-20261029183807362:0:1793299160933",
+          "mint": "95eDcs1z7oYxQ91XbVVUWjFZNtdvJgGVhp7NuLCpump",
+          "at": "2026-10-29T18:39:20.933Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:1:1793299182452",
+          "mint": "B41bvvrSQfgCvFNh5245pBQmNcrraZH3YaQZ9JvBpump",
+          "at": "2026-10-29T18:39:42.452Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:2:1793299182714",
+          "mint": "6bjQrNGReCatpPYmFBvCunMfWucwnsi3wm1NhcJSpump",
+          "at": "2026-10-29T18:39:42.714Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:3:1793299232455",
+          "mint": "EY2DjdUusJDmdCqB13qpNdcDccihXz8qUQgKjEaGpump",
+          "at": "2026-10-29T18:40:32.455Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:4:1793299251284",
+          "mint": "5Go6dTdJybUHYugXYrTyygAmXrimq3K6ci13bpAtpump",
+          "at": "2026-10-29T18:40:51.284Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:5:1793299350791",
+          "mint": "7i7ioekovXkyRDDVnVoLWv4q3sYy5EB2YQDESNYCpump",
+          "at": "2026-10-29T18:42:30.791Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:6:1793299382457",
+          "mint": "shTHzjQ8iwWef2aK67RDQnMfJibtT6qet8bZT21pump",
+          "at": "2026-10-29T18:43:02.457Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:7:1793299382715",
+          "mint": "7JxfCxFrgraC7FVECJHBxJUvJofkXj7bY8HPtxTapump",
+          "at": "2026-10-29T18:43:02.715Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:8:1793299513856",
+          "mint": "ENn7T5Y2P1cYU9Zap9C1V1PXXSun84CadrtcrsXGpump",
+          "at": "2026-10-29T18:45:13.856Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:9:1793299532305",
+          "mint": "FBACZF1nWvsGubj2sJZsaAjgmKnxkUfYGYXZ1Zyjpump",
+          "at": "2026-10-29T18:45:32.305Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:10:1793299532576",
+          "mint": "9wBdi8JhdsPWZJGYeWQADwz8ArV9pPKjdtayc4XXpump",
+          "at": "2026-10-29T18:45:32.576Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:11:1793299605776",
+          "mint": "CBNReTcmyjRgM6Co81PKspGzNkW9AmMm9u8RUoaHpump",
+          "at": "2026-10-29T18:46:45.776Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:12:1793299622039",
+          "mint": "GXQVzSaNGQiSy7Kxpvox3HE4bJujFa666E2wvbrrpump",
+          "at": "2026-10-29T18:47:02.039Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:13:1793299622655",
+          "mint": "7k12PzDsWRfL9YbNgV6iCwKoyNpNGLoJNK17hm26pump",
+          "at": "2026-10-29T18:47:02.655Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:14:1793299623213",
+          "mint": "anoYHEbNxTUSMdAAyaSZ3BBAfxbYvNHTVy1vGpYpump",
+          "at": "2026-10-29T18:47:03.213Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:15:1793299714137",
+          "mint": "3cN6fwokMAYP1pyAn4MjjLL8mL9axyxhvjS9c6bzpump",
+          "at": "2026-10-29T18:48:34.137Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:16:1793299714379",
+          "mint": "3brs5nWeVj8vLCsmgWcXsgbYgmM6ogt9RgrBk6iqpump",
+          "at": "2026-10-29T18:48:34.379Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:17:1793299762069",
+          "mint": "J6YjAvE11a8UZMe55Eqeq2SwKvkJgQAqKXunCbntpump",
+          "at": "2026-10-29T18:49:22.069Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:18:1793299771415",
+          "mint": "Dr24BUPzDZzxeZW9SXu6ctNU8TcHv54bEfPDbyXagaDw",
+          "at": "2026-10-29T18:49:31.415Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:19:1793299802375",
+          "mint": "DQqfhkvY1pKyWXenZUdHXSC38RZj4p1F3D8MHtCvpump",
+          "at": "2026-10-29T18:50:02.375Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:20:1793299802633",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T18:50:02.633Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 37,
+        "supported": 37,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 701
+      }
+    },
+    {
+      "sequence": "9561",
+      "generatedAt": "2026-10-29T18:50:17.711Z",
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 77,
+      "decisions": [
+        {
+          "id": "native-paper-20261029183807362:0:1793299160933",
+          "mint": "95eDcs1z7oYxQ91XbVVUWjFZNtdvJgGVhp7NuLCpump",
+          "at": "2026-10-29T18:39:20.933Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:1:1793299182452",
+          "mint": "B41bvvrSQfgCvFNh5245pBQmNcrraZH3YaQZ9JvBpump",
+          "at": "2026-10-29T18:39:42.452Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:2:1793299182714",
+          "mint": "6bjQrNGReCatpPYmFBvCunMfWucwnsi3wm1NhcJSpump",
+          "at": "2026-10-29T18:39:42.714Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:3:1793299232455",
+          "mint": "EY2DjdUusJDmdCqB13qpNdcDccihXz8qUQgKjEaGpump",
+          "at": "2026-10-29T18:40:32.455Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:4:1793299251284",
+          "mint": "5Go6dTdJybUHYugXYrTyygAmXrimq3K6ci13bpAtpump",
+          "at": "2026-10-29T18:40:51.284Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:5:1793299350791",
+          "mint": "7i7ioekovXkyRDDVnVoLWv4q3sYy5EB2YQDESNYCpump",
+          "at": "2026-10-29T18:42:30.791Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:6:1793299382457",
+          "mint": "shTHzjQ8iwWef2aK67RDQnMfJibtT6qet8bZT21pump",
+          "at": "2026-10-29T18:43:02.457Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:7:1793299382715",
+          "mint": "7JxfCxFrgraC7FVECJHBxJUvJofkXj7bY8HPtxTapump",
+          "at": "2026-10-29T18:43:02.715Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:8:1793299513856",
+          "mint": "ENn7T5Y2P1cYU9Zap9C1V1PXXSun84CadrtcrsXGpump",
+          "at": "2026-10-29T18:45:13.856Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:9:1793299532305",
+          "mint": "FBACZF1nWvsGubj2sJZsaAjgmKnxkUfYGYXZ1Zyjpump",
+          "at": "2026-10-29T18:45:32.305Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:10:1793299532576",
+          "mint": "9wBdi8JhdsPWZJGYeWQADwz8ArV9pPKjdtayc4XXpump",
+          "at": "2026-10-29T18:45:32.576Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:11:1793299605776",
+          "mint": "CBNReTcmyjRgM6Co81PKspGzNkW9AmMm9u8RUoaHpump",
+          "at": "2026-10-29T18:46:45.776Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:12:1793299622039",
+          "mint": "GXQVzSaNGQiSy7Kxpvox3HE4bJujFa666E2wvbrrpump",
+          "at": "2026-10-29T18:47:02.039Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:13:1793299622655",
+          "mint": "7k12PzDsWRfL9YbNgV6iCwKoyNpNGLoJNK17hm26pump",
+          "at": "2026-10-29T18:47:02.655Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:14:1793299623213",
+          "mint": "anoYHEbNxTUSMdAAyaSZ3BBAfxbYvNHTVy1vGpYpump",
+          "at": "2026-10-29T18:47:03.213Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:15:1793299714137",
+          "mint": "3cN6fwokMAYP1pyAn4MjjLL8mL9axyxhvjS9c6bzpump",
+          "at": "2026-10-29T18:48:34.137Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:16:1793299714379",
+          "mint": "3brs5nWeVj8vLCsmgWcXsgbYgmM6ogt9RgrBk6iqpump",
+          "at": "2026-10-29T18:48:34.379Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:17:1793299762069",
+          "mint": "J6YjAvE11a8UZMe55Eqeq2SwKvkJgQAqKXunCbntpump",
+          "at": "2026-10-29T18:49:22.069Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:18:1793299771415",
+          "mint": "Dr24BUPzDZzxeZW9SXu6ctNU8TcHv54bEfPDbyXagaDw",
+          "at": "2026-10-29T18:49:31.415Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:19:1793299802375",
+          "mint": "DQqfhkvY1pKyWXenZUdHXSC38RZj4p1F3D8MHtCvpump",
+          "at": "2026-10-29T18:50:02.375Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:20:1793299802633",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T18:50:02.633Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 39,
+        "supported": 39,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 715
+      }
+    },
+    {
+      "sequence": "9562",
+      "generatedAt": "2026-10-29T18:50:33.103Z",
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 77,
+      "decisions": [
+        {
+          "id": "native-paper-20261029183807362:0:1793299160933",
+          "mint": "95eDcs1z7oYxQ91XbVVUWjFZNtdvJgGVhp7NuLCpump",
+          "at": "2026-10-29T18:39:20.933Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:1:1793299182452",
+          "mint": "B41bvvrSQfgCvFNh5245pBQmNcrraZH3YaQZ9JvBpump",
+          "at": "2026-10-29T18:39:42.452Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:2:1793299182714",
+          "mint": "6bjQrNGReCatpPYmFBvCunMfWucwnsi3wm1NhcJSpump",
+          "at": "2026-10-29T18:39:42.714Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:3:1793299232455",
+          "mint": "EY2DjdUusJDmdCqB13qpNdcDccihXz8qUQgKjEaGpump",
+          "at": "2026-10-29T18:40:32.455Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:4:1793299251284",
+          "mint": "5Go6dTdJybUHYugXYrTyygAmXrimq3K6ci13bpAtpump",
+          "at": "2026-10-29T18:40:51.284Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:5:1793299350791",
+          "mint": "7i7ioekovXkyRDDVnVoLWv4q3sYy5EB2YQDESNYCpump",
+          "at": "2026-10-29T18:42:30.791Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:6:1793299382457",
+          "mint": "shTHzjQ8iwWef2aK67RDQnMfJibtT6qet8bZT21pump",
+          "at": "2026-10-29T18:43:02.457Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:7:1793299382715",
+          "mint": "7JxfCxFrgraC7FVECJHBxJUvJofkXj7bY8HPtxTapump",
+          "at": "2026-10-29T18:43:02.715Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:8:1793299513856",
+          "mint": "ENn7T5Y2P1cYU9Zap9C1V1PXXSun84CadrtcrsXGpump",
+          "at": "2026-10-29T18:45:13.856Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:9:1793299532305",
+          "mint": "FBACZF1nWvsGubj2sJZsaAjgmKnxkUfYGYXZ1Zyjpump",
+          "at": "2026-10-29T18:45:32.305Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:10:1793299532576",
+          "mint": "9wBdi8JhdsPWZJGYeWQADwz8ArV9pPKjdtayc4XXpump",
+          "at": "2026-10-29T18:45:32.576Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:11:1793299605776",
+          "mint": "CBNReTcmyjRgM6Co81PKspGzNkW9AmMm9u8RUoaHpump",
+          "at": "2026-10-29T18:46:45.776Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:12:1793299622039",
+          "mint": "GXQVzSaNGQiSy7Kxpvox3HE4bJujFa666E2wvbrrpump",
+          "at": "2026-10-29T18:47:02.039Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:13:1793299622655",
+          "mint": "7k12PzDsWRfL9YbNgV6iCwKoyNpNGLoJNK17hm26pump",
+          "at": "2026-10-29T18:47:02.655Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:14:1793299623213",
+          "mint": "anoYHEbNxTUSMdAAyaSZ3BBAfxbYvNHTVy1vGpYpump",
+          "at": "2026-10-29T18:47:03.213Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:15:1793299714137",
+          "mint": "3cN6fwokMAYP1pyAn4MjjLL8mL9axyxhvjS9c6bzpump",
+          "at": "2026-10-29T18:48:34.137Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:16:1793299714379",
+          "mint": "3brs5nWeVj8vLCsmgWcXsgbYgmM6ogt9RgrBk6iqpump",
+          "at": "2026-10-29T18:48:34.379Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:17:1793299762069",
+          "mint": "J6YjAvE11a8UZMe55Eqeq2SwKvkJgQAqKXunCbntpump",
+          "at": "2026-10-29T18:49:22.069Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:18:1793299771415",
+          "mint": "Dr24BUPzDZzxeZW9SXu6ctNU8TcHv54bEfPDbyXagaDw",
+          "at": "2026-10-29T18:49:31.415Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:19:1793299802375",
+          "mint": "DQqfhkvY1pKyWXenZUdHXSC38RZj4p1F3D8MHtCvpump",
+          "at": "2026-10-29T18:50:02.375Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:20:1793299802633",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T18:50:02.633Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029183807362:21:1793299832227",
+          "mint": "EaiBBHDmijokKiyZ29cySJugJ5DBbFnTo8toWpCcpump",
+          "at": "2026-10-29T18:50:32.227Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 40,
+        "supported": 40,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 730
+      }
+    },
+    {
+      "sequence": "9564",
+      "generatedAt": "2026-10-29T18:50:52.107Z",
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 78,
+      "decisions": [],
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 0,
+        "supported": 0,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0
+      }
+    },
+    {
+      "sequence": "9565",
+      "generatedAt": "2026-10-29T18:51:07.132Z",
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 78,
+      "decisions": [],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 4,
+        "supported": 4,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 14
+      }
+    },
+    {
+      "sequence": "9566",
+      "generatedAt": "2026-10-29T18:51:22.134Z",
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 78,
+      "decisions": [],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 4,
+        "supported": 4,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 29
+      }
+    },
+    {
+      "sequence": "9599",
+      "generatedAt": "2026-10-29T18:59:41.914Z",
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 78,
+      "decisions": [
+        {
+          "id": "native-paper-20261029185051115:0:1793299920898",
+          "mint": "BCjPUs9bjKLxCJTSp98rd25Rj1q8KTjqgjggMcqypump",
+          "at": "2026-10-29T18:52:00.898Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:1:1793299942373",
+          "mint": "FcRUMWBxUS7baQGMcRKnLQBSSuuJiSF1NG4GANsGpump",
+          "at": "2026-10-29T18:52:22.373Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:2:1793299942772",
+          "mint": "7e215FBxgyJgjPqEWjXyXoXC3cWkK6X7XWFRYusspump",
+          "at": "2026-10-29T18:52:22.772Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:3:1793299943031",
+          "mint": "7iXEe4CjF8rWJCcpF2nwbmvxzUUTTFxnEMaKmLDMpump",
+          "at": "2026-10-29T18:52:23.031Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:4:1793300011161",
+          "mint": "jFdFuvytKYfHytHr1pE3UMHxA3ekuoDKBRKmFnKpump",
+          "at": "2026-10-29T18:53:31.161Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:5:1793300012134",
+          "mint": "GiKXjT4rz8kLk9nDQj2jUh61wLMV2PVGj7gNCNfjpump",
+          "at": "2026-10-29T18:53:32.134Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:6:1793300031410",
+          "mint": "HTesL5j78nf3jQGDzNhesK69M8nFjHdk5EQVKS52pump",
+          "at": "2026-10-29T18:53:51.410Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:7:1793300031670",
+          "mint": "mF7fEh6a4xVp5GBfUhrtEz8SHZe2eKCBa1BcKPZpump",
+          "at": "2026-10-29T18:53:51.670Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:8:1793300101497",
+          "mint": "6HXP5Lb33ZfPAZdaevApB8LEWzJ18qURCDsbgKSLpump",
+          "at": "2026-10-29T18:55:01.497Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:9:1793300101865",
+          "mint": "6RxDziVi7BY52xvbbCL9necM4h612z4ZiyPH4DeXpump",
+          "at": "2026-10-29T18:55:01.865Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:10:1793300102130",
+          "mint": "VwPwQ55MDR6c2HyySzJvig5pG36PWE7PRpezgKLpump",
+          "at": "2026-10-29T18:55:02.130Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:11:1793300102869",
+          "mint": "3PsVQfRUCX9fWSPxmLNhu39P8ZP2A2DytxtsKr6opump",
+          "at": "2026-10-29T18:55:02.869Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:12:1793300171199",
+          "mint": "EVogkkzvpWtTbuNouiVRcoi29TDqqFFFkR7qQuUMpump",
+          "at": "2026-10-29T18:56:11.199Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:13:1793300171935",
+          "mint": "BzvqcbkCCF2fuTc99Ngb9UHNSVKXuZN9nBH9uwNQpump",
+          "at": "2026-10-29T18:56:11.935Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:14:1793300202611",
+          "mint": "8pE82V65WnpGLKWVHKanGTaEammcDXF4YYLRG2b2pump",
+          "at": "2026-10-29T18:56:42.611Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:15:1793300202938",
+          "mint": "AzYd4vhrdoHrrRKBDm6cyEY5QZzWTRVCLGuDP3T6pump",
+          "at": "2026-10-29T18:56:42.938Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:16:1793300264543",
+          "mint": "9XSR5yQfBfmSJmBNe5xsFnvPS3jt3en8P4FK33Mipump",
+          "at": "2026-10-29T18:57:44.543Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:17:1793300264940",
+          "mint": "8YQ2bnmGXeCSG3LGaMV3EUrsgtt5TYz9dTSw5Hdapump",
+          "at": "2026-10-29T18:57:44.940Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:18:1793300272435",
+          "mint": "ASkh7DQAixN47AuB4k9PZbdn2VVEN5nT1RqVRfgYpump",
+          "at": "2026-10-29T18:57:52.435Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:19:1793300372088",
+          "mint": "FkdKocLVj1cHzvzG1Kr4ieY2Z4Fi4iuWmzthCsTbpump",
+          "at": "2026-10-29T18:59:32.088Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:20:1793300372360",
+          "mint": "H2j41gvWLVDXVfasYoEXtrc4YSZh8HPmsjJUnvMcpump",
+          "at": "2026-10-29T18:59:32.360Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:21:1793300372624",
+          "mint": "EPW6eXVw2pTRPpytJrfC8dU2xSHcD11R5km7WuWGpump",
+          "at": "2026-10-29T18:59:32.624Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:22:1793300372883",
+          "mint": "2QoAVZHojBAWdpkrdesU4WA5CuXqSMbni4taiW6Jpump",
+          "at": "2026-10-29T18:59:32.883Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 28,
+        "supported": 28,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 517
+      }
+    },
+    {
+      "sequence": "9600",
+      "generatedAt": "2026-10-29T18:59:56.963Z",
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 78,
+      "decisions": [
+        {
+          "id": "native-paper-20261029185051115:0:1793299920898",
+          "mint": "BCjPUs9bjKLxCJTSp98rd25Rj1q8KTjqgjggMcqypump",
+          "at": "2026-10-29T18:52:00.898Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:1:1793299942373",
+          "mint": "FcRUMWBxUS7baQGMcRKnLQBSSuuJiSF1NG4GANsGpump",
+          "at": "2026-10-29T18:52:22.373Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:2:1793299942772",
+          "mint": "7e215FBxgyJgjPqEWjXyXoXC3cWkK6X7XWFRYusspump",
+          "at": "2026-10-29T18:52:22.772Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:3:1793299943031",
+          "mint": "7iXEe4CjF8rWJCcpF2nwbmvxzUUTTFxnEMaKmLDMpump",
+          "at": "2026-10-29T18:52:23.031Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:4:1793300011161",
+          "mint": "jFdFuvytKYfHytHr1pE3UMHxA3ekuoDKBRKmFnKpump",
+          "at": "2026-10-29T18:53:31.161Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:5:1793300012134",
+          "mint": "GiKXjT4rz8kLk9nDQj2jUh61wLMV2PVGj7gNCNfjpump",
+          "at": "2026-10-29T18:53:32.134Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:6:1793300031410",
+          "mint": "HTesL5j78nf3jQGDzNhesK69M8nFjHdk5EQVKS52pump",
+          "at": "2026-10-29T18:53:51.410Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:7:1793300031670",
+          "mint": "mF7fEh6a4xVp5GBfUhrtEz8SHZe2eKCBa1BcKPZpump",
+          "at": "2026-10-29T18:53:51.670Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:8:1793300101497",
+          "mint": "6HXP5Lb33ZfPAZdaevApB8LEWzJ18qURCDsbgKSLpump",
+          "at": "2026-10-29T18:55:01.497Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:9:1793300101865",
+          "mint": "6RxDziVi7BY52xvbbCL9necM4h612z4ZiyPH4DeXpump",
+          "at": "2026-10-29T18:55:01.865Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:10:1793300102130",
+          "mint": "VwPwQ55MDR6c2HyySzJvig5pG36PWE7PRpezgKLpump",
+          "at": "2026-10-29T18:55:02.130Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:11:1793300102869",
+          "mint": "3PsVQfRUCX9fWSPxmLNhu39P8ZP2A2DytxtsKr6opump",
+          "at": "2026-10-29T18:55:02.869Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:12:1793300171199",
+          "mint": "EVogkkzvpWtTbuNouiVRcoi29TDqqFFFkR7qQuUMpump",
+          "at": "2026-10-29T18:56:11.199Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:13:1793300171935",
+          "mint": "BzvqcbkCCF2fuTc99Ngb9UHNSVKXuZN9nBH9uwNQpump",
+          "at": "2026-10-29T18:56:11.935Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:14:1793300202611",
+          "mint": "8pE82V65WnpGLKWVHKanGTaEammcDXF4YYLRG2b2pump",
+          "at": "2026-10-29T18:56:42.611Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:15:1793300202938",
+          "mint": "AzYd4vhrdoHrrRKBDm6cyEY5QZzWTRVCLGuDP3T6pump",
+          "at": "2026-10-29T18:56:42.938Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:16:1793300264543",
+          "mint": "9XSR5yQfBfmSJmBNe5xsFnvPS3jt3en8P4FK33Mipump",
+          "at": "2026-10-29T18:57:44.543Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:17:1793300264940",
+          "mint": "8YQ2bnmGXeCSG3LGaMV3EUrsgtt5TYz9dTSw5Hdapump",
+          "at": "2026-10-29T18:57:44.940Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:18:1793300272435",
+          "mint": "ASkh7DQAixN47AuB4k9PZbdn2VVEN5nT1RqVRfgYpump",
+          "at": "2026-10-29T18:57:52.435Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:19:1793300372088",
+          "mint": "FkdKocLVj1cHzvzG1Kr4ieY2Z4Fi4iuWmzthCsTbpump",
+          "at": "2026-10-29T18:59:32.088Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:20:1793300372360",
+          "mint": "H2j41gvWLVDXVfasYoEXtrc4YSZh8HPmsjJUnvMcpump",
+          "at": "2026-10-29T18:59:32.360Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:21:1793300372624",
+          "mint": "EPW6eXVw2pTRPpytJrfC8dU2xSHcD11R5km7WuWGpump",
+          "at": "2026-10-29T18:59:32.624Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:22:1793300372883",
+          "mint": "2QoAVZHojBAWdpkrdesU4WA5CuXqSMbni4taiW6Jpump",
+          "at": "2026-10-29T18:59:32.883Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 28,
+        "supported": 28,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 531
+      }
+    },
+    {
+      "sequence": "9601",
+      "generatedAt": "2026-10-29T19:00:12.010Z",
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 78,
+      "decisions": [
+        {
+          "id": "native-paper-20261029185051115:0:1793299920898",
+          "mint": "BCjPUs9bjKLxCJTSp98rd25Rj1q8KTjqgjggMcqypump",
+          "at": "2026-10-29T18:52:00.898Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:1:1793299942373",
+          "mint": "FcRUMWBxUS7baQGMcRKnLQBSSuuJiSF1NG4GANsGpump",
+          "at": "2026-10-29T18:52:22.373Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:2:1793299942772",
+          "mint": "7e215FBxgyJgjPqEWjXyXoXC3cWkK6X7XWFRYusspump",
+          "at": "2026-10-29T18:52:22.772Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:3:1793299943031",
+          "mint": "7iXEe4CjF8rWJCcpF2nwbmvxzUUTTFxnEMaKmLDMpump",
+          "at": "2026-10-29T18:52:23.031Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:4:1793300011161",
+          "mint": "jFdFuvytKYfHytHr1pE3UMHxA3ekuoDKBRKmFnKpump",
+          "at": "2026-10-29T18:53:31.161Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:5:1793300012134",
+          "mint": "GiKXjT4rz8kLk9nDQj2jUh61wLMV2PVGj7gNCNfjpump",
+          "at": "2026-10-29T18:53:32.134Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:6:1793300031410",
+          "mint": "HTesL5j78nf3jQGDzNhesK69M8nFjHdk5EQVKS52pump",
+          "at": "2026-10-29T18:53:51.410Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:7:1793300031670",
+          "mint": "mF7fEh6a4xVp5GBfUhrtEz8SHZe2eKCBa1BcKPZpump",
+          "at": "2026-10-29T18:53:51.670Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:8:1793300101497",
+          "mint": "6HXP5Lb33ZfPAZdaevApB8LEWzJ18qURCDsbgKSLpump",
+          "at": "2026-10-29T18:55:01.497Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:9:1793300101865",
+          "mint": "6RxDziVi7BY52xvbbCL9necM4h612z4ZiyPH4DeXpump",
+          "at": "2026-10-29T18:55:01.865Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:10:1793300102130",
+          "mint": "VwPwQ55MDR6c2HyySzJvig5pG36PWE7PRpezgKLpump",
+          "at": "2026-10-29T18:55:02.130Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:11:1793300102869",
+          "mint": "3PsVQfRUCX9fWSPxmLNhu39P8ZP2A2DytxtsKr6opump",
+          "at": "2026-10-29T18:55:02.869Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:12:1793300171199",
+          "mint": "EVogkkzvpWtTbuNouiVRcoi29TDqqFFFkR7qQuUMpump",
+          "at": "2026-10-29T18:56:11.199Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:13:1793300171935",
+          "mint": "BzvqcbkCCF2fuTc99Ngb9UHNSVKXuZN9nBH9uwNQpump",
+          "at": "2026-10-29T18:56:11.935Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:14:1793300202611",
+          "mint": "8pE82V65WnpGLKWVHKanGTaEammcDXF4YYLRG2b2pump",
+          "at": "2026-10-29T18:56:42.611Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:15:1793300202938",
+          "mint": "AzYd4vhrdoHrrRKBDm6cyEY5QZzWTRVCLGuDP3T6pump",
+          "at": "2026-10-29T18:56:42.938Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:16:1793300264543",
+          "mint": "9XSR5yQfBfmSJmBNe5xsFnvPS3jt3en8P4FK33Mipump",
+          "at": "2026-10-29T18:57:44.543Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:17:1793300264940",
+          "mint": "8YQ2bnmGXeCSG3LGaMV3EUrsgtt5TYz9dTSw5Hdapump",
+          "at": "2026-10-29T18:57:44.940Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:18:1793300272435",
+          "mint": "ASkh7DQAixN47AuB4k9PZbdn2VVEN5nT1RqVRfgYpump",
+          "at": "2026-10-29T18:57:52.435Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:19:1793300372088",
+          "mint": "FkdKocLVj1cHzvzG1Kr4ieY2Z4Fi4iuWmzthCsTbpump",
+          "at": "2026-10-29T18:59:32.088Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:20:1793300372360",
+          "mint": "H2j41gvWLVDXVfasYoEXtrc4YSZh8HPmsjJUnvMcpump",
+          "at": "2026-10-29T18:59:32.360Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:21:1793300372624",
+          "mint": "EPW6eXVw2pTRPpytJrfC8dU2xSHcD11R5km7WuWGpump",
+          "at": "2026-10-29T18:59:32.624Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:22:1793300372883",
+          "mint": "2QoAVZHojBAWdpkrdesU4WA5CuXqSMbni4taiW6Jpump",
+          "at": "2026-10-29T18:59:32.883Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 28,
+        "supported": 28,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 546
+      }
+    },
+    {
+      "sequence": "9602",
+      "generatedAt": "2026-10-29T19:00:27.031Z",
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "predictivePasses": 78,
+      "decisions": [
+        {
+          "id": "native-paper-20261029185051115:0:1793299920898",
+          "mint": "BCjPUs9bjKLxCJTSp98rd25Rj1q8KTjqgjggMcqypump",
+          "at": "2026-10-29T18:52:00.898Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:1:1793299942373",
+          "mint": "FcRUMWBxUS7baQGMcRKnLQBSSuuJiSF1NG4GANsGpump",
+          "at": "2026-10-29T18:52:22.373Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:2:1793299942772",
+          "mint": "7e215FBxgyJgjPqEWjXyXoXC3cWkK6X7XWFRYusspump",
+          "at": "2026-10-29T18:52:22.772Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:3:1793299943031",
+          "mint": "7iXEe4CjF8rWJCcpF2nwbmvxzUUTTFxnEMaKmLDMpump",
+          "at": "2026-10-29T18:52:23.031Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:4:1793300011161",
+          "mint": "jFdFuvytKYfHytHr1pE3UMHxA3ekuoDKBRKmFnKpump",
+          "at": "2026-10-29T18:53:31.161Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:5:1793300012134",
+          "mint": "GiKXjT4rz8kLk9nDQj2jUh61wLMV2PVGj7gNCNfjpump",
+          "at": "2026-10-29T18:53:32.134Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:6:1793300031410",
+          "mint": "HTesL5j78nf3jQGDzNhesK69M8nFjHdk5EQVKS52pump",
+          "at": "2026-10-29T18:53:51.410Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:7:1793300031670",
+          "mint": "mF7fEh6a4xVp5GBfUhrtEz8SHZe2eKCBa1BcKPZpump",
+          "at": "2026-10-29T18:53:51.670Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:8:1793300101497",
+          "mint": "6HXP5Lb33ZfPAZdaevApB8LEWzJ18qURCDsbgKSLpump",
+          "at": "2026-10-29T18:55:01.497Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:9:1793300101865",
+          "mint": "6RxDziVi7BY52xvbbCL9necM4h612z4ZiyPH4DeXpump",
+          "at": "2026-10-29T18:55:01.865Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:10:1793300102130",
+          "mint": "VwPwQ55MDR6c2HyySzJvig5pG36PWE7PRpezgKLpump",
+          "at": "2026-10-29T18:55:02.130Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:11:1793300102869",
+          "mint": "3PsVQfRUCX9fWSPxmLNhu39P8ZP2A2DytxtsKr6opump",
+          "at": "2026-10-29T18:55:02.869Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:12:1793300171199",
+          "mint": "EVogkkzvpWtTbuNouiVRcoi29TDqqFFFkR7qQuUMpump",
+          "at": "2026-10-29T18:56:11.199Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:13:1793300171935",
+          "mint": "BzvqcbkCCF2fuTc99Ngb9UHNSVKXuZN9nBH9uwNQpump",
+          "at": "2026-10-29T18:56:11.935Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:14:1793300202611",
+          "mint": "8pE82V65WnpGLKWVHKanGTaEammcDXF4YYLRG2b2pump",
+          "at": "2026-10-29T18:56:42.611Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:15:1793300202938",
+          "mint": "AzYd4vhrdoHrrRKBDm6cyEY5QZzWTRVCLGuDP3T6pump",
+          "at": "2026-10-29T18:56:42.938Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:16:1793300264543",
+          "mint": "9XSR5yQfBfmSJmBNe5xsFnvPS3jt3en8P4FK33Mipump",
+          "at": "2026-10-29T18:57:44.543Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:17:1793300264940",
+          "mint": "8YQ2bnmGXeCSG3LGaMV3EUrsgtt5TYz9dTSw5Hdapump",
+          "at": "2026-10-29T18:57:44.940Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:18:1793300272435",
+          "mint": "ASkh7DQAixN47AuB4k9PZbdn2VVEN5nT1RqVRfgYpump",
+          "at": "2026-10-29T18:57:52.435Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:19:1793300372088",
+          "mint": "FkdKocLVj1cHzvzG1Kr4ieY2Z4Fi4iuWmzthCsTbpump",
+          "at": "2026-10-29T18:59:32.088Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:20:1793300372360",
+          "mint": "H2j41gvWLVDXVfasYoEXtrc4YSZh8HPmsjJUnvMcpump",
+          "at": "2026-10-29T18:59:32.360Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:21:1793300372624",
+          "mint": "EPW6eXVw2pTRPpytJrfC8dU2xSHcD11R5km7WuWGpump",
+          "at": "2026-10-29T18:59:32.624Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029185051115:22:1793300372883",
+          "mint": "2QoAVZHojBAWdpkrdesU4WA5CuXqSMbni4taiW6Jpump",
+          "at": "2026-10-29T18:59:32.883Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "funnel": {
+        "discovered": 28,
+        "supported": 28,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 561
+      }
+    }
+  ]
+}

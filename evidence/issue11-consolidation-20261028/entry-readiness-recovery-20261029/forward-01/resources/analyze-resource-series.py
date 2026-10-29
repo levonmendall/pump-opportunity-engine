@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+"""Reproduce run-bound resource facts from retained read-only EC2 receipts."""
+import datetime,json,pathlib
+ROOT=pathlib.Path(__file__).resolve().parent
+SOURCE={'commit':'f96f02eeccd56dda6ce811bdc4405f237224c54f','sha256':'b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9'}
+CONFIG='acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf'
+ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e'
+def iso(ms):return datetime.datetime.fromtimestamp(ms/1000,datetime.timezone.utc).isoformat()
+def at(text):return int(datetime.datetime.fromisoformat(text.replace('Z','+00:00')).timestamp()*1000)
+rows=[]
+for path in ROOT.glob('host-*.json'):
+ d=json.loads(path.read_bytes());u=d['upgradeVerification']['value'];v=u['verification'];p=d['publicStatus'];r=d['hostResourceUsage'];roles={x['role']:x for x in d.get('ownedProcessRoles',[])};s=d['service'];ack=d.get('acceptedSource',{}).get('value',{});new_ack=ack.get('source')==SOURCE and ack.get('accountId')==ACCOUNT
+ assert u['complete']is True and v['complete']is True and u['source']==SOURCE and v['configurationSha256']==CONFIG
+ assert p['accountId']==ACCOUNT and p['release']==SOURCE['commit'] and p['mode']=='PAPER' and p['liveTrading']is False
+ assert v['financialVerification']['identityAndInceptionPreserved']and v['financialVerification']['initialFundingAndRoundingPreserved']and v['financialVerification']['journalAndActionPrefixPreserved']
+ generation=[s['MainPID'],roles.get('native-source',{}).get('pid'),ack.get('runId')if new_ack else None,SOURCE['commit'],CONFIG];active=s.get('ActiveState')=='active'and s.get('SubState')=='running'and str(s.get('MainPID','')).isdigit()and int(s['MainPID'])>0 and type(roles.get('native-source',{}).get('pid'))is int and roles['native-source']['pid']>0
+ rows.append({'file':path.name,'checkedAt':d['checkedAt'],'utc':iso(d['checkedAt']),'generation':generation,'newRunAcknowledged':new_ack,'activeGeneration':active,'ackSourceAt':ack.get('sourceAtMs')if new_ack else None,'ackAcceptedAt':ack.get('acknowledgedAtMs')if new_ack else None,'ackDistinct':ack.get('acceptedDistinctSourcesThisSupervisor')if new_ack else None,'restartCount':s['NRestarts'],'sourceAt':p['generatedAt'],'reconciliationAgeAtSourceMs':at(p['generatedAt'])-at(p['lastReconciledAt'])if p.get('lastReconciledAt')else None,'blocker':p.get('blocker'),'entriesDisabled':p.get('entriesDisabled'),'feedConnected':p.get('feedConnected'),'observedShortlist':p.get('shortlistCount'),'resources':r,'roles':roles,'memoryEvents':d.get('effectivePerformanceControls',{}).get('cgroupMemoryEvents')})
+rows.sort(key=lambda r:r['checkedAt']);pairs=[];skipped=[]
+for a,b in zip(rows,rows[1:]):
+ if not a['activeGeneration']or not b['activeGeneration']or not a['newRunAcknowledged']or not b['newRunAcknowledged']or a['generation']!=b['generation']or a['restartCount']!=b['restartCount']:
+  skipped.append({'from':a['file'],'until':b['file'],'reason':'Missing active generation/new-run acknowledgment or changed source/PID/run; no stopped or cross-generation delta computed.'});continue
+ seconds=(b['checkedAt']-a['checkedAt'])/1000;assert seconds>0;x=a['resources'];y=b['resources'];c0=x['serviceCpu'];c1=y['serviceCpu'];i0=x['serviceIo'];i1=y['serviceIo'];assert c0['available']and c1['available']and i0['available']and i1['available']
+ io={k:i1['totals'][k]-i0['totals'][k]for k in i0['totals']if k in i1['totals']};assert all(v>=0 for v in io.values());cpu=c1['usage_usec']-c0['usage_usec'];assert cpu>=0
+ network={};before={v['interface']:v for v in x.get('hostNetwork',{}).get('interfaces',[])}
+ for v in y.get('hostNetwork',{}).get('interfaces',[]):
+  if v['interface']in before:network[v['interface']]={k:v[k]-before[v['interface']][k]for k in ('receivedBytes','transmittedBytes','receivedPackets','transmittedPackets')}
+ pairs.append({'from':a['file'],'until':b['file'],'generation':a['generation'],'seconds':seconds,'serviceCpuOneCoreFraction':cpu/(seconds*1000000),'throttledUsecDelta':c1.get('throttled_usec',0)-c0.get('throttled_usec',0),'serviceIoCounterDeltas':io,'serviceIoBytesPerSecond':{k:io[k]/seconds for k in ('rbytes','wbytes')if k in io},'nativeCpuOneCoreFraction':(b['roles']['native-source']['cpuSeconds']-a['roles']['native-source']['cpuSeconds'])/seconds,'nativeRssBytes':{'start':a['roles']['native-source']['rssBytes'],'end':b['roles']['native-source']['rssBytes']},'cgroupMemoryBytes':{'start':x['serviceMemory']['current']['bytes'],'end':y['serviceMemory']['current']['bytes'],'peakAtEnd':y['serviceMemory']['peak']['bytes']},'hostAvailableMemoryBytes':{'start':x['hostMemory']['availableBytes'],'end':y['hostMemory']['availableBytes']},'hostAvailableDiskBytes':{'start':x['rootFilesystem']['availableBytes'],'end':y['rootFilesystem']['availableBytes']},'hostNetworkCounterDeltas':network,'hostMetricAttribution':'Host memory, free disk and network include unrelated applications; no POE-only attribution. Cgroup I/O includes evidence, ledger, backups and filesystem amplification without separation.'})
+result={'classification':'ACTUAL_READ_ONLY_POST_UPGRADE_RESOURCE_SAMPLES_NOT_OPERATIONAL_ACCEPTANCE','source':SOURCE,'configurationSha256':CONFIG,'samples':rows,'pairs':pairs,'skippedPairs':skipped,'limitations':['Only matching source, native PID, supervisor PID, run ACK and restart generation produce deltas.','No financial database, credential or provider calls are made by this analysis.','Point resource samples and cumulative interval counters do not prove continuous market or position coverage.','Source reconciliation age is assessed at original source generation, never refreshed from receiver time.']}
+(ROOT/'resource-series-analysis.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({'samples':len(rows),'pairs':len(pairs),'skippedPairs':len(skipped),'latest':{k:rows[-1][k]for k in ['utc','generation','newRunAcknowledged','reconciliationAgeAtSourceMs','blocker','entriesDisabled','feedConnected']},'pairSummaries':[{k:p[k]for k in ['seconds','serviceCpuOneCoreFraction','throttledUsecDelta','serviceIoBytesPerSecond','nativeRssBytes','cgroupMemoryBytes']}for p in pairs]},indent=2))

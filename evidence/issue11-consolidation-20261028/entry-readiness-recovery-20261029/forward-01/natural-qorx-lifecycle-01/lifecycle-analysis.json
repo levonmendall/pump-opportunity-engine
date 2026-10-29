@@ -1,0 +1,5446 @@
+{
+  "kind": "independent-natural-paper-lifecycle-public-evidence-v1",
+  "evidenceClass": "ACTUAL_FORWARD_MARKET_PAPER_EXECUTION",
+  "createdAt": "2026-10-29T19:31:09.494210+00:00",
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "source": {
+    "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "run": {
+    "id": "native-paper-20261029185051115",
+    "startedAt": "2026-10-29T18:50:51.115Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+    "strategyVersion": "persistent-buying-pilot-v1"
+  },
+  "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+  "inputProvenance": [
+    {
+      "path": "entry-readiness-recovery-20261029/forward-01/snapshots.ndjson",
+      "bytes": 2142775,
+      "sha256": "e49c9511fc334971e303d320410fbaa762a3c237a08cbcd97322504cbd7ab5ac",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/material-transitions.ndjson",
+      "bytes": 3746244,
+      "sha256": "1fc260db866e1ebced74a50781a6bf0b5d0a11755ac3926408655b70da5a9263",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/rotation-receipts.ndjson",
+      "bytes": 1615,
+      "sha256": "d7e3bdc05508b278601148b570d5b01be1ce93340c49daacabdaf69811de2ea2",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-0.ndjson",
+      "bytes": 368568,
+      "sha256": "24f02ac8bbda7d26e3160f9cc15eb42de740e900037f9ca7f4bc6f9890da1633",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-1.ndjson",
+      "bytes": 1045915,
+      "sha256": "fbbcf759bffe023cc22a2934440e143b055d1df6bc254c4eb8fb384c7e98c989",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+      "bytes": 1039927,
+      "sha256": "7d0e3d56be64a0943c8249ab4496f00a314dab16e7e1fd8779dda6e1b6dfc1d5",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+      "bytes": 1035299,
+      "sha256": "8e5345e68f3ff1f3ddfbcc6a2a5334266df3cf2ed67d413b3a4e3b00f1fa8d76",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+      "bytes": 847614,
+      "sha256": "7eb40ed009bd4649c6d2180599eb50916028b96c5d4220a3242df90f5527dc5f",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-5.ndjson",
+      "bytes": 451270,
+      "sha256": "0d810d92725e60ab0406e187ce64a08b978f35851634a4a461f3b41fc850a32d",
+      "partialTrailingLine": false
+    }
+  ],
+  "frozen": {
+    "path": "source-snapshots.ndjson",
+    "bytes": 1263107,
+    "sha256": "93d481b4c17ba3809de69458b6aff014c6a55554c4969eb6a7e2c6fbc794176b",
+    "distinctSourceFrames": 77,
+    "firstSourceAt": "2026-10-29T19:09:06.295Z",
+    "lastSourceAt": "2026-10-29T19:30:44.840Z"
+  },
+  "sourceFactConflicts": [],
+  "decisions": [
+    {
+      "id": "native-paper-20261029185051115:2:1793301022606",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:10:22.606Z",
+      "stage": "shadow-predictive-not-rejected",
+      "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+    },
+    {
+      "id": "native-paper-20261029185051115:0:1793301024683",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:10:24.683Z",
+      "stage": "missing-data",
+      "reason": "fresh-size-specific-quote-unavailable"
+    },
+    {
+      "id": "native-paper-20261029185051115:1:1793301032782",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:10:32.782Z",
+      "stage": "shadow-predictive-not-rejected",
+      "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+    },
+    {
+      "id": "native-paper-20261029185051115:4:1793301044728",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:10:44.728Z",
+      "stage": "shadow-predictive-not-rejected",
+      "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+    },
+    {
+      "id": "native-paper-20261029185051115:5:1793301054544",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:10:54.544Z",
+      "stage": "shadow-predictive-not-rejected",
+      "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+    },
+    {
+      "id": "native-paper-20261029185051115:1:1793301062376",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:11:02.376Z",
+      "stage": "shadow-predictive-not-rejected",
+      "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+    },
+    {
+      "id": "native-paper-20261029185051115:1:1793301230851",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:13:50.851Z",
+      "stage": "shadow-predictive-not-rejected",
+      "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+    },
+    {
+      "id": "native-paper-20261029185051115:1:1793301232500",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:13:52.500Z",
+      "stage": "qualified",
+      "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+    },
+    {
+      "id": "native-paper-20261029185051115:28:1793302135089",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "at": "2026-10-29T19:28:55.089Z",
+      "stage": "exit-reserved",
+      "reason": "maximum-holding-time; fresh executable quote still required"
+    }
+  ],
+  "fills": [
+    {
+      "id": "paper-fill:d5775daf8c2b9df708b307a2a99cb33c",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "side": "buy",
+      "quantity": "195070637",
+      "at": "2026-10-29T19:13:54.251Z",
+      "valueUsd": 49.698274,
+      "executionCostsUsd": 0.000701,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:51167:1793301232511"
+    },
+    {
+      "id": "paper-fill:def906f7b2cc4a0c2732c63eefbe322c",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "side": "sell",
+      "quantity": "195070637",
+      "at": "2026-10-29T19:28:56.225Z",
+      "valueUsd": 49.555833,
+      "executionCostsUsd": 0.0007,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:51615:1793302135089"
+    }
+  ],
+  "duplicateFillIds": [],
+  "duplicateAttemptIdentity": false,
+  "sameQuantityOpenedAndClosed": true,
+  "holdingDurationMs": 901974,
+  "pendingOrderIdsObserved": [
+    "buy:51167:1793301232511"
+  ],
+  "observationGaps": [
+    {
+      "lastObservedSource": "2026-10-29T19:22:32.355Z",
+      "nextObservedSource": "2026-10-29T19:23:33.426Z",
+      "lastSequence": "9689",
+      "nextSequence": "9693",
+      "unretainedSourceFrames": 3,
+      "sourceFrameSpacingMs": 61071,
+      "meaning": "Missing observer samples, not inferred source stoppage; Cloud reattachments are independently recorded by root."
+    },
+    {
+      "lastObservedSource": "2026-10-29T19:23:33.426Z",
+      "nextObservedSource": "2026-10-29T19:25:07.285Z",
+      "lastSequence": "9693",
+      "nextSequence": "9699",
+      "unretainedSourceFrames": 5,
+      "sourceFrameSpacingMs": 93859,
+      "meaning": "Missing observer samples, not inferred source stoppage; Cloud reattachments are independently recorded by root."
+    },
+    {
+      "lastObservedSource": "2026-10-29T19:29:11.278Z",
+      "nextObservedSource": "2026-10-29T19:29:41.326Z",
+      "lastSequence": "9715",
+      "nextSequence": "9717",
+      "unretainedSourceFrames": 1,
+      "sourceFrameSpacingMs": 30048,
+      "meaning": "Missing observer samples, not inferred source stoppage; Cloud reattachments are independently recorded by root."
+    }
+  ],
+  "sampleStates": [
+    {
+      "sequence": "9636",
+      "generatedAt": "2026-10-29T19:09:06.295Z",
+      "observerReceivedAt": 1793300960116,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 56,
+        "supported": 56,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1067
+      },
+      "provider": {
+        "rpcRequests": 431,
+        "httpTimeouts": 370,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 13
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12336468,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      }
+    },
+    {
+      "sequence": "9637",
+      "generatedAt": "2026-10-29T19:09:21.314Z",
+      "observerReceivedAt": 1793300975313,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 60,
+        "supported": 60,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1082
+      },
+      "provider": {
+        "rpcRequests": 444,
+        "httpTimeouts": 370,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 25
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12598037,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      }
+    },
+    {
+      "sequence": "9638",
+      "generatedAt": "2026-10-29T19:09:36.355Z",
+      "observerReceivedAt": 1793300990613,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 60,
+        "supported": 60,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1097
+      },
+      "provider": {
+        "rpcRequests": 446,
+        "httpTimeouts": 370,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 24
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12718852,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      }
+    },
+    {
+      "sequence": "9639",
+      "generatedAt": "2026-10-29T19:09:51.375Z",
+      "observerReceivedAt": 1793301005999,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 60,
+        "supported": 60,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1112
+      },
+      "provider": {
+        "rpcRequests": 448,
+        "httpTimeouts": 370,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 24
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12832470,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      }
+    },
+    {
+      "sequence": "9640",
+      "generatedAt": "2026-10-29T19:10:06.391Z",
+      "observerReceivedAt": 1793301021235,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 60,
+        "supported": 60,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1126
+      },
+      "provider": {
+        "rpcRequests": 452,
+        "httpTimeouts": 371,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 21
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12951187,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      }
+    },
+    {
+      "sequence": "9641",
+      "generatedAt": "2026-10-29T19:10:21.405Z",
+      "observerReceivedAt": 1793301036542,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 60,
+        "supported": 60,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1141
+      },
+      "provider": {
+        "rpcRequests": 458,
+        "httpTimeouts": 371,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 14
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13185904,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      }
+    },
+    {
+      "sequence": "9642",
+      "generatedAt": "2026-10-29T19:10:36.417Z",
+      "observerReceivedAt": 1793301051833,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 61,
+        "supported": 61,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1157
+      },
+      "provider": {
+        "rpcRequests": 487,
+        "httpTimeouts": 371,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 41
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 5402115,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9643",
+      "generatedAt": "2026-10-29T19:10:51.467Z",
+      "observerReceivedAt": 1793301067184,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 61,
+        "supported": 61,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1172
+      },
+      "provider": {
+        "rpcRequests": 497,
+        "httpTimeouts": 373,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 49
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 5695101,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9644",
+      "generatedAt": "2026-10-29T19:11:06.518Z",
+      "observerReceivedAt": 1793301082392,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 63,
+        "supported": 63,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1186
+      },
+      "provider": {
+        "rpcRequests": 514,
+        "httpTimeouts": 373,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 62
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 6099771,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9645",
+      "generatedAt": "2026-10-29T19:11:21.738Z",
+      "observerReceivedAt": 1793301097558,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 63,
+        "supported": 63,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1201
+      },
+      "provider": {
+        "rpcRequests": 518,
+        "httpTimeouts": 376,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 59
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 6255759,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9646",
+      "generatedAt": "2026-10-29T19:11:36.776Z",
+      "observerReceivedAt": 1793301113068,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 67,
+        "supported": 67,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1215
+      },
+      "provider": {
+        "rpcRequests": 531,
+        "httpTimeouts": 376,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 44
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 6822188,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9647",
+      "generatedAt": "2026-10-29T19:11:51.926Z",
+      "observerReceivedAt": 1793301128419,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 67,
+        "supported": 67,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1230
+      },
+      "provider": {
+        "rpcRequests": 532,
+        "httpTimeouts": 376,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 35
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 8699995,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9648",
+      "generatedAt": "2026-10-29T19:12:06.978Z",
+      "observerReceivedAt": 1793301143589,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 67,
+        "supported": 67,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1244
+      },
+      "provider": {
+        "rpcRequests": 535,
+        "httpTimeouts": 376,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 21
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 10215638,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9649",
+      "generatedAt": "2026-10-29T19:12:22.028Z",
+      "observerReceivedAt": 1793301158735,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 67,
+        "supported": 67,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1259
+      },
+      "provider": {
+        "rpcRequests": 536,
+        "httpTimeouts": 376,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 18
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 10475488,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9650",
+      "generatedAt": "2026-10-29T19:12:37.038Z",
+      "observerReceivedAt": 1793301173876,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 67,
+        "supported": 67,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1274
+      },
+      "provider": {
+        "rpcRequests": 541,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 10
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 10879653,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9651",
+      "generatedAt": "2026-10-29T19:12:52.045Z",
+      "observerReceivedAt": 1793301189194,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 68,
+        "supported": 68,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1288
+      },
+      "provider": {
+        "rpcRequests": 549,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 17
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12089547,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9652",
+      "generatedAt": "2026-10-29T19:13:07.046Z",
+      "observerReceivedAt": 1793301204322,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 71,
+        "supported": 71,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1303
+      },
+      "provider": {
+        "rpcRequests": 565,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 30
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12537225,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9653",
+      "generatedAt": "2026-10-29T19:13:22.089Z",
+      "observerReceivedAt": 1793301219466,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 71,
+        "supported": 71,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1318
+      },
+      "provider": {
+        "rpcRequests": 566,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 30
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12963739,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9654",
+      "generatedAt": "2026-10-29T19:13:37.113Z",
+      "observerReceivedAt": 1793301234664,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 71,
+        "supported": 71,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1332
+      },
+      "provider": {
+        "rpcRequests": 571,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 30
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13490826,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9655",
+      "generatedAt": "2026-10-29T19:13:52.519Z",
+      "observerReceivedAt": 1793301249969,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [
+        {
+          "id": "buy:51167:1793301232511",
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "side": "buy",
+          "decidedAt": "2026-10-29T19:13:52.511Z",
+          "executeAt": "2026-10-29T19:13:53.511Z",
+          "expiresAt": "2026-10-29T19:13:57.511Z",
+          "reservedSol": "0.498678501",
+          "quantityMinimum": "193137973",
+          "reason": "rpc-market:5ff3587c74fc3d3a27676ceb692d512a898518a982611c91023b8ca045e73ca5"
+        }
+      ],
+      "funnel": {
+        "discovered": 71,
+        "supported": 71,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 1348
+      },
+      "provider": {
+        "rpcRequests": 580,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 31
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14026235,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9656",
+      "generatedAt": "2026-10-29T19:14:07.567Z",
+      "observerReceivedAt": 1793301265132,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:14:06.644Z",
+        "maximumCompletedGapMs": 2058,
+        "maximumQuoteAgeAtUseMs": 49,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.398409,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 72,
+        "supported": 72,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1355
+      },
+      "provider": {
+        "rpcRequests": 596,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 31
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14867291,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9657",
+      "generatedAt": "2026-10-29T19:14:22.749Z",
+      "observerReceivedAt": 1793301280300,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:14:22.748Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 49,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.411174,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 72,
+        "supported": 72,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1363
+      },
+      "provider": {
+        "rpcRequests": 613,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 47
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15632324,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9658",
+      "generatedAt": "2026-10-29T19:14:37.797Z",
+      "observerReceivedAt": 1793301295465,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:14:36.983Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 51,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.427251,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 74,
+        "supported": 74,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1370
+      },
+      "provider": {
+        "rpcRequests": 629,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 58
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16384257,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9659",
+      "generatedAt": "2026-10-29T19:14:53.055Z",
+      "observerReceivedAt": 1793301310793,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:14:53.055Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 51,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.437514,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 74,
+        "supported": 74,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1378
+      },
+      "provider": {
+        "rpcRequests": 644,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 64
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 17219185,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9660",
+      "generatedAt": "2026-10-29T19:15:08.078Z",
+      "observerReceivedAt": 1793301326000,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:15:07.235Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.449072,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 75,
+        "supported": 75,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1385
+      },
+      "provider": {
+        "rpcRequests": 658,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 61
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 17569692,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9661",
+      "generatedAt": "2026-10-29T19:15:23.531Z",
+      "observerReceivedAt": 1793301341195,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:15:23.530Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.460511,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 75,
+        "supported": 75,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1393
+      },
+      "provider": {
+        "rpcRequests": 675,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 62
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14183023,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9662",
+      "generatedAt": "2026-10-29T19:15:38.556Z",
+      "observerReceivedAt": 1793301356327,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:15:37.717Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.468412,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 76,
+        "supported": 76,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1400
+      },
+      "provider": {
+        "rpcRequests": 689,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 60
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14138906,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9663",
+      "generatedAt": "2026-10-29T19:15:53.836Z",
+      "observerReceivedAt": 1793301371679,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:15:53.836Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.466982,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 76,
+        "supported": 76,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1408
+      },
+      "provider": {
+        "rpcRequests": 704,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 57
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14005134,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9664",
+      "generatedAt": "2026-10-29T19:16:08.873Z",
+      "observerReceivedAt": 1793301386831,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:16:08.033Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.453725,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 76,
+        "supported": 76,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1415
+      },
+      "provider": {
+        "rpcRequests": 714,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 56
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13978616,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9665",
+      "generatedAt": "2026-10-29T19:16:24.304Z",
+      "observerReceivedAt": 1793301402059,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:16:24.303Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.466203,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 80,
+        "supported": 80,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1423
+      },
+      "provider": {
+        "rpcRequests": 735,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 57
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14283461,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9666",
+      "generatedAt": "2026-10-29T19:16:39.341Z",
+      "observerReceivedAt": 1793301417271,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:16:38.483Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.465247,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 80,
+        "supported": 80,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1430
+      },
+      "provider": {
+        "rpcRequests": 745,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 56
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14441902,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9667",
+      "generatedAt": "2026-10-29T19:16:54.813Z",
+      "observerReceivedAt": 1793301432416,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:16:54.812Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.481106,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 80,
+        "supported": 80,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1438
+      },
+      "provider": {
+        "rpcRequests": 754,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 48
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14545464,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9668",
+      "generatedAt": "2026-10-29T19:17:09.816Z",
+      "observerReceivedAt": 1793301447793,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:17:08.941Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.495647,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 80,
+        "supported": 80,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1445
+      },
+      "provider": {
+        "rpcRequests": 764,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 50
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14680105,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9669",
+      "generatedAt": "2026-10-29T19:17:25.165Z",
+      "observerReceivedAt": 1793301462950,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:17:25.165Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.456408,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 81,
+        "supported": 81,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1453
+      },
+      "provider": {
+        "rpcRequests": 779,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 44
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14980150,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9670",
+      "generatedAt": "2026-10-29T19:17:40.219Z",
+      "observerReceivedAt": 1793301478147,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:17:39.483Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.472999,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 81,
+        "supported": 81,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1460
+      },
+      "provider": {
+        "rpcRequests": 793,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 48
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16103033,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9671",
+      "generatedAt": "2026-10-29T19:17:55.687Z",
+      "observerReceivedAt": 1793301493475,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:17:55.687Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.464528,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 83,
+        "supported": 83,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1468
+      },
+      "provider": {
+        "rpcRequests": 815,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 61
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16755815,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9672",
+      "generatedAt": "2026-10-29T19:18:10.694Z",
+      "observerReceivedAt": 1793301508690,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:18:09.768Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.478907,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 84,
+        "supported": 84,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1475
+      },
+      "provider": {
+        "rpcRequests": 830,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 66
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 17103870,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9673",
+      "generatedAt": "2026-10-29T19:18:26.020Z",
+      "observerReceivedAt": 1793301524094,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:18:26.020Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.481979,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 84,
+        "supported": 84,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1483
+      },
+      "provider": {
+        "rpcRequests": 840,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 58
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 17379191,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9674",
+      "generatedAt": "2026-10-29T19:18:41.039Z",
+      "observerReceivedAt": 1793301539493,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:18:40.250Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.500196,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 85,
+        "supported": 85,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1490
+      },
+      "provider": {
+        "rpcRequests": 858,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 65
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 18138967,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9675",
+      "generatedAt": "2026-10-29T19:18:56.779Z",
+      "observerReceivedAt": 1793301554788,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:18:56.361Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.51549,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 85,
+        "supported": 85,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1498
+      },
+      "provider": {
+        "rpcRequests": 868,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 52
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 10067189,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9676",
+      "generatedAt": "2026-10-29T19:19:11.819Z",
+      "observerReceivedAt": 1793301569971,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:19:10.666Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.524079,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 86,
+        "supported": 86,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1505
+      },
+      "provider": {
+        "rpcRequests": 886,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 55
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 10423805,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9677",
+      "generatedAt": "2026-10-29T19:19:26.896Z",
+      "observerReceivedAt": 1793301585167,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:19:26.895Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.511025,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 88,
+        "supported": 88,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1513
+      },
+      "provider": {
+        "rpcRequests": 906,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 66
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 10756070,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9678",
+      "generatedAt": "2026-10-29T19:19:41.951Z",
+      "observerReceivedAt": 1793301600331,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:19:41.172Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.505324,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 88,
+        "supported": 88,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1520
+      },
+      "provider": {
+        "rpcRequests": 914,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 56
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 11434263,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9679",
+      "generatedAt": "2026-10-29T19:19:57.325Z",
+      "observerReceivedAt": 1793301615526,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:19:57.324Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.514809,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 89,
+        "supported": 89,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1528
+      },
+      "provider": {
+        "rpcRequests": 931,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 63
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12824938,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9680",
+      "generatedAt": "2026-10-29T19:20:12.370Z",
+      "observerReceivedAt": 1793301630699,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:20:11.573Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.524413,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 89,
+        "supported": 89,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1535
+      },
+      "provider": {
+        "rpcRequests": 939,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 53
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13418896,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9681",
+      "generatedAt": "2026-10-29T19:20:27.805Z",
+      "observerReceivedAt": 1793301645846,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:20:27.804Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.523945,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 89,
+        "supported": 89,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1543
+      },
+      "provider": {
+        "rpcRequests": 955,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 49
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13848158,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9682",
+      "generatedAt": "2026-10-29T19:20:43.031Z",
+      "observerReceivedAt": 1793301661160,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:20:41.983Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.513714,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 90,
+        "supported": 90,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1550
+      },
+      "provider": {
+        "rpcRequests": 973,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 59
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14706518,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9683",
+      "generatedAt": "2026-10-29T19:20:58.251Z",
+      "observerReceivedAt": 1793301676304,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:20:58.251Z",
+        "maximumCompletedGapMs": 2158,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.521656,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 93,
+        "supported": 93,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1558
+      },
+      "provider": {
+        "rpcRequests": 990,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 59
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15021277,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9684",
+      "generatedAt": "2026-10-29T19:21:14.717Z",
+      "observerReceivedAt": 1793301691471,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:21:14.467Z",
+        "maximumCompletedGapMs": 2167,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.51849,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 93,
+        "supported": 93,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1566
+      },
+      "provider": {
+        "rpcRequests": 1000,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 60
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15103432,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9685",
+      "generatedAt": "2026-10-29T19:21:29.756Z",
+      "observerReceivedAt": 1793301706640,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:21:28.667Z",
+        "maximumCompletedGapMs": 2167,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.528169,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 94,
+        "supported": 94,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1573
+      },
+      "provider": {
+        "rpcRequests": 1014,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 58
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15322047,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9686",
+      "generatedAt": "2026-10-29T19:21:45.010Z",
+      "observerReceivedAt": 1793301721851,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:21:45.009Z",
+        "maximumCompletedGapMs": 2167,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.51864,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 94,
+        "supported": 94,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1581
+      },
+      "provider": {
+        "rpcRequests": 1024,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 47
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15403633,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9687",
+      "generatedAt": "2026-10-29T19:22:01.995Z",
+      "observerReceivedAt": 1793301737032,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:22:01.146Z",
+        "maximumCompletedGapMs": 2167,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.537018,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 94,
+        "supported": 94,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1589
+      },
+      "provider": {
+        "rpcRequests": 1039,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 48
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15697855,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9688",
+      "generatedAt": "2026-10-29T19:22:17.313Z",
+      "observerReceivedAt": 1793301752370,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:22:17.312Z",
+        "maximumCompletedGapMs": 2167,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.52812,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 95,
+        "supported": 95,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1597
+      },
+      "provider": {
+        "rpcRequests": 1054,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 52
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15990940,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9689",
+      "generatedAt": "2026-10-29T19:22:32.355Z",
+      "observerReceivedAt": 1793301767586,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:22:31.602Z",
+        "maximumCompletedGapMs": 2167,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.538201,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 96,
+        "supported": 96,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1604
+      },
+      "provider": {
+        "rpcRequests": 1070,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 55
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16579367,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9693",
+      "generatedAt": "2026-10-29T19:23:33.426Z",
+      "observerReceivedAt": 1793301839025,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:23:32.537Z",
+        "maximumCompletedGapMs": 2219,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.543395,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 100,
+        "supported": 100,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1634
+      },
+      "provider": {
+        "rpcRequests": 1129,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 59
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12014748,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9699",
+      "generatedAt": "2026-10-29T19:25:07.285Z",
+      "observerReceivedAt": 1793301937957,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:25:05.903Z",
+        "maximumCompletedGapMs": 2219,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.555961,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 103,
+        "supported": 103,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1680
+      },
+      "provider": {
+        "rpcRequests": 1217,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 64
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13684180,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9700",
+      "generatedAt": "2026-10-29T19:25:22.416Z",
+      "observerReceivedAt": 1793301953274,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:25:22.113Z",
+        "maximumCompletedGapMs": 2219,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.546663,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 103,
+        "supported": 103,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1688
+      },
+      "provider": {
+        "rpcRequests": 1231,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 65
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13992286,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9701",
+      "generatedAt": "2026-10-29T19:25:37.452Z",
+      "observerReceivedAt": 1793301968480,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:25:36.410Z",
+        "maximumCompletedGapMs": 2219,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.546762,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 104,
+        "supported": 104,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1695
+      },
+      "provider": {
+        "rpcRequests": 1247,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 62
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14614955,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9702",
+      "generatedAt": "2026-10-29T19:25:52.546Z",
+      "observerReceivedAt": 1793301983661,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:25:52.546Z",
+        "maximumCompletedGapMs": 2219,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.556877,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 105,
+        "supported": 105,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1703
+      },
+      "provider": {
+        "rpcRequests": 1261,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 60
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15471496,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9703",
+      "generatedAt": "2026-10-29T19:26:07.585Z",
+      "observerReceivedAt": 1793301998855,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:26:06.731Z",
+        "maximumCompletedGapMs": 2219,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.566523,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 105,
+        "supported": 105,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1710
+      },
+      "provider": {
+        "rpcRequests": 1270,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 53
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15685590,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9704",
+      "generatedAt": "2026-10-29T19:26:22.950Z",
+      "observerReceivedAt": 1793302014203,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:26:22.950Z",
+        "maximumCompletedGapMs": 2219,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.555567,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 107,
+        "supported": 107,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1718
+      },
+      "provider": {
+        "rpcRequests": 1289,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 57
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16484184,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9705",
+      "generatedAt": "2026-10-29T19:26:39.541Z",
+      "observerReceivedAt": 1793302029405,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:26:39.233Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.586369,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 107,
+        "supported": 107,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1726
+      },
+      "provider": {
+        "rpcRequests": 1299,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 51
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 18403335,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9706",
+      "generatedAt": "2026-10-29T19:26:54.591Z",
+      "observerReceivedAt": 1793302044579,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:26:53.466Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.573686,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 107,
+        "supported": 107,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1733
+      },
+      "provider": {
+        "rpcRequests": 1315,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 52
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 20474952,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9707",
+      "generatedAt": "2026-10-29T19:27:10.242Z",
+      "observerReceivedAt": 1793302059999,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:27:09.652Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.574657,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 107,
+        "supported": 107,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1741
+      },
+      "provider": {
+        "rpcRequests": 1325,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 53
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 20590455,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9708",
+      "generatedAt": "2026-10-29T19:27:25.276Z",
+      "observerReceivedAt": 1793302075391,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:27:23.813Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.586639,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 108,
+        "supported": 108,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1748
+      },
+      "provider": {
+        "rpcRequests": 1340,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 50
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 20840673,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9709",
+      "generatedAt": "2026-10-29T19:27:40.281Z",
+      "observerReceivedAt": 1793302090601,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:27:40.105Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.571592,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 108,
+        "supported": 108,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1756
+      },
+      "provider": {
+        "rpcRequests": 1353,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 53
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12564296,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9710",
+      "generatedAt": "2026-10-29T19:27:55.338Z",
+      "observerReceivedAt": 1793302106000,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:27:54.239Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.573177,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 109,
+        "supported": 109,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1763
+      },
+      "provider": {
+        "rpcRequests": 1369,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 53
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12850322,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9711",
+      "generatedAt": "2026-10-29T19:28:10.498Z",
+      "observerReceivedAt": 1793302121389,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:10.498Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.564816,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 111,
+        "supported": 111,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1771
+      },
+      "provider": {
+        "rpcRequests": 1386,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 61
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13390458,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9712",
+      "generatedAt": "2026-10-29T19:28:25.549Z",
+      "observerReceivedAt": 1793302136550,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:24.669Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.558946,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 111,
+        "supported": 111,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1778
+      },
+      "provider": {
+        "rpcRequests": 1395,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 55
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13812264,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9713",
+      "generatedAt": "2026-10-29T19:28:40.962Z",
+      "observerReceivedAt": 1793302151735,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:40.961Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 55,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [
+        {
+          "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "label": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+          "quantity": "195070637",
+          "enteredAt": "2026-10-29T19:13:54.251Z",
+          "entryCostUsd": 49.698976,
+          "netLiquidationUsd": 49.548529,
+          "executionCostsUsd": 0.000701,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "pending": [],
+      "funnel": {
+        "discovered": 111,
+        "supported": 111,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 1786
+      },
+      "provider": {
+        "rpcRequests": 1407,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 54
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14276747,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9714",
+      "generatedAt": "2026-10-29T19:28:56.243Z",
+      "observerReceivedAt": 1793302166910,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 75,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 111,
+        "supported": 111,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 1794
+      },
+      "provider": {
+        "rpcRequests": 1419,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 49
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14900294,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9715",
+      "generatedAt": "2026-10-29T19:29:11.278Z",
+      "observerReceivedAt": 1793302182231,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 75,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 112,
+        "supported": 112,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 1808
+      },
+      "provider": {
+        "rpcRequests": 1430,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 44
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 15740898,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9717",
+      "generatedAt": "2026-10-29T19:29:41.326Z",
+      "observerReceivedAt": 1793302197460,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 75,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 115,
+        "supported": 115,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 1837
+      },
+      "provider": {
+        "rpcRequests": 1449,
+        "httpTimeouts": 377,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 42
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16329205,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9718",
+      "generatedAt": "2026-10-29T19:29:56.365Z",
+      "observerReceivedAt": 1793302212670,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 75,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 115,
+        "supported": 115,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 1852
+      },
+      "provider": {
+        "rpcRequests": 1454,
+        "httpTimeouts": 378,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 35
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16477546,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9719",
+      "generatedAt": "2026-10-29T19:30:11.410Z",
+      "observerReceivedAt": 1793302227895,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 75,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 115,
+        "supported": 115,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 1867
+      },
+      "provider": {
+        "rpcRequests": 1457,
+        "httpTimeouts": 378,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 27
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16550955,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9720",
+      "generatedAt": "2026-10-29T19:30:26.435Z",
+      "observerReceivedAt": 1793302243080,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 75,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 116,
+        "supported": 116,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 1882
+      },
+      "provider": {
+        "rpcRequests": 1465,
+        "httpTimeouts": 378,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 26
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 17890143,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "sequence": "9721",
+      "generatedAt": "2026-10-29T19:30:44.840Z",
+      "observerReceivedAt": 1793302258293,
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+        "maximumCompletedGapMs": 2243,
+        "maximumQuoteAgeAtUseMs": 75,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "position": [],
+      "pending": [],
+      "funnel": {
+        "discovered": 116,
+        "supported": 116,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 1,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 1898
+      },
+      "provider": {
+        "rpcRequests": 1469,
+        "httpTimeouts": 380,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 18
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 26316006,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    }
+  ],
+  "lastFinancialProjection": {
+    "times": {
+      "generatedAt": "2026-10-29T19:30:44.840Z",
+      "marketAt": "2026-10-29T19:30:41.786Z",
+      "reconciledAt": "2026-10-29T19:30:43.923Z",
+      "usefulProgressAt": "2026-10-29T19:30:43.923Z"
+    },
+    "funnel": {
+      "discovered": 116,
+      "supported": 116,
+      "sufficientlyObserved": 2,
+      "evaluated": 2,
+      "qualified": 1,
+      "attempted": 2,
+      "paperFilled": 1,
+      "exited": 1,
+      "reconciled": 1898
+    },
+    "balances": {
+      "cashSol": "9.79170004",
+      "reservedSol": "0",
+      "equitySol": "9.80671144",
+      "equityUsd": 982.044084,
+      "realizedUsd": -15.515312,
+      "unrealizedUsd": 0,
+      "tradingPnlUsd": -15.515312,
+      "economicPnlUsd": null,
+      "positionCostUsd": 0,
+      "markedExposureUsd": 0,
+      "drawdownUsd": null,
+      "executionCostsUsd": null,
+      "operatingCostsUsd": null,
+      "passiveSolEquityUsd": 997.559397,
+      "solPriceUsd": 100.14
+    },
+    "positions": [],
+    "pending": []
+  },
+  "findings": [
+    "A temporary fresh-size-specific-quote failure at19:10:24.683 was followed by later freshly audited predictive assessments and a new actual primary qualification at19:13:52.500. Only one buy attempt/fill is evidenced for this mint.",
+    "This is compatible with successful fresh-data technical recovery; public snapshots do not expose the private technical retry request/claim records, so exact retry scheduling attribution remains unproven.",
+    "Actual entry fill19:13:54.251 and maximum-holding-time exit reservation19:28:55.089 precede a matching actual PAPER sell fill19:28:56.225.",
+    "The same f96 source/configuration/run generated the whole natural lifecycle; new arming v2 source had not been deployed and receives no credit.",
+    "Protection counters ended at2243ms maximum completed gap,75ms maximum quote age,0breaches and0unavailable checks. Flat/no pending is observed after sell.",
+    "Existing one-position/four-deep-slot limits remained unchanged; there is no demonstrated multiple-position capability here.",
+    "Global MONITORING_UNAVAILABLE while held is consistent with known f96 permission-versus-position-capacity coupling; it is not evidence of missing position protection.",
+    "Whole-account historical balances and trade-level USD row amounts are retained, but exact per-trade reconciled P&L cannot be proved from these public aggregates. Costs, deposit assets and SOL/USD timestamps must not be combined into an invented return.",
+    "Cloud sampler interruptions create real gaps in interactive supervision; the data does not establish an uninterrupted acceptance interval."
+  ],
+  "runtimeStatus": "Verified natural PAPER open-to-close lifecycle; sustained autonomous operational acceptance and v2 repair validation remain NOT YET PROVEN."
+}

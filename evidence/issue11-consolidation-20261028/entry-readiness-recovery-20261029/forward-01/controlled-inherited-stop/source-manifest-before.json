@@ -1,0 +1,16 @@
+{
+  "frozenInstalledSource": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+  "currentLead": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "appEquivalentToFrozenSource": true,
+  "sourceFilesBefore": {
+    "src/execution.ts": "d046bf855754eac85153a3cb64ef68ed23fec8099dde0176ed913a58c8175f6b",
+    "src/native-paper.ts": "546ab5112fcba3a9e282645a1b94106e04e0a7a24bea2a9498ace60bffb57d1c",
+    "src/run-native-paper.ts": "a2b7641bfd8ed74366e75bb14bb5b6dc0bd378388da8f8f90bfef4444bff2738",
+    "src/trader.ts": "a052a57e331e284b6ca6b9c017052343a84a429182992f57f932a80888545281",
+    "src/ledger.ts": "002fd214389a748d5c8e08127ac61be749dccd5c7daf6d66f6bc48cef99c93bb",
+    "src/pilot-market.ts": "c463e89554a36d7ea9eb07b7f61dfc294b26f84bf0a104d8dd957456ec6cd3fc",
+    "src/retained-recorder.ts": "4edf8e22db2cc4bf7153bf15b0cdbfbdb6533e93a86ee22aed70af3aaf7aa250",
+    "test/native-paper-integration.test.ts": "b7207b23f06c6bdc009dce8a1af1e8e8bb19939a3e635cd2743d84c5e580a44b"
+  },
+  "method": "Evidence-only copied existing integration helper (imports rewritten to unchanged frozen app); adds real retained recorder/proof-preparation adapters and two controlled tests. Not auto-discovered; no source or original tests modified."
+}

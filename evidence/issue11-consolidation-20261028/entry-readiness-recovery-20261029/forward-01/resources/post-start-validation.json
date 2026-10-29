@@ -1,0 +1,68 @@
+{
+  "classification": "ACTUAL_POST_START_VERIFICATION_AND_RUN_BOUND_RESOURCE_COLLECTION",
+  "recordedAt": "2026-10-29T18:48:47.274901+00:00",
+  "source": {
+    "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9"
+  },
+  "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "financialPrefix": {
+    "identityAndInceptionPreserved": true,
+    "initialFundingAndRoundingPreserved": true,
+    "journalAndActionPrefixPreserved": true,
+    "priorRevision": 49066,
+    "currentRevision": 49068,
+    "currentStateBodySha256": "1b02fd64ca18068818889f6c349a0d3c6b2cc8712a5e1768b88facc3aa516c91",
+    "prefix": {
+      "actions": {
+        "priorRows": 49066,
+        "exactPriorRowsRetained": true,
+        "currentRows": 49068
+      },
+      "journal": {
+        "priorRows": 49067,
+        "exactPriorRowsRetained": true,
+        "currentRows": 49069
+      }
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "interruption": {
+    "stopRequestedAt": 1793299084052,
+    "physicalStopVerifiedAt": 1793299086749,
+    "startRequestedAt": 1793299086980,
+    "localVerificationAt": 1793299088909,
+    "stopToStartMs": 231,
+    "observedNewSource": {
+      "available": true,
+      "sourceTimestamp": "2026-10-29T18:38:08.360Z",
+      "statusSha256": "3db0d48fb81e2e8f10de8636ae21640315a62b34b6458cc7da34eaf9edeb87aa",
+      "observedAt": 1793299088505,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f"
+    },
+    "continuousCoverageClaimed": false
+  },
+  "resourcePolicyPreserved": true,
+  "currentUnitPid": "2465804",
+  "firstNativePid": 2465812,
+  "sourceMode": "PAPER",
+  "realMoneyEnabled": false,
+  "rootUpgradeComplete": true,
+  "backupRestored": false,
+  "financialHistoryReset": false,
+  "physicalSettlementTimestampPresent": true,
+  "separatePrivateBackupReadPerformed": false,
+  "limitations": [
+    "Detailed root backup file hashes and native settlement records are not independently reopened by this metadata collector. The reviewed root driver completed its guarded backup/prefix/settlement path and published this post-start result.",
+    "The18:39first resource sample still had an old cdba publisher acknowledgment, so it is excluded from run-bound deltas.",
+    "Only matched new PID/source/configuration/run and unchanged restart counts are paired.",
+    "No independent financial/trading/performance acceptance is inferred from root upgrade completion or resource health."
+  ]
+}

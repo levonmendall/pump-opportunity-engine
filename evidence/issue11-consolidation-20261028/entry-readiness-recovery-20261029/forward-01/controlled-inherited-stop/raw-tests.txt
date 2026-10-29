@@ -1,0 +1,10 @@
+✔ CONTROLLED inherited internal safe-stop survives startup, then genuine audited/proof/SDK qualification autonomously reserves and fills once (291.671721ms)
+✔ CONTROLLED owner admission remains false despite a valid passing certificate and inherited stop; no proof/SDK/order/fill is admitted (67.680848ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1395.558255

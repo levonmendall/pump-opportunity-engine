@@ -1,0 +1,12 @@
+{
+  "recoveredAt": "2026-10-29T19:23:58.690938+00:00",
+  "lastReceivedAt": 1793301767586,
+  "lastSourceAt": "2026-10-29T19:22:32.355Z",
+  "lastSequence": "9689",
+  "archive": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1923.tar.gz",
+  "sha256": "0baeab6e1742631dd1401bb88955058cd30ca2f585ead46ff1533843fcee7a13",
+  "bytes": 321602,
+  "reason": "Cloud execution environment reattached; existing Cloud observer found defunct. EC2 state not assumed from gap.",
+  "serviceOperations": 0,
+  "financialWrites": 0
+}

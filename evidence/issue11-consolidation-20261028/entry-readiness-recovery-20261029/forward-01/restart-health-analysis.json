@@ -1,0 +1,1495 @@
+{
+  "kind": "retained-restart-health-v1",
+  "inputPrefixSha256": "3280dda9f828af738c50ca5957745197d052c89dfba246fb01538a80c7e1a554",
+  "inputBytes": 950057,
+  "frames": [
+    {
+      "sequence": "9558",
+      "times": {
+        "generatedAt": "2026-10-29T18:49:32.414Z",
+        "marketAt": "2026-10-29T18:49:31.802Z",
+        "reconciledAt": "2026-10-29T18:49:32.160Z",
+        "usefulProgressAt": "2026-10-29T18:49:32.160Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 29992.0,
+      "sourceToRenderMs": 23589.0,
+      "reconciliationAgeAtSourceMs": 254.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 4856789,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 261,
+        "rpcResponseBytes": 39761671,
+        "nativeStreamBytes": 721656682,
+        "broadWatchBytes": 41452868449,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 355,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 32,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:48:33.030Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:49:32.211Z",
+        "cpuOneCoreFraction": 0.14125083059308605,
+        "rssBytes": 395440128,
+        "availableMemoryBytes": 6888034304,
+        "availableDiskBytes": 288590409728,
+        "eventLoopLagMs": 26.279935,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 149,
+        "known": 174,
+        "watch": 95,
+        "eligible": 73,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 69,
+        "promoted": 3851,
+        "repromoted": 3564,
+        "demoted": 3843,
+        "completeWindows": 1717,
+        "auditedWindows": 1739,
+        "uniqueEvaluated": 19,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1739,
+        "predictivePasses": 77,
+        "predictiveFailures": 1640,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2147767,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9559",
+      "times": {
+        "generatedAt": "2026-10-29T18:49:47.448Z",
+        "marketAt": "2026-10-29T18:49:46.952Z",
+        "reconciledAt": "2026-10-29T18:49:47.247Z",
+        "usefulProgressAt": "2026-10-29T18:49:47.247Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 30424.0,
+      "sourceToRenderMs": 23628.0,
+      "reconciliationAgeAtSourceMs": 201.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 5036020,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 262,
+        "rpcResponseBytes": 39864943,
+        "nativeStreamBytes": 721759952,
+        "broadWatchBytes": 41469467109,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 355,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 19,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:48:33.030Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:49:47.447Z",
+        "cpuOneCoreFraction": 0.14645212045254385,
+        "rssBytes": 395436032,
+        "availableMemoryBytes": 6766788608,
+        "availableDiskBytes": 288589922304,
+        "eventLoopLagMs": 26.279935,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 149,
+        "known": 174,
+        "watch": 95,
+        "eligible": 73,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 69,
+        "promoted": 3851,
+        "repromoted": 3564,
+        "demoted": 3843,
+        "completeWindows": 1717,
+        "auditedWindows": 1739,
+        "uniqueEvaluated": 19,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1739,
+        "predictivePasses": 77,
+        "predictiveFailures": 1640,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2162802,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9560",
+      "times": {
+        "generatedAt": "2026-10-29T18:50:02.686Z",
+        "marketAt": "2026-10-29T18:50:01.990Z",
+        "reconciledAt": "2026-10-29T18:50:02.447Z",
+        "usefulProgressAt": "2026-10-29T18:50:02.633Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 30342.0,
+      "sourceToRenderMs": 23498.0,
+      "reconciliationAgeAtSourceMs": 239.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 5446650,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 269,
+        "rpcResponseBytes": 40081430,
+        "nativeStreamBytes": 721881572,
+        "broadWatchBytes": 41486378508,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 355,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 24,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:48:33.030Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:50:01.840Z",
+        "cpuOneCoreFraction": 0.1477660153937241,
+        "rssBytes": 395456512,
+        "availableMemoryBytes": 6874755072,
+        "availableDiskBytes": 288589754368,
+        "eventLoopLagMs": 26.312703,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 149,
+        "known": 174,
+        "watch": 96,
+        "eligible": 72,
+        "deepActive": 2,
+        "deepMaximum": 4,
+        "queued": 70,
+        "promoted": 3851,
+        "repromoted": 3564,
+        "demoted": 3845,
+        "completeWindows": 1719,
+        "auditedWindows": 1741,
+        "uniqueEvaluated": 21,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1741,
+        "predictivePasses": 77,
+        "predictiveFailures": 1642,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2178039,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9561",
+      "times": {
+        "generatedAt": "2026-10-29T18:50:17.711Z",
+        "marketAt": "2026-10-29T18:50:17.192Z",
+        "reconciledAt": "2026-10-29T18:50:16.861Z",
+        "usefulProgressAt": "2026-10-29T18:50:16.861Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 30458.0,
+      "sourceToRenderMs": 23565.0,
+      "reconciliationAgeAtSourceMs": 850.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 7027884,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 276,
+        "rpcResponseBytes": 40819139,
+        "nativeStreamBytes": 722602090,
+        "broadWatchBytes": 41503592183,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 355,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 29,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:48:33.030Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:50:16.749Z",
+        "cpuOneCoreFraction": 0.16452809364548496,
+        "rssBytes": 395735040,
+        "availableMemoryBytes": 6878461952,
+        "availableDiskBytes": 288588058624,
+        "eventLoopLagMs": 26.476543,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 149,
+        "known": 174,
+        "watch": 93,
+        "eligible": 71,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 67,
+        "promoted": 3853,
+        "repromoted": 3566,
+        "demoted": 3845,
+        "completeWindows": 1719,
+        "auditedWindows": 1741,
+        "uniqueEvaluated": 21,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1741,
+        "predictivePasses": 77,
+        "predictiveFailures": 1642,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2162635,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9562",
+      "times": {
+        "generatedAt": "2026-10-29T18:50:33.103Z",
+        "marketAt": "2026-10-29T18:50:32.602Z",
+        "reconciledAt": "2026-10-29T18:50:32.230Z",
+        "usefulProgressAt": "2026-10-29T18:50:32.230Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029183807362",
+        "startedAt": "2026-10-29T18:38:07.362Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 30460.0,
+      "sourceToRenderMs": 23288.0,
+      "reconciliationAgeAtSourceMs": 873.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 7927966,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 286,
+        "rpcResponseBytes": 43607687,
+        "nativeStreamBytes": 723002055,
+        "broadWatchBytes": 41524104918,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 356,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 25,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:50:30.042Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:50:32.280Z",
+        "cpuOneCoreFraction": 0.1597648264182896,
+        "rssBytes": 397852672,
+        "availableMemoryBytes": 6885588992,
+        "availableDiskBytes": 288587161600,
+        "eventLoopLagMs": 26.574847,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 149,
+        "known": 174,
+        "watch": 93,
+        "eligible": 71,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 68,
+        "promoted": 3854,
+        "repromoted": 3567,
+        "demoted": 3846,
+        "completeWindows": 1720,
+        "auditedWindows": 1742,
+        "uniqueEvaluated": 22,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1742,
+        "predictivePasses": 77,
+        "predictiveFailures": 1643,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2178026,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9564",
+      "times": {
+        "generatedAt": "2026-10-29T18:50:52.107Z",
+        "marketAt": null,
+        "reconciledAt": "2026-10-29T18:50:47.562Z",
+        "usefulProgressAt": "2026-10-29T18:50:47.562Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 26608.0,
+      "sourceToRenderMs": 19372.0,
+      "reconciliationAgeAtSourceMs": 4545.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": false,
+        "candidateResourceAdmissionAllowed": false,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16648591,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": false,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 0,
+        "rpcResponseBytes": 0,
+        "nativeStreamBytes": 723783321,
+        "broadWatchBytes": 41543493080,
+        "discoveryConnected": false,
+        "watchConnected": false,
+        "httpTimeouts": 357,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": null,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:50:43.072Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": null,
+        "cpuOneCoreFraction": null,
+        "rssBytes": null,
+        "availableMemoryBytes": null,
+        "availableDiskBytes": null,
+        "eventLoopLagMs": 0.000511,
+        "state": "pressure"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 146,
+        "known": 173,
+        "watch": 97,
+        "eligible": 71,
+        "deepActive": 0,
+        "deepMaximum": 4,
+        "queued": 71,
+        "promoted": 3854,
+        "repromoted": 3567,
+        "demoted": 3850,
+        "completeWindows": 1721,
+        "auditedWindows": 1743,
+        "uniqueEvaluated": 0,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1743,
+        "predictivePasses": 78,
+        "predictiveFailures": 1643,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2197032,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9565",
+      "times": {
+        "generatedAt": "2026-10-29T18:51:07.132Z",
+        "marketAt": "2026-10-29T18:51:02.382Z",
+        "reconciledAt": "2026-10-29T18:51:06.632Z",
+        "usefulProgressAt": "2026-10-29T18:51:06.632Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 27336.0,
+      "sourceToRenderMs": 19420.0,
+      "reconciliationAgeAtSourceMs": 500.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": false,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16824403,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 11,
+        "rpcResponseBytes": 34447,
+        "nativeStreamBytes": 723799617,
+        "broadWatchBytes": 41560107899,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 357,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 28,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:50:43.072Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:51:06.801Z",
+        "cpuOneCoreFraction": 0.17139554452031175,
+        "rssBytes": 281731072,
+        "availableMemoryBytes": 6980702208,
+        "availableDiskBytes": 288570392576,
+        "eventLoopLagMs": 25.313279,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 146,
+        "known": 173,
+        "watch": 92,
+        "eligible": 70,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 67,
+        "promoted": 3858,
+        "repromoted": 3571,
+        "demoted": 3850,
+        "completeWindows": 1721,
+        "auditedWindows": 1743,
+        "uniqueEvaluated": 0,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1743,
+        "predictivePasses": 78,
+        "predictiveFailures": 1643,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2212056,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9566",
+      "times": {
+        "generatedAt": "2026-10-29T18:51:22.134Z",
+        "marketAt": "2026-10-29T18:51:17.402Z",
+        "reconciledAt": "2026-10-29T18:51:22.018Z",
+        "usefulProgressAt": "2026-10-29T18:51:22.018Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 27681.0,
+      "sourceToRenderMs": 19505.0,
+      "reconciliationAgeAtSourceMs": 116.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": false,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 16932911,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 13,
+        "rpcResponseBytes": 95006,
+        "nativeStreamBytes": 723844865,
+        "broadWatchBytes": 41582269404,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 357,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 29,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:50:43.072Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:51:22.133Z",
+        "cpuOneCoreFraction": 0.15289098954143202,
+        "rssBytes": 300933120,
+        "availableMemoryBytes": 6970634240,
+        "availableDiskBytes": 288570101760,
+        "eventLoopLagMs": 24.805375,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 146,
+        "known": 173,
+        "watch": 92,
+        "eligible": 70,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 67,
+        "promoted": 3858,
+        "repromoted": 3571,
+        "demoted": 3850,
+        "completeWindows": 1721,
+        "auditedWindows": 1743,
+        "uniqueEvaluated": 0,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1743,
+        "predictivePasses": 78,
+        "predictiveFailures": 1643,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2227057,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9567",
+      "times": {
+        "generatedAt": "2026-10-29T18:51:37.175Z",
+        "marketAt": "2026-10-29T18:51:32.533Z",
+        "reconciledAt": "2026-10-29T18:51:36.273Z",
+        "usefulProgressAt": "2026-10-29T18:51:36.273Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 27791.0,
+      "sourceToRenderMs": 19556.0,
+      "reconciliationAgeAtSourceMs": 902.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 17015686,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 15,
+        "rpcResponseBytes": 140047,
+        "nativeStreamBytes": 723889906,
+        "broadWatchBytes": 41601825213,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 357,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 20,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:50:43.072Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:51:36.627Z",
+        "cpuOneCoreFraction": 0.1499824252679075,
+        "rssBytes": 346914816,
+        "availableMemoryBytes": 6936129536,
+        "availableDiskBytes": 288570056704,
+        "eventLoopLagMs": 24.707071,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 351,
+        "verifiedOrigins": 146,
+        "known": 173,
+        "watch": 92,
+        "eligible": 70,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 67,
+        "promoted": 3858,
+        "repromoted": 3571,
+        "demoted": 3850,
+        "completeWindows": 1721,
+        "auditedWindows": 1743,
+        "uniqueEvaluated": 0,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1743,
+        "predictivePasses": 78,
+        "predictiveFailures": 1643,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2242099,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    },
+    {
+      "sequence": "9568",
+      "times": {
+        "generatedAt": "2026-10-29T18:51:52.215Z",
+        "marketAt": "2026-10-29T18:51:47.551Z",
+        "reconciledAt": "2026-10-29T18:51:51.689Z",
+        "usefulProgressAt": "2026-10-29T18:51:51.689Z"
+      },
+      "source": {
+        "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "run": {
+        "id": "native-paper-20261029185051115",
+        "startedAt": "2026-10-29T18:50:51.115Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+        "strategyVersion": "persistent-buying-pilot-v1"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_SAFE_STOP"
+      },
+      "sourceToObserverMs": 27910.0,
+      "sourceToRenderMs": 19652.0,
+      "reconciliationAgeAtSourceMs": 526.0,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 17217645,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "not-started"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1037,
+        "auditUnavailable": 46,
+        "auditUnusable": 124,
+        "decisionDeadlineMisses": 62,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1037,
+        "capacityExclusions": 0,
+        "structuralExclusions": 38,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 21,
+        "rpcResponseBytes": 270308,
+        "nativeStreamBytes": 723924964,
+        "broadWatchBytes": 41620224052,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 357,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 21,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T18:50:43.072Z",
+        "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T18:51:51.607Z",
+        "cpuOneCoreFraction": 0.14401520925370115,
+        "rssBytes": 351154176,
+        "availableMemoryBytes": 6930526208,
+        "availableDiskBytes": 288569856000,
+        "eventLoopLagMs": 24.674303,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "candidates": {
+        "migrationsReceived": 352,
+        "verifiedOrigins": 147,
+        "known": 174,
+        "watch": 93,
+        "eligible": 70,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 67,
+        "promoted": 3858,
+        "repromoted": 3571,
+        "demoted": 3850,
+        "completeWindows": 1721,
+        "auditedWindows": 1743,
+        "uniqueEvaluated": 0,
+        "uniqueAudited": null,
+        "predictiveAssessments": 1743,
+        "predictivePasses": 78,
+        "predictiveFailures": 1643,
+        "predictiveUnavailable": 3,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2257139,
+        "olderSelected": 24
+      },
+      "pendingOrders": [],
+      "positionCount": 0
+    }
+  ],
+  "exactRunChange": {
+    "old": "native-paper-20261029183807362",
+    "new": "native-paper-20261029185051115",
+    "sameSource": true,
+    "sameConfiguration": true,
+    "lastRetainedOldSourceAt": "2026-10-29T18:50:33.103Z",
+    "firstRetainedNewSourceAt": "2026-10-29T18:50:52.107Z",
+    "retainedSourceFrameGapMs": 19004,
+    "missingSequence": [
+      "9563"
+    ],
+    "firstNewCapturedFalse": true,
+    "firstRetainedConnectedNewSourceAt": "2026-10-29T18:51:07.132Z",
+    "newRunStartedAt": "2026-10-29T18:50:51.115Z",
+    "newStartToFirstConnectedSnapshotMs": 16017,
+    "firstRetainedSupervisionAllowedAt": "2026-10-29T18:51:37.175Z",
+    "actualCaptureStopOrStartTime": null,
+    "actualDowntimeDuration": null,
+    "cause": null
+  },
+  "lastPriorHost": {
+    "file": "resources/host-40934448586.json",
+    "sha256": "7fee7b63adde5f259c7a6cadaf9dcd9802b1a7744c88f5ab4426461e34a6c9e0",
+    "checkedAt": 1793299786549,
+    "service": {
+      "Restart": "always",
+      "MainPID": "2465804",
+      "ControlPID": "0",
+      "Result": "success",
+      "NRestarts": "0",
+      "OOMPolicy": "stop",
+      "ExecMainStartTimestamp": "Thu 2026-10-29 18:38:07 UTC",
+      "ExecMainExitTimestamp": "",
+      "ExecMainPID": "2465804",
+      "ExecMainCode": "0",
+      "ExecMainStatus": "0",
+      "ControlGroup": "/system.slice/poe-runtime.service",
+      "TasksCurrent": "22",
+      "CPUWeight": "100",
+      "CPUQuotaPerSecUSec": "infinity",
+      "CPUQuotaPeriodUSec": "100ms",
+      "AllowedCPUs": "",
+      "IOWeight": "[not set]",
+      "MemoryHigh": "2684354560",
+      "MemoryMax": "3221225472",
+      "MemorySwapMax": "0",
+      "TasksMax": "64",
+      "LimitNOFILE": "256",
+      "LimitAS": "infinity",
+      "RootDirectory": "",
+      "RootImage": "",
+      "Nice": "0",
+      "CPUAffinity": "",
+      "User": "poe-runtime",
+      "Group": "poe-runtime",
+      "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public",
+      "ReadOnlyPaths": "",
+      "InaccessiblePaths": "",
+      "PrivateTmp": "yes",
+      "PrivateMounts": "no",
+      "ProtectSystem": "strict",
+      "BindPaths": "",
+      "BindReadOnlyPaths": "",
+      "TemporaryFileSystem": "",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running",
+      "StateChangeTimestamp": "Thu 2026-10-29 18:38:07 UTC",
+      "ActiveEnterTimestamp": "Thu 2026-10-29 18:38:07 UTC",
+      "InactiveEnterTimestamp": "Thu 2026-10-29 18:38:05 UTC",
+      "Job": ""
+    },
+    "acceptedSource": {
+      "schemaVersion": 1,
+      "kind": "poe-original-snapshot-delivery-receipt-v1",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9"
+      },
+      "runId": "native-paper-20261029183807362",
+      "sourceAtMs": 1793299757283,
+      "sequence": "9557",
+      "fingerprint": "bd4a0ea8039c4fcd955b9d0878b3b5f92ec6d71a255ea0c5dd828bfbee6a7daf",
+      "rawSourceSha256": "411c7962199928bf0927eb07215f2776a6ecd36ee192ed907b55560c746cf59b",
+      "acknowledgedAtMs": 1793299780919,
+      "observedBySupervisorAtMs": 1793299781097,
+      "acceptedDistinctSourcesThisSupervisor": 32,
+      "meaning": "Duplicate metadata of an already matched original-channel Render acknowledgement; source timestamp is unchanged. No financial or market evidence is replaced."
+    },
+    "ackDelayMs": 23636,
+    "ackAgeAtHostCheckMs": 5630,
+    "resources": {
+      "sampleAt": 1793299786549,
+      "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+      "serviceScope": "poe-runtime.service cgroup, including owned children",
+      "hostMemory": {
+        "available": true,
+        "totalBytes": 8153255936,
+        "availableBytes": 6786781184
+      },
+      "rootFilesystem": {
+        "available": true,
+        "capacityBytes": 331712798720,
+        "availableBytes": 288590032896
+      },
+      "serviceIo": {
+        "available": true,
+        "scope": "poe-runtime.service cgroup only; not host I/O",
+        "deviceCount": 1,
+        "devices": [
+          {
+            "device": "259:0",
+            "rbytes": 38092800,
+            "wbytes": 569020416,
+            "rios": 353,
+            "wios": 13272,
+            "dbytes": 0,
+            "dios": 0
+          }
+        ],
+        "totals": {
+          "rbytes": 38092800,
+          "wbytes": 569020416,
+          "rios": 353,
+          "wios": 13272,
+          "dbytes": 0,
+          "dios": 0
+        },
+        "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+      },
+      "serviceCpu": {
+        "available": true,
+        "usage_usec": 110606995,
+        "user_usec": 104080850,
+        "system_usec": 6526145,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "throttled_usec": 0
+      },
+      "serviceMemory": {
+        "current": {
+          "available": true,
+          "bytes": 514891776,
+          "unlimited": false
+        },
+        "max": {
+          "available": true,
+          "bytes": 3221225472,
+          "unlimited": false
+        },
+        "peak": {
+          "available": true,
+          "bytes": 567697408,
+          "unlimited": false
+        }
+      },
+      "hostNetwork": {
+        "available": true,
+        "scope": "HOST-AGGREGATE; not POE-attributable",
+        "interfaceCount": 2,
+        "truncated": false,
+        "interfaces": [
+          {
+            "interface": "lo",
+            "receivedBytes": 564334630,
+            "receivedPackets": 3805000,
+            "transmittedBytes": 564334630,
+            "transmittedPackets": 3805000
+          },
+          {
+            "interface": "ens5",
+            "receivedBytes": 97603304740,
+            "receivedPackets": 80243305,
+            "transmittedBytes": 10866259523,
+            "transmittedPackets": 29041787
+          }
+        ]
+      }
+    },
+    "effectiveControls": {
+      "sampleAt": 1793299786550,
+      "logicalCpuCount": 4,
+      "systemd": {
+        "CPUQuotaPerSecUSec": "infinity",
+        "CPUQuotaPeriodUSec": "100ms",
+        "CPUWeight": "100",
+        "Nice": "0",
+        "MemoryHigh": "2684354560",
+        "MemoryMax": "3221225472",
+        "MemorySwapMax": "0",
+        "TasksMax": "64",
+        "LimitNOFILE": "256",
+        "LimitAS": "infinity",
+        "OOMPolicy": "stop",
+        "IOWeight": "[not set]",
+        "CPUAffinity": "",
+        "AllowedCPUs": "",
+        "ProtectSystem": "strict",
+        "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public"
+      },
+      "systemdMissingProperties": [],
+      "cgroupCpuMax": {
+        "available": true,
+        "unlimited": true,
+        "quotaUsec": null,
+        "periodUsec": 100000,
+        "equivalentCpuCores": null
+      },
+      "cgroupCpuWeight": {
+        "available": true,
+        "value": 100
+      },
+      "cgroupMemory": {
+        "high": {
+          "available": true,
+          "unlimited": false,
+          "bytes": 2684354560
+        },
+        "max": {
+          "available": true,
+          "unlimited": false,
+          "bytes": 3221225472
+        }
+      },
+      "cgroupMemoryEvents": {
+        "available": true,
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    }
+  },
+  "assessment": [
+    "A real run generation transition occurred; this cannot count as an uninterrupted f96 acceptance interval.",
+    "The last five retained old-run frames report connected capture/discovery/watch, normal resources and allowed resource/evidence/supervision gates.",
+    "Last retained old run is flat with no pending orders; fresh reconciliation873ms, provider timeout cumulative356 (+1 from prior frame), zero HTTP errors/throttles, provider cooldown had expired3061ms before source generation.",
+    "Last host sample18:49:46.549 shows NRestarts0, zero throttling and zero memory events, available RAM6.786GB, disk288.590GB, cgroup memory514.9MB/peak567.7MB. It is not a sample at the actual restart.",
+    "Last host accepted-source receipt seq9557 had ack delay23.636s and was5.630s old at host check, below90s stale policy but above15s target.",
+    "Public source-to-Render latency preceding restart was23.288\u201323.628s. Receiver receipt is not a runtime publisher private ACK.",
+    "No raw private control state, exact stop reason, restart-cause receipt, final old-run9563 or actual interruption boundaries are in this public population.",
+    "PredictivePasses78 first appears already carried at new-run startup with0 current-run decisions; cause and exact prior-run passing token remain unknown from these frames."
+  ]
+}

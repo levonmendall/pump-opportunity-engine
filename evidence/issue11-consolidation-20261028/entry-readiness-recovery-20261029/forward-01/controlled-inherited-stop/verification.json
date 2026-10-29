@@ -1,0 +1,52 @@
+{
+  "recordedAt": "2026-10-29T18:54:36.594595+00:00",
+  "classification": "CONTROLLED_FROZEN_F96_PATH_VERIFIED_NOT_LIVE_MARKET_SUCCESS",
+  "command": "node --import tsx --test evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/forward-01/controlled-inherited-stop/controlled-inherited-stop.test.mts",
+  "tests": 2,
+  "passed": 2,
+  "failed": 0,
+  "frozenInstalledSource": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+  "configuration": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+  "sourceFilesUnchanged": true,
+  "sourceFiles": {
+    "src/execution.ts": "d046bf855754eac85153a3cb64ef68ed23fec8099dde0176ed913a58c8175f6b",
+    "src/native-paper.ts": "546ab5112fcba3a9e282645a1b94106e04e0a7a24bea2a9498ace60bffb57d1c",
+    "src/run-native-paper.ts": "a2b7641bfd8ed74366e75bb14bb5b6dc0bd378388da8f8f90bfef4444bff2738",
+    "src/trader.ts": "a052a57e331e284b6ca6b9c017052343a84a429182992f57f932a80888545281",
+    "src/ledger.ts": "002fd214389a748d5c8e08127ac61be749dccd5c7daf6d66f6bc48cef99c93bb",
+    "src/pilot-market.ts": "c463e89554a36d7ea9eb07b7f61dfc294b26f84bf0a104d8dd957456ec6cd3fc",
+    "src/retained-recorder.ts": "4edf8e22db2cc4bf7153bf15b0cdbfbdb6533e93a86ee22aed70af3aaf7aa250",
+    "test/native-paper-integration.test.ts": "b7207b23f06c6bdc009dce8a1af1e8e8bb19939a3e635cd2743d84c5e580a44b"
+  },
+  "result": [
+    "Inherited internal-stop flag and historical restriction survive startup. Cash shortcut refuses them. Real current NativeCandidateRunner certificate + retained raw proof + proof-preparation gate + SDK actual-size pricing + fresh reconciliation allow the original candidate path to clear stop and reserve/fill once without manual resume.",
+    "Owner admission false prevents proof/SDK/order/fill despite the same valid passing certificate and retains the stop flag."
+  ],
+  "limitations": [
+    "Synthetic complete flow, coherent bank/liquidity/USD and explicitly retimed migration ages; not a natural qualification or profitability result.",
+    "Existing disposable integration helper permits two positions; only one opened here and installed maximum remains one.",
+    "Actual runtime owner-marker/control-variable code independently mapped read-only; control fixture exercises the exact NativePaper admitNewRisk boundary without starting a service."
+  ],
+  "artifacts": {
+    "success-receipt.json": "649df16dc775c40a3eb11efa6ae534ed2fa32df4ddde49fe4eb6a3d8535db615",
+    "raw-tests.txt": "460b9af205489da31761b81952d14ff2d401b2548471cecf63de6eda7df4ad2c",
+    "source-manifest-before.json": "3058fa1816f89af4bca040177b1d6bf1fb8a5a6c8539d4b9624c2b6e6be07dc6",
+    "owner-control-receipt.json": "7a4f9aae39a31ae6d737833e7824989e7e9c196580f9d4981e426b78eddb4f73",
+    "controlled-inherited-stop.test.mts": "f21bdb6e505962b7a06ee4b4e630d4b95a0cef4a700090d37cfc308e3e7d316b",
+    "owner-control-evidence/essential-000000000001.ndjson.manifest.json": "40f1996c47bb73016b9520bf1cad8eb8f11f9e876dd3c6f59a665a9f408db37d",
+    "owner-control-evidence/writer.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "owner-control-evidence/diagnostic-000000000001.ndjson": "084cd311af09a3243be9bd847a3c944fa4a677ea11a53285e4b894468816c657",
+    "owner-control-evidence/state.json": "02efc43606dc8870c79b7bb56ed522dfbc4e7864577801f83d82c5351652ad31",
+    "owner-control-evidence/essential-000000000001.ndjson": "da94a0a2521717145dfc8099945b6acd99763dafb132248473e244a62b5a6e69",
+    "owner-control-evidence/owner-namespace.txt": "1e1f5ac2ca301ecb9184e76758f69e2e59e45f582a9ec2a25c8c1dd2b1bc072b",
+    "success-evidence/essential-000000000001.ndjson.manifest.json": "582f056421186cf719e0af3ef0484dc695d9c69c1498e54aabb31a23f721b450",
+    "success-evidence/writer.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "success-evidence/diagnostic-000000000001.ndjson": "9896e1a1548f02f9434d8c3cd6863673bc4c36b42daa256ffdd410c8c0435d73",
+    "success-evidence/state.json": "c5ed3cc244aed4ffad593b1a1374d42d51115a7131a7267e553c44ee24d15163",
+    "success-evidence/essential-000000000001.ndjson": "648bd58faefd40e5e276dfbac11d14508f99204bdfbc30c7506ce46be66f1497",
+    "success-evidence/diagnostic-000000000002.ndjson": "9917d2074db20e1fb3fbb252392c006928589b537d74c3472cb43d58967fe348",
+    "success-evidence/owner-namespace.txt": "1e1f5ac2ca301ecb9184e76758f69e2e59e45f582a9ec2a25c8c1dd2b1bc072b",
+    "success-evidence/proof-6cc822215656f9114a81b7ec55b4aa28dea49af04b19de0896e729645249c9c9/manifest.json": "703925ce6d7e719a1073aefaacf7566ef586157eb8058617d71e60885244e38d",
+    "success-evidence/proof-6cc822215656f9114a81b7ec55b4aa28dea49af04b19de0896e729645249c9c9/diagnostic-000000000001.ndjson": "9896e1a1548f02f9434d8c3cd6863673bc4c36b42daa256ffdd410c8c0435d73"
+  }
+}
