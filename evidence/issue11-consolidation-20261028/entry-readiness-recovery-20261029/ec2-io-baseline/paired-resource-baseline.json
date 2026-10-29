@@ -1,0 +1,45 @@
+{
+  "classification": "ACTUAL_UNCHANGED_SOURCE_BASELINE_PAIR_NOT_NEW_REPAIR_VALIDATION",
+  "adminCommit": "7b44e9206651911f205e4fe6bbdb608a4cb4e52c",
+  "workflowRuns": [
+    40929835496,
+    40930340753
+  ],
+  "source": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "sameSupervisorAndRestartCountAndSource": true,
+  "fromAt": 1793298021607,
+  "untilAt": 1793298211155,
+  "seconds": 189.548,
+  "serviceIoCounterDeltas": {
+    "rbytes": 0,
+    "wbytes": 163373056,
+    "rios": 0,
+    "wios": 4261,
+    "dbytes": 0,
+    "dios": 0
+  },
+  "serviceIoBytesPerSecond": {
+    "rbytes": 0.0,
+    "wbytes": 861908.624728301
+  },
+  "serviceCpuOneCoreFraction": 0.17036790153417605,
+  "throttledUsecDelta": 0,
+  "cgroupMemoryBytes": {
+    "start": 863162368,
+    "end": 869122048,
+    "peakAtEnd": 900026368
+  },
+  "hostAvailableDiskBytes": {
+    "start": 288685412352,
+    "end": 288680087552
+  },
+  "hostAvailableMemoryBytes": {
+    "start": 6679597056,
+    "end": 6648184832
+  },
+  "attribution": "I/O and CPU belong to the service cgroup. Host memory/disk/network include unrelated applications. Cgroup writes do not separately identify SQLite, evidence, backup, or filesystem amplification.",
+  "financialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "providerRequests": 0,
+  "credentialReads": 0
+}

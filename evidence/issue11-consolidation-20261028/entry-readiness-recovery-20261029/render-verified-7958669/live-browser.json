@@ -1,0 +1,381 @@
+{
+  "checkedAt": "2026-10-29T18:32:47.049Z",
+  "dashboardRelease": "79586698694f8b850bb3d75186878134c8276567",
+  "networkRequests": 7,
+  "method": "Actual public GETs forwarded through verified-TLS session proxy; Chromium rendered returned live HTML/JSON",
+  "fixturesPublished": false,
+  "credentialsRead": false,
+  "financialFilesRead": false,
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T18:31:54.240Z",
+        "sequence": "9486",
+        "assessments": 1710,
+        "passes": 77,
+        "entries": "paused",
+        "positions": 0,
+        "trades": 8,
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "entry-paused",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 19213,
+          "receivedAgeMs": 1382,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": "OTHER_SOURCE_RESTRICTION",
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": false,
+            "valuationAgeMs": 19969,
+            "reconciliationAgeMs": 23371
+          },
+          "protection": {
+            "state": "flat",
+            "completedAt": "2026-10-29T17:25:38.079Z",
+            "completedAgeAtSourceMs": 3976161,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": [
+            "RECONCILIATION_NOT_CURRENT",
+            "OTHER_SOURCE_RESTRICTION"
+          ]
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries paused · source reporting current · Financial reconciliation is not current; entry permission remains as reported · New entries are restricted by another source-reported condition · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9486",
+        "receiver": "2026-10-29T18:32:12.071Z",
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 50885769,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 343,
+          "verifiedOrigins": 165,
+          "known": 174,
+          "watch": 91,
+          "eligible": 66,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 63,
+          "promoted": 3798,
+          "repromoted": 3520,
+          "demoted": 3790,
+          "completeWindows": 1688,
+          "auditedWindows": 1710,
+          "uniqueEvaluated": 96,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1710,
+          "predictivePasses": 77,
+          "predictiveFailures": 1611,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": null,
+          "waitMaximumMs": 1808271,
+          "olderSelected": 24
+        },
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "provider": {
+          "rpcRequests": 2705,
+          "rpcResponseBytes": 512585567,
+          "nativeStreamBytes": 694613606,
+          "broadWatchBytes": 40065402427,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 338,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 47,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T18:30:55.173Z",
+          "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T18:31:53.958Z",
+          "cpuOneCoreFraction": 0.3244465142014017,
+          "rssBytes": 479096832,
+          "availableMemoryBytes": 6704312320,
+          "availableDiskBytes": 288630870016,
+          "eventLoopLagMs": 26.771455,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+          "maximumCompletedGapMs": 2555,
+          "maximumQuoteAgeAtUseMs": 72,
+          "breaches": 0,
+          "unavailableChecks": 0
+        }
+      },
+      "last": {
+        "generatedAt": "2026-10-29T18:32:10.306Z",
+        "sequence": "9487",
+        "assessments": 1710,
+        "passes": 77,
+        "receiver": "2026-10-29T18:32:27.178Z",
+        "entries": "paused",
+        "market": "observing",
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "entry-paused",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 18404,
+          "receivedAgeMs": 1532,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": "OTHER_SOURCE_RESTRICTION",
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": true,
+            "valuationAgeMs": 19878,
+            "reconciliationAgeMs": 18460
+          },
+          "protection": {
+            "state": "flat",
+            "completedAt": "2026-10-29T17:25:38.079Z",
+            "completedAgeAtSourceMs": 3992227,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": [
+            "OTHER_SOURCE_RESTRICTION"
+          ]
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries paused · source reporting current · New entries are restricted by another source-reported condition · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9487"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot",
+        "/api/snapshot",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "pnlVisible": true,
+      "liveMarketSource": true
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T18:32:25.362Z",
+        "sequence": "9488",
+        "assessments": 1710,
+        "passes": 77,
+        "entries": "paused",
+        "positions": 0,
+        "trades": 8,
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "entry-paused",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 20012,
+          "receivedAgeMs": 3076,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": "OTHER_SOURCE_RESTRICTION",
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": true,
+            "valuationAgeMs": 21494,
+            "reconciliationAgeMs": 20067
+          },
+          "protection": {
+            "state": "flat",
+            "completedAt": "2026-10-29T17:25:38.079Z",
+            "completedAgeAtSourceMs": 4007283,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": [
+            "OTHER_SOURCE_RESTRICTION"
+          ]
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries paused · source reporting current · New entries are restricted by another source-reported condition · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9488",
+        "receiver": "2026-10-29T18:32:42.298Z",
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 51001772,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 344,
+          "verifiedOrigins": 165,
+          "known": 174,
+          "watch": 90,
+          "eligible": 65,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 63,
+          "promoted": 3798,
+          "repromoted": 3520,
+          "demoted": 3790,
+          "completeWindows": 1688,
+          "auditedWindows": 1710,
+          "uniqueEvaluated": 96,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1710,
+          "predictivePasses": 77,
+          "predictiveFailures": 1611,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": 809981,
+          "waitMaximumMs": 1839393,
+          "olderSelected": 24
+        },
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "provider": {
+          "rpcRequests": 2711,
+          "rpcResponseBytes": 512640717,
+          "nativeStreamBytes": 694613639,
+          "broadWatchBytes": 40106229339,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 338,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 30,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T18:30:55.173Z",
+          "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T18:32:25.189Z",
+          "cpuOneCoreFraction": 0.17665942826645317,
+          "rssBytes": 479272960,
+          "availableMemoryBytes": 6713122816,
+          "availableDiskBytes": 288630706176,
+          "eventLoopLagMs": 26.755071,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+          "maximumCompletedGapMs": 2555,
+          "maximumQuoteAgeAtUseMs": 72,
+          "breaches": 0,
+          "unavailableChecks": 0
+        }
+      },
+      "last": {
+        "generatedAt": "2026-10-29T18:32:25.362Z",
+        "sequence": "9488",
+        "assessments": 1710,
+        "passes": 77,
+        "receiver": "2026-10-29T18:32:42.298Z",
+        "entries": "paused",
+        "market": "observing",
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "entry-paused",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 20076,
+          "receivedAgeMs": 3140,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": "OTHER_SOURCE_RESTRICTION",
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": true,
+            "valuationAgeMs": 21558,
+            "reconciliationAgeMs": 20131
+          },
+          "protection": {
+            "state": "flat",
+            "completedAt": "2026-10-29T17:25:38.079Z",
+            "completedAgeAtSourceMs": 4007283,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": [
+            "OTHER_SOURCE_RESTRICTION"
+          ]
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries paused · source reporting current · New entries are restricted by another source-reported condition · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9488"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "pnlVisible": true,
+      "liveMarketSource": true
+    }
+  ]
+}

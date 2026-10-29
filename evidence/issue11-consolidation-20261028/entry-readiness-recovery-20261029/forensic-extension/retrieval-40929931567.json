@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-10-29T18:37:02.153577+00:00",
+  "workflowRun": 40929931567,
+  "status": "NOT_VERIFIED",
+  "kind": "POE_FORENSICS_ADMIN_REFUSED",
+  "reason": "FIXED_STAGE_OR_PUBLIC_ARTIFACT_UNAVAILABLE",
+  "privateLedgerReads": 0,
+  "serviceChanges": 0,
+  "historicalControlsEstablished": false,
+  "ownerExecutionInferred": false
+}

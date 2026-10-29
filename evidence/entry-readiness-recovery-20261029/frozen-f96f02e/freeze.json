@@ -1,0 +1,26 @@
+{
+  "recordedAt": "2026-10-29T18:30:50.718866+00:00",
+  "classification": "FROZEN_OFFLINE_VERIFIED_NOT_INSTALLED",
+  "sourceIdentity": {
+    "output": "/tmp/poe-native-paper-output-entry-readiness-f96f02e",
+    "sourceCommit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "bundleSha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9",
+    "bundleBytes": 5092481,
+    "metadataSha256": "21d180e0fb631ae3e72433062ae2975f1142a2104045688e852d031601349e31",
+    "backupWorkerSha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34",
+    "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "inputs": 544,
+    "dependencies": 54,
+    "smokeImport": true,
+    "disposableBackupAndReopen": true,
+    "measurementExecuted": false,
+    "financialAccountRead": false
+  },
+  "sourceFileHashesMatchFinal1777TestRun": true,
+  "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+  "financialPositions": 1,
+  "deepSlots": 4,
+  "strategyChanged": false,
+  "financialHistoryChanged": false,
+  "currentlyInstalledSource": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c"
+}

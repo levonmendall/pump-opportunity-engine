@@ -1,0 +1,32 @@
+{
+  "recordedAt": "2026-10-29T18:21:26.919114+00:00",
+  "adminCommit": "7b44e9206651911f205e4fe6bbdb608a4cb4e52c",
+  "workflowRun": 40929835496,
+  "inspectorSha256": "b3f06c4ba8363a95f8cbec97dc2f60b0ce72ca0cbafee57b2e218ce25de396c5",
+  "tests": 8,
+  "independentTests": 8,
+  "actualReceipt": 1793298021607,
+  "source": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "financialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "providerRequests": 0,
+  "credentialReads": 0,
+  "files": {
+    "admin-io-tests.raw.txt": {
+      "bytes": 106,
+      "sha256": "698d16d7b93c4bd9707d3cfacda6fb1e0fea99ed0cda6e69bedc42772940540a"
+    },
+    "host-40929835496.json": {
+      "bytes": 24130,
+      "sha256": "f0381bae01e87ef271210f5eaac2faeccd06fddac5a327fc073b30deaa415783"
+    },
+    "host-40929835496.raw.txt": {
+      "bytes": 41597,
+      "sha256": "328495e8f9a821326e5762e72610da9f10710b26d49e3b7a9ae7781532381b79"
+    },
+    "independent-admin-io-tests.raw.txt": {
+      "bytes": 106,
+      "sha256": "698d16d7b93c4bd9707d3cfacda6fb1e0fea99ed0cda6e69bedc42772940540a"
+    }
+  }
+}
