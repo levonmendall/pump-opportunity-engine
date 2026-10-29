@@ -1,0 +1,34 @@
+{
+  "at": "2026-10-29T21:28:25.580639+00:00",
+  "baseCommit": "5b2bc28e83ee5c1aedb4eddbefe33b0203a0cae3",
+  "classification": "OFFLINE_ACTIVE_NATIVE_V2_INTEGRATION_NO_FORWARD_ACCEPTANCE",
+  "ownedSource": {
+    "src/native-paper.ts": "5d2734c6c9a8ba2384431baf92472e0f5a6bfcdcec4ac5a4ab9a94b44ecca3c6",
+    "src/run-native-paper.ts": "adc9336b7818c0db5cb2b10d628d2d4bb54ae5348ae4ad655d54b9caad6de0ea",
+    "src/native-candidate-runner.ts": "221303b8853cd4dc3d30e98eb1b8e1327bd2bde86e221cd8ada0dcf9a513d57d",
+    "test/native-active-assessment.test.ts": "cd24199254d4082d53968f62c4a212f370121ed1f124029ca16e2ccdb2edc2ef",
+    "test/native-paper-adaptive-mode.test.ts": "c7ac691a7e9c98fe9707312fcab85aa3fddd7ed6827bf1cf86cf80fc04acb535"
+  },
+  "dependencyOverlaysNotCommittedByThisTask": {
+    "src/pilot-contract.ts": "16f8c38d827eceea2cb74ab2964fc718fa8d36d3a81ec0aa07e797508d87015b",
+    "src/pilot.ts": "e7117f353b885407f30776adcf9948125279846f2639226222d806fc16c97a2d",
+    "src/ledger.ts": "36cdfeeeca92601ab02cceaa60c43ab482cc55a20eb20419c59bd3798028887a",
+    "src/trader.ts": "3728a29378b53353e81c0da0ea32c8aa06e69016b82ee5a09711bc56f23790f7",
+    "src/adaptive-momentum-v2.ts": "0f5c3d92740d0182e5b44f507430b1508e463213b7f4ff285ebfe28e4b090a30"
+  },
+  "raw": {
+    "initial-older-hint-fixture-failure.raw.txt": "26e7385bc628ab52785153caa0457b1cf9f0b385ca9183ab02a68d017591e798",
+    "audit-first.raw.txt": "9d3b4e5307a266b5d99912eefbd248ffd4ff3fd6156335b445f1b113a4775dd6",
+    "focused108.raw.txt": "4e749020e5cd01f3d95b06331997cb5245ce9bf530648a05a459c52554a032f8",
+    "final-focused.raw.txt": "9715a194928c78a539d205e4f1853f4639a26eb270b0b60ceac930052632364c",
+    "final-build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "finalFocusedTests": 17,
+  "earlierFocusedTests": 108,
+  "independentReviewFocusedTests": 67,
+  "networkRequests": 0,
+  "holdingTimingAcceptanceClaimed": false,
+  "liveDeploymentClaimed": false,
+  "operatingFinancialAccountRead": false,
+  "disposableFixtureLedgerUsed": true
+}

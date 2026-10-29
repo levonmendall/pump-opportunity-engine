@@ -1,0 +1,32 @@
+✔ a baseline-failed independently audited window survives for active V2 exact-size evaluation (25.990308ms)
+✔ baseline rollback keeps its unchanged weak-window retirement and does not claim adaptive decisions (8.899606ms)
+✔ active native V2 turns a baseline-rejected early audited window into a real PAPER reservation and preserves winner beyond old caps (75.901174ms)
+✖ active native age eligibility also retains an older audited token beyond120minutes (12.98572ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1125.179009
+
+✖ failing tests:
+
+test at test/native-active-assessment.test.ts:1:10332
+✖ active native age eligibility also retains an older audited token beyond120minutes (12.98572ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at auditFixture (/workspace/poe-active-v2-native/test/native-active-assessment.test.ts:32:49)
+      at async TestContext.<anonymous> (/workspace/poe-active-v2-native/test/native-active-assessment.test.ts:58:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

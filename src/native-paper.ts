@@ -6,9 +6,10 @@ import {PaperTrader,TEMPORARY_ENTRY_READINESS_PAUSES,type TraderTickOptions} fro
 import {PilotMarket} from './pilot-market.js';
 import type {PilotNativeFlow,PilotNativeFlowOptions} from './pilot-native-flow.js';
 import type {NativeAuditCertificate} from './native-candidate-runner.js';
-import type {PilotBinding} from './pilot-contract.js';
+import {ADAPTIVE_PILOT_BINDING,type PilotBinding} from './pilot-contract.js';
 import {PROVISIONAL_RULE,assessPredictiveBuying} from './strategy.js';
 import {entryAgeEligible} from './observation-age.js';
+import {assessAdaptiveBuying,adaptiveMigrationEligible} from './adaptive-momentum-v2.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION,nativePaperEvidenceReady} from './native-paper-contract.js';
 import type {ExecutionContext} from './execution.js';
 import type {TechnicalReevaluationReason} from './pilot-watch.js';
@@ -35,12 +36,12 @@ export function nativePaperDerivedEntryBlocker(input:{at:number;state:LedgerStat
  return null;
 }
 export class NativePaper {
- readonly trader:PaperTrader;private readonly now:()=>number;private readonly maximumPositions:PilotBinding['maxPositions'];private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
+ readonly trader:PaperTrader;private readonly adaptive:boolean;private readonly now:()=>number;private readonly maximumPositions:PilotBinding['maxPositions'];private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
  private context:ExecutionContext={price:null,marks:{}};
  private internalStopDiagnostic:{code:typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number];at:number|null;lastSuccessfulResumeRevision:number|null;knownStopCount:number|null}={code:'INTERNAL_SHUTDOWN_NOT_EVALUATED',at:null,lastSuccessfulResumeRevision:null,knownStopCount:null};
  private readonly internalStopRefusalCounts:Partial<Record<typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number],number>>={};
  constructor(private readonly options:NativePaperOptions){
-  this.now=options.now??Date.now;this.maximumPositions=options.binding.maxPositions;const state=options.ledger.state();assertNativePaperAccount(state,options.fixtureAccountBinding);
+  this.now=options.now??Date.now;this.adaptive=options.binding.version===ADAPTIVE_PILOT_BINDING.version;this.maximumPositions=options.binding.maxPositions;const state=options.ledger.state();assertNativePaperAccount(state,options.fixtureAccountBinding);
   for(const [mint,pool]of Object.entries(options.restoredPools??{}))if(state.positions[mint]||Object.values(state.pending).some(o=>o.mint===mint))this.register(pool.identity,pool.evidence);
   for(const mint of new Set([...Object.keys(state.positions),...Object.values(state.pending).map(o=>o.mint)]))need(this.pools.has(mint),'NATIVE_PAPER_OWNED_POOL_PROOF_REQUIRED');
   // Ordinary ticks validate/sanitize this read and reconcile in PaperTrader.
@@ -48,9 +49,16 @@ export class NativePaper {
   // its own fresh reconciliation before ledger.attempt checks financial gates.
   const context=async(positions:LedgerState['positions'],signal:AbortSignal)=>{const current=await (options.withProtectionWork?options.withProtectionWork(()=>options.market.context(positions,signal)):options.market.context(positions,signal));this.context=current;return current;};
   const executionContext=async(positions:LedgerState['positions'],signal:AbortSignal)=>{const current=await context(positions,signal),at=this.now();if(current.price){const marks=Object.keys(positions).length&&(!Number.isSafeInteger(current.sourceValidUntil)||current.sourceValidUntil!<at)?{}:current.marks;try{options.ledger.reconcile('native-paper-context:'+options.ledger.state().revision+':'+at,at,current.price,marks);}catch{this.trader?.pauseNewEntries('current financial reconciliation unavailable; exposure retained');}}return current;};
-  this.trader=new PaperTrader({ledger:options.ledger,now:this.now,context,quote:options.market.quote,costs:{gasLamports:'7000',depositLamports:'0',slippageBps:100,evidence:'Frozen isolated PAPER fees/delay; program-native data contract '+NATIVE_PAPER_DATA_CONTRACT_VERSION},recorder:{record:options.record},flowVerification:{verified:true,evidence:NATIVE_PAPER_DATA_CONTRACT_VERSION},predictiveDiagnostics:true,deferPredictivelyRejectedQuotes:true,candidateReadiness:(mint,at)=>this.options.admitNewRisk?.(at)===true&&this.ready(mint,at)&&entryAgeEligible(this.pools.get(mint)!.identity.chainBlockTime*1000,at),predictiveReadiness:(mint,at)=>this.ready(mint,at),experimentalPilot:options.binding,operatingAccount:options.fixtureAccountBinding?undefined:true,pilotExecution:{context:executionContext,quote:options.market.executionQuote},timeoutMs:3000});
-  this.trader.start();options.record('native-paper-start',{at:this.now(),accountId:state.accountId,inceptionAt:state.inceptionAt,contract:NATIVE_PAPER_DATA_CONTRACT_VERSION,sourceContract:options.source.usage().dataContract,liveTradingEnabled:false,capitalInitialized:false});
+  this.trader=new PaperTrader({ledger:options.ledger,now:this.now,context,quote:options.market.quote,costs:{gasLamports:'7000',depositLamports:'0',slippageBps:100,evidence:'Frozen isolated PAPER fees/delay; program-native data contract '+NATIVE_PAPER_DATA_CONTRACT_VERSION},recorder:{record:options.record},flowVerification:{verified:true,evidence:NATIVE_PAPER_DATA_CONTRACT_VERSION},predictiveDiagnostics:true,deferPredictivelyRejectedQuotes:true,candidateReadiness:(mint,at)=>this.options.admitNewRisk?.(at)===true&&this.ready(mint,at)&&this.entryAge(mint,at),predictiveReadiness:(mint,at)=>this.ready(mint,at),experimentalPilot:options.binding,operatingAccount:options.fixtureAccountBinding?undefined:true,pilotExecution:{context:executionContext,quote:options.market.executionQuote},timeoutMs:3000,...(this.adaptive?{adaptiveMomentumV2:true as const}:{})});
+  this.trader.start();options.record('native-paper-start',{at:this.now(),accountId:state.accountId,inceptionAt:state.inceptionAt,contract:NATIVE_PAPER_DATA_CONTRACT_VERSION,sourceContract:options.source.usage().dataContract,strategyVersion:options.binding.version,strategyMode:this.adaptive?'adaptive-momentum-v2':'baseline',liveTradingEnabled:false,capitalInitialized:false});
  }
+ private entryAge(mint:string,at:number){const pool=this.pools.get(mint);if(!pool)return false;const migrationAt=pool.identity.chainBlockTime*1000;return this.adaptive?adaptiveMigrationEligible(migrationAt,true,at):entryAgeEligible(migrationAt,at);}
+ private entryHistory(mint:string,at:number,windowEndAt?:number){
+  if(!this.adaptive)return !this.options.ledger.hasTradedMint(mint);
+  const end=windowEndAt??this.trader.candidateFeatures(mint,at)?.windowEndAt;
+  return end!==undefined&&this.options.ledger.entryEligibility(mint,this.options.binding.version,end,at).allowed;
+ }
+ private assessment(features:ReturnType<PaperTrader['candidateFeatures']>,at:number){return features?(this.adaptive?assessAdaptiveBuying(features,at):assessPredictiveBuying(features,at)):null;}
  private register(identity:MigrationIdentity,evidence='independently decoded finalized migration identity'){
   const prior=this.pools.get(identity.baseMint);need(!prior||prior.identity.pool===identity.pool&&prior.identity.signature===identity.signature,'NATIVE_PAPER_POOL_IDENTITY_CHANGED');
   this.options.market.registerPool({mint:identity.baseMint,migrationSlot:identity.slot,migrationVerified:true,evidence});this.pools.set(identity.baseMint,{identity:structuredClone(identity),evidence});
@@ -71,12 +79,12 @@ export class NativePaper {
  /** Called only outside an active financial/market adapter operation. */
  maintain(){for(const mint of [...this.retired])if(!this.ownership(mint)){this.trader.remove(mint);this.options.market.unregisterPool(mint);this.pools.delete(mint);this.lastCandidateBucket.delete(mint);this.retired.delete(mint);}}
  private technical(mint:string,reason:TechnicalReevaluationReason,claimedOnly=false){
-  if(!this.options.onTechnicalReevaluation||this.ownership(mint)||this.options.ledger.hasTradedMint(mint))return;
+  if(!this.options.onTechnicalReevaluation||this.ownership(mint)||!this.entryHistory(mint,this.now()))return;
   const at=this.now(),request={mint,reason,at,...(claimedOnly?{claimedOnly:true as const}:{}),failedWindowEndAt:Math.floor(at/PROVISIONAL_RULE.bucketMs)*PROVISIONAL_RULE.bucketMs};this.options.record('native-paper-technical-reevaluation-request',{...request,oldOrderRetried:false,newCurrentAuditedWindowRequired:true,financialPermission:false});this.options.onTechnicalReevaluation(request);
  }
  private async tick(options:TraderTickOptions){
   const pending=this.options.ledger.state().pending,result=await this.trader.tick(options);
-  for(const outcome of result.execution){const order=pending[outcome.orderId];if(order?.side!=='buy'||this.ownership(order.mint)||this.options.ledger.hasTradedMint(order.mint))continue;
+  for(const outcome of result.execution){const order=pending[outcome.orderId];if(order?.side!=='buy'||this.ownership(order.mint)||!this.entryHistory(order.mint,this.now()))continue;
    if(outcome.status==='expired')this.technical(order.mint,'entry-action-expired');
    else if(outcome.status==='failed'&&/^(USD valuation unavailable|unknown liquidation marks|missing\/stale first-attempt state|malformed first-attempt amounts)/.test(outcome.reason))this.technical(order.mint,'entry-attempt-data-unavailable');
    else if(outcome.status==='failed'||outcome.status==='canceled')this.options.onEvaluationComplete?.(order.mint,this.now());
@@ -85,10 +93,10 @@ export class NativePaper {
  async protection(options:TraderTickOptions={}){return this.tick({...options,evaluateCandidates:false,maximumDueActions:1});}
  /** No extra quote for a failed feature rule. Preparation/financial readiness
   * still recheck current evidence; an expired certificate never reserves entry. */
- candidateDue(mint:string,at=this.now()){const features=this.trader.candidateFeatures(mint,at),pool=this.pools.get(mint);return !!(features&&pool&&!this.options.ledger.hasTradedMint(mint)&&entryAgeEligible(pool.identity.chainBlockTime*1000,at)&&this.ready(mint,at)&&this.lastCandidateBucket.get(mint)!==features.windowEndAt);}
+ candidateDue(mint:string,at=this.now()){const features=this.trader.candidateFeatures(mint,at),pool=this.pools.get(mint);return !!(features&&pool&&this.entryHistory(mint,at,features.windowEndAt)&&this.entryAge(mint,at)&&this.ready(mint,at)&&this.lastCandidateBucket.get(mint)!==features.windowEndAt);}
  qualificationProof(mint:string,at=this.now()):NativeQualificationProof|null{
   const pool=this.pools.get(mint),features=this.trader.candidateFeatures(mint,at),certificate=this.options.certificate(mint,at);
-  if(!pool||!features||!certificate||!this.entryCapacity().available||this.ownership(mint)||!entryAgeEligible(pool.identity.chainBlockTime*1000,at)||!this.ready(mint,at)||assessPredictiveBuying(features,at).status!=='not-rejected')return null;
+  if(!pool||!features||!certificate||!this.entryCapacity().available||this.ownership(mint)||!this.entryHistory(mint,at,features.windowEndAt)||!this.entryAge(mint,at)||!this.ready(mint,at)||this.assessment(features,at)?.status!=='not-rejected')return null;
   return {proofId:['entry',mint,features.windowEndAt,certificate.admittedAt,certificate.featuresSha256].join(':'),mint,startAt:features.windowStartAt,throughAt:at,windowEndAt:features.windowEndAt,featuresSha256:certificate.featuresSha256,certificateAt:certificate.admittedAt,deadlineAt:certificate.deadlineAt};
  }
  /** A qualifying market window is not authority to clear an owner or hard
@@ -117,8 +125,8 @@ export class NativePaper {
   const capacity=this.entryCapacity();if(!capacity.available){this.options.onEvaluationComplete?.(mint,this.now());this.options.record('native-paper-entry-unavailable',{mint,at,windowEndAt:features.windowEndAt,reason:'simulated-position-capacity-reserved',...capacity,predictiveOnly:true,executableQualification:false,orderCreated:false,existingFinancialActionsPreserved:true});this.lastCandidateBucket.set(mint,features.windowEndAt);return {kind:'capacity-refused' as const};}
   if(!admitNewRisk||this.options.admitNewRisk?.(at)!==true){this.options.onEvaluationComplete?.(mint,this.now());this.options.record('native-paper-entry-unavailable',{mint,at,windowEndAt:features.windowEndAt,reason:'monitoring/time/request/response or pending-action reserve unavailable',predictiveOnly:true,executableQualification:false,orderCreated:false});this.lastCandidateBucket.set(mint,features.windowEndAt);return {kind:'capacity-refused' as const};}
   if(!this.candidateEntryAuthority())return this.refuseCandidateEntryAuthority(mint,at,features.windowEndAt);
-  const assessment=assessPredictiveBuying(features,at);
-  if(assessment.status==='not-rejected'&&entryAgeEligible(pool.identity.chainBlockTime*1000,at)&&!this.ownership(mint)){
+  const assessment=this.assessment(features,at)!;
+  if(assessment.status==='not-rejected'&&this.entryAge(mint,at)&&this.entryHistory(mint,at,features.windowEndAt)&&!this.ownership(mint)){
    try{if(this.options.pinQualification){const proof=this.qualificationProof(mint,this.now());need(proof,'NATIVE_PAPER_QUALIFICATION_PROOF_UNAVAILABLE');this.options.pinQualification(proof);need(this.ready(mint,this.now())&&this.options.admitNewRisk?.(this.now())===true,'NATIVE_PAPER_PINNED_PROOF_EXPIRED');}const plan=await this.options.market.prepareEntryCosts(mint,new AbortController().signal);this.trader.setPilotEntryDeposit(plan.depositLamports,plan.evidence,mint);
     if(!this.candidateEntryAuthority())return this.refuseCandidateEntryAuthority(mint,this.now(),features.windowEndAt);
     if(this.ready(mint,this.now())){await this.protection();const when=this.now(),context=this.context,state=this.options.ledger.state();if(!this.candidateEntryAuthority())return this.refuseCandidateEntryAuthority(mint,when,features.windowEndAt);if(context.price&&this.ready(mint,when)&&this.options.admitNewRisk?.(when)===true){const result=this.options.ledger.resume('native-paper-ready:'+state.revision+':'+when,when,context.price,context.marks,{version:NATIVE_PAPER_DATA_CONTRACT_VERSION,evidence:'current exact audited native window and isolated PAPER monitoring reserve',marketAt:plan.at,recoveryComplete:true,candidateWindowsReady:this.ready(mint,when),budgetAvailable:this.options.admitNewRisk?.(when)===true});if(result.enabled)this.trader.verifiedEntryReadinessRecovered();this.options.record('native-paper-entry-permission',{at:when,result,mint,windowEndAt:features.windowEndAt});}}
@@ -154,7 +162,7 @@ export class NativePaper {
   if(!recover||current.controls.entriesEnabled||current.daily.lossPaused||!freshSafety.recoveryComplete||!freshSafety.evidenceAvailable||!freshSafety.financialAvailable||freshSafety.uncertainActions||financialAdmission?.(when)!==true)return {kind:'reconciled' as const,recovered:false};
   for(const [mint,pool]of this.pools){
    if(freshlyAuditedMint!==undefined&&mint!==freshlyAuditedMint)continue;
-   const now=this.now(),certificate=this.options.certificate(mint,now);if(!currentPrice(now)||!certificate||certificate.windowEndAt>now||now-certificate.windowEndAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs||this.options.ledger.hasTradedMint(mint)||!entryAgeEligible(pool.identity.chainBlockTime*1000,now)||!this.ready(mint,now)||financialAdmission?.(now)!==true)continue;
+   const now=this.now(),certificate=this.options.certificate(mint,now);if(!currentPrice(now)||!certificate||certificate.windowEndAt>now||now-certificate.windowEndAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs||!this.entryHistory(mint,now,certificate.windowEndAt)||!this.entryAge(mint,now)||!this.ready(mint,now)||financialAdmission?.(now)!==true)continue;
    const internalStop=(current.controls.stopRequested||!freshSafety.automaticRecoveryAllowed)&&!freshSafety.newHardPauseObserved?this.options.internalShutdownRecovery?.(now):null;
    if(internalStop){const code=internalStop.verified?'INTERNAL_SHUTDOWN_VERIFIED':INTERNAL_STOP_DIAGNOSTIC_CODES.includes(internalStop.reason as never)?internalStop.reason as typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number]:'INTERNAL_SHUTDOWN_HISTORY_MALFORMED';if(code!=='INTERNAL_SHUTDOWN_VERIFIED'&&code!=='INTERNAL_SHUTDOWN_NOT_EVALUATED'&&code!==this.internalStopDiagnostic.code)this.internalStopRefusalCounts[code]=(this.internalStopRefusalCounts[code]??0)+1;this.internalStopDiagnostic={code,at:now,lastSuccessfulResumeRevision:internalStop.verified?internalStop.lastSuccessfulResumeRevision:null,knownStopCount:internalStop.verified?internalStop.stops.length:null};}
    const provedInternal=internalStop?.verified===true&&internalStop.stateRevision===current.revision&&internalStop.accountId===current.accountId&&internalStop.inceptionAt===current.inceptionAt;
