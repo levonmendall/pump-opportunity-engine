@@ -179,6 +179,7 @@ body.poe-compact-view .compact-folded{min-height:0}
 <div><div class="breadcrumb">POE <span>//</span> OPERATIONS <span>//</span> SOLANA</div><div class="top-label">Command overview</div></div>
 <div class="top-actions"><div class="clock"><small>UTC · SYSTEM CLOCK</small><strong id="utcClock">--:--:-- UTC</strong></div><span class="chip"><i></i>PAPER ONLY</span><a id="exportLink" class="export-link" href="/api/export" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 17v4h14v-4"/></svg>EXPORT</a></div>
 </header>
+<button id="refreshNow" class="export-link" type="button">Refresh dashboard</button>
 <main>
 <section class="hero" id="overview" aria-labelledby="pageTitle">
 <div class="hero-copy"><div class="eyebrow">PRECISION MARKET INTELLIGENCE</div><h1 id="pageTitle">PUMP<br><span>OPPORTUNITY</span>ENGINE.</h1><p class="hero-description">An on-chain research terminal built for decisive signals, disciplined risk, and transparent PAPER performance. Every number comes from verified source data.</p><div class="hero-chips"><span class="hero-chip primary">SOLANA / PUMPSWAP</span><span class="hero-chip danger">LIVE EXECUTION DISABLED</span><span class="hero-chip">NO DEMO PERFORMANCE</span></div></div>
@@ -351,6 +352,7 @@ document.querySelectorAll('.rail-link').forEach(link=>link.addEventListener('cli
 function paintFreshness(){if(!latest)return;const age=at=>at===null?0:Math.max(0,Date.now()-Date.parse(at));const stale=Math.max(age(latest.times.generatedAt),age(latest.times.marketAt),age(latest.times.reconciledAt))>90000;if(stale)signal('STALE SOURCE SNAPSHOT','Last verified source is retained; market or financial information is no longer current. PAPER entries '+latest.status.entries+' · runtime '+latest.status.runtime+' · account '+latest.account.id,'CHECK SOURCE FRESHNESS','warning','RECEIVER · '+latestReceivedAt);else if(latest.status.runtime==='stopped')signal('STOPPED','Runtime stopped. Positions and unresolved actions remain as reported; no liquidation is inferred. Account '+latest.account.id,'MONITORING INTERRUPTED','warning','RECEIVER · '+latestReceivedAt);}
 clock();setInterval(()=>{clock();paintFreshness()},1000);plot([]);refresh();setInterval(refresh,15000);
 window.addEventListener('focus',()=>{void refresh()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh()});
+byId('refreshNow').addEventListener('click',()=>{void refresh()});
 window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
 
 /** UI-only progressive disclosure. All projections, API endpoints and financial boundaries are unchanged. */
@@ -380,7 +382,7 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
  const portfolio=document.getElementById('portfolio');
  if(status){
   const nav=document.createElement('nav');nav.className='compact-quick-links';nav.setAttribute('aria-label','Jump to dashboard sections');
-  for(const [href,label] of [['#portfolio','Portfolio'],['#activity','PAPER orders and trades'],['#system','Candidates and system health']]){
+  for(const [href,label] of [['#portfolio','Portfolio'],['#performance','P&L trajectory'],['#activity','PAPER orders and trades'],['#system','Candidates'],['#reporting-status','System health']]){
    if(!document.querySelector(href))continue;
    const link=document.createElement('a');link.href=href;link.textContent=label;nav.append(link);
   }
@@ -390,7 +392,6 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
  metricToggle('portfolio','cards','portfolio metrics');
  panelFold('section[aria-labelledby="metricsTitle"]','Runtime metrics and provider usage');
  panelFold('section[aria-labelledby="decisionsTitle"]','Full evaluation decisions and refusal reasons');
- panelFold('#performance','Portfolio P&L chart and historical timestamps');
  document.body.classList.add('poe-compact-view');
  // Side-rail navigation opens the requested disclosure without hiding its destination.
  document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',()=>{

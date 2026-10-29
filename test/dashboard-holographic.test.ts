@@ -45,9 +45,10 @@ test('hero has one ornamental orbital illustration and no false performance data
 });
 
 test('one authoritative portfolio and existing diagnostic sections remain visible',()=>{
- const rendered=full();for(const id of ['portfolio','positions','trades','orders','metrics','decisions'])assert.equal(ids(rendered).filter(x=>x===id).length,1,id);
+ const rendered=full();for(const id of ['portfolio','positions','trades','orders','metrics','decisions','refreshNow'])assert.equal(ids(rendered).filter(x=>x===id).length,1,id);
  assert.doesNotMatch(rendered,/experimental-portfolio|pilot-telemetry-panel|Pilot intelligence/);
  assert.ok(rendered.indexOf('id="portfolio"')<rendered.indexOf('id="performance"'));assert.ok(rendered.indexOf('id="performance"')<rendered.indexOf('id="activity"'));assert.match(rendered,/SYSTEM STATUS &amp; REPORTING/);assert.match(rendered,/Candidate progression &amp; decisions/);
+ assert.doesNotMatch(rendered,/panelFold\('#performance'/,'preserve the live main change keeping P&L trajectory always visible');assert.match(rendered,/'#performance','P&L trajectory'/);assert.match(rendered,/byId\('refreshNow'\)\.addEventListener/);
 });
 
 test('visual layer adds no new client script, external dependency or request',()=>{
