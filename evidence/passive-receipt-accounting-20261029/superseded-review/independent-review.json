@@ -1,0 +1,44 @@
+{
+  "reviewedAt": "2026-10-29T22:48:13.272533+00:00",
+  "reviewer": "held_candidate_deadline_review",
+  "status": "SUPERSEDED_PENDING_PREFUND_AND_TRANSIENT_REFILL_FIX_REVIEW",
+  "tests": {
+    "independentlyRerunNewTests": 8,
+    "passed": 8,
+    "additionalAdversarialCasesPassed": 3,
+    "cases": [
+      "timer flush storage failure blocks new physical work and retains crash reservation",
+      "failed graceful close releases ownership without forgiving durable tail",
+      "same-book ownership lock and interleaved HTTP/passive replenishment retain conservative then exact totals"
+    ]
+  },
+  "reviewedSemantics": [
+    "durable reserve precedes passive acceptance",
+    "replenishment includes prior exact prefix",
+    "HTTP existing physical reservation covers uncheckpointed chunks",
+    "crash tail remains uncertainty not measured bytes",
+    "reopen consumes old tail once",
+    "graceful release preserves measured prefix and old uncertainty",
+    "legacy schema and baseline compaction carry obligations",
+    "physical starts remain durably rate accounted",
+    "timer/storage failure fails closed"
+  ],
+  "providerRequests": 0,
+  "financialFilesOpened": false,
+  "sourceModifiedByReviewer": false,
+  "files": {
+    "src/component-budget.ts": "885c452b9572af58fcb5a782003f5b04c8545b8c6f75b9db72887efc45c85084",
+    "src/research-baseline.ts": "16b4445c185762fd62efd5442af481b4b1195edc66afef8af348c168522744b7",
+    "src/pilot-rpc.ts": "7306697d577fbcb16226511b5dc21bc07762c2ace4fcb22a8e319fe114f862d0",
+    "test/component-receipt-accounting.test.ts": "7c806d36d2d1c5aa484b06aa2cf687a082cd1e0ad59e7c59e2fabb164b1027e9"
+  },
+  "supersededAt": "2026-10-29T22:55:10.963684+00:00",
+  "blockingReproduction": {
+    "case": "active HTTP plus passive refill storage failure then successful HTTP settlement",
+    "savedReservationBytes": 2097151,
+    "readerError": "COMPONENT_INVALID_BYTE_ACCOUNTING",
+    "actualProviderRequests": 0,
+    "originalFinancialFilesOpened": false,
+    "authorFixPending": "restore-reader accepts conservative partial tail; constructor still prefunds before transport"
+  }
+}

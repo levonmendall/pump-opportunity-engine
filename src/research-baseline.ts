@@ -4,7 +4,7 @@
 import {createHash} from 'node:crypto';
 import {constants,openSync,closeSync,fstatSync,readSync,lstatSync,writeFileSync,fsyncSync,realpathSync} from 'node:fs';
 import {dirname,resolve} from 'node:path';
-import {COMPONENT_COUNTERBOOK_MAX_BYTES,type ComponentBaseline} from './component-budget.js';
+import {COMPONENT_COUNTERBOOK_MAX_BYTES,componentByteAccounting,type ComponentBaseline} from './component-budget.js';
 
 const MIB=1024*1024;
 /** Explicit finite history runway: at most512 books, each at most512KiB,
@@ -55,13 +55,13 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
   const sources:ResearchBaselineSource[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0,inputBytes=0,checkpointCreatedAt=0;
   for(let index=0;index<paths.length;index++){
     const path=paths[index]!,{book:b,sha256,inputBytes:bookBytes,stat}=readBook(path,RESEARCH_MAXIMUM_INPUT_BYTES-inputBytes);inputBytes+=bookBytes;need(inputBytes<=RESEARCH_MAXIMUM_INPUT_BYTES,'AGGREGATE_INPUT_BOUND');
-    need((b.schemaVersion===1||index===0&&b.kind===RESEARCH_CHECKPOINT_KIND&&b.schemaVersion===2)&&int(b.lastObservedAt)&&b.lastObservedAt<=options.now&&b.lastObservedAt>=lastObservedAt,'INVALID_CLOCK');lastObservedAt=b.lastObservedAt;
+    need((b.schemaVersion===1||b.schemaVersion===2&&(index===0&&b.kind===RESEARCH_CHECKPOINT_KIND||index>0&&b.continuousAccounting===true))&&int(b.lastObservedAt)&&b.lastObservedAt<=options.now&&b.lastObservedAt>=lastObservedAt,'INVALID_CLOCK');lastObservedAt=b.lastObservedAt;
     if(index===0&&b.kind===RESEARCH_CHECKPOINT_KIND){
       need(stat.uid===process.getuid?.()&&(stat.mode&0o077)===0&&stat.nlink===1,'CHECKPOINT_PRIVATE_OWNER_FILE');need(options.checkpointSha256===sha256,'CHECKPOINT_HASH_MISMATCH');const checkpoint=checkedCheckpoint(b,options.now);checkpointCreatedAt=checkpoint.createdAt;observedBytes=checkpoint.accounted.observedBytes;uncertainResponseBytes=checkpoint.accounted.uncertainResponseBytes;pendingOperations=checkpoint.accounted.pendingOperations;
       baseline={calls:checkpoint.accounted.calls,bytes:checkpoint.accounted.bytes,starts:[...checkpoint.starts.times],startHistory:{schemaVersion:1,omittedStarts:checkpoint.starts.omittedCount,retainedSinceAt:checkpoint.starts.retainedSinceAt},refusal:'RPC_HTTP_429',refusalAt:checkpoint.refusal.at,sha256};
       sources.push({path,sha256,incrementUnits:baseline.calls,incrementObservedBytes:observedBytes,pendingReservedBytes:uncertainResponseBytes,inputBytes:bookBytes});
     }else if(index===0){
-      need(options.checkpointSha256===undefined,'CHECKPOINT_ANCHOR_REQUIRED');
+      need(options.checkpointSha256===undefined,'CHECKPOINT_ANCHOR_REQUIRED');componentByteAccounting(b);
       need(b.blockedReason==='RPC_HTTP_429'&&int(b.calls)&&int(b.bytes),'INVALID_LEGACY_BOOK');
       const starts=times(b.starts,b.lastObservedAt);need(starts.length===b.calls,'INVALID_LEGACY_CALLS');
       const pending=pendingBytes(b.pending,1,b.calls,true);
@@ -83,10 +83,10 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
         }
       }
       const newStarts=reserved.map((at,i)=>actual.get(baseline!.calls+i+1)??at);
-      const pending=pendingBytes(b.pending,baseline.calls+1,baseline.calls+reserved.length,false);
-      observedBytes+=b.httpBytes+b.wsBytes;uncertainResponseBytes+=pending.bytes;pendingOperations+=pending.count;
-      baseline={...baseline,calls:baseline.calls+reserved.length,bytes:baseline.bytes+b.httpBytes+b.wsBytes+pending.bytes,starts:[...baseline.starts,...newStarts].sort((a,z)=>a-z),sha256};
-      sources.push({path,sha256,incrementUnits:reserved.length,incrementObservedBytes:b.httpBytes+b.wsBytes,pendingReservedBytes:pending.bytes,inputBytes:bookBytes});
+      const pending=pendingBytes(b.pending,baseline.calls+1,baseline.calls+reserved.length,false),receiptAccounting=componentByteAccounting(b),receiptUncertainty=receiptAccounting?receiptAccounting.uncertainBytes+receiptAccounting.reservedBytes:0;need(int(receiptUncertainty),'INVALID_RECEIPT_UNCERTAINTY');
+      observedBytes+=b.httpBytes+b.wsBytes;uncertainResponseBytes+=pending.bytes+receiptUncertainty;pendingOperations+=pending.count;
+      baseline={...baseline,calls:baseline.calls+reserved.length,bytes:baseline.bytes+b.httpBytes+b.wsBytes+pending.bytes+receiptUncertainty,starts:[...baseline.starts,...newStarts].sort((a,z)=>a-z),sha256};
+      sources.push({path,sha256,incrementUnits:reserved.length,incrementObservedBytes:b.httpBytes+b.wsBytes,pendingReservedBytes:pending.bytes+receiptUncertainty,inputBytes:bookBytes});
     }
     need(int(baseline.calls)&&int(baseline.bytes)&&(options.allowCumulativeBeyondLegacy===true||baseline.calls<=240&&baseline.bytes<=64*MIB),'CUMULATIVE_CAP');
   }

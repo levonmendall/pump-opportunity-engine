@@ -1,0 +1,31 @@
+✔ busy passive receipts consume bounded durable reservations without per-message persistence (10.41698ms)
+✔ an abrupt passive crash is retained as uncertainty, never invented measured bytes or a new request (235.770262ms)
+✔ HTTP receipt chunks reuse their durable physical response reservation until settlement (11.688937ms)
+✔ an abrupt HTTP-body crash retains the original full durable uncertainty and request identity (183.859281ms)
+✔ coalesced exact-receipt checkpoints preserve an honest late timer and close flushes its tail (1037.701866ms)
+✔ new passive reservation persistence failure rejects acceptance and cannot admit unaccounted bytes (10.100891ms)
+✖ settled-reader checkpoints and handoffs preserve passive crash uncertainty without increasing RPC starts (649.904631ms)
+✔ malformed or unversioned passive accounting cannot silently disappear from a baseline reader (8.645864ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2476.320944
+
+✖ failing tests:
+
+test at test/component-receipt-accounting.test.ts:1:7604
+✖ settled-reader checkpoints and handoffs preserve passive crash uncertainty without increasing RPC starts (649.904631ms)
+  Error: RESEARCH_BASELINE_CHECKPOINT_PHYSICAL_UNSETTLED
+      at need (/workspace/poe-passive-accounting-batches/src/research-baseline.ts:19:61)
+      at createResearchBaselineCheckpoint (/workspace/poe-passive-accounting-batches/src/research-baseline.ts:139:2)
+      at TestContext.<anonymous> (/workspace/poe-passive-accounting-batches/test/component-receipt-accounting.test.ts:68:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
