@@ -1,0 +1,43 @@
+{
+  "kind": "POE_ORIGINAL_REPORTER_REPAIR_STAGED_NOT_INSTALLED",
+  "at": 1793244149089,
+  "directory": "/var/tmp/poe-original-publisher-credential-v2-20261029",
+  "files": [
+    {
+      "file": "repair-original-publisher.py",
+      "bytes": 14320,
+      "sha256": "b2fbce1a36bc047cc5c8047ae4091ed8cb3a4798c91edf2c7d9c6da1e43766fc"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 29872,
+      "sha256": "2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa"
+    }
+  ],
+  "serviceBefore": {
+    "MainPID": "2437741",
+    "NRestarts": "163",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceAfter": {
+    "MainPID": "2437741",
+    "NRestarts": "163",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "sameSupervisor": true,
+  "runtimeIdentityValidatedByExactStagedDriver": {
+    "uid": 988,
+    "gid": 982,
+    "pid": 2437741
+  },
+  "serviceControlOperations": 0,
+  "financialDatabaseOpened": false,
+  "credentialContentsRead": false,
+  "executed": false
+}

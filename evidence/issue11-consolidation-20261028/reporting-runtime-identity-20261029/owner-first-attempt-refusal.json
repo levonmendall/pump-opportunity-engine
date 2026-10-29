@@ -1,0 +1,11 @@
+{
+  "provenance": "owner terminal screenshot supplied2026-10-29",
+  "kind": "POE_ORIGINAL_REPORTING_REPAIR_REFUSED",
+  "reasonCode": "ORIGINAL_RUNTIME_IDENTITY_REQUIRED",
+  "lastCompletedPhase": null,
+  "durableTransitionRecord": null,
+  "financialDatabaseOpened": false,
+  "serviceControlOperations": 0,
+  "financialHistoryReset": false,
+  "meaning": "First driver failed its unverified UID/GID equality assumption before lock, backups, or file replacement; service unchanged."
+}

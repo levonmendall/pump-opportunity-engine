@@ -1,0 +1,19 @@
+{
+  "kind": "OFFLINE_SYNTHETIC_FD_METADATA_ONLY",
+  "results": [
+    {
+      "syntheticMode": "440",
+      "aliveAfterOneSecond": true,
+      "exitCode": 0
+    },
+    {
+      "syntheticMode": "644",
+      "aliveAfterOneSecond": false,
+      "exitCode": 1
+    }
+  ],
+  "actualCredentialRead": false,
+  "financialFilesRead": false,
+  "networkRequests": 0,
+  "hostAclReadabilityVerified": false
+}

@@ -1,0 +1,172 @@
+{
+  "kind": "POE_ORIGINAL_CUTOVER_REFUSAL_READ_ONLY",
+  "checkedAt": 1793244000674,
+  "service": {
+    "Restart": "always",
+    "MainPID": "2437741",
+    "ControlPID": "0",
+    "Result": "success",
+    "NRestarts": "163",
+    "ExecMainStartTimestamp": "Thu 2026-10-29 02:26:29 UTC",
+    "ExecMainExitTimestamp": "",
+    "ExecMainPID": "2437741",
+    "ExecMainCode": "0",
+    "ExecMainStatus": "0",
+    "ControlGroup": "/system.slice/poe-runtime.service",
+    "TasksCurrent": "12",
+    "User": "poe-runtime",
+    "Group": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running",
+    "StateChangeTimestamp": "Thu 2026-10-29 02:26:29 UTC",
+    "ActiveEnterTimestamp": "Thu 2026-10-29 02:26:29 UTC",
+    "InactiveEnterTimestamp": "Thu 2026-10-29 02:17:55 UTC",
+    "Job": ""
+  },
+  "runtimeIdentity": {
+    "name": "poe-runtime",
+    "uid": 988,
+    "primaryGid": 982,
+    "primaryGroupName": "poe-runtime",
+    "supervisor": {
+      "pid": 2437741,
+      "ownerUid": 988,
+      "uids": [
+        988,
+        988,
+        988,
+        988
+      ],
+      "gids": [
+        982,
+        982,
+        982,
+        982
+      ]
+    },
+    "protectedReportingMetadata": {
+      "publisher": {
+        "available": false,
+        "errno": 13,
+        "contentRead": false
+      },
+      "manifest": {
+        "available": false,
+        "errno": 13,
+        "contentRead": false
+      }
+    }
+  },
+  "lastExecStop": {},
+  "effectiveExecStart": {
+    "executable": "/usr/bin/python3",
+    "nativeSupervisorEntrypoint": true,
+    "obsoleteObserverEntrypoint": false,
+    "valueSha256": "c24e15150d4bf810a0ff32d2a831c2c65ded0a51a0512112297c5deef2ea649b",
+    "argumentsExported": false
+  },
+  "dropInBasenames": [
+    "00-legacy-entrypoint.conf",
+    "90-native-engine.conf",
+    "reporting.conf"
+  ],
+  "repairMetadataMissingKeys": [
+    "ExecStop"
+  ],
+  "execStopTypedProperty": {
+    "available": true,
+    "type": "a(sasbttttuii)",
+    "entries": 0,
+    "verifiedEmptyCommandArray": true,
+    "argumentsExported": false
+  },
+  "execStopTypedReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 36,
+    "stderrBytes": 0,
+    "stdoutSha256": "a8796853c7e18d8b5c0c3fa8272c20fa384b1ef8806f573aa7b73d215ba371f9",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "serviceReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 966,
+    "stderrBytes": 0,
+    "stdoutSha256": "7e17ea8df0445dc619f881464181f2708ad566214f629dd0ca61dad58d6006bd",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "publicStatus": {
+    "sha256": "46830234c39f520e2a1b924b7e652bc752e2ac4e77cb4234caf04203ac59f659",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "5e55d8b939de99698ddb311a282461931fcbc957",
+    "strategy": "persistent-buying-pilot-v1",
+    "generatedAt": "2026-10-29T03:19:48.460Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "execution startup: fresh reconciliation/readiness required",
+    "shortlistCount": 1,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-29T03:19:47.527Z",
+    "lastReconciledAt": "2026-10-29T03:19:47.527Z",
+    "lastMigrationReceivedAt": null,
+    "reportingConfigured": true
+  },
+  "currentReleaseLink": null,
+  "currentCgroup": {
+    "available": true,
+    "pids": [
+      2437741,
+      2440527
+    ]
+  },
+  "ownedProcessRoles": [
+    {
+      "pid": 2437741,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 7.42,
+      "rssBytes": 29171712,
+      "argvExported": false
+    },
+    {
+      "pid": 2440527,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 58.04,
+      "rssBytes": 284540928,
+      "argvExported": false
+    }
+  ],
+  "privateDiagnosticAccess": {
+    "supervisorHealth": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "publisherDiagnostic": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "reportingCredentialMetadata": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    }
+  },
+  "managerJournal": [],
+  "journalReceipt": {
+    "exitCode": 1,
+    "stdoutBytes": 0,
+    "stderrBytes": 62,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "69290b924ebefd68d1806a463f5c072523b1c5ed4c35e4096eee215ff5916e2e"
+  },
+  "financialDatabaseOpened": false,
+  "credentialReads": 0,
+  "serviceChanges": 0,
+  "providerRequests": 0
+}

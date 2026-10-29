@@ -4,7 +4,7 @@
 The running original supervisor retries its existing publisher path. Replace only
 that artifact and its startup hash, preserving an exact, recoverable before-image.
 """
-import fcntl,hashlib,json,os,pathlib,pwd,stat,subprocess,sys,time
+import fcntl,grp,hashlib,json,os,pathlib,pwd,stat,subprocess,sys,time
 
 SOURCE='5e55d8b939de99698ddb311a282461931fcbc957'
 ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e'
@@ -18,7 +18,7 @@ REPORTER_SOURCE='5735db2ca8abc6af6f99bb0ad855c19cdebaf864'
 RELEASE=pathlib.Path('/opt/poe/releases')/SOURCE
 MANIFEST=pathlib.Path('/etc/poe/native-engine.json')
 BACKUP=pathlib.Path('/etc/poe/cutovers')/SOURCE/'reporting-credential-v1'
-STAGE=pathlib.Path('/var/tmp/poe-original-publisher-credential-20261029')
+STAGE=pathlib.Path('/var/tmp/poe-original-publisher-credential-v2-20261029')
 PUBLIC=pathlib.Path('/var/lib/poe-public')
 LEDGER=pathlib.Path('/var/lib/poe/state/ledger.sqlite')
 ACTIVE={}
@@ -51,6 +51,17 @@ def atomic(p,b,gid=0,mode=0o600):
 def unit():
  r=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property=MainPID,NRestarts,User,Group,ActiveState,SubState'],capture_output=True,text=True,timeout=5,check=True,env={'PATH':'/usr/bin:/bin','LANG':'C'});need(len(r.stdout)<=4096,'UNIT_METADATA_BOUND');v=dict(l.split('=',1)for l in r.stdout.splitlines()if'='in l)
  need(v.get('User')=='poe-runtime'and v.get('Group')=='poe-runtime'and v.get('ActiveState')=='active'and v.get('SubState')=='running'and int(v.get('MainPID','0'))>0,'EXISTING_ORIGINAL_NATIVE_SERVICE_REQUIRED');return v
+def runtime_owner():
+ owner=pwd.getpwnam('poe-runtime');group=grp.getgrnam('poe-runtime')
+ need(owner.pw_uid>0 and owner.pw_gid>0 and owner.pw_gid==group.gr_gid and pwd.getpwuid(owner.pw_uid).pw_name=='poe-runtime'and grp.getgrgid(group.gr_gid).gr_name=='poe-runtime','ORIGINAL_NAMED_RUNTIME_IDENTITY_REQUIRED');return owner.pw_uid,owner.pw_gid
+def runtime_process(pid,uid,gid):
+ p=pathlib.Path('/proc')/str(pid);need(p.stat().st_uid==uid,'ORIGINAL_SUPERVISOR_OWNER_REQUIRED')
+ with(p/'status').open('rb')as f:raw=f.read(32769)
+ need(len(raw)<=32768,'SUPERVISOR_STATUS_BOUND');values={line.split(':',1)[0]:line.split(':',1)[1].split()for line in raw.decode().splitlines()if line.startswith(('Uid:','Gid:'))}
+ need(values.get('Uid')==[str(uid)]*4 and values.get('Gid')==[str(gid)]*4,'ORIGINAL_SUPERVISOR_CREDENTIALS_REQUIRED')
+ return{'uid':uid,'gid':gid,'pid':int(pid)}
+def reporting_permissions(path,gid):
+ s=path.lstat();need(stat.S_ISREG(s.st_mode)and s.st_uid==0 and s.st_gid==gid and stat.S_IMODE(s.st_mode)==0o640 and s.st_nlink==1,'ORIGINAL_ROOT_RUNTIME_REPORTING_PERMISSIONS_REQUIRED');return s.st_gid,stat.S_IMODE(s.st_mode)
 def build_manifest(original,body):
  need(sha(original)==OLD_MANIFEST and sha(body)==NEW,'EXACT_REPAIR_INPUTS_REQUIRED');v=json.loads(original)
  need(v.get('source')=={'commit':SOURCE,'sha256':FINANCIAL}and v.get('strategy')=='persistent-buying-pilot-v1','FROZEN_FINANCIAL_SOURCE_REQUIRED')
@@ -81,11 +92,11 @@ def selected_diagnostics(uid):
 def main():
  need(os.getuid()==0 and len(sys.argv)==2 and sys.argv[1]in['apply','rollback-reporting'],'EXACT_ROOT_REPORTING_ACTION_REQUIRED');os.umask(0o077)
  for p in[RELEASE,MANIFEST.parent,BACKUP.parent,PUBLIC]:directory(p,0 if p!=PUBLIC else pwd.getpwnam('poe-runtime').pw_uid)
- need(pathlib.Path('/opt/poe/current').resolve(strict=True)==RELEASE,'CURRENT_FINANCIAL_RELEASE_REQUIRED');uid=pwd.getpwnam('poe-runtime').pw_uid;gid=pwd.getpwnam('poe-runtime').pw_gid;need((uid,gid)==(988,988),'ORIGINAL_RUNTIME_IDENTITY_REQUIRED')
+ need(pathlib.Path('/opt/poe/current').resolve(strict=True)==RELEASE,'CURRENT_FINANCIAL_RELEASE_REQUIRED');uid,gid=runtime_owner()
  lock=os.open(MANIFEST.parent/'cutover.owner.lock',os.O_RDWR|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
   ls=os.fstat(lock);need(stat.S_ISREG(ls.st_mode)and ls.st_uid==0 and ls.st_nlink==1 and stat.S_IMODE(ls.st_mode)==0o600,'ROOT_MAINTENANCE_LOCK_REQUIRED');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-  before=unit();need(sha(read(RELEASE/'operator/native-paper-ec2/run-authoritative-service.py',0))==SUPERVISOR,'UNCHANGED_SUPERVISOR_REQUIRED')
+  before=unit();identity=runtime_process(before['MainPID'],uid,gid);permissions={p:reporting_permissions(p,gid)for p in[RELEASE/'snapshot-publisher.mjs',MANIFEST]};need(sha(read(RELEASE/'operator/native-paper-ec2/run-authoritative-service.py',0))==SUPERVISOR,'UNCHANGED_SUPERVISOR_REQUIRED')
   ledger=LEDGER.lstat();need(stat.S_ISREG(ledger.st_mode)and ledger.st_uid==uid and ledger.st_nlink==1 and stat.S_IMODE(ledger.st_mode)==0o600,'EXISTING_FINANCIAL_LEDGER_REQUIRED');ledger_inode=(ledger.st_dev,ledger.st_ino)
   public=json.loads(read(PUBLIC/'status.json',uid,4096));assert_identity(public);need(public.get('release')==SOURCE,'CURRENT_PUBLIC_SOURCE_REQUIRED')
   original=read(MANIFEST,0);current=read(RELEASE/'snapshot-publisher.mjs',0)
@@ -109,11 +120,14 @@ def main():
   for row in json.loads(old_manifest)['files']:
    if row['file']!='snapshot-publisher.mjs':need(sha(read(RELEASE/row['file'],0,8388608))==row['sha256'],'UNCHANGED_FINANCIAL_RELEASE_REQUIRED')
   goal_body,goal_manifest=(body,new_manifest)if sys.argv[1]=='apply'else(old_body,old_manifest)
-  at=int(time.time()*1000);record={'kind':'POE_ORIGINAL_REPORTING_ONLY_REPAIR','at':at,'action':sys.argv[1],'financialSource':SOURCE,'reporterSource':REPORTER_SOURCE,'repairDriverSha256':sha(driver),'beforePublisherSha256':sha(current),'afterPublisherSha256':sha(goal_body),'beforeManifestSha256':sha(original),'afterManifestSha256':sha(goal_manifest),'accountId':ACCOUNT,'inceptionAt':INCEPTION,'serviceBefore':before,'financialDatabaseOpened':False,'financialHistoryReset':False,'serviceControlOperations':0,'credentialContentsRead':False,'phase':'before-images-verified'}
+  at=int(time.time()*1000);record={'kind':'POE_ORIGINAL_REPORTING_ONLY_REPAIR','at':at,'action':sys.argv[1],'financialSource':SOURCE,'reporterSource':REPORTER_SOURCE,'repairDriverSha256':sha(driver),'runtimeIdentity':identity,'beforePublisherSha256':sha(current),'afterPublisherSha256':sha(goal_body),'beforeManifestSha256':sha(original),'afterManifestSha256':sha(goal_manifest),'accountId':ACCOUNT,'inceptionAt':INCEPTION,'serviceBefore':before,'financialDatabaseOpened':False,'financialHistoryReset':False,'serviceControlOperations':0,'credentialContentsRead':False,'phase':'before-images-verified'}
   record_path=BACKUP/('transition-'+str(at)+'.json');ACTIVE.update(record=record,recordPath=str(record_path));save=lambda:atomic(record_path,(json.dumps(record,indent=2)+'\n').encode());save()
   # A crash between these two atomic replacements is recoverable by this same
   # hash-pinned command. Keep the pair adjacent; never roll financial state back.
-  atomic(RELEASE/'snapshot-publisher.mjs',goal_body,gid,0o640);record['phase']='reporter-replaced';atomic(MANIFEST,goal_manifest,gid,0o640);record['phase']='reporter-and-future-start-manifest-verified';save()
+  need(unit()==before,'SERVICE_CHANGED_BEFORE_REPORTING_REPLACEMENT');runtime_process(before['MainPID'],uid,gid)
+  for p,expected in permissions.items():need(reporting_permissions(p,gid)==expected,'REPORTING_PERMISSIONS_CHANGED_BEFORE_REPLACEMENT')
+  atomic(RELEASE/'snapshot-publisher.mjs',goal_body,*permissions[RELEASE/'snapshot-publisher.mjs']);record['phase']='reporter-replaced';atomic(MANIFEST,goal_manifest,*permissions[MANIFEST]);record['phase']='reporter-and-future-start-manifest-verified';save()
+  for p,expected in permissions.items():need(reporting_permissions(p,gid)==expected,'INSTALLED_REPORTING_PERMISSIONS_CHANGED')
   need(read(MANIFEST,0)==goal_manifest and read(RELEASE/'snapshot-publisher.mjs',0)==goal_body,'INSTALLED_REPORTING_HASH_REQUIRED');need((LEDGER.lstat().st_dev,LEDGER.lstat().st_ino)==ledger_inode,'ORIGINAL_LEDGER_INODE_CHANGED');after=unit();need(after==before,'SERVICE_IDENTITY_CHANGED_DURING_REPORTING_REPAIR');record.update(serviceAfter=after,financialLedgerInodeUnchanged=True,diagnostics=selected_diagnostics(uid));save()
   # No extra publisher is started. The original supervisor's bounded retry owns
   # recovery. Observe two distinct accepted source timestamps for at most 95s.

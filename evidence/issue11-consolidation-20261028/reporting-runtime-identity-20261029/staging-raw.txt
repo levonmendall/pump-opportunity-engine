@@ -1,0 +1,170 @@
+stage-verified-continuation	Set up job	﻿2026-10-29T03:22:27.1748874Z Current runner version: '2.338.0'
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1755314Z Runner name: 'meme-machine-ec2-admin'
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1756322Z Runner group name: 'Default'
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1757209Z Machine name: 'ip-172-31-15-198'
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1759627Z ##[group]GITHUB_TOKEN Permissions
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1761794Z Contents: read
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1762394Z Metadata: read
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1762908Z ##[endgroup]
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1764831Z Secret source: Actions
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1765797Z Cache mode: write
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.1766632Z Prepare workflow directory
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.2137782Z Prepare all required actions
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.2184678Z Getting action download info
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.5805580Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+stage-verified-continuation	Set up job	2026-10-29T03:22:27.9342518Z Complete job name: stage-verified-continuation
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T03:22:28.0080369Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0081569Z with:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0082226Z   ref: 9367ed8ec17bb2a6b7755f8a688cb35366cd919c
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0082884Z   persist-credentials: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0083705Z   sparse-checkout-cone-mode: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0084497Z   sparse-checkout: operator/native-paper-ec2/publisher-credential-repair/
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0085352Z   repository: levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0089134Z   token: ***
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0089625Z   ssh-strict: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0090134Z   ssh-user: git
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0090630Z   clean: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0091136Z   fetch-depth: 1
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0091647Z   fetch-tags: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0092152Z   show-progress: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0092641Z   lfs: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0093153Z   submodules: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0093714Z   set-safe-directory: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0094288Z   allow-unsafe-pr-checkout: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.0095300Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1137966Z Syncing repository: levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1141418Z ##[group]Getting Git version info
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1143203Z Working directory is '/opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin'
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1145653Z [command]/usr/bin/git version
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1146968Z git version 2.43.0
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1150196Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1157347Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/72986cbf-68a2-45d8-b539-2a859939e283' before making global git config changes
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1158933Z Adding repository directory to the temporary git global config as a safe directory
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1160235Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1171055Z [command]/usr/bin/git config --local --get remote.origin.url
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1190364Z https://github.com/levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1201102Z ##[group]Removing previously created refs, to avoid conflicts
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1205690Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1225475Z HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1267015Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1267722Z [command]/usr/bin/git submodule status
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1448923Z ##[group]Cleaning the repository
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1450650Z [command]/usr/bin/git clean -ffdx
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1483492Z [command]/usr/bin/git reset --hard HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1643268Z HEAD is now at 209f111 Read original runtime user and group identities before correcting reporting guard
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1648351Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1650310Z ##[group]Disabling automatic garbage collection
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1653499Z [command]/usr/bin/git config --local gc.auto 0
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1676509Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1677604Z ##[group]Setting up auth
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1681747Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1705513Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1888997Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.1913784Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.2098100Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.2123722Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.2307443Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.2351742Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.2353873Z ##[group]Fetching the repository
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.2361502Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin 9367ed8ec17bb2a6b7755f8a688cb35366cd919c
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6113523Z From https://github.com/levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6114607Z  * branch            9367ed8ec17bb2a6b7755f8a688cb35366cd919c -> FETCH_HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6144684Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6145777Z ##[group]Determining the checkout info
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6147175Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6148529Z ##[group]Setting up sparse checkout
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6152948Z [command]/usr/bin/git config core.sparseCheckout true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6184940Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6205762Z .git/info/sparse-checkout
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6221475Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6223428Z ##[group]Checking out the ref
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.6227812Z [command]/usr/bin/git checkout --progress --force 9367ed8ec17bb2a6b7755f8a688cb35366cd919c
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9056863Z Warning: you are leaving 1 commit behind, not connected to
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9067194Z any of your branches:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9067743Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9068275Z   209f111 Read original runtime user and group identities before correcting reporting guard
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9069133Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9069569Z If you want to keep it by creating a new branch, this may be a good time
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9070396Z to do so with:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9070695Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9070940Z  git branch <new-branch-name> 209f111
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9071381Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9072499Z HEAD is now at 9367ed8 Validate actual original runtime UID and GID with the staged reporting repair
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9075533Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9105528Z [command]/usr/bin/git log -1 --format=%H
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9131831Z 9367ed8ec17bb2a6b7755f8a688cb35366cd919c
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9141866Z ##[group]Removing auth
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9148270Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9173271Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9362109Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9379776Z http.https://github.com/.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9387907Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9416476Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9587314Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9611086Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:28.9787446Z ##[endgroup]
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	﻿2026-10-29T03:22:29.0024334Z ##[group]Run set -euo pipefail
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0026058Z [36;1mset -euo pipefail[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0027480Z [36;1mtest "$ACTUAL_RUNNER" = meme-machine-ec2-admin[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0028938Z [36;1mtest "$(id -u)" = 994[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0030620Z [36;1m/usr/bin/env -i PATH=/usr/bin:/bin LANG=C ACTUAL_RUNNER="$ACTUAL_RUNNER" \[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0032665Z [36;1m  /usr/bin/timeout --signal=TERM --kill-after=3s 30s \[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0034403Z [36;1m  /usr/bin/nice -n 19 /usr/bin/prlimit \[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0036573Z [36;1m  --cpu=5:5 --as=134217728:134217728 --nofile=64:64 --fsize=1048576:1048576 --core=0:0 -- \[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0038599Z [36;1m  /usr/bin/python3 -B -I - <<'PYSTAGE'[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0040335Z [36;1mimport hashlib,json,os,pathlib,pwd,stat,subprocess,time[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0043254Z [36;1massert os.getuid()==994 and pwd.getpwuid(994).pw_name=='mm-ec2-runner' and os.environ['ACTUAL_RUNNER']=='meme-machine-ec2-admin'[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0048470Z [36;1mpins={'repair-original-publisher.py': 'b2fbce1a36bc047cc5c8047ae4091ed8cb3a4798c91edf2c7d9c6da1e43766fc', 'snapshot-publisher.mjs': '2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa'}[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0052209Z [36;1mdef view():[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0056053Z [36;1m    r=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property=MainPID,NRestarts,User,LoadState,ActiveState,SubState'],capture_output=True,text=True,timeout=5,check=True,env={'PATH':'/usr/bin:/bin','LANG':'C'})[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0060330Z [36;1m    assert len(r.stdout)<=4096[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0061921Z [36;1m    v=dict(l.split('=',1) for l in r.stdout.splitlines() if '='in l)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0065212Z [36;1m    assert v.get('User')=='poe-runtime' and v.get('LoadState')=='loaded' and v.get('ActiveState')=='active' and v.get('SubState')=='running' and int(v.get('MainPID','0'))>0[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0068245Z [36;1m    return v[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0069467Z [36;1mdef read(p,name):[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0070823Z [36;1m    assert p.parent.resolve(strict=True)==p.parent[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0072565Z [36;1m    f=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0074160Z [36;1m    try:[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0076477Z [36;1m        s=os.fstat(f);assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and not s.st_mode&0o022 and 0<s.st_size<=65536[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0079728Z [36;1m        b=os.read(f,s.st_size+1);assert len(b)==s.st_size and hashlib.sha256(b).hexdigest()==pins[name];return b[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0081846Z [36;1m    finally:os.close(f)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0084815Z [36;1mbefore=view();source=pathlib.Path('operator/native-paper-ec2/publisher-credential-repair').resolve(strict=True);data={name:read(source/name,name) for name in pins}[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0088988Z [36;1mscope={'__name__':'poe_staging_readonly_identity_fixture','__file__':str(source/'repair-original-publisher.py')}[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0091958Z [36;1mexec(compile(data['repair-original-publisher.py'],scope['__file__'],'exec'),scope)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0095126Z [36;1muid,gid=scope['runtime_owner']();runtime_identity=scope['runtime_process'](before['MainPID'],uid,gid)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0212742Z [36;1mtarget=pathlib.Path('/var/tmp/poe-original-publisher-credential-v2-20261029');space=os.statvfs(target.parent);assert space.f_bavail*space.f_frsize>=512*1048576+sum(map(len,data.values()))[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0218761Z [36;1mif not os.path.lexists(target):target.mkdir(mode=0o700)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0222200Z [36;1ms=target.lstat();assert stat.S_ISDIR(s.st_mode) and s.st_uid==994 and stat.S_IMODE(s.st_mode)==0o700 and target.resolve(strict=True)==target and set(p.name for p in target.iterdir())<=set(pins)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0226960Z [36;1mfor name,body in data.items():[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0228224Z [36;1m    p=target/name[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0229434Z [36;1m    if os.path.lexists(p):assert read(p,name)==body[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0230923Z [36;1m    else:[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0232169Z [36;1m        f=os.open(p,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0233763Z [36;1m        try:[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0234636Z [36;1m            pos=0[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0235825Z [36;1m            while pos<len(body):pos+=os.write(f,body[pos:])[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0237385Z [36;1m            os.fsync(f)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0238436Z [36;1m        finally:os.close(f)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0239543Z [36;1m    assert read(p,name)==body[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0241643Z [36;1md=os.open(target,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW);os.fsync(d);os.close(d);after=view();assert after==before[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0249747Z [36;1mprint(json.dumps({'kind':'POE_ORIGINAL_REPORTER_REPAIR_STAGED_NOT_INSTALLED','at':int(time.time()*1000),'directory':str(target),'files':[{'file':n,'bytes':len(b),'sha256':pins[n]}for n,b in data.items()],'serviceBefore':before,'serviceAfter':after,'sameSupervisor':True,'runtimeIdentityValidatedByExactStagedDriver':runtime_identity,'serviceControlOperations':0,'financialDatabaseOpened':False,'credentialContentsRead':False,'executed':False},separators=(',',':')),flush=True)[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0256825Z [36;1mPYSTAGE[0m
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0275801Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0277366Z env:
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0278169Z   ACTUAL_RUNNER: meme-machine-ec2-admin
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0279219Z ##[endgroup]
+stage-verified-continuation	Stage reporting-only bytes without stopping or modifying the service	2026-10-29T03:22:29.0906633Z {"kind":"POE_ORIGINAL_REPORTER_REPAIR_STAGED_NOT_INSTALLED","at":1793244149089,"directory":"/var/tmp/poe-original-publisher-credential-v2-20261029","files":[{"file":"repair-original-publisher.py","bytes":14320,"sha256":"b2fbce1a36bc047cc5c8047ae4091ed8cb3a4798c91edf2c7d9c6da1e43766fc"},{"file":"snapshot-publisher.mjs","bytes":29872,"sha256":"2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa"}],"serviceBefore":{"MainPID":"2437741","NRestarts":"163","User":"poe-runtime","LoadState":"loaded","ActiveState":"active","SubState":"running"},"serviceAfter":{"MainPID":"2437741","NRestarts":"163","User":"poe-runtime","LoadState":"loaded","ActiveState":"active","SubState":"running"},"sameSupervisor":true,"runtimeIdentityValidatedByExactStagedDriver":{"uid":988,"gid":982,"pid":2437741},"serviceControlOperations":0,"financialDatabaseOpened":false,"credentialContentsRead":false,"executed":false}
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T03:22:29.1177259Z Post job cleanup.
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2050109Z [command]/usr/bin/git version
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2095064Z git version 2.43.0
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2138327Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/87533eb0-7fa4-4e82-b2dc-203f1a8f9b59' before making global git config changes
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2143760Z Adding repository directory to the temporary git global config as a safe directory
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2148419Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2173814Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2202006Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2388304Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2423621Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2641397Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T03:22:29.2657761Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+stage-verified-continuation	Complete job	﻿2026-10-29T03:22:29.3001654Z Cleaning up orphan processes
+stage-verified-continuation	Complete job	2026-10-29T03:22:29.3446977Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

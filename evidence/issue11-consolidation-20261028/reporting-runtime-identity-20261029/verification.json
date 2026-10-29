@@ -1,0 +1,41 @@
+{
+  "recordedAt": "2026-10-29T03:23:01.300248+00:00",
+  "defect": "Installer wrongly assumed original UID and primaryGID both988; onlyUID hadbeenverified. Actual primaryGID982.",
+  "actualHostEvidence": {
+    "run": 40811531287,
+    "uid": 988,
+    "gid": 982,
+    "group": "poe-runtime",
+    "supervisorPid": 2437741,
+    "uidSlots": [
+      988,
+      988,
+      988,
+      988
+    ],
+    "gidSlots": [
+      982,
+      982,
+      982,
+      982
+    ]
+  },
+  "correction": "Validate nameduser/group relationship, all liveprocesscredential IDs, and existing root:runtime-group0640; retain their metadata at replacement. No hardcoded UID=GID.",
+  "newDriverSha256": "b2fbce1a36bc047cc5c8047ae4091ed8cb3a4798c91edf2c7d9c6da1e43766fc",
+  "newStage": "/var/tmp/poe-original-publisher-credential-v2-20261029",
+  "stageRun": 40811761692,
+  "adminSource": "9367ed8ec17bb2a6b7755f8a688cb35366cd919c",
+  "tests": {
+    "installer": 9,
+    "reporting": 27,
+    "bundledSyntheticFD": "PASS",
+    "full1685BuildCompile": "Previously passed on unchanged reporter5735db2; no TypeScript or financial change in this identity repair"
+  },
+  "independentReview": "No codeblocker; command hashes regenerated and testedactualruntimeidentity on EC2 from same stagedbytes.",
+  "financialSourceUnchanged": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "reporterBundleUnchangedSha256": "2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa",
+  "rootInstallation": "NOT YET EXECUTED",
+  "actualReportingRecovery": "UNVERIFIED",
+  "financialDatabaseOpened": false,
+  "serviceControlOperations": 0
+}
