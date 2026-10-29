@@ -476,6 +476,10 @@ export class PaperLedger {
     return !!lastControl&&lastControl.at===state.controls.changedAt&&lastControl.reason===state.controls.reason;
   }
 
+  /** Preflight for the operating candidate path; no preparation or state
+   * change may launder an owner intent behind temporary startup wording. */
+  operatingFinancialRecoveryAllowed(at:number){const state=this.state();return Number.isSafeInteger(at)&&at>=state.lastAt&&!state.controls.entriesEnabled&&!state.controls.stopRequested&&!state.daily.lossPaused&&!Object.keys(state.pending).length&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason)&&this.operatingTemporaryControlVerified(state,at);}
+
   resume(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>, readiness: RuntimeReadiness) {
     const p = priceAt(price, now);
     const kind=runtimeReadinessKind(readiness,now,marks,undefined,this.accountId,price);if(!kind)throw new Error('fresh explicit runtime readiness required');

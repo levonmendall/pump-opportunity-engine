@@ -1,0 +1,34 @@
+{
+  "verifiedAt": "2026-10-29T23:29:16.855608+00:00",
+  "results": {
+    "focused": {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/native-paper-integration.test.ts",
+        "test/native-paper-readiness.test.ts",
+        "test/operating-financial-readiness.test.ts",
+        "test/internal-shutdown-provenance.test.ts"
+      ],
+      "exitCode": 0,
+      "sha256": "9b3a6358f494d9a3bb69addf29fc9123eb10d1c3f96b680274cfb3f81f6b22e4"
+    },
+    "build": {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  },
+  "sourceSha256": {
+    "src/ledger.ts": "c251d5a68a57e19c0bad3ee9a0bc137f78646bcb74645d70d3ac61e829344aa4",
+    "src/native-paper.ts": "b256fbeb93952286bab1ad3ebca03de1b4bd8dff44282c8af75ed435dc3e91ce"
+  },
+  "operatingActions": 0,
+  "providerRequests": 0
+}
