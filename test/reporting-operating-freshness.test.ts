@@ -39,7 +39,7 @@ const currentEntryMessages = {
   POE_ENTRY_RECONCILIATION_STALE: 'Financial reconciliation exceeds the two-second entry boundary',
   POE_ENTRY_PROVIDER_UNAVAILABLE: 'Provider access is unavailable or recovering; new entries remain closed',
   POE_ENTRY_SOURCE_UNAVAILABLE: 'Required market observation is unavailable or recovering',
-  POE_ENTRY_MONITORING_UNAVAILABLE: 'Position protection or operating safeguards are not ready for new exposure',
+  POE_ENTRY_MONITORING_UNAVAILABLE: 'New-entry monitoring or shared RPC capacity is temporarily reserved; position safeguards remain enforced.',
   POE_ENTRY_READINESS_REQUIRED: 'Fresh complete audited market evidence and financial readiness are required',
   POE_ENTRY_FINANCIAL_PAUSED: 'The ledger entry control is paused; verified recovery is still required',
 };

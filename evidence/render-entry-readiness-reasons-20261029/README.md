@@ -12,4 +12,6 @@ Base source: `9bdf59aa9ca4fe2af92dfeecd65cfa6ab8346fe1`.
 
 Implementation and verification are offline only. No Render push/deploy, EC2 operation, private financial read, provider request or financial-service restart was performed by this task. Root must review the final backend reason enum before deployment.
 
-Raw focused/build/full-suite output and exact source hashes are retained alongside this file. Final counts and independent review are recorded in `verification.json`.
+Raw focused/build/full-suite output and exact source hashes are retained alongside this file. Initial counts and independent review are recorded in `verification.json`.
+
+The latest wording clarification is verified in `wording-clarification/verification.json`. Ordinary shared RPC occupation is described as reserved monitoring/capacity, rather than provider failure or failed position protection. Only the static explanation and its browser expectation changed; the classifier and all financial behavior remain unchanged.
