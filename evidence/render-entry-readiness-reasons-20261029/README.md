@@ -15,3 +15,5 @@ Implementation and verification are offline only. No Render push/deploy, EC2 ope
 Raw focused/build/full-suite output and exact source hashes are retained alongside this file. Initial counts and independent review are recorded in `verification.json`.
 
 The latest wording clarification is verified in `wording-clarification/verification.json`. Ordinary shared RPC occupation is described as reserved monitoring/capacity, rather than provider failure or failed position protection. Only the static explanation and its browser expectation changed; the classifier and all financial behavior remain unchanged.
+
+The final integrated source preserves owner main `e1409fc58eb8329cb3ca51f5b824b50801a398ed`, including the recent-PAPER-trades disclosure and P&L line graph. Both owner test files remain byte-identical, and the dashboard differs from owner main only in the intended static restriction-message line. Verification of those integrated bytes is retained in `owner-integration/verification.json`; earlier verification records remain historical.

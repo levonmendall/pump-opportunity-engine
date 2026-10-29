@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-10-29T18:27:49.102743+00:00",
+  "integratedCommit": "b73feaf35a949c367e7819b383cf0d670b6403bb",
+  "ownerMain": "e1409fc58eb8329cb3ca51f5b824b50801a398ed",
+  "preservedOwnerCommits": [
+    "37b7b98",
+    "e1409fc"
+  ],
+  "ownerDashboardBytesExceptIntendedMessageLineMatch": true,
+  "ownerTestsByteIdentical": true,
+  "sourceFiles": {
+    "src/reporting.ts": {
+      "bytes": 24780,
+      "sha256": "b5a28ad6a8a37cb00f0187dad2cda678e57482c040d9e5e3a5fde6c68ea153a2"
+    },
+    "src/dashboard.ts": {
+      "bytes": 75080,
+      "sha256": "e87c934b162a199cfa44fd738af9cc44a37ca13abe4fd0a61d192c3ba544ca55"
+    },
+    "test/reporting-operating-freshness.test.ts": {
+      "bytes": 18215,
+      "sha256": "16d9cb1f090ee081c5020347880777ad0f9970bd72ae9d98592f785619418160"
+    },
+    "test/dashboard-paper-trades-collapse.test.ts": {
+      "bytes": 4571,
+      "sha256": "837cc0642e75f03a64296574660906bbf14282c26d2aca82fb5e27e73c083945"
+    },
+    "test/dashboard-pnl-line.test.ts": {
+      "bytes": 7211,
+      "sha256": "25bf3377dcacfeed34f87118fdf0bb6a98228d07efd3c3f9b0123bf5e36d27ab"
+    }
+  }
+}
