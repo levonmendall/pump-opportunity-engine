@@ -237,7 +237,7 @@ test('bounded exports contain no configuration secrets; HTML uses safe DOM and m
 
 test('original positions and PAPER trades render safe token-chart links with no external requests', async t => {
   const app = await serve(t);
-  const html = await app.get('/').then(r => r.text());
+  const html = await app.get('/', viewer).then(r => r.text());
   const start = html.indexOf('function dexScreenerUrl('), end = html.indexOf('\nfunction renderFunnel(', start);
   assert.ok(start > 0 && end > start, 'link helper and table renderer exist in authoritative dashboard');
   assert.match(html, /s\.positions\.map\(p=>p\.mint\),0\)/);
