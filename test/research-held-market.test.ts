@@ -8,10 +8,13 @@ import {SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
 import {DisposableLedger,type Order,type Position,type UsdPrice} from '../src/ledger.js';
 import {PaperExecutionCoordinator,type QuoteRequest} from '../src/execution.js';
 import {ResearchClockPositionPricer} from '../src/research-clock-pricing.js';
-import {ResearchHeldMarket} from '../src/research-held-market.js';
+import {ResearchHeldMarket,heldPricingFailureCode} from '../src/research-held-market.js';
 import type {PoolWireAccount} from '../src/pool.js';
 
 const GAS='7000',ENTRY='10000000',signal=()=>new AbortController().signal;
+test('holding pricing exposes only bounded static interruption categories',()=>{
+  for(const [message,code]of [['PHYSICAL_SLOT_OCCUPIED','HELD_PRICING_BUSY'],['PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','HELD_PRICING_PROVIDER_TIMEOUT'],['COOLDOWN','HELD_PRICING_PROVIDER_COOLDOWN'],['COMPONENT_START_DEADLINE','HELD_PRICING_DISPATCH_UNAVAILABLE'],['RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS','HELD_PRICING_BANK_CLOCK_UNAVAILABLE'],['POOL_REGRESSING_CONTEXT','HELD_PRICING_SLOT_UNAVAILABLE'],['RESEARCH_HELD_SOURCE_AGE','HELD_PRICING_STALE_EVIDENCE'],['RESEARCH_HELD_POSITION_CHANGED','HELD_PRICING_INVENTORY_CHANGED'],['untrusted https://provider.invalid/?api-key=not-for-public','HELD_PRICING_DATA_UNAVAILABLE']] as const)assert.equal(heldPricingFailureCode(Error(message)),code);
+});
 function fixture(t:TestContext){
   const retained=['2026-10-26T19-42-16.130Z','2026-10-26T19-57-35.882Z'].map(run=>{
     const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8')),rows=readFileSync(`evidence/integration-${run}.ndjson`,'utf8').trim().split('\n').map(x=>JSON.parse(x));
@@ -76,6 +79,16 @@ test('two-held union marks and post-delay exit reuse integrate with one disposab
   const end=f.ledger.state(),profit=expectedGross.reduce((a,b)=>a+b,0n)-2n*BigInt(ENTRY)-4n*BigInt(GAS);
   assert.deepEqual(end.positions,{});assert.deepEqual(end.pending,{});assert.equal(end.executionCosts,(4n*BigInt(GAS)).toString());assert.equal(end.realizedLamports,profit.toString());assert.equal(BigInt(end.lamports)-f.initial,profit);assert.equal(end.inceptionAt,f.inception);
   assert.deepEqual((await c.runDue()).results,[]);assert.equal(f.calls.length-calls,2);
+});
+
+test('holding diagnostics retain actual Clock failures after recovery without claiming a protection completion',async t=>{
+ const f=fixture(t),market=f.makeMarket(),c=f.coordinator(market);f.setSetupMarket(market);c.recover();f.ready();await f.buy(c,0);
+ const inventory=f.ledger.state().positions,at=f.now(),before=structuredClone(f.ledger.state());
+ f.setClockSeconds(Math.floor(at/1000)-31);assert.deepEqual((await market.context(inventory,signal())).marks,{});
+ assert.equal(market.usage().lastContext!.state,'unavailable');assert.equal(market.usage().lastContext!.reasonCode,'HELD_PRICING_BANK_CLOCK_UNAVAILABLE');
+ assert.equal(market.usage().contextFailureCounts.HELD_PRICING_BANK_CLOCK_UNAVAILABLE,1);
+ f.setClockSeconds(null);assert.ok(Object.keys((await market.context(inventory,signal())).marks).length);assert.equal(market.usage().lastContext!.state,'available');assert.equal(market.usage().lastContext!.reasonCode,null);
+ assert.equal(market.usage().contextFailureCounts.HELD_PRICING_BANK_CLOCK_UNAVAILABLE,1,'recovery cannot erase historical failed pricing');assert.deepEqual(f.ledger.state(),before);
 });
 
 test('post-delay, exact-size, slot, stale and gap constraints refuse cached fills without extra requests',async t=>{

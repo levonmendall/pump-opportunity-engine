@@ -29,6 +29,9 @@ export type PilotMarketOptions={
   recorder:{record:(kind:string,data:unknown)=>void};
   gas:{baseFeeLamports:string;priorityFeeLamports:string;evidence:string};
   now?:()=>number;timeoutMs?:number;
+  /** Runs only between entry-cost preparation reads, before another physical
+   * request starts. Never called from an active trader decision/entry quote. */
+  beforeEntryPreparationRead?:(input:{method:string;signal:AbortSignal})=>Promise<void>;
 };
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 const integer=(value:string)=>{need(typeof value==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(value),'PILOT_MARKET_AMOUNT');return BigInt(value);};
@@ -45,10 +48,15 @@ export class PilotMarket {
   private readonly floors=new Map<string,number>();
   private readonly entrySnapshots=new Map<string,PilotSizeQuote>();
   private readonly pricer:ResearchClockPositionPricer;
+  private readonly holdingPricer:ResearchClockPositionPricer;
+  private readonly preparationRpc:PilotRpc;
   private readonly held:ResearchHeldMarket;
   private readonly now:()=>number;
   private generation=0;
   private active=false;
+  private holdingActive=false;
+  private preparing=false;
+  private protectionYield=false;
   private prepared=0;
   private entryEstimates=0;
   private entryAttempts=0;
@@ -59,22 +67,40 @@ export class PilotMarket {
     this.gasLamports=(integer(options.gas.baseFeeLamports)+integer(options.gas.priorityFeeLamports)).toString();
     need(integer(this.gasLamports)>0n&&typeof options.gas.evidence==='string'&&options.gas.evidence.length>0,'PILOT_MARKET_GAS_REQUIRED');
     need(Number.isSafeInteger(options.timeoutMs??3000)&&(options.timeoutMs??3000)>0&&(options.timeoutMs??3000)<=3000,'PILOT_MARKET_BOUNDED_TIMEOUT_REQUIRED');
-    this.pricer=new ResearchClockPositionPricer(options.rpc,options.recorder);
-    this.held=new ResearchHeldMarket({pricer:this.pricer,inventory:options.inventory,gasLamports:this.gasLamports,gasEvidence:options.gas.evidence,recorder:options.recorder,now:this.now,usd:options.price,entryQuote:(request,signal)=>this.entryQuote(request,signal)});
+    this.preparationRpc={call:async<T>(method:string,params:unknown[]=[],signal?:AbortSignal)=>{
+      signal?.throwIfAborted();
+      if(this.preparing&&this.options.beforeEntryPreparationRead){
+        need(signal,'PILOT_MARKET_PREPARATION_SIGNAL_REQUIRED');
+        this.protectionYield=true;
+        try{await this.options.beforeEntryPreparationRead({method,signal});}
+        finally{this.protectionYield=false;}
+        signal.throwIfAborted();
+      }
+      return options.rpc.call<T>(method,params,signal);
+    }};
+    this.pricer=new ResearchClockPositionPricer(this.preparationRpc,options.recorder);
+    // Discretionary reads cannot retain the held pricer's busy lock or raise
+    // its global slot floor through an unrelated candidate. Every holding
+    // still preserves its own known slot and fresh complete union/Clock read.
+    this.holdingPricer=new ResearchClockPositionPricer(options.rpc,options.recorder);
+    this.held=new ResearchHeldMarket({pricer:this.holdingPricer,inventory:options.inventory,gasLamports:this.gasLamports,gasEvidence:options.gas.evidence,recorder:options.recorder,now:this.now,usd:options.price,entryQuote:(request,signal)=>this.entryQuote(request,signal)});
   }
   registerPool(pool:VerifiedMarketPool){
     this.held.registerPool(pool);
     this.pools.set(pool.mint,Object.freeze({...pool}));
   }
+  /** A timeout does not prove physical settlement. Retire replaceable pool
+   * state only after every earlier market continuation actually releases it. */
+  retirementReady(){return !this.active&&!this.holdingActive;}
   /** Release only a retired, unowned pool's replaceable market state. Locked
    * deposits and the caller's durable origin/financial history are preserved. */
   unregisterPool(mint:string){
-    need(!this.active,'PILOT_MARKET_READ_IN_FLIGHT');
+    need(!this.active&&!this.holdingActive,'PILOT_MARKET_READ_IN_FLIGHT');
     const removed=this.held.unregisterPool(mint);if(!removed)return false;
     this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);return true;
   }
   minimumSlot(mint:string,slot:number){this.held.minimumSlot(mint,slot);this.floors.set(mint,Math.max(this.floors.get(mint)??0,slot));}
-  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.held.invalidate(reason);}
+  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.pricer.invalidate(reason);this.held.invalidate(reason);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
   private locked(mint:string){const value=this.options.inventory().lockedDeposits[mint]??'0';integer(value);return value;}
   private freshPlan(mint:string){
@@ -89,7 +115,7 @@ export class PilotMarket {
    * account-creation rent. Use the unchanged state decoder/SDK checks, but leave
    * financial entry plans absent; any future entry must prepare its own costs. */
   async validateObservationPool(mint:string,signal:AbortSignal):Promise<{mint:string;evidence:string;at:number;sourceSlot:number}>{
-    need(!this.active&&!signal.aborted&&this.pools.has(mint),'PILOT_MARKET_PREPARATION_UNAVAILABLE');
+    need(!this.active&&!this.holdingActive&&!signal.aborted&&this.pools.has(mint),'PILOT_MARKET_PREPARATION_UNAVAILABLE');
     this.active=true;const generation=this.generation;
     try{
       const state=await quotePool(this.options.rpc as ReadOnlyRpc,new PublicKey(mint),10000000n,this.options.recorder,this.floor(mint),signal);
@@ -108,9 +134,21 @@ export class PilotMarket {
    * establishes account lengths (including Token2022 ImmutableOwner), then
    * current rent is read once per distinct required length. Every call counts.
    */
-  async prepareEntryCosts(mint:string,signal:AbortSignal):Promise<PilotEntryCosts>{
-    need(!this.active&&!signal.aborted&&this.pools.has(mint),'PILOT_MARKET_PREPARATION_UNAVAILABLE');
-    this.active=true;const generation=this.generation;
+  async prepareEntryCosts(mint:string,signal:AbortSignal,options?:{maximumMs:number}):Promise<PilotEntryCosts>{
+    need(!this.active&&!this.holdingActive&&!signal.aborted&&this.pools.has(mint),'PILOT_MARKET_PREPARATION_UNAVAILABLE');
+    const maximumMs=options?.maximumMs??this.options.timeoutMs??3000;
+    need(Number.isSafeInteger(maximumMs)&&maximumMs>0&&maximumMs<=3000,'PILOT_MARKET_PREPARATION_BOUND_REQUIRED');
+    this.active=true;this.preparing=true;const controller=new AbortController(),combined=AbortSignal.any([signal,controller.signal]);
+    const operation=this.prepareEntryCostsOperation(mint,combined).finally(()=>{this.active=false;this.preparing=false;});
+    let timer:ReturnType<typeof setTimeout>|undefined,listener:(()=>void)|undefined;
+    try{return await Promise.race([operation,new Promise<never>((_resolve,reject)=>{
+      listener=()=>reject(Error('PILOT_MARKET_PREPARATION_ABORTED'));combined.addEventListener('abort',listener,{once:true});
+      timer=setTimeout(()=>controller.abort(),maximumMs);if(combined.aborted)listener();
+    })]);}
+    finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();}
+  }
+  private async prepareEntryCostsOperation(mint:string,signal:AbortSignal):Promise<PilotEntryCosts>{
+    const generation=this.generation;
     try{
       const supported=await this.pricer.validateMany([{mint:new PublicKey(mint),minSlot:this.floor(mint)}],signal),support=supported.validations[mint];
       need(support,'PILOT_MARKET_ENTRY_SUPPORT_UNAVAILABLE');const state=support.summary;
@@ -118,7 +156,7 @@ export class PilotMarket {
       for(const bytes of Object.values(lengths))need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
       const locked=this.locked(mint),exists=integer(locked)>0n,rents:Record<string,string>={};let deposit=0n;
       if(!exists)for(const bytes of Object.values(lengths)){
-        if(rents[bytes]===undefined){const rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
+        if(rents[bytes]===undefined){const rent=await this.preparationRpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
         deposit+=integer(rents[bytes]!);
       }
       signal.throwIfAborted();const at=this.clock();this.freshClock(state,mint,signal);
@@ -130,7 +168,7 @@ export class PilotMarket {
       need(this.clock()-at<=10000&&generation===this.generation&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
       this.minimumSlot(mint,state.slot);this.plans.set(mint,structuredClone(plan));this.prepared++;
       return structuredClone(plan);
-    }finally{this.active=false;}
+    }finally{/* Physical ownership is released by the complete operation above. */}
   }
   /** Keep Clock provenance explicit; a received source keeps its original
    * timestamp after rent reads, validation and recorder callbacks. */
@@ -140,7 +178,7 @@ export class PilotMarket {
     return received;
   }
   private async entryQuote(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>{
-    if(this.active||signal.aborted)return null;
+    if(this.active||this.holdingActive||signal.aborted)return null;
     this.active=true;const generation=this.generation,controller=new AbortController(),combined=AbortSignal.any([signal,controller.signal]);
     const operation=this.readEntryQuote(request,combined,generation);void operation.then(()=>{this.active=false;},()=>{this.active=false;});
     let timer:ReturnType<typeof setTimeout>|undefined,listener:(()=>void)|undefined;
@@ -174,10 +212,10 @@ export class PilotMarket {
     }catch{return null;}
   }
   readonly context=async(positions:Readonly<Record<string,Position>>,signal:AbortSignal):Promise<ExecutionContext>=>{
-    if(this.active||signal.aborted)return {price:null,marks:{}};
-    this.active=true;
+    if(this.holdingActive||this.active&&!this.protectionYield||signal.aborted)return {price:null,marks:{}};
+    this.holdingActive=true;
     try{return await this.held.context(positions,signal);}
-    finally{this.active=false;}
+    finally{this.holdingActive=false;}
   };
   readonly quote=(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>=>this.held.quote(request,signal);
   readonly executionQuote=async(request:QuoteRequest&{minSlot?:number},signal:AbortSignal):Promise<PilotExecutionQuote|null>=>{
@@ -194,5 +232,5 @@ export class PilotMarket {
       return {...q,slot:entry.slot,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-execution-validated-costs:'+hash({preparation:plan.evidence,quote:q.evidence,deposit:plan.depositLamports})};
     }catch{return null;}
   };
-  usage(){return {classification:'isolated PAPER pilot only',registeredPools:this.pools.size,preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,held:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:MODEL,depositRefundsAssumed:false};}
+  usage(){return {classification:'isolated PAPER pilot only',registeredPools:this.pools.size,preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,held:this.holdingPricer.usage(),holdingDiagnostics:this.held.usage(),entryPricing:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:MODEL,depositRefundsAssumed:false};}
 }

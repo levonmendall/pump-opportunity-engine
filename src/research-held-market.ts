@@ -25,6 +25,24 @@ type Options={
 const amount=(v:string)=>{if(typeof v!=='string'||!/^(0|[1-9][0-9]{0,19})$/.test(v))throw Error('RESEARCH_HELD_INVALID_AMOUNT');return BigInt(v);};
 const validText=(v:unknown):v is string=>typeof v==='string'&&v.length>0&&v.length<=512&&!/[\u0000-\u001f]/.test(v);
 const need=(v:unknown,m:string)=>{if(!v)throw Error(m);};
+export const HELD_PRICING_FAILURE_CODES=['HELD_PRICING_BUSY','HELD_PRICING_ABORTED','HELD_PRICING_PROVIDER_TIMEOUT','HELD_PRICING_PROVIDER_COOLDOWN','HELD_PRICING_DISPATCH_UNAVAILABLE','HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE','HELD_PRICING_BANK_CLOCK_UNAVAILABLE','HELD_PRICING_SLOT_UNAVAILABLE','HELD_PRICING_STALE_EVIDENCE','HELD_PRICING_INVENTORY_CHANGED','HELD_PRICING_DATA_UNAVAILABLE'] as const;
+export type HeldPricingFailureCode=typeof HELD_PRICING_FAILURE_CODES[number];
+/** Only static categories leave the pricing adapter. Never publish arbitrary
+ * provider messages, URLs, account bytes or a false successful evaluation. */
+export function heldPricingFailureCode(error:unknown):HeldPricingFailureCode{
+ const name=error instanceof Error?error.name:'',message=error instanceof Error?error.message:typeof error==='string'?error:'';
+ if(name==='AbortError'||/ABORT|CANCEL/.test(message))return 'HELD_PRICING_ABORTED';
+ if(/CONCURRENT|READ_IN_FLIGHT|PHYSICAL_SLOT_OCCUPIED|DISPATCH_BUSY/.test(message))return 'HELD_PRICING_BUSY';
+ if(/PHYSICAL_TIMEOUT|REQUEST_TIMEOUT|preparation timeout/.test(message))return 'HELD_PRICING_PROVIDER_TIMEOUT';
+ if(/COOLDOWN|HTTP_STATUS_429|HTTP_STATUS_503/.test(message))return 'HELD_PRICING_PROVIDER_COOLDOWN';
+ if(/ADMISSION|START_DEADLINE|START_LIMIT|SPACING|RESOURCE_RESERVE/.test(message))return 'HELD_PRICING_DISPATCH_UNAVAILABLE';
+ if(/SLOT|REGRESSING|INCOHERENT_BATCH|SOURCE_CONTEXT|CONTEXT_MISMATCH/.test(message))return 'HELD_PRICING_SLOT_UNAVAILABLE';
+ if(/RESEARCH_CLOCK_(OWNER_OR_ENCODING|LAYOUT|TIMESTAMP_RANGE|NOT_CURRENT_WITHIN)|RESEARCH_HELD_CLOCK_AGE/.test(message))return 'HELD_PRICING_BANK_CLOCK_UNAVAILABLE';
+ if(/AGE|EXPIRED|STALE/.test(message))return 'HELD_PRICING_STALE_EVIDENCE';
+ if(/POSITION_CHANGED|INTERRUPTED_CONTEXT/.test(message))return 'HELD_PRICING_INVENTORY_CHANGED';
+ if(/HTTP|RPC|RESPONSE/.test(message))return 'HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE';
+ return 'HELD_PRICING_DATA_UNAVAILABLE';
+}
 
 export class ResearchHeldMarket {
   private readonly pools=new Map<string,VerifiedMarketPool>();
@@ -33,6 +51,8 @@ export class ResearchHeldMarket {
   private busy=false;
   private inFlightQuotes=0;
   private generation=0;
+  private lastContext:{at:number;state:'available'|'unavailable';reasonCode:HeldPricingFailureCode|null;heldPositions:number}|null=null;
+  private readonly contextFailureCounts:Partial<Record<HeldPricingFailureCode,number>>={};
   private readonly now:()=>number;
   constructor(private readonly options:Options){
     this.now=options.now??Date.now;need(amount(options.gasLamports)>0n&&validText(options.gasEvidence),'RESEARCH_HELD_EXPLICIT_GAS_REQUIRED');
@@ -72,6 +92,8 @@ export class ResearchHeldMarket {
     return null;
   }
   private current(mint:string,units:string){const p=this.options.inventory().positions[mint];return !!p&&p.mint===mint&&p.units===units;}
+  private noteContext(heldPositions:number,reasonCode:HeldPricingFailureCode|null){this.lastContext={at:this.clock(),state:reasonCode?'unavailable':'available',reasonCode,heldPositions};if(reasonCode)this.contextFailureCounts[reasonCode]=Math.min(Number.MAX_SAFE_INTEGER,(this.contextFailureCounts[reasonCode]??0)+1);}
+  usage(){return {lastContext:this.lastContext?{...this.lastContext}:null,contextFailureCounts:{...this.contextFailureCounts}};}
   private source(q:ResearchClockQuote,minSlot=0){
     const now=this.clock(),requestedAt=Date.parse(q.requestedAt),receivedAt=Date.parse(q.receivedAt),validatedAt=Date.parse(q.validatedAt),pool=this.pools.get(q.mint),floor=Math.max(minSlot,this.floors.get(q.mint)??0,pool?.migrationSlot??0);
     need(pool&&q.commitment==='confirmed'&&q.timeEvidence==='confirmed-bank-clock'&&Number.isSafeInteger(q.slot)&&q.slot>=floor&&q.clockSlot===q.slot,'RESEARCH_HELD_SOURCE_CONTEXT');
@@ -85,7 +107,7 @@ export class ResearchHeldMarket {
    */
   readonly context=async(positions:Readonly<Record<string,Position>>,signal:AbortSignal):Promise<ExecutionContext>=>{
     const result:ExecutionContext={price:this.price(),marks:{}};
-    if(this.busy||signal.aborted)return result;
+    if(this.busy||signal.aborted){this.noteContext(Object.keys(positions).length,signal.aborted?'HELD_PRICING_ABORTED':'HELD_PRICING_BUSY');return result;}
     const selected=Object.entries(positions).map(([mint,p])=>({mint,units:p.units,positionMint:p.mint}));
     if(selected.length>3)throw Error('RESEARCH_HELD_POSITION_CAPACITY');
     const sourceExpiry=()=>{
@@ -98,14 +120,14 @@ export class ResearchHeldMarket {
       // source check. Missing metadata must never disguise known stale facts.
       if(Number.isSafeInteger(expiry))result.sourceValidUntil=expiry;
     };
-    this.snapshots.clear();this.busy=true;const generation=this.generation;
+    this.snapshots.clear();this.busy=true;const generation=this.generation;let failure:HeldPricingFailureCode|null=null;
     try{
       signal.throwIfAborted();
       const requests=selected.filter(p=>p.mint===p.positionMint&&this.pools.has(p.mint)&&this.current(p.mint,p.units)).map(p=>({mint:new PublicKey(p.mint),fullBaseUnits:amount(p.units),minSlot:Math.max(this.pools.get(p.mint)!.migrationSlot,this.floors.get(p.mint)??0)}));
       if(requests.length){
         const batch=await this.options.pricer.quoteMany(requests,signal);signal.throwIfAborted();need(generation===this.generation,'RESEARCH_HELD_INTERRUPTED_CONTEXT');
         for(const r of requests){
-          const mint=r.mint.toBase58(),q=batch.quotes[mint];if(!q)continue;
+          const mint=r.mint.toBase58(),q=batch.quotes[mint];if(!q){failure??=heldPricingFailureCode(batch.unavailable[mint]);continue;}
           try{
             need(q.mint===mint,'RESEARCH_HELD_QUOTE_MINT_MISMATCH');
             const time=this.source(q,r.minSlot);need(batch.context&&q.slot===batch.context.slot&&q.requestedAt===batch.context.requestedAt&&q.receivedAt===batch.context.receivedAt,'RESEARCH_HELD_INCOHERENT_BATCH');
@@ -113,16 +135,17 @@ export class ResearchHeldMarket {
             const output=amount(q.sell.outputLamports),gas=amount(this.options.gasLamports);need(output>gas,'RESEARCH_HELD_EXIT_COST_EXCEEDS_PROCEEDS');
             this.floors.set(mint,Math.max(this.floors.get(mint)??0,q.slot));this.snapshots.set(mint,structuredClone(q));
             result.marks[mint]={netLamports:(output-gas).toString(),pricedBaseUnits:q.sell.inputBaseUnits,at:time.receivedAt,evidence:this.evidence(q)};
-          }catch{/* This holding stays explicitly unmarked; unaffected holdings may continue. */}
+          }catch(error){failure??=heldPricingFailureCode(error);/* Unaffected holdings may continue. */}
         }
       }
       result.price=this.price();sourceExpiry();this.options.recorder.record('research-held-market-context',{at:this.clock(),context:result,classification:'ISOLATED_RESEARCH_ONLY',gasLamports:this.options.gasLamports,gasClassification:'simulated; subtracted once from marks, gross sell quote excludes separate execution gas'});
       signal.throwIfAborted();need(generation===this.generation,'RESEARCH_HELD_INTERRUPTED_CONTEXT');
       // Recorder delay or simultaneous account changes cannot leave stale marks.
-      for(const [mint,q]of this.snapshots){try{this.source(q);need(this.current(mint,q.sell.inputBaseUnits),'RESEARCH_HELD_POSITION_CHANGED');}catch{this.snapshots.delete(mint);delete result.marks[mint];}}
+      for(const [mint,q]of this.snapshots){try{this.source(q);need(this.current(mint,q.sell.inputBaseUnits),'RESEARCH_HELD_POSITION_CHANGED');}catch(error){failure??=heldPricingFailureCode(error);this.snapshots.delete(mint);delete result.marks[mint];}}
       result.price=this.price();sourceExpiry();
+      this.noteContext(selected.length,Object.keys(result.marks).length===selected.length?null:failure??'HELD_PRICING_DATA_UNAVAILABLE');
       return structuredClone(result);
-    }catch{this.snapshots.clear();return {price:this.price(),marks:{}};}
+    }catch(error){this.noteContext(selected.length,heldPricingFailureCode(error));this.snapshots.clear();return {price:this.price(),marks:{}};}
     finally{this.busy=false;}
   };
   /** Decision quotes reuse only a current actual-size coherent snapshot. Buys
