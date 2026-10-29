@@ -1,0 +1,8 @@
+{
+  "sourceCommit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+  "rawFile": "npm-test.raw.txt",
+  "status": "INCOMPLETE_CLOUD_EXECUTION_STOPPED",
+  "fullSuitePassed": false,
+  "supersededBy": "resumed-verification/verification.json",
+  "monitoringGapSeparatelyRecorded": true
+}

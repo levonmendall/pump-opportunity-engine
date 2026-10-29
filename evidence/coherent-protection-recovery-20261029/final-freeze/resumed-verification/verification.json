@@ -1,0 +1,45 @@
+{
+  "sourceCommit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+  "startedAt": "2026-10-29T23:36:20.229711+00:00",
+  "previousAttempt": "Cloud execution stopped before complete test result; no success inferred",
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0,
+      "rawFile": "npm-test.raw.txt"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "rawFile": "build.raw.txt"
+    }
+  ],
+  "sourceUnchanged": true,
+  "completedAt": "2026-10-29T23:38:18.691924+00:00",
+  "passed": true,
+  "artifacts": {
+    "npm-test.raw.txt": {
+      "sha256": "956f71e32f85a758dca946f456865ba75254dadaac525f16c9ff9f8b8b82ab73",
+      "bytes": 254590
+    },
+    "build.raw.txt": {
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "bytes": 55
+    },
+    "source-before.json": {
+      "sha256": "dc4fb1c96f0ef221dcbdc8e39c000de58df457485d7120f6c177cae68075d034",
+      "bytes": 24036
+    },
+    "source-after.json": {
+      "sha256": "dc4fb1c96f0ef221dcbdc8e39c000de58df457485d7120f6c177cae68075d034",
+      "bytes": 24036
+    }
+  }
+}

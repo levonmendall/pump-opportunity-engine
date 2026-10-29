@@ -1,0 +1,45 @@
+{
+  "sourceCommit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+  "configuration": {
+    "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+    "financialMode": "PAPER",
+    "liveTradingEnabled": false,
+    "service": true,
+    "stage": "two",
+    "deepSlots": 4,
+    "strategy": "adaptive-momentum-v2",
+    "financialAccountRead": false,
+    "measurementExecuted": false
+  },
+  "files": {
+    "metadata.json": {
+      "sha256": "33161968dd3e7e77787508b02f9945cf67a437eedf10d313a1d7c092e687d097",
+      "bytes": 155512
+    },
+    "verify-native-paper-package.mjs": {
+      "sha256": "39cc41af55a135f09e63da9094ccdd6690a8ad43a021d4b1724bb9422b0580b3",
+      "bytes": 175937
+    },
+    "snapshot-publisher.mjs": {
+      "sha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44",
+      "bytes": 32314
+    },
+    "native-paper.mjs": {
+      "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c",
+      "bytes": 5230480
+    },
+    "better_sqlite3.node": {
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+      "bytes": 2226168
+    },
+    "backup-worker.mjs": {
+      "sha256": "042ca47275d0ba287bc6444c31a98c4b215c1f228bfca36cdd02de64c81e8a2a",
+      "bytes": 75762
+    }
+  },
+  "freezeVerifiedAt": "2026-10-29T23:38:54.432199+00:00",
+  "compiledImportPassed": true,
+  "installed": false,
+  "accountModified": false,
+  "sourceProviderRequests": 0
+}
