@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "githubRunId": 40793644280,
+  "adminCommit": "d9d107da1a6e08c6710e69d7289195133fbd7990",
+  "rawLogSha256": "63d3afcc490a75fe5ec4d4308b3fe141341fb4493689c1208565854a79be9db8",
+  "rawLogBytes": 58866,
+  "files": {
+    "sealed-baseline.json": {
+      "bytes": 21021,
+      "sha256": "7c26978f49f0edbb6026766645e8dbbb0af006a7874cdb89949d92cf58ec1a43"
+    },
+    "receipt.json": {
+      "bytes": 2363,
+      "sha256": "82a8098173761a4de1eb7e7f255d9093264ce6cde986677314f5430c67d9733e"
+    },
+    "original-status.json": {
+      "bytes": 674,
+      "sha256": "9e96f7504e7396dc8f0ec2c89829eb59ea1c3668cf19bc4487246213098aadeb"
+    }
+  },
+  "records": [
+    {
+      "kind": "POE_AUTHORITATIVE_NODE_ACCESS_CHECK",
+      "metadataReadable": false,
+      "errno": 13,
+      "exceptionType": "PermissionError"
+    },
+    {
+      "kind": "POE_ORIGINAL_ACCOUNTING_FILE",
+      "file": "sealed-baseline.json",
+      "bytes": 21021,
+      "sha256": "7c26978f49f0edbb6026766645e8dbbb0af006a7874cdb89949d92cf58ec1a43"
+    },
+    {
+      "kind": "POE_ORIGINAL_ACCOUNTING_FILE",
+      "file": "receipt.json",
+      "bytes": 2363,
+      "sha256": "82a8098173761a4de1eb7e7f255d9093264ce6cde986677314f5430c67d9733e"
+    },
+    {
+      "kind": "POE_ORIGINAL_ACCOUNTING_FILE",
+      "file": "original-status.json",
+      "bytes": 674,
+      "sha256": "9e96f7504e7396dc8f0ec2c89829eb59ea1c3668cf19bc4487246213098aadeb"
+    },
+    {
+      "kind": "POE_ORIGINAL_ACCOUNTING_PREPARED",
+      "complete": true,
+      "sourceUnits": 8959,
+      "auxiliaryUnitsSeparatelyRetained": 33,
+      "financialDatabaseOpened": false,
+      "providerRequests": 0
+    },
+    {
+      "kind": "POE_ORIGINAL_ACCOUNTING_PREP_WRAPPER",
+      "complete": true,
+      "elapsedMs": 194,
+      "maximumRssBytes": 66945024,
+      "childSettled": true,
+      "childExit": 0,
+      "failure": null,
+      "helperSha256": "b0b2ad8bd273cbd0c6d7f2a7860fa2fd6b964b83fd22204042f58b65c04d1b76",
+      "nodeVersion": "v24.21.0",
+      "nodeSelection": "existing-reviewed-runner-node-only",
+      "processLogBytes": 32755,
+      "processLogSha256": "0006f249c8f8d8a763232c21e5343d5baefd4b619b07e566268db223afac21b9",
+      "financialDatabaseOpened": false,
+      "providerRequests": 0,
+      "serviceChanges": 0,
+      "oldFilesModified": false
+    }
+  ],
+  "financialDatabaseOpened": false,
+  "serviceChanged": false,
+  "providerRequests": 0
+}

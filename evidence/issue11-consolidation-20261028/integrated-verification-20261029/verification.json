@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "fullTests": {
+    "tests": 1684,
+    "pass": 1684,
+    "fail": 0,
+    "elapsedMs": 88825.181775
+  },
+  "commands": [
+    "npm test",
+    "npm run build",
+    "npm run compile",
+    "node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-original-issue11-20261029"
+  ],
+  "frozenArtifactDirectory": "/tmp/poe-native-paper-output-original-issue11-20261029",
+  "files": {
+    "metadata.json": {
+      "bytes": 154684,
+      "sha256": "5ab32a3a4c960a0378b2194756419a4cc8cd5faae3b18a27e74b783ee7143d00"
+    },
+    "verify-native-paper-package.mjs": {
+      "bytes": 132996,
+      "sha256": "cc2edd7ae461ce775616d2467c66d9b5997b599f4ea60c1ac9101e20c2c9cf3f"
+    },
+    "snapshot-publisher.mjs": {
+      "bytes": 28874,
+      "sha256": "4d80782c1cf6d31aec51c56f088283360f2f90760dd7489d621bbe124cb3df3f"
+    },
+    "native-paper.mjs": {
+      "bytes": 5052042,
+      "sha256": "531012e82b6cb86149350ec4478c1f7a7b87b6f35f08f3b1f32447f05cd31eaa"
+    },
+    "better_sqlite3.node": {
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    "backup-worker.mjs": {
+      "bytes": 73859,
+      "sha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34"
+    }
+  },
+  "sourceRuntimeUnchangedAfterTests": true,
+  "networkDisabledPackagingSmoke": true,
+  "originalLedgerOpened": false,
+  "accountInitialized": false,
+  "serviceChanged": false,
+  "deployed": false,
+  "actualAccountingPreparationRefusalRetained": "https://github.com/levonmendall/meme-machine-admin/actions/runs/40792959630",
+  "limitations": [
+    "Tests and network-disabled fixtures are offline evidence, not original service operation or trading acceptance.",
+    "Original protected financial state remains to be verified by the owner-root cutover command."
+  ]
+}
