@@ -25,16 +25,17 @@ AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 OLD_REPORTER='29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f'
 UNCHANGED={'backup-worker.mjs':'53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34','better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
 UNCHANGED.update({'snapshot-publisher.mjs':OLD_REPORTER,'run-authoritative-service.py':OLD_SUPERVISOR})
-COMPATIBILITY={'scope':'native-bounded-technical-reevaluation-only','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
+COMPATIBILITY={'scope':'native-financial-readiness-and-bounded-technical-reevaluation','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
-STAGE=pathlib.Path('/var/tmp/poe-original-technical-reevaluation-upgrade')
+STAGE=pathlib.Path('/var/tmp/poe-original-entry-readiness-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
 NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
 NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 OLD_CONFIGURATION_SHA='44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae'
-NEW_CONFIGURATION_SHA='e363dad750e601e533670bd8d8881bc82ffd1508718b982cabf09eca79be92f4'
+# Final source f96f02e: 1777/1777 tests and exact immutable bundle verified.
+NEW_CONFIGURATION_SHA='acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf'
 OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
@@ -223,7 +224,7 @@ def recover_old(m,auditor,supervisor,record_dir,record,expected_inode):
   finally:os.close(owner)
  need(m.CURRENT.resolve(strict=True)==m.RELEASES/OLD_SOURCE['commit']and read(m.MANIFEST,128*1024,0,GID,0o640)==read(record_dir/'before-service.json',128*1024)and read(m.ACCOUNT/'input.json',MIB,UID,GID,0o600)==read(record_dir/'before-input.json',MIB),'OLD_FINANCIAL_RECOVERY_IMAGES_MUST_BE_EXACT');m.original_audit(auditor,expected_inode);need(resource_profile(unit())==RESOURCE_BEFORE,'RESTORED_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');m.systemctl('start','poe-runtime.service');record.update(phase='old-financial-source-resumed-before-new-start',recoveredAt=now(),oldFinancialSource=OLD_SOURCE,reporterHotfixPreserved=True);m.write_json(record_dir/'transition.json',record)
 def apply(expected,m,auditor,indexed_supervisor,driver_sha):
- need(os.getuid()==0 and hashed(driver_sha),'INDEPENDENT_OWNER_ROOT_DRIVER_PIN_REQUIRED');merged=local_preflight(m,auditor,indexed_supervisor);supervisor=current_release_supervisor(m)
+ need(os.getuid()==0 and hashed(driver_sha),'INDEPENDENT_OWNER_ROOT_DRIVER_PIN_REQUIRED');need(hashed(NEW_CONFIGURATION_SHA),'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED');merged=local_preflight(m,auditor,indexed_supervisor);supervisor=current_release_supervisor(m)
  # Read the staged index before choosing the fixed root destination. A frozen
  # copy makes recovery independent of runner files after first preparation.
  choices=[]
@@ -280,7 +281,7 @@ def apply(expected,m,auditor,indexed_supervisor,driver_sha):
  need((m.LEDGER.lstat().st_dev,m.LEDGER.lstat().st_ino)==expected_inode,'ORIGINAL_LEDGER_INODE_CHANGED');post_record=dict(record);post_record['startRequestedAt']=max(record['startRequestedAt'],record.get('verificationNotBefore',0));verification,post=m.post_start_verification(manifest,post_record,auditor,UID,GID);post_unit=unit();process_owner(post_unit);need(resource_profile(post_unit)==RESOURCE_AFTER,'NEW_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');record.update(phase='new-source-post-start-prefix-verified-render-gate-pending'if verification['complete']else'new-source-retained-post-start-verification-incomplete',postStartVerification=verification,postStartFinancial=post,unitAfter=post_unit,selectedRuntimeAfter=selected_runtime(m),verifiedAt=now());record['interruption']={'stopRequestedAt':record.get('stopRequestedAt'),'physicalStopVerifiedAt':record.get('stoppedAt'),'startRequestedAt':record['startRequestedAt'],'localVerificationAt':record['verifiedAt'],'stopToStartMs':None if not record.get('stoppedAt')else record['startRequestedAt']-record['stoppedAt'],'observedNewSource':verification.get('newPublicSource'),'continuousCoverageClaimed':False};m.write_json(record_dir/'transition.json',record)
  result={'schemaVersion':1,'kind':'POE_ORIGINAL_FORWARD_UPGRADE_RESULT','phase':record['phase'],'accountId':m.ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','source':manifest['source'],'previousSource':OLD_SOURCE,'complete':verification['complete'],'verification':verification,'interruption':record['interruption'],'resourceTransition':{**record['resourceTransition'],'effectiveAfter':resource_profile(post_unit)},'renderReadinessGate':record['subsequentCodexReadinessGate'],'financialHistoryReset':False,'backupRestored':False,'operationalAcceptance':False};raw=encoded(result);need(len(raw)<=16384,'BOUNDED_PUBLIC_FORWARD_RECEIPT_REQUIRED');m.directory(m.PUBLIC_STATUS.parent,UID);need(stat.S_IMODE(m.PUBLIC_STATUS.parent.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');m.atomic(m.PUBLIC_STATUS.parent/'upgrade-verification.json',raw,0,0,0o644);print(raw.decode(),end='',flush=True);need(verification['complete'],'NEW_FINANCIAL_MANAGER_RETAINED_POST_START_VERIFICATION_INCOMPLETE');return result
 def main():
- need(os.getuid()==0 and len(sys.argv)==3 and sys.argv[1]=='apply'and hashed(sys.argv[2]),'EXPLICIT_ROOT_FORWARD_OPERATION_AND_INDEX_PIN_REQUIRED');driver_sha=globals().get('__poe_verified_driver_sha256__');need(hashed(driver_sha),'INDEPENDENT_IN_MEMORY_DRIVER_VERIFICATION_REQUIRED');os.umask(0o077);m,auditor,supervisor=load_helpers();m.directory(m.ETC,0);fd=os.open(m.ETC/'cutover.owner.lock',os.O_RDWR|os.O_NOFOLLOW|os.O_NONBLOCK)
+ need(os.getuid()==0 and len(sys.argv)==3 and sys.argv[1]=='apply'and hashed(sys.argv[2]),'EXPLICIT_ROOT_FORWARD_OPERATION_AND_INDEX_PIN_REQUIRED');need(hashed(NEW_CONFIGURATION_SHA),'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED');driver_sha=globals().get('__poe_verified_driver_sha256__');need(hashed(driver_sha),'INDEPENDENT_IN_MEMORY_DRIVER_VERIFICATION_REQUIRED');os.umask(0o077);m,auditor,supervisor=load_helpers();m.directory(m.ETC,0);fd=os.open(m.ETC/'cutover.owner.lock',os.O_RDWR|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
   s=os.fstat(fd);need(stat.S_ISREG(s.st_mode)and s.st_nlink==1 and s.st_uid==0 and s.st_gid==0 and stat.S_IMODE(s.st_mode)==0o600,'EXISTING_ROOT_MAINTENANCE_LOCK_REQUIRED');fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);apply(sys.argv[2],m,auditor,supervisor,driver_sha)
  finally:os.close(fd)

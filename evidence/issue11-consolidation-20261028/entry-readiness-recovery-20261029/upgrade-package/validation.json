@@ -1,0 +1,19 @@
+{
+  "kind": "poe-original-entry-readiness-offline-validation-v1",
+  "offlineBundleValidation": "PASS actual inert bundle/current025abb V2 validator",
+  "exactCurrentManifestSha256": "bf3a377b2adc28900fc3c10df7b89023cccb52e8b0936c5740197bd5efb6a59a",
+  "fourSlotSingleStagePreserved": true,
+  "exactPreservedManifestValidation": "PASS",
+  "metadataCommit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+  "unchangedSupervisorReporterBackupAddonUnit": true,
+  "unitAndPolicyUnchanged": true,
+  "ownerCommandPythonSyntaxAndShellRoundTrip": "PASS",
+  "packageFileCount": 9,
+  "transportFileCount": 10,
+  "transportSha256": "4a0642e5d0a4e8b1e7f5d8a853f3ed46cd6d997200aa753d2b5f1d14428d24c3",
+  "rootCommandExecuted": false,
+  "serviceControlled": false,
+  "financialDatabaseOpened": false,
+  "deployed": false,
+  "ownerCommandSha256": "49cb98a2d34307d25ed8a8f9f7db38ebb92630f04cacb75eb203b4380c53e34a"
+}

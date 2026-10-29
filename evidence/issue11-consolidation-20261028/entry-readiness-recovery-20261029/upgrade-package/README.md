@@ -1,0 +1,13 @@
+# Prepared original-service coherent readiness upgrade — not installed
+
+Frozen application source `f96f02eeccd56dda6ce811bdc4405f237224c54f`, native SHA256 `b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9`, configuration `acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf`. The application passed1777/1777 repository tests and independent review before the parent built its immutable executable. The exact parent output is copied here; no application rebuild was performed in this package worktree.
+
+The change addresses cash-only reconciliation scheduling, narrowly authorized technical readiness recovery, backup retry scheduling, precise current entry restriction reporting, and bounded fresh-window technical reevaluation. It retains the two-second reconciliation/market-readiness requirement, original USD timestamps and ten-second valuation bound, all actual-size entry pricing and per-entry qualification, four deep slots and one PAPER position. Global readiness uses a genuine audited window cutoff, not a fabricated price or audit-completion timestamp.
+
+Current source is cdba. The root driver verifies its completed forward transition, exact current V2 supervisor, original root trust index and helpers, same account/inception/funding/ledger, and complete financial action/journal prefixes. It creates fresh live/stopped backups, requires graceful physical settlement and the financial-owner lease before switching code, retains the new manager after any possible execution, and never restores a financial database or replaces the authoritative account. Reporter, supervisor, unit/resource policy, backup worker and SQLite ABI are byte-identical to the current installed source.
+
+Forty-four disposable helper tests pass. `validation.json` proves the actual inert bundle, exact old-manifest preservation, ten compressed roundtrips, frozen executable configuration import and owner-command syntax/shell roundtrip. This is offline verification, not forward runtime acceptance.
+
+`OWNER_APPLY.txt` verifies the exact driver bytes and package index, preferring the root-frozen driver on a resumed transition. The target is the existing original service, using distinct staging `/var/tmp/poe-original-entry-readiness-upgrade`. The old96e6-only package remains superseded and must not be applied.
+
+Actual nonroot EC2 staging, owner-only application, new-source financial prefix verification, original Render source rebinding and sustained forward validation are separate gates. No24-hour acceptance, continuous coverage, profitability or automatic clearing of genuine owner/safe-stop/loss/uncertainty restrictions is claimed. No real-money execution is enabled.
