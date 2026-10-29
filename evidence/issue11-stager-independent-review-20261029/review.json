@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "decision": "GO FOR REVIEWED NONROOT PACKAGE STAGING SCOPE",
+  "reviewedAt": "2026-10-29T00:39:48.416563+00:00",
+  "sourceParentCommit": "7d31959e6cb0cbca6a6d8da7e0742e2199567ae2",
+  "reviewedFilesWereUntrackedPendingLeadCommit": true,
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/stage-original-service-package.py",
+      "sha256": "396cd502c6cc3930426f2e45c61af64c938a00f857c15ed608362872a99dc570"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-stage-original-service-package.py",
+      "sha256": "c623bd8540ed82b83207d223c3c1b7ac0f76d1f146d1866aa4dcf18ae9da5f27"
+    }
+  ],
+  "command": "python3 operator/native-paper-ec2/test-stage-original-service-package.py",
+  "testsPassed": 5,
+  "exitCode": 0,
+  "reviewedControls": [
+    "Fixed nonroot administration identity; no path overrides in CLI.",
+    "Exact reviewed transport SHA plus compressed, raw, index and immutable executable hashes.",
+    "Fourteen exact allowed files: thirteen code/config/public-status/usage payloads and one index.",
+    "Received compressed content and decompressed aggregate are bounded; files are regular owner-held with one link and no symlink following.",
+    "Existing stage files must match exact bytes; unrelated or changed files are preserved and cause refusal.",
+    "Fresh available-disk reserve is enforced before directory creation, before each write, and after all writes.",
+    "Every staged file is reread; directory and file data are fsynced.",
+    "Only original-service read-only metadata is checked before/after; no Node execution, financial database, credentials, market request or service mutation."
+  ],
+  "reviewFindingResolved": "Initial helper lacked fresh disk reserve checks. Added total payload plus 512MiB admission guard and per-file/final checks; boundary test proves refusal before stage directory creation.",
+  "limitations": [
+    "No actual EC2 staging or cutover executed by this review.",
+    "Lead must freeze the exact reviewed source and transport/index hashes after completing the root SQLite ownership correction.",
+    "Staging bytes does not establish original-account migration, service operation or reporting acceptance."
+  ]
+}
