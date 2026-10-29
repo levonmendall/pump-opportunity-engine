@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-10-29T17:42:50.040157+00:00",
+  "sourceIdentity": {
+    "output": "/tmp/poe-native-paper-output-reevaluation-96e6d32",
+    "sourceCommit": "96e6d3245082e1297e94624dcdceedffac7808f0",
+    "bundleSha256": "bbfb478d0002efbaddd6dac292e220faa29c0131da8084e2f34081b983abf1e6",
+    "bundleBytes": 5077194,
+    "metadataSha256": "9044077a646fec29f6cfe7ce8e1d68161a7ebc8f65a10e1e0b383b1573384be6",
+    "backupWorkerSha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34",
+    "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "inputs": 544,
+    "dependencies": 54,
+    "smokeImport": true,
+    "disposableBackupAndReopen": true,
+    "measurementExecuted": false,
+    "financialAccountRead": false
+  },
+  "offlineVerificationSourceHashesMatchIntegratedSource": true,
+  "tests": 1751,
+  "pass": 1751,
+  "failure": 0,
+  "configurationSha256": "e363dad750e601e533670bd8d8881bc82ffd1508718b982cabf09eca79be92f4",
+  "installed": false,
+  "liveSourceUnchanged": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "financialMaximumPositions": 1,
+  "deepMaximum": 4,
+  "strategyUnchanged": true
+}

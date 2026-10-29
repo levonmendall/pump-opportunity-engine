@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-29 17:47:57 UTC",
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "result": {
+    "commit": {
+      "createdAt": "2026-10-29T17:37:38Z",
+      "id": "9bdf59aa9ca4fe2af92dfeecd65cfa6ab8346fe1",
+      "message": "Separate POE capture freshness from financial reporting warnings"
+    },
+    "createdAt": "2026-10-29T17:38:14.113213Z",
+    "finishedAt": "2026-10-29T17:39:41.868387Z",
+    "id": "dep-dbho91m1egvs738350q0",
+    "startedAt": "2026-10-29T17:38:14.067219Z",
+    "status": "live",
+    "trigger": "api",
+    "updatedAt": "2026-10-29T17:40:10.880607Z"
+  },
+  "financialSourceUnchanged": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "financialServiceRestarted": false,
+  "sourceBindingChanged": false
+}

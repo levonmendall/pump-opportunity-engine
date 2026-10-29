@@ -1,0 +1,918 @@
+{
+  "classification": "Retained authenticated public reporting facts; not independent ledger audit or real-money execution",
+  "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+  "frames": [
+    {
+      "label": "entry-before",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 30,
+        "publicRowSha256": "a244a720ac336dea3ec7fbea8eb5fcf634ae98d590e560335ecce6d19b891069"
+      },
+      "snapshotSha256": "8cb830f5e8f7e6b41231a8d42487c4d27c56d4d2cd739fc25f5c514be1e4c3aa",
+      "requestedAt": 1793294419093,
+      "receivedAt": 1793294419454,
+      "responseSha256": "250291219a0af5166d563dfc3a02407a040803fb31eed3346c62a1e42ec2adc9",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "sequence": "9201",
+      "times": {
+        "generatedAt": "2026-10-29T17:19:57.967Z",
+        "marketAt": "2026-10-29T17:19:54.039Z",
+        "reconciledAt": "2026-10-29T17:19:54.007Z",
+        "usefulProgressAt": "2026-10-29T17:19:54.007Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "entry preparation or reconciliation unavailable"
+      },
+      "freshness": {
+        "state": "unavailable",
+        "receivedAt": "2026-10-29T17:20:09.522Z",
+        "generatedAt": "2026-10-29T17:19:57.967Z",
+        "marketAt": "2026-10-29T17:19:54.039Z",
+        "reconciledAt": "2026-10-29T17:19:54.007Z",
+        "usefulProgressAt": "2026-10-29T17:19:54.007Z",
+        "sourceAgeMs": 21416,
+        "marketAgeMs": 25344,
+        "reconciliationAgeMs": 25376
+      },
+      "balances": {
+        "cashSol": "9.872390772",
+        "reservedSol": "0",
+        "equitySol": "9.881397612",
+        "equityUsd": 1003.110079,
+        "realizedUsd": -8.146583,
+        "unrealizedUsd": 0,
+        "tradingPnlUsd": -8.146583,
+        "economicPnlUsd": null,
+        "positionCostUsd": 0,
+        "markedExposureUsd": 0,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 1011.256662,
+        "solPriceUsd": 101.515
+      },
+      "positions": [],
+      "trades": [],
+      "funnel": {
+        "discovered": 99,
+        "supported": 99,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 362
+      },
+      "intelligence": {
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 11855022,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 286,
+          "verifiedOrigins": 118,
+          "known": 174,
+          "watch": 67,
+          "eligible": 39,
+          "deepActive": 2,
+          "deepMaximum": 4,
+          "queued": 36,
+          "promoted": 3583,
+          "repromoted": 3355,
+          "demoted": 3578,
+          "completeWindows": 1540,
+          "auditedWindows": 1561,
+          "uniqueEvaluated": 42,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1561,
+          "predictivePasses": 54,
+          "predictiveFailures": 1486,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": null,
+          "waitMaximumMs": 1575841,
+          "olderSelected": 24
+        },
+        "quality": {
+          "captureConnected": true,
+          "qualityGaps": 930,
+          "auditUnavailable": 35,
+          "auditUnusable": 104,
+          "decisionDeadlineMisses": 45,
+          "enrichmentDeadlineFailures": 0,
+          "incompleteExclusions": 930,
+          "capacityExclusions": 0,
+          "structuralExclusions": 29,
+          "limitations": [
+            "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+          ]
+        },
+        "provider": {
+          "rpcRequests": 780,
+          "rpcResponseBytes": 189048591,
+          "nativeStreamBytes": 562193783,
+          "broadWatchBytes": 34550715048,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 263,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 20,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T17:19:12.030Z",
+          "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T17:19:57.115Z",
+          "cpuOneCoreFraction": 0.12023494736842105,
+          "rssBytes": 404086784,
+          "availableMemoryBytes": 6846197760,
+          "availableDiskBytes": 288768307200,
+          "eventLoopLagMs": 26.345471,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "times": {
+          "marketNotificationAt": "2026-10-29T17:19:57.833Z",
+          "freshSupportAt": "2026-10-29T17:19:51.765Z",
+          "bankClockAt": "2026-10-29T17:19:51.000Z",
+          "auditAt": "2026-10-29T17:19:52.738Z",
+          "predictiveAt": "2026-10-29T17:19:52.738Z",
+          "reconciliationAt": "2026-10-29T17:19:54.007Z"
+        },
+        "pendingOrders": []
+      },
+      "decisionsForMint": [
+        {
+          "id": "native-paper-20261029164842357:8:1793293514924",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:05:14.924Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029164842357:30:1793294392738",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:19:52.738Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+        }
+      ]
+    },
+    {
+      "label": "entry-after",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 31,
+        "publicRowSha256": "d6b5cd465cc7f8d847325adf35c71df34a04d6955401c9240e01d569cb3fb543"
+      },
+      "snapshotSha256": "fa7baea2957988093e0abccfb90b241667b6d6fb2b9107aa3a25bd5cfa676e97",
+      "requestedAt": 1793294434463,
+      "receivedAt": 1793294434604,
+      "responseSha256": "5113836ea5e97cd29bc9cdc6d5b5aca6959723b0e85c86c2f3f4ecfb9b6e92fb",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "sequence": "9202",
+      "times": {
+        "generatedAt": "2026-10-29T17:20:13.404Z",
+        "marketAt": "2026-10-29T17:20:12.000Z",
+        "reconciledAt": "2026-10-29T17:20:13.390Z",
+        "usefulProgressAt": "2026-10-29T17:20:13.390Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "freshness": {
+        "state": "fresh",
+        "receivedAt": "2026-10-29T17:20:24.629Z",
+        "generatedAt": "2026-10-29T17:20:13.404Z",
+        "marketAt": "2026-10-29T17:20:12.000Z",
+        "reconciledAt": "2026-10-29T17:20:13.390Z",
+        "usefulProgressAt": "2026-10-29T17:20:13.390Z",
+        "sourceAgeMs": 21163,
+        "marketAgeMs": 22567,
+        "reconciliationAgeMs": 21177
+      },
+      "balances": {
+        "cashSol": "9.379852724",
+        "reservedSol": "0",
+        "equitySol": "9.876011213",
+        "equityUsd": 1002.563279,
+        "realizedUsd": -8.146583,
+        "unrealizedUsd": -0.5468,
+        "tradingPnlUsd": -8.693383,
+        "economicPnlUsd": null,
+        "positionCostUsd": 49.695223,
+        "markedExposureUsd": 49.148423,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 1011.256662,
+        "solPriceUsd": 101.515
+      },
+      "positions": [
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "label": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "quantity": "1028422062926",
+          "enteredAt": "2026-10-29T17:20:07.003Z",
+          "entryCostUsd": 49.695223,
+          "netLiquidationUsd": 49.148423,
+          "executionCostsUsd": 0.00071,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "trades": [
+        {
+          "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "side": "buy",
+          "quantity": "1028422062926",
+          "at": "2026-10-29T17:20:07.003Z",
+          "valueUsd": 49.694512,
+          "executionCostsUsd": 0.00071,
+          "status": "PAPER filled",
+          "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+        }
+      ],
+      "funnel": {
+        "discovered": 102,
+        "supported": 102,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 369
+      },
+      "intelligence": {
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 12601596,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 287,
+          "verifiedOrigins": 118,
+          "known": 174,
+          "watch": 65,
+          "eligible": 39,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 34,
+          "promoted": 3586,
+          "repromoted": 3357,
+          "demoted": 3578,
+          "completeWindows": 1541,
+          "auditedWindows": 1562,
+          "uniqueEvaluated": 42,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1562,
+          "predictivePasses": 55,
+          "predictiveFailures": 1486,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": null,
+          "waitMaximumMs": 1591277,
+          "olderSelected": 24
+        },
+        "quality": {
+          "captureConnected": true,
+          "qualityGaps": 930,
+          "auditUnavailable": 35,
+          "auditUnusable": 104,
+          "decisionDeadlineMisses": 45,
+          "enrichmentDeadlineFailures": 0,
+          "incompleteExclusions": 930,
+          "capacityExclusions": 0,
+          "structuralExclusions": 29,
+          "limitations": [
+            "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+          ]
+        },
+        "provider": {
+          "rpcRequests": 805,
+          "rpcResponseBytes": 189642787,
+          "nativeStreamBytes": 562395859,
+          "broadWatchBytes": 34568187606,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 263,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 41,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T17:19:12.030Z",
+          "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T17:20:12.812Z",
+          "cpuOneCoreFraction": 0.11894041805370148,
+          "rssBytes": 399048704,
+          "availableMemoryBytes": 6851829760,
+          "availableDiskBytes": 288763490304,
+          "eventLoopLagMs": 26.361855,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T17:20:13.404Z",
+          "maximumCompletedGapMs": 2555,
+          "maximumQuoteAgeAtUseMs": 49,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "times": {
+          "marketNotificationAt": "2026-10-29T17:20:07.419Z",
+          "freshSupportAt": "2026-10-29T17:20:12.364Z",
+          "bankClockAt": "2026-10-29T17:20:11.000Z",
+          "auditAt": "2026-10-29T17:20:03.307Z",
+          "predictiveAt": "2026-10-29T17:20:03.307Z",
+          "reconciliationAt": "2026-10-29T17:20:13.390Z"
+        },
+        "pendingOrders": []
+      },
+      "decisionsForMint": [
+        {
+          "id": "native-paper-20261029164842357:7:1793293514924",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:05:14.924Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "id": "native-paper-20261029164842357:29:1793294392738",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:19:52.738Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+        },
+        {
+          "id": "native-paper-20261029164842357:30:1793294403307",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:03.307Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+        },
+        {
+          "id": "native-paper-20261029164842357:31:1793294405313",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:05.313Z",
+          "stage": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+        }
+      ]
+    },
+    {
+      "label": "exit-before",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 52,
+        "publicRowSha256": "dc5c77a876f88afc12b7c00fb3c48b979411ccf711231b4d1466ac78926ea1f7"
+      },
+      "snapshotSha256": "17979c5fd6aeef203f5148f11ff6eb610f28b540da504d4a027d2429047b81bf",
+      "requestedAt": 1793294754568,
+      "receivedAt": 1793294754938,
+      "responseSha256": "570b4296b39dbcb7ea7822d870ab2d805fbf9404ea5a8137bb2c8f800649d3d4",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "sequence": "9223",
+      "times": {
+        "generatedAt": "2026-10-29T17:25:31.950Z",
+        "marketAt": "2026-10-29T17:25:31.000Z",
+        "reconciledAt": "2026-10-29T17:25:31.879Z",
+        "usefulProgressAt": "2026-10-29T17:25:31.879Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "freshness": {
+        "state": "unavailable",
+        "receivedAt": "2026-10-29T17:25:41.860Z",
+        "generatedAt": "2026-10-29T17:25:31.950Z",
+        "marketAt": "2026-10-29T17:25:31.000Z",
+        "reconciledAt": "2026-10-29T17:25:31.879Z",
+        "usefulProgressAt": "2026-10-29T17:25:31.879Z",
+        "sourceAgeMs": 22905,
+        "marketAgeMs": 23855,
+        "reconciliationAgeMs": 22976
+      },
+      "balances": {
+        "cashSol": "9.379852724",
+        "reservedSol": "0",
+        "equitySol": "9.816786132",
+        "equityUsd": 997.827227,
+        "realizedUsd": -8.157015,
+        "unrealizedUsd": -6.567433,
+        "tradingPnlUsd": -14.724449,
+        "economicPnlUsd": null,
+        "positionCostUsd": 49.695223,
+        "markedExposureUsd": 43.191429,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 1012.551676,
+        "solPriceUsd": 101.645
+      },
+      "positions": [
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "label": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "quantity": "1028422062926",
+          "enteredAt": "2026-10-29T17:20:07.003Z",
+          "entryCostUsd": 49.695223,
+          "netLiquidationUsd": 43.191429,
+          "executionCostsUsd": 0.00071,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "trades": [
+        {
+          "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "side": "buy",
+          "quantity": "1028422062926",
+          "at": "2026-10-29T17:20:07.003Z",
+          "valueUsd": 49.694512,
+          "executionCostsUsd": 0.00071,
+          "status": "PAPER filled",
+          "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+        }
+      ],
+      "funnel": {
+        "discovered": 115,
+        "supported": 115,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 2,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 526
+      },
+      "intelligence": {
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 60629566,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 291,
+          "verifiedOrigins": 122,
+          "known": 174,
+          "watch": 69,
+          "eligible": 43,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 39,
+          "promoted": 3599,
+          "repromoted": 3367,
+          "demoted": 3591,
+          "completeWindows": 1551,
+          "auditedWindows": 1572,
+          "uniqueEvaluated": 49,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1572,
+          "predictivePasses": 55,
+          "predictiveFailures": 1496,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": null,
+          "waitMaximumMs": 1795916,
+          "olderSelected": 24
+        },
+        "quality": {
+          "captureConnected": false,
+          "qualityGaps": 933,
+          "auditUnavailable": 39,
+          "auditUnusable": 104,
+          "decisionDeadlineMisses": 49,
+          "enrichmentDeadlineFailures": 0,
+          "incompleteExclusions": 933,
+          "capacityExclusions": 0,
+          "structuralExclusions": 29,
+          "limitations": [
+            "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+          ]
+        },
+        "provider": {
+          "rpcRequests": 1065,
+          "rpcResponseBytes": 221433288,
+          "nativeStreamBytes": 591236887,
+          "broadWatchBytes": 34929310816,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 263,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 37,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T17:19:12.030Z",
+          "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T17:25:31.705Z",
+          "cpuOneCoreFraction": 0.13513184841663423,
+          "rssBytes": 448356352,
+          "availableMemoryBytes": 6813532160,
+          "availableDiskBytes": 288712683520,
+          "eventLoopLagMs": 26.329087,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T17:25:31.892Z",
+          "maximumCompletedGapMs": 2555,
+          "maximumQuoteAgeAtUseMs": 53,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "times": {
+          "marketNotificationAt": "2026-10-29T17:24:32.596Z",
+          "freshSupportAt": "2026-10-29T17:24:31.648Z",
+          "bankClockAt": "2026-10-29T17:24:31.000Z",
+          "auditAt": "2026-10-29T17:24:33.363Z",
+          "predictiveAt": "2026-10-29T17:24:33.363Z",
+          "reconciliationAt": "2026-10-29T17:25:31.879Z"
+        },
+        "pendingOrders": []
+      },
+      "decisionsForMint": [
+        {
+          "id": "native-paper-20261029164842357:19:1793294392738",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:19:52.738Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+        },
+        {
+          "id": "native-paper-20261029164842357:20:1793294403307",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:03.307Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+        },
+        {
+          "id": "native-paper-20261029164842357:21:1793294405313",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:05.313Z",
+          "stage": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+        }
+      ]
+    },
+    {
+      "label": "exit-after",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 53,
+        "publicRowSha256": "2a78f5998257f0120a1ad7c8e813584018a6be2e49593d155b185e4ce2590297"
+      },
+      "snapshotSha256": "43a584bc422ce0ba7da4e09b010c187f1ebc785fbb924e118f63ad67ba7030d2",
+      "requestedAt": 1793294769949,
+      "receivedAt": 1793294770154,
+      "responseSha256": "4ab7f365571123cbe7cd1e78f91ab1520ae08d5f5fd1744445ecc7447ad57c32",
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+        "strategy": "persistent-buying-pilot-v1"
+      },
+      "sequence": "9224",
+      "times": {
+        "generatedAt": "2026-10-29T17:25:47.004Z",
+        "marketAt": "2026-10-29T17:25:46.178Z",
+        "reconciledAt": "2026-10-29T17:25:44.237Z",
+        "usefulProgressAt": "2026-10-29T17:25:44.237Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "explicit verified runtime readiness"
+      },
+      "freshness": {
+        "state": "unavailable",
+        "receivedAt": "2026-10-29T17:25:56.974Z",
+        "generatedAt": "2026-10-29T17:25:47.004Z",
+        "marketAt": "2026-10-29T17:25:46.178Z",
+        "reconciledAt": "2026-10-29T17:25:44.237Z",
+        "usefulProgressAt": "2026-10-29T17:25:44.237Z",
+        "sourceAgeMs": 23111,
+        "marketAgeMs": 23937,
+        "reconciliationAgeMs": 25878
+      },
+      "balances": {
+        "cashSol": "9.795527016",
+        "reservedSol": "0",
+        "equitySol": "9.807536136",
+        "equityUsd": 996.887011,
+        "realizedUsd": -15.664665,
+        "unrealizedUsd": 0,
+        "tradingPnlUsd": -15.664665,
+        "economicPnlUsd": null,
+        "positionCostUsd": 0,
+        "markedExposureUsd": 0,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 1012.551676,
+        "solPriceUsd": 101.645
+      },
+      "positions": [],
+      "trades": [
+        {
+          "id": "paper-fill:a3642f8273dedd56f127555852b6bf13",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "side": "sell",
+          "quantity": "1028422062926",
+          "at": "2026-10-29T17:25:39.189Z",
+          "valueUsd": 42.251924,
+          "executionCostsUsd": 0.000711,
+          "status": "PAPER filled",
+          "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:48201:1793294738055"
+        },
+        {
+          "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "side": "buy",
+          "quantity": "1028422062926",
+          "at": "2026-10-29T17:20:07.003Z",
+          "valueUsd": 49.694512,
+          "executionCostsUsd": 0.00071,
+          "status": "PAPER filled",
+          "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+        }
+      ],
+      "funnel": {
+        "discovered": 119,
+        "supported": 119,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 3,
+        "paperFilled": 1,
+        "exited": 1,
+        "reconciled": 531
+      },
+      "intelligence": {
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 60736032,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 291,
+          "verifiedOrigins": 122,
+          "known": 174,
+          "watch": 70,
+          "eligible": 44,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 37,
+          "promoted": 3603,
+          "repromoted": 3370,
+          "demoted": 3595,
+          "completeWindows": 1551,
+          "auditedWindows": 1572,
+          "uniqueEvaluated": 49,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1572,
+          "predictivePasses": 55,
+          "predictiveFailures": 1496,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": null,
+          "waitMaximumMs": 1795638,
+          "olderSelected": 24
+        },
+        "quality": {
+          "captureConnected": false,
+          "qualityGaps": 937,
+          "auditUnavailable": 39,
+          "auditUnusable": 104,
+          "decisionDeadlineMisses": 49,
+          "enrichmentDeadlineFailures": 0,
+          "incompleteExclusions": 937,
+          "capacityExclusions": 0,
+          "structuralExclusions": 29,
+          "limitations": [
+            "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+          ]
+        },
+        "provider": {
+          "rpcRequests": 1072,
+          "rpcResponseBytes": 221555777,
+          "nativeStreamBytes": 591236887,
+          "broadWatchBytes": 34945577606,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 263,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 35,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T17:19:12.030Z",
+          "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T17:25:47.003Z",
+          "cpuOneCoreFraction": 0.1033380269857006,
+          "rssBytes": 448524288,
+          "availableMemoryBytes": 6811127808,
+          "availableDiskBytes": 288712491008,
+          "eventLoopLagMs": 26.296319,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+          "maximumCompletedGapMs": 2555,
+          "maximumQuoteAgeAtUseMs": 72,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "times": {
+          "marketNotificationAt": "2026-10-29T17:24:32.596Z",
+          "freshSupportAt": "2026-10-29T17:25:35.371Z",
+          "bankClockAt": "2026-10-29T17:25:34.000Z",
+          "auditAt": "2026-10-29T17:24:33.363Z",
+          "predictiveAt": "2026-10-29T17:24:33.363Z",
+          "reconciliationAt": "2026-10-29T17:25:44.237Z"
+        },
+        "pendingOrders": []
+      },
+      "decisionsForMint": [
+        {
+          "id": "native-paper-20261029164842357:19:1793294392738",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:19:52.738Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+        },
+        {
+          "id": "native-paper-20261029164842357:20:1793294403307",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:03.307Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+        },
+        {
+          "id": "native-paper-20261029164842357:21:1793294405313",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:05.313Z",
+          "stage": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+        },
+        {
+          "id": "native-paper-20261029164842357:32:1793294738055",
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:25:38.055Z",
+          "stage": "exit-reserved",
+          "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+        }
+      ]
+    }
+  ]
+}

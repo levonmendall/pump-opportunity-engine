@@ -1,0 +1,1115 @@
+{
+  "classification": "Exact original public rows matched against hash-verified retained sampler prefixes; no runtime/provider/ledger operation",
+  "originalSummarySha256BeforeFrozenInputExtension": "e339d6ef88c7b4d53cdf1f49702a67f812a77cc391e446963f4c7534c9b37b5e",
+  "snapshots": {
+    "file": "snapshots.ndjson",
+    "bytes": 1684921,
+    "sha256": "4a777f85c946f519241a0ef89eed7ffed8fcc649e85eaa50e0e7cb0b9c6efcc3",
+    "rows": 114,
+    "firstSequence": "9146",
+    "lastSequence": "9260"
+  },
+  "originalInputFilesAtRead": [
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-0.ndjson",
+      "bytesAtRead": 1043903,
+      "sha256AtRead": "1b0122a0405ad4cd939326f6af3e0b21ece9771b0ba52923f5a44b4c7147c559"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-1.ndjson",
+      "bytesAtRead": 1044980,
+      "sha256AtRead": "9584ab50c1a04c5bfd8c3ad6fcd836817f9e55057870ce3472a14cb5160f988e"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+      "bytesAtRead": 1041064,
+      "sha256AtRead": "69f8e737af1c212069d6ae0e5c4fe6088a7e02c7e5268cd1af88afa278128669"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+      "bytesAtRead": 1035830,
+      "sha256AtRead": "6d386e44ff663f7149a2bf4054812d101500fb13254d10f557fff41ff186a810"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+      "bytesAtRead": 466162,
+      "sha256AtRead": "5031d5ff32754557a8d5c3d670f93a0556c6e4962d19259a2e7d0a8fe3456828"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/material-transitions.ndjson",
+      "bytesAtRead": 1674820,
+      "sha256AtRead": "bd5c98fcbbc18903c1ca526ce04b5a68d80bec0018c4e797185b84179e238969"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/latest.json",
+      "bytesAtRead": 15781,
+      "sha256AtRead": "a9dd49e42d95f70d14c57588502175b356365407867d93a0855310d531f82783"
+    }
+  ],
+  "verifiedOriginalSamplerPrefixes": [
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-0.ndjson",
+      "bytesAtRead": 1043903,
+      "sha256AtRead": "1b0122a0405ad4cd939326f6af3e0b21ece9771b0ba52923f5a44b4c7147c559"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-1.ndjson",
+      "bytesAtRead": 1044980,
+      "sha256AtRead": "9584ab50c1a04c5bfd8c3ad6fcd836817f9e55057870ce3472a14cb5160f988e"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+      "bytesAtRead": 1041064,
+      "sha256AtRead": "69f8e737af1c212069d6ae0e5c4fe6088a7e02c7e5268cd1af88afa278128669"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+      "bytesAtRead": 1035830,
+      "sha256AtRead": "6d386e44ff663f7149a2bf4054812d101500fb13254d10f557fff41ff186a810"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+      "bytesAtRead": 466162,
+      "sha256AtRead": "5031d5ff32754557a8d5c3d670f93a0556c6e4962d19259a2e7d0a8fe3456828"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/material-transitions.ndjson",
+      "bytesAtRead": 1674820,
+      "sha256AtRead": "bd5c98fcbbc18903c1ca526ce04b5a68d80bec0018c4e797185b84179e238969"
+    }
+  ],
+  "replaceableInputsNotRequired": [
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/latest.json",
+      "reason": "Replaceable latest pointer advanced; all matched rows verified from durable routine/material prefixes"
+    }
+  ],
+  "rows": [
+    {
+      "sequence": "9146",
+      "sourceAt": "2026-10-29T17:06:00.099Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 60,
+        "publicRowSha256": "9e95f16190133f8618f3af271718a3d11da0b1ae718f02af611daf50f8922af1"
+      }
+    },
+    {
+      "sequence": "9147",
+      "sourceAt": "2026-10-29T17:06:15.162Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 61,
+        "publicRowSha256": "e3e2315446e7344a877250104ee4e87ba86722132124ea2d84bf07ca6c409393"
+      }
+    },
+    {
+      "sequence": "9148",
+      "sourceAt": "2026-10-29T17:06:31.126Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 62,
+        "publicRowSha256": "b3cfc4e7809d585fc0dc7b4dad99e1f79755c19ee72b4a369472ea26ce4aff48"
+      }
+    },
+    {
+      "sequence": "9149",
+      "sourceAt": "2026-10-29T17:06:46.141Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 63,
+        "publicRowSha256": "6fae07561db02f0a6cd731efa9c0a545f6e8c5bdcf0ce89e9859c7c826cdafcf"
+      }
+    },
+    {
+      "sequence": "9150",
+      "sourceAt": "2026-10-29T17:07:01.186Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 64,
+        "publicRowSha256": "365ff605e2284028c48016d4bc217897eb64dc38df356fe1917bcaddd40084db"
+      }
+    },
+    {
+      "sequence": "9151",
+      "sourceAt": "2026-10-29T17:07:16.236Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 65,
+        "publicRowSha256": "feb3f51538f3c2e4d7956300263c9e45e1b811c27d11cbb4e02470ceaa57dc09"
+      }
+    },
+    {
+      "sequence": "9152",
+      "sourceAt": "2026-10-29T17:07:31.285Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 66,
+        "publicRowSha256": "03b71a72c1d3dc5f3e30f12d7ceab2fcf8240145279e21de5bb082530d66309c"
+      }
+    },
+    {
+      "sequence": "9153",
+      "sourceAt": "2026-10-29T17:07:46.724Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 67,
+        "publicRowSha256": "48e79b4d4b5f4159ffb133dcefc5f8b3b08a1fd28a4cf5e643d3500e9157c55d"
+      }
+    },
+    {
+      "sequence": "9154",
+      "sourceAt": "2026-10-29T17:08:01.769Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 68,
+        "publicRowSha256": "955c74ceb44d77b1cb1000b86067464e29fca80e70d1523a7feffa4e2e845e42"
+      }
+    },
+    {
+      "sequence": "9155",
+      "sourceAt": "2026-10-29T17:08:16.773Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 69,
+        "publicRowSha256": "5db4e5c9e004349529601f848b14752325b2cedfe264f4e139652669ef5b2e84"
+      }
+    },
+    {
+      "sequence": "9156",
+      "sourceAt": "2026-10-29T17:08:31.790Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 70,
+        "publicRowSha256": "181575d9a599bc2ba4dc4d61fff441a2a4d58dd666cc34f7ec8da060766a209b"
+      }
+    },
+    {
+      "sequence": "9157",
+      "sourceAt": "2026-10-29T17:08:46.812Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 71,
+        "publicRowSha256": "5aa4d602724701485d25c13df2328efde547d700a47f75c86e09f92ab0f7c33a"
+      }
+    },
+    {
+      "sequence": "9158",
+      "sourceAt": "2026-10-29T17:09:01.852Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 72,
+        "publicRowSha256": "d33d1b6cff6c888acfb3ef29f7ba06b43804f3828988809a52084419a48b14c3"
+      }
+    },
+    {
+      "sequence": "9159",
+      "sourceAt": "2026-10-29T17:09:16.896Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 73,
+        "publicRowSha256": "1842dfec84b6632bbb16390d43efbd9e50ad5d04d01f63695b4dbf778429cf74"
+      }
+    },
+    {
+      "sequence": "9160",
+      "sourceAt": "2026-10-29T17:09:31.923Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 74,
+        "publicRowSha256": "4f2fad2fbdfd21c6e719bc62ff93b564019534b61352d626ab564b5c4315e0da"
+      }
+    },
+    {
+      "sequence": "9161",
+      "sourceAt": "2026-10-29T17:09:46.927Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 75,
+        "publicRowSha256": "eef08843d9e337baa3503b4eba9ca5dbaab05e97f01957d3971140d3778a336c"
+      }
+    },
+    {
+      "sequence": "9162",
+      "sourceAt": "2026-10-29T17:10:01.944Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 76,
+        "publicRowSha256": "ffa46c38548019ca413d132470aab822dbbffb01a5387424710031d00537349c"
+      }
+    },
+    {
+      "sequence": "9163",
+      "sourceAt": "2026-10-29T17:10:16.969Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 77,
+        "publicRowSha256": "3b50e7cd141634131c132169456c8da09bc8c3dde6158bc57614adf673fb750a"
+      }
+    },
+    {
+      "sequence": "9164",
+      "sourceAt": "2026-10-29T17:10:32.001Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 78,
+        "publicRowSha256": "5eab38bbaed9148b47687c54b9a06f7ce24f8d116a3bb4cb8e053d9e51cee079"
+      }
+    },
+    {
+      "sequence": "9165",
+      "sourceAt": "2026-10-29T17:10:47.011Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 79,
+        "publicRowSha256": "5d94580c37b3f371ee7f6fcb5a016e08ea4417e618e0628e4c8d8208e622eba6"
+      }
+    },
+    {
+      "sequence": "9166",
+      "sourceAt": "2026-10-29T17:11:02.016Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 80,
+        "publicRowSha256": "9681510a48256eba5f8e820452fb727855f0eeabd3e79195fb4dcbfaacca4805"
+      }
+    },
+    {
+      "sequence": "9167",
+      "sourceAt": "2026-10-29T17:11:17.050Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 81,
+        "publicRowSha256": "d67ee2aaa5a5941e19b441fa55d61cd4edf904dc0e949a554158bd9f7e715a38"
+      }
+    },
+    {
+      "sequence": "9168",
+      "sourceAt": "2026-10-29T17:11:34.035Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 83,
+        "publicRowSha256": "e474056765beaa511dd5dbe250a64590ed2cd22f92aa0485896d247343d2c739"
+      }
+    },
+    {
+      "sequence": "9169",
+      "sourceAt": "2026-10-29T17:11:49.060Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 84,
+        "publicRowSha256": "8835b69a28f58fa32bc763bc6876a625b4d44255d0f7dd85590f27bd332e76ca"
+      }
+    },
+    {
+      "sequence": "9170",
+      "sourceAt": "2026-10-29T17:12:04.093Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 85,
+        "publicRowSha256": "d3cb8070b7eaa8af9e0e43fbc01c2ce6eb0d5130fc9b5893302fa44601ae078c"
+      }
+    },
+    {
+      "sequence": "9171",
+      "sourceAt": "2026-10-29T17:12:19.104Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+        "line": 86,
+        "publicRowSha256": "f573060a0f69de3b25d3a5e0c4f31e7c767a24aae75d03f4649b257fa0d9423c"
+      }
+    },
+    {
+      "sequence": "9172",
+      "sourceAt": "2026-10-29T17:12:34.125Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 1,
+        "publicRowSha256": "783f1ab842137ef610f0f05c64d8e006e9e9883896198434ba4e53c567ce0204"
+      }
+    },
+    {
+      "sequence": "9173",
+      "sourceAt": "2026-10-29T17:12:50.145Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 2,
+        "publicRowSha256": "dfdee2f575e8ec95239e7c7bc8af93a660b33c52ffad5072474234bb59195a01"
+      }
+    },
+    {
+      "sequence": "9174",
+      "sourceAt": "2026-10-29T17:13:05.198Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 3,
+        "publicRowSha256": "d0b9140a25acfeda7801aa16d9cd9ef2458e72c97cdf210739fde1b086f2e39e"
+      }
+    },
+    {
+      "sequence": "9175",
+      "sourceAt": "2026-10-29T17:13:20.575Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 4,
+        "publicRowSha256": "c6d95d7d1cb3877791667580b41457a59544bb4c4ea0e4e1588a1b90224aa892"
+      }
+    },
+    {
+      "sequence": "9176",
+      "sourceAt": "2026-10-29T17:13:35.609Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 5,
+        "publicRowSha256": "936897a9ac5cc98435658f53cf6e22394bb570b87a6356df102f10d76c31e4d8"
+      }
+    },
+    {
+      "sequence": "9177",
+      "sourceAt": "2026-10-29T17:13:50.934Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 6,
+        "publicRowSha256": "8615a9fc10445d33c0f88c53d50cbb232d89b5956885d14173b1c0b03ac860ca"
+      }
+    },
+    {
+      "sequence": "9178",
+      "sourceAt": "2026-10-29T17:14:05.961Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 7,
+        "publicRowSha256": "12c52392de391914745860f90143d41ade0ca3304f2d3067c631b1c8d21435ec"
+      }
+    },
+    {
+      "sequence": "9179",
+      "sourceAt": "2026-10-29T17:14:21.229Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 8,
+        "publicRowSha256": "7f8101a71a48ecb0a21a4083262bd01550eccbf71f1eba1289910510e92a770a"
+      }
+    },
+    {
+      "sequence": "9180",
+      "sourceAt": "2026-10-29T17:14:36.236Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 9,
+        "publicRowSha256": "401ae92ba492d231a4a0988b2f3ace318ca0dcc2adde2549dbc3dfb90a1a83b5"
+      }
+    },
+    {
+      "sequence": "9181",
+      "sourceAt": "2026-10-29T17:14:51.288Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 10,
+        "publicRowSha256": "09fb1038e9744e18012adab009dc779b2de64d171557a6eb3967a71e8185415d"
+      }
+    },
+    {
+      "sequence": "9182",
+      "sourceAt": "2026-10-29T17:15:06.293Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 11,
+        "publicRowSha256": "eba416459e8a6cfc482d12515734cd961fa1793b0e5fce89bd731ea079e18d84"
+      }
+    },
+    {
+      "sequence": "9183",
+      "sourceAt": "2026-10-29T17:15:21.322Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 12,
+        "publicRowSha256": "83321fdbca966a018961c4e5f26a4f20ce07d9124bccb19f1900adf808a5ff73"
+      }
+    },
+    {
+      "sequence": "9184",
+      "sourceAt": "2026-10-29T17:15:36.374Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 13,
+        "publicRowSha256": "37b84ee959b43aa63489d4e54e980f6bf4417922ea180bbf611d19ac1fdfec6d"
+      }
+    },
+    {
+      "sequence": "9185",
+      "sourceAt": "2026-10-29T17:15:51.375Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 14,
+        "publicRowSha256": "d2b9fcedce37e48f80618bb2b223163d32a3294e9e5d14dee4837346ada5ff7f"
+      }
+    },
+    {
+      "sequence": "9186",
+      "sourceAt": "2026-10-29T17:16:06.424Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 15,
+        "publicRowSha256": "1302146838f899061a585eecaf0724f4eaf227fbc39ebb856e06506fdb1625dd"
+      }
+    },
+    {
+      "sequence": "9187",
+      "sourceAt": "2026-10-29T17:16:21.471Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 16,
+        "publicRowSha256": "7ab930ae8e14aa2b28bb5aff43202367d84ca68977e55911c48d512739bc66c0"
+      }
+    },
+    {
+      "sequence": "9188",
+      "sourceAt": "2026-10-29T17:16:36.519Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 17,
+        "publicRowSha256": "f0bde7c081f48258dae18f57897a50af9e5bea32752a4f0e0e11e2383a452995"
+      }
+    },
+    {
+      "sequence": "9189",
+      "sourceAt": "2026-10-29T17:16:51.576Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 18,
+        "publicRowSha256": "e7682c4eb1160c5c755f043f4a3cca16915516392283a343c1bff78da4efa7de"
+      }
+    },
+    {
+      "sequence": "9190",
+      "sourceAt": "2026-10-29T17:17:08.082Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 19,
+        "publicRowSha256": "84240e3a243ed626826c93bf21ec2230b3dc6318c52c6d5cc35b379939c55b20"
+      }
+    },
+    {
+      "sequence": "9191",
+      "sourceAt": "2026-10-29T17:17:23.127Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 20,
+        "publicRowSha256": "19eab1f42c3c3765c6d3ab0af55c8afc9994c4df6e522581add8921cc7d2f3a0"
+      }
+    },
+    {
+      "sequence": "9192",
+      "sourceAt": "2026-10-29T17:17:38.302Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 21,
+        "publicRowSha256": "3e411739a8510aa6f2f6ca5b3106c870753ec8c81f573060c687414d4a0e0235"
+      }
+    },
+    {
+      "sequence": "9193",
+      "sourceAt": "2026-10-29T17:17:53.328Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 22,
+        "publicRowSha256": "528d63290bc31406732e9b9e4f7c44da70d0a6e12232f09e213d17e88b7da71c"
+      }
+    },
+    {
+      "sequence": "9194",
+      "sourceAt": "2026-10-29T17:18:08.920Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 23,
+        "publicRowSha256": "fdd8eb5407d4c5094def9c1cfb5a4ababac2053228a16c622ae158e7d31176d3"
+      }
+    },
+    {
+      "sequence": "9195",
+      "sourceAt": "2026-10-29T17:18:27.886Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 24,
+        "publicRowSha256": "513a52a496ffb83b46c788f7c229b9d4a9c334a356509a8d3b9a9dc688ff71bc"
+      }
+    },
+    {
+      "sequence": "9196",
+      "sourceAt": "2026-10-29T17:18:42.903Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 25,
+        "publicRowSha256": "bf4fb19faa59fed7647e77dad1c146681dad783c43f03458fa25dd6bab12a58a"
+      }
+    },
+    {
+      "sequence": "9197",
+      "sourceAt": "2026-10-29T17:18:57.905Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 26,
+        "publicRowSha256": "6b60bccddf5928d849e62eee490e463a4c47a2e5604a45c230296aadd1a40e85"
+      }
+    },
+    {
+      "sequence": "9198",
+      "sourceAt": "2026-10-29T17:19:12.917Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 27,
+        "publicRowSha256": "45d6df32099402f9de53443817bb6fecea21f0652afa5b43b4f5ca509012c030"
+      }
+    },
+    {
+      "sequence": "9199",
+      "sourceAt": "2026-10-29T17:19:27.948Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 28,
+        "publicRowSha256": "288d40e7e1e0b65d9683685e4cdbc9c8993253af917fc0982e561f565c83e551"
+      }
+    },
+    {
+      "sequence": "9200",
+      "sourceAt": "2026-10-29T17:19:42.963Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 29,
+        "publicRowSha256": "7dc690f5d64aa3315d1b08a17e98491fb339b62423dc25123fb13954b493772e"
+      }
+    },
+    {
+      "sequence": "9201",
+      "sourceAt": "2026-10-29T17:19:57.967Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 30,
+        "publicRowSha256": "a244a720ac336dea3ec7fbea8eb5fcf634ae98d590e560335ecce6d19b891069"
+      }
+    },
+    {
+      "sequence": "9202",
+      "sourceAt": "2026-10-29T17:20:13.404Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 31,
+        "publicRowSha256": "d6b5cd465cc7f8d847325adf35c71df34a04d6955401c9240e01d569cb3fb543"
+      }
+    },
+    {
+      "sequence": "9203",
+      "sourceAt": "2026-10-29T17:20:28.457Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 32,
+        "publicRowSha256": "971e43f44960a1bd48ce5f7078535cf66e024cdb89d74780a2939601f18e81c7"
+      }
+    },
+    {
+      "sequence": "9204",
+      "sourceAt": "2026-10-29T17:20:43.702Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 33,
+        "publicRowSha256": "f3508a362eec66126e2572de14eaed7c224143898fb2c58223dc5c0861509788"
+      }
+    },
+    {
+      "sequence": "9205",
+      "sourceAt": "2026-10-29T17:20:59.331Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 34,
+        "publicRowSha256": "548e9255442bce4394dda002b9254f242ca4615240a37ac58b8a4901cd65ec46"
+      }
+    },
+    {
+      "sequence": "9206",
+      "sourceAt": "2026-10-29T17:21:14.356Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 35,
+        "publicRowSha256": "ca7963c0f52e7d17c22706726b9ca3e0d77ff7f9c857dc73f71aff99ca404246"
+      }
+    },
+    {
+      "sequence": "9207",
+      "sourceAt": "2026-10-29T17:21:29.404Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 36,
+        "publicRowSha256": "46fcf5ff566f783520255e19b12a0d614bb48c9ff12dc04c64d755c053bffc32"
+      }
+    },
+    {
+      "sequence": "9208",
+      "sourceAt": "2026-10-29T17:21:44.458Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 37,
+        "publicRowSha256": "5a469b754e481cb442526f4297a1fb9e115ea5fd7257187d032b61337335baa9"
+      }
+    },
+    {
+      "sequence": "9209",
+      "sourceAt": "2026-10-29T17:21:59.492Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 38,
+        "publicRowSha256": "96c87f6c7d639fc78769bbb3b45740c72b99b1940c41be935fd13f6f94911800"
+      }
+    },
+    {
+      "sequence": "9210",
+      "sourceAt": "2026-10-29T17:22:15.333Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 39,
+        "publicRowSha256": "cc15d8ddaf1dd95c0196469c5778a1e523553135c2d4719871afbf174d4fd262"
+      }
+    },
+    {
+      "sequence": "9211",
+      "sourceAt": "2026-10-29T17:22:30.369Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 40,
+        "publicRowSha256": "216257239ca782678c3d43dc04d5fac62508d5b5b012895b6345d2d30a03ee14"
+      }
+    },
+    {
+      "sequence": "9212",
+      "sourceAt": "2026-10-29T17:22:45.595Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 41,
+        "publicRowSha256": "12d3eb08b748a630295528e82705c5fd0d5fb886dfeb34b2ec20ad6a9b4c9d4f"
+      }
+    },
+    {
+      "sequence": "9213",
+      "sourceAt": "2026-10-29T17:23:00.602Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 42,
+        "publicRowSha256": "b2251b38184f6f3ccab7ff211188208396a0e37a3ef87066af6fb207d2cb6621"
+      }
+    },
+    {
+      "sequence": "9214",
+      "sourceAt": "2026-10-29T17:23:15.606Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 43,
+        "publicRowSha256": "ebb7944d15f3de2ab5b82f3e9030afdf26e531322945cac41fc0c4e78177030f"
+      }
+    },
+    {
+      "sequence": "9215",
+      "sourceAt": "2026-10-29T17:23:30.636Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 44,
+        "publicRowSha256": "635067fd432b503af774406c8b1bf306629d0b79b30fb523512f09e5b50cb42f"
+      }
+    },
+    {
+      "sequence": "9216",
+      "sourceAt": "2026-10-29T17:23:46.314Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 45,
+        "publicRowSha256": "9457a3046477f052700328a7ef8443719aca8b572da6067524bbabec2c3fd967"
+      }
+    },
+    {
+      "sequence": "9217",
+      "sourceAt": "2026-10-29T17:24:01.422Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 46,
+        "publicRowSha256": "9108775e059e67151ef6ab28af38ec80597c4f5bde645092ddde2422859790a6"
+      }
+    },
+    {
+      "sequence": "9218",
+      "sourceAt": "2026-10-29T17:24:16.805Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 47,
+        "publicRowSha256": "f4910f44c40b39b336ec830ca1115dd909c4c645525411090137d107c2094180"
+      }
+    },
+    {
+      "sequence": "9219",
+      "sourceAt": "2026-10-29T17:24:31.810Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 48,
+        "publicRowSha256": "41f2b9e265a600192a0af6dc2a999db8ade68d81b28d690de28547666d2cb915"
+      }
+    },
+    {
+      "sequence": "9220",
+      "sourceAt": "2026-10-29T17:24:46.820Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 49,
+        "publicRowSha256": "4aa8273833705d58e2a1405af5132697c9b5cf05778accaf832a8ec284319929"
+      }
+    },
+    {
+      "sequence": "9221",
+      "sourceAt": "2026-10-29T17:25:01.857Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 50,
+        "publicRowSha256": "7c0bec001e61bd11600a5157184cafbf0f389cb4b5688bda11f9b7779a57fbc2"
+      }
+    },
+    {
+      "sequence": "9222",
+      "sourceAt": "2026-10-29T17:25:16.898Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 51,
+        "publicRowSha256": "d12b622de7d84b640d1a87a7ff1edb7d43cbbdfa3531e9f9a6c23c1e2af324d3"
+      }
+    },
+    {
+      "sequence": "9223",
+      "sourceAt": "2026-10-29T17:25:31.950Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 52,
+        "publicRowSha256": "dc5c77a876f88afc12b7c00fb3c48b979411ccf711231b4d1466ac78926ea1f7"
+      }
+    },
+    {
+      "sequence": "9224",
+      "sourceAt": "2026-10-29T17:25:47.004Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 53,
+        "publicRowSha256": "2a78f5998257f0120a1ad7c8e813584018a6be2e49593d155b185e4ce2590297"
+      }
+    },
+    {
+      "sequence": "9225",
+      "sourceAt": "2026-10-29T17:26:02.037Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 54,
+        "publicRowSha256": "4d2b0afdb1937cae7840e3c205bc438ad6ce4b9cc36696ff4d1e75cd1e6adb8a"
+      }
+    },
+    {
+      "sequence": "9226",
+      "sourceAt": "2026-10-29T17:26:17.073Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 55,
+        "publicRowSha256": "6821ffaa1a8e722a887cca11cc851a3dd0b2ea2110aea3fc92930cf11c4fadfc"
+      }
+    },
+    {
+      "sequence": "9227",
+      "sourceAt": "2026-10-29T17:26:32.079Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 56,
+        "publicRowSha256": "535b48344f135a8d709659d1dd577b216f385627fe325c46c52da652e1d426fa"
+      }
+    },
+    {
+      "sequence": "9228",
+      "sourceAt": "2026-10-29T17:26:47.266Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 57,
+        "publicRowSha256": "5d943d5c46337e4ce477f551fa8d53c83c9e46bf8aae728c13b0c2647ca9e498"
+      }
+    },
+    {
+      "sequence": "9229",
+      "sourceAt": "2026-10-29T17:27:02.280Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 58,
+        "publicRowSha256": "a580de94de68e62d68f665d7b7c50488c2d28bc34ef7dd7cfc7f2d5b2a02b75f"
+      }
+    },
+    {
+      "sequence": "9230",
+      "sourceAt": "2026-10-29T17:27:17.297Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 59,
+        "publicRowSha256": "455bb7c49239e9302ca100ad0d25712bafabd89768c9649233316fbfcb520564"
+      }
+    },
+    {
+      "sequence": "9231",
+      "sourceAt": "2026-10-29T17:27:32.308Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 60,
+        "publicRowSha256": "3a525acdccc0d3a55f6660c6aa65d28a97ba78c4c3eee9113502c4fd58294b7c"
+      }
+    },
+    {
+      "sequence": "9232",
+      "sourceAt": "2026-10-29T17:27:47.342Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 61,
+        "publicRowSha256": "f34270892e27c249641a62c9e76f753c93138be60c08e871c5787079f537a5c8"
+      }
+    },
+    {
+      "sequence": "9233",
+      "sourceAt": "2026-10-29T17:28:02.363Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 62,
+        "publicRowSha256": "f69d571d5ebbc5adf914df16b51d9af4baa7a06ebb53faf91d799cbb3b90f57c"
+      }
+    },
+    {
+      "sequence": "9234",
+      "sourceAt": "2026-10-29T17:28:17.396Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 63,
+        "publicRowSha256": "6b63f8ea5af02d1472e0e883d99bfc627aa36602d537f32b7c7ec3fd41ae0aba"
+      }
+    },
+    {
+      "sequence": "9235",
+      "sourceAt": "2026-10-29T17:28:33.852Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 64,
+        "publicRowSha256": "497c75c58490bb5d0cf7ba360ab76f1446d6cefc3807b7fc0262194f6656dac2"
+      }
+    },
+    {
+      "sequence": "9236",
+      "sourceAt": "2026-10-29T17:28:48.869Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 65,
+        "publicRowSha256": "ec556f852dd5dd2c0d3b2a22166b7e6df12eb60c4f02c4b074102de8211ad2a6"
+      }
+    },
+    {
+      "sequence": "9237",
+      "sourceAt": "2026-10-29T17:29:04.496Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 66,
+        "publicRowSha256": "c9f77db6a305639343e57c7613b720aafeab7678d9c96ed18009945aa4463c38"
+      }
+    },
+    {
+      "sequence": "9239",
+      "sourceAt": "2026-10-29T17:29:34.584Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 67,
+        "publicRowSha256": "c3c4960635675f9b1575b563c86bc0678af8dc9c17d79cf7be03e8eec7fbdb9b"
+      }
+    },
+    {
+      "sequence": "9240",
+      "sourceAt": "2026-10-29T17:29:50.074Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 68,
+        "publicRowSha256": "d2bb8da1bb1f81a054df5a4b9a76896319eb36f397e4e74688f6936f6a789bd9"
+      }
+    },
+    {
+      "sequence": "9241",
+      "sourceAt": "2026-10-29T17:30:05.153Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 69,
+        "publicRowSha256": "7e7f48e637830ab4106142d37133ef85cefc366c4edbcb11a07c5ce0d26e3177"
+      }
+    },
+    {
+      "sequence": "9242",
+      "sourceAt": "2026-10-29T17:30:20.177Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+        "line": 70,
+        "publicRowSha256": "5ee7281fcf74fcfac14eac1cf34d05866a558fc6ba37b2b82ec0c32898af7fa3"
+      }
+    },
+    {
+      "sequence": "9243",
+      "sourceAt": "2026-10-29T17:30:35.187Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 1,
+        "publicRowSha256": "fc34ab30e6e94665a1b78700eb80d6b547976fccfb575efdee1b856da461719e"
+      }
+    },
+    {
+      "sequence": "9244",
+      "sourceAt": "2026-10-29T17:30:50.352Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 2,
+        "publicRowSha256": "b40a066a1e353f9c7f5d54c688d246fb5d39b6b77d29806ad0f2a2282665cf4c"
+      }
+    },
+    {
+      "sequence": "9245",
+      "sourceAt": "2026-10-29T17:31:05.357Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 3,
+        "publicRowSha256": "48f7235089a523ab10a12a619ca4b5bbb71f19bc9540ce808f1ce0dcbd6dda1b"
+      }
+    },
+    {
+      "sequence": "9246",
+      "sourceAt": "2026-10-29T17:31:20.383Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 4,
+        "publicRowSha256": "fe57fd63c0b9e03221cffb95e57abfad571e5202911a49a4a9d51e10354d8a78"
+      }
+    },
+    {
+      "sequence": "9247",
+      "sourceAt": "2026-10-29T17:31:35.436Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 5,
+        "publicRowSha256": "94c4ed5918f7bf09dc9824a6d53eade73287ad75549174511a80eea9f9a3c658"
+      }
+    },
+    {
+      "sequence": "9248",
+      "sourceAt": "2026-10-29T17:31:50.478Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 6,
+        "publicRowSha256": "3acf44708d79dc5bc9fe74bc48ca6b0197f977b3dcf3b154601695e0f4fe1de2"
+      }
+    },
+    {
+      "sequence": "9249",
+      "sourceAt": "2026-10-29T17:32:05.552Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 7,
+        "publicRowSha256": "04caa857d2649db2fdb07bb7df775c6c1b3a421bfef3b85f87b7c4bd04b857a8"
+      }
+    },
+    {
+      "sequence": "9250",
+      "sourceAt": "2026-10-29T17:32:20.569Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 8,
+        "publicRowSha256": "4bbb63cb8b24e5c19e14d6559c2d37056ab436134a873f1ecd707d62ab151543"
+      }
+    },
+    {
+      "sequence": "9251",
+      "sourceAt": "2026-10-29T17:32:35.609Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 9,
+        "publicRowSha256": "8f5810120fb7f189a7d8a5bf7cea3e22684362987c9a2a60caf81765aae40b2f"
+      }
+    },
+    {
+      "sequence": "9252",
+      "sourceAt": "2026-10-29T17:32:50.636Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 10,
+        "publicRowSha256": "a2dbd2b79aebf4f3584a717e5d83ea93d40d35b54d809da16d0b820afcb232dd"
+      }
+    },
+    {
+      "sequence": "9253",
+      "sourceAt": "2026-10-29T17:33:05.638Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 11,
+        "publicRowSha256": "72165074824db7179bc99a4f23edea245bb02368ba151ad6122858b20a55ef4c"
+      }
+    },
+    {
+      "sequence": "9254",
+      "sourceAt": "2026-10-29T17:33:20.662Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 12,
+        "publicRowSha256": "201f064e7c53a5db81d14d88f72c2a53571cac759c36128a304ed75cfdc2d5b4"
+      }
+    },
+    {
+      "sequence": "9255",
+      "sourceAt": "2026-10-29T17:33:35.716Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 13,
+        "publicRowSha256": "9211630235b65275558dcb4987e8db1356123cdc861ddc7f67ed98606ff1494a"
+      }
+    },
+    {
+      "sequence": "9256",
+      "sourceAt": "2026-10-29T17:33:50.723Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 14,
+        "publicRowSha256": "60ba76fcf43109a48fc445a1b034f76788e5674e082ec2c6bae4fa10d3c09590"
+      }
+    },
+    {
+      "sequence": "9257",
+      "sourceAt": "2026-10-29T17:34:05.748Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 15,
+        "publicRowSha256": "d235b2786bbf66cb9db0a14c38e3eb6d1266631497b9ef88777cc59dd2abec3d"
+      }
+    },
+    {
+      "sequence": "9258",
+      "sourceAt": "2026-10-29T17:34:20.791Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 16,
+        "publicRowSha256": "b43d95fe9ef09553bcc746a7cf518dfcb33cbad1fcf20c31c0a30c5421f871bd"
+      }
+    },
+    {
+      "sequence": "9259",
+      "sourceAt": "2026-10-29T17:34:35.837Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 17,
+        "publicRowSha256": "42cdea2ebe3b2fb2ddb356d07c2a4f84e2ff9ad74a71f498169b4170dea004cd"
+      }
+    },
+    {
+      "sequence": "9260",
+      "sourceAt": "2026-10-29T17:34:50.887Z",
+      "provenance": {
+        "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+        "line": 18,
+        "publicRowSha256": "788fe1aeaa3e01b8a4797f1bde906201fe5bd91fbf39082ca6516a6dc6072aef"
+      }
+    }
+  ]
+}
