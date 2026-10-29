@@ -1,0 +1,5 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+sh: 1: tsc: not found

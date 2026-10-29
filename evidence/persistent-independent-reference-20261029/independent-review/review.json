@@ -1,0 +1,42 @@
+{
+  "kind": "independent-persistent-reference-safety-review-v1",
+  "state": "OFFLINE_APPROVED_FOR_ROOT_REVIEW",
+  "reviewedAt": "2026-10-29T20:04:42.927449+00:00",
+  "baseCommit": "14d3d89",
+  "files": {
+    "scripts/capture-independent-two-hour-reference.ts": "b27840c0895ff285f308ffadace4ebdd3ae0e245bbf23f18cf3ff357aa1fc668",
+    "test/persistent-independent-reference.test.ts": "7cccdcc79de62e2981cc001333f4c7151fabb5ca155b3c9c37f1b9c0b04759f9",
+    "test/independent-two-hour-reference.test.ts": "028b6b6d67b1541651f2f2b07c57359f847b3d68038a9e23c753147fe365e44d"
+  },
+  "focusedTests": {
+    "command": "node --import tsx --test test/independent-two-hour-reference.test.ts test/persistent-independent-reference.test.ts",
+    "passed": 25,
+    "failed": 0,
+    "exitCode": 0,
+    "sha256": "57134ad6101542518bbffa1003f794b889f01d43f9b3cd68cf17498918803e8d"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "blockingFindings": [],
+  "reviewedProperties": [
+    "Existing finite legacy source-interval API and fifteen prior tests remain valid.",
+    "New explicit bounded measurement start/end are distinct from original persistent runtime start; measurement completion invents no runtime end and performs no service control.",
+    "Current bounded original public account/inception/capital/run/source/start identity is required before any index request; observed identity and raw snapshot hash are retained.",
+    "Capture disconnection, stale snapshot and later recovery are sampled facts, never proof of continuous coverage; changed or stopped runtime closes enrollment for that binding.",
+    "A first validated actual runtime-end attestation remains latched even if its input file disappears.",
+    "Already-frozen independent active/control cohorts retain later indicative outcomes after a source change, separately from conservative runtime-comparable ranges and without runtime-performance credit.",
+    "Single physical index operation, maximum twenty-eight GETs, twelve-second pacing, response/evidence/resource bounds, no retries and prior provider cooldown/uncertainty accounting remain intact.",
+    "Only fixed keyless GeckoTerminal endpoints are requested; no Solana RPC, signing, ledger, financial writer, runtime controls or reporting architecture introduced."
+  ],
+  "limitations": [
+    "Offline mocked verification does not establish provider availability, measured live sampler overhead, executable opportunities, profitability or whole-market recall.",
+    "Root must select the actual current source/run/public snapshot and settled prior provider receipt before starting collection; no live collection was started by this reviewer.",
+    "Public runtime observations are sampled and do not certify uninterrupted market capture between snapshots."
+  ],
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "productionActions": 0
+}
