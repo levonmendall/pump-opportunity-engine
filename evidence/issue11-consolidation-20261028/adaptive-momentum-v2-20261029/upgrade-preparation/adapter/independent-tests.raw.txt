@@ -1,0 +1,7 @@
+Independent INERT active AdaptiveMomentumV2 adapter review
+{"/tmp/poe-adaptive-v2-build-and-config-skeleton.sh": "7d058829db95a65da094a462e0d9c2055129801df31669ef72e643cd41f06c51", "/tmp/poe-prepare-adaptive-v2-package.py": "382c0ec40ee1670bf3a6573b8dc7e74abaf2e2596c35ca544a4536ccdd63a5eb", "/tmp/poe-update-adaptive-v2-stager.py": "4a7214be0b231ef8370abfee6c06430ad54d7ac27195ae851446f9a7bc26f743", "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "787d00df80985018c5152891c2cbb25c047ad401375e576690b08812846a6740", "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "2637150ca63a4c5679682c86695447959ffb66c6da138a1f2f0e55e175db9654"}
+.......................................................
+----------------------------------------------------------------------
+Ran 55 tests in 2.878s
+
+OK

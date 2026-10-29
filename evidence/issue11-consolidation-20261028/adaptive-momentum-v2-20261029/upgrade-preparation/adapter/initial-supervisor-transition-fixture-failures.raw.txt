@@ -1,0 +1,62 @@
+..FE.....F...............................E.............
+======================================================================
+ERROR: test_current_supervisor_loads_only_exact_pinned_v2_bytes (__main__.Tests.test_current_supervisor_loads_only_exact_pinned_v2_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py", line 242, in test_current_supervisor_loads_only_exact_pinned_v2_bytes
+    with patch.object(f,'read',return_value=raw):current=f.current_release_supervisor(context)
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py", line 109, in current_release_supervisor
+    module=reviewed_module('poe_forward_current_supervisor',m.RELEASES/OLD_SOURCE['commit']/'operator/native-paper-ec2/run-authoritative-service.py',OLD_SUPERVISOR)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py", line 74, in reviewed_module
+    raw=read(path,128*1024);need(sha(raw)==expected,'REVIEWED_ROOT_HELPER_HASH_REQUIRED');module=types.ModuleType(name);module.__file__=str(path);exec(compile(raw,str(path),'exec'),module.__dict__);return module
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py", line 62, in need
+    if not value:raise Refused(code)
+                 ^^^^^^^^^^^^^^^^^^^
+forward_test_driver.Refused: REVIEWED_ROOT_HELPER_HASH_REQUIRED
+
+======================================================================
+ERROR: test_six_slot_target_is_rejected_even_with_approved_transport_hashes (__main__.Tests.test_six_slot_target_is_rejected_even_with_approved_transport_hashes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py", line 209, in test_six_slot_target_is_rejected_even_with_approved_transport_hashes
+    with self.assertRaisesRegex(f.Refused,'APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
+                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py", line 122, in bundle
+    manifest=new_supervisor.validate_manifest(json.loads(data['service.json']));need(manifest['deepSlots']==4 and manifest['stage']==NEW_STAGE and manifest['strategy']==NEW_STRATEGY,'APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED');need(manifest['configurationSha256']==NEW_CONFIGURATION_SHA,'PINNED_RESOURCE_CONFIGURATION_REQUIRED');need(manifest['source']=={'commit':index['sourceCommit'],'sha256':sha(data['native-paper.mjs'])},'COMPILED_FORWARD_SOURCE_REQUIRED')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/run-authoritative-service.py", line 59, in validate_manifest
+    if v['strategy']==ADAPTIVE_STRATEGY:need(v['stage']=='two'and v['deepSlots']==4,'ADAPTIVE_STRATEGY_REQUIRES_TWO_POSITION_FOUR_SLOT_PROFILE')
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/run-authoritative-service.py", line 29, in need
+    if not v:raise Guard(code)
+             ^^^^^^^^^^^^^^^^^
+forward_test_supervisor.Guard: ADAPTIVE_STRATEGY_REQUIRES_TWO_POSITION_FOUR_SLOT_PROFILE
+
+======================================================================
+FAIL: test_bootstrap_v1_and_current_v2_validators_are_separate (__main__.Tests.test_bootstrap_v1_and_current_v2_validators_are_separate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py", line 233, in test_bootstrap_v1_and_current_v2_validators_are_separate
+    raw=(HERE/'run-authoritative-service.py').read_bytes();self.assertEqual(f.sha(raw),f.OLD_SUPERVISOR);module=f.release_supervisor({'run-authoritative-service.py':raw});self.assertEqual(module.validate_manifest(manifest),manifest);self.assertEqual(f.policy_sha(module.POLICY),f.OLD_POLICY_SHA)
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e' != '025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed'
+- 66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e
++ 025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed
+
+
+======================================================================
+FAIL: test_helpers_and_sqlite_remain_pinned_even_if_new_index_and_manifest_agree (__main__.Tests.test_helpers_and_sqlite_remain_pinned_even_if_new_index_and_manifest_agree) (file='run-authoritative-service.py')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py", line 186, in test_helpers_and_sqlite_remain_pinned_even_if_new_index_and_manifest_agree
+    with self.assertRaisesRegex(f.Refused,'EXACT_NEW_COMPILED_BACKUP_WORKER_REQUIRED'if name=='backup-worker.mjs'else'EXACT_NEW_ORIGINAL_REPORTER_REQUIRED'if name=='snapshot-publisher.mjs'else'PRESERVED_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refused not raised
+
+----------------------------------------------------------------------
+Ran 55 tests in 4.040s
+
+FAILED (failures=2, errors=2)

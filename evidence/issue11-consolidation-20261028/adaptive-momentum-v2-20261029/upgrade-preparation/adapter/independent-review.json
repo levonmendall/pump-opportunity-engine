@@ -1,0 +1,81 @@
+{
+  "activeStrategy": "adaptive-momentum-v2-paper-v1",
+  "actualEC2RootServiceOrFinancialActions": false,
+  "allFourTargetPinsUnset": true,
+  "blockingFindings": [],
+  "completedAt": 1793308677185,
+  "deepSlots": 4,
+  "diffCheckExitCode": 0,
+  "expectedTransportFiles": 10,
+  "explicitStrategyAndRiskTransition": {
+    "authorizedPositionLimit": {
+      "after": 2,
+      "before": 1
+    },
+    "authorizedStrategyTransition": {
+      "after": "adaptive-momentum-v2-paper-v1",
+      "before": "persistent-buying-pilot-v1",
+      "mode": "active-paper"
+    },
+    "baselineEntryExitThresholdsPreserved": false,
+    "completeRelevantTradingEvidencePreserved": true,
+    "financialSchemaChanged": false,
+    "originalAccountFinancialHistoryPreserved": true,
+    "riskChanged": true,
+    "scope": "active-adaptive-momentum-v2-and-two-position-paper",
+    "strategyChanged": true
+  },
+  "finalSourcePackageAndStagerReviewStillRequired": true,
+  "financialAndHistoricalReuseFunctionsASTUnchanged": [
+    "source_input",
+    "preserved_manifest",
+    "recover_old",
+    "install_images",
+    "native_stop_receipt",
+    "operating_image",
+    "local_preflight",
+    "read",
+    "keep_file",
+    "freeze",
+    "release",
+    "copy_records",
+    "known_images",
+    "retain_prior_forensic_proof",
+    "load_helpers",
+    "current_release_supervisor"
+  ],
+  "forensicExporterNotPresent": true,
+  "hashesAfter": {
+    "/tmp/poe-adaptive-v2-build-and-config-skeleton.sh": "7d058829db95a65da094a462e0d9c2055129801df31669ef72e643cd41f06c51",
+    "/tmp/poe-prepare-adaptive-v2-package.py": "382c0ec40ee1670bf3a6573b8dc7e74abaf2e2596c35ca544a4536ccdd63a5eb",
+    "/tmp/poe-update-adaptive-v2-stager.py": "4a7214be0b231ef8370abfee6c06430ad54d7ac27195ae851446f9a7bc26f743",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "787d00df80985018c5152891c2cbb25c047ad401375e576690b08812846a6740",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "2637150ca63a4c5679682c86695447959ffb66c6da138a1f2f0e55e175db9654"
+  },
+  "hashesBefore": {
+    "/tmp/poe-adaptive-v2-build-and-config-skeleton.sh": "7d058829db95a65da094a462e0d9c2055129801df31669ef72e643cd41f06c51",
+    "/tmp/poe-prepare-adaptive-v2-package.py": "382c0ec40ee1670bf3a6573b8dc7e74abaf2e2596c35ca544a4536ccdd63a5eb",
+    "/tmp/poe-update-adaptive-v2-stager.py": "4a7214be0b231ef8370abfee6c06430ad54d7ac27195ae851446f9a7bc26f743",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "787d00df80985018c5152891c2cbb25c047ad401375e576690b08812846a6740",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "2637150ca63a4c5679682c86695447959ffb66c6da138a1f2f0e55e175db9654"
+  },
+  "hashesUnchanged": true,
+  "head": "f27ce3fdd8287b9a0171ab85bed969d0d051b174",
+  "indexedArtifacts": 9,
+  "kind": "POE_INDEPENDENT_ACTIVE_ADAPTIVE_UPGRADE_DRAFT_REVIEW",
+  "newSupervisorIndependentlyPinnedBeforeExec": true,
+  "notDeployable": true,
+  "oldRootAndCurrent564SupervisorTrustPreserved": true,
+  "positionLimit": 2,
+  "recipeBashAndPythonSyntax": true,
+  "recipeBuildPackageOrStageExecuted": false,
+  "recipeNativeConfigSelectsActiveAdaptiveStageTwo": true,
+  "recipeTransportHashAndSourceChecked": true,
+  "recipeUsesActualFutureBundlePublisherWorkerAndNewReviewedSupervisor": true,
+  "serviceControlCallsitesASTUnchanged": true,
+  "stage": "two",
+  "testCount": 55,
+  "testExitCode": 0,
+  "testsLog": "/tmp/poe-independent-adaptive-upgrade-draft-tests-20261029.txt",
+  "testsLogSha256": "544841b651d20215c28c147564c0ed57416ffc62182e35f7d1aeea4e5b55d534"
+}
