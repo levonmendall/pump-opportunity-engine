@@ -1,0 +1,20 @@
+{
+  "classification": "OFFLINE_DISPOSABLE_OWNER_DAILY_LOSS_RESET",
+  "generatedAt": "2026-10-29T21:47:47.070342+00:00",
+  "baseCommit": "8410390e31e1248f584406f27030b3e0e2cf4484",
+  "files": {
+    "src/ledger.ts": "831c8ea80900440186d76c31040efd70261b4f14dcae8732927b69ebe6e6b72c",
+    "test/owner-daily-loss-reset.test.ts": "6c1aa52ede3d2355ff465bd2b0863317f9c3f39d236897f21453e92e3b942b45"
+  },
+  "tests": {
+    "focused": "56/56 PASS",
+    "finalReset": "13/13 PASS",
+    "build": "PASS",
+    "independent": "13/13 PASS; application source cleared"
+  },
+  "independentReviewer": "/root/two_position_protection/review_two_position_path",
+  "actualAccountAccessed": false,
+  "financialDatabaseWritesOutsideFixtures": 0,
+  "installed": false,
+  "runtimeCallbackReviewed": false
+}

@@ -59,6 +59,7 @@ export type ExecutionQuote = {
 };
 export type OrderOutcome = { status: 'filled' | 'failed' | 'expired'; reason: string; at: number };
 export type InternalShutdownRecoveryProof={verified:true;accountId:string;inceptionAt:number;stateRevision:number;lastSuccessfulResumeRevision:number;stops:Array<{revision:number;actionId:string;at:number}>;proofSha256:string}|{verified:false;reason:string};
+export type DailyLossResetReceipt={reset:true;accountId:string;inceptionAt:number;at:number;reason:string;revisionBefore:number;revisionAfter:number;previousDaily:LedgerState['daily'];currentEquityMicroUsd:string;nextDaily:LedgerState['daily'];price:UsdPrice;controlsPreserved:true;entryPermissionGranted:false;orderCreated:false};
 /** Provenance only. Neither this bounded read nor its digest grants permission
  * to enter, changes a stop, or substitutes for fresh financial/market evidence. */
 const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v1',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
@@ -344,6 +345,26 @@ export class PaperLedger {
       const canceled = Object.values(s.pending).filter(o => o.side === 'buy').map(o => o.id);
       // Preserve already-decided actions until their modeled attempt/cancel is recorded.
       return { paused: true, pendingBuyCancellations: canceled };
+    });
+  }
+
+  /** One explicit owner-authorized current-day risk reset, through the sole
+   * financial writer. Stable id+reason identifies the authorization; changing
+   * observational time/price on a retry returns its ORIGINAL durable receipt,
+   * never another waiver after a subsequent loss. No entry control is armed. */
+  resetDailyLoss(id:string,now:number,price:UsdPrice,marks:Record<string,Mark>,reason:string):DailyLossResetReceipt{
+    if(!boundedText(reason)||/[\u0000-\u001f]/.test(reason))throw Error('explicit bounded owner daily-loss reset reason required');
+    return this.apply(id,'owner-daily-loss-reset',now,{reason},s=>{
+      if(Object.keys(s.positions).length||Object.keys(s.pending).length)throw Error('daily-loss reset requires flat settled accounting');
+      if(Object.keys(marks).length)throw Error('daily-loss reset requires empty flat liquidation marks');
+      if(s.daily.day!==utcDay(now)||s.daily.reconciledAt<=0||s.daily.reconciledAt>now||now-s.daily.reconciledAt>MAX_QUOTE_AGE)throw Error('daily-loss reset requires fresh same-day reconciliation');
+      if(!s.daily.lossPaused)throw Error('no current daily-loss latch to reset');
+      const equity=this.equity(s,priceAt(price,now),marks,now),previousDaily=structuredClone(s.daily);
+      s.daily.baselineMicroUsd=equity.toString();s.daily.lossPaused=false;
+      // Ordinary authenticated readiness must still satisfy its current audit,
+      // quote, owner/hard-stop, financial and provider conditions afterward.
+      s.daily.paused=true;
+      return {reset:true,accountId:s.accountId,inceptionAt:s.inceptionAt,at:now,reason,revisionBefore:s.revision,revisionAfter:s.revision+1,previousDaily,currentEquityMicroUsd:equity.toString(),nextDaily:structuredClone(s.daily),price:structuredClone(price),controlsPreserved:true,entryPermissionGranted:false,orderCreated:false};
     });
   }
 
