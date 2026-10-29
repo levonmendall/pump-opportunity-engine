@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "6a3973fe547dbf6d69ee7588569f42f299b6c5b8",
+  "verifiedAt": "2026-10-29T01:34:07.991938+00:00",
+  "tests": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-cutover-original-service.py"
+      ],
+      "exitCode": 0,
+      "sha256": "31832836f6cb068adaa496989916bb6fab946dad8741d685ae00c5cd93c9837f",
+      "bytes": 127
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-audit-original-account.py"
+      ],
+      "exitCode": 0,
+      "sha256": "637ad693971420b70a01476cd5d51065ecc3c7af270c41cfe91899ec8c2db4bd",
+      "bytes": 106
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-authoritative-service.py"
+      ],
+      "exitCode": 0,
+      "sha256": "05a6cfc91f9d871b8e68fc1698dd27423d30e74c188eef2645153343fa9f5478",
+      "bytes": 125
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-prepare-original-service-package.py"
+      ],
+      "exitCode": 0,
+      "sha256": "d577ce294f5fbd4e9ad4ab464851155181041ed5a059d6760ac0dd7b0b801765",
+      "bytes": 98
+    }
+  ],
+  "totalPurposeSpecificTests": 63,
+  "independentReview": {
+    "reviewer": "/root/finish_original_ops/review_ops_supervisor",
+    "result": "CONDITIONAL_GO_FOR_REVIEWED_OFFLINE_SCOPE",
+    "driverTestsIndependentlyRerun": 26,
+    "followup": "Two further pin/prior-start/partial-path rejection tests passed in the final 28-test driver suite."
+  },
+  "driverSha256": "93f23cb18b67f72749b34f11c28e8af777195da2832a25b68867d80ea89d8b3e",
+  "actualPreviousFailure": "Owner supplied ORIGINAL_WRITER_MUST_BE_SETTLED. Exact unit state at that instant was not retained and remains unproven. Subsequent parent read-only evidence confirmed original observer recovery, not a native-engine start.",
+  "verifiedMechanics": [
+    "Terminal failed state requires stable full metadata, both PIDs zero, no job and empty/absent fixed cgroup while financial owner lease is held",
+    "Stop proof recorded before refusal rather than inferred after recovery",
+    "Known pre-start refusal only; source bytes, original package/index/tools and original financial prefix verified before new stop",
+    "No rebootstrap, delete, reseed, different account, source/strategy change or financial execution by the driver",
+    "Old backups/phases preserved; fresh retry backup directory; actual in-memory administrative code SHA recorded",
+    "Physical refusal resumes original source; altered release/partial state/prior new start/pin absence fail closed",
+    "Unavailable historical PID1-only journal does not substitute for mandatory current physical/financial proof"
+  ],
+  "actualResumeRootCommandExecuted": false,
+  "ec2MutationByThisWork": false,
+  "marketProviderRequests": 0,
+  "financialExecutionActivated": false,
+  "claim": "Offline administrative repair verified; actual guarded resume, new native runtime, original-account PAPER lifecycle and Render parity still require forward evidence."
+}
