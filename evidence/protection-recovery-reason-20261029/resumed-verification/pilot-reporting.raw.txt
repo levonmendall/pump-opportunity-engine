@@ -1,0 +1,52 @@
+
+> pump-opportunity-engine@0.1.0 test:pilot-reporting
+> npm run compile && node --test test/pilot-telemetry.test.mjs test/pilot-publisher.test.mjs
+
+
+> pump-opportunity-engine@0.1.0 compile
+> tsc --outDir dist --noEmit false
+
+✔ publisher only reads bounded private owner files, refusing symlinks and unsafe permissions (16.798581ms)
+✔ publisher projects only diagnostics and pins source and exact HTTPS destination (32.244689ms)
+✔ publisher forwards current observation cohorts through the original dedicated pilot channel without changing identity or time (3.697288ms)
+✔ publisher forwards actual source fact timestamps without substituting fresh generatedAt or exposing private source fields (3.36803ms)
+✔ projection is an allowlist and does not leak raw financial/source/credential objects (2.224897ms)
+✔ projection cannot accept original account as pilot (0.550185ms)
+✔ projection cannot accept a live or authoritative source (0.221649ms)
+✔ extra top-level fields are rejected rather than cached (0.245904ms)
+✔ invalid negative, nonfinite and noninteger counts rejected (0.365762ms)
+✔ channel pins pilot account and inception (1.374847ms)
+✔ duplicate replay cannot refresh receiver freshness (0.935697ms)
+✔ stale source remains stale even if first received now (0.435395ms)
+✔ source timestamp and same-run counters cannot regress (0.739986ms)
+✔ new run may reset run counters without changing original pilot identity (0.443367ms)
+✔ conflicting equal-time payload rejected (0.374705ms)
+✔ stopped and disconnected are not presented as running (0.531147ms)
+✔ unconfigured pilot channel remains distinct from original snapshot (0.500422ms)
+✔ frontend is syntactically valid and never uses innerHTML for telemetry (0.70837ms)
+✔ HTTP public GET but authenticated POST, no original-token fallback (48.967868ms)
+✔ private viewer mode is preserved (10.081538ms)
+✔ HTTP wrong content type / oversized telemetry rejected (11.929506ms)
+✔ stopped stale source and disconnected publisher remain distinct (0.58738ms)
+✔ no holding evaluations do not become measured zero protection gaps (0.139707ms)
+✔ telemetry requires full explicit nullable shape and integer event counters (0.286464ms)
+✔ dynamic watch projection excludes identities/history and preserves missing measurements (0.620299ms)
+✔ dynamic watch validation bounds identities/deep capacity and rejects extra fields (1.027062ms)
+✔ receiver accepts legacy diagnostic payload without an optional watch section (0.471628ms)
+✔ completed promotion wait is separate from current queue wait and remains optional (1.420325ms)
+✔ feature-only diagnostics remain distinct from primary decisions and optional for legacy sources (0.926943ms)
+✔ observation policy and age cohorts are bounded allowlisted source facts separate from entry eligibility (0.969336ms)
+✔ observation policy rejects partial, malformed, nonfinite, out-of-order and unbounded values (0.721159ms)
+✔ age cohort validation rejects contradictions and preserves unknown values instead of inventing zeros (0.705255ms)
+✔ actual source timestamps survive projection independently of reporting generation and exclude private fields (0.514172ms)
+✔ source timestamps are bounded integer facts and receiver rejects unknown or missing fields (1.077947ms)
+✔ fresh source heartbeat cannot manufacture fresh market, audit, predictive or financial facts (0.398851ms)
+✔ candidate-only reporting cannot claim financial reconciliation and legacy payloads remain accepted (0.710243ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 208.643789
