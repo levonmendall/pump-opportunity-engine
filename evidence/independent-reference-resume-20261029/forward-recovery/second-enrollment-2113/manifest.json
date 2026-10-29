@@ -1,0 +1,87 @@
+{
+  "kind": "actual-resumed-independent-second-enrollment-v1",
+  "retainedAt": "2026-10-29T21:15:20.866826+00:00",
+  "collectorCommit": "0a17765824d2d7b17e78ecc0765c0d4b6b52cd28",
+  "collectorSha256": "43141c6aaa0c69e5100085edb10ec5ffd3eaaa643614b16013f477c1a98541b5",
+  "sessionId": 50289,
+  "nodePid": 129181,
+  "scheduledSecondEnrollmentAt": 1793308361728,
+  "actualFirstSecondEnrollmentStartAt": 1793308361736,
+  "dispatchDelayMs": 8,
+  "newRequests": 6,
+  "newResponseBytes": 215412,
+  "allHttp200AndSettled": true,
+  "minimumPhysicalSpacingMs": 12011,
+  "responseCompletionMs": {
+    "minimum": 142,
+    "median": 393.5,
+    "maximum": 456
+  },
+  "secondCohortNewIdentities": 1,
+  "secondCohortSelection": [
+    {
+      "mint": "ANVLA6eKiAq4nstD2Sg3SZhfVkSEwfnGccn12UQWpump",
+      "pool": "BQJzersGUgNhav8C1m3VC4WA6MgQBAE8T2W7EpTSDKW4",
+      "arm": "indexed-active",
+      "frozenAt": 1793308421958
+    }
+  ],
+  "totalSelected": 6,
+  "totalMeasurementRequests": 12,
+  "cumulative": {
+    "requestStarts": 70,
+    "measuredBodyBytes": 2120751,
+    "uncertainBodyBytes": 262416
+  },
+  "collectorGaps": [
+    {
+      "fromLastObservedAt": 1793306204300,
+      "resumedAt": 1793307637569,
+      "meaning": "Cloud collector sampling gap only; actual runtime continuity unknown between retained public observations. No runtime end or provider call invented."
+    }
+  ],
+  "wholeMarketRecall": null,
+  "profitability": null,
+  "outcomeCollectionPendingAt": "2026-10-29T22:02:41.728Z",
+  "files": {
+    "cohort-freeze-2.json": {
+      "bytes": 1353,
+      "sha256": "1968bf8e82256e46b4b4d14ed542b5ab2bce854654d2305e3f12e4bc9438342f"
+    },
+    "runtime-observations.ndjson": {
+      "bytes": 82667,
+      "sha256": "9f34ef7550df8c252f9242aee9c746d50d803b9ef409b00ee8d904c27c4a2fcc"
+    },
+    "receipt.json": {
+      "bytes": 334972,
+      "sha256": "c1e923e377b3b588622938aa58c00abaf23c8c6a8012942084baa52a96d7615f"
+    },
+    "raw/12.json": {
+      "bytes": 36533,
+      "sha256": "cdadf2733140740aa76f8ea2cdbc01d9f099ae6736e5c301c3ebf3a3310201ee"
+    },
+    "raw/09.json": {
+      "bytes": 35588,
+      "sha256": "406cb4b34b8c38928b88257f6fbac354696ea2cc4c69b8e69fa1f490c482a375"
+    },
+    "raw/07.json": {
+      "bytes": 35745,
+      "sha256": "14974fba59cfb537dc7fdb5c53025a88b3e06b78c88df1669305d61ff3dd3cf2"
+    },
+    "raw/08.json": {
+      "bytes": 35908,
+      "sha256": "a140d1eded776175bca0f35786da9a5c78b2250fd9ee39a21bb9bf54126d89ce"
+    },
+    "raw/10.json": {
+      "bytes": 35965,
+      "sha256": "851cc2c99d5d958a119fb8118ca940e8e2377627ab8c835fe37053363c4b3e0f"
+    },
+    "raw/11.json": {
+      "bytes": 35673,
+      "sha256": "cf6a41f2c57a35b4cef6027b50107ea8be80304c7a53beb5a0a36e01c9406446"
+    }
+  },
+  "serviceOperations": 0,
+  "financialOperations": 0,
+  "SolanaRpcRequests": 0
+}
