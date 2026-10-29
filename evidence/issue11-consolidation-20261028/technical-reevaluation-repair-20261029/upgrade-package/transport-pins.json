@@ -1,0 +1,87 @@
+{
+  "transportSha256": "c674260b1599603717b31ab2d05aa93e9adbb383add91650c03ec56dd22389a1",
+  "packedBytes": 2041907,
+  "unpackedBytes": 7649679,
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5077194,
+      "sha256": "bbfb478d0002efbaddd6dac292e220faa29c0131da8084e2f34081b983abf1e6",
+      "packedFile": "native-paper.mjs.gz",
+      "packedBytes": 838127,
+      "packedSha256": "e2609654800d704af5fa02e16d20d8719d41ebdfbcd1e89f0559fcf3672e2d2f"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 73859,
+      "sha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34",
+      "packedFile": "backup-worker.mjs.gz",
+      "packedBytes": 17829,
+      "packedSha256": "cdcddf5d4d045b79b9dfa4890ab84403263b5f737e89767b7cd1be8add8a9bb0"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+      "packedFile": "better_sqlite3.node.gz",
+      "packedBytes": 1106933,
+      "packedSha256": "c8918c0472d35440ba4aa55a92b8f49726e1d1fe8ae0e23027fb7f683ee36488"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154492,
+      "sha256": "9044077a646fec29f6cfe7ce8e1d68161a7ebc8f65a10e1e0b383b1573384be6",
+      "packedFile": "metadata.json.gz",
+      "packedBytes": 41268,
+      "packedSha256": "150e54386e8a9175edc6bf67c92ee90262c31f97347a7814f82df40703254f90"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f",
+      "packedFile": "snapshot-publisher.mjs.gz",
+      "packedBytes": 9459,
+      "packedSha256": "509ed38457814d51946ede8ac3c01fb1cbd3c52f2c0760fa83fd0134b46c4b4f"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37498,
+      "sha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed",
+      "packedFile": "run-authoritative-service.py.gz",
+      "packedBytes": 11981,
+      "packedSha256": "1ca8ab8ee444aa8985f952461b47280b40c52ea817eee1877f55146fa2dee532"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 43582,
+      "sha256": "85aea1a3b6a9e135af075763232964ad6fa8bd0e65a80141179d37d76ba7885b",
+      "packedFile": "forward-original-upgrade.py.gz",
+      "packedBytes": 13903,
+      "packedSha256": "6872314969ed41827cc0c0c15ecda9d426f8b473b4164b311f8aac41fcf0e262"
+    },
+    {
+      "file": "service.json",
+      "bytes": 2105,
+      "sha256": "a9c11dbf976d30e943ec498908a904afeaee69d30ce262219ba1570387d16937",
+      "packedFile": "service.json.gz",
+      "packedBytes": 924,
+      "packedSha256": "d55adb07d7f827d53822a51638a5d60e0646e245fda9fccb66896a8c95a028e2"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df",
+      "packedFile": "poe-runtime-persistent.conf.gz",
+      "packedBytes": 583,
+      "packedSha256": "476063b6fa54ad42dbd6b8181b5c1ea7312554052f5cc83862e626db32f50c31"
+    },
+    {
+      "file": "index.json",
+      "bytes": 1907,
+      "sha256": "c3d5440862ae98cab6f82a4ca77b1b1347a5aeb73c7255714412da157d2bc301",
+      "packedFile": "index.json.gz",
+      "packedBytes": 900,
+      "packedSha256": "93b577277bf4b9c7a303f1f7b59fef2048e54a1dbe6ecfc170194b8b0addbf48"
+    }
+  ]
+}

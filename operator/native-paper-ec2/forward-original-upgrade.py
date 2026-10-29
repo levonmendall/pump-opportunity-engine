@@ -3,41 +3,42 @@
 
 API: apply <transport-index-sha256>. The same command resumes interrupted work.
 The transport index has schemaVersion, kind, sourceCommit, previousSource,
-compatibility and files. Its eight exact files are BOUNDS below. Review and pin
+compatibility and files. Its nine exact files are BOUNDS below. Review and pin
 the index and this driver independently before root executes verified bytes.
 No bootstrap, account initialization, DB restore, secret access or Render call.
 """
 import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
 
-OLD_SOURCE={'commit':'239a00ea9fbc0a25ebcf318631d26618d941c899','sha256':'fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315'}
+OLD_SOURCE={'commit':'cdba9d483fdcef105e74e3053a8d4bbf28bdff0c','sha256':'77d671b39664cbd30006fe5997e2b0e73077f8e18111d80ebac3a1704ea7a7e1'}
 OLD_INDEX='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
-PRIOR_INDEX='7dce6bdd39a16d90453c512b307774f900d3845965e02ec9a52e63b8ba572947'
-PRIOR_RECORD='configuration-four-'+OLD_SOURCE['commit']
-PRIOR_CONFIGURATION_DRIVER_SHA='4c5390a9792bf2ac895fb0a09fc1c80829545c330d01bf04849b402c4b751a45'
-OLD_MANIFEST='a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b'
+PRIOR_INDEX='4f29d5e6691da319cfa3ec1714da71e71a0aeb5140a81b58e2c8c4d88a7b0e86'
+PRIOR_RECORD='forward-'+OLD_SOURCE['commit']
+PRIOR_FORWARD_DRIVER_SHA='d2da791da20014bc0dbda54dfb8a1859bd2356586fc189d8b3b374c2cc190b60'
+OLD_MANIFEST='bf3a377b2adc28900fc3c10df7b89023cccb52e8b0936c5740197bd5efb6a59a'
 # Root-indexed validation helper and current financial release have distinct pins.
 INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
-OLD_SUPERVISOR='1c993f89ec08c2ec6b8dfa05c5657bd2d572636361c8f32bff3febbeae729a79'
+OLD_SUPERVISOR='025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed'
 CORE_SHA='2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab'
 AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
-# The reporter recompiles its exact-index-pinned schema validator; its credential
-# handling source is unchanged. The installed old reporter remains independently pinned.
+# Reporting, supervision, backup and SQLite ABI remain byte-identical to the
+# independently pinned installed financial source; no credential change is allowed.
 OLD_REPORTER='29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f'
 UNCHANGED={'backup-worker.mjs':'53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34','better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
-COMPATIBILITY={'scope':'persistent-resource-aware-evidence-and-scheduling-v2','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
+UNCHANGED.update({'snapshot-publisher.mjs':OLD_REPORTER,'run-authoritative-service.py':OLD_SUPERVISOR})
+COMPATIBILITY={'scope':'native-bounded-technical-reevaluation-only','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
-STAGE=pathlib.Path('/var/tmp/poe-original-proactive-retention-upgrade')
+STAGE=pathlib.Path('/var/tmp/poe-original-technical-reevaluation-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
-NATIVE_DROPIN_SHA='02086524f05593a85034bf13626f0c2c0a4caac2379cc4ae76cfa92d93d4b682'
+NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
 NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
-OLD_CONFIGURATION_SHA='f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857'
-NEW_CONFIGURATION_SHA='44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae'
-OLD_POLICY_SHA='6ba87bc2a2ccdeb6396e6e5866db8e53c391751a61948f974b9ff1055b5a1f99'
+OLD_CONFIGURATION_SHA='44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae'
+NEW_CONFIGURATION_SHA='e363dad750e601e533670bd8d8881bc82ffd1508718b982cabf09eca79be92f4'
+OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
-RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'500ms','CPUQuotaPeriodUSec':'100ms','CPUWeight':'10','Nice':'19','MemoryHigh':'671088640','MemoryMax':'805306368','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
-RESOURCE_AFTER={**RESOURCE_BEFORE,'CPUQuotaPerSecUSec':'infinity','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472'}
+RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
+RESOURCE_AFTER=dict(RESOURCE_BEFORE)
 UID,GID,RUNNER=988,982,994
 MIB=1024*1024
 BOUNDS={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB,'run-authoritative-service.py':128*1024,'forward-original-upgrade.py':128*1024,'service.json':128*1024,'poe-runtime-persistent.conf':8192}
@@ -72,6 +73,11 @@ def release_supervisor(data):
  # this function is called. The root-indexed v1 module only validates v1.
  raw=data['run-authoritative-service.py'];module=types.ModuleType('poe_forward_new_supervisor');module.__file__=str(STAGE/'run-authoritative-service.py');exec(compile(raw,module.__file__,'exec'),module.__dict__)
  need(policy_sha(module.POLICY)==NEW_POLICY_SHA and module.RELEASE_FILES=={name:BOUNDS[name]for name in['native-paper.mjs','backup-worker.mjs','better_sqlite3.node','metadata.json','snapshot-publisher.mjs']},'EXACT_REVIEWED_NEW_RESOURCE_SUPERVISOR_REQUIRED');return module
+def current_release_supervisor(m):
+ # The bootstrap d90 module remains the host-verification anchor. It must never
+ # validate a v2 manifest; load only the independently pinned current release.
+ module=reviewed_module('poe_forward_current_supervisor',m.RELEASES/OLD_SOURCE['commit']/'operator/native-paper-ec2/run-authoritative-service.py',OLD_SUPERVISOR)
+ need(policy_sha(module.POLICY)==OLD_POLICY_SHA,'EXACT_CURRENT_RESOURCE_SUPERVISOR_REQUIRED');return module
 def bundle(path,uid,expected,driver_sha,supervisor):
  raw=read(path/'index.json',128*1024,uid);need(hashed(expected)and sha(raw)==expected,'REVIEWED_FORWARD_INDEX_PIN_REQUIRED');index=json.loads(raw)
  need(type(index)is dict and set(index)=={'schemaVersion','kind','sourceCommit','previousSource','compatibility','files'}and index['schemaVersion']==1 and index['kind']=='poe-original-forward-upgrade-package-v1'and hashed(index['sourceCommit'],40)and index['sourceCommit']!=OLD_SOURCE['commit']and index['previousSource']==OLD_SOURCE and index['compatibility']==COMPATIBILITY,'EXACT_FORWARD_PACKAGE_IDENTITY_REQUIRED')
@@ -79,7 +85,7 @@ def bundle(path,uid,expected,driver_sha,supervisor):
  for row in rows:
   name=row['file'];need(set(row)=={'file','bytes','sha256'}and type(row['bytes'])is int and 0<row['bytes']<=BOUNDS[name]and hashed(row['sha256']),'BOUNDED_FORWARD_FILE_PIN_REQUIRED');body=read(path/name,BOUNDS[name],uid);need(len(body)==row['bytes']and sha(body)==row['sha256'],'FORWARD_PACKAGE_FILE_HASH_REQUIRED');data[name]=body
  need(hashed(driver_sha)and sha(data['forward-original-upgrade.py'])==driver_sha,'INDEPENDENT_VERIFIED_FORWARD_DRIVER_REQUIRED')
- for name,digest in UNCHANGED.items():need(sha(data[name])==digest,'PRESERVED_BACKUP_WORKER_AND_SQLITE_ABI_REQUIRED')
+ for name,digest in UNCHANGED.items():need(sha(data[name])==digest,'PRESERVED_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED')
  need(sha(data['poe-runtime-persistent.conf'])==NEW_NATIVE_DROPIN_SHA,'REVIEWED_NEW_RESOURCE_DROPIN_REQUIRED');new_supervisor=release_supervisor(data)
  manifest=new_supervisor.validate_manifest(json.loads(data['service.json']));need(manifest['deepSlots']==4 and manifest['stage']=='single','APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED');need(manifest['configurationSha256']==NEW_CONFIGURATION_SHA,'PINNED_RESOURCE_CONFIGURATION_REQUIRED');need(manifest['source']=={'commit':index['sourceCommit'],'sha256':sha(data['native-paper.mjs'])},'COMPILED_FORWARD_SOURCE_REQUIRED')
  rows={r['file']:r for r in manifest['files']}
@@ -93,7 +99,8 @@ def preserved_manifest(old,new):
  need(old.get('configurationSha256')==OLD_CONFIGURATION_SHA and new.get('configurationSha256')==NEW_CONFIGURATION_SHA,'EXACT_RESOURCE_CONFIGURATION_TRANSITION_REQUIRED')
  need(policy_sha(old.get('policy'))==OLD_POLICY_SHA and policy_sha(new.get('policy'))==NEW_POLICY_SHA,'EXACT_RESOURCE_POLICY_TRANSITION_REQUIRED')
  need(next((r['sha256']for r in old['files']if r['file']=='snapshot-publisher.mjs'),None)==OLD_REPORTER,'CURRENT_REPORTER_HOTFIX_REQUIRED')
- for name,digest in UNCHANGED.items():need(next((r['sha256']for r in old['files']if r['file']==name),None)==digest,'CURRENT_BACKUP_WORKER_AND_SQLITE_ABI_REQUIRED')
+ for name,digest in UNCHANGED.items():
+  if name!='run-authoritative-service.py':need(next((r['sha256']for r in old['files']if r['file']==name),None)==digest,'CURRENT_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED')
 def source_input(raw,old,new,baseline,m):
  value=m.validate_input(json.loads(raw),old,baseline);changed=dict(value);changed['source']=dict(new['source']);need({k:v for k,v in changed.items()if k!='source'}=={k:v for k,v in value.items()if k!='source'},'ONLY_INPUT_SOURCE_MAY_CHANGE');result=encoded(changed);m.validate_input(json.loads(result),new,baseline);return result
 def unit_stop_fields():
@@ -215,8 +222,8 @@ def recover_old(m,auditor,supervisor,record_dir,record,expected_inode):
    proof=m.observe_stopped_writer();need(proof.get('physicalWriterSettled')is True,'RECOVERY_REQUIRES_FRESH_PHYSICAL_STOP');record['recoveryStopProof']=proof;m.original_audit(auditor,expected_inode);install_images(m,record_dir,False);m.switch_current(m.RELEASES/OLD_SOURCE['commit']);m.systemctl('daemon-reload')
   finally:os.close(owner)
  need(m.CURRENT.resolve(strict=True)==m.RELEASES/OLD_SOURCE['commit']and read(m.MANIFEST,128*1024,0,GID,0o640)==read(record_dir/'before-service.json',128*1024)and read(m.ACCOUNT/'input.json',MIB,UID,GID,0o600)==read(record_dir/'before-input.json',MIB),'OLD_FINANCIAL_RECOVERY_IMAGES_MUST_BE_EXACT');m.original_audit(auditor,expected_inode);need(resource_profile(unit())==RESOURCE_BEFORE,'RESTORED_EFFECTIVE_RESOURCE_PROFILE_REQUIRED');m.systemctl('start','poe-runtime.service');record.update(phase='old-financial-source-resumed-before-new-start',recoveredAt=now(),oldFinancialSource=OLD_SOURCE,reporterHotfixPreserved=True);m.write_json(record_dir/'transition.json',record)
-def apply(expected,m,auditor,supervisor,driver_sha):
- need(os.getuid()==0 and hashed(driver_sha),'INDEPENDENT_OWNER_ROOT_DRIVER_PIN_REQUIRED');merged=local_preflight(m,auditor,supervisor)
+def apply(expected,m,auditor,indexed_supervisor,driver_sha):
+ need(os.getuid()==0 and hashed(driver_sha),'INDEPENDENT_OWNER_ROOT_DRIVER_PIN_REQUIRED');merged=local_preflight(m,auditor,indexed_supervisor);supervisor=current_release_supervisor(m)
  # Read the staged index before choosing the fixed root destination. A frozen
  # copy makes recovery independent of runner files after first preparation.
  choices=[]
@@ -227,7 +234,7 @@ def apply(expected,m,auditor,supervisor,driver_sha):
  if choices:index,manifest,data,index_raw=bundle(choices[0],0,expected,driver_sha,supervisor)
  else:m.directory(STAGE,RUNNER,True);index,manifest,data,index_raw=bundle(STAGE,RUNNER,expected,driver_sha,supervisor)
  new_supervisor=release_supervisor(data);commit=index['sourceCommit'];target=m.RELEASES/commit;frozen=PACKAGE.parent/('forward-'+commit);record_dir=m.RECORDS/('forward-'+commit);prior_dir=m.RECORDS/PRIOR_RECORD;m.directory(prior_dir,0,True);prior_raw=read(prior_dir/'transition.json',128*1024);prior=json.loads(prior_raw)
- need(prior.get('kind')=='poe-original-four-slot-reconfiguration-v1'and prior.get('accountId')==m.ACCOUNT_ID and prior.get('inceptionAt')==m.INCEPTION and prior.get('source')==OLD_SOURCE and prior.get('driverSha256')==PRIOR_CONFIGURATION_DRIVER_SHA and prior.get('manifestSha256')==OLD_MANIFEST and prior.get('configurationSha256')==OLD_CONFIGURATION_SHA and prior.get('phase')=='four-slot-runtime-and-financial-prefix-verified'and prior.get('runtimeAfter',{}).get('source')==OLD_SOURCE and prior.get('runtimeAfter',{}).get('configurationSha256')==OLD_CONFIGURATION_SHA and prior.get('runtimeAfter',{}).get('maximumCandidates')==4 and prior.get('runtimeAfter',{}).get('watchMaximumDeep')==4 and prior.get('runtimeAfter',{}).get('feedMaximumCandidates')==4,'VERIFIED_FOUR_SLOT_CONFIGURATION_RECORD_REQUIRED');inode=m.LEDGER.lstat();expected_inode=(inode.st_dev,inode.st_ino)
+ need(prior.get('kind')=='poe-original-forward-upgrade-v1'and prior.get('accountId')==m.ACCOUNT_ID and prior.get('inceptionAt')==m.INCEPTION and prior.get('source')==OLD_SOURCE and prior.get('driverSha256')==PRIOR_FORWARD_DRIVER_SHA and prior.get('packageIndexSha256')==PRIOR_INDEX and prior.get('phase')=='new-source-post-start-prefix-verified-render-gate-pending'and prior.get('postStartVerification',{}).get('complete')is True and prior.get('postStartVerification',{}).get('source')==OLD_SOURCE and prior.get('postStartVerification',{}).get('configurationSha256')==OLD_CONFIGURATION_SHA and sha(read(prior_dir/'after-service.json',128*1024))==OLD_MANIFEST,'VERIFIED_CURRENT_FORWARD_UPGRADE_RECORD_REQUIRED');inode=m.LEDGER.lstat();expected_inode=(inode.st_dev,inode.st_ino)
  prefix=m.verify_live_financial_prefix(auditor,prior['stoppedFinancial'],prior['backup']);financial=m.original_audit(auditor,expected_inode)
  m.directory(m.BACKUPS,0,True);need(os.statvfs(m.ROOT).f_bavail*os.statvfs(m.ROOT).f_frsize>=1024*MIB,'FORWARD_UPGRADE_DISK_HEADROOM_REQUIRED')
  existing=os.path.lexists(record_dir/'transition.json')

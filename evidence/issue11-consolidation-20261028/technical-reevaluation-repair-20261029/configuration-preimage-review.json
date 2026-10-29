@@ -1,0 +1,55 @@
+{
+  "kind": "poe-configuration-preimage-change-review-v1",
+  "beforeSource": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "afterSource": "96e6d3245082e1297e94624dcdceedffac7808f0",
+  "configurationFunctionChange": "Only adds versioned technicalReevaluationPolicy to the existing hash preimage.",
+  "beforeFunctionSha256": "fccd623888a5498628032dfc6a7ee4489040f4d0a6a4a13b29827393cd6e39f6",
+  "afterFunctionSha256": "fea48bdffd50171be355823340fcc3a3ed71a209904c43d33e467dc4b9a72792",
+  "unchanged": [
+    {
+      "file": "src/strategy.ts",
+      "sha256": "ed4ca8b601da4105af5d3b003d195a664f75171647a6739e032eed0372cff07f",
+      "unchanged": true
+    },
+    {
+      "file": "src/ledger.ts",
+      "sha256": "002fd214389a748d5c8e08127ac61be749dccd5c7daf6d66f6bc48cef99c93bb",
+      "unchanged": true
+    },
+    {
+      "file": "src/poe-operating-account.ts",
+      "sha256": "d4744f8f762ecc3a88ba4abe6abe9958db068027aaafca7ca87ea4429068282d",
+      "unchanged": true
+    },
+    {
+      "file": "src/native-paper-contract.ts",
+      "sha256": "55c687fc859f3ede7c3f901256c46e5a6d716991c60a79cfcac3cb21a05fd0a1",
+      "unchanged": true
+    },
+    {
+      "file": "src/pilot-contract.ts",
+      "sha256": "4c446beb8739c5e2129642d569617ded9d64ea0b6d4cd6453359a47e5acebd48",
+      "unchanged": true
+    },
+    {
+      "file": "src/paper-service-policy.ts",
+      "sha256": "a833a7e08f8b2b378bf2103cded61ea4fb066f216a9f90c33770a56cb7ef29f6",
+      "unchanged": true
+    },
+    {
+      "file": "operator/native-paper-ec2/run-authoritative-service.py",
+      "sha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed",
+      "unchanged": true
+    },
+    {
+      "file": "operator/native-paper-ec2/poe-runtime-persistent.conf",
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df",
+      "unchanged": true
+    }
+  ],
+  "financialSchemaChanged": false,
+  "strategyChanged": false,
+  "riskChanged": false,
+  "deepSlots": 4,
+  "positionStage": "single"
+}

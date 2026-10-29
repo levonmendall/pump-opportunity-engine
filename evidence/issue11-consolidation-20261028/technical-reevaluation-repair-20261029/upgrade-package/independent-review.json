@@ -1,0 +1,20 @@
+{
+  "kind": "poe-original-technical-reevaluation-independent-review-v1",
+  "reviewer": "/root/expose_operating_gates",
+  "status": "PASS",
+  "driverSha256": "85aea1a3b6a9e135af075763232964ad6fa8bd0e65a80141179d37d76ba7885b",
+  "indexSha256": "c3d5440862ae98cab6f82a4ca77b1b1347a5aeb73c7255714412da157d2bc301",
+  "manifestSha256": "a9c11dbf976d30e943ec498908a904afeaee69d30ce262219ba1570387d16937",
+  "transportSha256": "c674260b1599603717b31ab2d05aa93e9adbb383add91650c03ec56dd22389a1",
+  "actualInertBundleAndCurrentManifestValidation": "PASS",
+  "transportRoundTrips": 10,
+  "helperTests": 42,
+  "driverHashStableBeforeAndAfterTests": true,
+  "financialStateAndPossibleStartRecoveryReviewed": true,
+  "ownerCommandLogicReviewedWithoutExecution": true,
+  "ownerCommandShellReformatAstUnchanged": true,
+  "ownerCommandSha256": "fb4f465ad9fbf38f28a60fb13764d388b8da1a675ac0720d7cfa81d234125347",
+  "rootReviewedFinalPinsAndReformattedOwnerWrapper": true,
+  "rootCommandExecuted": false,
+  "deployed": false
+}

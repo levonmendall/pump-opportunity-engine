@@ -1,0 +1,65 @@
+{
+  "kind": "poe-original-technical-reevaluation-upgrade-pins-v1",
+  "source": {
+    "commit": "96e6d3245082e1297e94624dcdceedffac7808f0",
+    "sha256": "bbfb478d0002efbaddd6dac292e220faa29c0131da8084e2f34081b983abf1e6"
+  },
+  "previousSource": {
+    "commit": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+    "sha256": "77d671b39664cbd30006fe5997e2b0e73077f8e18111d80ebac3a1704ea7a7e1"
+  },
+  "configurationSha256": "e363dad750e601e533670bd8d8881bc82ffd1508718b982cabf09eca79be92f4",
+  "previousConfigurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+  "driverSha256": "85aea1a3b6a9e135af075763232964ad6fa8bd0e65a80141179d37d76ba7885b",
+  "indexSha256": "c3d5440862ae98cab6f82a4ca77b1b1347a5aeb73c7255714412da157d2bc301",
+  "manifestSha256": "a9c11dbf976d30e943ec498908a904afeaee69d30ce262219ba1570387d16937",
+  "transportSha256": "c674260b1599603717b31ab2d05aa93e9adbb383add91650c03ec56dd22389a1",
+  "stage": "/var/tmp/poe-original-technical-reevaluation-upgrade",
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5077194,
+      "sha256": "bbfb478d0002efbaddd6dac292e220faa29c0131da8084e2f34081b983abf1e6"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 73859,
+      "sha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154492,
+      "sha256": "9044077a646fec29f6cfe7ce8e1d68161a7ebc8f65a10e1e0b383b1573384be6"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37498,
+      "sha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 43582,
+      "sha256": "85aea1a3b6a9e135af075763232964ad6fa8bd0e65a80141179d37d76ba7885b"
+    },
+    {
+      "file": "service.json",
+      "bytes": 2105,
+      "sha256": "a9c11dbf976d30e943ec498908a904afeaee69d30ce262219ba1570387d16937"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+    }
+  ]
+}
