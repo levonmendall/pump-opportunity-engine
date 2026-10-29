@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {nativeCandidateWatchControlRequest} from '../src/run-native-candidates.js';
-import {PilotRpc,PilotRpcUnavailable,type PilotRpcOptions,CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE} from '../src/pilot-rpc.js';
+import {PilotRpc,PilotRpcUnavailable,pilotUninvokedHistoryRefusal,type PilotRpcOptions,CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE} from '../src/pilot-rpc.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from '../src/research-baseline.js';
 const MIB=1024*1024,turn=()=>new Promise<void>(r=>setImmediate(r));
 function fixture(options:Partial<PilotRpcOptions>={},recent=false,tickingClock=false){
@@ -267,7 +267,7 @@ for(const reason of ['COMPONENT_DISPATCH_EXPIRED','COMPONENT_ADMISSION_CLOSED'])
  const clock=()=>{if(armed&&existsSync(chapter)){const book=JSON.parse(readFileSync(chapter,'utf8'));if(book.starts.length===1&&book.pending.length===1&&book.actualInvocations.length===0){armed=false;expired=true;at+=101;}}return at;};
  try{
   client=new PilotRpc({directory:join(directory,'run'),runId:'local-refusal-only',baselinePaths:[old],priorPhysicalSettled:true,maxUnits:3,now:clock,monotonic:()=>at,sleep:async ms=>{at+=ms;},record:(kind,data)=>records.push({kind,data}),fetcher:(async(_url,init)=>{fetches++;const request=JSON.parse(String(init?.body));return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:123}));}) as typeof fetch});
-  armed=true;await assert.rejects(client.call('getSlot',[],undefined,reason==='COMPONENT_DISPATCH_EXPIRED'?{latestStartAt:200100}:{admissionOpen:()=>!expired}),new RegExp(reason));await turn();
+  armed=true;let refused:unknown;try{await client.call('getSignaturesForAddress',[HISTORY_POOL],undefined,{queryTimeoutScope:'independent-history',...(reason==='COMPONENT_DISPATCH_EXPIRED'?{latestStartAt:200100}:{admissionOpen:()=>!expired})});assert.fail('reserved late refusal required');}catch(error){refused=error;assert.match(String(error),new RegExp(reason));}await turn();const proof=pilotUninvokedHistoryRefusal(refused);assert.ok(proof);assert.equal(proof.pool,HISTORY_POOL);assert.equal(proof.physicalSettled,true);assert.equal(proof.at,at);
   const u=client.usage(),failed=readFileSync(chapter),book=JSON.parse(failed.toString());assert.equal(fetches,0);assert.equal(u.newUnits,1);assert.equal(book.actualInvocations.length,0);assert.equal(book.haltedReason,reason);assert.equal(book.pending.length,1);assert.equal(book.pending[0].reservedBytes,2*MIB);assert.equal(u.currentChapterUncertainResponseBytes,2*MIB);assert.equal(u.uncertainResponseBytes,4*MIB);assert.equal(u.inFlight,0);assert.equal(u.waitingOrOperating,false);assert.equal(u.fatal,null);assert.equal(u.cooldownUntil,0);assert.equal(u.controlCooldownUntil,0);assert.equal(u.chapter,1);assert.equal(client.available(),true);assert.equal(records.some(r=>r.kind==='pilot-rpc-unavailable'),false);assert.ok(records.some(r=>r.kind==='pilot-job-admission-refused'&&r.data.code===reason&&r.data.reservationsRetained===2*MIB));
   assert.equal(await client.call('getSlot'),123);assert.equal(fetches,1);const after=client.usage();assert.equal(after.chapter,2);assert.equal(after.newUnits,2);assert.equal(after.cumulativeUnits,4);assert.equal(after.uncertainResponseBytes,4*MIB);assert.equal(after.fatal,null);assert.equal(after.cooldownUntil,0);assert.deepEqual(readFileSync(chapter),failed,'settled rejected chapter is immutable after safe rollover');assert.deepEqual(readFileSync(old),original,'historical refusal and uncertainty remain untouched');
  }finally{client?.close();rmSync(directory,{recursive:true,force:true});}
@@ -410,4 +410,26 @@ test('persistent startup compacts a fully populated512-source chain before anoth
  try{client=new PilotRpc({...options,directory:join(directory,'run')});assert.equal(client.usage().compactedAccountingEpochs,1);assert.equal(client.usage().recoveryBaselinePaths.length,1);assert.equal(await client.call('getSlot'),123);assert.ok(client.methodReadyAt('getTransaction',8)>now,'newly sealed unknown reservations must occupy the method window too');assert.equal(await client.call('getSlot'),123);client.close();const closed=client.usage();assert.equal(closed.cumulativeUnits,515);assert.equal(closed.uncertainResponseBytes,2*MIB);assert.deepEqual(paths.map(p=>hash(readFileSync(p,'utf8'))),before);
   restarted=new PilotRpc({...options,runId:'maxpaths-resumed',directory:join(directory,'resumed'),baselinePaths:closed.recoveryBaselinePaths,baselineCheckpointSha256:closed.recoveryBaselineCheckpointSha256!});assert.equal(await restarted.call('getSlot'),123);assert.equal(restarted.usage().cumulativeUnits,516);assert.equal(restarted.usage().uncertainResponseBytes,2*MIB);
  }finally{restarted?.close();client?.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+
+test('uninvoked history refusal is owned per-call evidence, never a matching error string or provider error',async()=>{
+ assert.equal(pilotUninvokedHistoryRefusal(new Error('PILOT_RPC_COMPONENT_ADMISSION_CLOSED')),null);
+ assert.equal(pilotUninvokedHistoryRefusal(new PilotRpcUnavailable('COMPONENT_ADMISSION_CLOSED')),null);
+ const f=fixture();try{
+  let refusal:unknown;try{await f.client.call('getSignaturesForAddress',[HISTORY_POOL],undefined,{queryTimeoutScope:'independent-history',admissionOpen:()=>false});assert.fail('refusal required');}catch(e){refusal=e;}
+  const proof=pilotUninvokedHistoryRefusal(refusal);assert.ok(proof);assert.equal(proof.pool,HISTORY_POOL);assert.equal(proof.code,'COMPONENT_ADMISSION_CLOSED');assert.equal(proof.physicalSettled,true);assert.ok(Object.isFrozen(proof));assert.equal(f.client.usage().chapterUsage!.actualInvokedUnits,0);assert.equal(f.client.usage().newUnits,0);assert.equal(f.invocations.length,0);
+ }finally{f.close();}
+ let fetches=0;const invoked=fixture({fetcher:(async()=>{fetches++;throw Error('COMPONENT_ADMISSION_CLOSED');}) as typeof fetch});try{
+  let error:unknown;try{await invoked.client.call('getSignaturesForAddress',[HISTORY_POOL],undefined,{queryTimeoutScope:'independent-history'});assert.fail('provider failure required');}catch(e){error=e;}
+  assert.equal(fetches,1);assert.equal(invoked.client.usage().chapterUsage!.actualInvokedUnits,1);assert.equal(pilotUninvokedHistoryRefusal(error),null,'a transport invocation cannot become a retriable pre-dispatch refusal');assert.ok(invoked.client.usage().uncertainResponseBytes>=4*MIB);
+ }finally{invoked.close();}
+});
+
+test('a physically unsettled history timeout has no no-invocation proof and retains its original slot',async()=>{
+ let settle!:(r:Response)=>void;const f=fixture({fetcher:(async()=>await new Promise<Response>(r=>{settle=r;})) as typeof fetch});try{
+  let timeout:unknown;try{await f.client.call('getSignaturesForAddress',[HISTORY_POOL],undefined,{queryTimeoutScope:'independent-history',timeoutMs:5});assert.fail('timeout required');}catch(e){timeout=e;}
+  assert.equal(pilotUninvokedHistoryRefusal(timeout),null);assert.equal(f.client.usage().inFlight,1);assert.equal(f.client.usage().chapterUsage!.actualInvokedUnits,1);let blocked:unknown;try{await f.client.call('getSignaturesForAddress',[HISTORY_POOL],undefined,{queryTimeoutScope:'independent-history'});}catch(e){blocked=e;}
+  assert.equal(pilotUninvokedHistoryRefusal(blocked)?.physicalSettled,false);assert.equal(f.client.usage().newUnits,1);assert.throws(()=>f.client.close(),/PHYSICAL_SLOT_OCCUPIED/);
+ }finally{settle(new Response('late'));await turn();await turn();f.close();}
 });

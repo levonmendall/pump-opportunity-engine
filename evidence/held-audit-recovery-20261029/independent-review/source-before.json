@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-29T20:12:10.649668+00:00",
+  "files": {
+    "src/native-candidate-runner.ts": "96f2cd8814a26d1f42760f63225d073444656cf516e84b1892c9cb9c8ed3857c",
+    "src/pilot-rpc.ts": "acd18fb2f41124d23e2abb4dbd79d3bbd26a6a56f929b1d254f806f2ff1cec73",
+    "src/run-native-paper.ts": "4619d9e412cf2c24434ffcae824a88ee3722d91cdb16b03facd4ba4748818f9d",
+    "test/native-candidate-runner.test.ts": "5f0d218740eefbb8bf063674d35259c0b608a5af5f047e939994d7a5d5592599",
+    "test/native-paper-launcher.test.ts": "2f09356ba72a0c65c810a9b9ca92a92ba01bc6a962dac61d0a3a8b4bcacd46c1",
+    "test/pilot-rpc.test.ts": "6d482475d0599e9cedd4978bbfe49640db19ae6ce03cd582bdcad8de42a48712"
+  }
+}

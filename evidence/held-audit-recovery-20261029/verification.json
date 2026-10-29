@@ -1,0 +1,71 @@
+{
+  "kind": "held-audit-recovery-offline-verification-v1",
+  "verifiedAt": "2026-10-29T20:15:35.484248+00:00",
+  "state": "VERIFIED_OFFLINE_NOT_INSTALLED",
+  "base": "8bd509fd683781ba69bd69bea4600de0f85fd99f",
+  "installedComparison": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "sourceManifestSha256": "2f3c636654f3aee67e70abb16b9c695eb6566823a4361298ca3ecbe89e2ee6f6",
+  "files": {
+    "src/native-candidate-runner.ts": "96f2cd8814a26d1f42760f63225d073444656cf516e84b1892c9cb9c8ed3857c",
+    "src/pilot-rpc.ts": "acd18fb2f41124d23e2abb4dbd79d3bbd26a6a56f929b1d254f806f2ff1cec73",
+    "src/run-native-paper.ts": "4619d9e412cf2c24434ffcae824a88ee3722d91cdb16b03facd4ba4748818f9d",
+    "test/native-candidate-runner.test.ts": "5f0d218740eefbb8bf063674d35259c0b608a5af5f047e939994d7a5d5592599",
+    "test/native-paper-launcher.test.ts": "2f09356ba72a0c65c810a9b9ca92a92ba01bc6a962dac61d0a3a8b4bcacd46c1",
+    "test/pilot-rpc.test.ts": "6d482475d0599e9cedd4978bbfe49640db19ae6ce03cd582bdcad8de42a48712"
+  },
+  "configurationSha256": "1f969ad6844ccee9278ec5d00fc871afcb80b12930f65f714c42b872c23d7181",
+  "policyVersion": "native-end-to-end-operation-admission-v2",
+  "tests": {
+    "command": "npm test",
+    "passed": 1807,
+    "failed": 0,
+    "exitCode": 0,
+    "raw": "full-tests.txt"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "raw": "build-final.txt"
+  },
+  "independentReview": {
+    "state": "APPROVED",
+    "passed": 134,
+    "failed": 0,
+    "receipt": "independent-review/review.json",
+    "sha256": "d9b606a249b388e6e73c58fbbd307b517ec40cb5255d31c0f23dae8891b1d564"
+  },
+  "artifactSha256": {
+    "unchanged-financial-strategy-sources.json": "3904693e9061e5495a47ff1e97d97bd98f4281125cc7f1f190f61c28de6ad601",
+    "four-single-configuration.json": "a597cf88449db0daa59095006a658c5a43ec18d13376f9b49b2703584b6888b1",
+    "build-initial.txt": "dc85c86609892b886288c9ac9ff14b1ab30135c2744fb45f8f47cf39cac91def",
+    "batch-guard-corrected.txt": "65a43d7a9cc2fb50ef29d6769f3aab73817a0585c73d6031963ca26d1ffe2b7f",
+    "focused-third.txt": "3e6dd5dbd6ad5e814eed650bf58ba9744b38f5a9f21c734f048e862a9dc197ab",
+    "build-final.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "focused-initial.txt": "93ddb2ae097d6393859ae85eba1cec145f0d565433b59940059a06e0131861c9",
+    "repair.patch": "1b45a72e3ec5adc6fc778746724b165295222442a6a857d12531e4996407ec52",
+    "full-tests.txt": "b1d38f2764e611b8d52c86d98d9d5390dcc1c63558409944290beb44884e136b",
+    "source-before-final-tests.json": "2f3c636654f3aee67e70abb16b9c695eb6566823a4361298ca3ecbe89e2ee6f6",
+    "focused-fourth.txt": "8b198635a7bf1dc666eeae6049daf120a4db5e73d4646811391142dba4f74bc6",
+    "generation-debug.txt": "7fe3cabba208a75bda9f861232e26ac35990c13912228455f2ac8af5c020ac75",
+    "focused-second.txt": "9a319a607860ca7c138688ec4bb1c7ee9ff15443fd052371850dcf444c6e963e",
+    "README.md": "ae7f3588516e207e54a8cb2ad5f57f22e7833633a7812442c24f5f2867471fa3",
+    "build-second.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "build-third.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "independent-review/focused-tests.txt": "ed63c98637bc99b91d7836275b2ce838755782cf94ac1972cb9b1793bbff3626",
+    "independent-review/focused-failed-batch-clock.txt": "c106e145fda2a2fb6ddb9cd0d81295bb5f44c5c2634b7917d71de05240fe18f1",
+    "independent-review/source-before.json": "9b29a76d0e7b3fe80473de23f8b02fb3d8b6b74b9168c908525614ce7c3cf056",
+    "independent-review/source-before-failed-batch-clock.json": "f357cddf51231849a8dbe454f566f2db9df61206746de3956ead39ee8c1c314f",
+    "independent-review/focused-before-batch-guard.txt": "840b0362f07c3a873e791a45826810c265daf406d5a9b4de160db0b7a472074e",
+    "independent-review/source-after.json": "cc488b19b259c79a5a332a6d5f6d50f9353b82c9e3ab75de95c5f13250fa5ec2",
+    "independent-review/review.json": "d9b606a249b388e6e73c58fbbd307b517ec40cb5255d31c0f23dae8891b1d564"
+  },
+  "limits": [
+    "No provider or original financial account access, deployment or service control",
+    "No source/runtime equivalence or historical per-target fault attribution invented",
+    "Controlled injected-response and synthetic-completion-clock tests are not forward-market capacity evidence",
+    "Actual original-service source-pinned deployment and forward audit/protection/resource evidence required"
+  ],
+  "financialAndStrategySourcesUnchanged": true,
+  "ownerStopReadinessRiskAndPositionRulesChanged": false,
+  "newAccountsOrReportingChannels": 0
+}

@@ -1,7 +1,7 @@
 /** Offline launch guards; no live directory, provider, wallet or financial file. */
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {mkdtempSync,writeFileSync,rmSync,readFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
-import {parseNativePaperArgs,runNativePaper,nativePaperReportingAdmission} from '../src/run-native-paper.js';
+import {parseNativePaperArgs,runNativePaper,nativePaperReportingAdmission,nativePaperRequestOperationBound} from '../src/run-native-paper.js';
 import {POE_OPERATING_ACCOUNT} from '../src/poe-operating-account.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION} from '../src/native-paper-contract.js';
 const args=['--resume','--directory','/does-not-exist','--input','/must-not-be-read','--paper-contract',NATIVE_PAPER_DATA_CONTRACT_VERSION];
@@ -44,4 +44,13 @@ test('COHERENT report and checkpoint service obey committed candidate latest-sta
  assert.equal(nativePaperReportingAdmission({...due,at:20001,candidateLatestStartAt:20010}).admitted,true,'small dispatch jitter within the advertised latest start is allowed');
  assert.equal(nativePaperReportingAdmission({...due,held:2,nextProtectionAt:20100,candidateLatestStartAt:25000}).reason,'next-protection-start-reserved');
  assert.equal(nativePaperReportingAdmission({...due,nextPendingAt:20100,candidateLatestStartAt:19999}).reason,'pending-financial-action-has-priority');
+});
+
+
+test('source requests reserve the chosen complete operation without changing physical timeout or held protection limits',()=>{
+ assert.equal(nativePaperRequestOperationBound({timeoutMs:1500,operationBoundMs:2125}),2125);
+ assert.equal(nativePaperRequestOperationBound({timeoutMs:1500,operationBoundMs:125}),1700,'a caller cannot underspecify its own transport runway');
+ assert.equal(nativePaperRequestOperationBound({timeoutMs:1000,operationBoundMs:1200}),1200);
+ for(const operationBoundMs of [0,-1,NaN,3001,1.5])assert.throws(()=>nativePaperRequestOperationBound({operationBoundMs}),/REQUEST_OPERATION_BOUND/);
+ const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.match(source,/lowerView\(NATIVE_DEADLINE_POLICY.postValidationMs\)/);assert.match(source,/sourceWorkAdmission:bound=>lowerView\(bound\).admitted/);assert.match(source,/bound=nativePaperRequestOperationBound\(options\)/);assert.match(source,/pendingAt!==null&&pendingAt<=at/);assert.match(source,/held&&\(lastProtectionStart===0/);assert.match(source,/financial=owned&&\(work==='protection'\|\|work==='pending'\)/);
 });

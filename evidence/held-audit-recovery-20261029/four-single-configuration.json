@@ -1,0 +1,18 @@
+{
+  "configurationSha256": "1f969ad6844ccee9278ec5d00fc871afcb80b12930f65f714c42b872c23d7181",
+  "maximumDeep": 4,
+  "financialMaximumPositions": 1,
+  "deadlinePolicy": {
+    "version": "native-end-to-end-operation-admission-v2",
+    "pageOperationMs": 2000,
+    "postValidationMs": 125,
+    "discretionaryReadMs": 1500,
+    "originWorkflowMs": 20000,
+    "maximumOriginReads": 6,
+    "uninvokedPageRetryMs": 250,
+    "nativeOperationMs": 1700,
+    "heartbeatOperationMs": 1200
+  },
+  "providerAccess": false,
+  "financialAccountRead": false
+}

@@ -15,11 +15,16 @@ export type PilotRpcProfile='candidate-native-research-v1'|NativeResearchProfile
  * Time/request/chapter and physical scheduling limits remain the legacy ones.
  * A two-hour profile needs separately validated cumulative-book capacity. */
 export const CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE=Object.freeze({version:'candidate-native-research-v1' as const,maximumDurationMs:1800000,maximumUnits:1500,maximumResponseBytes:256*MIB});
-export type PilotRpcCallOptions={latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean;/** Query-local timeout backoff for independently scheduled history audits only. Actual throttling/overload remains provider-wide in its fixed route domain. */queryTimeoutScope?:'independent-history'};
+export type PilotRpcCallOptions={latestStartAt?:number;timeoutMs?:number;/** Caller-owned complete operation/validation reservation. This does not extend the physical timeout or deadline. */operationBoundMs?:number;admissionOpen?:()=>boolean;/** Query-local timeout backoff for independently scheduled history audits only. Actual throttling/overload remains provider-wide in its fixed route domain. */queryTimeoutScope?:'independent-history'};
 export type PilotRpcOptions={persistent?:boolean;profile?:PilotRpcProfile;directory:string;runId:string;baselinePaths:readonly string[];baselineCheckpointSha256?:string;priorPhysicalSettled:true;priorCooldownUntil?:number;historyRoute?:ComponentHistoryRoute;priorHistoryCooldownUntil?:number;durationMs?:number;maxUnits?:number;maxResponseBytes?:number;chapterMs?:number;chapterUnits?:number;maxChapters?:number;/** Explicit isolated research control; default60, accepted60..90. Not provider entitlement. */maxStartsPerMinute?:number;/** Research-only local gate; default10 retains earlier behavior. */maxStartsPer10s?:number;/** Optional conservative experiment limit, not a provider entitlement. */maxGetTransactionStartsPer10s?:number;record?:(kind:string,data:unknown)=>void;now?:()=>number;monotonic?:()=>number;fetcher?:typeof fetch;sleep?:ComponentBudgetOptions['sleep']};
 export class PilotRpcUnavailable extends Error{
   constructor(readonly code:string,readonly retryAt:number|null=null){super('PILOT_RPC_'+code);this.name='PilotRpcUnavailable';}
 }
+type UninvokedHistoryRefusal=Readonly<{kind:'pilot-uninvoked-history-v1';at:number;pool:string;code:string;retryAt:number|null;physicalSettled:boolean}>;
+// Only the actual client can issue this observation. Matching provider/error
+// text, a constructed error or a copied metadata object cannot manufacture it.
+const uninvokedHistoryRefusals=new WeakMap<Error,UninvokedHistoryRefusal>();
+export function pilotUninvokedHistoryRefusal(error:unknown){return error instanceof Error?uninvokedHistoryRefusals.get(error)??null:null;}
 const int=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const safe=(e:unknown)=>e instanceof Error&&/^(COMPONENT_[A-Z0-9_:-]{1,100}|PAPER_RPC_METHOD_DENIED)$/.test(e.message)?e.message:'COMPONENT_OPERATION_FAILED';
 // A job can lose its admission/deadline while a durable reservation is being
@@ -165,7 +170,7 @@ export class PilotRpc{
   }
   private async perform<T>(work:(options:PilotRpcCallOptions)=>Promise<T>,signal:AbortSignal|undefined,options:PilotRpcCallOptions,domain:'rpc'|'control'|'history',queryKey?:string):Promise<T>{
     if(signal?.aborted)throw new PilotRpcUnavailable('ABORTED');
-    this.openChapter(domain);this.active=true;this.pendingRetryAfter=null;this.pendingHttpStatus=null;
+    this.openChapter(domain);const operationBudget=this.budget!,invokedBefore=operationBudget.usage().actualInvokedUnits;this.active=true;this.pendingRetryAfter=null;this.pendingHttpStatus=null;
     try{
       const remaining=Math.floor(this.remainingMs()),timeout=options.timeoutMs??1000;if(!int(timeout)||timeout<1||timeout>1500)throw new PilotRpcUnavailable('INVALID_TIMEOUT');
       const result=await work({...options,timeoutMs:Math.max(1,Math.min(timeout,remaining)),admissionOpen:()=>this.remainingMs()>0&&(!options.admissionOpen||options.admissionOpen())});
@@ -198,7 +203,9 @@ export class PilotRpc{
           this.emit('pilot-rpc-unavailable',{at:this.now(),domain,code:u.haltedReason,cooldownUntil:domain==='history'?this.historyCooldown:this.cooldown,primaryRpcCooldownUntil:this.cooldown,physicalSettled:u.inFlight===0,reservationsRetained:u.uncertainResponseBytes});
         }else if(!['COMPONENT_UNIT_CAP','COMPONENT_TIME_CAP',...(this.options.persistent?['COMPONENT_RESPONSE_BYTE_CAP']:[])].includes(u.haltedReason))this.fatal=u.haltedReason;
       }
-      throw error instanceof PilotRpcUnavailable?error:new PilotRpcUnavailable(code,(domain==='history'?this.historyCooldown:this.cooldown)||null);
+      const unavailable=error instanceof PilotRpcUnavailable?error:new PilotRpcUnavailable(code,(domain==='history'?this.historyCooldown:this.cooldown)||null);
+      if(queryKey&&localAdmissionRefusal(code)&&this.budget===operationBudget&&u?.actualInvokedUnits===invokedBefore&&u.inFlight===0&&!u.waitingOrOperating&&!u.storageFailed){uninvokedHistoryRefusals.set(unavailable,Object.freeze({kind:'pilot-uninvoked-history-v1',at:this.now(),pool:queryKey,code:unavailable.code,retryAt:unavailable.retryAt,physicalSettled:true}));}
+      throw unavailable;
     }finally{this.active=false;try{this.persist();}catch{this.fatal='STORAGE_UNAVAILABLE';throw new PilotRpcUnavailable('STORAGE_UNAVAILABLE');}}
   }
   private historyDomain(method:string):'rpc'|'history'{return this.options.historyRoute===PUBLICNODE_HISTORY_ROUTE.version&&method===PUBLICNODE_HISTORY_ROUTE.method?'history':'rpc';}
@@ -237,7 +244,7 @@ export class PilotRpc{
     if(signal?.aborted)throw new PilotRpcUnavailable('ABORTED');
     if(method==='getTransaction'&&this.transactionStartsPer10s!==undefined){this.check();const at=this.now(),retryAt=this.methodReadyAtClock(method,1,at);if(retryAt>at){this.methodRefusals++;this.emit('pilot-method-capacity-refusal',{at,method,reserveStarts:1,retryAt,maximumStartsPer10s:this.transactionStartsPer10s,knownOrConservativelyInheritedStarts:this.recentMethodStarts(at).length,physicalRequestStarted:false,providerResponse:false});this.persist();throw new PilotRpcUnavailable('METHOD_PACING',retryAt);}}
     let queryKey:string|undefined;
-    if(options.queryTimeoutScope!==undefined){if(options.queryTimeoutScope!=='independent-history'||method!=='getSignaturesForAddress'||typeof params[0]!=='string'||params[0].length<32||params[0].length>44||!/^[1-9A-HJ-NP-Za-km-z]+$/.test(params[0]))throw new PilotRpcUnavailable('INVALID_QUERY_TIMEOUT_SCOPE');queryKey=params[0];this.check(this.historyDomain(method));const row=this.queryTimeouts.get(queryKey);if(row&&(this.now()<row.until||this.mono()<row.untilMono))throw new PilotRpcUnavailable('QUERY_COOLDOWN',Math.max(row.until,this.now()+Math.ceil(Math.max(0,row.untilMono-this.mono()))));}
+    if(options.queryTimeoutScope!==undefined){if(options.queryTimeoutScope!=='independent-history'||method!=='getSignaturesForAddress'||typeof params[0]!=='string'||params[0].length<32||params[0].length>44||!/^[1-9A-HJ-NP-Za-km-z]+$/.test(params[0]))throw new PilotRpcUnavailable('INVALID_QUERY_TIMEOUT_SCOPE');queryKey=params[0];try{this.check(this.historyDomain(method));const row=this.queryTimeouts.get(queryKey);if(row&&(this.now()<row.until||this.mono()<row.untilMono))throw new PilotRpcUnavailable('QUERY_COOLDOWN',Math.max(row.until,this.now()+Math.ceil(Math.max(0,row.untilMono-this.mono()))));}catch(error){if(error instanceof PilotRpcUnavailable&&['COOLDOWN','QUERY_COOLDOWN','PHYSICAL_SLOT_OCCUPIED'].includes(error.code)){const u=this.current();uninvokedHistoryRefusals.set(error,Object.freeze({kind:'pilot-uninvoked-history-v1',at:this.now(),pool:queryKey,code:error.code,retryAt:error.retryAt,physicalSettled:!this.active&&(u?.inFlight??0)===0&&u?.waitingOrOperating!==true}));}throw error;}}
     return this.perform(o=>this.transport!.call<T>(method,params,signal,o),signal,options,this.historyDomain(method),queryKey);
   }
   private collectHistoryBatchCounts(){
