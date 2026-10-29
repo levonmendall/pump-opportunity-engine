@@ -27,6 +27,22 @@ function sample(): Snapshot {
   };
 }
 const classify = (s: Snapshot, now = T, receivedAt = iso(T)) => operatingSnapshotFreshness(s, receivedAt, now)!;
+const currentEntryMessages = {
+  POE_ENTRY_MANUAL_PAUSE: 'The owner paused new entries',
+  POE_ENTRY_SAFE_STOP: 'A safe stop is active; existing obligations remain',
+  POE_ENTRY_DAILY_LOSS: 'The daily loss protection restricts new entries',
+  POE_ENTRY_FINANCIAL_UNCERTAINTY: 'Financial state or an order outcome is unresolved; new entries remain closed',
+  POE_ENTRY_EVIDENCE_UNAVAILABLE: 'Required trading evidence is unavailable; new entries remain closed',
+  POE_ENTRY_USD_UNAVAILABLE: 'A fresh SOL/USD price is unavailable; new entries remain closed',
+  POE_ENTRY_LIQUIDATION_UNAVAILABLE: 'Fresh actual-size liquidation pricing is unavailable',
+  POE_ENTRY_RECONCILIATION_REQUIRED: 'Financial reconciliation has not completed for the current account day',
+  POE_ENTRY_RECONCILIATION_STALE: 'Financial reconciliation exceeds the two-second entry boundary',
+  POE_ENTRY_PROVIDER_UNAVAILABLE: 'Provider access is unavailable or recovering; new entries remain closed',
+  POE_ENTRY_SOURCE_UNAVAILABLE: 'Required market observation is unavailable or recovering',
+  POE_ENTRY_MONITORING_UNAVAILABLE: 'Position protection or operating safeguards are not ready for new exposure',
+  POE_ENTRY_READINESS_REQUIRED: 'Fresh complete audited market evidence and financial readiness are required',
+  POE_ENTRY_FINANCIAL_PAUSED: 'The ledger entry control is paused; verified recovery is still required',
+};
 
 test('modern source freshness is independent of unavailable USD and 2s financial reconciliation validity', () => {
   const s = sample(); s.status.market = 'unavailable'; s.status.reconciled = false;
@@ -91,6 +107,22 @@ test('known entry restrictions remain visible and unknown blocker text never ent
   s.status.entries = 'enabled'; assert.equal(classify(s).entryRestriction, null);
 });
 
+for (const code of Object.keys(currentEntryMessages)) test('current entry restriction remains precise without changing permission: ' + code, () => {
+  const s = sample(); s.status.blocker = code;
+  const before = structuredClone(s), f = classify(s);
+  assert.equal(f.entryRestriction, code); assert.ok(f.reasonCodes.includes(code));
+  assert.equal(f.state, 'entry-paused'); assert.equal(f.reporting, 'current');
+  assert.deepEqual(s, before); assert.equal(s.status.entries, 'paused');
+  s.status.entries = 'enabled'; assert.equal(classify(s).entryRestriction, null);
+});
+
+test('a familiar entry-code prefix cannot export unknown private blocker text', () => {
+  const s = sample(); s.status.blocker = 'POE_ENTRY_USD_UNAVAILABLE: https://provider.invalid/DO_NOT_EXPORT';
+  const f = classify(s); assert.equal(f.entryRestriction, 'OTHER_SOURCE_RESTRICTION');
+  assert.equal(JSON.stringify(f).includes('DO_NOT_EXPORT'), false);
+  assert.equal(JSON.stringify(f).includes('provider.invalid'), false);
+});
+
 test('legacy sources keep combined market/accounting validity semantics and do not gain inferred capture facts', () => {
   const s = sample(); delete s.intelligence; const cache = new SnapshotCache(identity); s.status.reconciled = false;
   cache.accept(s, T); assert.equal(cache.status(T).state, 'unavailable'); assert.equal('operating' in cache.status(T), false); assert.equal(operatingSnapshotFreshness(s, iso(T), T), null);
@@ -142,6 +174,16 @@ test('actual served browser uses shared classifier, preserves true disconnection
     if (row.intelligence.quality.captureConnected) { assert.match(result[0]!, /^RUNNING · OBSERVING$/); assert.doesNotMatch(result[0]!, /UNAVAILABLE|STALE/); }
     else { assert.match(result[0]!, /SELECTED CAPTURE UNAVAILABLE/); assert.match(result[1]!, /Broad discovery continues/); assert.equal(result[3], 'warning'); }
   }
+  now = T;
+  for (const [code, message] of Object.entries(currentEntryMessages)) {
+    const current = sample(); current.status.blocker = code;
+    const result = run(current); assert.equal(result[0], 'RUNNING · OBSERVING');
+    assert.ok(result[1]!.includes(message)); assert.doesNotMatch(result[1]!, /another source-reported condition/);
+    assert.equal(result[3], 'warning'); assert.equal(current.status.entries, 'paused');
+  }
+  const unknown = sample(); unknown.status.blocker = 'POE_ENTRY_USD_UNAVAILABLE: DO_NOT_EXPORT';
+  const unknownResult = run(unknown); assert.match(unknownResult[1]!, /another source-reported condition/);
+  assert.doesNotMatch(unknownResult.join(' '), /DO_NOT_EXPORT/);
   now = T; const s = sample(); s.times.marketAt = iso(T - 120000); s.times.reconciledAt = iso(T - 120000); s.status.reconciled = false;
   let result = run(s); assert.equal(result[0], 'RUNNING · OBSERVING'); assert.match(result[1]!, /Financial valuation timestamp is over 90 seconds old/); assert.doesNotMatch(result[0]!, /STALE/);
   s.times.marketAt = null; s.balances.equityUsd = null; s.balances.solPriceUsd = null; result = run(s); assert.equal(result[0], 'RUNNING · OBSERVING'); assert.match(result[1]!, /USD valuation is unavailable/);

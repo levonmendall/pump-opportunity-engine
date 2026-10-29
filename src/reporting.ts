@@ -150,7 +150,9 @@ export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: strin
   else if (reconciliationAgeMs > 90_000) reasonCodes.push('RECONCILIATION_STALE');
   let entryRestriction: string | null = null;
   if (snapshot.status.entries !== 'enabled' && snapshot.status.blocker !== null) {
-    if (snapshot.status.blocker === 'execution startup: fresh reconciliation/readiness required' || snapshot.status.blocker === 'startup: observation only; explicit runtime readiness required') entryRestriction = 'ENTRY_READINESS_REQUIRED';
+    const currentEntryCodes = ['POE_ENTRY_MANUAL_PAUSE', 'POE_ENTRY_SAFE_STOP', 'POE_ENTRY_DAILY_LOSS', 'POE_ENTRY_FINANCIAL_UNCERTAINTY', 'POE_ENTRY_EVIDENCE_UNAVAILABLE', 'POE_ENTRY_USD_UNAVAILABLE', 'POE_ENTRY_LIQUIDATION_UNAVAILABLE', 'POE_ENTRY_RECONCILIATION_REQUIRED', 'POE_ENTRY_RECONCILIATION_STALE', 'POE_ENTRY_PROVIDER_UNAVAILABLE', 'POE_ENTRY_SOURCE_UNAVAILABLE', 'POE_ENTRY_MONITORING_UNAVAILABLE', 'POE_ENTRY_READINESS_REQUIRED', 'POE_ENTRY_FINANCIAL_PAUSED'];
+    if (currentEntryCodes.includes(snapshot.status.blocker)) entryRestriction = snapshot.status.blocker;
+    else if (snapshot.status.blocker === 'execution startup: fresh reconciliation/readiness required' || snapshot.status.blocker === 'startup: observation only; explicit runtime readiness required') entryRestriction = 'ENTRY_READINESS_REQUIRED';
     else if (snapshot.status.blocker === 'explicit verified runtime readiness') entryRestriction = 'CURRENT_ENTRY_GATE_NOT_SATISFIED';
     else if (snapshot.status.blocker === 'operator paused new entries' || snapshot.status.blocker === 'owner paused new entries') entryRestriction = 'OWNER_ENTRY_PAUSE';
     else if (snapshot.status.blocker === 'safe stop requested' || snapshot.status.blocker === 'owner requested safe stop') entryRestriction = 'SAFE_STOP_REQUESTED';

@@ -1,0 +1,97 @@
+{
+  "verifiedAt": "2026-10-29T18:09:06.111594+00:00",
+  "baseCommit": "9bdf59aa9ca4fe2af92dfeecd65cfa6ab8346fe1",
+  "classification": "OFFLINE_VERIFIED_RENDER_COMPANION_NOT_DEPLOYED",
+  "sourceUnchangedThroughFullSuite": true,
+  "files": {
+    "src/reporting.ts": {
+      "bytes": 24780,
+      "sha256": "b5a28ad6a8a37cb00f0187dad2cda678e57482c040d9e5e3a5fde6c68ea153a2"
+    },
+    "src/dashboard.ts": {
+      "bytes": 70770,
+      "sha256": "04f504f80502849b4af98027ab40588368f7f9962b393ee4b1ce7e7c300b6d46"
+    },
+    "test/reporting-operating-freshness.test.ts": {
+      "bytes": 18184,
+      "sha256": "94d77ab72578adb04e9fff9d3ee7ca8b6b331319fdc2ddd573ea51d44410648a"
+    }
+  },
+  "fullSuite": {
+    "command": "npm test",
+    "tests": 262,
+    "passed": 262,
+    "failed": 0,
+    "durationMs": 36500.994052
+  },
+  "focusedTests": {
+    "command": "node --import tsx --test test/reporting-operating-freshness.test.ts",
+    "passed": 23,
+    "failed": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "passed": true
+  },
+  "backendEnumCheck": {
+    "actualCurrentSource": "/workspace/poe-entry-readiness-repair/src/native-paper.ts",
+    "codesMatch": true,
+    "count": 14,
+    "codes": [
+      "POE_ENTRY_DAILY_LOSS",
+      "POE_ENTRY_EVIDENCE_UNAVAILABLE",
+      "POE_ENTRY_FINANCIAL_PAUSED",
+      "POE_ENTRY_FINANCIAL_UNCERTAINTY",
+      "POE_ENTRY_LIQUIDATION_UNAVAILABLE",
+      "POE_ENTRY_MANUAL_PAUSE",
+      "POE_ENTRY_MONITORING_UNAVAILABLE",
+      "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "POE_ENTRY_READINESS_REQUIRED",
+      "POE_ENTRY_RECONCILIATION_REQUIRED",
+      "POE_ENTRY_RECONCILIATION_STALE",
+      "POE_ENTRY_SAFE_STOP",
+      "POE_ENTRY_SOURCE_UNAVAILABLE",
+      "POE_ENTRY_USD_UNAVAILABLE"
+    ],
+    "limitation": "Backend work remains in progress; root must confirm enum against final frozen backend source."
+  },
+  "scope": {
+    "financialValuesChanged": false,
+    "entryPermissionsChanged": false,
+    "freshnessThresholdsChanged": false,
+    "schemaChanged": false,
+    "accountChanged": false,
+    "EC2ServiceRestarted": false,
+    "RenderDeployed": false
+  },
+  "artifacts": {
+    "npm-test.raw.txt": {
+      "bytes": 29234,
+      "sha256": "85c80adf58fdb3bf8560e3aec5d0b322177fb2c7bc54d86d7be08e8fa303ca9e"
+    },
+    "independent-review.json": {
+      "bytes": 1032,
+      "sha256": "881320736ea2f5a7bd3a47f8fcc31afba7d2702b808a42514f6fa6b1de5e7ea1"
+    },
+    "source-before-tests.json": {
+      "bytes": 678,
+      "sha256": "dafe74a74411832b06b63064fff6ce0b67cdbfcc1e82803747e71e6a2f4372a4"
+    },
+    "build.raw.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "source.patch": {
+      "bytes": 13900,
+      "sha256": "77e030ba3c9a1464b922a93894164a6fc8a2bcb8cdd697d831c70d637ce34285"
+    },
+    "README.md": {
+      "bytes": 1720,
+      "sha256": "9f7cf1308b4f0ab86e6dd627841d639be2684d7c486b5990097279f874ff3dcf"
+    },
+    "focused-tests.raw.txt": {
+      "bytes": 2865,
+      "sha256": "e363b551aaf0734baa2bcff2370ddd03269571f004a7445ad7a8d05caffed616"
+    }
+  }
+}
