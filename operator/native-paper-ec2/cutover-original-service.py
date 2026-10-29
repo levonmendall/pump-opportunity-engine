@@ -23,6 +23,7 @@ CURRENT=pathlib.Path('/opt/poe/current')
 DROPIN=pathlib.Path('/etc/systemd/system/poe-runtime.service.d/90-native-engine.conf')
 MANIFEST=ETC/'native-engine.json'
 PUBLIC_STATUS=pathlib.Path('/var/lib/poe-public/status.json')
+SERVICE_CGROUP=pathlib.Path('/sys/fs/cgroup/system.slice/poe-runtime.service/cgroup.procs')
 ORIGINAL='bce3d22bb434eb429aafacb788a18f39ec189c1b'
 ACCOUNT_ID='poe-3123e352-4581-455b-85db-acd7e825e99e'
 INCEPTION=1793052456212
@@ -154,20 +155,67 @@ def stopped_phase(operation,recover):
   recover();raise
  finally:
   if owner is not None:os.close(owner)
-def upgrade(expected_hash,auditor,supervisor):
+def unit_stop_fields():
+ fields={'LoadState','ActiveState','SubState','MainPID','ControlPID','ControlGroup','Job','Result','ExecMainCode','ExecMainStatus'};r=subprocess.run(['/usr/bin/systemctl','show','--all','poe-runtime.service','--property='+','.join(sorted(fields))],capture_output=True,text=True,timeout=5,env={'PATH':'/usr/bin:/bin','LANG':'C'},check=False);need(r.returncode==0 and len(r.stdout)<=8192 and len(r.stderr)<=4096,'FIXED_UNIT_STOP_METADATA_UNAVAILABLE');value={key:text for line in r.stdout.splitlines()for key,sep,text in[line.partition('=')]if sep and key in fields};need(set(value)==fields,'COMPLETE_UNIT_STOP_METADATA_REQUIRED');return value
+def observe_stopped_writer():
+ """Terminal unit state is distinct from physical financial-owner settlement."""
+ evidence={'metadataAvailable':False,'financialOwnerLeaseHeldByCaller':True,'physicalWriterSettled':False,'gracefulStopClaimed':False}
+ try:
+  first=unit_stop_fields();evidence['unitBefore']=first
+  try:
+   fd=os.open(SERVICE_CGROUP,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+   try:raw=os.read(fd,8193)
+   finally:os.close(fd)
+   need(len(raw)<=8192,'SERVICE_CGROUP_RESPONSE_BOUND');parts=raw.decode('ascii').split();need(all(p.isdigit()and int(p)>0 for p in parts)and len(parts)<=256,'SERVICE_CGROUP_PID_BOUND');pids=[int(p)for p in parts];group={'state':'present','pidCount':len(pids),'pids':pids[:32],'pidListTruncated':len(pids)>32}
+  except FileNotFoundError:group={'state':'absent','pidCount':0,'pids':[],'pidListTruncated':False}
+  second=unit_stop_fields();critical=['LoadState','ActiveState','SubState','MainPID','ControlPID','ControlGroup','Job'];stable=all(first[k]==second[k]for k in critical);terminal=(second['ActiveState'],second['SubState'])in[('inactive','dead'),('failed','failed')];valid_group=second['ControlGroup']in['','/system.slice/poe-runtime.service'];settled=stable and second['LoadState']=='loaded'and terminal and second['MainPID']=='0'and second['ControlPID']=='0'and second['Job']in['','0']and valid_group and group['pidCount']==0;evidence.update(metadataAvailable=True,unitAfter=second,cgroup=group,stable=stable,physicalWriterSettled=settled,terminalStateAccepted=terminal,meaning='A terminal failed unit can be physically settled; this does not certify a graceful shutdown. The same financial owner lease remains held and a fresh same-inode financial audit is still required.')
+ except(OSError,ValueError,Refused,subprocess.SubprocessError):evidence['reason']='STOP_METADATA_OR_CGROUP_NOT_VERIFIED'
+ return evidence
+def historical_pid1_lifecycle(at):
+ """Bounded manager-only prior lifecycle evidence; never required for cutover."""
+ try:
+  need(type(at)is int and at>=INCEPTION,'PRIOR_TRANSITION_TIMESTAMP_REQUIRED');r=subprocess.run(['/usr/bin/journalctl','--no-pager','--output=json','-n','40','--since','@'+str((at-120000)//1000),'--until','@'+str((at+300000)//1000),'-u','poe-runtime.service','_PID=1'],capture_output=True,text=True,timeout=5,env={'PATH':'/usr/bin:/bin','LANG':'C'},check=False);need(r.returncode==0 and len(r.stdout.encode())<=65536,'PRIOR_PID1_JOURNAL_UNAVAILABLE');rows=[]
+  for line in r.stdout.splitlines():
+   if not line or len(line)>8192:continue
+   v=json.loads(line)
+   if v.get('_PID')!='1':continue
+   message=v.get('MESSAGE');unit=v.get('UNIT')or v.get('OBJECT_SYSTEMD_UNIT');
+   if type(message)is not str or unit!='poe-runtime.service'and'poe-runtime.service'not in message:continue
+   rows.append({'pid':1,'unit':'poe-runtime.service','timestamp':str(v.get('__REALTIME_TIMESTAMP',''))[:32],'message':message[:1000]})
+  return{'available':True,'pid1Only':True,'rows':rows,'coverage':'At most 40 retained manager events in the bounded prior-attempt interval; absence is not proof that an event did not occur.'}
+ except(OSError,ValueError,Refused,subprocess.SubprocessError):return{'available':False,'pid1Only':True,'reason':'PRIOR_MANAGER_JOURNAL_UNAVAILABLE','coverage':'Exact prior failure state remains unverified; fresh physical settlement and financial proof remain mandatory.'}
+def publish_stop_observation(manifest,transition,proof,uid):
+ value={'schemaVersion':1,'kind':'poe-original-upgrade-stop-observation-v1','accountId':ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','targetSource':manifest['source'],'previousRelease':ORIGINAL,'observedAt':int(time.time()*1000),'attempt':transition.get('retryNumber',0),'stopProof':proof,'complete':False,'operationalAcceptance':False};print(json.dumps(value,separators=(',',':')),flush=True)
+ try:
+  folder=PUBLIC_STATUS.parent;directory(folder,uid);need(stat.S_IMODE(folder.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');raw=(json.dumps(value,separators=(',',':'))+'\n').encode();need(len(raw)<=4096,'PUBLIC_STOP_PROOF_BOUND');atomic(folder/'upgrade-verification.json',raw,0,0,0o644)
+ except(OSError,Refused):pass
+def upgrade(expected_hash,auditor,supervisor,resume=False,repair_sha=None):
  uid,gid,status=validate_host(auditor,supervisor);index,manifest,data=package(expected_hash,supervisor);commit=index['sourceCommit'];target=RELEASES/commit
- need(CURRENT.resolve(strict=True)==RELEASES/ORIGINAL and status.get('ActiveState')=='active'and not DROPIN.exists()and not MANIFEST.exists()and not ACCOUNT.exists()and not SERVICE.exists(),'INITIAL_SAME_ACCOUNT_CUTOVER_ONLY')
- need(not target.exists(),'NEW_RELEASE_DIRECTORY_REQUIRED');inode=LEDGER.lstat();expected_inode=(inode.st_dev,inode.st_ino);before=original_audit(auditor,expected_inode);need(before['flatAtSnapshot']and before['lockedDepositLamports']=='0','ORIGINAL_EXPOSURE_REQUIRES_MANAGEMENT_HANDOFF_NOT_OBSERVER_CUTOVER')
- archived=data['original-status.json'];need(sha(archived)==json.loads(data['input.json'])['reportingBinding']['sourceStatusSha256'],'ARCHIVED_ORIGINAL_STATUS_BINDING_MISMATCH');prior=json.loads(archived);public=json.loads(read(pathlib.Path('/var/lib/poe-public/status.json'),4096,uid))
+ need(CURRENT.resolve(strict=True)==RELEASES/ORIGINAL and status.get('ActiveState')=='active'and not any(os.path.lexists(p)for p in[DROPIN,MANIFEST,ACCOUNT,SERVICE]),'INITIAL_SAME_ACCOUNT_CUTOVER_ONLY')
+ prior_transition=None
+ if resume:
+  need(hashed(repair_sha),'VERIFIED_IN_MEMORY_REPAIR_DRIVER_REQUIRED');prior_dir=RECORDS/commit;directory(prior_dir,0,True);prior_raw=read(prior_dir/'transition.json',128*1024);prior_transition=json.loads(prior_raw);need(prior_transition.get('phase')=='cutover-failed-original-source-resumed-before-new-start'and prior_transition.get('packageIndexSha256')==expected_hash and prior_transition.get('source')==manifest['source']and prior_transition.get('accountId')==ACCOUNT_ID and prior_transition.get('inceptionAt')==INCEPTION and not prior_transition.get('startRequestedAt'),'KNOWN_PRE_START_REFUSAL_REQUIRED');supervisor.release_verified(manifest);need(read(target/'operator/native-paper-ec2/run-authoritative-service.py',128*1024)==data['run-authoritative-service.py'],'UNCHANGED_PREPARED_SUPERVISOR_REQUIRED')
+ else:need(not target.exists(),'NEW_RELEASE_DIRECTORY_REQUIRED')
+ inode=LEDGER.lstat();expected_inode=(inode.st_dev,inode.st_ino);before=original_audit(auditor,expected_inode);need(before['flatAtSnapshot']and before['lockedDepositLamports']=='0','ORIGINAL_EXPOSURE_REQUIRES_MANAGEMENT_HANDOFF_NOT_OBSERVER_CUTOVER')
+ if resume:
+  need(financial_rollback_equivalent(prior_transition['before'],before),'PREPARED_REFUSAL_FINANCIAL_STATE_CHANGED');prior_prefix=verify_live_financial_prefix(auditor,prior_transition['beforeStopVerifiedBackup']['financial'],prior_transition['beforeStopVerifiedBackup'])
+ archived=data['original-status.json'];need(sha(archived)==json.loads(data['input.json'])['reportingBinding']['sourceStatusSha256'],'ARCHIVED_ORIGINAL_STATUS_BINDING_MISMATCH');prior=json.loads(archived);public=json.loads(read(PUBLIC_STATUS,4096,uid))
  for view in[prior,public]:need(view.get('accountId')==ACCOUNT_ID and view.get('inceptionAt')=='2026-10-26T22:07:36.212Z'and view.get('release')==ORIGINAL,'ORIGINAL_PUBLIC_SOURCE_IDENTITY_REQUIRED')
  need(os.statvfs(ROOT).f_bavail*os.statvfs(ROOT).f_frsize>=1024*MIB,'CUTOVER_DISK_HEADROOM_REQUIRED')
- make_dir(RECORDS,0,0,0o700);record_dir=RECORDS/commit;make_dir(record_dir,0,0,0o700);need(not(record_dir/'transition.json').exists(),'NO_PREVIOUS_TRANSITION_TO_OVERWRITE');make_dir(BACKUPS.parent,0,0,0o755);make_dir(BACKUPS,0,0,0o700);backup_dir=BACKUPS/commit;make_dir(backup_dir,0,0,0o700)
- prestop_backup=snapshot_backup(backup_dir/'before-stop.sqlite',auditor,None);need(financial_rollback_equivalent(before,prestop_backup['financial']),'FINANCIAL_STATE_CHANGED_DURING_PREFLIGHT')
- transition={'schemaVersion':1,'kind':'poe-original-account-cutover','accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'source':manifest['source'],'packageIndexSha256':expected_hash,'previousRelease':ORIGINAL,'at':int(time.time()*1000),'phase':'preflight-verified','before':before,'beforeStopVerifiedBackup':prestop_backup,'originalLedgerPathUnchanged':str(LEDGER),'financialImport':False,'capitalInitialized':False,'secretChanged':False};write_json(record_dir/'transition.json',transition)
- # Only immutable code is staged while the original observer still operates.
- make_dir(target,0,gid,0o750)
- for row in manifest['files']:atomic(target/row['file'],data[row['file']],0,gid,0o640)
- op=target/'operator';make_dir(op,0,gid,0o750);op=op/'native-paper-ec2';make_dir(op,0,gid,0o750);atomic(op/'run-authoritative-service.py',data['run-authoritative-service.py'],0,gid,0o640);syncdir(target)
+ make_dir(RECORDS,0,0,0o700);record_dir=RECORDS/commit;make_dir(record_dir,0,0,0o700);make_dir(BACKUPS.parent,0,0,0o755);make_dir(BACKUPS,0,0,0o700)
+ if resume:
+  retry=prior_transition.get('retryNumber',0)+1;need(type(retry)is int and retry>0,'VALID_RETRY_SEQUENCE_REQUIRED');backup_dir=BACKUPS/(commit+'-retry-'+str(retry).zfill(2));need(not backup_dir.exists(),'NEW_RETRY_BACKUP_DIRECTORY_REQUIRED');transition=dict(prior_transition);transition.update(retryNumber=retry,phase='resume-preflight-verified',administrativeRepair={'verifiedInMemoryDriverSha256':repair_sha,'unchangedPackageIndexSha256':expected_hash,'priorTransitionSha256':sha(prior_raw),'priorFailureState':'Exact first-attempt state was not recorded; fresh physical proof is mandatory.'},priorPid1Lifecycle=historical_pid1_lifecycle(prior_transition['at']),priorFinancialPrefixVerified=prior_prefix)
+ else:
+  need(not(record_dir/'transition.json').exists(),'NO_PREVIOUS_TRANSITION_TO_OVERWRITE');backup_dir=BACKUPS/commit;transition={'schemaVersion':1,'kind':'poe-original-account-cutover','accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'source':manifest['source'],'packageIndexSha256':expected_hash,'previousRelease':ORIGINAL,'at':int(time.time()*1000),'phase':'preflight-verified','before':before,'originalLedgerPathUnchanged':str(LEDGER),'financialImport':False,'capitalInitialized':False,'secretChanged':False}
+ make_dir(backup_dir,0,0,0o700);prestop_backup=snapshot_backup(backup_dir/'before-stop.sqlite',auditor,None);need(financial_rollback_equivalent(before,prestop_backup['financial']),'FINANCIAL_STATE_CHANGED_DURING_PREFLIGHT')
+ if resume:transition['retryBeforeStopVerifiedBackup']=prestop_backup
+ else:transition['beforeStopVerifiedBackup']=prestop_backup
+ write_json(record_dir/'transition.json',transition)
+ # Reuse a prior immutable preparation only after exact source closure checks.
+ if not resume:
+  make_dir(target,0,gid,0o750)
+  for row in manifest['files']:atomic(target/row['file'],data[row['file']],0,gid,0o640)
+  op=target/'operator';make_dir(op,0,gid,0o750);op=op/'native-paper-ec2';make_dir(op,0,gid,0o750);atomic(op/'run-authoritative-service.py',data['run-authoritative-service.py'],0,gid,0o640);syncdir(target)
  def recover_original_before_new_start():
   # No new source has been started yet. Remove only this exact package's
   # configuration, restore the existing release, then resume its writer.
@@ -176,16 +224,16 @@ def upgrade(expected_hash,auditor,supervisor):
   if CURRENT.resolve(strict=True)==target:switch_current(RELEASES/ORIGINAL)
   need(CURRENT.resolve(strict=True)==RELEASES/ORIGINAL,'RECOVERY_RELEASE_CHANGED');systemctl('daemon-reload');systemctl('start','poe-runtime.service');transition.update(phase='cutover-failed-original-source-resumed-before-new-start',recoveredAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition)
  def stopped_install():
-  stopped=auditor.service_status();need(stopped.get('ActiveState')=='inactive'and stopped.get('MainPID')=='0','ORIGINAL_WRITER_MUST_BE_SETTLED');stable=original_audit(auditor,expected_inode);need(stable['flatAtSnapshot']and stable['lockedDepositLamports']=='0','EXPOSURE_APPEARED_BEFORE_CUTOVER');actual_stopped_at=int(time.time()*1000);installed_input,input_receipt=transition_input(data['input.json'],actual_stopped_at);backup=snapshot_backup(backup_dir/'ledger.sqlite',auditor,stable);transition.update(phase='original-stopped-backup-verified',stoppedAt=actual_stopped_at,stoppedFinancial=stable,backup=backup,inputTransition=input_receipt);write_json(record_dir/'transition.json',transition)
+  stopped=observe_stopped_writer();transition.update(phase='writer-stop-observed',lastStopProof=stopped);write_json(record_dir/'transition.json',transition);publish_stop_observation(manifest,transition,stopped,uid);need(stopped['physicalWriterSettled'],'ORIGINAL_WRITER_MUST_BE_SETTLED');stable=original_audit(auditor,expected_inode);need(stable['flatAtSnapshot']and stable['lockedDepositLamports']=='0','EXPOSURE_APPEARED_BEFORE_CUTOVER');actual_stopped_at=int(time.time()*1000);installed_input,input_receipt=transition_input(data['input.json'],actual_stopped_at);backup=snapshot_backup(backup_dir/'ledger.sqlite',auditor,stable);transition.update(phase='original-stopped-backup-verified',stoppedAt=actual_stopped_at,stoppedFinancial=stable,backup=backup,inputTransition=input_receipt);write_json(record_dir/'transition.json',transition)
   make_dir(ACCOUNT,uid,gid,0o700);make_dir(SERVICE,uid,gid,0o700);atomic(ACCOUNT/'input.json',installed_input,uid,gid);atomic(ACCOUNT/'research-baseline.json',data['research-baseline.json'],uid,gid);atomic(MANIFEST,data['service.json'],0,gid,0o640)
   make_dir(DROPIN.parent,0,0,0o755);atomic(DROPIN,data['poe-runtime-persistent.conf'],0,0,0o644);switch_current(target);systemctl('daemon-reload');transition.update(phase='new-source-installed-not-started',installedAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition)
  stopped_phase(stopped_install,recover_original_before_new_start)
  # The sole runtime acquires the unchanged original DB owner lease itself.
- transition.update(phase='new-service-start-requested-runtime-and-render-verification-required',startRequestedAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition);systemctl('start','poe-runtime.service');verification,financial_proof=post_start_verification(manifest,transition,auditor,uid,gid);transition.update(phase='post-start-read-only-verified-render-and-operation-still-unverified'if verification['complete']else'post-start-verification-incomplete-new-financial-source-retained',postStartVerification=verification,postStartFinancial=financial_proof);write_json(record_dir/'transition.json',transition);public_dir=pathlib.Path('/var/lib/poe-public');directory(public_dir,uid);need(stat.S_IMODE(public_dir.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');atomic(public_dir/'upgrade-verification.json',(json.dumps(verification,separators=(',',':'))+'\n').encode(),0,0,0o644);print(json.dumps(verification,separators=(',',':')))
+ transition.update(phase='new-service-start-requested-runtime-and-render-verification-required',startRequestedAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition);systemctl('start','poe-runtime.service');verification,financial_proof=post_start_verification(manifest,transition,auditor,uid,gid);transition.update(phase='post-start-read-only-verified-render-and-operation-still-unverified'if verification['complete']else'post-start-verification-incomplete-new-financial-source-retained',postStartVerification=verification,postStartFinancial=financial_proof);write_json(record_dir/'transition.json',transition);public_dir=PUBLIC_STATUS.parent;directory(public_dir,uid);need(stat.S_IMODE(public_dir.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');atomic(public_dir/'upgrade-verification.json',(json.dumps(verification,separators=(',',':'))+'\n').encode(),0,0,0o644);print(json.dumps(verification,separators=(',',':')))
  need(verification['complete'],'POST_START_VERIFICATION_INCOMPLETE_NEW_FINANCIAL_SOURCE_RETAINED')
 def verify_live_financial_prefix(auditor,stopped,backup,deadline_seconds=5):
  """Exact whole-column prefix streams; all original SQLite access is owner UID."""
- backup_path=pathlib.Path(backup['file']);need(backup_path.resolve(strict=True)==backup_path and backup_path.parent.parent==BACKUPS and backup_path.name=='ledger.sqlite','EXACT_STOPPED_BACKUP_PATH_REQUIRED');raw=read(backup_path,128*MIB);need(sha(raw)==backup['sha256']and len(raw)==backup['bytes'],'VERIFIED_STOPPED_BACKUP_CHANGED')
+ backup_path=pathlib.Path(backup['file']);need(backup_path.resolve(strict=True)==backup_path and backup_path.parent.parent==BACKUPS and backup_path.name in['ledger.sqlite','before-stop.sqlite'],'EXACT_STOPPED_BACKUP_PATH_REQUIRED');raw=read(backup_path,128*MIB);need(sha(raw)==backup['sha256']and len(raw)==backup['bytes'],'VERIFIED_STOPPED_BACKUP_CHANGED')
  owner=pwd.getpwnam('poe-runtime');uid=owner.pw_uid;need(LEDGER.resolve(strict=True)==LEDGER,'CANONICAL_ORIGINAL_LEDGER_REQUIRED');meta=auditor.file_metadata(LEDGER,uid,True);need(meta['exists'],'EXISTING_ORIGINAL_LEDGER_REQUIRED');identity=(meta['device'],meta['inode']);fd=os.open(LEDGER,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK);prior=None;deadline=time.monotonic()+deadline_seconds
  try:
   need((os.fstat(fd).st_dev,os.fstat(fd).st_ino)==identity,'ORIGINAL_LEDGER_OPEN_IDENTITY_CHANGED')
@@ -270,12 +318,14 @@ def bootstrap(expected_hash):
  for name in['audit-original-account.py','run-authoritative-service.py','cutover-original-service.py']:atomic(TOOLS/name,data[name],0,0)
  HERE=TOOLS
 def main():
+ global HERE
  need(os.getuid()==0,'EXISTING_OWNER_ROOT_ACCESS_REQUIRED');os.umask(0o077);directory(ETC,0)
- need(len(sys.argv)==3 and sys.argv[1]in['bootstrap','upgrade','rollback'],'EXPLICIT_OPERATION_WITH_PIN_REQUIRED')
+ need(len(sys.argv)==3 and sys.argv[1]in['bootstrap','upgrade','rollback','resume'],'EXPLICIT_OPERATION_WITH_PIN_REQUIRED')
  op=os.open(ETC/'cutover.owner.lock',os.O_RDWR|os.O_CREAT|os.O_NOFOLLOW,0o600)
  try:
   ls=os.fstat(op);need(stat.S_ISREG(ls.st_mode)and ls.st_nlink==1 and ls.st_uid==0 and stat.S_IMODE(ls.st_mode)==0o600,'ROOT_CUTOVER_OWNER_LOCK_REQUIRED');fcntl.flock(op,fcntl.LOCK_EX|fcntl.LOCK_NB)
   if sys.argv[1]=='bootstrap':bootstrap(sys.argv[2])
+  if sys.argv[1]=='resume':need(hashed(globals().get('__poe_verified_driver_sha256__')),'VERIFIED_IN_MEMORY_REPAIR_DRIVER_REQUIRED');HERE=TOOLS
   directory(HERE,0);expected=sys.argv[2]
   if sys.argv[1]=='rollback':
    need(hashed(expected,40),'EXACT_ROLLBACK_SOURCE_REQUIRED');expected=json.loads(read(RECORDS/expected/'transition.json',128*1024))['packageIndexSha256']
@@ -283,7 +333,7 @@ def main():
   for name in['audit-original-account.py','run-authoritative-service.py','cutover-original-service.py']:
    raw=read(HERE/name,128*1024);need(name in rows and sha(raw)==rows[name].get('sha256')and len(raw)==rows[name].get('bytes'),'REVIEWED_ROOT_HELPER_HASH_REQUIRED')
   auditor=module('poe_original_audit',HERE/'audit-original-account.py');supervisor=module('poe_original_supervisor',HERE/'run-authoritative-service.py')
-  if sys.argv[1]in['bootstrap','upgrade']:upgrade(sys.argv[2],auditor,supervisor)
+  if sys.argv[1]in['bootstrap','upgrade','resume']:upgrade(sys.argv[2],auditor,supervisor,resume=sys.argv[1]=='resume',repair_sha=globals().get('__poe_verified_driver_sha256__'))
   else:rollback(sys.argv[2],auditor,supervisor)
  finally:os.close(op)
 if __name__=='__main__':

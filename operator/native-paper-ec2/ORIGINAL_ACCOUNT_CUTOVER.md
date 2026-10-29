@@ -184,3 +184,45 @@ Experimental financial storage, publisher, credentials and `/api/pilot` may be
 retired only after the original cutover and reporting checks pass. Preserve
 irreplaceable market evidence and usage receipts. Do not restart that account
 as a workaround for unavailable original-service privileges.
+
+## Resume the retained pre-start refusal
+
+The owner's first command reached `ORIGINAL_WRITER_MUST_BE_SETTLED`. The exact
+unit state at that instant was not recorded, so it is **not proven** that a
+failed-but-dead unit caused the refusal. Subsequent read-only host/public
+evidence established that the original observer restarted and resumed fresh
+original-account reporting. The failure did not authorize clearing its records.
+
+The corrected administrative driver supports explicit `resume ORIGINAL_INDEX`
+from newly staged, bounded, SHA-verified **in-memory** code. The owner command
+must pass `__poe_verified_driver_sha256__` containing the SHA of the same bytes
+it verifies and executes. It does not run the old on-disk driver's nonexistent
+new mode. This repair imports the unchanged protected original helpers and
+verifies their original package index; it does not replace the original root
+package, tools, index, compiled runtime or configuration.
+
+Resume is restricted to the recorded pre-start refusal, original observer
+release, original financial identity and flat unchanged obligations. Any prior
+new-source start, changed prepared executable, populated or dangling partial
+account/service path, or existing retry backup refuses before a new stop. It
+verifies the original before-stop backup's complete financial prefix against
+the current original account. It optionally captures bounded PID-1-only unit
+lifecycle messages before stopping; unavailable historical logs do not replace
+fresh physical/financial proof.
+
+After the stop returns and the same financial-owner lease is held, it records
+complete `systemctl show --all` stop metadata and the fixed service-cgroup
+process census **before** testing settlement. Only terminal `inactive/dead` or
+`failed/failed` is accepted, with stable metadata, both main/control PIDs zero,
+no systemd job, and an empty or kernel-removed fixed service cgroup. A failed
+unit is not called a graceful stop. A fresh consistent same-inode financial
+audit remains mandatory. Stop proof is also emitted as bounded nonsecret
+stdout/public upgrade-receipt data, so another refusal is diagnosable without
+guessing its state afterward.
+
+Prior backups and append-only phase files remain untouched. A resumed attempt
+uses a fresh `/var/backups/poe/<commit>-retry-01/` directory (and an incremented
+suffix on a later explicitly corrected attempt). The current transition records
+the actual repair-code SHA, original package hash and prior transition hash.
+It reuses immutable prepared application bytes only after full hash validation.
+No account is created, imported, reseeded or substituted by this resume path.
