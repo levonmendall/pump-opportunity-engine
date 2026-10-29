@@ -1,0 +1,16 @@
+✔ busy passive receipts consume bounded durable reservations without per-message persistence (21.160742ms)
+✔ an abrupt passive crash is retained as uncertainty, never invented measured bytes or a new request (436.130925ms)
+✔ HTTP receipt chunks reuse their durable physical response reservation until settlement (39.402738ms)
+✔ an abrupt HTTP-body crash retains the original full durable uncertainty and request identity (477.915935ms)
+✔ coalesced exact-receipt checkpoints preserve an honest late timer and close flushes its tail (1037.354893ms)
+✔ new passive reservation persistence failure rejects acceptance and cannot admit unaccounted bytes (4.150343ms)
+✔ settled-reader checkpoints and handoffs preserve passive crash uncertainty without increasing RPC starts (174.366755ms)
+✔ malformed or unversioned passive accounting cannot silently disappear from a baseline reader (2.787152ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3021.278773

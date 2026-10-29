@@ -1,0 +1,46 @@
+{
+  "kind": "OFFLINE_PASSIVE_ACCOUNTING_SYNCHRONOUS_BLOCK_REPRODUCTION",
+  "modulePath": "/workspace/poe-passive-accounting-batches/src/component-budget.ts",
+  "sourceSha256": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+  "receipts": 1200,
+  "bytes": 4915200,
+  "injectedBeforeEachDurablePersistMs": 10,
+  "elapsedMs": 22.09972300000001,
+  "maximum50msTimerGapMs": 50.266008,
+  "timerTicks": 3,
+  "actualCalls": 0,
+  "httpBytes": 0,
+  "wsBytes": 4915200,
+  "durableObservedBeforeClose": 4202496,
+  "durableCrashTailBeforeClose": 4194304,
+  "durableWsBytesAfterClose": 4915200,
+  "persistence": {
+    "attempts": 3,
+    "totalMs": 21.186698000000035,
+    "maximumMs": 10.574919000000023
+  },
+  "receiptAccounting": {
+    "version": "durable-receipt-reservation-v1",
+    "reservedBytes": 3481600,
+    "uncertainBytes": 0,
+    "policy": {
+      "version": "durable-receipt-reservation-v1",
+      "maximumPassiveReservationBytes": 4194304,
+      "maximumAcceptedReceiptBytes": 2097152,
+      "minimumPassiveTailBytes": 2097152,
+      "maximumScheduledFlushMs": 1000
+    },
+    "pendingDirtyAgeMs": 70.5144,
+    "passiveReceipts": 1200,
+    "passiveBytes": 4915200,
+    "coalescedReceipts": 1198,
+    "reservations": 2,
+    "timerFlushes": 0,
+    "maximumDirtyAgeMs": 0.5112390000000175
+  },
+  "providerRequests": 0,
+  "financialDatabaseOpened": false,
+  "productionTouched": false,
+  "liveFailureAttribution": false,
+  "meaning": "Actual ComponentBudget passive-receipt path with explicit offline durability-latency injection; compares same-thread timer starvation and durable crash coverage. This does not attribute the live protection breach."
+}

@@ -1,0 +1,51 @@
+{
+  "kind": "RESERVATION_BATCHED_RECEIPT_ACCOUNTING_VERIFICATION",
+  "baseSource": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "at": "2026-10-29T23:03:16.507876+00:00",
+  "sourceFiles": {
+    "src/component-budget.ts": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+    "src/pilot-rpc.ts": "9d9c0d931eafc83bac14b82c5d35718cba92662a27567d2fde79b16a90c231ef",
+    "src/research-baseline.ts": "f334972642db61ab80702e7df1b93742700ba6f71092634ec986642b1b1c790c",
+    "test/component-receipt-accounting.test.ts": "81a408c36ad2748b0a6442fbdd22340f159264a51521f1746bd7a1690ffc56db",
+    "test/pilot-rpc.test.ts": "45a507429d0b1f41a68de7c69e9aa4d3e0a9e5a33b677f131d9929d2732dc7b7"
+  },
+  "tests": {
+    "broader": {
+      "passed": 322,
+      "failed": 0
+    },
+    "persistentNativeOperating": {
+      "passed": 20,
+      "failed": 0
+    },
+    "newCrashAccountingTests": 11,
+    "independentReceiptAndPilotRpcTests": 66,
+    "independentReview": "PASS_NO_BLOCKING_DEFECT_FOUND_FINAL_PREFUNDED_REVISION",
+    "buildPassed": true
+  },
+  "offlineDurabilityLatencyReproduction": {
+    "beforeBurstMs": 12386.731111000001,
+    "afterBurstMs": 22.09972300000001,
+    "beforeMaximumTimerGapMs": 12407.396228,
+    "afterMaximumTimerGapMs": 50.266008,
+    "exactBytes": 4915200,
+    "maximumAcceptedPassiveReceiptBytes": 2097152,
+    "durablePassiveReservationBytes": 4194304,
+    "minimumPreAcceptTailBytes": 2097152,
+    "coalescingWindowBytes": 2097152
+  },
+  "sourceCompatibility": {
+    "newPersistentCounterbookSchema": 2,
+    "legacyFiniteResearchSchema": 1,
+    "historicalSourcesModified": false,
+    "oldExecutableMustRefuseNewSchema": true,
+    "rollbackRequiresUpdatedReader": true
+  },
+  "originalFinancialFilesOpened": false,
+  "financialJournalDurabilityChanged": false,
+  "providerRequests": 0,
+  "serviceChanges": 0,
+  "deployed": false,
+  "liveFailureAttribution": false,
+  "forwardAcceptance": false
+}

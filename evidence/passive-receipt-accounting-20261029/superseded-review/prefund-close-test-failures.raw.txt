@@ -1,0 +1,408 @@
+✔ explicit passive receipt after chapter expiry preserves bytes but cannot admit a late operation (9.384717ms)
+✔ all HTTP/upgrade/subscription starts share durable cumulative counters, pacing and one source baseline (11.308969ms)
+✔ recent prior starts participate in rolling ceilings and all70 new units include WS management (31.216142ms)
+✔ cancel while waiting consumes no new request or reservation and does not rewrite the stored book (4.927082ms)
+✔ actual transport invocations remain spaced when durable reservation writes have variable latency (6.512495ms)
+✔ timeout retains a stalled physical operation and uncertain bytes without a second attempt (20.570969ms)
+✔ continuous accounting lets admitted physical work cross its chapter without shortening the caller timeout (50.72875ms)
+✔ continuous accounting preserves the actual timeout and occupied physical slot after its chapter expires (64.60236ms)
+✔ bounded research still ends admitted work at its original chapter deadline (24.614941ms)
+✔ HTTP429 is charged once, stops the new grant and remains sticky without changing historical refusal (6.573405ms)
+✔ passive WS bytes count without request units; HTTP category retains cancellation headroom (4.739514ms)
+✔ oversized actual response bytes are retained and halt before any further operation (2.89745ms)
+✔ grant deadline and explicit cooldown are enforced during pacing before another start (2.381183ms)
+✔ explicit ten-minute migration listener duration persists and cannot be enlarged or silently resumed with another duration (7.20937ms)
+✔ minimum duration is bounded and free migration permission does not permit metered or trading subscriptions (3.696246ms)
+✔ signing/simulation/trading, concurrent ownership and malformed baseline are denied offline (5.520934ms)
+✔ the dispatcher observes the authoritative pacing gate without taking its slot or charging requests (5.583316ms)
+✔ latest physical-start deadline is checked before pacing and again after durable reservation latency (8.623784ms)
+✔ slow start diagnostics cannot move the actual stamp ahead of transport or shrink later start spacing (5.418692ms)
+✔ failed diagnostic after invocation retains the physical slot until actual settlement (9.533468ms)
+✔ legacy defaults retain lifetime caps and do not add a limits field to historical books (8.693121ms)
+✔ explicit standing limits carry cumulative calls and accounted bytes beyond historical caps with250ms physical spacing (9.127807ms)
+✔ standing rolling10/10s and60/minute caps constrain bursts independently of250ms spacing (20.047306ms)
+✔ standing mode still enforces per-run request and byte ceilings and keeps failed response uncertainty (10.45799ms)
+✔ monotonic admission closes without a reservation before or after pacing (7.770167ms)
+✔ admission closure during durable reservation never invokes transport and conservatively retains the charged unit and bytes (4.06004ms)
+✔ malformed or unbounded run-limit settings are refused before creating a counterbook (0.790443ms)
+✔ read-only targeted logs management shares physical units and rejects financial methods (4.462092ms)
+✔ physical timeout diagnostics expose scheduled versus actual callback timing without releasing unknown occupancy (9.027698ms)
+✔ six independent queries use one HTTP start, preserve original params/IDs and expose later validation time (55.091549ms)
+✔ caller and recorder mutations cannot replace validated pool identity or slot floors before physical start (8.30473ms)
+✔ ordinary per-item RPC failure leaves successful siblings independent and never logs provider text (5.701762ms)
+✔ per-item -32005 retains partial results and stops future gate admission after physical settlement (6.49546ms)
+✔ per-item 429 retains partial results and stops future gate admission after physical settlement (6.897286ms)
+✔ HTTP429 retains body uncertainty and six logical attempts without reading or retrying its error body (18.323563ms)
+✔ malformed single batch cannot associate another query response with a pool (6.817267ms)
+✔ malformed missing batch cannot associate another query response with a pool (6.131239ms)
+✔ malformed duplicate batch cannot associate another query response with a pool (5.28254ms)
+✔ malformed unknown batch cannot associate another query response with a pool (6.369183ms)
+✔ malformed wrong-id-type batch cannot associate another query response with a pool (5.065563ms)
+✔ malformed both-result-error batch cannot associate another query response with a pool (3.920288ms)
+✔ malformed invalid-error-code batch cannot associate another query response with a pool (4.005124ms)
+✔ total batch response keeps the existing2MiB limit and charges received overflow before stopping (13.674483ms)
+✔ timeout and cancellation cannot release a physical batch that ignores AbortSignal (15.837604ms)
+✔ invalid size, non-readonly request shape or pre-admission cancellation consumes no request (4.895225ms)
+✔ injected fetch without real dispatcher events remains explicitly unavailable (22.430148ms)
+✔ dispatch timing matches its invocation context/request and never touches payload, headers or socket addresses (6.497653ms)
+✔ same socket object across transports proves prior observed request use, not first-observation newness (7.974154ms)
+✔ ambiguous nested matching request cannot claim timings or connection reuse (0.366635ms)
+✔ multiple header sends on one request are bounded ambiguity, not inferred automatic retry success (0.358181ms)
+✔ malformed diagnostic properties cannot throw into network or financial work (0.502176ms)
+✔ error metadata is request matched, allowlisted, and does not claim physical settlement (0.554453ms)
+✔ abort error is captured before physical-work cleanup without changing accounting (20.8381ms)
+✔ logical timeout cannot remove observers before actual fetch work settles; late events stay source timed (21.389874ms)
+✔ Node actual loopback fetch emits request/send/headers events and observed socket reuse without provider access (36.238911ms)
+✔ exact active budget temp can vanish between readdir and stat; full transient headroom remains counted (6.359457ms)
+✔ present atomic temp is rounded up inside the fixed128KiB transient slot, never omitted or counted twice (0.744835ms)
+✔ stable file deletion and another writer temp deletion still fail closed (2.113517ms)
+✔ root, stable and recognized temporary symlinks are all refused (1.942663ms)
+✔ oversized or directory-shaped atomic temp is refused; nested lookalike gets no disappearance exception (1.366007ms)
+✔ transient slot is reserved on every scan, including an empty active directory (0.634652ms)
+✔ only proc ENOENT waits for the child exit event; permissions and stable missing evidence stop immediately (1.375942ms)
+✔ actual component starts are paced and linked cumulative usage preserves the historical429 (2.215748ms)
+✔ retained actual routed swap has no SOL-quoted hop; decoding the new route does not create an eligible pool (12.581322ms)
+✔ retained successful address-only transaction is not a PumpSwap invocation or a pricing result (0.413263ms)
+✔ same-byte Clock parity preserves all layout fields, established SDK math and native backing without network (57.197239ms)
+✔ parity refuses incomplete dependency sets, stale original Clock and insufficient native backing (14.35905ms)
+✔ historical same-byte decoding uses preserved receipt time and never relabels bank Clock as blockTime (12.474333ms)
+✔ busy passive receipts consume bounded durable reservations without per-message persistence (16.486903ms)
+✔ an abrupt passive crash is retained as uncertainty, never invented measured bytes or a new request (280.581137ms)
+✔ HTTP receipt chunks reuse their durable physical response reservation until settlement (29.735329ms)
+✔ an abrupt HTTP-body crash retains the original full durable uncertainty and request identity (243.268905ms)
+✔ coalesced exact-receipt checkpoints preserve an honest late timer and close flushes its tail (1035.619964ms)
+✔ a failed passive refill retains the entire already received 1-byte payload in its prior durable bound (4.742909ms)
+✔ a failed passive refill retains the entire already received 2097152-byte payload in its prior durable bound (4.132162ms)
+✔ settled-reader checkpoints and handoffs preserve passive crash uncertainty without increasing RPC starts (239.45193ms)
+✔ malformed or unversioned passive accounting cannot silently disappear from a baseline reader (4.558155ms)
+✔ quiet current state and ACK/reconnect/fresh retrieval can pass without changed delivery or protection (1.343894ms)
+✔ later throttle or missing optional activity never erases captured basic evidence (0.165696ms)
+✔ ACK duplicates and an unmatched change cannot manufacture restoration or notification proof (0.294877ms)
+✔ only a later validated matching account version proves a delivered sample; sparse quotes do not reveal exact crossing time (1.061936ms)
+✔ changing hypothetical size or pool cannot be counted as a market price move (0.230763ms)
+✔ fresh RPC state after upgrade is independent of complete subscription restoration (0.183513ms)
+✔ one current actual compiled swap selects hypothetical full units without fetching support or opening transport (12.300605ms)
+✔ quiet historical seed can use exactly one bounded program page without fabricating seed activity (8.095654ms)
+✔ persisted seed refusal skips its history; a guarded actual pool cannot become eligible (3.268862ms)
+✔ address membership, failed or old transactions are not accepted as actual current swaps (3.347468ms)
+✔ HTTP429 and source/context faults terminate without an automatic retry (3.120661ms)
+✔ the four-read cap and six-second elapsed bound leave the caller setup reserve intact (5.403579ms)
+✔ basic purpose uses retained independently verified identity with zero history reads, not fresh activity (2.331951ms)
+✔ basic ignores old flow capacity and quiet guards but never hides an older structural guard (3.213239ms)
+✔ global refusal still blocks both purposes; an expired structural cooldown only permits fresh support checks (5.240107ms)
+✔ retained proof helper rejects mismatched canonical identity and missing executed-transfer evidence (4.76387ms)
+✔ changing purpose only checks supplied migration identity and separately verifies a current actual swap (6.96735ms)
+✔ changing purpose requires explicit seeds; quiet activity is inconclusive and never falls back to broad program sampling (1.239279ms)
+✔ two explicit migration seeds share four reads; address mentions and quiet seeds never become current swap evidence (7.581011ms)
+✔ purpose preparation preserves throttle refusal, elapsed bounds, cancellation and no automatic retry (2.490986ms)
+✔ changing pricing ignores full-flow capacity guards but retains quiet and structural refusals (19.862598ms)
+✔ hypothetical token amounts must fit the on-chain unsigned64-bit range without shrinking (1.855173ms)
+✔ HTTP429 stops at headers, retains uncertain body reserve and prior refusal, and never retries (43.253186ms)
+✔ a fully received bounded HTTP503 body is charged exactly without an unknown response reservation (26.039425ms)
+✔ stalled HTTP503 body times out, charges partial receipt and preserves uncertain response bytes (14.716665ms)
+✔ canceling a partially received HTTP503 cannot turn cancellation into a complete response (5.752927ms)
+✔ declared oversize HTTP503 is canceled before reading and preserves uncertainty (6.01722ms)
+✔ streamed oversize HTTP503 charges delivered chunks and cannot mark a partial body complete (5.704005ms)
+✔ truncated HTTP503 body does not clear uncertainty when the identity Content-Length disagrees (4.334027ms)
+✔ upgrade, ACK and passive data share counters without double-counting socket/payload (8.201612ms)
+✔ raw partial and oversized receipt is charged before application parsing (6.891047ms)
+✔ notification before subscribe ACK preserves receipt time and resolves only the acknowledged scope (4.761742ms)
+✔ rejected invalid ACK halts without an automatic second request (4.708113ms)
+✔ rejected error ACK halts without an automatic second request (4.336506ms)
+✔ missing ACK cancellation retains uncertain response and cannot release a replacement request (5.104295ms)
+✔ planned reconnect waits for CLOSED and ignores stale first-socket events (4.977216ms)
+✔ close timeout halts without opening a second session (8.243724ms)
+✔ unsupported request methods are denied before network and budget use (2.664484ms)
+✔ HTTP lifecycle separates headers, body transfer and JSON availability without claiming pool reuse (3.637538ms)
+✔ HTTP lifecycle retains partial successful-body timing after timeout without logging payload (14.348834ms)
+✔ HTTP lifecycle does not emit a settled-body claim while timed-out fetch still owns physical gate (14.926511ms)
+✔ HTTP lifecycle distinguishes fully received malformed JSON from a validated response (4.039836ms)
+✔ legacy exporter input keeps its exact explicit source list and does not inspect an anchor (1.94058ms)
+✔ first sealed input provides only untrusted raw candidates until original source guards and exact handoff verification run (4.149027ms)
+✔ multiple anchors, absent source list and unsafe anchor names refuse before file access (0.617486ms)
+✔ a changed anchor cannot be adopted merely because its sources are plausible (1.029407ms)
+✔ recursive seals and duplicate/self-referential source lists are explicitly unsupported for this first handoff (1.73791ms)
+✔ updating the local anchor pin cannot hide a changed counter or archived source (1.830026ms)
+✔ importing exporter has no CLI side effects and invalid explicit arguments refuse before accessing an account (1.427949ms)
+✔ repinning an anchor cannot erase or backdate unknown physical demand during adoption (2.975195ms)
+✔ only the fixed zero-request local timeout refusal accepts an append-only source identity correction (6.137298ms)
+✔ both retained preparation vocabularies require explicit disabled financial declarations and a separate runtime receipt (1.558393ms)
+✔ passive bursts coalesce only derived status while every authoritative byte charge is already durable (35.918436ms)
+✔ a silent tail flushes after one scheduled second without another receipt and close cancels future writes (2261.506691ms)
+✔ operation completion and cooldown changes synchronously flush the latest derived projection (9.314914ms)
+✔ derived timer write failure is observable, stops admission, and cannot erase already durable receipt (1159.993692ms)
+✔ abrupt process exit before derived flush retains exact bytes and uncertainty for chapter-based recovery (322.815939ms)
+✔ quiet batch preserves independent item errors, stable IDs and cumulative logical counters across the same chapter gate (61.906999ms)
+✔ bounded requests, canceled signals and absent admission cannot invoke a physical batch (9.821626ms)
+✔ query-local cooling pools are refused before batch admission while healthy pools still share the settled gate (27.23623ms)
+✔ unattributable timeout retains physical occupancy; late HTTP429 updates durable shared backoff (29.698846ms)
+✔ unattributable timeout retains physical occupancy; late HTTP503 updates durable shared backoff (17.782792ms)
+✔ cancel after physical start keeps the gate occupied and retains query uncertainty until actual settlement (8.256333ms)
+✔ actual per-item overload429 returns its settled receipt and establishes the shared cooldown (6.687695ms)
+✔ actual per-item overload-32005 returns its settled receipt and establishes the shared cooldown (5.93662ms)
+✔ HTTP429 stops before the body and preserves physical/logical counts plus unobserved bytes (8.114713ms)
+✔ malformed missing envelope never invents validated per-pool responses (8.403487ms)
+✔ malformed duplicate envelope never invents validated per-pool responses (6.558173ms)
+✔ malformed wrong-id envelope never invents validated per-pool responses (5.304016ms)
+✔ quiet batch aggregate decoded response cap is512KiB and charges the crossing chunk before rejection (7.409757ms)
+✔ quiet batch json disables that optimization while ordinary pricing RPC can recover on the same accounted gate (11.858374ms)
+✔ quiet batch envelope disables that optimization while ordinary pricing RPC can recover on the same accounted gate (11.5895ms)
+✔ quiet batch capped-body disables that optimization while ordinary pricing RPC can recover on the same accounted gate (10.639635ms)
+✔ declared response beyond the unchanged2MiB hard limit remains fatal rather than a recoverable quiet-batch fault (6.121905ms)
+✔ failure to record a batch-disable event remains fatal and cannot be bypassed by ordinary RPC recovery (5.754781ms)
+✔ failure to durably persist a batch-disable state remains storage-fatal after physical settlement (6.041576ms)
+✔ settled json candidate fault permits policy-safe holding SDK service without an artificial global cooldown (40.615982ms)
+✔ settled envelope candidate fault permits policy-safe holding SDK service without an artificial global cooldown (31.939625ms)
+✔ settled capped-body candidate fault permits policy-safe holding SDK service without an artificial global cooldown (31.751932ms)
+✔ a scoped-looking batch fault with HTTP200 Retry-After retains the genuine shared provider cooldown (10.879426ms)
+✔ a scoped-looking batch fault with HTTP503 Retry-After retains the genuine shared provider cooldown (5.280476ms)
+✔ settled candidate batch faults preserve an earlier genuine global failure streak rather than resetting or increasing it (12.110994ms)
+✔ failure to record scoped candidate-fault containment remains diagnostic-fatal (4.263757ms)
+✔ frozen query planning retains actual monotonic timeout cooling after a wall-clock jump (13.972106ms)
+✔ default60/minute remains unchanged; explicit60..90 is validated before any source work (15.252205ms)
+✔ explicit90 flows into every chapter and durable authorization/status while default60 paces the61st start (219.792162ms)
+✔ raising only the minute ceiling cannot bypass physical serialization or eight getTransaction starts/10 seconds (29.086026ms)
+✔ a90/minute local option inherits recent starts and never refunds a refused job or old receipt (14.578495ms)
+✔ isolated timed-out pool preserves its own backoff while another pool and protection use the shared settled gate (62.100777ms)
+✔ three distinct timed-out queries in10s trigger the existing global backoff instead of probing every candidate (29.714414ms)
+✔ query isolation cannot preempt a timed-out physical request that has not actually settled (15.841936ms)
+✔ actual HTTP429 remains global even when an independent audit opts into timeout isolation (6.708245ms)
+✔ actual HTTP503 remains global even when an independent audit opts into timeout isolation (6.090318ms)
+✔ timeout isolation is rejected outside a bounded independently scheduled pool-history call before any request (1.252709ms)
+✔ actual429 arriving during late physical settlement still establishes Retry-After after a logical isolated timeout (11.349032ms)
+✔ actual502 arriving during late physical settlement still establishes Retry-After after a logical isolated timeout (11.468119ms)
+✔ actual503 arriving during late physical settlement still establishes Retry-After after a logical isolated timeout (10.145937ms)
+✔ actual504 arriving during late physical settlement still establishes Retry-After after a logical isolated timeout (9.52828ms)
+✔ chapter rollover preserves cumulative counters, inherited uncertainty, real spacing and frozen prior books (79.515312ms)
+✔ optional getTransaction gate refuses without a physical reservation or hidden wait and keeps held-price methods available (31.323341ms)
+✔ immediate linked run conservatively inherits all recent unknown-method starts and persists its bounded method cache (6.264372ms)
+✔ legacy method pacing is unrestricted beyond shared caps, with explicit bounded configuration and reserve validation (14.856308ms)
+✔ failed actual getTransaction attempts count, while dispatch refusal and cancellation do not invent starts or bypass HTTP429 (20.924954ms)
+✔ HTTP429 never retries; Retry-After plus5s gates a settled new chapter and retains both uncertainty reservations (17.122816ms)
+✔ settled HTTP refusal preserves its Retry-After while permitting separately admitted control on the same gate (18.517331ms)
+✔ actual control Retry-After blocks only controls and cannot be cleared by successful HTTP work (9.267133ms)
+✔ mixed HTTP and control work share the same sixty-start minute and short-window pacing (52.44387ms)
+✔ an unsettled timed-out control operation blocks both domains until actual settlement (16.855725ms)
+✔ a canceled physical request remains occupied after cooldown and cannot create a replacement slot (16.590972ms)
+✔ malformed responses fail closed rather than starting another chapter or inventing data (5.751215ms)
+✔ PAPER submission/signing and paid data methods are rejected before a chapter or physical operation (0.984361ms)
+✔ free control requests share the HTTP physical gate and measured bytes remain chargeable while it is occupied (8.096776ms)
+✔ global time/response allowances remain finite across chapters; a new constructor cannot overwrite the run (5.903165ms)
+✔ WS throttle observation respects an HTTP-date cooldown without retrying the original control operation (11.319093ms)
+✔ a periodic chapter expiry caused by passive control receipt preserves bytes and allows only a settled rollover (9.859332ms)
+✖ persistent RPC finishes a timely response across the accounting boundary then rolls over before the next start (60.157624ms)
+✖ persistent RPC keeps a genuine caller timeout after chapter expiry and cannot replace its unsettled transport (74.270658ms)
+✔ passive chapter-expiry receipt cannot cancel or replace an in-flight physical request (6.816035ms)
+✔ passive receipt during a retained RPC cooldown neither clears it nor drops byte reservations (6.538384ms)
+✔ global time and response bounds still stop passive receipt after charging actual bytes once (10.907668ms)
+✔ explicit research burst gate permits at most20 starts while the default stays10 and actual spacing stays250ms (37.707436ms)
+✔ new run requires the retained throttle receipt and cannot guess a long provider Retry-After (12.157567ms)
+✔ settled transient RPC failures use bounded2/5/10s backoff without automatic retry or dropping old reservations (17.222539ms)
+✔ invalid feed protocol remains isolated from held-price RPC while global accounting failures still block it (12.889449ms)
+✔ single admission timestamp avoids one-millisecond method refusals without weakening the real cap (11.108916ms)
+✔ public read-only log subscriptions use the existing gate without authorizing financial WS methods (5.474044ms)
+✔ long settled baseline leaves bounded chapter runway without discarding paths, counters or uncertainty (33.74486ms)
+✔ native research response envelope is explicit and leaves default finite limits unchanged (6.570141ms)
+✔ native profile does not silently authorize longer runs, more starts, larger payload budgets or unknown profiles (0.920045ms)
+✔ local admission and deadline refusals before a reservation preserve the healthy shared gate without provider cooldown (12.056572ms)
+✔ durably reserved COMPONENT_DISPATCH_EXPIRED before physical invocation stays charged and rolls over only after settlement (12.954896ms)
+✔ durably reserved COMPONENT_ADMISSION_CLOSED before physical invocation stays charged and rolls over only after settlement (10.132958ms)
+✔ a local refusal cannot roll a chapter or release a physical operation that has not actually settled (10.312475ms)
+✔ repeated rolling-minute pacing refusals reuse the unhalted chapter beyond32 attempts and consume no additional units (98.211473ms)
+✔ WATCH pacing cannot hold the shared gate across the next native deadline or start after native becomes due (6.313459ms)
+✔ served-node context-floor lag is paced unavailable data through real HTTP decoding, never a permanent fatal or audit success (9.627959ms)
+✔ context-floor recovery does not reclassify unrelated invalid-request RPC errors as transient (5.015944ms)
+✔ opt-in history route is method-fixed and shares primary/control accounting and pacing (8.792619ms)
+✔ history429 preserves Retry-After/uncertainty while primary pricing and healthy controls continue on the same gate (15.206603ms)
+✔ primary HTTP throttle does not silently reroute it to history or erase a history service opportunity (9.637999ms)
+✔ history503 and explicit provider Retry-After remain history-local and survive chapter rollover (10.922309ms)
+✔ history physically unsettled timeout blocks every domain until actual settlement; no fallback or extra slot (13.702206ms)
+✔ inherited history cooldown is enforced without transferring it to primary and invalid route values are refused (5.242471ms)
+✔ history batches use the same fixed history method endpoint, never primary and never one budget per item (5.825977ms)
+✔ late history429 headers retain their provider cooldown without changing primary or bypassing actual settlement (15.111777ms)
+✔ a linked HTTP429 book requires an explicit history cooldown receipt when enabling the separate history route (1.613805ms)
+✔ history readiness freezes only the planning floor across advancing clocks, never provider admission (4.928294ms)
+✔ persistent RPC rotates bounded accounting epochs beyond research lifetime/chapter limits and preserves restart anchors (328.116008ms)
+✔ persistent control receipt rolls a full accounting byte epoch without stopping a healthy passive stream or changing provider cooldown (15.120609ms)
+✔ persistent passive receipts may cross an accounting epoch during an HTTP request without aborting or hiding its real ownership (10.68824ms)
+✔ persistent startup compacts a fully populated512-source chain before another chapter can exceed the hot path bound (158.043989ms)
+✔ uninvoked history refusal is owned per-call evidence, never a matching error string or provider error (10.253357ms)
+✔ a physically unsettled history timeout has no no-invocation proof and retains its original slot (11.931055ms)
+✔ actual immutable books produce24 cumulative units and377058 bytes without double counting baseline20 (3.423531ms)
+✔ ordered chapters require exact preceding cumulative calls, bytes, starts and file hash (5.33049ms)
+✔ pending uncertainty blocks unless physical settlement is explicitly confirmed; debit carries once (1.408511ms)
+✔ future clocks, forged event identities, and cumulative overrun are rejected without writes (1.341461ms)
+✔ explicit standing mode crosses historical lifetime caps while retaining uncertainty and the exact linked history (2.424067ms)
+✔ an explicitly larger bounded chapter list preserves default32-path behavior and never scans directories (22.571317ms)
+✔ explicit512-path history retains every hash, counter and uncertain debit while default32 remains bounded (39.14905ms)
+✔ quiescent append-only checkpoint preserves all cumulative counters, old429 and uncertain debits while bounding rolling starts (9.804601ms)
+✔ unknown physical stamps retain their latest possible time rather than refund recent provider demand (7.972027ms)
+✔ repeated24h rollovers retain raw history, stable operationIDs and cumulative unknown bytes with a small live chain (49.935818ms)
+✔ in-flight or unsettled transport refuses checkpoint before writing; corruption and anchor mismatch fail closed (2.559068ms)
+✔ checkpointed normal chapters preserve strict hash/starts linkage, default path limits and throttle receipt requirement (4.585796ms)
+✔ unpersisted physical invocation cannot escape rolling control merely because its last durable observation is old (2.193555ms)
+✔ settled-handoff adoption must match every exact source path/hash and counter; archived mutation is detectable without unbounded startup replay (1.974921ms)
+✔ PilotRpc resumes the explicit pinned anchor, links ordinary physical chapters and retains the pin across another restart (56.933874ms)
+✔ same-batch Clock research path uses2cold/1steady reads, preserving exact established sell and fees (36.973552ms)
+✔ explicit observation admission reaches every physical read and late preparation cannot return a usable mark (14.579367ms)
+✔ fresh changed reserves and newer slot still get one coherent read and exactly match established math (22.690504ms)
+✔ fee-tier changes are read in the fresh dependency batch, with exact established decoder parity (23.960234ms)
+✔ Clock refuses wrong owner, executable, encoding, layout, slot, out-of-range and stale/future timestamp (1.794383ms)
+✔ changed links fail current batch, invalidate reuse and never retry the failing quote (23.521167ms)
+✔ missing dependency, bad owner, Clock mismatch and context regression invalidate rather than price partial state (43.813683ms)
+✔ aborted and invalid-size quotes make no read; explicit invalidation retains nonregression floor (9.864129ms)
+✔ slow validation or recording cannot refresh the original receive time into a fresh returned quote (16.114205ms)
+✔ three holdings share one complete16-account Clock batch with exact established full-size quotes (46.2244ms)
+✔ one missing holding dependency is isolated, while other holdings retain coherent quotes and reusable links (37.811064ms)
+✔ one changed pool link cannot borrow old vault data or invalidate unaffected holding quotes (33.615533ms)
+✔ common Clock or context faults invalidate every cached holding without losing verified slot floors (34.413603ms)
+✔ missing discovery pool is isolated before dependency union and no duplicate/capacity request can start (10.977471ms)
+✔ an all-unavailable newer bank still prevents recovery from an older favorable snapshot (24.46307ms)
+✔ bank source-age is rechecked at return even when the batch itself remains within two seconds (7.995595ms)
+✔ unsupported mint extensions keep the exact refusal and isolate the affected holding (31.92109ms)
+✔ six distinct observation pools use2cold/1steady shared Clock reads without hypothetical trading quotes (64.21405ms)
+✔ observation support does not depend on whether a one-base-unit hypothetical sell produces output (11.788774ms)
+✔ alternating six observation pools and three holdings preserves shared links without pruning other observation identities (74.017893ms)
+✔ observation changed links and missing vaults isolate affected pools and rediscover links in one recovery batch (94.717215ms)
+✔ observation common Clock/source/slot faults and slow recording refuse the whole batch without refreshing timestamps (155.603764ms)
+✔ observation invalid cardinality, duplicate identities, minimum slots, aborts and closed admission make no request (7.920824ms)
+✔ an observation refusal before source admission does not evict validated held dependency links (60.044993ms)
+✔ coherent actual-input buy preserves retained SDK amounts and fees with2cold/1warm reads (43.676804ms)
+✔ buy admission, aborts, invalid amounts and unsupported state refuse without partial success (13.882861ms)
+✔ buy validation retains the original receive time through slow recording and bank expiry (9.398302ms)
+✔ alternating buys, three held quotes and six observations preserves their existing dependency working sets (228.437981ms)
+✔ nine reserved working identities refuse a tenth buy without poisoning higher-priority observation (64.96622ms)
+✔ a nonzero10ms admission window serves enrichment; exact-boundary equality is unnecessary (1.412005ms)
+✔ due protection wins; two candidates cannot own consecutive physical slots (0.155621ms)
+✔ known reservation cost must fit before the existing physical-start deadline rather than knowingly expiring after precharge (0.133568ms)
+✔ known late-phase hint can pull one future refresh forward; it cannot cause repeated early pricing (0.232014ms)
+✔ pending financial work keeps priority and every expired candidate is an explicit refusal (0.22936ms)
+✔ caller cancellation does not release an occupied slot; malformed/unbounded work is refused (0.410549ms)
+✔ actual retained flow reproduces both amount views while missing migration evidence prevents a fabricated natural entry (0.961297ms)
+✔ same-byte SDK entry and held pricing reach one disposable ledger lifecycle without hiding uncertain exit exposure (0.245644ms)
+✔ fixture results cannot be interpreted as current trading, provider capacity or natural performance (0.207148ms)
+✔ two-held union marks and post-delay exit reuse integrate with one disposable writer and exact gas accounting (139.529881ms)
+✔ post-delay, exact-size, slot, stale and gap constraints refuse cached fills without extra requests (37.354652ms)
+✔ same-account restart quarantines unresolved exit without re-quote, preserves inception and restores current marks (37.252631ms)
+✔ a registered different-mint quote cannot be relabeled as a same-size held mark (20.617255ms)
+✔ delegated entry result is refused if a gap or higher slot floor arrives while awaiting it (7.75624ms)
+✔ held context carries original inclusive bank-source expiry and refuses a still-recent quote after that expiry (21.642256ms)
+✔ source expiry covers every required full-size holding, uses the minimum and is absent for an incomplete batch (45.806425ms)
+✔ a Clock boundary crossed after final source validation stays explicitly expired instead of losing metadata (22.337968ms)
+✔ selection enforces actual spacing across phase wrappers without duplicating shared request accounting (8.300407ms)
+✔ spacing survives a process-style restart and honors stricter source delay before transport (10.101489ms)
+✔ cancelled pacing wait does not start, charge or reserve another provider request (3.630287ms)
+✔ one dispatcher and one owning pacing state prevent parallel waits and independent burst gates (6.055016ms)
+✔ real shared counterbook retains HTTP429 across pacer and RPC restart, without retry or clearing (54.862573ms)
+✔ physical slot remains occupied after cancellation when transport ignores abort; no new request is started (27.727466ms)
+✔ clock regression and attempts to disable spacing fail closed without provider work (5.09451ms)
+✔ the historical fourteen-request burst is spread over at least thirteen seconds by actual pacing (7.596302ms)
+✔ a forward wall-time step cannot bypass the monotonic selection cooldown (5.376829ms)
+✔ phase preserves global counters and reserves maximum in-flight response before transport (2.050013ms)
+✔ phase enforces per-method allocation without request retries (0.660229ms)
+✔ research reuse retains exact same-byte established decoder output with fresh full dependency reads (57.664832ms)
+✔ new slots require real block-time reads; same slot beyond2s cannot extend timestamp freshness (40.946578ms)
+✔ changed vault links invalidate quote and cache; subsequent cycle rediscovers rather than retrying (25.327305ms)
+✔ missing dependency, bad owner, unsupported mint and regressing context do not survive cache reuse (57.622074ms)
+✔ explicit invalidation and increased verification slot force genuine rediscovery; cache age is bounded (25.106591ms)
+✔ fresh changed reserves are decoded from coherent full batch, with exact helper parity and no cached liquidation value (20.914647ms)
+✔ invalidation preserves highest verified slot and invalid minimum slots are never silently normalized (15.97147ms)
+✔ approved research budget uses only public read methods and persists before transport (40.298296ms)
+✔ rolling30/10s and150/min ceilings survive reopening and total attempts stop at240 (96.964481ms)
+✔ 429 body bytes count, no retry occurs and stricter provider block survives restart (7.715669ms)
+✔ malformed/error/failed responses count actual bytes and cannot leak provider contents (4.593146ms)
+✔ canceled ignored transport retains physical capacity and uncertain response reservation after restart (21.636097ms)
+✔ a canceled stalled reader is not mistaken for observed response EOF (11.463561ms)
+✔ 64MiB aggregate response budget keeps2MiB cancellation headroom and refuses further transport (83.577355ms)
+✔ oversized response is counted and canceled without retry (4.162958ms)
+✔ invalid request/abort consumes no capacity; corrupt, alias and simultaneous budget owners fail closed (34.334261ms)
+✔ wall clock regression and exhausted provider credit response prevent further risk (4.848981ms)
+✔ a feasible owned exit uses the shared physical gate, preserves suspended flow and prices the remaining holding coherently (95.877097ms)
+ℹ tests 320
+ℹ suites 0
+ℹ pass 318
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9890.25191
+
+✖ failing tests:
+
+test at test/pilot-rpc.test.ts:1:20246
+✖ persistent RPC finishes a timely response across the accounting boundary then rolls over before the next start (60.157624ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+  + Buffer(946) [Uint8Array] [
+  - Buffer(952) [Uint8Array] [
+      123,
+      34,
+      115,
+      99,
+      104,
+  ...
+      58,
+  -   52,
+  -   49,
+  -   57,
+  -   52,
+  -   51,
+      48,
+  -   52,
+      44,
+      34,
+      117,
+      110,
+      99,
+  
+      at TestContext.<anonymous> (/workspace/poe-passive-accounting-batches/test/pilot-rpc.test.ts:138:244)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: <Buffer 7b 22 73 63 68 65 6d 61 56 65 72 73 69 6f 6e 22 3a 32 2c 22 63 6f 6e 74 69 6e 75 6f 75 73 41 63 63 6f 75 6e 74 69 6e 67 22 3a 74 72 75 65 2c 22 62 79 ... 896 more bytes>,
+    expected: <Buffer 7b 22 73 63 68 65 6d 61 56 65 72 73 69 6f 6e 22 3a 32 2c 22 63 6f 6e 74 69 6e 75 6f 75 73 41 63 63 6f 75 6e 74 69 6e 67 22 3a 74 72 75 65 2c 22 62 79 ... 902 more bytes>,
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/pilot-rpc.test.ts:1:22395
+✖ persistent RPC keeps a genuine caller timeout after chapter expiry and cannot replace its unsettled transport (74.270658ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+  + Buffer(1024) [Uint8Array] [
+  - Buffer(1030) [Uint8Array] [
+      123,
+      34,
+      115,
+      99,
+      104,
+  ...
+      58,
+  -   52,
+  -   49,
+  -   57,
+  -   52,
+  -   51,
+      48,
+  -   52,
+      44,
+      34,
+      117,
+      110,
+      99,
+  
+      at TestContext.<anonymous> (/workspace/poe-passive-accounting-batches/test/pilot-rpc.test.ts:148:347)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: <Buffer 7b 22 73 63 68 65 6d 61 56 65 72 73 69 6f 6e 22 3a 32 2c 22 63 6f 6e 74 69 6e 75 6f 75 73 41 63 63 6f 75 6e 74 69 6e 67 22 3a 74 72 75 65 2c 22 62 79 ... 974 more bytes>,
+    expected: <Buffer 7b 22 73 63 68 65 6d 61 56 65 72 73 69 6f 6e 22 3a 32 2c 22 63 6f 6e 74 69 6e 75 6f 75 73 41 63 63 6f 75 6e 74 69 6e 67 22 3a 74 72 75 65 2c 22 62 79 ... 980 more bytes>,
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
