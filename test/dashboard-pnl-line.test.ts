@@ -38,7 +38,8 @@ function view(width=900){
   const node=elements.get(id);assert.ok(node,'expected text target '+id);node.textContent=value;
  },makeSvg,Math,Date});
  new Script(renderer).runInContext(context);
- const api=context as unknown as {plot:(points:PnlRow[])=>void;tradingPnlTimeline:(points:PnlRow[])=>Array<{at:string;tradingUsd:number|null;conflict:boolean}>};
+ type TimelineRow={at:string;tradingUsd:number|null;conflict:boolean};
+ const api=context as unknown as {plot:(points:PnlRow[])=>void;tradingPnlTimeline:(points:PnlRow[])=>TimelineRow[];tradingPnlLines:(rows:TimelineRow[])=>{solid:TimelineRow[][];shortGaps:Array<[TimelineRow,TimelineRow]>;isolated:TimelineRow[]}};
  const chart=elements.get('chart')!,toggle=elements.get('chartRangeToggle')!,label=elements.get('chartWindowLabel')!;
  const paths=()=>chart.children.filter(node=>node.tag==='path'&&node.attributes['data-chart-series']==='trading-pnl-line');
  const endpoints=()=>chart.children.filter(node=>node.tag==='circle'&&node.attributes['data-chart-point']==='last-verified');
@@ -63,6 +64,50 @@ test('same-timestamp null P&L placeholders do not break the verified line',()=>{
  assert.equal(JSON.stringify(p),before,'dashboard does not mutate source P&L history');
 });
 
+
+test('real publisher pattern: null gap markers 1ms after each 15-second sample still produce one continuous line',()=>{
+ const v=view(335),start=Date.parse('2026-10-29T15:00:00.000Z'),rows:PnlRow[]=[];
+ for(let i=0;i<65;i++){
+  const tick=start+i*15024;
+  rows.push({at:new Date(tick).toISOString(),tradingUsd:-8.5+i*.003,economicUsd:null});
+  // Historical source emits this conservative marker because 15.024s >15s.
+  rows.push({at:new Date(tick+1).toISOString(),tradingUsd:null,economicUsd:null});
+ }
+ const retained=JSON.stringify(rows);
+ const normalized=v.api.tradingPnlTimeline(rows);
+ assert.equal(normalized.length,130,'the source markers do not share exact timestamps');
+ const segments=v.api.tradingPnlLines(normalized);
+ assert.equal(segments.solid.length,1,'a single uninterrupted verified sequence');
+ assert.equal(segments.solid[0]!.length,65,'all verified readings belong to the line');
+ assert.equal(segments.shortGaps.length,0,'millisecond metadata markers are not missing trade valuations');
+ assert.equal(segments.isolated.length,0,'no dot soup');
+ v.api.plot(rows);
+ assert.equal(v.paths().length,1,'actual user-facing SVG contains a connected line');
+ assert.equal((v.paths()[0]!.attributes.d??'').match(/L/g)?.length,64,'line joins all verified readings');
+ assert.equal(v.chart.children.filter(x=>x.attributes['data-chart-point']==='isolated').length,0);
+ assert.equal(v.endpoints().length,1);
+ assert.equal(JSON.stringify(rows),retained,'reporting data is not changed');
+});
+
+test('genuine unavailable sample gets a dashed short bridge, long outage stays visually disconnected',()=>{
+ const v=view(),rows:PnlRow[]=[
+  row(0,-8),{at:new Date(Date.parse(at(0))+1).toISOString(),tradingUsd:null,economicUsd:null},
+  row(15,-8.1),row(30,null),row(45,-8.2),row(60,-8.3),
+  row(260,-8.5),row(275,-8.6),
+ ];
+ const plotRows=v.api.tradingPnlLines(v.api.tradingPnlTimeline(rows));
+ assert.equal(plotRows.solid.length,3,'three independent observed runs');
+ assert.equal(plotRows.shortGaps.length,1,'short unavailable data is never represented as verified solid line');
+ assert.equal(plotRows.shortGaps[0]![0].at,at(15));
+ assert.equal(plotRows.shortGaps[0]![1].at,at(45));
+ v.api.plot(rows);
+ assert.equal(v.paths().length,3);
+ const bridges=v.chart.children.filter(x=>x.attributes['data-chart-gap-bridge']==='short-unobserved-interval');
+ assert.equal(bridges.length,1);
+ assert.equal(bridges[0]!.attributes['stroke-dasharray'],'3 5');
+ assert.ok(v.chart.children.every(x=>x.attributes['data-chart-series']===undefined||x.attributes.fill==='none'));
+});
+
 test('distinct missing timestamp and long unsampled intervals preserve honest gaps',()=>{
  const v=view();v.api.plot([
   row(0,-8.1),row(15,-8.2),row(15,null),
@@ -72,7 +117,8 @@ test('distinct missing timestamp and long unsampled intervals preserve honest ga
  ]);
  assert.equal(v.paths().length,3,'missing timestamp and >90s silence break the line');
  assert.ok(v.paths().every(p=>((p.attributes.d??'').match(/L/g)||[]).length===1));
- assert.equal(v.endpoints().length,3);
+ assert.equal(v.endpoints().length,1,'only the last verified point is highlighted');
+ assert.equal(v.chart.children.filter(e=>e.attributes['data-chart-gap-bridge']==='short-unobserved-interval').length,1,'short unavailable interval is dashed');
  assert.ok(!v.chart.children.some(p=>p.tag==='path'&&p.attributes.fill!=='none'));
 });
 
