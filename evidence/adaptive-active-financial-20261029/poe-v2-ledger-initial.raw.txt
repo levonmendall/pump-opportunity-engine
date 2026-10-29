@@ -1,0 +1,50 @@
+✔ adaptive high-water persists per roundtrip in original reconciliation; invalid evidence cannot raise it (32.101404ms)
+✔ closed adaptive roundtrip requires fresh post-close window and new identity; old attempts cannot duplicate reentry (21.880937ms)
+✔ legacy full-sale history without new metadata permits V2 only after receipt-verified closure and new complete window (19.024077ms)
+✖ V2 metadata never overrides owner stop, daily/risk controls or pending obligations (8.59509ms)
+✔ fixture-only identity, fixed loaded SQLite, integer conversion and one-time inception (44.243961ms)
+✔ delayed full lifecycle counts gas once, locks/refunds deposits, preserves idempotency (15.317574ms)
+✔ failed single attempt charges gas and cannot cherry-pick a retry; expiry cannot fill (8.896496ms)
+✔ missing state never fills and pre-delay or stale quotes never become execution evidence (8.368899ms)
+✔ unknown liquidation blocks new risk, never converts an open position to zero (9.015723ms)
+✔ sticky day loss survives recovery, price recovery and restart; fresh next day can resume (12.670691ms)
+✔ entry pause cancels pending buys without abandoning position exit management (6.826267ms)
+✔ entry size includes gas/deposit, prevents adds and keeps reserved capital exclusive (7.978336ms)
+✔ wrong-sized exit cannot remove held tokens or refund its deposit (7.088852ms)
+✔ restart recovers unresolved reservations; SQLite backup restores coherent financial state (27.555831ms)
+✔ separate advisory flock rejects a second writer while external SQLite readers remain available (324.496301ms)
+✔ owner lease rejects symlinks, shared permissions, hardlinks and nonregular files without touching their targets (0.926062ms)
+✔ database open errors release the separate lease and disposable memory accounts need no file lease (6.45706ms)
+✔ database and directory aliases cannot establish a second financial writer (5.897271ms)
+✔ backward wall time cannot clear a persisted day pause (3.594378ms)
+✔ SOL exits work during USD outage and deposits stay locked until explicit refund (4.861476ms)
+✔ SIGKILL after durable order commit retains reservation and inception (208.262763ms)
+✔ SIGKILL during uncommitted write rolls back without reseeding account (172.996048ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1206.369776
+
+✖ failing tests:
+
+test at test/adaptive-paper-ledger.test.ts:1:6712
+✖ V2 metadata never overrides owner stop, daily/risk controls or pending obligations (8.59509ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (/workspace/poe-v2-financial-integration/test/adaptive-paper-ledger.test.ts:22:449)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /strategy/,
+    operator: 'throws',
+    diff: 'simple'
+  }

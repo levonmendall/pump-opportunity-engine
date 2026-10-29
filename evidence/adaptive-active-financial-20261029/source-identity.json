@@ -1,0 +1,39 @@
+{
+  "classification": "OFFLINE_DISPOSABLE_ACTIVE_V2_FINANCIAL_SOURCE",
+  "generatedAt": "2026-10-29T21:30:58.427052+00:00",
+  "baseCommit": "5b2bc28e83ee5c1aedb4eddbefe33b0203a0cae3",
+  "ownedFiles": {
+    "src/ledger.ts": "56c532eb22815503f145c1be2e301592f8abd8532bb3ffac484aabc0e2cba3ca",
+    "src/trader.ts": "8f8238d51f541eaa9c3f8777390d1f0d29970d80de55a69ad5bac4bd53382223",
+    "test/adaptive-paper-ledger.test.ts": "fced822b8f9bb0667b0404bd107e05ba42060fd1f2c31f508a3e67098364108e",
+    "test/adaptive-paper-trader.test.ts": "cf4d835b00964435f0916d50d8aaf13e59b2e454b8d74ac3534778b35a537e39"
+  },
+  "dependencyOverlaysNotCommitted": {
+    "src/pilot-contract.ts": "16f8c38d827eceea2cb74ab2964fc718fa8d36d3a81ec0aa07e797508d87015b",
+    "src/pilot.ts": "e7117f353b885407f30776adcf9948125279846f2639226222d806fc16c97a2d",
+    "src/adaptive-momentum-v2.ts": "0f5c3d92740d0182e5b44f507430b1508e463213b7f4ff285ebfe28e4b090a30"
+  },
+  "pureModuleCommit": "5371e2c1c333184f13bdae622146ad718e5e7eda",
+  "policySha256": "b4fa586df1b6d89c04b250a1ff3ea4e394a4cbf9b7900c7a3ebd0317c7c56a07",
+  "tests": {
+    "finalPinnedV2": "14/14 PASS",
+    "build": "PASS",
+    "expandedRegression": "107/107 PASS on same application patch before final cache invalidation; final added cache regression passes",
+    "independent": "37/37 PASS before final cache invalidation; independent final delta review and exact new latest-closure regression1/1 PASS"
+  },
+  "originalAccountAccessed": false,
+  "networkRequests": 0,
+  "installed": false,
+  "livePerformanceClaimed": false,
+  "independentReview": {
+    "reviewer": "/root/two_position_protection/review_two_position_path",
+    "verdict": "CLEAR_TO_COMMIT",
+    "finalLedgerSha256": "56c532eb22815503f145c1be2e301592f8abd8532bb3ffac484aabc0e2cba3ca",
+    "finalTraderSha256": "8f8238d51f541eaa9c3f8777390d1f0d29970d80de55a69ad5bac4bd53382223",
+    "essentialFindingsFixed": [
+      "corrupt optional index cannot prevent protective exit; prior raw bytes/hash preserved",
+      "stale/missing peak inputs remain market-data unavailable",
+      "historical proof cache invalidates on actual fills"
+    ]
+  }
+}

@@ -11,14 +11,22 @@ import { initializeOperatingCosts, validateOperatingCosts, applyOperatingCostEve
 export type UsdPrice = { microUsdPerSol: string; at: number; source: string };
 /** Actual-size token liquidation net of exit costs; excludes separately locked rent deposits. */
 export type Mark = { netLamports: string; pricedBaseUnits: string; at: number; evidence: string };
+export const ADAPTIVE_PAPER_STRATEGY_VERSION='adaptive-momentum-v2-paper-v1' as const;
+export type EntryStrategy={version:typeof ADAPTIVE_PAPER_STRATEGY_VERSION;cycle:number;windowStartAt:number;windowEndAt:number;assessedAt:number;signalId:string};
+export type PositionStrategy=EntryStrategy&{roundTripId:string;highWaterNetLamports:string;highWaterAt:number};
+type ClosedCycle={schemaVersion:1;mint:string;cycle:number;entryOrderId:string;entryWindowEndAt:number;closedAt:number|null;exitOrderId:string|null;legacyEntryCutoff:boolean};
+export type EntryEligibility={allowed:boolean;reason:string;closedAt:number|null;previousWindowEndAt:number|null;cycle:number};
 export type Position = {
   mint: string; units: string; entryLamports: string; entryGas: string;
   costMicroUsd: string; deposit: string; enteredAt: number;
+  /** Absent metadata permanently retains the original holding's exit rules. */
+  strategy?:PositionStrategy;
 };
 export type Order = {
   id: string; side: 'buy' | 'sell'; mint: string; decidedAt: number; executeAt: number;
   expiresAt: number; gas: string; deposit: string; maxSpend: string;
   minReceive: string; reserved: string; decisionEvidence: string;
+  entryStrategy?:EntryStrategy;
 };
 export type LedgerMode = 'PAPER' | 'DISPOSABLE_PAPER';
 export type LedgerState = {
@@ -75,6 +83,9 @@ function priceAt(price: UsdPrice, now: number) {
 }
 const usd = (lamports: bigint, price: bigint) => lamports * price / L;
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+function validateEntryStrategy(value:EntryStrategy,at:number){
+ if(!value||typeof value!=='object'||Array.isArray(value)||value.version!==ADAPTIVE_PAPER_STRATEGY_VERSION||!Number.isSafeInteger(value.cycle)||value.cycle<1||!Number.isSafeInteger(value.windowStartAt)||value.windowStartAt<0||value.windowEndAt!==value.windowStartAt+60000||value.windowEndAt!==Math.floor(at/10000)*10000||!Number.isSafeInteger(value.assessedAt)||value.assessedAt<value.windowEndAt||value.assessedAt>at||!boundedText(value.signalId,160)||/[\u0000-\u001f]/.test(value.signalId))throw Error('adaptive entry strategy invariant');
+}
 
 /** Shared with backup/recovery validation. No database or financial mutation. */
 export function validateOperatingReportingHistory(value:unknown,inceptionAt:number):OperatingReportingHistory {
@@ -157,12 +168,14 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   }
   for (const [mint, p] of Object.entries(s.positions)) {
     if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || amount(p.costMicroUsd) > 50_000_000n || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
+    if(p.strategy!==undefined){validateEntryStrategy(p.strategy,p.strategy.assessedAt);if(!boundedText(p.strategy.roundTripId,100)||!Number.isSafeInteger(p.strategy.highWaterAt)||p.strategy.highWaterAt<p.enteredAt||p.strategy.highWaterAt>s.lastAt||p.strategy.assessedAt>p.enteredAt)throw Error('adaptive position strategy invariant');amount(p.strategy.highWaterNetLamports);}
   }
   let reservations = 0n;
   const pendingMints = new Set<string>(); let pendingBuys = 0;
   for (const [id, o] of Object.entries(s.pending)) {
     if (!record(o) || !key(id, 100) || o.id !== id || !key(o.mint, 96) || pendingMints.has(o.mint) || !eventTime(o.decidedAt) || !Number.isSafeInteger(o.executeAt) || !Number.isSafeInteger(o.expiresAt) || o.executeAt < o.decidedAt + 500 || o.expiresAt <= o.executeAt || o.expiresAt > o.decidedAt + 30_000 || !boundedText(o.decisionEvidence) || amount(o.gas) === 0n || amount(o.minReceive) === 0n) throw new Error('pending order identity/time/amount invariant');
     const gas = amount(o.gas), spend = amount(o.maxSpend), deposit = amount(o.deposit), reserved = amount(o.reserved);
+    if(o.entryStrategy!==undefined){if(o.side!=='buy')throw Error('adaptive strategy belongs to entry only');validateEntryStrategy(o.entryStrategy,o.decidedAt);}
     if (o.side === 'buy') {
       pendingBuys++;
       if (spend === 0n || s.positions[o.mint] || reserved !== gas + spend + deposit || deposit > 0n && s.lockedDeposits[o.mint]) throw new Error('pending buy reservation invariant');
@@ -178,6 +191,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
 
 export class PaperLedger {
   private readonly db: Database.Database;
+  private readonly historicalClosedCycles=new Map<string,ClosedCycle|null>();
   private ownerFd: number | undefined;
   readonly sqlite: { version: string; source: string };
 
@@ -288,10 +302,28 @@ export class PaperLedger {
     return usd(liquid, price) + amount(s.roundingResidualMicroUsd);
   }
 
+  private updateAdaptiveHighWater(s:State,now:number,marks:Record<string,Mark>){
+    const updated:string[]=[];
+    for(const position of Object.values(s.positions))if(position.strategy){const mark=marks[position.mint];if(!mark)continue;if(!boundedText(mark.evidence)||mark.pricedBaseUnits!==position.units||!Number.isSafeInteger(mark.at)||mark.at<position.enteredAt||mark.at>now||now-mark.at>MAX_QUOTE_AGE)throw Error('adaptive high-water requires fresh exact-size liquidation evidence');if(mark.at>=position.strategy.highWaterAt&&amount(mark.netLamports)>amount(position.strategy.highWaterNetLamports)){position.strategy.highWaterNetLamports=mark.netLamports;position.strategy.highWaterAt=mark.at;updated.push(position.mint);}}
+    return updated;
+  }
+  /** Fresh SOL liquidation remains useful protection during unavailable USD.
+   * A higher peak is durable in this SAME writer; this never reconciles USD,
+   * changes cash/daily controls, grants entry or invents an unavailable mark. */
+  checkpointAdaptiveProtection(id:string,now:number,marks:Record<string,Mark>){
+    const probe=structuredClone(this.state()),valid:Record<string,Mark>={},unavailable:string[]=[];
+    for(const position of Object.values(probe.positions))if(position.strategy){const mark=marks[position.mint];let usable=false;try{usable=!!mark&&boundedText(mark.evidence)&&mark.pricedBaseUnits===position.units&&Number.isSafeInteger(mark.at)&&mark.at>=position.enteredAt&&mark.at<=now&&now-mark.at<=MAX_QUOTE_AGE; if(usable)amount(mark!.netLamports);}catch{usable=false;}if(usable)valid[position.mint]=mark!;else unavailable.push(position.mint);}
+    if(!this.updateAdaptiveHighWater(probe,now,valid).length)return {updated:[] as string[],unavailable};
+    return this.apply(id,'adaptive-protection-peak',now,{now,marks:valid},s=>({updated:this.updateAdaptiveHighWater(s,now,valid),unavailable}));
+  }
+
   reconcile(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>) {
     const p = priceAt(price, now);
     return this.apply(id, 'reconcile', now, { now, price, marks }, s => {
       const equity = this.equity(s, p, marks, now);
+      // Reuse the sole existing reconciliation transaction. Never create a
+      // diagnostic writer or advance a peak from stale/wrong-size evidence.
+      this.updateAdaptiveHighWater(s,now,marks);
       if (s.daily.day !== utcDay(now)) {
         s.daily = { day: utcDay(now), baselineMicroUsd: equity.toString(), paused: false, lossPaused: false, reconciledAt: now };
       } else {
@@ -360,6 +392,50 @@ export class PaperLedger {
     return !!row;
   }
 
+  private closedCycle(mint:string,state:Readonly<State>,ignoredPendingId?:string):ClosedCycle|null{
+    const row=this.db.prepare('SELECT value FROM metadata WHERE key=?').get('paper_round_trip_v2:'+mint) as {value:string}|undefined;if(!row)return this.historicalClosedCycle(mint,state,ignoredPendingId);
+    if(row.value.length>2048)return null;let value:ClosedCycle;try{value=JSON.parse(row.value);}catch{return null;}
+    if(!value||value.schemaVersion!==1||value.mint!==mint||!Number.isSafeInteger(value.cycle)||value.cycle<1||!boundedText(value.entryOrderId,100)||!Number.isSafeInteger(value.entryWindowEndAt)||value.entryWindowEndAt<0||value.entryWindowEndAt>state.lastAt||typeof value.legacyEntryCutoff!=='boolean'||!(value.closedAt===null||Number.isSafeInteger(value.closedAt)&&value.closedAt>=state.inceptionAt&&value.closedAt<=state.lastAt)||!(value.exitOrderId===null||boundedText(value.exitOrderId,100))||(value.closedAt===null)!==(value.exitOrderId===null))return null;return value;
+  }
+  private preservePriorRoundTripIndex(mint:string,now:number,revision:number){
+    const prior=this.db.prepare('SELECT value FROM metadata WHERE key=?').get('paper_round_trip_v2:'+mint) as {value:string}|undefined;if(!prior)return;
+    const sha256=createHash('sha256').update(prior.value).digest('hex');
+    this.db.prepare('INSERT OR IGNORE INTO metadata VALUES(?,?)').run('paper_round_trip_index_history:'+sha256,JSON.stringify({mint,observedAt:now,beforeRevision:revision,sha256,raw:prior.value}));
+  }
+  /** Old authoritative accounts already prove full closes in their original
+   * order/attempt/action rows. Read that proof without rewriting any history.
+   * The cache is disposable; the next actual fill establishes the durable
+   * versioned cycle. Unknown/malformed/over-bound history grants no re-entry. */
+  private historicalClosedCycle(mint:string,state:Readonly<State>,ignoredPendingId?:string):ClosedCycle|null{
+    if(state.positions[mint]||Object.values(state.pending).some(order=>order.mint===mint&&order.id!==ignoredPendingId)||!this.hasTradedMint(mint))return null;
+    if(this.historicalClosedCycles.has(mint))return this.historicalClosedCycles.get(mint)!;
+    let result:ClosedCycle|null=null;
+    try{
+      type Row={revision:number;at:number;actionId:string;detail:string;payloadHash:string;result:string;orderDetail:string;orderHash:string};
+      const rows=this.db.prepare("SELECT j.revision,j.at,j.action_id actionId,j.detail,a.payload_hash payloadHash,a.result,o.detail orderDetail,oa.payload_hash orderHash FROM journal j JOIN actions a ON a.id=j.action_id JOIN journal o ON o.action_id='order:'||json_extract(j.detail,'$.orderId') JOIN actions oa ON oa.id=o.action_id WHERE j.kind='attempt' AND o.kind='order' AND json_extract(o.detail,'$.input.mint')=? ORDER BY j.revision DESC LIMIT 257").all(mint) as Row[];
+      if(rows.length>256)throw Error('bounded legacy round-trip proof');
+      const fills=rows.flatMap(row=>{if(row.detail.length>65536||row.orderDetail.length>65536||row.result.length>65536)throw Error('legacy receipt bound');const attempt=JSON.parse(row.detail),order=JSON.parse(row.orderDetail),receipt=JSON.parse(row.result);if(digest({kind:'attempt',payload:attempt})!==row.payloadHash||digest({kind:'order',payload:order})!==row.orderHash)throw Error('legacy receipt hash');const trade=reportingFilledTrade(row.actionId,row.at,attempt,order,receipt);return trade?[{row,attempt,order,trade}]:[];});
+      const sell=fills[0],buy=fills.find(item=>item.trade.side==='buy');
+      if(sell?.trade.side==='sell'&&buy&&sell.row.revision>buy.row.revision&&sell.row.at>=buy.row.at&&sell.row.at<=state.lastAt&&sell.attempt.quote.pricedBaseUnits===buy.attempt.quote.receiveUnits){result={schemaVersion:1,mint,cycle:fills.filter(item=>item.trade.side==='buy').length,entryOrderId:buy.order.input.id,entryWindowEndAt:buy.order.input.entryStrategy?.windowEndAt??Math.floor(buy.row.at/10000)*10000,closedAt:sell.row.at,exitOrderId:sell.order.input.id,legacyEntryCutoff:!buy.order.input.entryStrategy};}
+    }catch{/* Missing evidence is a refusal, never a fabricated closure. */}
+    if(this.historicalClosedCycles.size>=64)this.historicalClosedCycles.delete(this.historicalClosedCycles.keys().next().value!);this.historicalClosedCycles.set(mint,result);return result;
+  }
+  private entryEligibilityFrom(state:Readonly<State>,mint:string,strategyVersion:string,windowEndAt:number,at:number,ignoredPendingId?:string):EntryEligibility{
+    if(!boundedText(mint,96)||!Number.isSafeInteger(at)||at<state.lastAt||!Number.isSafeInteger(windowEndAt)||windowEndAt<60000||windowEndAt>at)throw Error('valid entry eligibility identity/window/time required');
+    if(state.positions[mint]||Object.values(state.pending).some(order=>order.id!==ignoredPendingId))return {allowed:false,reason:'held or pending financial obligation remains',closedAt:null,previousWindowEndAt:null,cycle:1};
+    const prior=this.closedCycle(mint,state,ignoredPendingId),result=(allowed:boolean,reason:string):EntryEligibility=>({allowed,reason,closedAt:prior?.closedAt??null,previousWindowEndAt:prior?.entryWindowEndAt??null,cycle:(prior?.cycle??0)+1});
+    if(!prior&&this.db.prepare('SELECT 1 FROM metadata WHERE key=?').get('paper_round_trip_v2:'+mint))return result(false,'round-trip recovery index unavailable; no entry authority');
+    if(!this.hasTradedMint(mint))return result(true,'first complete qualified entry remains subject to financial controls');
+    if(strategyVersion!==ADAPTIVE_PAPER_STRATEGY_VERSION)return result(false,'legacy no-reentry policy');
+    if(!prior||prior.closedAt===null)return result(false,'prior fill has no verified completed closure');
+    if(state.daily.reconciledAt<prior.closedAt||state.daily.reconciledAt>at)return result(false,'post-close financial reconciliation required');
+    if(windowEndAt-60000<=prior.closedAt||windowEndAt<=prior.entryWindowEndAt)return result(false,'new complete audited window after closure required');
+    return result(true,'verified closed round trip and strictly new post-close observation window');
+  }
+  /** History awareness only; this never arms controls or substitutes for a
+   * complete independent audit, current quote, risk or uncertainty checks. */
+  entryEligibility(mint:string,strategyVersion:string,windowEndAt:number,at:number):EntryEligibility{return this.entryEligibilityFrom(this.state(),mint,strategyVersion,windowEndAt,at);}
+
   order(input: Omit<Order, 'reserved'>, price: UsdPrice, marks: Record<string, Mark>) {
     const now = input.decidedAt;
     return this.apply(`order:${input.id}`, 'order', now, { input, price, marks }, s => {
@@ -377,7 +453,8 @@ export class PaperLedger {
         if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) { s.daily.paused = true; s.daily.lossPaused = true; }
         if (s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.paused || !s.controls.entriesEnabled || s.controls.stopRequested) return { rejected: 'entries paused or reconciliation required' };
         if (s.positions[input.mint]) throw new Error('adds/re-entry into held position forbidden');
-        if (this.hasTradedMint(input.mint)) throw new Error('re-entry after a prior PAPER fill forbidden');
+        if(input.entryStrategy){validateEntryStrategy(input.entryStrategy,now);const eligibility=this.entryEligibilityFrom(s,input.mint,input.entryStrategy.version,input.entryStrategy.windowEndAt,now);if(!eligibility.allowed||input.entryStrategy.cycle!==eligibility.cycle)throw Error('adaptive re-entry requires verified closed cycle and fresh audited signal');}
+        else if (this.hasTradedMint(input.mint)) throw new Error('re-entry after a prior PAPER fill forbidden');
         if (s.lockedDeposits[input.mint] && dep > 0n) throw new Error('existing account deposit cannot be charged twice');
         if (Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');
         const pendingBuys = Object.values(s.pending).filter(o => o.side === 'buy');
@@ -410,6 +487,7 @@ export class PaperLedger {
       if (now >= o.expiresAt) return finish('expired', 'expiry reached before attempt');
       let p = 0n;
       if (o.side === 'buy') {
+        if(o.entryStrategy){const eligibility=this.entryEligibilityFrom(s,o.mint,o.entryStrategy.version,o.entryStrategy.windowEndAt,now,o.id);if(!eligibility.allowed||o.entryStrategy.cycle!==eligibility.cycle)return finish('failed','adaptive round-trip or fresh-entry identity changed; canceled before attempt');}
         try { p = priceAt(price, now); }
         catch { return finish('failed', 'USD valuation unavailable; entry canceled before attempt'); }
         let equity: bigint;
@@ -432,13 +510,16 @@ export class PaperLedger {
       if (o.side === 'buy') {
         if (usd(spend + gas + amount(o.deposit), p) > 50_000_000n) return finish('failed', '$50 commitment limit at execution; gas charged');
         if (s.positions[o.mint]) throw new Error('position already held');
+        this.historicalClosedCycles.delete(o.mint);
         s.lamports = (amount(s.lamports) - spend - amount(o.deposit)).toString();
         if (amount(o.deposit) > 0n) s.lockedDeposits[o.mint] = o.deposit;
         s.positions[o.mint] = {
           mint: o.mint, units: received.toString(), entryLamports: spend.toString(), entryGas: gas.toString(),
           costMicroUsd: usd(spend + gas, p).toString(), deposit: o.deposit, enteredAt: now,
+          ...(o.entryStrategy?{strategy:{...o.entryStrategy,roundTripId:o.id,highWaterNetLamports:'0',highWaterAt:now}}:{}),
         };
-        this.db.prepare('INSERT INTO metadata VALUES(?,?)').run('traded_mint:' + o.mint, '1');
+        this.db.prepare(o.entryStrategy?'INSERT OR IGNORE INTO metadata VALUES(?,?)':'INSERT INTO metadata VALUES(?,?)').run('traded_mint:' + o.mint, '1');
+        if(o.entryStrategy){this.preservePriorRoundTripIndex(o.mint,now,s.revision);this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run('paper_round_trip_v2:'+o.mint,JSON.stringify({schemaVersion:1,mint:o.mint,cycle:o.entryStrategy.cycle,entryOrderId:o.id,entryWindowEndAt:o.entryStrategy.windowEndAt,closedAt:null,exitOrderId:null,legacyEntryCutoff:false} satisfies ClosedCycle));}
       } else {
         const pos = s.positions[o.mint]; if (!pos) throw new Error('position missing');
         if (quote.pricedBaseUnits !== pos.units) return finish('failed', 'exit quote is not for actual full size; gas charged');
@@ -451,6 +532,10 @@ export class PaperLedger {
         if (locked > refund) s.lockedDeposits[o.mint] = (locked - refund).toString();
         else delete s.lockedDeposits[o.mint];
         s.realizedLamports = (BigInt(s.realizedLamports) + received - gas - amount(pos.entryLamports) - amount(pos.entryGas)).toString();
+        this.historicalClosedCycles.delete(o.mint);
+        // Exit protection depends on the held obligation, never optional
+        // re-entry metadata. A malformed index cannot prevent liquidation.
+        this.preservePriorRoundTripIndex(o.mint,now,s.revision);this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run('paper_round_trip_v2:'+o.mint,JSON.stringify({schemaVersion:1,mint:o.mint,cycle:pos.strategy?.cycle??1,entryOrderId:pos.strategy?.roundTripId??'legacy-held:'+o.mint+':'+pos.enteredAt,entryWindowEndAt:pos.strategy?.windowEndAt??Math.floor(pos.enteredAt/10000)*10000,closedAt:now,exitOrderId:o.id,legacyEntryCutoff:!pos.strategy} satisfies ClosedCycle));
         delete s.positions[o.mint];
       }
       return finish('filled', 'single modeled PAPER attempt; no live fill claim');
