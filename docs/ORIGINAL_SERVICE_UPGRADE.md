@@ -1,4 +1,4 @@
-# Original POE service upgrade — financial history verified; launch-order repair staged
+# Original POE service upgrade — launch configuration corrected; standard start pending
 
 The sole target is original account `poe-3123e352-4581-455b-85db-acd7e825e99e`, inception `2026-10-26T22:07:36.212Z`, original virtual funding $1,000. Its database remains `/var/lib/poe/state/ledger.sqlite` and its service remains `poe-runtime.service`. No ledger is initialized, imported, reseeded or restored by this package. No experimental service or financial account is created. Real blockchain execution stays disabled.
 
@@ -6,7 +6,7 @@ The original stage was verified by run [40796418549](https://github.com/levonmen
 
 Read-only host run [40798966387](https://github.com/levonmendall/meme-machine-admin/actions/runs/40798966387) confirmed the recovered original observer, PID `2431222`, original source/account/inception, entries disabled. The guarded repair is now separately staged by run [40801911352](https://github.com/levonmendall/meme-machine-admin/actions/runs/40801911352), with exact hash readback and that same PID/state unchanged. Actual root continuation and new-source operation remain **unverified**. The initial protected financial audit/backup is inferred from the old control path; its detailed root receipts must still be verified.
 
-Current status supersedes the earlier staging/refusal history above: native source is installed, but actual stage40804738053 at02:10:11UTC showed MainPID0/NRestarts118/auto-restart under the obsolete effective launch. The new Python financial manager has not started successfully. Use the launch-order correction below, not the historical continuation.
+Current status supersedes the earlier staging/refusal history above: native source is installed and the launch-order rename/reload has completed. Actual run40805746959 confirms the correct native command and independently verified empty stop array, but the service is stopped after a text-metadata parsing refusal. Use the standard start below; do not repeat historical installation or repair commands.
 
 ## Exact reviewed identity
 
@@ -21,21 +21,21 @@ Current status supersedes the earlier staging/refusal history above: native sour
 
 The application artifact is frozen read-only at `/tmp/poe-native-paper-output-original-issue11-20261029` in this workspace. The installation payload is already at `/var/tmp/poe-issue11-staging` on EC2, private UID 994. The operating profile starts with six deep-observation slots and one PAPER position as initial exposure validation, preserving the frozen buying rule and existing financial limits. These are not permanent market-capacity limits. Fresh migration discovery supplies current candidates; no historical hint is assumed a supported current pool.
 
-## One owner launch-order correction
+## One owner standard start
 
-The owner continuation installed the native release and verified the exact prior financial prefix: 36,834 actions, 36,835 journal rows, revision36,834, unchanged original identity/inception/funding. Actual public-receipt readback is retained in [actual-staging.json](../evidence/issue11-consolidation-20261028/entrypoint-order-20261029/actual-staging.json). Its public-status wait failed because the pre-existing `entrypoint.conf` sorts after `90-native-engine.conf` and restores the obsolete Node launch command. Actual host run40803189057 confirmed that effective command and immediate restart-loop exits. The package missed this ordering interaction; it was not a slow provider response.
+The owner ordering repair **completed the rename and systemd reload**. Actual run [40805746959](https://github.com/levonmendall/meme-machine-admin/actions/runs/40805746959) confirms the correct native Python command, correct `00-legacy`/`90-native`/`reporting` drop-ins, both PIDs zero and inactive/dead.
 
-Run this single guarded correction on the same EC2 instance. The runner lacks root permission to change the protected unit. This command verifies the retained original package and financial history, renames the unchanged legacy override earlier, verifies the effective native command, and starts the same original service. No ledger initialization, financial import, source rebuild or account replacement occurs:
+The repair's metadata guard then refused because `systemctl show --all` omits an empty `ExecStop` command array. An independent typed D-Bus query verified exactly `a(sasbttttuii)` with zero entries. No other required field is missing. The maintenance parser is corrected on the review branch and 20 focused plus63 existing checks pass; this is not a new application release or claimed live repair execution.
+
+No further installation, rename, daemon reload, reset, account initialization or custom helper is needed for this confirmed state. Start the existing original service from the sudo-capable EC2 terminal:
 
 ```bash
-sudo /usr/bin/python3 -B -I -c 'import os,stat,hashlib,sys; p="/var/tmp/poe-issue11-entrypoint-order-80af3224/repair-original-entrypoint-order.py"; f=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK); s=os.fstat(f); assert stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_uid==994 and not s.st_mode&0o022 and 0<s.st_size<=131072; b=os.read(f,s.st_size+1); os.close(f); assert len(b)==s.st_size and hashlib.sha256(b).hexdigest()=="80af32246e4a639d4b0923365fd7d329517bfc73825137e093b78b5aa401bc49"; sys.argv=[p]; exec(compile(b,p,"exec"),{"__name__":"__main__","__file__":p,"__poe_verified_driver_sha256__":hashlib.sha256(b).hexdigest()})'
+sudo /usr/bin/systemctl start poe-runtime.service
 ```
 
-Literal [REPAIR_OWNER_COMMAND.txt](../evidence/issue11-consolidation-20261028/entrypoint-order-20261029/REPAIR_OWNER_COMMAND.txt). Historical bootstrap/resume commands remain evidence and are not the next action.
+The runner lacks that root permission. Independent review approved this normal same-unit/source/account restart; the native supervisor retains host, root-manifest/executable, account and exclusive lease checks. It may append normal PAPER financial records. Previous financial identity/funding and all36,834actions/36,835journal rows remain verified by the retained receipt; fresh source/account, post-start financial-prefix and matched Render reporting still require actual runtime evidence.
 
-The 16,245-byte repair SHA is `80af32246e4a639d4b0923365fd7d329517bfc73825137e093b78b5aa401bc49`. Actual EC2 staging run [40804738053](https://github.com/levonmendall/meme-machine-admin/actions/runs/40804738053) verified this body and both existing root-owned configuration hashes before staging. Source, package index, manifest, original90native/reporting files and backups remain unchanged. Rename `entrypoint.conf`→`00-legacy-entrypoint.conf` preserves exact bytes/ownership/mode/inode; the old guarded rollback remains valid because removing90 exposes the original legacy command again.
-
-18 new regression tests and 63 existing operator tests pass; independent review reran the 18 and approved this pinned driver. It checks same ledger inode, complete prior history, financial lease and physical settlement, exact effective Python argv and empty old ExecStop. It handles the renamed-but-not-yet-reloaded interruption seam. Failure preserves state and exposes bounded nonsecret startup clues, never restores an old ledger or launches the observer over exposure. Actual correction/startup remains pending owner execution.
+Literal [START_OWNER_COMMAND.txt](../evidence/issue11-consolidation-20261028/empty-exec-stop-20261029/START_OWNER_COMMAND.txt); actual metadata and regressions in that directory. Earlier long bootstrap/resume/ordering commands are historical evidence, not next actions. No healthy manager, natural trade or acceptance interval is claimed before actual startup verification.
 
 ## Backup and financial verification
 
@@ -73,7 +73,7 @@ The compatible receiver `79195ecfb2aaf138715a730194edf1a489937fc1` is already li
 
 Render expected-source binding has now been merged to5e55/persistent-buying-pilot-v1, preserving all other configuration and the original secret. Same79195receiver configuration deploymentdep-dbhai58n74is73cqva40 is live (2026-10-29 02:02:40.046Z); healthz200/api/snapshot503AwaitingPOEdata honestly show receiver availability without a current source. After owner correction, Codex must verify actual protected financial/source receipts and compare at least two matched current-source receipts with Render. Original channel/secret/account remain unchanged. No further owner approval is needed for these ordinary reporting steps. The future unified reporting merge `9ef309d`/`3e5574f` must be reconciled with current `79195ec` main, preserving newer work and retiring experimental backend/credentials only after safe original cutover/reporting.
 
-Do not delete experimental financial files/credentials before original cutover and reporting verification. Do not claim a natural PAPER trade, sustained protection, profitability or 24-hour acceptance from this prepared package. The installed native target currently fails through the obsolete legacy launch command; no healthy native financial manager or natural trade is claimed.
+Do not delete experimental financial files/credentials before original cutover and reporting verification. Do not claim a natural PAPER trade, sustained protection, profitability or 24-hour acceptance from this prepared package. The corrected native launch is selected; the unit awaits the standard owner start. No healthy native financial manager or natural trade is claimed yet.
 
 ## Indexed payload
 

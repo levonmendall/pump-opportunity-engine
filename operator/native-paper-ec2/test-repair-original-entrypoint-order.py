@@ -7,12 +7,12 @@ spec=importlib.util.spec_from_file_location('repair_order',path);r=importlib.uti
 UID=os.getuid()
 class Tests(unittest.TestCase):
  @contextlib.contextmanager
- def fixture(self,lower=False,cached=False,settled=True,wrong_merged=False,reload_failure=False,complete=True):
+ def fixture(self,lower=False,cached=False,settled=True,wrong_merged=False,reload_failure=False,complete=True,stopped_native=False):
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-entrypoint-order-')as tmp:
    base=pathlib.Path(tmp);unitdir=base/'unit.d';unitdir.mkdir(mode=0o755);unitdir.chmod(0o755);legacy=unitdir/'entrypoint.conf';renamed=unitdir/'00-legacy-entrypoint.conf';(renamed if lower else legacy).write_bytes(r.LEGACY_BYTES);(renamed if lower else legacy).chmod(0o644);native=path.with_name('poe-runtime-persistent.conf').read_bytes();(unitdir/'90-native-engine.conf').write_bytes(native);(unitdir/'90-native-engine.conf').chmod(0o644);(unitdir/'reporting.conf').write_bytes(b'[Service]\nLoadCredential=poe-ingest-secret:/etc/poe/secrets/ingest-secret\n');(unitdir/'reporting.conf').chmod(0o644)
    releases=base/'releases';target=releases/r.SOURCE['commit'];op=target/'operator/native-paper-ec2';op.mkdir(parents=True);(op/'run-authoritative-service.py').write_bytes(b'CONTROLLED_SUPERVISOR');current=base/'current';current.symlink_to(target);manifest={'source':r.SOURCE};manifest_raw=json.dumps(manifest).encode();manifest_path=base/'manifest.json';manifest_path.write_bytes(manifest_raw);ledger=base/'TEST_ONLY-ledger';ledger.write_bytes(b'CONTROLLED_NOT_SQLITE');records=base/'records';parent=records/r.SOURCE['commit'];parent.mkdir(parents=True);prior={'accountId':'poe-3123e352-4581-455b-85db-acd7e825e99e','inceptionAt':1793052456212,'source':r.SOURCE,'packageIndexSha256':r.INDEX_SHA,'stoppedFinancial':{'fixture':True},'backup':{'fixture':True},'startRequestedAt':1,'inputTransition':{'installedInputSha256':'e'*64}};(parent/'transition.json').write_text(json.dumps(prior));events=[];proofs=[];public=[];lease=[None];state={'native':lower and not cached,'reloads':0}
    old_names=['90-native-engine.conf','entrypoint.conf','reporting.conf'];new_names=['00-legacy-entrypoint.conf','90-native-engine.conf','reporting.conf']
-   def merged():return {'User':'poe-runtime','Group':'poe-runtime','LoadState':'loaded','nativeExecStart':state['native']and not wrong_merged,'legacyExecStart':not state['native'],'execStopEmpty':state['native']and not wrong_merged,'dropInBasenames':new_names if state['native']else old_names}
+   def merged():return {'MainPID':'0'if stopped_native else'42','ControlPID':'0','ActiveState':'inactive'if stopped_native else'active','SubState':'dead'if stopped_native else'running','User':'poe-runtime','Group':'poe-runtime','LoadState':'loaded','nativeExecStart':state['native']and not wrong_merged,'legacyExecStart':not state['native'],'execStopEmpty':state['native']and not wrong_merged,'dropInBasenames':new_names if state['native']else old_names}
    def systemctl(*args):
     events.append(':'.join(args))
     if args==('daemon-reload',):
@@ -94,8 +94,13 @@ class Tests(unittest.TestCase):
    d=pathlib.Path(tmp);(d/'00-legacy-entrypoint.conf').write_bytes(r.LEGACY_BYTES)
    fields={k:'0'for k in['LoadState','User','Group','ActiveState','SubState','MainPID','ControlPID','NRestarts','Result','ExecMainCode','ExecMainStatus','ExecStart','ExecStop','DropInPaths']};fields.update(LoadState='loaded',User='poe-runtime',Group='poe-runtime',ExecStart='{ path=/opt/poe/node/bin/node ; argv[]='+' '.join(r.OLD_ARGV)+' ; }',ExecStop='',DropInPaths=str(d/'entrypoint.conf'))
    def result():return types.SimpleNamespace(returncode=0,stdout='\n'.join(k+'='+v for k,v in fields.items()),stderr='')
-   with patch.object(r,'UNITDIR',d),patch.object(r.subprocess,'run',side_effect=lambda *a,**k:result()):
+   def dispatch(args,**kwargs):return types.SimpleNamespace(returncode=0,stdout=json.dumps({'type':'a(sasbttttuii)','data':[]})+'\n',stderr='')if args[0]=='/usr/bin/busctl'else result()
+   with patch.object(r,'UNITDIR',d),patch.object(r.subprocess,'run',side_effect=dispatch):
     self.assertTrue(r.merged_unit()['legacyExecStart'])
+    del fields['ExecStop'];self.assertTrue(r.merged_unit()['emptyExecStopProof']['entries']==0)
+    del fields['User']
+    with self.assertRaisesRegex(r.Guard,'COMPLETE_MERGED_UNIT_METADATA_REQUIRED'):r.merged_unit()
+    fields['User']='poe-runtime'
     fields['DropInPaths']=str(d/'reporting.conf')
     with self.assertRaisesRegex(r.Guard,'EXACT_CANONICAL_DROPIN_PATHS'):r.merged_unit()
     fields['DropInPaths']=str(d/'nested/entrypoint.conf')
@@ -112,6 +117,18 @@ class Tests(unittest.TestCase):
    f.lower.write_bytes(r.LEGACY_BYTES);f.lower.chmod(0o644)
    with self.assertRaisesRegex(r.Guard,'ONE_EXACT_LEGACY_DROPIN_REQUIRED'):r.repair(f.m,None,f.supervisor,'a'*64)
    self.assertNotIn('stop:poe-runtime.service',f.events)
+ def test_typed_empty_command_array_proof_and_rejection_shapes(self):
+  good=json.dumps({'type':'a(sasbttttuii)','data':[]})+'\n'
+  with patch.object(r.subprocess,'run',return_value=types.SimpleNamespace(returncode=0,stdout=good,stderr=''))as call:
+   self.assertEqual(r.verified_empty_exec_stop()['entries'],0);self.assertIn('/org/freedesktop/systemd1/unit/poe_2druntime_2eservice',call.call_args.args[0]);self.assertEqual(call.call_args.args[0][-1],'ExecStop')
+  for body,code in [(json.dumps({'type':'a(sasbttttuii)','data':[['COMMAND']]}),0),(json.dumps({'type':'s','data':[]}),0),('{bad',0),(good,1),(good+' '*8192,0)]:
+   with self.subTest(body=body[:20],exit=code),patch.object(r.subprocess,'run',return_value=types.SimpleNamespace(returncode=code,stdout=body,stderr='')):
+    with self.assertRaises(r.Guard):r.verified_empty_exec_stop()
+  with patch.object(r.subprocess,'run',side_effect=subprocess.TimeoutExpired('busctl',5)):
+   with self.assertRaisesRegex(r.Guard,'TYPED_EXEC_STOP_UNAVAILABLE'):r.verified_empty_exec_stop()
+ def test_renamed_native_stopped_service_obtains_lease_and_starts_once(self):
+  with self.fixture(lower=True,stopped_native=True)as f:
+   inode=f.lower.stat().st_ino;self.assertTrue(r.repair(f.m,None,f.supervisor,'a'*64)['complete']);self.assertEqual(f.lower.stat().st_ino,inode);self.assertEqual(f.events.count('start:poe-runtime.service'),1);self.assertIn('physical-proof',f.events);self.assertLess(f.events.index('lease'),f.events.index('start:poe-runtime.service'))
  def test_private_file_reader_rejects_links(self):
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-link-')as tmp:
    p=pathlib.Path(tmp)/'file';p.write_bytes(b'body');p.chmod(0o600);link=p.with_name('link');link.symlink_to(p)

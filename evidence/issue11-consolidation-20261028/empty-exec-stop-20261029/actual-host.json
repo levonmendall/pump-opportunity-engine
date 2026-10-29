@@ -1,0 +1,93 @@
+{
+  "kind": "POE_ORIGINAL_CUTOVER_REFUSAL_READ_ONLY",
+  "checkedAt": 1793240426935,
+  "service": {
+    "Restart": "always",
+    "MainPID": "0",
+    "ControlPID": "0",
+    "Result": "exit-code",
+    "NRestarts": "163",
+    "ExecMainStartTimestamp": "Thu 2026-10-29 02:17:47 UTC",
+    "ExecMainExitTimestamp": "Thu 2026-10-29 02:17:47 UTC",
+    "ExecMainPID": "2435954",
+    "ExecMainCode": "1",
+    "ExecMainStatus": "1",
+    "ControlGroup": "",
+    "TasksCurrent": "[not set]",
+    "User": "poe-runtime",
+    "Group": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "inactive",
+    "SubState": "dead",
+    "StateChangeTimestamp": "Thu 2026-10-29 02:17:55 UTC",
+    "ActiveEnterTimestamp": "Thu 2026-10-29 02:17:47 UTC",
+    "InactiveEnterTimestamp": "Thu 2026-10-29 02:17:55 UTC",
+    "Job": ""
+  },
+  "lastExecStop": {},
+  "effectiveExecStart": {
+    "executable": "/usr/bin/python3",
+    "nativeSupervisorEntrypoint": true,
+    "obsoleteObserverEntrypoint": false,
+    "valueSha256": "95555b178f9d272e4d82275a3c395c424c4b14949f4c97e74d4883421c349588",
+    "argumentsExported": false
+  },
+  "dropInBasenames": [
+    "00-legacy-entrypoint.conf",
+    "90-native-engine.conf",
+    "reporting.conf"
+  ],
+  "repairMetadataMissingKeys": [
+    "ExecStop"
+  ],
+  "execStopTypedProperty": {
+    "available": true,
+    "type": "a(sasbttttuii)",
+    "entries": 0,
+    "verifiedEmptyCommandArray": true,
+    "argumentsExported": false
+  },
+  "execStopTypedReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 36,
+    "stderrBytes": 0,
+    "stdoutSha256": "a8796853c7e18d8b5c0c3fa8272c20fa384b1ef8806f573aa7b73d215ba371f9",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "serviceReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 932,
+    "stderrBytes": 0,
+    "stdoutSha256": "0efe3a607c178f9be60df414ad999d5efdfb99189bfe57b1c3c754b33fa64b00",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "publicStatus": {
+    "sha256": "76a0bf5fb7af628d839f28ade8ab1c5da4f113aa05545b8bc83e5e31af47bc19",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+    "generatedAt": "2026-10-29T01:49:54.048Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false
+  },
+  "currentReleaseLink": null,
+  "currentCgroup": {
+    "available": false,
+    "absent": true
+  },
+  "managerJournal": [],
+  "journalReceipt": {
+    "exitCode": 1,
+    "stdoutBytes": 0,
+    "stderrBytes": 62,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "69290b924ebefd68d1806a463f5c072523b1c5ed4c35e4096eee215ff5916e2e"
+  },
+  "financialDatabaseOpened": false,
+  "credentialReads": 0,
+  "serviceChanges": 0,
+  "providerRequests": 0
+}

@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-10-29T02:23:01.541650+00:00",
+  "actualHostRun": 40805746959,
+  "adminSource": "a11ac1455c357b8821217fafa9efe6cd228bd713",
+  "rootCause": "systemctl show --all omits empty ExecStop command array; strict14-text-field parser rejected a correctly cleared stop configuration. Typed D-Bus independently proves the exact array empty.",
+  "protectedRenameAndDaemonReloadActuallyCompleted": true,
+  "currentService": "inactive/dead, bothPIDs0; exactnativePythonselected; legacyrename00/nativeroot90/reporting configurations present",
+  "correction": "Only missing ExecStop can be resolved via a successful bounded fixed-property typedD-Bus proof. Other missing fields remain refusals. Stopped renamed-native maintenance-resume branch obtains fresh settlement/lease before start.",
+  "newFocusedTestsPassed": 20,
+  "existingOperatorTestsPassed": 63,
+  "combinedTestsPassed": 83,
+  "codeRepairSha256": "4f40a2a66b5ee9cf7d63b3bf6570ec162d2b085e6ac33e415316e48e74b96ee6",
+  "deploymentScope": "Maintenance code corrected on review branch only; frozen5e application and installed root helpers unchanged. No further configuration change needed on EC2 for this confirmed state.",
+  "exactMinimalOwnerAction": "sudo /usr/bin/systemctl start poe-runtime.service",
+  "minimalActionIndependentReview": {
+    "reviewer": "/root/review_empty_exec_metadata",
+    "result": "GO standard same-unit/source/ledger startup with builtin host/source/account/lease guards; no additional helper required",
+    "reference": "operator/native-paper-ec2/ORIGINAL_ACCOUNT_CUTOVER.md routine restart provision"
+  },
+  "financialPreservation": "Prior complete36834action/36835journal prefix receipt preserved; no financial history reset/backuprestored. Fresh post-start original source/account/financial-prefix and reporting evidence still required.",
+  "operationalAcceptance": false,
+  "providerRequests": 0,
+  "files": {
+    "test-cutover-original-service.py.txt": {
+      "bytes": 127,
+      "sha256": "95f1eb7e46ba254467c8dc6daa2896387b0511874ccdfa195b3f7029cb615da5"
+    },
+    "test-prepare-original-service-package.py.txt": {
+      "bytes": 98,
+      "sha256": "f2bc42bc97eb5e7e317ed7fb4f8c98a4f5dfc7483bb3e5397d9612332380a9a9"
+    },
+    "actual-host-raw.txt": {
+      "bytes": 26190,
+      "sha256": "f08adae48d403afde287da6e3479bdcc72e7f5df48da2992a85a2e39ac820a8f"
+    },
+    "actual-host.json": {
+      "bytes": 2948,
+      "sha256": "6b5f35ecc45b68f926c40c0b75629767c9c15ab2f546058ee0308f629ecd58f5"
+    },
+    "test-audit-original-account.py.txt": {
+      "bytes": 106,
+      "sha256": "8511476ade8de90f5517cc722fe4e78a712af4c32884f34c51335fc83e873772"
+    },
+    "test-authoritative-service.py.txt": {
+      "bytes": 125,
+      "sha256": "05a6cfc91f9d871b8e68fc1698dd27423d30e74c188eef2645153343fa9f5478"
+    },
+    "repair-tests.txt": {
+      "bytes": 1825,
+      "sha256": "f4f3dd9f667da1c2749fa2bbedf080b3f172e96f6e31e6c8d4b2cc0da73cd36a"
+    }
+  }
+}
