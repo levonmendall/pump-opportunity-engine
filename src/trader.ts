@@ -1,5 +1,5 @@
 import {assertPoeOperatingAccount} from './poe-operating-account.js';
-import {PaperLedger,ADAPTIVE_PAPER_STRATEGY_VERSION,type ExecutionQuote,type Mark,type Position,type EntryStrategy} from './ledger.js';
+import {PaperLedger,ADAPTIVE_PAPER_STRATEGY_VERSION,OPERATING_FINANCIAL_READINESS_VERSION,type ExecutionQuote,type Mark,type Position,type EntryStrategy} from './ledger.js';
 import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,type QuoteRequest} from './execution.js';
 import {FlowWindow,copyEventIdentity,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
 import {assertPilotBaseline,resolvePilotBinding,type PilotBinding,type ResolvedPilotBinding} from './pilot-contract.js';
@@ -124,7 +124,15 @@ export class PaperTrader{
   entryReadinessSafety(){const execution=this.execution.readinessSafety();return {recoveryComplete:this.started&&execution.recoveryComplete,idle:!this.active&&!this.outstanding&&execution.idle,evidenceAvailable:!this.evidenceUnavailable,financialAvailable:!this.financialUnavailable,uncertainActions:Math.max(this.uncertainOrders.size,execution.uncertainActions),automaticRecoveryAllowed:!this.nonRecoverablePauseObserved,newHardPauseObserved:this.newHardPauseObserved};}
   refreshFlatContext(price:ExecutionContext['price']){const state=this.options.ledger.state();if(!this.entryReadinessSafety().idle||Object.keys(state.positions).length||Object.keys(state.pending).length)throw Error('cash context requires idle flat accounting');this.context={price:price?{...price}:null,marks:{}};this.contextInventory={};}
   financialMaintenanceFailed(){this.financialUnavailable=true;this.pause('financial maintenance unavailable; preserve records and close entries');}
-  recordFinancialReadiness(data:unknown){this.record('native-paper-financial-readiness-recovered',data);return !this.evidenceUnavailable;}
+  recordFinancialReadiness(data:unknown){
+    this.record('native-paper-financial-readiness-recovered',data);if(this.evidenceUnavailable)return false;
+    if(data&&typeof data==='object'&&Object.hasOwn(data,'technicalProtectionRecovery')){
+      const value=data as Record<string,unknown>,result=value.result as {enabled?:unknown}|null,proof=value.technicalProtectionRecovery as TechnicalProtectionRecoveryProof;
+      if(value.version!==OPERATING_FINANCIAL_READINESS_VERSION||value.financialPermissionOnly!==true||value.candidateWindowClaimed!==false||value.entryQuoteClaimed!==false||value.orderCreated!==false||result?.enabled!==true)return false;
+      return this.technicalProtectionRecovery.recordRetained(proof,this.options.ledger.state(),this.clock());
+    }
+    return true;
+  }
   verifiedEntryReadinessRecovered(){const state=this.options.ledger.state();if(this.started&&!this.evidenceUnavailable&&!this.financialUnavailable&&!this.uncertainOrders.size&&!Object.keys(state.pending).length&&state.controls.entriesEnabled&&!state.controls.stopRequested&&!state.daily.lossPaused){this.nonRecoverablePauseObserved=false;this.newHardPauseObserved=false;}}
   checkpointForRestart(){this.pause(ROUTINE_PAPER_CHECKPOINT_REASON,true);}
   private pilotDepositFor(mint:string){return this.pilotDeposits.get(mint)??(this.pilotConfig?.stage===null?this.pilotDeposit:null);}

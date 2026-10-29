@@ -13,8 +13,9 @@ export class TechnicalProtectionRecoveryTracker{
  private progress:Progress|null=null;
  private readonly completed=new Map<string,Completion>();
  private issued=new WeakSet<TechnicalProtectionRecoveryProof>();
+ private recorded=new WeakSet<TechnicalProtectionRecoveryProof>();
  private authoritySha256:string|null=null;
- reset(){this.progress=null;this.completed.clear();this.issued=new WeakSet();this.authoritySha256=null;}
+ reset(){this.progress=null;this.completed.clear();this.issued=new WeakSet();this.recorded=new WeakSet();this.authoritySha256=null;}
  private safe(s:LedgerState,c:ExecutionContext,at:number){
   return integer(at)&&at>=s.lastAt&&(s.mode==='PAPER'||s.mode==='DISPOSABLE_PAPER')&&!s.controls.entriesEnabled&&!s.controls.stopRequested&&!s.daily.lossPaused&&!Object.keys(s.pending).length&&s.daily.day===new Date(at).toISOString().slice(0,10)&&s.daily.reconciledAt>0&&s.daily.reconciledAt<=at&&at-s.daily.reconciledAt<=2000&&validPrice(c,at);
  }
@@ -53,8 +54,10 @@ export class TechnicalProtectionRecoveryTracker{
   const p=this.progress;if(!p||p.inventory!==key||at<p.completedAt||at-p.completedAt>2000||p.completedAt-p.startedAt<60000||p.maximumCompletedGapMs>4000||p.completedEvaluations<16||p.lastQuoteAt>at||at-p.lastQuoteAt>2000)return null;
   const proof:TechnicalProtectionRecoveryProof=Object.freeze({version:'paper-technical-protection-recovery-v1',authoritySha256:authority.authoritySha256,originRevision:authority.originRevision,accountId:s.accountId,inceptionAt:s.inceptionAt,stateRevision:s.revision,controlChangedAt:s.controls.changedAt,controlReason:s.controls.reason,positionUnits:Object.freeze({...units}),startedAt:p.startedAt,completedAt:p.completedAt,completedEvaluations:p.completedEvaluations,maximumCompletedGapMs:p.maximumCompletedGapMs,lastQuoteAt:p.lastQuoteAt});this.issued.add(proof);return proof;
  }
+ private postResume(proof:TechnicalProtectionRecoveryProof,s:LedgerState,at:number){return this.issued.has(proof)&&integer(at)&&at>=s.lastAt&&s.accountId===proof.accountId&&s.inceptionAt===proof.inceptionAt&&s.revision===proof.stateRevision+1&&s.controls.entriesEnabled&&!s.controls.stopRequested&&!s.daily.paused&&!s.daily.lossPaused&&s.controls.reason==='explicit verified operating financial readiness'&&!Object.keys(s.pending).length&&JSON.stringify(inventory(s))===JSON.stringify(proof.positionUnits)&&at>=proof.completedAt&&at-proof.completedAt<=2000;}
+ recordRetained(proof:TechnicalProtectionRecoveryProof,s:LedgerState,at:number){const valid=this.postResume(proof,s,at);if(valid)this.recorded.add(proof);return valid;}
  committed(proof:TechnicalProtectionRecoveryProof,s:LedgerState,at:number){
-  const valid=this.issued.has(proof)&&integer(at)&&at>=s.lastAt&&s.accountId===proof.accountId&&s.inceptionAt===proof.inceptionAt&&s.revision===proof.stateRevision+1&&s.controls.entriesEnabled&&!s.controls.stopRequested&&!s.daily.paused&&!s.daily.lossPaused&&s.controls.reason==='explicit verified operating financial readiness'&&!Object.keys(s.pending).length&&JSON.stringify(inventory(s))===JSON.stringify(proof.positionUnits)&&at>=proof.completedAt&&at-proof.completedAt<=2000;
+  const valid=this.recorded.has(proof)&&this.postResume(proof,s,at);
   this.reset();return valid;
  }
  hasIssued(proof:TechnicalProtectionRecoveryProof){return this.issued.has(proof);}

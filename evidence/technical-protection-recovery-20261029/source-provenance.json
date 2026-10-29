@@ -1,9 +1,9 @@
 {
   "baseCommit": "9a85bbe9b899a5ed15f9626c1f658886c823f3d0",
   "files": {
-    "src/trader.ts": "eb1d35f04213a4db5c9e541cac78265a3a5d1152de2a5fc172dfec5f9598311c",
-    "src/technical-protection-recovery.ts": "44deb42481bfa7ad892695d46c672802fbc48ae23c97e5056339a6713bd25df6",
-    "test/technical-protection-recovery.test.ts": "d752863b4902c8bbc8d0aa167c442cc2ddbf860875204a39516505e4ae8dbb55"
+    "src/trader.ts": "c93fd6fc2f84d0ad91a52a692df9413e30f68acc667d80e7cdd1ac971d3b802c",
+    "src/technical-protection-recovery.ts": "8df8b3a412a43e8442899b4518448c045b62df6071a9098219dbb757dedfa917",
+    "test/technical-protection-recovery.test.ts": "b98ddd178767e54473b7b6191c708370b484a51f67e427d59dab6c0f415dadc6"
   },
   "foreignLedgerOverlay": {
     "path": "/workspace/poe-general-arming-window/src/ledger.ts",
@@ -14,12 +14,15 @@
   "providerRequests": 0,
   "operatingFinancialDatabaseRead": false,
   "historicalProtectionFailuresReset": false,
-  "testsPassed": 64,
+  "testsPassed": 67,
   "latestLedgerOverlayRecoveryTestsPassed": 14,
   "buildPassed": true,
   "rawVerification": {
+    "evidence/technical-protection-recovery-20261029/required-record.raw.txt": "73d6f84a97a40a011f59856ecb2a6332bad2097fc4dc7e37b5db7298692a0258",
     "evidence/technical-protection-recovery-20261029/build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
     "evidence/technical-protection-recovery-20261029/latest-ledger-overlay.raw.txt": "1618f2e289ff35268ef93171d1488250c1fa878c2143f771f492ff76d557318f",
     "evidence/technical-protection-recovery-20261029/targeted.raw.txt": "fd630307e5e22478c7e0c174daa6abe1e837436f2291d42b48f9ef2205b1d7c6"
-  }
+  },
+  "technicalRecoveryCasesPassed": 17,
+  "mandatoryRecordProducerGuard": "independently reviewed gap corrected; exact issued-and-recorded private identity required"
 }

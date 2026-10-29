@@ -21,7 +21,8 @@ function fixture(t:TestContext,flat=false,two=false){
  const proof=(healthy=true)=>trader.technicalProtectionRecoveryProof(ledger.technicalProtectionRecoveryAuthority(at),healthy,at);
  const tick=async(healthy=true)=>{at+=2000;await trader.tick({evaluateCandidates:false});return proof(healthy);};
  const resume=(p:TechnicalProtectionRecoveryProof)=>{const state=ledger.state(),currentMarks=marks();return ledger.resume('technical-recover:'+state.revision,at,price(),currentMarks,{version:OPERATING_FINANCIAL_READINESS_VERSION,purpose:'financial-permission-only',evidence:'CONTROLLED authenticated technical proof and current inventory/source',accountId:state.accountId,stateRevision:state.revision,reconciledAt:state.daily.reconciledAt,positionUnits:Object.fromEntries(Object.values(state.positions).map(p=>[p.mint,p.units])),source:{kind:Object.keys(state.positions).length?'complete-held-liquidation-context':'selected-native-support',bankClockAt:at,receivedAt:at,validUntil:at+30000},recoveryComplete:true,financialInventoryReady:true,budgetAvailable:true,technicalProtectionRecovery:p});};
- return {ledger,trader,price,marks,records,proof,tick,resume,get at(){return at;},advance:(ms:number)=>{at+=ms;},set missing(v:boolean){missing=v;},set missingMint(v:string|null){missingMint=v;},set recordFailure(v:boolean){recordFailure=v;}};
+ const recordRecovery=(p:TechnicalProtectionRecoveryProof)=>trader.recordFinancialReadiness({at,version:OPERATING_FINANCIAL_READINESS_VERSION,technicalProtectionRecovery:p,result:{enabled:true},financialPermissionOnly:true,candidateWindowClaimed:false,entryQuoteClaimed:false,orderCreated:false});
+ return {ledger,trader,price,marks,records,proof,tick,resume,recordRecovery,get at(){return at;},advance:(ms:number)=>{at+=ms;},set missing(v:boolean){missing=v;},set missingMint(v:string|null){missingMint=v;},set recordFailure(v:boolean){recordFailure=v;}};
 }
 
 test('known technical hard pause requires a full new measured held interval before revision-bound recovery',async t=>{
@@ -29,7 +30,7 @@ test('known technical hard pause requires a full new measured held interval befo
  for(let i=0;i<32;i++){proof=await f.tick();if(i<31)assert.equal(proof,null);}
  assert.ok(proof,JSON.stringify({authority:f.ledger.technicalProtectionRecoveryAuthority(f.at),status:f.trader.technicalProtectionRecoveryStatus(),safety:f.trader.entryReadinessSafety()}));assert.equal(proof.completedAt-proof.startedAt,60000);assert.equal(proof.maximumCompletedGapMs,2000);assert.equal(proof.completedEvaluations,31);assert.deepEqual(proof.positionUnits,{'fixture-token':'1000'});
  assert.equal(f.ledger.state().controls.entriesEnabled,false,'proof production never arms the account');assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);
- assert.equal(f.resume(proof).enabled,true);assert.equal(f.trader.recordFinancialReadiness({version:proof.version,orderCreated:false,entryQuoteClaimed:false}),true);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),true);assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,true);
+ assert.equal(f.resume(proof).enabled,true);assert.equal(f.recordRecovery(proof),true);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),true);assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,true);
  assert.equal(f.ledger.state().inceptionAt,before.inceptionAt);assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),false,'the proof cannot be consumed twice');assert.equal(f.ledger.state().controls.entriesEnabled,true,'replaying an already consumed completion cannot invent a new interruption');
 });
 
@@ -59,12 +60,12 @@ for(const stop of ['owner-pause','owner-stop','unknown-hard','pending-exit'] as 
 
 test('a required recovery record failure retains the safety latch after a financial resume',async t=>{
  const f=fixture(t);let proof:TechnicalProtectionRecoveryProof|null=null;for(let i=0;i<32;i++)proof=await f.tick();assert.ok(proof);assert.equal(f.resume(proof).enabled,true);
- f.recordFailure=true;assert.equal(f.trader.recordFinancialReadiness({version:proof.version}),false);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);
+ f.recordFailure=true;assert.equal(f.recordRecovery(proof),false);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);
 });
 
 test('closed inventory recovers only through new durable cash checks without invented held evaluations',async t=>{
  const f=fixture(t,true);let proof:TechnicalProtectionRecoveryProof|null=null;for(let i=0;i<31;i++)proof=await f.tick();assert.ok(proof);assert.deepEqual(proof.positionUnits,{});assert.equal(proof.lastQuoteAt,f.price().at);assert.equal(f.records.filter(r=>r.kind==='trader-held-evaluation').length,0);
- assert.equal(f.resume(proof).enabled,true);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),true);assert.deepEqual(f.ledger.state().positions,{});
+ assert.equal(f.resume(proof).enabled,true);assert.equal(f.recordRecovery(proof),true);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),true);assert.deepEqual(f.ledger.state().positions,{});
 });
 
 test('both holdings must complete fresh protection; a partial inventory cannot accumulate recovery credit',async t=>{
@@ -74,11 +75,18 @@ test('both holdings must complete fresh protection; a partial inventory cannot a
 });
 
 test('an owner stop arriving after the resume commit cannot be cleared by late proof completion',async t=>{
- const f=fixture(t);let proof:TechnicalProtectionRecoveryProof|null=null;for(let i=0;i<32;i++)proof=await f.tick();assert.ok(proof);assert.ok(Object.isFrozen(proof));assert.ok(Object.isFrozen(proof.positionUnits));assert.equal(f.resume(proof).enabled,true);
+ const f=fixture(t);let proof:TechnicalProtectionRecoveryProof|null=null;for(let i=0;i<32;i++)proof=await f.tick();assert.ok(proof);assert.ok(Object.isFrozen(proof));assert.ok(Object.isFrozen(proof.positionUnits));assert.equal(f.resume(proof).enabled,true);assert.equal(f.recordRecovery(proof),true);
  f.ledger.safeStop('owner-stop-after-recovery-commit',f.at);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),false);assert.equal(f.ledger.state().controls.stopRequested,true);assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);
 });
 
 test('a slow post-resume evidence phase closes permission again rather than consuming expired protection proof',async t=>{
- const f=fixture(t);let proof:TechnicalProtectionRecoveryProof|null=null;for(let i=0;i<32;i++)proof=await f.tick();assert.ok(proof);assert.equal(f.resume(proof).enabled,true);
+ const f=fixture(t);let proof:TechnicalProtectionRecoveryProof|null=null;for(let i=0;i<32;i++)proof=await f.tick();assert.ok(proof);assert.equal(f.resume(proof).enabled,true);assert.equal(f.recordRecovery(proof),true);
  f.advance(2500);assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);assert.deepEqual(f.ledger.state().pending,{});
+});
+
+for(const record of ['absent','copied-proof','misclassified'] as const)test(`technical recovery cannot consume a ${record} required record`,async t=>{
+ const f=fixture(t);let proof:TechnicalProtectionRecoveryProof|null=null;for(let i=0;i<32;i++)proof=await f.tick();assert.ok(proof);assert.equal(f.resume(proof).enabled,true);
+ if(record==='copied-proof')assert.equal(f.recordRecovery(structuredClone(proof)),false);
+ if(record==='misclassified')assert.equal(f.trader.recordFinancialReadiness({version:OPERATING_FINANCIAL_READINESS_VERSION,technicalProtectionRecovery:proof,result:{enabled:true},financialPermissionOnly:false,candidateWindowClaimed:true,entryQuoteClaimed:true,orderCreated:false}),false);
+ assert.equal(f.trader.technicalProtectionRecoveryCommitted(proof),false);assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);
 });
