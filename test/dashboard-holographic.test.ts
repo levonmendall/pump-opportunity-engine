@@ -41,16 +41,19 @@ test('hero has one ornamental orbital illustration and no false performance data
  assert.match(rendered,/LIVE EXECUTION DISABLED/);
  assert.match(rendered,/NO DEMO PERFORMANCE/);
  assert.match(rendered,/NO SYNTHETIC BALANCES OR TRADES/);
- assert.match(rendered,/NO VERIFIED P&L SERIES/);
+ assert.match(rendered,/RECORDING PORTFOLIO EQUITY/);
  assert.ok(!rendered.includes('class="radar"'));
  assert.ok(!rendered.includes('NaN'));
 });
 
-test('original account panels remain, experimental sections are absent and the P&L chart stays visible',()=>{
+test('original account panels remain, experimental sections are absent and the equity chart stays visible',()=>{
  const rendered=full(),elements=ids(rendered);
  for(const id of ['reporting-status','refreshNow','portfolio','performance','chart','funnel','metrics','decisions'])assert.equal(elements.filter(x=>x===id).length,1,id);
  for(const id of ['pilot-telemetry-panel','experimental-portfolio','pilot-link-state','pilot-funnel','pilot-decisions'])assert.ok(!elements.includes(id),'remove '+id);
- assert.ok(!rendered.includes("panelFold('#performance'"),'chart must not be collapsed');
+ assert.ok(!rendered.includes("panelFold('#performance'"),'equity chart must not be collapsed');
+ assert.match(rendered,/Portfolio equity trajectory/);
+ assert.match(rendered,/PORTFOLIO EQUITY · USD/);
+ assert.ok(!rendered.includes('chartRangeToggle'),'remove unnecessary range toggle');
  assert.ok(rendered.indexOf('id="overview"')<rendered.indexOf('id="portfolio"'));
  assert.ok(rendered.indexOf('id="portfolio"')<rendered.indexOf('id="performance"'));
  assert.ok(rendered.indexOf('id="performance"')<rendered.indexOf('id="activity"'));

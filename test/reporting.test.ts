@@ -39,6 +39,58 @@ async function serve(t: { after: (fn: () => Promise<void>) => void }, settings: 
   return { ...app, url, get, post };
 }
 
+test('receiver equity timeline records only authentic Portfolio Overview USD equity, not P&L-derived or invented points',()=>{
+  const cache=new SnapshotCache(config);
+  const at=Math.ceil(NOW/60_000)*60_000+1000;
+  const first=sample('1',at);
+  first.balances.equityUsd=982.25;
+  first.balances.tradingPnlUsd=-400;
+  first.pnl=[{at:config.inceptionAt,tradingUsd:-400,economicUsd:100}];
+  assert.equal(cache.accept(first,at+500),'accepted');
+  assert.equal(cache.accept(structuredClone(first),at+1000),'duplicate');
+  assert.deepEqual(cache.equityHistory().points,[{at:iso(at),equityUsd:982.25}]);
+  const second=sample('2',at+15000);second.balances.equityUsd=983.5;
+  assert.equal(cache.accept(second,at+15_500),'accepted');
+  assert.deepEqual(cache.equityHistory().points,[{at:iso(at+15000),equityUsd:983.5}],'latest real equity within the same minute replaces earlier sample');
+  const unknown=sample('3',at+65000);unknown.balances.equityUsd=null;
+  assert.equal(cache.accept(unknown,at+65_500),'accepted');
+  assert.equal(cache.equityHistory().points.length,1,'unknown valuation is not interpreted as zero or the previous price');
+  const third=sample('4',at+76000);third.balances.equityUsd=980.75;
+  assert.equal(cache.accept(third,at+76_500),'accepted');
+  const history=cache.equityHistory();
+  assert.equal(history.accountId,config.accountId);
+  assert.equal(history.source,'accepted-authoritative-portfolio-equity');
+  assert.equal(history.retention,'receiver-memory-only');
+  assert.equal(history.bucketMs,60_000);
+  assert.deepEqual(history.points,[{at:iso(at+15000),equityUsd:983.5},{at:iso(at+76000),equityUsd:980.75}]);
+  history.points[0]!.equityUsd=0;
+  assert.equal(cache.equityHistory().points[0]!.equityUsd,983.5,'public read model is a defensive copy');
+  assert.equal(new SnapshotCache(config).equityHistory().points.length,0,'receiver restart never fabricates prior equity history');
+});
+
+test('equity history uses the same authenticated source and remains separate from immutable snapshot/export content',async t=>{
+  const app=await serve(t);
+  assert.equal((await app.get('/api/snapshot')).status,401);
+  const first=sample('10',NOW-70_000);first.balances.equityUsd=974.12;first.balances.tradingPnlUsd=-32;
+  const second=sample('11',NOW-5000);second.balances.equityUsd=991.06;second.balances.tradingPnlUsd=-29;
+  assert.equal((await app.post(first)).status,200);
+  assert.equal((await app.post(second)).status,200);
+  const fetched=await app.get('/api/snapshot',viewer);
+  assert.equal(fetched.status,200);
+  const value=await fetched.json() as {snapshot:Snapshot;equityHistory:{accountId:string;source:string;points:Array<{at:string;equityUsd:number}>}};
+  assert.equal(value.snapshot.balances.equityUsd,991.06);
+  assert.equal(value.snapshot.balances.tradingPnlUsd,-29,'P&L remains independent');
+  assert.equal(value.equityHistory.accountId,config.accountId);
+  assert.equal(value.equityHistory.source,'accepted-authoritative-portfolio-equity');
+  assert.deepEqual(value.equityHistory.points,[
+    {at:first.times.generatedAt,equityUsd:974.12},{at:second.times.generatedAt,equityUsd:991.06},
+  ]);
+  assert.equal(value.snapshot.pnl.length,0,'financial snapshot is never rewritten to contain equity history');
+  assert.equal((await app.get('/api/export',viewer)).status,200);
+  assert.equal((await app.post(sample('12'),'Bearer incorrect')).status,401,'unauthorized sender cannot add equity points');
+  assert.equal(app.cache.equityHistory().points.length,2);
+});
+
 test('cache starts empty, accepts whole snapshots atomically, retains gaps and clones read model', () => {
   const cache = new SnapshotCache(config);
   assert.equal(cache.read(), null); assert.equal(cache.status(NOW).state, 'waiting');
@@ -146,8 +198,8 @@ test('command center UI is accessible and purely cosmetic, not a trading control
   assert.match(html, /aria-label="Dashboard navigation"/);
   assert.match(html, /aria-hidden="true"/);
   assert.match(html, /No authenticated EC2 snapshot has been received/);
-  assert.match(html, /NO VERIFIED P&L SERIES/);
-  assert.match(html, /Missing samples remain gaps/);
+  assert.match(html, /RECORDING PORTFOLIO EQUITY/);
+  assert.match(html, /Recorded from accepted Portfolio Equity reports/);
   assert.ok(!html.includes('onerror='));
   assert.ok(!html.includes('onclick='));
   assert.ok(!html.includes('fetch(\'http'));
@@ -180,7 +232,7 @@ test('bounded exports contain no configuration secrets; HTML uses safe DOM and m
   assert.match(response.headers.get('content-security-policy')!, /frame-ancestors 'none'/);
   assert.match(html, /width=device-width/); assert.match(html, /@media\(max-width:640px\)/); assert.match(html, /textContent/);
   assert.ok(!html.includes('.innerHTML')); assert.ok(!html.includes(config.ingestionSecret)); assert.ok(!html.includes('<img src=x onerror'));
-  assert.match(html, /LIVE EXECUTION DISABLED/); assert.match(html, /Zero is the reference line/); assert.match(html, /UTC/);
+  assert.match(html, /LIVE EXECUTION DISABLED/); assert.match(html, /Recorded from accepted Portfolio Equity reports/); assert.match(html, /UTC/);
 });
 
 test('publisher does not send on construction; outages retain only latest snapshot and recover independently', async () => {

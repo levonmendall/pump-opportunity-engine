@@ -2,6 +2,23 @@ import { createHash } from 'node:crypto';
 import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
 
 export const MAX_SNAPSHOT_BYTES = 128 * 1024;
+// The receiver records only source-reported portfolio equity (never trading P&L
+// plus an inferred starting balance). Samples are ephemeral reporting data, not
+// a financial ledger or a claim of historical coverage before this process.
+// Coalesce into one verified end-of-minute reading to bound mobile chart data.
+const MAX_RECEIVED_EQUITY_MINUTES = 1440;
+const EQUITY_HISTORY_MS = 24 * 60 * 60 * 1000;
+export type ReceivedEquityPoint = {at: string; equityUsd: number};
+export type ReceivedEquityHistory = {
+  schemaVersion: 1;
+  accountId: string | null;
+  source: 'accepted-authoritative-portfolio-equity';
+  retention: 'receiver-memory-only';
+  bucketMs: 60_000;
+  windowLimited: boolean;
+  points: ReceivedEquityPoint[];
+};
+
 export type ReportingIdentity = { accountId: string; inceptionAt: string; release: string; strategy: string };
 export type Snapshot = {
   intelligence?: OperatingIntelligence;
@@ -187,6 +204,8 @@ export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: strin
 
 export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
+  private acceptedEquity: ReceivedEquityPoint[] = [];
+  private equityWindowLimited = false;
   constructor(readonly identity: ReportingIdentity | null = null) { if (identity !== null) validateIdentity(identity); }
   accept(value: unknown, now = Date.now()): 'accepted' | 'duplicate' {
     if (this.identity === null) throw new Error('source-not-configured');
@@ -202,7 +221,29 @@ export class SnapshotCache {
     }
     // Replace one complete immutable value; never mutate fields of the visible read model.
     this.current = { snapshot: JSON.parse(JSON.stringify(snapshot)) as Snapshot, fingerprint, receivedAt: new Date(now).toISOString() };
+    // Append only authenticated, validated source equity. The same exact USD
+    // value drives the Portfolio Overview equity card; no P&L-derived proxy.
+    if (snapshot.balances.equityUsd !== null) {
+      const point: ReceivedEquityPoint = {at: snapshot.times.generatedAt, equityUsd: snapshot.balances.equityUsd};
+      const previous = this.acceptedEquity.at(-1);
+      if (previous && Math.floor(Date.parse(previous.at) / 60_000) === Math.floor(Date.parse(point.at) / 60_000)) {
+        this.acceptedEquity[this.acceptedEquity.length - 1] = point;
+      } else {
+        this.acceptedEquity.push(point);
+      }
+      const mostRecentAt = Date.parse(point.at);
+      while (this.acceptedEquity.length > MAX_RECEIVED_EQUITY_MINUTES ||
+             mostRecentAt - Date.parse(this.acceptedEquity[0]!.at) > EQUITY_HISTORY_MS) {
+        this.acceptedEquity.shift(); this.equityWindowLimited = true;
+      }
+    }
     return 'accepted';
+  }
+  /** Separate read-only chart history. Never injected into or substituted for an authoritative Snapshot. */
+  equityHistory(): ReceivedEquityHistory {
+    return {schemaVersion: 1, accountId: this.identity?.accountId ?? null,
+      source: 'accepted-authoritative-portfolio-equity', retention: 'receiver-memory-only',
+      bucketMs: 60_000, windowLimited: this.equityWindowLimited, points: structuredClone(this.acceptedEquity)};
   }
   read() { return this.current ? structuredClone(this.current) : null; }
   status(now = Date.now()) {
