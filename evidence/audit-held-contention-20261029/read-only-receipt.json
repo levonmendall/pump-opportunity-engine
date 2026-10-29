@@ -1,0 +1,30 @@
+{
+  "kind": "offline-read-only-contention-map-v1",
+  "installedComparedSource": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+  "repairedArmingSource": "a317a8321aa35d3b6d2cd8fb8d7f60177a0e05bd",
+  "sourceFileHashes": {
+    "src/run-native-paper.ts": "a2b7641bfd8ed74366e75bb14bb5b6dc0bd378388da8f8f90bfef4444bff2738",
+    "src/native-candidate-runner.ts": "2a649d70683b1f1bbfe754f064088e994b46b9faf6505202e300a2ed8f91a6ea",
+    "src/pilot.ts": "8a3e361fc03907ab24f3ca4c9588adeafc99ed720162c036ce276299e087177d"
+  },
+  "repairedArmingTenFilesUnchanged": true,
+  "noOperatingProviderRequests": true,
+  "noServiceControl": true,
+  "noOperatingLedgerAccess": true,
+  "reproduction": {
+    "command": "node --import tsx --test evidence/audit-held-contention-20261029/reproduce-held-admission.mts",
+    "exitCode": 0,
+    "tests": 2,
+    "passed": 2,
+    "classification": "Controlled local fixture, not installed scheduling replay or actual audit attribution"
+  },
+  "files": {
+    "timeline.json": "22fb3fe78522fab95eb7feb49ebeb5b01b57a892e23791fc3c45038545ae9ad4",
+    "reproduction-provenance.json": "66616b5ad05df71bbc24112bd8ab52dd757c6a1ba397e44ef9fef09abefd8419",
+    "reproduce-held-admission.mts": "ac8a5fe5d3e4266c857b809786bfd5ac192d7e0174aec0e160aac0677e9faf46",
+    "public-source-snapshots.ndjson": "08c91483e0a31916e7c430b57534e405c0e2b9ce7d4548498d6fead13bd8f46b",
+    "installed-f96-scheduler-excerpts.txt": "0dc51b89a802b6b9a69227edee7a0df16ba187a4bbf53b3910ffc548d772f3e9",
+    "README.md": "0e104fee94774b670f126ba6195fd4cf6a91396bd3b67d1ce3bc85f9fc9a59bf",
+    "reproduction.raw.txt": "15d32372701adda0e94d738d6b2e403666bfad7a16c4c09934bf69bbed4cc213"
+  }
+}

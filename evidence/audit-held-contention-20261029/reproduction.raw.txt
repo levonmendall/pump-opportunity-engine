@@ -1,0 +1,12 @@
+{"kind":"OFFLINE_HELD_ADMISSION_REPRODUCTION","heldAgeMs":0,"at":1793058332000,"targetEndAt":1793058330000,"decisionDeadlineAt":1793058339999,"remainingDecisionMs":7999,"outer1200":{"admitted":true,"latestStartAt":1793058333350,"reason":"bounded-physical-segment-fits"},"inner1700":{"admitted":true,"latestStartAt":1793058332850,"reason":"bounded-physical-segment-fits"},"fetches":1,"actualPhysicalStarts":1,"wrapperInvocations":[{"at":1793058332000,"latestStartAt":1793058332850,"admitted":true}],"auditUnavailable":0,"predictiveAssessments":1,"remainingAuditSession":null,"refusal":null,"auditReason":"NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED"}
+{"kind":"OFFLINE_HELD_ADMISSION_REPRODUCTION","heldAgeMs":1000,"at":1793058332000,"targetEndAt":1793058330000,"decisionDeadlineAt":1793058339999,"remainingDecisionMs":7999,"outer1200":{"admitted":true,"latestStartAt":1793058332350,"reason":"bounded-physical-segment-fits"},"inner1700":{"admitted":false,"latestStartAt":1793058331850,"reason":"higher-priority-completion-envelope-reserved"},"fetches":0,"actualPhysicalStarts":0,"wrapperInvocations":[{"at":1793058332000,"latestStartAt":1793058331850,"admitted":false}],"auditUnavailable":1,"predictiveAssessments":0,"remainingAuditSession":null,"refusal":{"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","pool":"DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD","at":1793058332000,"windowEndAt":1793058330000,"decisionDeadlineAt":1793058339999,"firstReadyAt":1793058332000,"remainingDecisionMs":7999,"reason":"page-refusal","nextAction":"retain-unavailable-target","context":{"reason":"PILOT_RPC_COMPONENT_ADMISSION_CLOSED","physicalSettlementClaimed":false,"readyOrder":0,"readyCandidates":1,"page":1,"sessionOpened":true},"transitionRecord":4,"physicalStartClaimed":false},"auditReason":"PILOT_RPC_COMPONENT_ADMISSION_CLOSED"}
+✔ OFFLINE exact requestOptions held-age 0ms: physical admission and single-page target lifetime (66.517069ms)
+✔ OFFLINE exact requestOptions held-age 1000ms: physical admission and single-page target lifetime (26.62636ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 981.876164
