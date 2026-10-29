@@ -1,0 +1,18 @@
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (478.147891ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (23.876709ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (72.134807ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (18.750588ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (39.699096ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (52.864747ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (48.331322ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (45.788757ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (69.257946ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (30.508841ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1807.82269

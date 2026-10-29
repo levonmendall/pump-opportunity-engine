@@ -67,6 +67,7 @@ export class PaperExecutionCoordinator{
     if(order.side==='buy'&&this.outstanding)throw new Error('execution adapter unavailable for new entries');
     return this.options.ledger.order(order,context.price??UNKNOWN_PRICE,context.marks);
   }
+  readinessSafety(){return {recoveryComplete:this.recovered,idle:!this.active&&!this.outstanding,uncertainActions:this.uncertain.size};}
   nextDueAt():number|null{
     if(!this.recovered)return null;
     const times=Object.values(this.options.ledger.state().pending).map(o=>this.outstanding||this.uncertain.has(o.id)||o.side==='buy'&&this.uncertain.size>0?Math.max(o.expiresAt,this.financialRetryAt.get(o.id)??0):o.executeAt);

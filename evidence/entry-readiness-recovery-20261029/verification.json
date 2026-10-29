@@ -1,0 +1,77 @@
+{
+  "recordedAt": "2026-10-29T18:26:43.290383+00:00",
+  "classification": "OFFLINE_FULL_VERIFICATION_AND_INDEPENDENT_REVIEW_PASS_NOT_DEPLOYED",
+  "base": "e82ee83663036dc3f89cad10a7a3b82206f6138e",
+  "sourceFiles": {
+    "src/execution.ts": "d046bf855754eac85153a3cb64ef68ed23fec8099dde0176ed913a58c8175f6b",
+    "src/native-paper.ts": "546ab5112fcba3a9e282645a1b94106e04e0a7a24bea2a9498ace60bffb57d1c",
+    "src/trader.ts": "a052a57e331e284b6ca6b9c017052343a84a429182992f57f932a80888545281",
+    "src/run-native-paper.ts": "a2b7641bfd8ed74366e75bb14bb5b6dc0bd378388da8f8f90bfef4444bff2738",
+    "test/native-paper-readiness.test.ts": "e747c3e212f74fa755c2373f4a58f4a10b702e75c5546c5599bd62b25a603160",
+    "test/native-paper-integration.test.ts": "b7207b23f06c6bdc009dce8a1af1e8e8bb19939a3e635cd2743d84c5e580a44b",
+    "test/native-paper-launcher.test.ts": "7b1759bc19953198f2036d8c868e3aabfaf8360acbebce82ba547cee70a18a0e"
+  },
+  "sourceHashesUnchangedThroughFinalChecks": true,
+  "configuration": {
+    "service": true,
+    "stage": "single",
+    "deepSlots": 4,
+    "financialPositions": 1,
+    "originalOperatingAccount": true,
+    "sha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+    "financialReadinessPolicy": "native-paper-cash-readiness-audited-cutoff-v1"
+  },
+  "commands": [
+    {
+      "command": "npm test",
+      "tests": 1777,
+      "passed": 1777,
+      "failed": 0,
+      "exitCode": 0,
+      "raw": "full-tests.txt"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "raw": "build-final.txt"
+    },
+    {
+      "command": "node --import tsx --test test/native-paper-readiness.test.ts test/native-paper-integration.test.ts",
+      "tests": 35,
+      "passed": 35,
+      "failed": 0,
+      "exitCode": 0,
+      "raw": "independent-review/final-focused-tests.raw.txt"
+    },
+    {
+      "command": "git diff --check -- src test",
+      "exitCode": 0
+    }
+  ],
+  "independentReview": "independent-review/final-review.json",
+  "artifactSha256": {
+    "metrics-final-focused.txt": "4dfde2e5ea91afd56a7e0887511cf136dd040ca1e9e3fb85bb3579bbd38a0c45",
+    "financial-critical-path-map.md": "5c123bd7efc933e2c581c9e4441c3997b572cba9be818bb626e74d8ea2a4074a",
+    "service4-configuration-sha256.txt": "c656f41c884b621d844bd8ffbc931922b9a086e5a721782c2870bcff03e092a9",
+    "build-final.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "source-before-pre-metrics-tests.json": "a42e75371d53d53201acaad5d6ba91745f0ecdec6227150ba4d12a93faa59aff",
+    "repair.patch": "4a59ea14833a4bc511e2128129b64a0b56fd365410f9e7a5315908bde2e958ba",
+    "integration-final.txt": "2b92b60e7afe0d72c9721ad726bdc8bf4f8eccf521438d686d8149b37e02c1f4",
+    "full-tests.txt": "e1a206a736208ec1512465d4180d8778c7a978a71ad8aea481b437916114a935",
+    "build-in-progress.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "focused-final.txt": "ff400c8167381c79edf5df8c658b2eae289dbf3a5fd52b2f176bcb17af7b3c01",
+    "source-before-final-tests.json": "c282c717ae19895bb9508a7a0ec8326c04c68532dc0f9c35e63491a767bc7c6b",
+    "source-before-full-tests.json": "0cfa5cb3be7ff115fcc29eb19d6a484744c5e13e8e93b969c7500413dd500474",
+    "full-tests-superseded-pre-metrics-1776-pass.txt": "8e22e6916999d2d6a87c390f51bad60741ddd60c7ce2032dfc6e08610c321076",
+    "full-tests-superseded-1771-of-1772.txt": "a2e02773eb866a98b6dc60abc6071f93fb74338e328c8ceebc91e9301185c159",
+    "README.md": "2c0d9118a623d2b1c65d6062d46f4bb941ee33f4e9c1e962839266b99d0a1445",
+    "focused-in-progress.txt": "7c8d745b546765a31fe90f085f69890b77a92089c90e2f6f71ffc2f226b69ddd",
+    "independent-review/final-focused-tests.raw.txt": "e3b8a964e0097fa11d550afd6cb3dba9bda58a2b482b7e2bbc22ee7bd74d45e1",
+    "independent-review/review-progress.json": "ee816554981e3503cb0e87fe76cf7f7927464030f6ba2344e25be105df85071d",
+    "independent-review/poe-independent-readiness-integration-20261029.txt": "87987c82ce21a339dcff435421b1425595e9251ff47c08563778cfcf02675e52",
+    "independent-review/poe-independent-readiness-review-focused-20261029.txt": "93837f6ee13253a6cdb8e3572b9f9991c1aa3c3bb744d8861cfdaceda9773218",
+    "independent-review/final-review.json": "5d2ac317c93b832dc10203fcd6016f13efba3177674f8db6b8711133c5d27044"
+  },
+  "liveState": "Installed original service remained cdba; no deployment, provider request, operating-account write, service action or runtime acceptance performed by this worker.",
+  "nextRequired": "Lead source-pinned original-service package, verified account-preserving transition, exact source/config/source-receiver acceptance and bounded live readiness/resource verification."
+}

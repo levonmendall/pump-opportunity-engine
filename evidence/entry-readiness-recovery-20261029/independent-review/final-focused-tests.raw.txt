@@ -1,0 +1,44 @@
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (741.063698ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (27.88501ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (119.617753ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (44.165311ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (45.772487ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (89.428632ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (109.369407ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (79.851252ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (109.806206ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (36.189194ms)
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (92.447425ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (18.155868ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (25.035343ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (8.074559ms)
+  ✔ stop (8.523556ms)
+  ✔ loss (7.051009ms)
+  ✔ admission (7.996403ms)
+  ✔ connection (9.047704ms)
+  ✔ certificate (13.144527ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (55.735977ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (12.877581ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (10.110632ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (7.98085ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (19.192207ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (112.061101ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (15.062693ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (9.724518ms)
+✔ historical restriction latch clears only after the real complete candidate-preparation path succeeds (19.403097ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (50.018431ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (1.829116ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (17.589805ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.250912ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (36.085204ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (64.377759ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (16.968012ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3116.923541

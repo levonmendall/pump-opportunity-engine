@@ -71,6 +71,12 @@ test('native regular protection performs one durable reconciliation per complete
  const calls=f.calls.length;f.at+=100;await f.bridge.protection({reuseFreshContext:true});assert.equal(f.calls.length,calls,'fresh exact-size reuse does not request a new market state');assert.equal(reconciles()-start,4);assert.equal(f.bridge.trader.funnel.reconciled,4);assert.equal(f.ledger.state().initialMicroUsd,initial.initialMicroUsd);assert.equal(f.ledger.state().inceptionAt,initial.inceptionAt);assert.deepEqual(f.ledger.state().positions,{});
 });
 
+test('real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation',async t=>{
+ const f=fixture(t);await f.open();f.warm();await f.audit();const mint=f.retained[0]!.proof.quote.mint as string,certificate=f.engine.currentAuditCertificate(mint,f.at)!;assert.equal(certificate.windowEndAt,f.at);assert.equal(f.bridge.ready(mint,f.at),true);
+ const before=f.calls.length;assert.equal(f.bridge.maintainFlatFinancialReadiness(f.price()).recovered,true);f.bridge.trader.pauseNewEntries('entry preparation or reconciliation unavailable');assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.bridge.maintainFlatFinancialReadiness(f.price()).recovered,true);assert.equal(f.calls.length,before,'the actual runner certificate and local cash state require no extra quote, SDK preparation or RPC');assert.deepEqual(f.ledger.state().pending,{});assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().executionCosts,'0');
+ assert.equal((await f.bridge.candidate(mint,true)).kind,'evaluated');assert.ok(f.calls.length>before,'ordinary entry still performs independently required SDK cost and actual-size pricing work');assert.equal(Object.values(f.ledger.state().pending)[0]?.side,'buy');assert.equal(f.ledger.state().executionCosts,'0','a reservation is not a fill');
+});
+
 test('due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt',async t=>{
  const f=fixture(t);await f.open();f.warm();await f.audit();const mint=f.retained[0]!.proof.quote.mint;await f.bridge.candidate(mint,true);const order=Object.values(f.ledger.state().pending)[0]!;assert.equal(order.side,'buy');
  f.at+=1000;const revision=f.ledger.state().revision;await f.bridge.protection();const rows=f.ledger.exportJournal(1000).filter((r:any)=>r.revision>revision).reverse() as Array<{kind:string;action_id:string;at:number;detail:string}>;

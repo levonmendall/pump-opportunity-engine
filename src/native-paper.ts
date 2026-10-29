@@ -2,7 +2,7 @@
  * financial writer. Program-native evidence never becomes a blockchain order. */
 import type {MigrationIdentity} from './migration-identity.js';
 import {PaperLedger,type LedgerState,type UsdPrice} from './ledger.js';
-import {PaperTrader,type TraderTickOptions} from './trader.js';
+import {PaperTrader,TEMPORARY_ENTRY_READINESS_PAUSES,type TraderTickOptions} from './trader.js';
 import {PilotMarket} from './pilot-market.js';
 import type {PilotNativeFlow,PilotNativeFlowOptions} from './pilot-native-flow.js';
 import type {NativeAuditCertificate} from './native-candidate-runner.js';
@@ -20,6 +20,19 @@ export type NativeQualificationProof={proofId:string;mint:string;startAt:number;
 export type NativeTechnicalReevaluation={mint:string;reason:TechnicalReevaluationReason;failedWindowEndAt:number;at:number;claimedOnly?:true};
 export type NativePaperOptions={ledger:PaperLedger;market:PilotMarket;binding:PilotBinding;source:Pick<PilotNativeFlow,'snapshot'|'usage'>;certificate:(mint:string,at:number)=>NativeAuditCertificate|null;record:RecordSource['record'];withProtectionWork?:<T>(work:()=>Promise<T>)=>Promise<T>;admitNewRisk?:(at:number)=>boolean;now?:()=>number;restoredPools?:Readonly<Record<string,NativePaperPool>>;fixtureAccountBinding?:OperatingAccountBinding;pinQualification?:(proof:NativeQualificationProof)=>void;onTechnicalReevaluation?:(request:NativeTechnicalReevaluation)=>void;onEvaluationComplete?:(mint:string,at:number)=>void};
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
+export const NATIVE_PAPER_FINANCIAL_READINESS_POLICY=Object.freeze({version:'native-paper-cash-readiness-audited-cutoff-v1',targetMs:1000,maximumReconciliationAgeMs:2000,timerMs:250,localHeadroomMs:250,usdMaximumAgeMs:10000,marketEvidence:'original audited windowEndAt <= 2000ms; no price or executable quote claimed',recoverablePauseReasons:TEMPORARY_ENTRY_READINESS_PAUSES});
+export const NATIVE_PAPER_ENTRY_BLOCKERS=Object.freeze({manual:'POE_ENTRY_MANUAL_PAUSE',stop:'POE_ENTRY_SAFE_STOP',loss:'POE_ENTRY_DAILY_LOSS',uncertainty:'POE_ENTRY_FINANCIAL_UNCERTAINTY',evidence:'POE_ENTRY_EVIDENCE_UNAVAILABLE',usd:'POE_ENTRY_USD_UNAVAILABLE',liquidation:'POE_ENTRY_LIQUIDATION_UNAVAILABLE',reconciliationRequired:'POE_ENTRY_RECONCILIATION_REQUIRED',reconciliationStale:'POE_ENTRY_RECONCILIATION_STALE',provider:'POE_ENTRY_PROVIDER_UNAVAILABLE',source:'POE_ENTRY_SOURCE_UNAVAILABLE',monitoring:'POE_ENTRY_MONITORING_UNAVAILABLE',readiness:'POE_ENTRY_READINESS_REQUIRED',paused:'POE_ENTRY_FINANCIAL_PAUSED'} as const);
+export function nativePaperDerivedEntryBlocker(input:{at:number;state:LedgerState;projection:ReturnType<PaperLedger['projection']>;safety:ReturnType<PaperTrader['entryReadinessSafety']>;manualPaused?:boolean;safeStopRequested?:boolean;evidenceAvailable?:boolean;providerAvailable?:boolean;sourceAvailable?:boolean;monitoringAvailable?:boolean;candidateEvidenceReady?:boolean}){
+ const {at,state:s,projection:p,safety}=input,b=NATIVE_PAPER_ENTRY_BLOCKERS;
+ if(input.safeStopRequested||s.controls.stopRequested)return b.stop;if(input.manualPaused)return b.manual;if(s.daily.lossPaused)return b.loss;
+ if(!safety.recoveryComplete||!safety.idle||!safety.financialAvailable||safety.uncertainActions>0)return b.uncertainty;if(!safety.evidenceAvailable||input.evidenceAvailable===false)return b.evidence;
+ if(!p.usdValuationAvailable)return b.usd;if(p.unknownMarks)return b.liquidation;
+ if(s.daily.day!==new Date(at).toISOString().slice(0,10)||s.daily.reconciledAt<=0||s.daily.reconciledAt>at)return b.reconciliationRequired;
+ if(at-s.daily.reconciledAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs)return b.reconciliationStale;
+ if(input.providerAvailable===false)return b.provider;if(input.sourceAvailable===false)return b.source;if(input.monitoringAvailable===false)return b.monitoring;if(input.candidateEvidenceReady===false)return b.readiness;
+ if(!s.controls.entriesEnabled||s.daily.paused)return NATIVE_PAPER_FINANCIAL_READINESS_POLICY.recoverablePauseReasons.includes(s.controls.reason as never)?b.readiness:b.paused;
+ return null;
+}
 export class NativePaper {
  readonly trader:PaperTrader;private readonly now:()=>number;private readonly maximumPositions:PilotBinding['maxPositions'];private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
  private context:ExecutionContext={price:null,marks:{}};
@@ -85,7 +98,7 @@ export class NativePaper {
   const assessment=assessPredictiveBuying(features,at);
   if(assessment.status==='not-rejected'&&entryAgeEligible(pool.identity.chainBlockTime*1000,at)&&!this.ownership(mint)){
    try{if(this.options.pinQualification){const proof=this.qualificationProof(mint,this.now());need(proof,'NATIVE_PAPER_QUALIFICATION_PROOF_UNAVAILABLE');this.options.pinQualification(proof);need(this.ready(mint,this.now())&&this.options.admitNewRisk?.(this.now())===true,'NATIVE_PAPER_PINNED_PROOF_EXPIRED');}const plan=await this.options.market.prepareEntryCosts(mint,new AbortController().signal);this.trader.setPilotEntryDeposit(plan.depositLamports,plan.evidence,mint);
-    if(this.ready(mint,this.now())){await this.protection();const when=this.now(),context=this.context,state=this.options.ledger.state();if(context.price&&this.ready(mint,when)&&this.options.admitNewRisk?.(when)===true){const result=this.options.ledger.resume('native-paper-ready:'+state.revision+':'+when,when,context.price,context.marks,{version:NATIVE_PAPER_DATA_CONTRACT_VERSION,evidence:'current exact audited native window and isolated PAPER monitoring reserve',marketAt:plan.at,recoveryComplete:true,candidateWindowsReady:this.ready(mint,when),budgetAvailable:this.options.admitNewRisk?.(when)===true});this.options.record('native-paper-entry-permission',{at:when,result,mint,windowEndAt:features.windowEndAt});}}
+    if(this.ready(mint,this.now())){await this.protection();const when=this.now(),context=this.context,state=this.options.ledger.state();if(context.price&&this.ready(mint,when)&&this.options.admitNewRisk?.(when)===true){const result=this.options.ledger.resume('native-paper-ready:'+state.revision+':'+when,when,context.price,context.marks,{version:NATIVE_PAPER_DATA_CONTRACT_VERSION,evidence:'current exact audited native window and isolated PAPER monitoring reserve',marketAt:plan.at,recoveryComplete:true,candidateWindowsReady:this.ready(mint,when),budgetAvailable:this.options.admitNewRisk?.(when)===true});if(result.enabled)this.trader.verifiedEntryReadinessRecovered();this.options.record('native-paper-entry-permission',{at:when,result,mint,windowEndAt:features.windowEndAt});}}
    }catch(error){this.trader.pauseNewEntries('entry preparation or reconciliation unavailable');this.options.record('native-paper-entry-preparation-unavailable',{mint,at:this.now(),windowEndAt:features.windowEndAt,predictiveOnly:true,executableQualification:false,orderCreated:false,reason:error instanceof Error?error.message.slice(0,180):'unavailable'});this.lastCandidateBucket.set(mint,features.windowEndAt);this.technical(mint,'entry-preparation-unavailable');return {kind:'preparation-unavailable' as const};}
   }
   if(!this.ready(mint,this.now())){if(assessment.status==='not-rejected')this.technical(mint,'entry-preparation-unavailable');return {kind:'unavailable' as const};}
@@ -93,4 +106,30 @@ export class NativePaper {
  }
  poolsForRecovery(){return Object.fromEntries([...this.pools].map(([mint,pool])=>[mint,structuredClone(pool)]));}
  valuation(){return this.context;}
+ /** Cash-only maintenance: no market adapter, quote, feature assessment, order,
+  * or outstanding financial action is driven by this synchronous operation. */
+ maintainFlatFinancialReadiness(price:UsdPrice|null,recover=true){
+  const at=this.now(),state=this.options.ledger.state(),safety=this.trader.entryReadinessSafety();
+  if(Object.keys(state.positions).length||Object.keys(state.pending).length||!safety.idle)return {kind:'busy' as const,recovered:false};
+  if(!safety.financialAvailable)return {kind:'financial-unavailable' as const,recovered:false};
+  const currentPrice=(when:number)=>!!price&&Number.isSafeInteger(price.at)&&price.at>=0&&price.at<=when&&when-price.at<=NATIVE_PAPER_FINANCIAL_READINESS_POLICY.usdMaximumAgeMs&&typeof price.microUsdPerSol==='string'&&/^(0|[1-9][0-9]{0,38})$/.test(price.microUsdPerSol)&&BigInt(price.microUsdPerSol)>0n&&typeof price.source==='string'&&price.source.length>0&&price.source.length<=512&&!/[\u0000-\u001f]/.test(price.source);
+  if(!currentPrice(at)){this.context={price:null,marks:{}};this.trader.refreshFlatContext(null);this.trader.pauseNewEntries('current equity or liquidation unavailable; entries closed');return {kind:'unavailable' as const,recovered:false};}
+  try{this.options.ledger.reconcile('native-paper-cash:'+state.revision+':'+at,at,price!,{});this.trader.funnel.reconciled++;this.context={price:{...price!},marks:{}};this.trader.refreshFlatContext(price);}
+  catch{this.trader.financialMaintenanceFailed();return {kind:'financial-unavailable' as const,recovered:false};}
+  // Reconciliation/SQLite callbacks can consume real time. Never apply later
+  // readiness using the pre-write wall clock or make an old cutoff look fresh.
+  const when=this.now();if(!currentPrice(when)||when-at>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs)return {kind:'reconciled' as const,recovered:false};
+  const current=this.options.ledger.state(),freshSafety=this.trader.entryReadinessSafety();
+  if(!recover||current.controls.entriesEnabled||current.controls.stopRequested||current.daily.lossPaused||!freshSafety.recoveryComplete||!freshSafety.evidenceAvailable||!freshSafety.financialAvailable||!freshSafety.automaticRecoveryAllowed||freshSafety.uncertainActions||!NATIVE_PAPER_FINANCIAL_READINESS_POLICY.recoverablePauseReasons.includes(current.controls.reason as never)||this.options.admitNewRisk?.(when)!==true)return {kind:'reconciled' as const,recovered:false};
+  for(const [mint,pool]of this.pools){
+   const now=this.now(),certificate=this.options.certificate(mint,now);if(!currentPrice(now)||!certificate||certificate.windowEndAt>now||now-certificate.windowEndAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs||this.options.ledger.hasTradedMint(mint)||!entryAgeEligible(pool.identity.chainBlockTime*1000,now)||!this.ready(mint,now)||this.options.admitNewRisk?.(now)!==true)continue;
+   // The original executed-flow cutoff is used, never its later audit/receipt
+   // time. This global permission is neither prediction nor executable pricing.
+   const resumeAt=this.now();if(!currentPrice(resumeAt)||certificate.windowEndAt>resumeAt||resumeAt-certificate.windowEndAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs)continue;
+   let result;try{result=this.options.ledger.resume('native-paper-cash-ready:'+current.revision+':'+resumeAt,resumeAt,price!,{},{version:NATIVE_PAPER_FINANCIAL_READINESS_POLICY.version,evidence:'current cash reconciliation and complete exact audited flow through original cutoff; no entry price claimed',marketAt:certificate.windowEndAt,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});}catch{this.trader.financialMaintenanceFailed();return {kind:'financial-unavailable' as const,recovered:false};}
+   const retained=this.trader.recordFinancialReadiness({at:resumeAt,mint,windowEndAt:certificate.windowEndAt,version:NATIVE_PAPER_FINANCIAL_READINESS_POLICY.version,result,orderCreated:false,entryQuoteClaimed:false}),afterRecord=this.now(),finalSafety=this.trader.entryReadinessSafety();
+   return {kind:'reconciled' as const,recovered:result.enabled&&retained&&finalSafety.evidenceAvailable&&finalSafety.financialAvailable&&finalSafety.automaticRecoveryAllowed&&!finalSafety.uncertainActions&&this.options.admitNewRisk?.(afterRecord)===true&&this.options.ledger.projection(afterRecord,price??undefined,{}).entriesEnabled};
+  }
+  return {kind:'reconciled' as const,recovered:false};
+ }
 }

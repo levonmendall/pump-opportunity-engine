@@ -1,0 +1,10 @@
+{
+  "base": "e82ee83663036dc3f89cad10a7a3b82206f6138e",
+  "files": {
+    "src/native-paper.ts": "6b3fc5b2c5ffed2edf8f0da84a9cb9f1df097541e14a6954d776374ff9d602d9",
+    "src/trader.ts": "dd25b9a4883844c01ef00ad201a27890589eed25cc58b56a66eed382deecde01",
+    "src/run-native-paper.ts": "68e057e8cffe3c14c955ecf39afce0baf19c943b91bf412090598a14196aa30c",
+    "test/native-paper-readiness.test.ts": "edf41b28c2dc105a162a4f1cb48d8de658e13b91479e076fc27cfeb355015831"
+  },
+  "meaning": "Offline source identity before full suite; application not committed or deployed."
+}

@@ -40,6 +40,7 @@ type Candidate=CandidateEvidence&{admittedAt:number;window:FlowWindow;active:boo
 type Decision={mint:string;at:number;stage:string;reason:string;ruleVersion:string;features?:RuleDecision['features'];quote?:SizeQuote|null;permissionContext?:{mode:'candidate-evaluation';primaryKind:string;primaryReason:string;performanceFailure:false}};
 const validText=(s:unknown,max=512):s is string=>typeof s==='string'&&s.length>0&&s.length<=max&&!/[\u0000-\u001f]/.test(s);
 const unsigned=(s:string)=>{if(typeof s!=='string'||!/^(0|[1-9][0-9]{0,38})$/.test(s))throw new Error('bounded integer amount required');return BigInt(s);};
+export const TEMPORARY_ENTRY_READINESS_PAUSES=Object.freeze(['execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained'] as const);
 /** The exact existing predictive predicates, after evaluatePrimary has already
  * validated this feature snapshot. This cannot qualify an entry or replace any
  * quote/support/liquidity check. Only the refusal's order/knowledge changes. */
@@ -65,6 +66,7 @@ export class PaperTrader{
   private outstanding:Promise<unknown>|undefined;
   private evidenceUnavailable=false;
   private financialUnavailable=false;
+  private nonRecoverablePauseObserved=false;
   private readonly uncertainOrders=new Set<string>();
   private started=false;
   private readonly execution:PaperExecutionCoordinator;
@@ -105,6 +107,13 @@ export class PaperTrader{
   private get effectiveVersion(){return this.pilotConfig?.version??PROVISIONAL_RULE.version;}
   get frozenVersion():PilotBinding['version']|null{return this.pilotConfig?.version??null;}
   nextDueAt(){if(this.candidateEvaluationOnly){this.assertCandidateOnlyState();return null;}return this.execution.nextDueAt();}
+  /** Immutable safety view for local readiness maintenance. A settled logical
+   * tick does not imply that a timed-out physical adapter has settled. */
+  entryReadinessSafety(){const execution=this.execution.readinessSafety();return {recoveryComplete:this.started&&execution.recoveryComplete,idle:!this.active&&!this.outstanding&&execution.idle,evidenceAvailable:!this.evidenceUnavailable,financialAvailable:!this.financialUnavailable,uncertainActions:Math.max(this.uncertainOrders.size,execution.uncertainActions),automaticRecoveryAllowed:!this.nonRecoverablePauseObserved};}
+  refreshFlatContext(price:ExecutionContext['price']){const state=this.options.ledger.state();if(!this.entryReadinessSafety().idle||Object.keys(state.positions).length||Object.keys(state.pending).length)throw Error('cash context requires idle flat accounting');this.context={price:price?{...price}:null,marks:{}};this.contextInventory={};}
+  financialMaintenanceFailed(){this.financialUnavailable=true;this.pause('financial maintenance unavailable; preserve records and close entries');}
+  recordFinancialReadiness(data:unknown){this.record('native-paper-financial-readiness-recovered',data);return !this.evidenceUnavailable;}
+  verifiedEntryReadinessRecovered(){const state=this.options.ledger.state();if(this.started&&!this.evidenceUnavailable&&!this.financialUnavailable&&!this.uncertainOrders.size&&!Object.keys(state.pending).length&&state.controls.entriesEnabled&&!state.controls.stopRequested&&!state.daily.lossPaused)this.nonRecoverablePauseObserved=false;}
   private pilotDepositFor(mint:string){return this.pilotDeposits.get(mint)??(this.pilotConfig?.stage===null?this.pilotDeposit:null);}
   setPilotEntryDeposit(lamports:string,evidence:string,mint?:string){if(!this.pilot||!validText(evidence)||mint!==undefined&&!validText(mint,96)||Object.values(this.options.ledger.state().pending).some(o=>o.side==='buy'&&(mint===undefined||o.mint===mint)))throw Error('pilot deposit preparation requires no pending entry for the selected mint');if(this.pilotConfig?.stage!==null&&mint===undefined)throw Error('concurrent pilot deposit preparation requires an explicit mint');if(mint!==undefined&&!this.pilotDeposits.has(mint)&&this.pilotDeposits.size>=this.maximumCandidates+3)throw Error('bounded pilot deposit capacity');unsigned(lamports);const plan=Object.freeze({lamports,evidence,preparedAt:this.clock()});if(mint===undefined)this.pilotDeposit=plan;else this.pilotDeposits.set(mint,plan);this.record('trader-pilot-entry-deposit',{...plan,...(mint===undefined?{}:{mint}),classification:'required refundable locked capital; not a permanent execution fee'});}
   clearPilotEntryDeposit(mint:string){if(!this.pilot||!validText(mint,96))throw Error('isolated pilot and bounded mint required');const state=this.options.ledger.state();if(state.positions[mint]||Object.values(state.pending).some(order=>order.mint===mint))throw Error('held/pending deposit preparation must be retained');const removed=this.pilotDeposits.delete(mint);if(removed)this.record('trader-pilot-entry-deposit-cleared',{mint,at:this.clock(),reason:'unowned preparation released; financial history unchanged'});return removed;}
@@ -112,13 +121,17 @@ export class PaperTrader{
   private id(kind:string){return `trader:${kind}:${this.options.ledger.state().revision}:${this.clock()}`;}
   private pause(reason:string){
     if(this.candidateEvaluationOnly){this.assertCandidateOnlyState();return;}
+    // A later safety failure must not be hidden by an earlier transient reason
+    // whose durable controls were already closed. Ordinary reconciliation does
+    // not clear this latch; this is only the narrow automatic-recovery path.
+    if(!TEMPORARY_ENTRY_READINESS_PAUSES.includes(reason as never))this.nonRecoverablePauseObserved=true;
     const state=this.options.ledger.state(),at=this.clock(),buys=Object.values(state.pending).some(o=>o.side==='buy');
-    if(state.controls.entriesEnabled)this.options.ledger.pause(this.id('pause'),at,reason);
+    if(state.controls.entriesEnabled||!TEMPORARY_ENTRY_READINESS_PAUSES.includes(reason as never)&&TEMPORARY_ENTRY_READINESS_PAUSES.includes(state.controls.reason as never))this.options.ledger.pause(this.id('pause'),at,reason);
     if(buys&&!this.financialUnavailable&&!this.uncertainOrders.size)this.options.ledger.cancelEntryOrders(this.id('cancel'),at,reason);
   }
   private record(kind:string,data:unknown){try{this.options.recorder.record(kind,data);}catch{this.evidenceUnavailable=true;this.pause('selected evidence unavailable; entries closed');}}
   private decision(decision:Decision){const effective={...decision,ruleVersion:this.effectiveVersion};this.recent.push(structuredClone(effective));if(this.recent.length>50)this.recent.shift();this.record('trader-decision',effective);}
-  start(){if(this.started)return;if(this.candidateEvaluationOnly)this.assertCandidateOnlyState();else for(const id of this.execution.recover().uncertainExitOrders)this.uncertainOrders.add(id);this.started=true;this.record('trader-config',{mode:this.options.ledger.state().mode,candidateEvaluationOnly:this.candidateEvaluationOnly,financialExecutionAuthorized:!this.candidateEvaluationOnly,accountId:this.options.ledger.accountId,rule:{...PROVISIONAL_RULE,version:this.effectiveVersion},costs:{...this.options.costs},flowVerification:this.options.flowVerification??{verified:false,evidence:'unverified'},quoteRetrieval:this.options.deferPredictivelyRejectedQuotes===true?'RESEARCH_DEFER_ALREADY_REJECTED_PREDICTIVE_QUOTES':'EXISTING_QUOTE_FIRST_ORDER',...(this.pilotConfig?{pilot:{version:this.pilotConfig.version,contractSha256:this.pilotConfig.contractSha256,maxPositions:this.pilotConfig.maxPositions,...(this.pilotConfig.stage===null?{}:{stage:this.pilotConfig.stage}),amountConvention:'curve',entryDepositPreparation:'required-before-entry',contract:this.pilotConfig.contract}}:{})});}
+  start(){if(this.started)return;if(this.candidateEvaluationOnly)this.assertCandidateOnlyState();else{const prior=this.options.ledger.state(),hardClosed=!prior.controls.entriesEnabled&&!TEMPORARY_ENTRY_READINESS_PAUSES.includes(prior.controls.reason as never)&&prior.controls.reason!=='startup: observation only; explicit runtime readiness required';for(const id of this.execution.recover().uncertainExitOrders)this.uncertainOrders.add(id);if(hardClosed){this.nonRecoverablePauseObserved=true;this.options.ledger.pause(this.id('restore-hard-pause'),this.clock(),prior.controls.reason);}}this.started=true;this.record('trader-config',{mode:this.options.ledger.state().mode,candidateEvaluationOnly:this.candidateEvaluationOnly,financialExecutionAuthorized:!this.candidateEvaluationOnly,accountId:this.options.ledger.accountId,rule:{...PROVISIONAL_RULE,version:this.effectiveVersion},costs:{...this.options.costs},flowVerification:this.options.flowVerification??{verified:false,evidence:'unverified'},quoteRetrieval:this.options.deferPredictivelyRejectedQuotes===true?'RESEARCH_DEFER_ALREADY_REJECTED_PREDICTIVE_QUOTES':'EXISTING_QUOTE_FIRST_ORDER',...(this.pilotConfig?{pilot:{version:this.pilotConfig.version,contractSha256:this.pilotConfig.contractSha256,maxPositions:this.pilotConfig.maxPositions,...(this.pilotConfig.stage===null?{}:{stage:this.pilotConfig.stage}),amountConvention:'curve',entryDepositPreparation:'required-before-entry',contract:this.pilotConfig.contract}}:{})});}
   admit(input:CandidateEvidence){
     const now=this.clock();if(!validText(input.mint,96)||!validText(input.evidence)||!Number.isSafeInteger(input.migrationAt)||input.migrationAt<0||input.migrationAt>now)throw new Error('verified candidate identity/time required');
     const owned=this.options.ledger.state(),pendingMints=new Set(Object.values(owned.pending).map(order=>order.mint));

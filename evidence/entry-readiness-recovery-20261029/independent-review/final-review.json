@@ -1,0 +1,45 @@
+{
+  "recordedAt": "2026-10-29T18:25:54.816487+00:00",
+  "classification": "INDEPENDENT_SOURCE_AND_FOCUSED_VERIFICATION_PASS",
+  "baseCommit": "e82ee83663036dc3f89cad10a7a3b82206f6138e",
+  "testedSourceFiles": {
+    "src/execution.ts": "d046bf855754eac85153a3cb64ef68ed23fec8099dde0176ed913a58c8175f6b",
+    "src/native-paper.ts": "546ab5112fcba3a9e282645a1b94106e04e0a7a24bea2a9498ace60bffb57d1c",
+    "src/trader.ts": "a052a57e331e284b6ca6b9c017052343a84a429182992f57f932a80888545281",
+    "src/run-native-paper.ts": "a2b7641bfd8ed74366e75bb14bb5b6dc0bd378388da8f8f90bfef4444bff2738",
+    "test/native-paper-readiness.test.ts": "e747c3e212f74fa755c2373f4a58f4a10b702e75c5546c5599bd62b25a603160",
+    "test/native-paper-integration.test.ts": "b7207b23f06c6bdc009dce8a1af1e8e8bb19939a3e635cd2743d84c5e580a44b",
+    "test/native-paper-launcher.test.ts": "7b1759bc19953198f2036d8c868e3aabfaf8360acbebce82ba547cee70a18a0e"
+  },
+  "sourceHashesUnchangedThroughIndependentTests": true,
+  "independentTests": {
+    "command": "node --import tsx --test test/native-paper-readiness.test.ts test/native-paper-integration.test.ts",
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "rawOutput": "final-focused-tests.raw.txt",
+    "sha256": "e3b8a964e0097fa11d550afd6cb3dba9bda58a2b482b7e2bbc22ee7bd74d45e1"
+  },
+  "reviewFindingsResolved": [
+    "Cash financial maintenance runs while source HTTP awaits, without RPC/quotes/orders, and yields to held/pending/active or unsettled financial execution.",
+    "Real reconciliation and USD guards remain 2000ms/10000ms; post-SQL actual-time checks prevent backdated recovery.",
+    "Global recovery uses original audited window cutoff, not later audit availability or an invented execution price.",
+    "Typed temporary recovery checks original ledger, risk/admission and current evidence; owner, stop, loss, financial/evidence uncertainty remain closed.",
+    "Hard restrictions arising after a soft pause are durably preserved and deduplicated; historical-only restriction latch clears only after genuine full candidate readiness succeeds.",
+    "Throwing and nonthrowing recorder failures cannot be reported as recovered permission.",
+    "Actual NativeCandidateRunner certificate plumbing recovers cash permission without creating orders; ordinary SDK/pricing remains required for entry.",
+    "Deadline misses arm only after healthy current maintenance; startup, known FX outages and financial ownership deferrals are classified separately.",
+    "Normal physical RPC occupancy is not classified as a provider incident.",
+    "Backup retry and successful retry reset preserve normal cadence."
+  ],
+  "unchangedSafety": [
+    "Original account and financial schema, position/risk and strategy rules unchanged.",
+    "No live-money execution or new account/service/reporting channel.",
+    "Ledger reconcile/order/attempt age checks remain unchanged."
+  ],
+  "remainingVerification": [
+    "Full repository suite/build on the final pinned source must pass.",
+    "No protected EC2 access, deployment, original ledger mutation or forward runtime verification occurred during this review.",
+    "Actual EC2 CPU/memory/disk/journal overhead, sustained cash cadence, genuine fault recovery and original Render acceptance remain required after deployment."
+  ]
+}

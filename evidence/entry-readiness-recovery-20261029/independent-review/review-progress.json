@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-10-29T18:21:46.287685+00:00",
+  "classification": "INDEPENDENT_READ_ONLY_REVIEW_IN_PROGRESS",
+  "testsAtTimeOfRun": {
+    "readinessAndHooks": 30,
+    "preExistingIntegration": 9
+  },
+  "limitations": [
+    "These initial focused runs preceded the final execution-safety and metric-classification edges. They are retained, not final source verification.",
+    "No private EC2 I/O, financial account mutation or root execution occurred.",
+    "Final review awaits healthy-interval deadline metric classification and final exact source hashes."
+  ],
+  "logs": [
+    {
+      "file": "poe-independent-readiness-review-focused-20261029.txt",
+      "sha256": "93837f6ee13253a6cdb8e3572b9f9991c1aa3c3bb744d8861cfdaceda9773218",
+      "bytes": 3374
+    },
+    {
+      "file": "poe-independent-readiness-integration-20261029.txt",
+      "sha256": "87987c82ce21a339dcff435421b1425595e9251ff47c08563778cfcf02675e52",
+      "bytes": 1346
+    }
+  ]
+}
