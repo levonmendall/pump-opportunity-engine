@@ -1,0 +1,34 @@
+✔ prior private status seeds retained failures without restoring old healthy proof (3.148496ms)
+✔ cumulative checkpoint/status use per-counter maximum, never sum or reset on repeated resume (0.598167ms)
+✔ checkpoint foreign-account cannot restore statistics (0.240026ms)
+✔ checkpoint wrong-inception cannot restore statistics (0.328337ms)
+✔ checkpoint unknown-run cannot restore statistics (0.282459ms)
+✔ checkpoint future cannot restore statistics (0.186997ms)
+✔ checkpoint pre-inception cannot restore statistics (0.136151ms)
+✔ checkpoint bad-kind cannot restore statistics (0.122031ms)
+✔ checkpoint extra-proof-field cannot restore statistics (0.348727ms)
+✔ previous status account binding cannot claim known protection history (0.406433ms)
+✔ previous status inception binding cannot claim known protection history (0.273786ms)
+✔ previous status run binding cannot claim known protection history (0.078646ms)
+✔ previous status future binding cannot claim known protection history (0.08783ms)
+✔ previous status source-commit binding cannot claim known protection history (0.05364ms)
+✔ previous status source-hash binding cannot claim known protection history (0.102793ms)
+✔ malformed counter -1 cannot become a lower bound (0.711655ms)
+✔ malformed counter 1.5 cannot become a lower bound (0.581642ms)
+✔ malformed counter NaN cannot become a lower bound (0.408866ms)
+✔ malformed counter Infinity cannot become a lower bound (0.204844ms)
+✔ malformed counter 9007199254740992 cannot become a lower bound (0.088752ms)
+✔ malformed counter 3 cannot become a lower bound (0.16242ms)
+✔ malformed counter null cannot become a lower bound (0.14137ms)
+✔ malformed counter undefined cannot become a lower bound (0.098035ms)
+✔ missing or corrupt optional histories remain explicit unknown lower bounds and never throw (0.205465ms)
+✔ valid zero statistics are only a known lower bound, not evidence of a currently healthy position (0.116333ms)
+✔ unsafe helper identity/time/run collection returns unknown without reading optional statistics (0.140929ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.723172
