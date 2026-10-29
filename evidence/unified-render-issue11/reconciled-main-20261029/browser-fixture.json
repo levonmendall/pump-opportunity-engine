@@ -1,0 +1,72 @@
+{
+  "checkedAt": "2026-10-29T00:07:11.006Z",
+  "source": {
+    "commit": "9ef309d815e74a84fe5537eeb41938b9d26cc9c0",
+    "files": [
+      {
+        "file": "src/dashboard.ts",
+        "sha256": "6d66f6bd3be1af3513d0330bedaf5b3dcee7f5a45d1bf77cec89ae905d0c574d"
+      },
+      {
+        "file": "src/dashboard-holographic.ts",
+        "sha256": "dd0084e4569809f56adf0719d3925e9dcfbf4294a5e9f9527e95a90cca567803"
+      },
+      {
+        "file": "src/reporting.ts",
+        "sha256": "dd24f5a9135a04c089b0a132fbc0ee635d0b48b518c2283f4ca1bd928d9e16fe"
+      },
+      {
+        "file": "src/operating-intelligence.ts",
+        "sha256": "357a0f9e1906a1f013158cc2f727101e490fbe140c54ee17b5d3c915257c737c"
+      }
+    ]
+  },
+  "externalRequests": 0,
+  "financialFilesRead": false,
+  "ledgerCreated": false,
+  "publicDashboardModified": false,
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "documentWidth": 390,
+      "javaScriptErrors": [],
+      "onePortfolio": true,
+      "retiredPanelsPresent": false,
+      "pnlAlwaysVisible": true,
+      "manualRefreshVerified": true,
+      "classification": "OFFLINE_BROWSER_FIXTURE_NOT_FORWARD_PERFORMANCE"
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "documentWidth": 1280,
+      "javaScriptErrors": [],
+      "onePortfolio": true,
+      "retiredPanelsPresent": false,
+      "pnlAlwaysVisible": true,
+      "manualRefreshVerified": true,
+      "classification": "OFFLINE_BROWSER_FIXTURE_NOT_FORWARD_PERFORMANCE"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "fixture-390.png",
+      "bytes": 1546431,
+      "sha256": "5e888c41b16be5629e5ee23393571e2315ce709a5c78efc6ae8955207a5c6e01",
+      "retainedLocally": true,
+      "committed": false
+    },
+    {
+      "file": "fixture-1280.png",
+      "bytes": 2677852,
+      "sha256": "ac5d0a12c6937d2ac940e6aeaf557bef19e492c53e30882d95b28a5b7261d6c1",
+      "retainedLocally": true,
+      "committed": false
+    }
+  ]
+}
