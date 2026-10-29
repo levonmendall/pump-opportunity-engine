@@ -15,12 +15,15 @@
       "sha256": "cd1c44376fed4b83b79cad2354111786f13bdca3503d9707a3166b81fc46e744"
     },
     "REVIEW.md": {
-      "bytes": 6927,
-      "sha256": "797b448211f2f2cd4c3317fe1b594a9e759647d0613fa6132e3482d91ee989dc"
+      "bytes": 9543,
+      "sha256": "730cb3add3427a54908d7a3e559e0a01be486802cc760fa6756e8a89135535c5"
     },
     "build.raw.txt": {
       "bytes": 55,
       "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
     }
-  }
+  },
+  "liveQualifiedSdkEntryObservedByParent": "2026-10-29T22:23:36.537Z",
+  "parallelQualifiedSdkRecoveryPathMapped": true,
+  "implementationChangeRecommendedFromEarlyReadinessLabels": false
 }
