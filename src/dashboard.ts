@@ -117,6 +117,13 @@ main{max-width:1480px;margin:0 auto}
 .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.stat{border:1px solid var(--border);border-radius:13px;padding:21px;min-width:0;min-height:137px;position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(20,36,59,.89),rgba(11,22,38,.85));box-shadow:0 12px 36px rgba(0,0,0,.07),inset 0 1px 0 rgba(189,220,255,.03);transition:transform .22s,border-color .22s}.stat:hover{transform:translateY(-3px);border-color:rgba(83,216,238,.42)}.stat:before{content:"";position:absolute;width:120px;height:120px;right:-40px;top:-65px;background:radial-gradient(circle,rgba(88,150,220,.14),transparent 70%)}.stat.top{background:linear-gradient(130deg,rgba(20,53,70,.8),rgba(13,23,46,.96));border-color:rgba(67,212,219,.27)}.stat.top:after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:2px;background:linear-gradient(90deg,rgba(80,240,236,.8),transparent)}.stat-label{font:600 10px var(--mono);color:#91a5c1;letter-spacing:1.15px;line-height:1.4;min-height:14px}.stat-value{font-weight:740;font-size:clamp(22px,2.25vw,33px);letter-spacing:-1.4px;color:#eaf6ff;line-height:1.2;margin:19px 0 10px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.stat-value.long{font-size:18px;letter-spacing:-.5px}.stat-value.positive{color:var(--mint)}.stat-value.negative{color:var(--red)}.stat-foot{font:10px var(--mono);color:#6683a1;line-height:1.4}.stat.empty .stat-value{color:#56708e}.stat.empty .stat-foot{color:#6d829c}
 .panel{background:linear-gradient(150deg,rgba(14,27,45,.92),rgba(8,17,33,.94));border:1px solid var(--border);border-radius:16px;padding:25px;min-width:0;box-shadow:0 17px 45px rgba(0,0,0,.07);position:relative;overflow:hidden}.panel:before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,rgba(80,240,236,.2),rgba(132,178,245,.05),transparent)}.panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:22px}.panel-heading h2{font-size:21px;margin:5px 0 0}.panel-sub{margin:7px 0 0;color:#7993b1;font:11px var(--mono)}.panel-tag{border:1px solid rgba(81,173,194,.26);border-radius:5px;padding:7px 10px;color:var(--cyan);font:600 9px var(--mono);letter-spacing:1px;white-space:nowrap}
 .chart-panel{margin-top:18px;padding:25px 25px 20px}.chart-shell{position:relative;overflow:hidden;border:1px solid rgba(117,169,219,.12);border-radius:10px;background:linear-gradient(180deg,rgba(3,12,25,.38),rgba(5,14,30,.18));min-height:280px}.chart-shell:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 44px,rgba(83,153,197,.065) 45px 46px),repeating-linear-gradient(90deg,transparent 0 83px,rgba(83,153,197,.05) 84px 85px)}.chart-shell:after{content:"";pointer-events:none;position:absolute;inset:0;opacity:.35;background:linear-gradient(90deg,rgba(60,192,234,.03),transparent,rgba(116,105,223,.05))}.chart-shell svg{width:100%;height:280px;display:block;position:relative;z-index:1;overflow:visible}.chart-meta{display:flex;justify-content:space-between;gap:24px;padding:14px 2px 0;color:#7c93af;font:10px var(--mono);line-height:1.7}.chart-meta span{overflow-wrap:anywhere}.chart-legend{white-space:nowrap;color:#a1bad0}.chart-legend:before{content:"";display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:8px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}.chart-note{font:10px var(--mono);color:#6684a3;margin-top:6px}
+.chart-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:7px 2px 0}
+.chart-window-label{color:#94a9c4;font:600 9px/1.5 var(--mono);letter-spacing:.7px}
+.chart-range-toggle{border:1px solid rgba(138,245,219,.28);border-radius:7px;padding:7px 11px;background:rgba(93,208,181,.06);color:#b4f4e6;cursor:pointer;font:600 10px var(--mono)}
+.chart-range-toggle:hover{border-color:rgba(138,245,219,.65)}
+.chart-range-toggle:focus-visible{outline:2px solid #96ffec;outline-offset:3px}
+.chart-range-toggle[hidden]{display:none!important}
+
 .two-up,.system-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;margin-top:17px}.data-panel{min-height:286px}.data-panel .panel-heading{margin-bottom:16px}.table-wrap{width:100%;overflow-x:auto}.data-table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}.data-table th{text-align:left;font:600 9px var(--mono);letter-spacing:1.1px;color:#6b8aa9;text-transform:uppercase;padding:11px 11px 13px;border-bottom:1px solid rgba(105,149,197,.17)}.data-table td{padding:15px 11px;color:#bed0e1;border-bottom:1px solid rgba(105,149,197,.12);max-width:210px;overflow-wrap:anywhere;vertical-align:top}.data-table tr:last-child td{border-bottom:0}.no-records{min-height:155px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#7d95b1;gap:10px;padding:20px}.no-records:before{content:"";display:block;width:35px;height:35px;border:1px dashed rgba(80,240,236,.33);border-radius:10px;background:radial-gradient(circle,rgba(80,240,236,.12),transparent 68%);transform:rotate(45deg)}.no-records strong{font:600 11px var(--mono);color:#aec9e1;letter-spacing:.8px}.no-records span{font:11px var(--mono);color:#617c9a;max-width:300px}
 /* Native disclosure keeps the verified trade count visible while conserving dashboard space. */
 .data-panel.paper-trades-panel{min-height:0;align-self:start}
@@ -211,6 +218,7 @@ body.poe-compact-view .compact-folded{min-height:0}
 <div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio P&amp;L trajectory</h2><p class="panel-sub" id="chartBasis">Awaiting the source-reported P&amp;L convention</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
 <div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio trading profit and loss with explicit gaps for missing historical data"></svg></div>
 <div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend" id="chartLegend">SOURCE P&amp;L / USD</span></div>
+<div class="chart-controls"><span class="chart-window-label" id="chartWindowLabel">RECENT 24H · ZOOMED VALUE SCALE</span><button class="chart-range-toggle" id="chartRangeToggle" type="button" aria-pressed="false" hidden>View full history</button></div>
 <div class="chart-note" id="chartNote">Actual observations only. Zero is the reference line; missing history is not treated as zero.</div>
 </section>
 <div class="two-up" id="activity"><section class="panel data-panel" aria-labelledby="positionsTitle"><div class="panel-heading"><div><div class="section-index">03 / EXPOSURE</div><h2 id="positionsTitle">Open positions</h2></div><div class="panel-tag" id="positionsCount">—</div></div><div id="positions"><div class="no-records"><strong>NO POSITION DATA</strong><span>Waiting for an authoritative PAPER portfolio snapshot.</span></div></div></section>
@@ -320,39 +328,79 @@ function renderMetrics(m,source,intelligence=null){
  q.limitations.forEach(note=>add(p,'p',note,'panel-sub'));
 }
 
+let chartRange='recent';
+/** A same-time null placeholder does not erase a verified trading value.
+ * Missing values at distinct timestamps and conflicting duplicate values remain gaps. */
+function tradingPnlTimeline(points){
+ const timeline=[];
+ for(const point of points){
+  const prior=timeline[timeline.length-1];
+  if(prior&&prior.at===point.at){
+   if(point.tradingUsd!==null&&!prior.conflict){
+    if(prior.tradingUsd!==null&&prior.tradingUsd!==point.tradingUsd){prior.tradingUsd=null;prior.conflict=true;}
+    else prior.tradingUsd=point.tradingUsd;
+   }
+  }else timeline.push({at:point.at,tradingUsd:point.tradingUsd,conflict:false});
+ }
+ return timeline;
+}
 function plot(points){
  const root=byId('chart');root.replaceChildren();
  const width=Math.max(305,Math.min(960,Math.floor(root.parentElement.clientWidth||900)));
  const height=280;root.setAttribute('viewBox','0 0 '+width+' '+height);
- const left=width<500?49:70,right=width-20,top=20,bottom=height-34;
- for(let i=0;i<5;i++){const y=top+(bottom-top)*i/4;root.append(makeSvg('line',{x1:left,y1:y,x2:right,y2:y,stroke:'rgba(118,167,207,.15)','stroke-dasharray':'3 6'}))}
- const valid=points.filter(p=>p.tradingUsd!==null);
+ const left=width<500?58:77,right=width-20,top=20,bottom=height-34;
+ for(let i=0;i<5;i++){const yy=top+(bottom-top)*i/4;root.append(makeSvg('line',{x1:left,y1:yy,x2:right,y2:yy,stroke:'rgba(118,167,207,.15)','stroke-dasharray':'3 6'}))}
+ const timeline=tradingPnlTimeline(points),latestAt=timeline.length?Date.parse(timeline[timeline.length-1].at):0;
+ const recentCutoff=latestAt-24*60*60*1000,recent=timeline.filter(p=>Date.parse(p.at)>=recentCutoff);
+ const recentReady=recent.filter(p=>p.tradingUsd!==null).length>=2;
+ const hasEarlier=timeline.some(p=>Date.parse(p.at)<recentCutoff);
+ const focused=chartRange==='recent'&&recentReady;
+ const visible=focused?recent:timeline;
+ const rangeToggle=byId('chartRangeToggle');
+ rangeToggle.hidden=!hasEarlier||!recentReady;
+ rangeToggle.textContent=chartRange==='all'?'View recent 24h':'View full history';
+ rangeToggle.setAttribute('aria-pressed',String(chartRange==='all'));
+ put('chartWindowLabel',focused?'RECENT 24H · ZOOMED VALUE SCALE':'FULL REPORTED HISTORY · ZERO-BASED SCALE');
+ const valid=visible.filter(p=>p.tradingUsd!==null);
  if(!valid.length){
   root.append(makeSvg('text',{x:width/2,y:127,'text-anchor':'middle',fill:'#9dc5d9','font-size':width<420?13:15,'font-weight':650,'letter-spacing':1},'NO VERIFIED P&L SERIES'));
   root.append(makeSvg('text',{x:width/2,y:153,'text-anchor':'middle',fill:'#637e9f','font-size':11},'Chart will populate from actual PAPER history'));
-  return
+  return;
  }
- const from=Date.parse(points[0].at),end=Math.max(from+1,Date.parse(points[points.length-1].at));
- let low=Math.min(0,...valid.map(p=>p.tradingUsd)),high=Math.max(0,...valid.map(p=>p.tradingUsd));
- const span=Math.max(.01,high-low);low-=span*.14;high+=span*.14;
+ const from=Date.parse(visible[0].at),end=Math.max(from+1,Date.parse(visible[visible.length-1].at));
+ const values=valid.map(p=>p.tradingUsd),smallest=Math.min(...values),largest=Math.max(...values);
+ let low,high;
+ if(focused){
+  const center=(smallest+largest)/2,half=Math.max((largest-smallest)*.62,.015,Math.abs(center)*.0025);
+  low=center-half;high=center+half;
+ }else{
+  low=Math.min(0,smallest);high=Math.max(0,largest);
+  const span=Math.max(.01,high-low);low-=span*.14;high+=span*.14;
+ }
  const x=at=>left+(Date.parse(at)-from)/(end-from)*(right-left),y=n=>bottom-(n-low)/(high-low)*(bottom-top);
- const fmt=n=>(n<0?'-$':'$')+Math.abs(n).toFixed(Math.abs(n)<10?2:0);
- for(let i=0;i<5;i++){const value=high-(high-low)*i/4;root.append(makeSvg('text',{x:left-7,y:top+(bottom-top)*i/4+4,'text-anchor':'end',fill:'#7894b1','font-size':10},fmt(value)))}
- root.append(makeSvg('line',{x1:left,y1:y(0),x2:right,y2:y(0),stroke:'#6489a5','stroke-dasharray':'5 4','stroke-width':1}));
- const defs=makeSvg('defs',{}),grad=makeSvg('linearGradient',{id:'poeChartFill',x1:'0%',x2:'0%',y1:'0%',y2:'100%'});
- grad.append(makeSvg('stop',{offset:'0%','stop-color':'#57efea','stop-opacity':'.24'}),makeSvg('stop',{offset:'100%','stop-color':'#57efea','stop-opacity':'0'}));defs.append(grad);root.append(defs);
+ const precision=high-low<.02?4:high-low<.2?3:high-low<10?2:0;
+ const fmt=n=>(n<0?'−$':'$')+Math.abs(n).toFixed(precision);
+ for(let i=0;i<5;i++){const value=high-(high-low)*i/4;root.append(makeSvg('text',{x:left-7,y:top+(bottom-top)*i/4+4,'text-anchor':'end',fill:'#a4b9d2','font-size':10},fmt(value)))}
+ if(low<=0&&high>=0)root.append(makeSvg('line',{x1:left,y1:y(0),x2:right,y2:y(0),stroke:'#6489a5','stroke-dasharray':'5 4','stroke-width':1}));
  let group=[];
  const flush=()=>{
   if(!group.length)return;
-  const d=group.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.tradingUsd).toFixed(2)).join(' ');
-  if(group.length>1){const area=d+' L'+x(group[group.length-1].at).toFixed(2)+' '+y(0).toFixed(2)+' L'+x(group[0].at).toFixed(2)+' '+y(0).toFixed(2)+' Z';root.append(makeSvg('path',{d:area,fill:'url(#poeChartFill)',stroke:'none'}))}
-  root.append(makeSvg('path',{d,stroke:'#50f0ec','stroke-width':2.7,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
-  group.forEach(p=>root.append(makeSvg('circle',{cx:x(p.at),cy:y(p.tradingUsd),r:2.7,fill:'#8efaf4',stroke:'#07121e','stroke-width':1})));
+  if(group.length>1){
+   const d=group.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.tradingUsd).toFixed(2)).join(' ');
+   root.append(makeSvg('path',{'data-chart-series':'trading-pnl-line',d,stroke:'#90f7df','stroke-width':3.2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
+  }
+  const last=group[group.length-1];
+  root.append(makeSvg('circle',{'data-chart-point':'last-verified',cx:x(last.at),cy:y(last.tradingUsd),r:3.4,fill:'#d4fff7',stroke:'#07121e','stroke-width':1.3}));
   group=[];
  };
- points.forEach(p=>{if(p.tradingUsd===null)flush();else group.push(p)});flush();
- root.append(makeSvg('text',{x:left,y:height-12,fill:'#7894b1','font-size':10},new Date(from).toISOString().slice(11,19)+' UTC'));
- root.append(makeSvg('text',{x:right,y:height-12,'text-anchor':'end',fill:'#7894b1','font-size':10},new Date(end).toISOString().slice(11,19)+' UTC'));
+ for(const point of visible){
+  if(point.tradingUsd===null){flush();continue;}
+  if(group.length&&Date.parse(point.at)-Date.parse(group[group.length-1].at)>90000)flush();
+  group.push(point);
+ }
+ flush();
+ root.append(makeSvg('text',{x:left,y:height-12,fill:'#9bacc5','font-size':10},new Date(from).toISOString().slice(5,16).replace('T',' ')+' UTC'));
+ root.append(makeSvg('text',{x:right,y:height-12,'text-anchor':'end',fill:'#9bacc5','font-size':10},new Date(end).toISOString().slice(5,16).replace('T',' ')+' UTC'));
 }
 function showSnapshot(s,received,f){
  latest=s;latestReceivedAt=received;readFailure=null;
@@ -364,9 +412,9 @@ function showSnapshot(s,received,f){
  renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(s.pnl);
  put('chartBasis',s.intelligence?'Net token trading result translated at current SOL/USD; not historical realized USD profit':'Legacy equity change includes passive SOL/USD; do not interpret as pure trading profit');put('chartLegend',s.intelligence?'TOKEN TRADING · CURRENT USD':'LEGACY EQUITY CHANGE · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
- put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED SERIES':'HISTORY UNAVAILABLE');
+ put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED P&L LINE':'HISTORY UNAVAILABLE');
  put('freshness','Generated '+s.times.generatedAt+(s.intelligence?' · Financial valuation ':' · Market ')+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
- put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps.');
+ put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps. Line segments connect consecutive verified trading observations only; no missing values are interpolated.');
  if(!s.intelligence){
   const state=String(f.state).toUpperCase();
   const bad=f.state==='stale'||f.state==='unavailable';
@@ -422,6 +470,7 @@ function paintFreshness(){
 clock();setInterval(()=>{clock();paintFreshness()},1000);plot([]);refresh();setInterval(refresh,15000);
 window.addEventListener('focus',()=>{void refresh()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh()});
 byId('refreshNow').addEventListener('click',()=>{void refresh()});
+byId('chartRangeToggle').addEventListener('click',()=>{chartRange=chartRange==='recent'?'all':'recent';plot(latest?latest.pnl:[]);});
 window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
 
 /** UI-only progressive disclosure. All projections, API endpoints and financial boundaries are unchanged. */
