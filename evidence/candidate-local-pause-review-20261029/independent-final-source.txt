@@ -1,0 +1,4 @@
+99e81fa26cda5fe89124fb231c72ad5aa2b89bf785d7663a32fd546295ceaa7b  src/ledger.ts
+219c1c67047acbfa0a49e6de1225557b2a59da69fd05840a2eda5c92fb78ca88  src/native-paper.ts
+e6133e4bd270b9ebd6b045bda90234d9b5abc85fcaf4b430e488f86f85e5b735  src/trader.ts
+759e7431ba0ba70c6673095b546bdae8b0e30f14796190ab6d56b2935dfd99f1  src/technical-protection-recovery.ts

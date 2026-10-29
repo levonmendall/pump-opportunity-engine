@@ -1,0 +1,8 @@
+{
+  "testsPassed": 6,
+  "testsFailed": 0,
+  "ancestorCancellationRegressionFixed": true,
+  "nestedProtectionNotCanceled": true,
+  "supersedesInitialFourCaseApproval": true,
+  "deployed": false
+}

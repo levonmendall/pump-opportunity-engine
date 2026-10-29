@@ -1,0 +1,14 @@
+✔ nested financial work restores its still-active candidate caller and then idle (1.14002ms)
+✔ a canceled candidate cannot be resurrected by its late protection completion (0.196701ms)
+✔ a late restoration cannot overwrite a newer pending financial owner (0.107429ms)
+✔ a released work lease cannot restore twice (0.088792ms)
+✔ a late child cannot restore a candidate whose caller released while protection was running (0.189141ms)
+✔ late financial completion skips every retired ancestor while retaining a live parent (0.105887ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.661233

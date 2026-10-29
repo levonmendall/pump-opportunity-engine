@@ -42,7 +42,16 @@ export type LedgerState = {
   controls: { entriesEnabled: boolean; reason: string; changedAt: number; readinessVersion: string | null; stopRequested: boolean };
 };
 type State = LedgerState;
-export type RuntimeReadiness = { version: string; evidence: string; marketAt: number; recoveryComplete: boolean; candidateWindowsReady: boolean; budgetAvailable: boolean };
+export const OPERATING_FINANCIAL_READINESS_VERSION='paper-operating-financial-readiness-v1' as const;
+export const TECHNICAL_PROTECTION_PAUSE_REASONS=Object.freeze(['completed PAPER protection gap exceeded research boundary','completed protection deadline exceeded; candidate windows must restart','first completed protection deadline exceeded; fresh observation required','PAPER protection currently overdue; candidate admissions closed','PAPER protection unavailable; exposure retained'] as const);
+export type TechnicalProtectionRecoveryAuthority={verified:true;accountId:string;inceptionAt:number;stateRevision:number;controlChangedAt:number;controlReason:string;originRevision:number;authoritySha256:string}|{verified:false;reason:string};
+export type TechnicalProtectionRecoveryProof={version:'paper-technical-protection-recovery-v1';authoritySha256:string;originRevision:number;accountId:string;inceptionAt:number;stateRevision:number;controlChangedAt:number;controlReason:string;positionUnits:Record<string,string>;startedAt:number;completedAt:number;completedEvaluations:number;maximumCompletedGapMs:number;lastQuoteAt:number};
+export type LegacyRuntimeReadiness={version:string;evidence:string;marketAt:number;recoveryComplete:boolean;candidateWindowsReady:boolean;budgetAvailable:boolean};
+/** Financial permission only. No candidate window, signal, entry quote or order
+ * is asserted. The original bank Clock/source expiry and liquidation times are
+ * retained; exact inventory and current reconciliation are bound to one writer. */
+export type OperatingFinancialReadiness={version:typeof OPERATING_FINANCIAL_READINESS_VERSION;purpose:'financial-permission-only';evidence:string;accountId:string;stateRevision:number;reconciledAt:number;positionUnits:Record<string,string>;source:{kind:'selected-native-support'|'complete-held-liquidation-context';bankClockAt:number;receivedAt:number;validUntil:number};recoveryComplete:boolean;financialInventoryReady:boolean;budgetAvailable:boolean;technicalProtectionRecovery?:TechnicalProtectionRecoveryProof};
+export type RuntimeReadiness=LegacyRuntimeReadiness|OperatingFinancialReadiness;
 export type ReportingPoint = { at: number; tradingMicroUsd: string | null; economicMicroUsd: string | null };
 export type ReportingHistory = { points: ReportingPoint[]; windowLimited: boolean; downsampled: boolean };
 /** Optional reporting metadata only. Legacy reporting_history is never migrated
@@ -81,6 +90,21 @@ function priceAt(price: UsdPrice, now: number) {
     price.at > now || now - price.at > MAX_PRICE_AGE || typeof price.source !== 'string' || !price.source || price.source.length > 512 ||
     amount(price.microUsdPerSol) === 0n) throw new Error('fresh timestamped USD conversion required');
   return amount(price.microUsdPerSol);
+}
+/** Shared input/history validation prevents a new readiness receipt from
+ * becoming an unknown or unbounded historical control intent after restart. */
+function runtimeReadinessKind(value:unknown,now:number,marks:unknown,revision?:number,accountId?:string,price?:unknown):'legacy'|'financial'|null{
+ const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v),integer=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0,exact=(v:Record<string,unknown>,keys:string)=>Object.keys(v).sort().join(',')===keys;
+ if(!object(value)||!boundedText(value.version,128)||!boundedText(value.evidence)||value.recoveryComplete!==true||value.budgetAvailable!==true)return null;
+ if(value.version!==OPERATING_FINANCIAL_READINESS_VERSION)return exact(value,'budgetAvailable,candidateWindowsReady,evidence,marketAt,recoveryComplete,version')&&integer(value.marketAt)&&value.marketAt<=now&&now-value.marketAt<=MAX_QUOTE_AGE&&value.candidateWindowsReady===true?'legacy':null;
+ const financialKeys='accountId,budgetAvailable,evidence,financialInventoryReady,positionUnits,purpose,reconciledAt,recoveryComplete,source,stateRevision,version'.split(',');if(Object.hasOwn(value,'technicalProtectionRecovery'))financialKeys.push('technicalProtectionRecovery');
+ if(!exact(value,financialKeys.sort().join(','))||value.purpose!=='financial-permission-only'||value.financialInventoryReady!==true||!boundedText(value.accountId,160)||accountId!==undefined&&value.accountId!==accountId||!integer(value.stateRevision)||revision!==undefined&&value.stateRevision!==revision||!integer(value.reconciledAt)||value.reconciledAt>now||now-value.reconciledAt>MAX_QUOTE_AGE||!object(value.positionUnits)||Object.keys(value.positionUnits).length>3||!object(marks)||!object(value.source)||!exact(value.source,'bankClockAt,kind,receivedAt,validUntil'))return null;
+ const source=value.source,keys=Object.keys(value.positionUnits).sort();if(!integer(source.bankClockAt)||!integer(source.receivedAt)||!integer(source.validUntil)||source.bankClockAt>source.receivedAt||source.receivedAt>now||source.validUntil!==source.bankClockAt+30000||now>source.validUntil||source.kind!==(keys.length?'complete-held-liquidation-context':'selected-native-support')||Object.keys(marks).sort().join('|')!==keys.join('|'))return null;
+ try{for(const mint of keys){const units=value.positionUnits[mint],m=marks[mint];if(!boundedText(mint,96)||amount(units)===0n||!object(m)||!exact(m,'at,evidence,netLamports,pricedBaseUnits')||m.pricedBaseUnits!==units||!integer(m.at)||m.at>now||now-m.at>MAX_QUOTE_AGE||m.at<source.receivedAt||!boundedText(m.evidence)||/[\u0000-\u001f]/.test(m.evidence))return null;amount(m.netLamports);}}catch{return null;}
+ if(Object.hasOwn(value,'technicalProtectionRecovery')){
+  const p=value.technicalProtectionRecovery;if(!object(p)||!exact(p,'accountId,authoritySha256,completedAt,completedEvaluations,controlChangedAt,controlReason,inceptionAt,lastQuoteAt,maximumCompletedGapMs,originRevision,positionUnits,startedAt,stateRevision,version')||p.version!=='paper-technical-protection-recovery-v1'||p.accountId!==value.accountId||!integer(p.inceptionAt)||!integer(p.stateRevision)||p.stateRevision!==value.stateRevision||!integer(p.originRevision)||p.originRevision>p.stateRevision||!integer(p.controlChangedAt)||!TECHNICAL_PROTECTION_PAUSE_REASONS.includes(p.controlReason as never)||typeof p.authoritySha256!=='string'||!/^[a-f0-9]{64}$/.test(p.authoritySha256)||!isDeepStrictEqual(p.positionUnits,value.positionUnits)||!integer(p.startedAt)||p.startedAt<p.inceptionAt||p.startedAt<p.controlChangedAt||!integer(p.completedAt)||p.completedAt>now||now-p.completedAt>MAX_QUOTE_AGE||p.completedAt-p.startedAt<60000||!integer(p.completedEvaluations)||p.completedEvaluations<2||p.completedEvaluations>1000000||!integer(p.maximumCompletedGapMs)||p.maximumCompletedGapMs>4000||p.maximumCompletedGapMs===0||p.completedAt-p.startedAt>(p.completedEvaluations-1)*p.maximumCompletedGapMs||!integer(p.lastQuoteAt)||p.lastQuoteAt>p.completedAt||now-p.lastQuoteAt>MAX_QUOTE_AGE||(keys.length?p.lastQuoteAt!==Math.min(...keys.map(mint=>marks[mint].at)):!object(price)||p.lastQuoteAt!==price.at))return null;
+ }
+ return 'financial';
 }
 const usd = (lamports: bigint, price: bigint) => lamports * price / L;
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -396,15 +420,76 @@ export class PaperLedger {
     });
   }
 
+  /** One bounded, authenticated control history for both ordinary temporary
+   * recovery and separately proved protection recovery. Later startup wording
+   * cannot erase an earlier owner, unknown or malformed intent. */
+  private operatingControlHistory(state:State,at:number){
+    try{
+      type Row={revision:number;actionId:string;at:number;kind:string;detail:string;payloadHash:string;result:string};
+      const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
+      const select="SELECT j.revision,j.action_id actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
+      const read=(row:Row)=>{if(!Number.isSafeInteger(row.revision)||row.revision<1||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at<state.inceptionAt||row.at>at||!boundedText(row.actionId,160)||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('malformed');const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(!object(payload)||payload.now!==row.at||!object(result)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('malformed');return {payload,result};};
+      const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,row.revision-1,state.accountId,payload.price);if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
+      const anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get()as Row|undefined;
+      if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
+      const boundary=anchor?.revision??0,size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary)as{count:number;bytes:number};if(size.count>512||size.bytes>1024*1024)return null;
+      const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision LIMIT 513").all(boundary)as Row[];if(rows.length!==size.count)return null;
+      let previousAt=anchor?.at??state.inceptionAt,previousRevision=boundary;
+      const decoded=rows.map(row=>{if(row.revision<=previousRevision||row.at<previousAt)throw Error('malformed order');previousRevision=row.revision;previousAt=row.at;const {payload,result}=read(row);
+        if(row.kind==='resume')validateResume(row,false);
+        else if(row.kind==='pause'){if(Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))throw Error('malformed pause');}
+        else if(row.kind!=='safe-stop')throw Error('unknown control');
+        const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(row.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(row.actionId),startup=row.actionId===`execution-recovery:${state.accountId}:${row.revision-1}`,stamp=ordinary??restored;
+        if(stamp&&(Number(stamp[1])!==row.revision-1||!Number.isSafeInteger(Number(stamp[2]))||Number(stamp[2])<state.inceptionAt||Number(stamp[2])>at))throw Error('malformed action identity');
+        return {row,payload,result,ordinary:!!ordinary,restored:!!restored,startup};
+      });
+      return {anchor,decoded};
+    }catch{return null;}
+  }
+
+  /** Read-only control authority, never proof that actual protection recovered. */
+  technicalProtectionRecoveryAuthority(at:number):TechnicalProtectionRecoveryAuthority{
+    const state=this.state(),no=(reason:string):TechnicalProtectionRecoveryAuthority=>({verified:false,reason});
+    if(!Number.isSafeInteger(at)||at<state.lastAt)return no('TECHNICAL_PROTECTION_CONTROL_TIME');
+    if(state.controls.entriesEnabled||state.controls.stopRequested||state.daily.lossPaused||Object.keys(state.pending).length||!TECHNICAL_PROTECTION_PAUSE_REASONS.includes(state.controls.reason as never))return no('TECHNICAL_PROTECTION_CONTROL_NOT_ELIGIBLE');
+    const history=this.operatingControlHistory(state,at);if(!history||!history.anchor)return no('TECHNICAL_PROTECTION_CONTROL_HISTORY_UNAVAILABLE');
+    let originRevision:number|null=null,lastControl:{at:number;reason:string}|null=null;
+    const intents:Array<{revision:number;actionId:string;at:number;kind:string;payloadHash:string;resultSha256:string}>=[];
+    for(const {row,payload,result,ordinary,restored,startup}of history.decoded){intents.push({revision:row.revision,actionId:row.actionId,at:row.at,kind:row.kind,payloadHash:row.payloadHash,resultSha256:digest(result)});
+      if(row.kind==='safe-stop')return no('TECHNICAL_PROTECTION_STOP_INTENT_PRESENT');if(row.kind==='resume')continue;
+      if(ordinary&&TECHNICAL_PROTECTION_PAUSE_REASONS.includes(payload.reason as never))originRevision=row.revision;
+      else if(restored){if(originRevision===null||payload.reason!==state.controls.reason)return no('TECHNICAL_PROTECTION_UNPROVEN_RESTORE');}
+      else if(!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return no('TECHNICAL_PROTECTION_OWNER_OR_UNKNOWN_CONTROL');
+      lastControl={at:row.at,reason:payload.reason};
+    }
+    if(originRevision===null||!lastControl||lastControl.at!==state.controls.changedAt||lastControl.reason!==state.controls.reason)return no('TECHNICAL_PROTECTION_CURRENT_CONTROL_MISMATCH');
+    const anchor=history.anchor,body={version:'technical-protection-control-authority-v1',accountId:state.accountId,inceptionAt:state.inceptionAt,anchor:{revision:anchor.revision,actionId:anchor.actionId,payloadHash:anchor.payloadHash,resultSha256:digest(JSON.parse(anchor.result))},originRevision,controlChangedAt:state.controls.changedAt,controlReason:state.controls.reason,intents};
+    return {verified:true,accountId:state.accountId,inceptionAt:state.inceptionAt,stateRevision:state.revision,controlChangedAt:state.controls.changedAt,controlReason:state.controls.reason,originRevision,authoritySha256:digest(body)};
+  }
+
+  private operatingTemporaryControlVerified(state:State,at:number){
+    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=null;
+    for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
+      if(restored||!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return false;
+      lastControl={at:row.at,reason:payload.reason};
+    }
+    return !!lastControl&&lastControl.at===state.controls.changedAt&&lastControl.reason===state.controls.reason;
+  }
+
   resume(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>, readiness: RuntimeReadiness) {
     const p = priceAt(price, now);
-    if (typeof readiness.version !== 'string' || !readiness.version || readiness.version.length > 128 || typeof readiness.evidence !== 'string' || !readiness.evidence || readiness.evidence.length > 512 || !Number.isSafeInteger(readiness.marketAt) || readiness.marketAt > now || now - readiness.marketAt > MAX_QUOTE_AGE || readiness.recoveryComplete !== true || readiness.candidateWindowsReady !== true || readiness.budgetAvailable !== true) throw new Error('fresh explicit runtime readiness required');
+    const kind=runtimeReadinessKind(readiness,now,marks,undefined,this.accountId,price);if(!kind)throw new Error('fresh explicit runtime readiness required');
     return this.apply(id, 'resume', now, { now, price, marks, readiness }, s => {
+      if(kind==='financial'){
+        const q=readiness as OperatingFinancialReadiness,units=Object.fromEntries(Object.entries(s.positions).map(([mint,position])=>[mint,position.units]));
+        const technical=q.technicalProtectionRecovery,authority=technical?this.technicalProtectionRecoveryAuthority(now):null,controlAllowed=technical?authority?.verified===true&&authority.accountId===technical.accountId&&authority.inceptionAt===technical.inceptionAt&&authority.stateRevision===technical.stateRevision&&authority.controlChangedAt===technical.controlChangedAt&&authority.controlReason===technical.controlReason&&authority.originRevision===technical.originRevision&&authority.authoritySha256===technical.authoritySha256:this.operatingTemporaryControlVerified(s,now)&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(s.controls.reason);
+        if(q.stateRevision!==s.revision||q.reconciledAt!==s.daily.reconciledAt||!isDeepStrictEqual(q.positionUnits,units)||Object.keys(s.pending).length||s.controls.stopRequested||!controlAllowed)return {enabled:false,reason:'fresh reconciled inventory and authorized temporary recovery required'};
+      }
       const equity = this.equity(s, p, marks, now);
       if (BigInt(s.daily.baselineMicroUsd) - equity >= 50_000_000n) { s.daily.paused = true; s.daily.lossPaused = true; }
       if (s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.lossPaused) return { enabled: false, reason: 'fresh reconciliation or next UTC-day loss reset required' };
       s.daily.paused = false;
-      s.controls = { entriesEnabled: true, reason: 'explicit verified runtime readiness', changedAt: now, readinessVersion: readiness.version, stopRequested: false };
+      s.controls = { entriesEnabled: true, reason: kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness', changedAt: now, readinessVersion: readiness.version, stopRequested: false };
       return { enabled: true, reason: s.controls.reason };
     });
   }
@@ -678,7 +763,8 @@ export class PaperLedger {
       };
       const resume=(r:Row,expectedEnabled:boolean)=>{
         const {payload,result}=read(r),q=payload.readiness;
-        if(r.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!object(payload.price)||!object(payload.marks)||!object(q)||Object.keys(q).sort().join(',')!=='budgetAvailable,candidateWindowsReady,evidence,marketAt,recoveryComplete,version'||!boundedText(q.version,128)||!boundedText(q.evidence)||!Number.isSafeInteger(q.marketAt)||q.marketAt>r.at||r.at-q.marketAt>MAX_QUOTE_AGE||q.recoveryComplete!==true||q.candidateWindowsReady!==true||q.budgetAvailable!==true||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==expectedEnabled||result.reason!==(expectedEnabled?'explicit verified runtime readiness':'fresh reconciliation or next UTC-day loss reset required'))throw Error('malformed');
+        const kind=runtimeReadinessKind(q,r.at,payload.marks,r.revision-1,s.accountId,payload.price),validReason=expectedEnabled?(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness'):result.reason==='fresh reconciliation or next UTC-day loss reset required'||kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required';
+        if(r.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!object(payload.price)||!object(payload.marks)||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==expectedEnabled||(expectedEnabled?result.reason!==validReason:!validReason))throw Error('malformed');
         priceAt(payload.price as UsdPrice,r.at);return {payload,result};
       };
       if(anchor)resume(anchor,true);

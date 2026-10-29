@@ -71,7 +71,14 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
    strategyRows.push(`${mint}: Adaptive Momentum v2 historical executable net peak ${value}; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit.`);
   }
  }
- const limitations=[...(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,10-strategyRows.length),...strategyRows];
+ const operationalRows:string[]=[],history=rec(rec(s.reporting).protectionHistory);
+ if(history.scope==='known-lower-bound')operationalRows.push(history.historyUnavailable===true?'Prior protection statistics are unavailable; current counters do not certify earlier protection.':'Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.');
+ const pricing=rec(rec(u.market).holdingDiagnostics),pricingCodes=['HELD_PRICING_BUSY','HELD_PRICING_ABORTED','HELD_PRICING_PROVIDER_TIMEOUT','HELD_PRICING_PROVIDER_COOLDOWN','HELD_PRICING_DISPATCH_UNAVAILABLE','HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE','HELD_PRICING_BANK_CLOCK_UNAVAILABLE','HELD_PRICING_SLOT_UNAVAILABLE','HELD_PRICING_STALE_EVIDENCE','HELD_PRICING_INVENTORY_CHANGED','HELD_PRICING_DATA_UNAVAILABLE'],pricingCounts=rec(pricing.contextFailureCounts);
+ const refusalCounts=pricingCodes.flatMap(code=>{const n=count(pricingCounts[code]);return n!==null&&n>0?[code+':'+n]:[];});
+ if(refusalCounts.length)operationalRows.push('Recorded holding-pricing refusals in this run: '+refusalCounts.slice(0,6).join(', ')+(refusalCounts.length>6?'; additional categories retained.':'.'));
+ const lastPricing=rec(pricing.lastContext),pricingAt=time(lastPricing.at);
+ if(lastPricing.state==='unavailable'&&pricingAt&&pricingCodes.includes(lastPricing.reasonCode))operationalRows.push('Holding-pricing refusal at '+pricingAt+': '+lastPricing.reasonCode+'. This is not a completed protection evaluation.');
+ const limitations=[...(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,Math.max(0,10-strategyRows.length-operationalRows.length)),...operationalRows,...strategyRows];
  const hasAdmission=['reporting','serviceSupervision','resourceControl','evidenceRetention','sourceRecovery','proofPreparation'].some(k=>Object.hasOwn(s,k));
  const report=rec(s.reporting),supervision=rec(s.serviceSupervision),control=rec(s.resourceControl),retention=rec(s.evidenceRetention),recovery=rec(s.sourceRecovery),proof=rec(s.proofPreparation);
  const admission:OperatingAdmission|undefined=hasAdmission?{
