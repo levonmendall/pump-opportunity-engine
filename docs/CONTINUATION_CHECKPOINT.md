@@ -14,7 +14,7 @@ PREPARED AND ACTUALLY STAGED
 - Package index fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd; final driver 2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab.
 - Actual EC2 directory /var/tmp/poe-issue11-staging, UID994 private; 13 payloads plus index, all14 readback hashes matched.
 - Staging GHA40796418549, admin commit d412f14892d8c23be9987f3c9c8477d669663522. It did NOT run the upgrade or open a ledger.
-- Literal hash-verified one-time owner command: evidence/issue11-consolidation-20261028/prepared-original-upgrade/OWNER_COMMAND.txt
+- Literal hash-verified one-time owner command: evidence/issue11-consolidation-20261028/prepared-original-upgrade/OWNER_COMMAND_READABLE.txt
 - Full handoff, hashes, backup/rollback instructions: docs/ORIGINAL_SERVICE_UPGRADE.md
 - Local frozen artifact /tmp/poe-native-paper-output-original-issue11-20261029 is readonly. Installation bundle /tmp/poe-original-service-package-20261029. Input/receipts /tmp/poe-original-service-preparation-20261029.
 
