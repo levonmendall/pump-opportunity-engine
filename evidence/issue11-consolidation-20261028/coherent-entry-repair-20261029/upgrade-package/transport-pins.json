@@ -1,0 +1,85 @@
+{
+  "transportSha256": "185f7ca67e2b773792523bca449ecc506f6a59951a8a811e0f14496ad422fdd9",
+  "schemaVersion": 1,
+  "kind": "poe-original-forward-transport-v1",
+  "indexSha256": "7dce6bdd39a16d90453c512b307774f900d3845965e02ec9a52e63b8ba572947",
+  "driverSha256": "7e22683f8b170f0d16a6e2f7867e1e995a1661ff99544df3da8fa34c87f79691",
+  "source": {
+    "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+    "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+  },
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5052930,
+      "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315",
+      "packedFile": "native-paper.mjs.gz",
+      "packedBytes": 833033,
+      "packedSha256": "f92809ae19ee20671eb13696c65589cc6586dff1ad23c80cd3e6bc4c1b9dd98e"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 73859,
+      "sha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34",
+      "packedFile": "backup-worker.mjs.gz",
+      "packedBytes": 17829,
+      "packedSha256": "cdcddf5d4d045b79b9dfa4890ab84403263b5f737e89767b7cd1be8add8a9bb0"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+      "packedFile": "better_sqlite3.node.gz",
+      "packedBytes": 1106933,
+      "packedSha256": "c8918c0472d35440ba4aa55a92b8f49726e1d1fe8ae0e23027fb7f683ee36488"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154477,
+      "sha256": "aa8f59dfc9659199a872cea5086250dde9120c2b92379c69cab63cec9b1f92ec",
+      "packedFile": "metadata.json.gz",
+      "packedBytes": 41276,
+      "packedSha256": "04c51bedde3b752637debd201492be145f36bdef5f6720500c50e16ec9339b99"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f",
+      "packedFile": "snapshot-publisher.mjs.gz",
+      "packedBytes": 9459,
+      "packedSha256": "509ed38457814d51946ede8ac3c01fb1cbd3c52f2c0760fa83fd0134b46c4b4f"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 36245,
+      "sha256": "1c993f89ec08c2ec6b8dfa05c5657bd2d572636361c8f32bff3febbeae729a79",
+      "packedFile": "run-authoritative-service.py.gz",
+      "packedBytes": 11693,
+      "packedSha256": "4d749c6dcd8d79a30217257f689b0d1552bc1933f6314830bcbcc16089b944a3"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 38063,
+      "sha256": "7e22683f8b170f0d16a6e2f7867e1e995a1661ff99544df3da8fa34c87f79691",
+      "packedFile": "forward-original-upgrade.py.gz",
+      "packedBytes": 12563,
+      "packedSha256": "a7bc3a29b65c84f0a1911cb659782f1e83e2bbbf667ea3d382a60dfd2ba9d8d9"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1950,
+      "sha256": "6e4549b41db60a4b58d3d61d8eb0becfeb03699071edf34a50b5b0c9e4015779",
+      "packedFile": "service.json.gz",
+      "packedBytes": 863,
+      "packedSha256": "55d73b05bc4b29f1098267b80dde3391c482950c9c2872c755c492df80d9eec5"
+    },
+    {
+      "file": "index.json",
+      "bytes": 1761,
+      "sha256": "7dce6bdd39a16d90453c512b307774f900d3845965e02ec9a52e63b8ba572947",
+      "packedFile": "index.json.gz",
+      "packedBytes": 842,
+      "packedSha256": "dec03d1d5c7786ec124ca1023457b52dcf1c6b5d95e68e5b5e10adff4a7a5518"
+    }
+  ]
+}

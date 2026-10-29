@@ -19,7 +19,10 @@ INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3
 OLD_SUPERVISOR='1c993f89ec08c2ec6b8dfa05c5657bd2d572636361c8f32bff3febbeae729a79'
 CORE_SHA='2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab'
 AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
-UNCHANGED={'snapshot-publisher.mjs':'2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa','backup-worker.mjs':'53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34','better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
+# The reporter recompiles its exact-index-pinned schema validator; its credential
+# handling source is unchanged. The installed old reporter remains independently pinned.
+OLD_REPORTER='2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa'
+UNCHANGED={'backup-worker.mjs':'53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34','better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
 COMPATIBILITY={'scope':'native-coherent-entry-quotes-and-admission-telemetry-only','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
@@ -62,7 +65,7 @@ def bundle(path,uid,expected,driver_sha,supervisor):
  for row in rows:
   name=row['file'];need(set(row)=={'file','bytes','sha256'}and type(row['bytes'])is int and 0<row['bytes']<=BOUNDS[name]and hashed(row['sha256']),'BOUNDED_FORWARD_FILE_PIN_REQUIRED');body=read(path/name,BOUNDS[name],uid);need(len(body)==row['bytes']and sha(body)==row['sha256'],'FORWARD_PACKAGE_FILE_HASH_REQUIRED');data[name]=body
  need(hashed(driver_sha)and sha(data['forward-original-upgrade.py'])==driver_sha,'INDEPENDENT_VERIFIED_FORWARD_DRIVER_REQUIRED')
- for name,digest in UNCHANGED.items():need(sha(data[name])==digest,'PRESERVED_REPORTER_WORKER_AND_SQLITE_ABI_REQUIRED')
+ for name,digest in UNCHANGED.items():need(sha(data[name])==digest,'PRESERVED_BACKUP_WORKER_AND_SQLITE_ABI_REQUIRED')
  manifest=supervisor.validate_manifest(json.loads(data['service.json']));need(manifest['source']=={'commit':index['sourceCommit'],'sha256':sha(data['native-paper.mjs'])},'COMPILED_FORWARD_SOURCE_REQUIRED')
  rows={r['file']:r for r in manifest['files']}
  need(set(rows)==set(supervisor.RELEASE_FILES)and all(rows[name]=={'file':name,'bytes':len(data[name]),'sha256':sha(data[name])}for name in rows),'EXACT_NEW_RELEASE_MANIFEST_REQUIRED')
@@ -71,7 +74,8 @@ def bundle(path,uid,expected,driver_sha,supervisor):
 def preserved_manifest(old,new):
  need(old.get('source')==OLD_SOURCE,'EXACT_OLD_FINANCIAL_SOURCE_REQUIRED')
  need({k:v for k,v in old.items()if k not in['source','files']}=={k:v for k,v in new.items()if k not in['source','files']},'OPERATING_MANIFEST_MUST_BE_PRESERVED')
- for name,digest in UNCHANGED.items():need(next((r['sha256']for r in old['files']if r['file']==name),None)==digest,'CURRENT_REPORTER_HOTFIX_AND_ABI_REQUIRED')
+ need(next((r['sha256']for r in old['files']if r['file']=='snapshot-publisher.mjs'),None)==OLD_REPORTER,'CURRENT_REPORTER_HOTFIX_REQUIRED')
+ for name,digest in UNCHANGED.items():need(next((r['sha256']for r in old['files']if r['file']==name),None)==digest,'CURRENT_BACKUP_WORKER_AND_SQLITE_ABI_REQUIRED')
 def source_input(raw,old,new,baseline,m):
  value=m.validate_input(json.loads(raw),old,baseline);changed=dict(value);changed['source']=dict(new['source']);need({k:v for k,v in changed.items()if k!='source'}=={k:v for k,v in value.items()if k!='source'},'ONLY_INPUT_SOURCE_MAY_CHANGE');result=encoded(changed);m.validate_input(json.loads(result),new,baseline);return result
 def unit_stop_fields():

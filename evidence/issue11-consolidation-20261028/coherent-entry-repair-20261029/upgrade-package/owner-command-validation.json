@@ -1,0 +1,7 @@
+{
+  "pythonSyntax": "PASS",
+  "shellTokenRoundtrip": "PASS",
+  "stagedDriverMatches": true,
+  "independentIndexMatches": true,
+  "rootExecutionPerformed": false
+}

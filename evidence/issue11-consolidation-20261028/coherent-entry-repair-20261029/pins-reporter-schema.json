@@ -1,0 +1,23 @@
+{
+  "offlineOnly": true,
+  "committed": false,
+  "deployed": false,
+  "oldReporterSeparatelyPinned": true,
+  "newReporterApproval": "Exact independently pinned index AND compiled release manifest",
+  "unchangedFiles": [
+    "backup-worker.mjs",
+    "better_sqlite3.node"
+  ],
+  "files": [
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 38063,
+      "sha256": "7e22683f8b170f0d16a6e2f7867e1e995a1661ff99544df3da8fa34c87f79691"
+    },
+    {
+      "file": "test-forward-original-upgrade.py",
+      "bytes": 37865,
+      "sha256": "efb8921a30d9e059d4b8656c0ad9e8ea68a74cafdf5d953f624c4592d35785e3"
+    }
+  ]
+}
