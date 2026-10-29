@@ -1,0 +1,33 @@
+{
+  "kind": "offline-catalog-verification-v1",
+  "sourceBase": "19e3b31",
+  "checks": [
+    "Two reproductions produced identical bytes",
+    "11 retained input hashes recorded",
+    "160 historical index rows",
+    "3 prospective120-row samples with4active4weak controls and0outcomes",
+    "Null market/executable recall preserves incomplete denominator",
+    "No network, private financial access or production mutation"
+  ],
+  "files": {
+    "README.md": {
+      "bytes": 6480,
+      "sha256": "ccd8a1261ec895398821bf00d3db9d11d9116e1372192ecac535d69a61869dd3"
+    },
+    "baseline.json": {
+      "bytes": 75156,
+      "sha256": "21376bf54389fee95734c9dafc35aa2a02cb30f964bb3db48d1fc573ee1b3c5f"
+    },
+    "inputs/recovery-native-40714364745.receipt.json": {
+      "bytes": 129088,
+      "sha256": "012c076e330698d4d4fe9c918b321e7a2497d1001f19fbca0c84ccce8cd5a0ae"
+    },
+    "reproduce.py": {
+      "bytes": 5705,
+      "sha256": "6d4bbd0a0fa1c81c8c4cc072e6af3652befd99942fda190c1ba839ad37e15bbf"
+    }
+  },
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "productionChanged": false
+}

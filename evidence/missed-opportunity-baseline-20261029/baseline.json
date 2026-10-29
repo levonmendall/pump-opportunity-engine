@@ -1,0 +1,1623 @@
+{
+  "currentRuntimeEffectivenessEstablished": false,
+  "financialDatabaseOpened": false,
+  "frongusExecutionLimits": {
+    "limitations": [
+      "Pool state is historical captured evidence, never relabeled current.",
+      "Independent minute closes are not executable prices or intraminute paths and are not used as quote reserves.",
+      "No fully verified predictive window or qualified decision is reconstructed for the rally.",
+      "Historical support quotes can establish size/liquidity feasibility, not financial authorization, landing, modeled fill, protective response or missed profit.",
+      "No account or wallet secret was opened; all inputs are local retained market records."
+    ],
+    "mainRallyQuestion": {
+      "answer": "A$50all-in supported size quote can be tested on retained entry state. No second complete coherent account state during the indexed22:13\u219222:28 rise or within15m after the22:15:39snapshot exists here; therefore later actual-size exit/profitability/strategy capture cannot be established.",
+      "earliestLaterFullStateAt": "2026-10-27T22:43:05.559Z",
+      "gapToLaterFullStateMs": 1645902,
+      "laterStateFits15MinuteHold": false,
+      "retainedCompleteStatesDuringTargetRun": 1,
+      "target50DollarQuoteAvailable": true,
+      "targetRun": "pilot-20261027220800928-089eac29",
+      "targetStateAt": "2026-10-27T22:15:39.657Z"
+    },
+    "method": "Existing decodeSupportedPoolAccounts and integer SDK buyQuoteInput/positionSellFromState on complete retained confirmed batch bytes. Original10m quote outputs are reproduced first. All timestamps preserve original information availability. No new adapter, ledger, fill, interpolation or hypothetical missed profit."
+  },
+  "historicalPopulation": {
+    "canonicalSOLAgeOverlapLeads": [
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "47386.9513",
+        "derivedCanonicalPool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T18:34:39Z",
+        "indexedPoolId": "solana_Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "name": "Frongus / SOL",
+        "overlappingMainBenchmarkRuns": [],
+        "overlappingRecordedRuns": [
+          "pilot-20261027201954438-c75c4513"
+        ],
+        "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T20:34:39.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T18:39:39.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "515.216",
+        "reportedCurrent24hVolumeUsd": "8189230.57584325",
+        "sourcePage": 2,
+        "sourcePosition": 5,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "84044.7843",
+        "derivedCanonicalPool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T22:05:09Z",
+        "indexedPoolId": "solana_GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+        "name": "INGUS / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-28T00:05:09.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T22:10:09.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "1633.287",
+        "reportedCurrent24hVolumeUsd": "2512295.73923741",
+        "sourcePage": 4,
+        "sourcePosition": 7,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "13960.7831",
+        "derivedCanonicalPool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T20:37:44Z",
+        "indexedPoolId": "solana_7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+        "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+        "name": "DOCK / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T22:37:44.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T20:42:44.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-31.675",
+        "reportedCurrent24hVolumeUsd": "2082717.64336908",
+        "sourcePage": 4,
+        "sourcePosition": 18,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "56954.3492",
+        "derivedCanonicalPool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T21:13:41Z",
+        "indexedPoolId": "solana_2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+        "name": "FRONGUS / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T23:13:41.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T21:18:41.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "29.322",
+        "reportedCurrent24hVolumeUsd": "1962614.13124558",
+        "sourcePage": 5,
+        "sourcePosition": 4,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "3865.55",
+        "derivedCanonicalPool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T21:43:47Z",
+        "indexedPoolId": "solana_EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+        "name": "WANSULEK / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T23:43:47.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T21:48:47.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-90.132",
+        "reportedCurrent24hVolumeUsd": "1476015.50453693",
+        "sourcePage": 6,
+        "sourcePosition": 3,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2639.6178",
+        "derivedCanonicalPool": "BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T20:36:08Z",
+        "indexedPoolId": "solana_BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+        "mint": "2bQ29ZFP9fWUeEZ12vR84RvzaBd2N7viE3iUuwFTpump",
+        "name": "Duongus / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "pool": "BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T22:36:08.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T20:41:08.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-97.207",
+        "reportedCurrent24hVolumeUsd": "1468684.62957313",
+        "sourcePage": 6,
+        "sourcePosition": 5,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2245.4607",
+        "derivedCanonicalPool": "G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T20:09:19Z",
+        "indexedPoolId": "solana_G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+        "mint": "EZDzKuPm5cfK2K1SVytUaGjXRFp5rcDFP1LtWGVapump",
+        "name": "Kekius / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027201954438-c75c4513",
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29"
+        ],
+        "pool": "G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T22:09:19.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T20:14:19.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-97.218",
+        "reportedCurrent24hVolumeUsd": "1426364.08430945",
+        "sourcePage": 6,
+        "sourcePosition": 8,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "91331.3983",
+        "derivedCanonicalPool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T21:23:36Z",
+        "indexedPoolId": "solana_FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+        "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+        "name": "Something / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T23:23:36.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T21:28:36.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "244.878",
+        "reportedCurrent24hVolumeUsd": "1292608.3836685",
+        "sourcePage": 7,
+        "sourcePosition": 3,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2342.4753",
+        "derivedCanonicalPool": "EuS2hU1ZKdqNaUg3dJUrHkbBvyU9SHqd6kgiMaQQ3zvb",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T19:30:17Z",
+        "indexedPoolId": "solana_EuS2hU1ZKdqNaUg3dJUrHkbBvyU9SHqd6kgiMaQQ3zvb",
+        "mint": "FEGXkJzswJ2XyESpUbiW6bc2CDDGYbV8xr6Qh12Wpump",
+        "name": "TONCOIN / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027201954438-c75c4513",
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8"
+        ],
+        "pool": "EuS2hU1ZKdqNaUg3dJUrHkbBvyU9SHqd6kgiMaQQ3zvb",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T21:30:17.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T19:35:17.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-96.337",
+        "reportedCurrent24hVolumeUsd": "1125613.95089932",
+        "sourcePage": 8,
+        "sourcePosition": 5,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2226.2974",
+        "derivedCanonicalPool": "Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T19:47:26Z",
+        "indexedPoolId": "solana_Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+        "mint": "2TXL3ytE3DoobtLsNK1LEFz4ggg6oE8gn7oJLVEtpump",
+        "name": "COWNTDOWN / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027201954438-c75c4513",
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a"
+        ],
+        "pool": "Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T21:47:26.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T19:52:26.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-99.398",
+        "reportedCurrent24hVolumeUsd": "1058466.29817264",
+        "sourcePage": 8,
+        "sourcePosition": 15,
+        "validAddressEncodings": true
+      }
+    ],
+    "canonicalSOLCount": 50,
+    "canonicalSOLMainBenchmarkLeads": [
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "84044.7843",
+        "derivedCanonicalPool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T22:05:09Z",
+        "indexedPoolId": "solana_GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+        "name": "INGUS / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-28T00:05:09.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T22:10:09.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "1633.287",
+        "reportedCurrent24hVolumeUsd": "2512295.73923741",
+        "sourcePage": 4,
+        "sourcePosition": 7,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "13960.7831",
+        "derivedCanonicalPool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T20:37:44Z",
+        "indexedPoolId": "solana_7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+        "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+        "name": "DOCK / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T22:37:44.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T20:42:44.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-31.675",
+        "reportedCurrent24hVolumeUsd": "2082717.64336908",
+        "sourcePage": 4,
+        "sourcePosition": 18,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "56954.3492",
+        "derivedCanonicalPool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T21:13:41Z",
+        "indexedPoolId": "solana_2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+        "name": "FRONGUS / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T23:13:41.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T21:18:41.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "29.322",
+        "reportedCurrent24hVolumeUsd": "1962614.13124558",
+        "sourcePage": 5,
+        "sourcePosition": 4,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "3865.55",
+        "derivedCanonicalPool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T21:43:47Z",
+        "indexedPoolId": "solana_EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+        "name": "WANSULEK / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T23:43:47.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T21:48:47.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-90.132",
+        "reportedCurrent24hVolumeUsd": "1476015.50453693",
+        "sourcePage": 6,
+        "sourcePosition": 3,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2639.6178",
+        "derivedCanonicalPool": "BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T20:36:08Z",
+        "indexedPoolId": "solana_BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+        "mint": "2bQ29ZFP9fWUeEZ12vR84RvzaBd2N7viE3iUuwFTpump",
+        "name": "Duongus / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc"
+        ],
+        "pool": "BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T22:36:08.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T20:41:08.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-97.207",
+        "reportedCurrent24hVolumeUsd": "1468684.62957313",
+        "sourcePage": 6,
+        "sourcePosition": 5,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2245.4607",
+        "derivedCanonicalPool": "G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T20:09:19Z",
+        "indexedPoolId": "solana_G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+        "mint": "EZDzKuPm5cfK2K1SVytUaGjXRFp5rcDFP1LtWGVapump",
+        "name": "Kekius / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027201954438-c75c4513",
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29"
+        ],
+        "pool": "G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T22:09:19.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T20:14:19.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-97.218",
+        "reportedCurrent24hVolumeUsd": "1426364.08430945",
+        "sourcePage": 6,
+        "sourcePosition": 8,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "91331.3983",
+        "derivedCanonicalPool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T21:23:36Z",
+        "indexedPoolId": "solana_FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+        "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+        "name": "Something / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a",
+          "pilot-20261027215124336-ed67d639",
+          "pilot-20261027220800928-089eac29",
+          "pilot-20261027223455745-ec07c3bc",
+          "pilot-20261027223839107-205d2bb9",
+          "pilot-20261027230222347-7a5dc2cf"
+        ],
+        "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T23:23:36.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T21:28:36.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "244.878",
+        "reportedCurrent24hVolumeUsd": "1292608.3836685",
+        "sourcePage": 7,
+        "sourcePosition": 3,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2342.4753",
+        "derivedCanonicalPool": "EuS2hU1ZKdqNaUg3dJUrHkbBvyU9SHqd6kgiMaQQ3zvb",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T19:30:17Z",
+        "indexedPoolId": "solana_EuS2hU1ZKdqNaUg3dJUrHkbBvyU9SHqd6kgiMaQQ3zvb",
+        "mint": "FEGXkJzswJ2XyESpUbiW6bc2CDDGYbV8xr6Qh12Wpump",
+        "name": "TONCOIN / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027201954438-c75c4513",
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8"
+        ],
+        "pool": "EuS2hU1ZKdqNaUg3dJUrHkbBvyU9SHqd6kgiMaQQ3zvb",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T21:30:17.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T19:35:17.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-96.337",
+        "reportedCurrent24hVolumeUsd": "1125613.95089932",
+        "sourcePage": 8,
+        "sourcePosition": 5,
+        "validAddressEncodings": true
+      },
+      {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "currentReserveUsd": "2226.2974",
+        "derivedCanonicalPool": "Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+        "dexId": "pumpswap",
+        "historicalSupportAndExecution": "UNVERIFIED: no historical pool/mint/vault/fee/reserve proof or actual-size quotes supplied by this listing",
+        "indexedCreatedAt": "2026-10-27T19:47:26Z",
+        "indexedPoolId": "solana_Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+        "mint": "2TXL3ytE3DoobtLsNK1LEFz4ggg6oE8gn7oJLVEtpump",
+        "name": "COWNTDOWN / SOL",
+        "overlappingMainBenchmarkRuns": [
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a"
+        ],
+        "overlappingRecordedRuns": [
+          "pilot-20261027201954438-c75c4513",
+          "pilot-20261027205459767-1840d6f4",
+          "pilot-20261027210316237-57a92bce",
+          "pilot-20261027211320693-9bb70ba1",
+          "pilot-20261027212808269-733416a8",
+          "pilot-20261027214222149-d39aee9a"
+        ],
+        "pool": "Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+        "provisionalClassification": "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF",
+        "provisionalEligibilityEndAt": "2026-10-27T21:47:26.000Z",
+        "provisionalEligibilityStartAt": "2026-10-27T19:52:26.000Z",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "reportedCurrent24hPriceChangePct": "-99.398",
+        "reportedCurrent24hVolumeUsd": "1058466.29817264",
+        "sourcePage": 8,
+        "sourcePosition": 15,
+        "validAddressEncodings": true
+      }
+    ],
+    "classification": "INDEPENDENT_CURRENT_INDEXED_COHORT_NOT_HISTORICAL_WINNER_CENSUS",
+    "limitations": [
+      "The current provider-ranked listing was sampled after the experiments. It is not the universe as known then.",
+      "Pagination changed over retrieval time and response ordering is not strictly reported24hvolume descending.",
+      "Current volume ranking creates selection, survival and index-coverage bias; collapsed/unindexed pools can be absent.",
+      "Only successful pages are retained; page9 returned429, stopping the source with no retry.",
+      "Pool/mint/creation are index claims. Canonical PDA derivation checks address consistency but is not a chain transaction/pool support proof.",
+      "Age overlap uses indexed pool creation as a provisional migration time only.",
+      "No historical liquidity/fees, trader identities, net buying or executable50USD entry/exit are inferred.",
+      "There is no defensible denominator for historical top10/top20 or full-market recall from this cohort."
+    ],
+    "pageCount": 8,
+    "requestWindow": {
+      "lastAt": "2026-10-27T23:21:27.115Z",
+      "startedAt": "2026-10-27T23:16:52.688Z"
+    },
+    "sourceRowCount": 160,
+    "uniquePoolCount": 160
+  },
+  "historicalResearchOnly": true,
+  "historicalTraceIncidenceNotWinnerRecall": {
+    "mainDeepObserved": 2,
+    "mainLeadCount": 9,
+    "mainNoIdentityRecord": 6,
+    "mainNoIdentityRecordAndIndexedCreationInInterruption": 6,
+    "mainRawMigrationHintMentions": 3,
+    "mainRetainedCanonicalOriginProof": 2,
+    "mainWithAuditedPredictiveAssessment": 1,
+    "mainWithExplicitPredictiveOnlyPass": 0,
+    "percentagesNotReported": "These are trace-incidence counts in9current indexed leads, not recall of independent historically supported/tradable winning opportunities. Index age/support and time-specific economic ranking remain provisional."
+  },
+  "indicativePriceRankingNotExecutableProfits": [
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 900,
+      "fromBarAt": "2026-10-27T22:13:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T22:14:00.000Z",
+      "fromCloseUsd": 4.8085879620887276e-05,
+      "indexedIntervalVolumeUsd": 477560.73393232893,
+      "indicativeChangePct": 1967.871950793965,
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "name": "FRONGUS / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "SELECTED_BUT_NO_COMPLETE_AUDITED_PREDICTIVE_WINDOW",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "rank": 1,
+      "runId": "pilot-20261027220800928-089eac29",
+      "toBarAt": "2026-10-27T22:28:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T22:29:00.000Z",
+      "toCloseUsd": 0.0009943544169728794
+    },
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 900,
+      "fromBarAt": "2026-10-27T22:11:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T22:12:00.000Z",
+      "fromCloseUsd": 6.333999437487003e-05,
+      "indexedIntervalVolumeUsd": 478527.5732986095,
+      "indicativeChangePct": 205.13072911267378,
+      "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+      "name": "INGUS / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+      "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "rank": 2,
+      "runId": "pilot-20261027220800928-089eac29",
+      "toBarAt": "2026-10-27T22:26:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T22:27:00.000Z",
+      "toCloseUsd": 0.00019326978665596748
+    },
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 60,
+      "fromBarAt": "2026-10-27T21:49:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+      "fromCloseUsd": 2.307523291750772e-05,
+      "indexedIntervalVolumeUsd": 28658.74952091319,
+      "indicativeChangePct": 122.45604135863992,
+      "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+      "name": "WANSULEK / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "MIXED_EARLY_INCOMPLETE_AND_LATER_VALID_PREDICTIVE_REJECTIONS",
+      "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+      "rank": 3,
+      "runId": "pilot-20261027214222149-d39aee9a",
+      "toBarAt": "2026-10-27T21:50:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:51:00.000Z",
+      "toCloseUsd": 5.133224968257347e-05
+    },
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 300,
+      "fromBarAt": "2026-10-27T21:44:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:45:00.000Z",
+      "fromCloseUsd": 0.0004927359259341635,
+      "indexedIntervalVolumeUsd": 130109.31343507953,
+      "indicativeChangePct": 56.56306851727479,
+      "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+      "name": "Something / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+      "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "rank": 4,
+      "runId": "pilot-20261027214222149-d39aee9a",
+      "toBarAt": "2026-10-27T21:49:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:50:00.000Z",
+      "toCloseUsd": 0.0007714424853295329
+    },
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 60,
+      "fromBarAt": "2026-10-27T21:08:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:09:00.000Z",
+      "fromCloseUsd": 0.00015876277253818862,
+      "indexedIntervalVolumeUsd": 27389.310213667803,
+      "indicativeChangePct": 38.29261536800552,
+      "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+      "name": "DOCK / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+      "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "rank": 5,
+      "runId": "pilot-20261027210316237-57a92bce",
+      "toBarAt": "2026-10-27T21:09:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+      "toCloseUsd": 0.0002195571903738187
+    },
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 60,
+      "fromBarAt": "2026-10-27T21:31:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:32:00.000Z",
+      "fromCloseUsd": 0.0006274320703821243,
+      "indexedIntervalVolumeUsd": 44266.444779074,
+      "indicativeChangePct": 35.71722419307266,
+      "mint": "EZDzKuPm5cfK2K1SVytUaGjXRFp5rcDFP1LtWGVapump",
+      "name": "Kekius / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "DISCOVERED_BUT_NEVER_VERIFIED_OR_DEEPLY_OBSERVED",
+      "pool": "G6WJqiDtu73vMDf8XDB32kbUids4MgfCPMTBvBjLsmiq",
+      "rank": 6,
+      "runId": "pilot-20261027212808269-733416a8",
+      "toBarAt": "2026-10-27T21:32:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:33:00.000Z",
+      "toCloseUsd": 0.0008515333896197451
+    },
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 60,
+      "fromBarAt": "2026-10-27T20:07:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T20:08:00.000Z",
+      "fromCloseUsd": 0.000166981180847432,
+      "indexedIntervalVolumeUsd": 14057.443074757613,
+      "indicativeChangePct": 35.630503481197785,
+      "mint": "2TXL3ytE3DoobtLsNK1LEFz4ggg6oE8gn7oJLVEtpump",
+      "name": "COWNTDOWN / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+      "pool": "Hi34sVKQcomEnBLpJhmj9QUCzodpbHDFNCqqreTvmLva",
+      "rank": 7,
+      "runId": "pilot-20261027200603791-46c145af",
+      "toBarAt": "2026-10-27T20:08:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T20:09:00.000Z",
+      "toCloseUsd": 0.00022647741630222142
+    },
+    {
+      "allIntermediateMinuteBarsPresent": true,
+      "durationSeconds": 60,
+      "fromBarAt": "2026-10-27T21:09:00.000Z",
+      "fromCloseEndpointAt": "2026-10-27T21:10:00.000Z",
+      "fromCloseUsd": 0.00019159650652528332,
+      "indexedIntervalVolumeUsd": 19899.54432719009,
+      "indicativeChangePct": 17.863534371977096,
+      "mint": "2bQ29ZFP9fWUeEZ12vR84RvzaBd2N7viE3iUuwFTpump",
+      "name": "Duongus / SOL",
+      "observedEndpointBars": 2,
+      "poeClassification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+      "pool": "BfT6iK1fHNnhkQ4HcCTnfxxnagZHw3oy6V23DzpzXEwT",
+      "rank": 8,
+      "runId": "pilot-20261027210316237-57a92bce",
+      "toBarAt": "2026-10-27T21:10:00.000Z",
+      "toCloseEndpointAt": "2026-10-27T21:11:00.000Z",
+      "toCloseUsd": 0.00022582241432393462
+    }
+  ],
+  "ingusLaterOriginRecovery": {
+    "failure": "PILOT_RPC_COMPONENT_HTTP_429",
+    "origin": {
+      "ok": false,
+      "reason": "PILOT_RPC_COMPONENT_HTTP_429",
+      "usage": {
+        "attemptedReads": 12,
+        "elapsedMs": 2876.10777,
+        "limits": {
+          "anchorAfterHintSeconds": 2,
+          "elapsedMs": 20000,
+          "historyRows": 1000,
+          "maximumLookbackSlots": 262144,
+          "originCandidates": 3,
+          "reads": 24,
+          "responseBytes": 4194304
+        },
+        "physicalSettlementAuthority": "existing shared RPC transport",
+        "responseBytes": 2097679
+      }
+    },
+    "physicalSettled": true,
+    "physicalStarts": 12
+  },
+  "inputs": [
+    {
+      "bytes": 250908,
+      "path": "evidence/opportunity-coverage-20261027/reference-current-indexed-cohort.json",
+      "sha256": "794e07c062b0596ae99330967612557faf56c4982c8ba3af93f457fddefde080"
+    },
+    {
+      "bytes": 602818,
+      "path": "evidence/opportunity-coverage-20261027/indexed-cohort-poe-crosscheck.json",
+      "sha256": "9ea5d3fe7e9e97b4a8553141657f09d9726caeae8503096e86def99adb30de8a"
+    },
+    {
+      "bytes": 141184,
+      "path": "evidence/opportunity-coverage-20261027/cohort-ohlcv-20261027T235506594Z-analysis.json",
+      "sha256": "c5dfa98413dbcd3dc48b812783389a1ab22cb0d26c34e634540f9874d4e17096"
+    },
+    {
+      "bytes": 274735,
+      "path": "evidence/opportunity-coverage-20261027/si-local-lifecycle.json",
+      "sha256": "07fb1897a1482c4f4f5de24d72b50f1b378bed97c1e28a4d7b6373e449f4fc11"
+    },
+    {
+      "bytes": 39756,
+      "path": "evidence/opportunity-coverage-20261027/si-final-window-assessment.json",
+      "sha256": "85dbb2e15203a9ff9e17c0b633efa3547432864a270208eeab7a06684b0b5b46"
+    },
+    {
+      "bytes": 143038,
+      "path": "evidence/opportunity-coverage-20261027/frongus-quote-feasibility.json",
+      "sha256": "e7d29d0be689fbde6aad8cf972114cdbf43d481a5e1649adac6f9e8706c47feb"
+    },
+    {
+      "bytes": 14222,
+      "path": "evidence/age-origin-20261028/pilot-ingus-origin-20261028033629189/receipt.json",
+      "sha256": "e2b5c581c4917d71eb37566c5dce28be12da37d18c964940e4d06c8986962b9c"
+    },
+    {
+      "bytes": 172793,
+      "path": "evidence/age-reference-20261028/continuation-001/receipt.json",
+      "sha256": "4ed13e139e6f00a1c57b3e51965cfe7ac90e2590e10445bc07044f7e9bc5f4f6"
+    },
+    {
+      "bytes": 129080,
+      "path": "evidence/age-reference-20261028/native-two-hour-40642437328/receipt.json",
+      "sha256": "dc7b520ab0c9b02dfc7546aba71919e018edc9edbceac2ba69f8757368197df0"
+    },
+    {
+      "bytes": 128934,
+      "path": "evidence/age-reference-20261028/resumed-native-40704936322/receipt.json",
+      "sha256": "9bccffe2234586e737913314ea0ef2cdf69465368250ce42c6b6a3e2b2dd0599"
+    },
+    {
+      "bytes": 129088,
+      "path": "evidence/missed-opportunity-baseline-20261029/inputs/recovery-native-40714364745.receipt.json",
+      "sha256": "012c076e330698d4d4fe9c918b321e7a2497d1001f19fbca0c84ccce8cd5a0ae"
+    }
+  ],
+  "kind": "retained-independent-opportunity-baseline-v1",
+  "laterFrozenIndexSnapshot": {
+    "completedAt": "2026-10-28T02:01:29.051Z",
+    "listedRows": 80,
+    "selection": {
+      "activityFilter": "NONE: retain every qualifying lead, including zero-activity and weak controls.",
+      "leadRule": "Valid public addresses; canonical PumpSwap SOL-quoted PDA address consistency; index-created age >=0 and <=6h at that page receipt. Index time remains UNVERIFIED, not an on-chain migration proof or current support validation.",
+      "marketRecallDenominator": false,
+      "outcomeSelection": "NONE: population frozen at completion, before any later outcome retrieval.",
+      "universe": "All rows on independent current PumpSwap DEX pages 1\u20134, sorted by documented h24_volume_usd_desc. Not a historical or exhaustive census."
+    },
+    "startedAt": "2026-10-28T02:00:52.706Z",
+    "unverifiedLeads": 5
+  },
+  "marketCensus": false,
+  "networkRequests": 0,
+  "productionChanged": false,
+  "prospectiveSamples": [
+    {
+      "actualRuntimeEnd": {
+        "endedAt": 1793168144920,
+        "provenance": "Actual stopped source/runtimeOutcome in completed authenticated administration run40642437328/job122663430863;202026ms elapsed, stopRequestedAt1793168144730, fatal notification ledger limit; not normal completion or acceptance.",
+        "runId": "native-candidates-20261028061222894",
+        "schemaVersion": 1,
+        "sourceCommit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+        "startedAt": 1793167942894
+      },
+      "classification": "PROSPECTIVE_INDEPENDENT_BOUNDED_INDEX_SAMPLE_NOT_MARKET_CENSUS",
+      "completedAt": 1793168425644,
+      "listedRows": 120,
+      "opportunityRecall": null,
+      "receipt": "evidence/age-reference-20261028/native-two-hour-40642437328/receipt.json",
+      "retainedOutcomes": 0,
+      "runtimeIntersectionVerified": true,
+      "segment": {
+        "plannedEndAt": 1793175142894,
+        "runId": "native-candidates-20261028061222894",
+        "sourceCommit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+        "startedAt": 1793167942894
+      },
+      "selectedBeforeOutcomes": 8,
+      "selectedIdentities": [
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793168069508,
+          "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+          "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793168069508,
+          "mint": "3yM6w93HMUZSHrMSGVPR2cW4Wvubvkscht1541i6pump",
+          "pool": "3KgVPft91E1E3YedModfn1gwcLDSMErFDFhLGHa65LCj"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793168069508,
+          "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+          "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793168069508,
+          "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+          "pool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793168069508,
+          "mint": "BLsH91QKAz7DGVtuiif461f3YwNPkjMLvxP5s7Gopump",
+          "pool": "7KXRYw2H1JcuXDtXE9i1K1G8KkDpeciJDJgUgNbtANtJ"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793168069508,
+          "mint": "4ED2eJ9nLAdPonaWvTXpbLQLZsJf7TUBKCPA3Vzxpump",
+          "pool": "8QqN4BhtMuhDmPfTw6fCREJYanxMbkTU1T6ae4jKn7kb"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793168069508,
+          "mint": "iNMC5tCArwXv7KRxzpLoWUHcJCjjgNVz1uqtxp8pump",
+          "pool": "Bk41Ng5NMtaEbpBFDyJ1kMt6sT4eWzJtPCmBvd9SYa5T"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793168069508,
+          "mint": "9qpiyF4XeQjPkYTzBQjcJ5HFua5udCn4tbT6m58pump",
+          "pool": "C61k1x1HF1YNaProneMFcy5eMSyLP5kJzLce2h6X2B7v"
+        }
+      ],
+      "selectionArms": {
+        "indexed-active": 4,
+        "low-activity-control": 4
+      },
+      "startedAt": 1793168009357,
+      "stopReason": "GRACEFUL_STOP_REQUESTED",
+      "uniqueListedPools": 120,
+      "usage": {
+        "auxiliaryEvidenceBytes": 11667,
+        "elapsedMs": 416287.454941,
+        "maximumInFlight": 1,
+        "measuredBodyBytes": 217470,
+        "plannedRequests": 6,
+        "rawRetainedBytes": 217470,
+        "requestStarts": 6,
+        "retainedBytesExcludingReceipt": 229137,
+        "uncertainBodyBytes": 0,
+        "uncertainInvocationReservations": 0
+      }
+    },
+    {
+      "actualRuntimeEnd": {
+        "endedAt": 1793197662292,
+        "provenance": "Actual stopped runtime snapshot received through authenticated publisher/publicRender; final local receipt verification pending. Source stopped before cancellation request, which GitHub rejected as already completed.",
+        "runId": "native-candidates-20261028142028669",
+        "schemaVersion": 1,
+        "sourceCommit": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+        "startedAt": 1793197228669
+      },
+      "classification": "PROSPECTIVE_INDEPENDENT_BOUNDED_INDEX_SAMPLE_NOT_MARKET_CENSUS",
+      "completedAt": 1793197733923,
+      "listedRows": 120,
+      "opportunityRecall": null,
+      "receipt": "evidence/age-reference-20261028/resumed-native-40704936322/receipt.json",
+      "retainedOutcomes": 0,
+      "runtimeIntersectionVerified": true,
+      "segment": {
+        "plannedEndAt": 1793204428669,
+        "runId": "native-candidates-20261028142028669",
+        "sourceCommit": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+        "startedAt": 1793197228669
+      },
+      "selectedBeforeOutcomes": 8,
+      "selectedIdentities": [
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793197328455,
+          "mint": "69Y6D9xQKkDYPvESDiKaQpU9Z5FXzY8LB7PthQkmpump",
+          "pool": "55Md1fKr9zze1LmfK2byyEcPd55d5A2FR9Duoi7Pfmw2"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793197328455,
+          "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+          "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793197328455,
+          "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+          "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793197328455,
+          "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+          "pool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793197328455,
+          "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+          "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793197328455,
+          "mint": "3yM6w93HMUZSHrMSGVPR2cW4Wvubvkscht1541i6pump",
+          "pool": "3KgVPft91E1E3YedModfn1gwcLDSMErFDFhLGHa65LCj"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793197328455,
+          "mint": "BLsH91QKAz7DGVtuiif461f3YwNPkjMLvxP5s7Gopump",
+          "pool": "7KXRYw2H1JcuXDtXE9i1K1G8KkDpeciJDJgUgNbtANtJ"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793197328455,
+          "mint": "iNMC5tCArwXv7KRxzpLoWUHcJCjjgNVz1uqtxp8pump",
+          "pool": "Bk41Ng5NMtaEbpBFDyJ1kMt6sT4eWzJtPCmBvd9SYa5T"
+        }
+      ],
+      "selectionArms": {
+        "indexed-active": 4,
+        "low-activity-control": 4
+      },
+      "startedAt": 1793197268336,
+      "stopReason": "SOURCE_INTERVAL_ENDED",
+      "uniqueListedPools": 120,
+      "usage": {
+        "auxiliaryEvidenceBytes": 11685,
+        "elapsedMs": 465586.701883,
+        "maximumInFlight": 1,
+        "measuredBodyBytes": 215223,
+        "plannedRequests": 6,
+        "rawRetainedBytes": 215223,
+        "requestStarts": 6,
+        "retainedBytesExcludingReceipt": 226908,
+        "uncertainBodyBytes": 0,
+        "uncertainInvocationReservations": 0
+      }
+    },
+    {
+      "actualRuntimeEnd": {
+        "endedAt": 1793202794375,
+        "provenance": "Authenticated Render pilot stopped source snapshot, SHA256 ee973617e936df6eeb11003e42da7bcbbb338a4b688a63c301e04072561f51e7. Logical source end only; source/group physical settlement must be verified independently.",
+        "runId": "native-candidates-20261028151711944",
+        "schemaVersion": 1,
+        "sourceCommit": "640143a5924a7ff7d98039967c2db17957f71f24",
+        "startedAt": 1793200631944
+      },
+      "classification": "PROSPECTIVE_INDEPENDENT_BOUNDED_INDEX_SAMPLE_NOT_MARKET_CENSUS",
+      "completedAt": 1793203600607,
+      "listedRows": 120,
+      "opportunityRecall": null,
+      "receipt": "evidence/missed-opportunity-baseline-20261029/inputs/recovery-native-40714364745.receipt.json",
+      "retainedOutcomes": 0,
+      "runtimeIntersectionVerified": true,
+      "segment": {
+        "plannedEndAt": 1793207831944,
+        "runId": "native-candidates-20261028151711944",
+        "sourceCommit": "640143a5924a7ff7d98039967c2db17957f71f24",
+        "startedAt": 1793200631944
+      },
+      "selectedBeforeOutcomes": 8,
+      "selectedIdentities": [
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793200777440,
+          "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+          "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793200777440,
+          "mint": "69Y6D9xQKkDYPvESDiKaQpU9Z5FXzY8LB7PthQkmpump",
+          "pool": "55Md1fKr9zze1LmfK2byyEcPd55d5A2FR9Duoi7Pfmw2"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793200777440,
+          "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+          "pool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz"
+        },
+        {
+          "arm": "indexed-active",
+          "frozenAt": 1793200777440,
+          "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+          "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793200777440,
+          "mint": "iNMC5tCArwXv7KRxzpLoWUHcJCjjgNVz1uqtxp8pump",
+          "pool": "Bk41Ng5NMtaEbpBFDyJ1kMt6sT4eWzJtPCmBvd9SYa5T"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793200777440,
+          "mint": "3yM6w93HMUZSHrMSGVPR2cW4Wvubvkscht1541i6pump",
+          "pool": "3KgVPft91E1E3YedModfn1gwcLDSMErFDFhLGHa65LCj"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793200777440,
+          "mint": "EFLwx1cVeLoFx15eRzfei3yCYBHXFZefuzwi4R7Cpump",
+          "pool": "DLnoEYjymbr3pvVrV9husYY6EA9ZQp3zBNcA2dz6ZBTL"
+        },
+        {
+          "arm": "low-activity-control",
+          "frozenAt": 1793200777440,
+          "mint": "BLsH91QKAz7DGVtuiif461f3YwNPkjMLvxP5s7Gopump",
+          "pool": "7KXRYw2H1JcuXDtXE9i1K1G8KkDpeciJDJgUgNbtANtJ"
+        }
+      ],
+      "selectionArms": {
+        "indexed-active": 4,
+        "low-activity-control": 4
+      },
+      "startedAt": 1793200717312,
+      "stopReason": "SOURCE_INTERVAL_ENDED",
+      "uniqueListedPools": 120,
+      "usage": {
+        "auxiliaryEvidenceBytes": 11719,
+        "elapsedMs": 2883295.099005,
+        "maximumInFlight": 1,
+        "measuredBodyBytes": 217294,
+        "plannedRequests": 6,
+        "rawRetainedBytes": 217294,
+        "requestStarts": 6,
+        "retainedBytesExcludingReceipt": 229013,
+        "uncertainBodyBytes": 0,
+        "uncertainInvocationReservations": 0
+      }
+    }
+  ],
+  "reusableTools": [
+    {
+      "bytes": 6108,
+      "executedByThisCatalog": false,
+      "networkCapable": false,
+      "path": "scripts/select-independent-pool-reference.mjs",
+      "sha256": "bec96ff31fa6224509f2dca50e4b043eb7b35ffc7b353d6144398ce8d7f415c2"
+    },
+    {
+      "bytes": 8563,
+      "executedByThisCatalog": false,
+      "networkCapable": false,
+      "path": "scripts/analyze-independent-cohort-ohlcv.mjs",
+      "sha256": "b1c2630572c9ce57fb1e45eaf81b5c13b5ccd6e0df1f6c5bc83a6fec0d715b48"
+    },
+    {
+      "bytes": 13918,
+      "executedByThisCatalog": false,
+      "networkCapable": false,
+      "path": "scripts/evaluate-frongus-quote-feasibility.mjs",
+      "sha256": "68d2e5b44e954f3926b6e5ef1f9b6c64b1a76912a7f4af90e726821a9f2b8d86"
+    },
+    {
+      "bytes": 13191,
+      "executedByThisCatalog": false,
+      "networkCapable": false,
+      "path": "scripts/audit-opportunity-counterfactuals.mjs",
+      "sha256": "8aa8a14ebe175888a1693f5b3bc8aced43b2510dc1dca956731bb396cfa51347"
+    },
+    {
+      "bytes": 24772,
+      "executedByThisCatalog": false,
+      "networkCapable": true,
+      "path": "scripts/capture-independent-two-hour-reference.ts",
+      "sha256": "61eafc5af5fe929f6430e77ccf13a80de8096048a2f4afa28c3b98f5dbea8488"
+    },
+    {
+      "bytes": 15213,
+      "executedByThisCatalog": false,
+      "networkCapable": true,
+      "path": "scripts/capture-forward-reference.ts",
+      "sha256": "6713a511f2d994f3454d0c86d8c829c51af7b2aaafbb278326cdde2fe0e6b021"
+    },
+    {
+      "bytes": 12547,
+      "executedByThisCatalog": false,
+      "networkCapable": true,
+      "path": "scripts/capture-age-reference.ts",
+      "sha256": "fe70c6fe21d9075fa81d93523efb06948018ed5a2563c8624ecbdf3b321e4ca0"
+    }
+  ],
+  "sampledExecutableOpportunityRecall": null,
+  "sampledMissedExecutableProfitCount": null,
+  "si": {
+    "flowConclusion": "The two retained pre-rally chain-time windows contain net ordinary selling, not qualifying ordinary persistent buying. Five protocol Buy-and-burn instructions occur in each window. Frozen v1 cannot evaluate their mixed activity as a complete window; this is not proof of a valid rejection or a missed executable profitable trade.",
+    "headlineFindings": [
+      "POE discovered SI at20:21:11.324Z and verified its finalized canonical migration by20:23:28.116Z.",
+      "The cited21:19:30 zero-trade feature window had no completed independent audit and no strategy/predictive rejection; it is incomplete evidence, not a valid no-opportunity conclusion.",
+      "SI had six separately bounded audited windows later/earlier: five zero-trade windows and one tiny-Sell window; two explicit primary strategy rejections and four independent predictive failures.",
+      "The independently indexed20:28\u201320:36 rally and20:44 collapse lie inside the27m41.441s gap between experimental frozen runs.",
+      "The pre-rally20:26:11\u201320:27:18.326 eligibility overlap did occur in an active run, but SI was not deeply observed there; full pre-rally flow, historical reserves and actual-size quotes remain missing.",
+      "A discovered but unobserved/incomplete candidate cannot be labelled a missed profitable trade solely from its later indexed price peak."
+    ],
+    "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+    "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+    "researchInterruption": {
+      "classification": "No experimental candidate run in this interval. It is a genuine interruption/lost-observation interval in the overall research wall-clock span, but excluded from recall restricted to the actual union of frozen test periods. Original EC2 observer health/coverage was not inspected by this analysis.",
+      "elapsedMs": 1661441,
+      "endAt": 1793134499767,
+      "endIso": "2026-10-27T20:54:59.767Z",
+      "startAt": 1793132838326,
+      "startIso": "2026-10-27T20:27:18.326Z"
+    }
+  },
+  "threeIndexedCases": [
+    {
+      "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+      "counts": {
+        "acceptedBoundedAuditRows": 0,
+        "cachedIdentityImports": 0,
+        "dataGapReasons": {},
+        "dataGapRows": 0,
+        "deepAllocations": 0,
+        "distinctAuditedWindowEndpoints": 0,
+        "distinctNormalizedEventIdentities": 0,
+        "distinctSelectedSignatures": 0,
+        "explicitWatchDiscoveredRows": 0,
+        "explicitWatchVerifiedRows": 0,
+        "normalizationRows": 0,
+        "normalizationSideCounts": {},
+        "predictiveAssessments": 0,
+        "predictiveStatusCounts": {},
+        "preparationDeferralReasons": {},
+        "preparationDeferrals": 0,
+        "primaryDecisionCounts": {},
+        "rawProcessedMigrationHints": 0,
+        "retainedFinalizedOriginProofRows": 0,
+        "runsWithDeepAllocation": 0,
+        "runtimeCompleteWindowRows": 0,
+        "selectedPayloadRows": 0
+      },
+      "historicalStrongTradableOpportunityEstablished": false,
+      "identity": {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "derivedCanonicalPool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "indexedCreatedAt": "2026-10-27T22:05:09Z",
+        "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+        "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "quoteMint": "So11111111111111111111111111111111111111112"
+      },
+      "interpretation": "No matching migration hint, canonical proof, watch/deep record, audit or assessment exists in the completed run journals. Indexed creation occurred during a research interruption; this is an observation/restart-universe limitation conditional on index metadata, not established live-feed failure.",
+      "timing": {
+        "actualOnChainMigrationAtFromRetainedProof": null,
+        "actualOnChainMigrationIso": null,
+        "chainOccurrenceToFirstDeepMs": null,
+        "chainOccurrenceToFirstUsefulPredictiveMs": null,
+        "creationDuringActualCompletedRunIds": [],
+        "creationDuringResearchInterruption": {
+          "elapsedMs": 592131,
+          "endAt": 1793138880928,
+          "endIso": "2026-10-27T22:08:00.928Z",
+          "nextRun": "pilot-20261027220800928-089eac29",
+          "previousRun": "pilot-20261027215124336-ed67d639",
+          "startAt": 1793138288797,
+          "startIso": "2026-10-27T21:58:08.797Z"
+        },
+        "firstDeepAt": null,
+        "firstDeepIso": null,
+        "firstFinalizedOriginProofAvailableAt": null,
+        "firstMigrationHintReceivedAt": null,
+        "firstUsefulAuditedPredictiveAt": null,
+        "firstUsefulAuditedPredictiveIso": null,
+        "indexAgeEligibilityEndAt": 1793145909000,
+        "indexAgeEligibilityStartAt": 1793139009000,
+        "indexedAgeEligibleToFirstDeepMs": null,
+        "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+        "indexedCreationAt": 1793138709000,
+        "indexedCreationIso": "2026-10-27T22:05:09.000Z",
+        "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+      },
+      "untrustedDisplayName": "INGUS / SOL"
+    },
+    {
+      "classification": "SELECTED_BUT_NO_COMPLETE_AUDITED_PREDICTIVE_WINDOW",
+      "counts": {
+        "acceptedBoundedAuditRows": 0,
+        "cachedIdentityImports": 7,
+        "dataGapReasons": {
+          "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 2,
+          "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+          "PILOT_PILOT_CONFIRMED_ENRICHMENT_UNAVAILABLE": 1,
+          "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 2,
+          "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+          "candidate information lost; fresh candidate required: PILOT_PILOT_CONFIRMED_ENRICHMENT_UNAVAILABLE": 1,
+          "required enrichment cannot fit method rate limit and usefulness deadline": 4
+        },
+        "dataGapRows": 12,
+        "deepAllocations": 9,
+        "distinctAuditedWindowEndpoints": 0,
+        "distinctNormalizedEventIdentities": 52,
+        "distinctSelectedSignatures": 125,
+        "explicitWatchDiscoveredRows": 130,
+        "explicitWatchVerifiedRows": 1,
+        "normalizationRows": 52,
+        "normalizationSideCounts": {
+          "buy": 41,
+          "sell": 11
+        },
+        "predictiveAssessments": 0,
+        "predictiveStatusCounts": {},
+        "preparationDeferralReasons": {
+          "support phase plus opening capacity reserved before any support reads": 113
+        },
+        "preparationDeferrals": 113,
+        "primaryDecisionCounts": {
+          "missing-data:warming": 15
+        },
+        "rawProcessedMigrationHints": 1,
+        "retainedFinalizedOriginProofRows": 1,
+        "runsWithDeepAllocation": 6,
+        "runtimeCompleteWindowRows": 0,
+        "selectedPayloadRows": 125
+      },
+      "historicalStrongTradableOpportunityEstablished": false,
+      "identity": {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "derivedCanonicalPool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "indexedCreatedAt": "2026-10-27T21:13:41Z",
+        "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+        "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "quoteMint": "So11111111111111111111111111111111111111112"
+      },
+      "interpretation": "Actual deep scopes and selected/normalized trades exist, but method/deadline, aggregate capacity, mapper or confirmation failures prevented a complete audited decision. No absence of predictive pass may be inferred as predictive failure.",
+      "timing": {
+        "actualOnChainMigrationAtFromRetainedProof": 1793135621000,
+        "actualOnChainMigrationIso": "2026-10-27T21:13:41.000Z",
+        "chainOccurrenceToFirstDeepMs": 880303,
+        "chainOccurrenceToFirstUsefulPredictiveMs": null,
+        "creationDuringActualCompletedRunIds": [
+          "pilot-20261027211320693-9bb70ba1"
+        ],
+        "creationDuringResearchInterruption": null,
+        "firstDeepAt": 1793136501303,
+        "firstDeepIso": "2026-10-27T21:28:21.303Z",
+        "firstFinalizedOriginProofAvailableAt": 1793135657832,
+        "firstMigrationHintReceivedAt": 1793135621809,
+        "firstUsefulAuditedPredictiveAt": null,
+        "firstUsefulAuditedPredictiveIso": null,
+        "indexAgeEligibilityEndAt": 1793142821000,
+        "indexAgeEligibilityStartAt": 1793135921000,
+        "indexedAgeEligibleToFirstDeepMs": 580303,
+        "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+        "indexedCreationAt": 1793135621000,
+        "indexedCreationIso": "2026-10-27T21:13:41.000Z",
+        "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+      },
+      "untrustedDisplayName": "FRONGUS / SOL"
+    },
+    {
+      "classification": "MIXED_EARLY_INCOMPLETE_AND_LATER_VALID_PREDICTIVE_REJECTIONS",
+      "counts": {
+        "acceptedBoundedAuditRows": 3,
+        "cachedIdentityImports": 5,
+        "dataGapReasons": {
+          "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 2,
+          "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 2,
+          "required enrichment cannot fit method rate limit and usefulness deadline": 1,
+          "valid-window-predictive-assessment-failed": 3
+        },
+        "dataGapRows": 8,
+        "deepAllocations": 6,
+        "distinctAuditedWindowEndpoints": 3,
+        "distinctNormalizedEventIdentities": 13,
+        "distinctSelectedSignatures": 29,
+        "explicitWatchDiscoveredRows": 1,
+        "explicitWatchVerifiedRows": 1,
+        "normalizationRows": 13,
+        "normalizationSideCounts": {
+          "buy": 7,
+          "sell": 6
+        },
+        "predictiveAssessments": 3,
+        "predictiveStatusCounts": {
+          "failed": 3
+        },
+        "preparationDeferralReasons": {
+          "PILOT_RPC_COMPONENT_ADMISSION_CLOSED": 1,
+          "support phase plus opening capacity reserved before any support reads": 97
+        },
+        "preparationDeferrals": 98,
+        "primaryDecisionCounts": {
+          "candidate-observation:financial-execution-intentionally-disabled": 1,
+          "missing-data:warming": 25,
+          "risk-rejection:entries-not-authorized-by-ledger": 2
+        },
+        "rawProcessedMigrationHints": 1,
+        "retainedFinalizedOriginProofRows": 1,
+        "runsWithDeepAllocation": 5,
+        "runtimeCompleteWindowRows": 3,
+        "selectedPayloadRows": 29
+      },
+      "historicalStrongTradableOpportunityEstablished": false,
+      "identity": {
+        "SOLQuoted": true,
+        "canonicalAddressMatch": true,
+        "derivedCanonicalPool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "indexedCreatedAt": "2026-10-27T21:43:47Z",
+        "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+        "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "quoteMint": "So11111111111111111111111111111111111111112"
+      },
+      "interpretation": "Some deep scopes lost required data; later separately audited windows received explicit frozen predictive assessments. Those later outcomes do not resolve earlier unobserved activity or prove an entire token/opportunity was correctly rejected.",
+      "timing": {
+        "actualOnChainMigrationAtFromRetainedProof": 1793137427000,
+        "actualOnChainMigrationIso": "2026-10-27T21:43:47.000Z",
+        "chainOccurrenceToFirstDeepMs": 341168,
+        "chainOccurrenceToFirstUsefulPredictiveMs": 818108,
+        "creationDuringActualCompletedRunIds": [
+          "pilot-20261027214222149-d39aee9a"
+        ],
+        "creationDuringResearchInterruption": null,
+        "firstDeepAt": 1793137768168,
+        "firstDeepIso": "2026-10-27T21:49:28.168Z",
+        "firstFinalizedOriginProofAvailableAt": 1793137462674,
+        "firstMigrationHintReceivedAt": 1793137427290,
+        "firstUsefulAuditedPredictiveAt": 1793138245108,
+        "firstUsefulAuditedPredictiveIso": "2026-10-27T21:57:25.108Z",
+        "indexAgeEligibilityEndAt": 1793144627000,
+        "indexAgeEligibilityStartAt": 1793137727000,
+        "indexedAgeEligibleToFirstDeepMs": 41168,
+        "indexedAgeEligibleToFirstUsefulPredictiveMs": 518108,
+        "indexedCreationAt": 1793137427000,
+        "indexedCreationIso": "2026-10-27T21:43:47.000Z",
+        "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+      },
+      "untrustedDisplayName": "WANSULEK / SOL"
+    }
+  ],
+  "wholeMarketRecall": null
+}
