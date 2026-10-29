@@ -61,7 +61,17 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  const pendingOrders=Object.values(rec(s.pending)).slice(0,3).map(raw=>{const o=rec(raw),fields=['id','mint','side','decidedAt','executeAt','expiresAt','reserved','minReceive','decisionEvidence'];if(fields.some(k=>o[k]===undefined)||!bounded(o.id,128)||!bounded(o.mint,96)||!['buy','sell'].includes(o.side)||!/^(0|[1-9]\d{0,38})$/.test(o.reserved)||!/^(0|[1-9]\d{0,38})$/.test(o.minReceive)||!bounded(o.decisionEvidence,512))throw Error('OPERATING_PENDING_ORDER_PROJECTION');const decidedAt=time(o.decidedAt);if(!decidedAt||!Number.isSafeInteger(o.executeAt)||!Number.isSafeInteger(o.expiresAt)||o.executeAt<o.decidedAt+500||o.expiresAt<=o.executeAt||o.expiresAt>o.decidedAt+30000)throw Error('OPERATING_PENDING_ORDER_TIME');const n=BigInt(o.reserved);return {id:o.id,mint:o.mint,side:o.side as 'buy'|'sell',decidedAt,executeAt:new Date(o.executeAt).toISOString(),expiresAt:new Date(o.expiresAt).toISOString(),reservedSol:`${n/1000000000n}.${(n%1000000000n).toString().padStart(9,'0')}`,quantityMinimum:o.minReceive,reason:o.decisionEvidence};});
  const positions=rec(s.positions),held=Object.keys(positions).length,breaches=count(timing.protectionBreaches),unavailable=count(timing.unavailableChecks),lastProtected=count(timing.lastCompletedProtectionAt),protectionBoundary=count(timing.experimentalCompletedEvaluationLimitMs),primaryUnavailable=(count(rpc.cooldownUntil)??0)>at;
  const lastProtectedAt=time(lastProtected),protectionState:OperatingIntelligence['protection']['state']=held===0?'flat':!lastProtectedAt?'unavailable':primaryUnavailable||protectionBoundary===null||at-lastProtected!>protectionBoundary?'degraded':'monitored';
- const limitations=(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,10);
+ const strategyRows:string[]=[];
+ if(strategyVersion==='adaptive-momentum-v2-paper-v1'){
+  for(const [mint,raw]of Object.entries(positions).slice(0,3)){
+   if(!bounded(mint,96))continue;const position=rec(raw),strategy=rec(position.strategy);
+   if(strategy.version!=='adaptive-momentum-v2-paper-v1'){strategyRows.push(`${mint}: legacy holding retains its original exit rules; new entries use Adaptive Momentum v2.`);continue;}
+   const peak=typeof strategy.highWaterNetLamports==='string'&&/^(0|[1-9]\d{0,38})$/.test(strategy.highWaterNetLamports)?BigInt(strategy.highWaterNetLamports):null,peakAt=time(strategy.highWaterAt);
+   const value=peak!==null&&peak>0n&&peakAt?`${peak/1000000000n}.${(peak%1000000000n).toString().padStart(9,'0')} SOL at ${peakAt}`:'unavailable';
+   strategyRows.push(`${mint}: Adaptive Momentum v2 historical executable net peak ${value}; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit.`);
+  }
+ }
+ const limitations=[...(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,10-strategyRows.length),...strategyRows];
  const hasAdmission=['reporting','serviceSupervision','resourceControl','evidenceRetention','sourceRecovery','proofPreparation'].some(k=>Object.hasOwn(s,k));
  const report=rec(s.reporting),supervision=rec(s.serviceSupervision),control=rec(s.resourceControl),retention=rec(s.evidenceRetention),recovery=rec(s.sourceRecovery),proof=rec(s.proofPreparation);
  const admission:OperatingAdmission|undefined=hasAdmission?{
