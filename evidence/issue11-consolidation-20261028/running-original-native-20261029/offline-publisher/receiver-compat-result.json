@@ -1,0 +1,47 @@
+{
+  "fixtureKind": "synthetic-offline-frozen-publisher-to-receiver-cache-v1",
+  "generatedAt": "2026-10-29T02:37:01.729Z",
+  "nodeVersion": "v24.19.0",
+  "nodeExecutable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+  "inputs": [
+    {
+      "path": "/tmp/poe-native-paper-output-original-issue11-20261029/snapshot-publisher.mjs",
+      "sha256": "4d80782c1cf6d31aec51c56f088283360f2f90760dd7489d621bbe124cb3df3f"
+    },
+    {
+      "path": "/workspace/poe-render-compat-receiver/dist/src/reporting.js",
+      "sha256": "48c11a0f0121e54177f310acff72fb2873975bbfaaca09d42d4d5549ebcbc238"
+    },
+    {
+      "path": "/workspace/poe-render-compat-receiver/dist/src/operating-intelligence.js",
+      "sha256": "ce7336df72158d78319f49b5f9a1749f5f63ef58695cc1b55815065876c3e19a"
+    },
+    {
+      "path": "/workspace/poe-render-compat-receiver/src/reporting.ts",
+      "sha256": "75e348bb91c34c043fb4deab377a3a070b97cc3131f62c4bc207cb725e198f90"
+    }
+  ],
+  "identity": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "5e55d8b939de99698ddb311a282461931fcbc957",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "assertions": {
+    "mockFetchCalls": 1,
+    "successes": 1,
+    "failures": 0,
+    "acknowledgementResult": "accepted",
+    "rawSourceSha256Matched": true,
+    "receiverSequence": "1",
+    "unexpectedGlobalFetchCalls": 0
+  },
+  "scope": {
+    "realNetworkUsed": false,
+    "actualCredentialsRead": false,
+    "actualFinancialFilesRead": false,
+    "repositoryFilesModified": false,
+    "snapshotFixtureSynthetic": true
+  },
+  "passed": true
+}

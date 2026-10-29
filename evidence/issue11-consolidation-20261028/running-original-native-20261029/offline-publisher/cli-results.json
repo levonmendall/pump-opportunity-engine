@@ -1,0 +1,45 @@
+{
+  "kind": "poe-frozen-publisher-zero-network-fixture",
+  "generatedAt": "2026-10-29T02:36:52Z",
+  "uid": 1000,
+  "nodeVersion": "v24.19.0",
+  "publisherPath": "/tmp/poe-native-paper-output-original-issue11-20261029/snapshot-publisher.mjs",
+  "publisherSha256": "4d80782c1cf6d31aec51c56f088283360f2f90760dd7489d621bbe124cb3df3f",
+  "syntheticCredentialPath": "/tmp/poe-publisher-offline-diagnostic-20261029/synthetic-fixture/poe-ingest-secret",
+  "snapshotFixturePathDeliberatelyAbsent": "/tmp/poe-publisher-offline-diagnostic-20261029/synthetic-fixture/snapshot.json",
+  "actualCredentialsRead": false,
+  "financialFilesRead": false,
+  "sourceEdits": false,
+  "networkPrevention": "CLI cases have no snapshot file so no publish queue; export case only reads synthetic credential",
+  "actualNetworkRequests": 0,
+  "results": [
+    {
+      "case": "same-flags-credential-fixture",
+      "returncode": 0,
+      "stdoutPath": "/tmp/poe-publisher-offline-diagnostic-20261029/same-flags-credential-fixture.stdout.txt",
+      "stderrPath": "/tmp/poe-publisher-offline-diagnostic-20261029/same-flags-credential-fixture.stderr.txt",
+      "argvPath": "/tmp/poe-publisher-offline-diagnostic-20261029/same-flags-credential-fixture.argv.json",
+      "actualNetworkRequests": 0
+    },
+    {
+      "case": "exact-cli-missing-snapshot",
+      "aliveAfterOneSecond": true,
+      "returncode": 0,
+      "snapshotExists": false,
+      "stoppedByThisFixtureWith": "SIGTERM",
+      "stdoutPath": "/tmp/poe-publisher-offline-diagnostic-20261029/exact-cli-missing-snapshot.stdout.txt",
+      "stderrPath": "/tmp/poe-publisher-offline-diagnostic-20261029/exact-cli-missing-snapshot.stderr.txt",
+      "argvPath": "/tmp/poe-publisher-offline-diagnostic-20261029/exact-cli-missing-snapshot.argv.json",
+      "actualNetworkRequests": 0
+    },
+    {
+      "case": "exact-cli-unsafe-credential-mode",
+      "syntheticCredentialMode": "0644",
+      "returncode": 1,
+      "stdoutPath": "/tmp/poe-publisher-offline-diagnostic-20261029/exact-cli-unsafe-credential-mode.stdout.txt",
+      "stderrPath": "/tmp/poe-publisher-offline-diagnostic-20261029/exact-cli-unsafe-credential-mode.stderr.txt",
+      "argvPath": "/tmp/poe-publisher-offline-diagnostic-20261029/exact-cli-unsafe-credential-mode.argv.json",
+      "actualNetworkRequests": 0
+    }
+  ]
+}

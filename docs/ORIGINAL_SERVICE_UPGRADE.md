@@ -1,4 +1,4 @@
-# Original POE service upgrade — launch configuration corrected; standard start pending
+# Original POE service upgrade — native source running; reporting verification pending
 
 The sole target is original account `poe-3123e352-4581-455b-85db-acd7e825e99e`, inception `2026-10-26T22:07:36.212Z`, original virtual funding $1,000. Its database remains `/var/lib/poe/state/ledger.sqlite` and its service remains `poe-runtime.service`. No ledger is initialized, imported, reseeded or restored by this package. No experimental service or financial account is created. Real blockchain execution stays disabled.
 
@@ -6,7 +6,7 @@ The original stage was verified by run [40796418549](https://github.com/levonmen
 
 Read-only host run [40798966387](https://github.com/levonmendall/meme-machine-admin/actions/runs/40798966387) confirmed the recovered original observer, PID `2431222`, original source/account/inception, entries disabled. The guarded repair is now separately staged by run [40801911352](https://github.com/levonmendall/meme-machine-admin/actions/runs/40801911352), with exact hash readback and that same PID/state unchanged. Actual root continuation and new-source operation remain **unverified**. The initial protected financial audit/backup is inferred from the old control path; its detailed root receipts must still be verified.
 
-Current status supersedes the earlier staging/refusal history above: native source is installed and the launch-order rename/reload has completed. Actual run40805746959 confirms the correct native command and independently verified empty stop array, but the service is stopped after a text-metadata parsing refusal. Use the standard start below; do not repeat historical installation or repair commands.
+Current status supersedes the earlier staging/refusal history above: native source is installed and the launch-order rename/reload has completed. Actual run40805746959 confirms the correct native command and independently verified empty stop array, but the service is stopped after a text-metadata parsing refusal. The standard start has now succeeded; follow current reporting diagnosis below and preserve the running manager.
 
 ## Exact reviewed identity
 
@@ -21,21 +21,19 @@ Current status supersedes the earlier staging/refusal history above: native sour
 
 The application artifact is frozen read-only at `/tmp/poe-native-paper-output-original-issue11-20261029` in this workspace. The installation payload is already at `/var/tmp/poe-issue11-staging` on EC2, private UID 994. The operating profile starts with six deep-observation slots and one PAPER position as initial exposure validation, preserving the frozen buying rule and existing financial limits. These are not permanent market-capacity limits. Fresh migration discovery supplies current candidates; no historical hint is assumed a supported current pool.
 
-## One owner standard start
+## Standard start completed; reporting diagnosis pending
 
-The owner ordering repair **completed the rename and systemd reload**. Actual run [40805746959](https://github.com/levonmendall/meme-machine-admin/actions/runs/40805746959) confirms the correct native Python command, correct `00-legacy`/`90-native`/`reporting` drop-ins, both PIDs zero and inactive/dead.
+Owner ran the standard `systemctl start` command. Actual host run40806417023 confirms the native Python supervisor active at2026-10-29 02:26:29UTC. Subsequent runs40806962032/40807595487 confirm fresh original-account/source5e status and six currentshortlist candidates. The whole-unit supervisor remains stable; sourcechildgenerations changed, so uninterrupted child operation is not claimed. Keep the running financial manager; do not repeat bootstrap/ordering/start actions.
 
-The repair's metadata guard then refused because `systemctl show --all` omits an empty `ExecStop` command array. An independent typed D-Bus query verified exactly `a(sasbttttuii)` with zero entries. No other required field is missing. The maintenance parser is corrected on the review branch and 20 focused plus63 existing checks pass; this is not a new application release or claimed live repair execution.
+Render still has no accepted current snapshot and the publisher child is absent from measured process sets. Offline frozenCLI/permission/receiver fixtures pass; a pre-watch startup/credential check is the leading hypothesis, not an established hostcause. The UID994 runner actually received EACCES13 on protected health/log/credential metadata.
 
-No further installation, rename, daemon reload, reset, account initialization or custom helper is needed for this confirmed state. Start the existing original service from the sudo-capable EC2 terminal:
+The remaining minimum owner-only diagnostic prints reporting credential **metadata only**, from the service's actual mount namespace:
 
 ```bash
-sudo /usr/bin/systemctl start poe-runtime.service
+sudo /usr/bin/stat -c 'type=%F uid=%u gid=%g mode=%a links=%h bytes=%s' "/proc/$(/usr/bin/systemctl show -p MainPID --value poe-runtime.service)/root/run/credentials/poe-runtime.service/poe-ingest-secret"
 ```
 
-The runner lacks that root permission. Independent review approved this normal same-unit/source/account restart; the native supervisor retains host, root-manifest/executable, account and exclusive lease checks. It may append normal PAPER financial records. Previous financial identity/funding and all36,834actions/36,835journal rows remain verified by the retained receipt; fresh source/account, post-start financial-prefix and matched Render reporting still require actual runtime evidence.
-
-Literal [START_OWNER_COMMAND.txt](../evidence/issue11-consolidation-20261028/empty-exec-stop-20261029/START_OWNER_COMMAND.txt); actual metadata and regressions in that directory. Earlier long bootstrap/resume/ordering commands are historical evidence, not next actions. No healthy manager, natural trade or acceptance interval is claimed before actual startup verification.
+It prints no secret value and changes no service, permissions or financial state. Evidence and exact command: [running-original-native-20261029](../evidence/issue11-consolidation-20261028/running-original-native-20261029/verification.json). Metadata alone cannot establish credential format; use the result before deciding the smallest repair. Never loosen a credential guard speculatively, expose a key, or create another publisher/channel. Original account/financial checks, current source/account/financial-prefix and matched Render reporting remain separate readiness gates. No trading or sustained-operation acceptance is claimed.
 
 ## Backup and financial verification
 
@@ -73,7 +71,7 @@ The compatible receiver `79195ecfb2aaf138715a730194edf1a489937fc1` is already li
 
 Render expected-source binding has now been merged to5e55/persistent-buying-pilot-v1, preserving all other configuration and the original secret. Same79195receiver configuration deploymentdep-dbhai58n74is73cqva40 is live (2026-10-29 02:02:40.046Z); healthz200/api/snapshot503AwaitingPOEdata honestly show receiver availability without a current source. After owner correction, Codex must verify actual protected financial/source receipts and compare at least two matched current-source receipts with Render. Original channel/secret/account remain unchanged. No further owner approval is needed for these ordinary reporting steps. The future unified reporting merge `9ef309d`/`3e5574f` must be reconciled with current `79195ec` main, preserving newer work and retiring experimental backend/credentials only after safe original cutover/reporting.
 
-Do not delete experimental financial files/credentials before original cutover and reporting verification. Do not claim a natural PAPER trade, sustained protection, profitability or 24-hour acceptance from this prepared package. The corrected native launch is selected; the unit awaits the standard owner start. No healthy native financial manager or natural trade is claimed yet.
+Do not delete experimental financial files/credentials before original cutover and reporting verification. Do not claim a natural PAPER trade, sustained protection, profitability or 24-hour acceptance from this prepared package. The native unit is active and updating original-account status; reporting remains unavailable and natural trading/acceptance are unverified.
 
 ## Indexed payload
 

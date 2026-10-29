@@ -1,0 +1,22 @@
+[
+  {
+    "checkedAt": "2026-10-29T02:27:06.115Z",
+    "path": "/healthz",
+    "httpStatus": 200,
+    "body": {
+      "ok": true,
+      "service": "poe-dashboard",
+      "dashboardRelease": "79195ecfb2aaf138715a730194edf1a489937fc1",
+      "connectivityDiagnostics": 1
+    }
+  },
+  {
+    "checkedAt": "2026-10-29T02:27:06.430Z",
+    "path": "/api/snapshot",
+    "httpStatus": 503,
+    "body": {
+      "state": "waiting",
+      "message": "Awaiting POE data"
+    }
+  }
+]
