@@ -4,8 +4,19 @@ export const ORIGINAL_POE_ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e';
 export const ORIGINAL_POE_INCEPTION='2026-10-26T22:07:36.212Z';
 export const OPERATING_INTELLIGENCE_VERSION='poe-operating-intelligence-v1';
 type Count=number|null;
+const EVIDENCE_PRESSURE_CODES=['FILESYSTEM_RESERVE','RECORD_BOUND','YOUNG_DIAGNOSTIC_CAPACITY','YOUNG_SEGMENT_CAPACITY','DIAGNOSTIC_HEADROOM','DIAGNOSTIC_SEGMENT_HEADROOM','INTERRUPTED_ESSENTIAL_PROOF','CHECKPOINT_UNAVAILABLE','RECORD_IO_OR_INTEGRITY_FAILURE','FILESYSTEM_UNAVAILABLE','RETENTION_IO_OR_INTEGRITY_FAILURE','RECOVERY_CHECKPOINT_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
+const RECOVERY_REASON_CODES=['ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE','CANDIDATE_PROVIDER_FAILURE','CANDIDATE_STEP_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
+type EvidencePressureCode=typeof EVIDENCE_PRESSURE_CODES[number];
+type RecoveryReasonCode=typeof RECOVERY_REASON_CODES[number];
+export type OperatingAdmission={
+ financialProjectionReady:boolean|null;supervisedNewRiskAllowed:boolean|null;candidateResourceAdmissionAllowed:boolean|null;
+ evidenceAdmissionAllowed:boolean|null;evidencePressureReasonCode:EvidencePressureCode|null;evidenceDiagnosticBytes:Count;evidenceDiagnosticLimitBytes:Count;evidenceRequiresCriticalRecovery:boolean|null;evidenceRefusedRecords:Count;
+ sourceRecoveryGeneration:Count;sourceRecoveryFailures:Count;sourceRecoveryReasonCode:RecoveryReasonCode|null;sourceRecoveryRetryAt:string|null;sourceRecoveryClosingSettled:boolean|null;sourceRestartRequired:boolean|null;
+ proofPreparationState:'not-started'|'pending'|'complete'|'failed'|null;
+};
 export type OperatingIntelligence={
  version:typeof OPERATING_INTELLIGENCE_VERSION;
+ admission?:OperatingAdmission;
  run:{id:string;startedAt:string;mode:'persistent-paper'|'bounded-verification'|'maintenance';configurationSha256:string;strategyVersion:string};
  candidates:{migrationsReceived:Count;verifiedOrigins:Count;known:Count;watch:Count;eligible:Count;deepActive:Count;deepMaximum:Count;queued:Count;promoted:Count;repromoted:Count;demoted:Count;completeWindows:Count;auditedWindows:Count;uniqueEvaluated:Count;uniqueAudited:Count;predictiveAssessments:Count;predictivePasses:Count;predictiveFailures:Count;predictiveUnavailable:Count;waitMeanMs:Count;waitMaximumMs:Count;olderSelected:Count};
  quality:{captureConnected:boolean|null;qualityGaps:Count;auditUnavailable:Count;auditUnusable:Count;decisionDeadlineMisses:Count;enrichmentDeadlineFailures:Count;incompleteExclusions:Count;capacityExclusions:Count;structuralExclusions:Count;limitations:string[]};
@@ -23,6 +34,19 @@ const finite=(v:unknown):number|null=>typeof v==='number'&&Number.isFinite(v)&&v
 const boolean=(v:unknown):boolean|null=>typeof v==='boolean'?v:null;
 const bounded=(v:unknown,maximum=256)=>typeof v==='string'&&v.length>0&&v.length<=maximum&&!/[\u0000-\u001f]/.test(v)?v:null;
 const first=(...v:unknown[])=>v.find(x=>x!==undefined);
+// Recovery errors can include provider text. Export only static classifications,
+// never arbitrary messages, URLs, paths, credentials or proof identifiers.
+function evidencePressureCode(v:unknown):EvidencePressureCode|null{
+ if(v===null||v===undefined)return null;
+ return typeof v==='string'&&(EVIDENCE_PRESSURE_CODES as readonly string[]).includes(v)?v as EvidencePressureCode:'OTHER_UNEXPORTED_REASON';
+}
+function recoveryReasonCode(v:unknown):RecoveryReasonCode|null{
+ if(v===null||v===undefined)return null;
+ if(v==='rolling resource or evidence pressure')return 'ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE';
+ if(typeof v==='string'&&v.startsWith('candidate/provider failure: '))return 'CANDIDATE_PROVIDER_FAILURE';
+ if(typeof v==='string'&&v.startsWith('candidate step unavailable: '))return 'CANDIDATE_STEP_UNAVAILABLE';
+ return 'OTHER_UNEXPORTED_REASON';
+}
 /** Null is an unavailable fact, never a manufactured zero. */
 export function projectOperatingIntelligence(value:unknown):OperatingIntelligence{
  const s=rec(value),at=count(s.generatedAt),start=count(s.startedAt);
@@ -38,7 +62,15 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  const positions=rec(s.positions),held=Object.keys(positions).length,breaches=count(timing.protectionBreaches),unavailable=count(timing.unavailableChecks),lastProtected=count(timing.lastCompletedProtectionAt),protectionBoundary=count(timing.experimentalCompletedEvaluationLimitMs),primaryUnavailable=(count(rpc.cooldownUntil)??0)>at;
  const protectionState:OperatingIntelligence['protection']['state']=held===0?'flat':!time(lastProtected)?'unavailable':primaryUnavailable||protectionBoundary===null||at-lastProtected!>protectionBoundary?'degraded':'monitored';
  const limitations=(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,10);
- return {version:OPERATING_INTELLIGENCE_VERSION,
+ const hasAdmission=['reporting','serviceSupervision','resourceControl','evidenceRetention','sourceRecovery','proofPreparation'].some(k=>Object.hasOwn(s,k));
+ const report=rec(s.reporting),supervision=rec(s.serviceSupervision),control=rec(s.resourceControl),retention=rec(s.evidenceRetention),recovery=rec(s.sourceRecovery),proof=rec(s.proofPreparation);
+ const admission:OperatingAdmission|undefined=hasAdmission?{
+  financialProjectionReady:boolean(report.financialProjectionReady),supervisedNewRiskAllowed:boolean(supervision.newRiskAllowed),candidateResourceAdmissionAllowed:boolean(control.candidateAdmissionAllowed),
+  evidenceAdmissionAllowed:boolean(retention.candidateAdmissionAllowed),evidencePressureReasonCode:evidencePressureCode(retention.pressureReason),evidenceDiagnosticBytes:count(retention.diagnosticBytes),evidenceDiagnosticLimitBytes:count(retention.diagnosticLimitBytes),evidenceRequiresCriticalRecovery:boolean(retention.requiresCriticalRecovery),evidenceRefusedRecords:count(retention.refusedRecords),
+  sourceRecoveryGeneration:count(recovery.generation),sourceRecoveryFailures:count(recovery.failures),sourceRecoveryReasonCode:recoveryReasonCode(recovery.reason),sourceRecoveryRetryAt:futureTime(recovery.retryAt),sourceRecoveryClosingSettled:boolean(recovery.closingSettled),sourceRestartRequired:boolean(recovery.restartRequired),
+  proofPreparationState:s.proofPreparation===null?'not-started':['pending','complete','failed'].includes(proof.state)?proof.state:null
+ }:undefined;
+ return {version:OPERATING_INTELLIGENCE_VERSION,...(admission?{admission}:{}),
   run:{id:runId,startedAt:new Date(start).toISOString(),mode:s.persistent===true||s.service===true||s.operatingMode==='service'?'persistent-paper':s.running===false?'maintenance':'bounded-verification',configurationSha256,strategyVersion},
   candidates:{migrationsReceived:count(f.discovered),verifiedOrigins:count(f.verifiedMigrationOrigins),known:count(w.known),watch:count(first(w.watch,w.watchCandidates)),eligible:count(first(w.eligibleKnown,w.eligible)),deepActive:count(first(w.deepActive,w.deep)),deepMaximum:count(first(w.maximumDeep,w.maximumDeepCandidates)),queued:count(w.queued),promoted:count(w.promoted),repromoted:count(w.repromoted),demoted:count(w.demoted),completeWindows:count(w.completeWindows),auditedWindows:count(f.usableWindows),uniqueEvaluated:count(first(p.uniqueTokens,w.uniqueEvaluatedTokens)),uniqueAudited:count(first(p.uniqueAuditedTokens,w.uniqueAuditedTokens)),predictiveAssessments:count(first(p.assessments,w.predictiveAssessments)),predictivePasses:count(first(p.passed,w.predictivePasses)),predictiveFailures:count(first(p.failed,w.predictiveFailures)),predictiveUnavailable:count(first(p.unavailable,w.predictiveUnavailable)),waitMeanMs:count(rec(w.waitMs).mean),waitMaximumMs:count(rec(w.waitMs).maximum),olderSelected:count(rec(w.ageCohorts).olderSelected)},
   quality:{captureConnected:boolean(native.connected),qualityGaps:count(refusals['native-quality-gaps']),auditUnavailable:count(refusals['independent-audit-unavailable']),auditUnusable:count(refusals['independent-audit-unusable']),decisionDeadlineMisses:count(refusals['predictive-window-deadline-missed']),enrichmentDeadlineFailures:count(w.enrichmentDeadlineFailures),incompleteExclusions:count(w.incompleteDataExclusions),capacityExclusions:count(w.capacityExclusions),structuralExclusions:count(w.structuralExclusions),limitations},
@@ -50,11 +82,20 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
 }
 function exact(v:unknown,keys:string[]):Record<string,any>{const o=rec(v);if(Object.getPrototypeOf(v)!==Object.prototype||Object.keys(o).sort().join('|')!==[...keys].sort().join('|'))throw Error('OPERATING_INTELLIGENCE_FIELDS');return o;}
 export function validateOperatingIntelligence(value:unknown,generatedAt:string):OperatingIntelligence{
- const s=exact(value,['version','run','candidates','quality','provider','resources','protection','times','decisions','refusals','pendingOrders']);if(s.version!==OPERATING_INTELLIGENCE_VERSION)throw Error('OPERATING_INTELLIGENCE_VERSION');const generated=Date.parse(generatedAt),inception=Date.parse(ORIGINAL_POE_INCEPTION);
+ const s=exact(value,['version','run','candidates','quality','provider','resources','protection','times','decisions','refusals','pendingOrders',...(Object.hasOwn(rec(value),'admission')?['admission']:[])]);if(s.version!==OPERATING_INTELLIGENCE_VERSION)throw Error('OPERATING_INTELLIGENCE_VERSION');const generated=Date.parse(generatedAt),inception=Date.parse(ORIGINAL_POE_INCEPTION);
  const text=(v:unknown,max=256)=>{if(!bounded(v,max))throw Error('OPERATING_INTELLIGENCE_TEXT');};
  const n=(v:unknown,whole=true)=>{if(v!==null&&(whole?count(v)===null:finite(v)===null))throw Error('OPERATING_INTELLIGENCE_NUMBER');};
  const b=(v:unknown)=>{if(v!==null&&typeof v!=='boolean')throw Error('OPERATING_INTELLIGENCE_BOOLEAN');};
  const t=(v:unknown,nullable=true,future=false)=>{if(v===null&&nullable)return;const at=typeof v==='string'?Date.parse(v):NaN;if(!Number.isSafeInteger(at)||new Date(at).toISOString()!==v||at<inception||!future&&at>generated)throw Error('OPERATING_INTELLIGENCE_TIME');};
+ if(Object.hasOwn(s,'admission')){
+  const a=exact(s.admission,'financialProjectionReady supervisedNewRiskAllowed candidateResourceAdmissionAllowed evidenceAdmissionAllowed evidencePressureReasonCode evidenceDiagnosticBytes evidenceDiagnosticLimitBytes evidenceRequiresCriticalRecovery evidenceRefusedRecords sourceRecoveryGeneration sourceRecoveryFailures sourceRecoveryReasonCode sourceRecoveryRetryAt sourceRecoveryClosingSettled sourceRestartRequired proofPreparationState'.split(' '));
+  for(const k of ['financialProjectionReady','supervisedNewRiskAllowed','candidateResourceAdmissionAllowed','evidenceAdmissionAllowed','evidenceRequiresCriticalRecovery','sourceRecoveryClosingSettled','sourceRestartRequired'])b(a[k]);
+  for(const k of ['evidenceDiagnosticBytes','evidenceDiagnosticLimitBytes','evidenceRefusedRecords','sourceRecoveryGeneration','sourceRecoveryFailures'])n(a[k]);
+  if(a.evidencePressureReasonCode!==null&&!(EVIDENCE_PRESSURE_CODES as readonly unknown[]).includes(a.evidencePressureReasonCode))throw Error('OPERATING_EVIDENCE_PRESSURE_CODE');
+  if(a.sourceRecoveryReasonCode!==null&&!(RECOVERY_REASON_CODES as readonly unknown[]).includes(a.sourceRecoveryReasonCode))throw Error('OPERATING_RECOVERY_REASON_CODE');
+  t(a.sourceRecoveryRetryAt,true,true);
+  if(a.proofPreparationState!==null&&!['not-started','pending','complete','failed'].includes(a.proofPreparationState))throw Error('OPERATING_PROOF_PREPARATION_STATE');
+ }
  const run=exact(s.run,['id','startedAt','mode','configurationSha256','strategyVersion']);text(run.id,128);text(run.strategyVersion,128);t(run.startedAt,false);if(!['persistent-paper','bounded-verification','maintenance'].includes(run.mode)||typeof run.configurationSha256!=='string'||!/^[a-f0-9]{64}$/.test(run.configurationSha256))throw Error('OPERATING_INTELLIGENCE_RUN');
  const c=exact(s.candidates,'migrationsReceived verifiedOrigins known watch eligible deepActive deepMaximum queued promoted repromoted demoted completeWindows auditedWindows uniqueEvaluated uniqueAudited predictiveAssessments predictivePasses predictiveFailures predictiveUnavailable waitMeanMs waitMaximumMs olderSelected'.split(' '));Object.values(c).forEach(v=>n(v));if(c.deepActive!==null&&c.deepMaximum!==null&&c.deepActive>c.deepMaximum)throw Error('OPERATING_DEEP_CAPACITY');
  const q=exact(s.quality,'captureConnected qualityGaps auditUnavailable auditUnusable decisionDeadlineMisses enrichmentDeadlineFailures incompleteExclusions capacityExclusions structuralExclusions limitations'.split(' '));b(q.captureConnected);for(const k of Object.keys(q).filter(k=>k!=='captureConnected'&&k!=='limitations'))n(q[k]);if(!Array.isArray(q.limitations)||q.limitations.length>10)throw Error('OPERATING_LIMITATIONS_BOUND');q.limitations.forEach((v:unknown)=>text(v,512));
