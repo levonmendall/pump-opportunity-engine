@@ -1,0 +1,19 @@
+{
+  "kind": "independent-four-slot-package-review",
+  "reviewer": "expose_operating_gates",
+  "result": "PASS",
+  "helperSha256": "4c5390a9792bf2ac895fb0a09fc1c80829545c330d01bf04849b402c4b751a45",
+  "indexSha256": "b8b15a37c639f59892923bf4e0a8051c3a6f9f7974dad641544c7b0d323f9d43",
+  "verified": [
+    "all three payload file sizes and hashes",
+    "nonroot inert staging and before/after same service PID/restart count",
+    "fixed actual merged-unit parser",
+    "fixed owner command paths, descriptor metadata, exact hash, same compiled bytes, CLI and magic",
+    "existing maintenance metadata only; no maintenance execution"
+  ],
+  "notEstablished": [
+    "root apply",
+    "running capacity four",
+    "forward performance after change"
+  ]
+}

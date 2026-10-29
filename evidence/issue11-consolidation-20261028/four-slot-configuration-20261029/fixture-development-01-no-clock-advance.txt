@@ -1,0 +1,31 @@
+{"kind":"OFFLINE_FROZEN_239_FOUR_SLOT_CONFIGURATION","commit":"239a00ea9fbc0a25ebcf318631d26618d941c899","exportedRoot":"/tmp/poe-OFFLINE-frozen239-four-BSTnG3","archiveSha256":"0194d0675c5e6aa35e7edc9c67fe9fb4395dd16be6fdd97a1d40878d6214fd60","runnerSourceSha256":"1fe9411dbc9a4f5946be6bb29b421d9fbf34fe6435529a99d51fe23a7071abc6","fixtureSourceSha256":"8691f28b45ef1ef831c226307eac0b7052c75bf78d4438aa41819b78c1ca1001","fixtureAdapterSha256":"5439c9f27a15cc3f3045e943a02414e2989994bff6c35026435e2e780769ea2e","providerRequests":0,"serviceOperations":0,"financialDatabaseOpened":false,"previousDeepSlots":6,"deepSlots":4,"previousConfigurationSha256":"5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344","configurationSha256":"f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857","frozenExecutableSha256":"fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315","executableBytes":5052930,"strategyAndRiskContractSha256":"665b28e6cdc326b20cd5e921fbddbaf9fdfd786ce80cbd2286d98a00a8fef2a9","maximumPaperPositions":1,"financialAccountPreserved":true}
+✖ frozen239 six-to-four resume preserves six watch identities, enforces four audits, and fairly replaces retired scopes (81.139389ms)
+✔ frozen239 native and broad-feed constructors honor four independently of watch and position capacity (10.215593ms)
+✔ only the frozen239 deep-slot argument changes; original account, strategy, timing, financial limits and source remain fixed (9.09119ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1588.429182
+
+✖ failing tests:
+
+test at evidence/issue11-consolidation-20261028/four-slot-configuration-20261029/frozen-four-slot-resume.test.mts:1:3893
+✖ frozen239 six-to-four resume preserves six watch identities, enforces four audits, and fairly replaces retired scopes (81.139389ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 4
+  
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/four-slot-configuration-20261029/frozen-four-slot-resume.test.mts:45:104)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
