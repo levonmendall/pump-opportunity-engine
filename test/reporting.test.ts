@@ -232,7 +232,7 @@ test('bounded exports contain no configuration secrets; HTML uses safe DOM and m
   assert.match(response.headers.get('content-security-policy')!, /frame-ancestors 'none'/);
   assert.match(html, /width=device-width/); assert.match(html, /@media\(max-width:640px\)/); assert.match(html, /textContent/);
   assert.ok(!html.includes('.innerHTML')); assert.ok(!html.includes(config.ingestionSecret)); assert.ok(!html.includes('<img src=x onerror'));
-  assert.match(html, /LIVE EXECUTION DISABLED/); assert.match(html, /Zero is the reference line/); assert.match(html, /UTC/);
+  assert.match(html, /LIVE EXECUTION DISABLED/); assert.match(html, /Recorded from accepted Portfolio Equity reports/); assert.match(html, /UTC/);
 });
 
 test('publisher does not send on construction; outages retain only latest snapshot and recover independently', async () => {
