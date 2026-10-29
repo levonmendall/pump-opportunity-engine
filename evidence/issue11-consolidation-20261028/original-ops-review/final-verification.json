@@ -1,0 +1,48 @@
+{
+  "sourceCommit": "6bca43548adab6e7b073a503d887e6b277fdffae",
+  "verifiedAt": "2026-10-29T00:08:58.055711+00:00",
+  "tests": [
+    {
+      "test": "test-authoritative-service.py",
+      "exitCode": 0,
+      "outputSha256": "8714594ec61c392637b1451ba9a0daf89b81fec3dafee115e2a1094a3b5a5246",
+      "bytes": 120
+    },
+    {
+      "test": "test-cutover-original-service.py",
+      "exitCode": 0,
+      "outputSha256": "b3422b145032ac3a56ce40c0e8bbe6f04030fe26a1ce1f5388afec7a5b7cbee0",
+      "bytes": 109
+    },
+    {
+      "test": "test-audit-original-account.py",
+      "exitCode": 0,
+      "outputSha256": "baf49b59538192f3e136ca0404cac516ecb8dd2fe5ba1416604056f3080fa49c",
+      "bytes": 103
+    },
+    {
+      "test": "test-prepare-original-service-package.py",
+      "exitCode": 0,
+      "outputSha256": "1de6ecf0d697d79c3df1c8a42338798c31313705d18a2a67f513a8f2e0925826",
+      "bytes": 98
+    }
+  ],
+  "totalPurposeSpecificTests": 37,
+  "independentReview": {
+    "reviewer": "/root/finish_original_ops/review_ops_supervisor",
+    "result": "CONDITIONAL_GO_FOR_REVIEWED_OFFLINE_SCOPE",
+    "reviewedSource": "de049889bc92a03b09380e1aedeeb7e0f0da9c88",
+    "independentTestsPassed": 37,
+    "conditions": [
+      "Legitimate owner/root access",
+      "Exact indexed source/config/accounting bytes",
+      "Original-account flat identity/journal preflight",
+      "Actual service/source startup and two original-channel Render cycles still required"
+    ]
+  },
+  "followup": "6bca435 adds pre-stop existing Node24.19 ABI137 nonroot version probe and executable flock check; focused suites rerun, no original-account or host operation performed",
+  "rootCutoverExecuted": false,
+  "originalLedgerRead": false,
+  "sourceStartVerified": false,
+  "renderVerified": false
+}
