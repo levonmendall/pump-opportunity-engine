@@ -1,0 +1,17 @@
+{
+  "kind": "poe-source-upgrade-pre-apply-hold-v1",
+  "recordedAt": "2026-10-29T17:53:50.346292+00:00",
+  "applicationSource": "96e6d3245082e1297e94624dcdceedffac7808f0",
+  "packageCommit": "6f728f4decb43f51d794240a4c7bd240d4c374f6",
+  "packageIndexSha256": "c3d5440862ae98cab6f82a4ca77b1b1347a5aeb73c7255714412da157d2bc301",
+  "adminCommit": "ec6349b309b3fa0df091397e39d360761a71f074",
+  "publishedToAdminMain": true,
+  "workflowDispatchedByThisWorker": false,
+  "ec2StagePerformedByThisWorker": false,
+  "rootUpgradeExecuted": false,
+  "currentFinancialSource": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "status": "SUPERSEDED_BEFORE_APPLY",
+  "reason": "Owner steering requires coherent backend entry-readiness repair for enabled sequence9307 at17:47:05 versus paused9310 at17:47:51 before an installation handoff. The96e6-only package is preserved but must not be applied.",
+  "financialServiceInterrupted": false,
+  "packageBytesPreserved": true
+}
