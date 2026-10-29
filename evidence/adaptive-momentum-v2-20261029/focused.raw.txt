@@ -1,0 +1,27 @@
+✔ explicit experimental version has no fixed positive take-profit, profitable holding cap or live execution (0.932734ms)
+✔ preliminary real demand never invents liquidity, final score or financial qualification (1.444143ms)
+✔ same net flow is scored relative to actual liquidity, without mistaking the score for expectancy (0.586279ms)
+✔ near-neutral churn and numerically tiny normalized demand cannot qualify on the other score terms (0.603155ms)
+✔ age routes strategy cohorts but never invents earlier consolidation or a renewed momentum pattern (0.255509ms)
+✔ fully checked early and older candidates are considered without arbitrary 5–120 minute cutoffs (0.612659ms)
+✔ receipt/discovery times cannot substitute for verified migration or a post-migration observation window (0.282029ms)
+✔ incomplete, provisional, malformed, quiet and non-buying windows are never rescued by adaptive scoring (0.257893ms)
+✔ final qualification still requires exact-size quote, valid liquidity, current age, risk permission and original sizing fallback (0.406593ms)
+✔ complete-evidence strategy floors remain strategy rejection rather than a technical missing-data failure (0.396048ms)
+✔ re-entry needs complete new window after closure and reconciled conflict-free previous round trip (0.354155ms)
+✔ 200%,500% winners and holdings beyond15 minutes are not sold merely for their gain or duration (0.398151ms)
+✔ baseline15% protective cost stop remains enforceable on fresh exact-size net value (0.118426ms)
+✔ profit high-water is collectible net value and a material reversal protects the retained profit (0.232014ms)
+✔ known volatility widens trailing distance without removing the cost stop (0.441075ms)
+✔ old/future/wrong-size/missing quotes do not update high-water or fabricate profitable exits (0.182732ms)
+✔ deterioration requires fresh available evidence; a boolean or future report alone cannot force an exit (0.177703ms)
+✔ deployed cost, current exposure, original capital risk and profit giveback remain different quantities (0.198034ms)
+✔ missing stress is unknown rather than zero risk; no hidden diversification or stop-fill guarantee (0.140258ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 225.785219

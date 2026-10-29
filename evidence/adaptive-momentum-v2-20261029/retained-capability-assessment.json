@@ -1,0 +1,215 @@
+{
+  "classification": "READ_ONLY_RETAINED_CAPABILITY_ASSESSMENT_NOT_STRATEGY_PERFORMANCE",
+  "generatedAt": "2026-10-29T21:07:40.488711+00:00",
+  "sourceAtAssessment": "4b347f72bd465d7592b64a4560121bf698dc9a82",
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "productionChanged": false,
+  "inputs": [
+    {
+      "path": "src/strategy.ts",
+      "bytes": 21291,
+      "sha256": "ed4ca8b601da4105af5d3b003d195a664f75171647a6739e032eed0372cff07f"
+    },
+    {
+      "path": "src/pilot-contract.ts",
+      "bytes": 4871,
+      "sha256": "4c446beb8739c5e2129642d569617ded9d64ea0b6d4cd6453359a47e5acebd48"
+    },
+    {
+      "path": "src/adaptive-monitoring.ts",
+      "bytes": 26556,
+      "sha256": "058967b976305c4d1bea8d8bf4fb86a76459ed9ade3fe620d854e8ce73552e07"
+    },
+    {
+      "path": "src/pilot-market.ts",
+      "bytes": 18110,
+      "sha256": "c463e89554a36d7ea9eb07b7f61dfc294b26f84bf0a104d8dd957456ec6cd3fc"
+    },
+    {
+      "path": "src/research-clock-pricing.ts",
+      "bytes": 17582,
+      "sha256": "fae5af159cae4c813e8503c63bb371fab877bbae2e4b272de72b88c941d2cae1"
+    },
+    {
+      "path": "src/native-candidate-runner.ts",
+      "bytes": 77715,
+      "sha256": "96f2cd8814a26d1f42760f63225d073444656cf516e84b1892c9cb9c8ed3857c"
+    },
+    {
+      "path": "src/observation-age.ts",
+      "bytes": 3940,
+      "sha256": "cdd24fa02227592d2870e1cf52fa2b0401a12bc121cb9348b3a24a2861c5a98e"
+    },
+    {
+      "path": "src/ledger.ts",
+      "bytes": 66011,
+      "sha256": "071b83b6a937fd18b17f0a142e981f88948ee16507e9f5845f85c1c351c92b8b"
+    },
+    {
+      "path": "evidence/trade-quality-20261029/scorecard.json",
+      "bytes": 55756,
+      "sha256": "2ee7988ee1654bbf5d951a6008464956d15179f567f5e525bff335a056a9a7a2"
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-02/manifest.json",
+      "bytes": 4188,
+      "sha256": "fc357e81192b89351dfa13d22ff6909587115ec229ff523b74de465fc440a65f"
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-02/paired-post-close-forward-summary.json",
+      "bytes": 23096,
+      "sha256": "670276dcdb83868e64fc941a789c698df0e72af2f8a5389f3966961c154f6519"
+    },
+    {
+      "path": "evidence/adaptive-monitoring/summary.json",
+      "bytes": 5338,
+      "sha256": "f6dbd56d7e2da87a89b36e74f6fa6076ef2841ba7b08d0a8d608d0499d712b42"
+    },
+    {
+      "path": "evidence/opportunity-coverage-20261027/frozen-threshold-counterfactuals.json",
+      "bytes": 152848,
+      "sha256": "0ea397696ab4647ae7a171efa92cdab8586435dbe3072fc82262c9e201d89a77"
+    }
+  ],
+  "verifiedRuntimeAt": "2026-10-29T21:05:05.668Z",
+  "verifiedRuntime": {
+    "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+    "strategy": "persistent-buying-pilot-v1",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "deepSlots": 4,
+    "positionLimit": 1,
+    "positions": 0,
+    "historicalPublicFills": 12,
+    "entries": "paused",
+    "blocker": "POE_ENTRY_DAILY_LOSS",
+    "runtime": "running",
+    "market": "observing",
+    "stateDerivedFrom": "existing authenticated original public sampler; not a new network request or private ledger read",
+    "snapshotSha256": "adb4c3d40362d10daa64909db653d762bd51a53bda5cf2c076143c5d91b7c722"
+  },
+  "existingAndMissing": [
+    {
+      "capability": "Demand/persistence",
+      "existing": "FlowFeatures: buys, sells, signed net lamports, positive 10-second bucket count, closed60s window and quality/provisional flags.",
+      "missing": "Per-bucket flow magnitudes and subwindow participant histories needed for interpretable acceleration, time normalization and alternative horizons.",
+      "minimumAdapter": "Export immutable bucket aggregates with original received/available cutoffs from already audited window; do not loosen completeness."
+    },
+    {
+      "capability": "Buyer independence/authenticity",
+      "existing": "Distinct buyer public keys and largest-wallet buy share in BPS.",
+      "missing": "Wallet keys are not independent beneficial owners; no retained funding/coordination graph or independence confidence.",
+      "minimumAdapter": "Keep distinct-wallet feature labeled as proxy. Unknown coordinated ownership must remain unknown; use existing trade IDs/participation data before any extra RPC research."
+    },
+    {
+      "capability": "Liquidity-normalized demand and stability",
+      "existing": "SDK validates coherent pool/reserve/fee/Clock state for actual-size buy and sell.",
+      "missing": "FlowFeatures/public projections do not contain matched reserve depth or liquidity time series.",
+      "minimumAdapter": "Attach source-slot and availability-bound reserve summary from existing market support, record executable quantities and size-to-liquidity; do not fetch redundant per-score state."
+    },
+    {
+      "capability": "Price confirmation/volatility",
+      "existing": "first/last observed trade quote/base ratios and full-size executable held marks.",
+      "missing": "Observed trade ratio is not executable momentum; two points do not define volatility; public USD snapshots lack full-size native quote decomposition.",
+      "minimumAdapter": "Retain a bounded chronological actual-size net liquidation series, same position units/identity, sourceAt/availableAt/slot/gap flags; missing observations are gaps, never interpolated fills."
+    },
+    {
+      "capability": "Adaptive exits",
+      "existing": "evaluateExit uses15% stop,30% fullTP, unconditional900000ms hold; shared held pricing and delayed execution already exist. Adaptive-monitoring only tests monitoring cadence using this same exit.",
+      "missing": "No active high-water/trailing/thesis exit policy or validated partial-sale accounting.",
+      "minimumAdapter": "Pure shadow exit reducer over fresh actual-size native marks, unchanged protective stop, durable position+strategy identity and explicit UNKNOWN. Keep baseline path measurable; partial exits require new cost-basis/quantity execution support."
+    },
+    {
+      "capability": "Exposure/compounding",
+      "existing": "Ledger tracks available/reserved cash, entry cost, net liquidation equity, modeled fees/deposits. Aggregate150USD gate uses COST, not appreciated value; there is no equity/appreciation sell gate.",
+      "missing": "Hard50USD entry,150USD cost, max3 ledger/quote batch/pending capacities; no measured tail-risk/correlation/size-specific expectancy model.",
+      "minimumAdapter": "Separate deployed cost, current net value, reserved capital and scenario downside. Compare explicit newly quoted size ladder under one source bank; do not multiply50USD returns or infer probability from a stress haircut."
+    },
+    {
+      "capability": "Age lifecycle",
+      "existing": "Immediate observation minimum0; selected activity watch can retain to6h, but entryAgeEligible remains5min<=age<120min.24h study policy is separate.",
+      "missing": "Validated economic evidence for early/older entry cohorts and active v2 eligibility rule.",
+      "minimumAdapter": "Use canonical on-chain migration timestamp and proof availability as a feature. Unobserved cohorts are unknown; bounded older watch must remain activity prioritized."
+    },
+    {
+      "capability": "Re-entry/concurrency",
+      "existing": "Stage2/3 infrastructure and shared1-3 held-price batch; original runtime remains single until reviewed upgrade. Durable traded_mint marker plus NativePaper/trader checks prohibit every subsequent fill.",
+      "missing": "No validated multi-roundtrip policy/cost basis that permits fresh re-entry while preserving no-duplicate guarantees. Receiver currently bounds3position rows.",
+      "minimumAdapter": "Versioned per-position/per-roundtrip identity, prior fullclose+reconciliation+no pending/uncertain proof, new audited signal/quotes. Preserve historical marker for baseline; never delete it to enable re-entry."
+    }
+  ],
+  "retainedEconomicCorpus": {
+    "fourTradeAudit": {
+      "roundTrips": 4,
+      "allIndependentEntryClassifications": "INCOMPLETE_OR_UNVERIFIED_EVIDENCE",
+      "protectionFailures": [
+        "AcBX: >=4breaches/14unavailable/13745ms observed max",
+        "8TJ1: >=3 attributable breaches/8unavailable/13500ms postrestart max"
+      ],
+      "netNativePerTrade": "UNKNOWN without private native action/journal/size-quote proof; USD fills do not establish SOL P&L"
+    },
+    "historicalMatchedFeatureComparison": {
+      "completedRuns": 17,
+      "acceptedWindows": 121,
+      "uniqueTokens": 47,
+      "baselinePasses": 0,
+      "earlier4minPasses": 0,
+      "moderateRulePasses": 0,
+      "eligibilityUnknownWindows": 76,
+      "excludedIncompleteWindows": 219,
+      "heldOutData": false,
+      "executableOutcomes": "UNAVAILABLE"
+    },
+    "monitoringExperiment": {
+      "syntheticCases": 12,
+      "naturalPriceChanges": 0,
+      "purpose": "Cadence/physical occupancy stress; not adaptive return edge",
+      "existingConclusion": "Blanket slower5s/10s monitoring rejected because missed stop cases; preserve current protection priority"
+    },
+    "latestPostCloseForward": "169 original snapshots20:08:17\u201320:55:23,0additionalqualifications/attempts/fills,74new overlapping auditedwindows,37new evaluatedtokens. No comparable alternate strategy or size outcomes."
+  },
+  "unsupportedInferences": [
+    "No evidence supports promoting an optimized scoring threshold, trailing distance, sizing multiplier or age cohort as economically superior yet.",
+    "A public profitable fill or later peak is not valid entry or executable counterfactual profit.",
+    "The USD daily-loss latch is total marked USD equity; passive SOL/USD is separate from token trading P&L and must not be reset to make v2 active.",
+    "Synthetic two-position lifecycle success is not deployed two-position protection acceptance.",
+    "Repeated overlapping windows and selected winners are not independent trials or whole-market recall."
+  ],
+  "smallestNextShadowCollection": "At existing accepted audit callback, record identity/window/source hashes, same-as-of validated flow and existing support features. At existing held completed-price callback, record original native net mark/units/quoteAt/availableAt and coverage gap; no new polling. Join actual orders/journal/protection by immutable position/order IDs. Evaluate predeclared baseline+variants chronologically; do not produce full-trade economic scores without observed post-delay execution quotes and all costs.",
+  "sourceFilesMatchClaimedCommit": [
+    {
+      "path": "src/strategy.ts",
+      "matchesCommit": true
+    },
+    {
+      "path": "src/pilot-contract.ts",
+      "matchesCommit": true
+    },
+    {
+      "path": "src/adaptive-monitoring.ts",
+      "matchesCommit": true
+    },
+    {
+      "path": "src/pilot-market.ts",
+      "matchesCommit": true
+    },
+    {
+      "path": "src/research-clock-pricing.ts",
+      "matchesCommit": true
+    },
+    {
+      "path": "src/native-candidate-runner.ts",
+      "matchesCommit": true
+    },
+    {
+      "path": "src/observation-age.ts",
+      "matchesCommit": true
+    },
+    {
+      "path": "src/ledger.ts",
+      "matchesCommit": true
+    }
+  ]
+}
