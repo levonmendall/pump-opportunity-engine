@@ -5,7 +5,7 @@ The root-owned package is prepared/reviewed before this command is used. This
 file deliberately provides no sudo installation, remote command, provider,
 secret, financial import, or alternate account/path mechanism.
 """
-import datetime,fcntl,hashlib,importlib.util,json,os,pathlib,pwd,sqlite3,stat,subprocess,sys,time
+import datetime,fcntl,hashlib,importlib.util,itertools,json,os,pathlib,pwd,sqlite3,stat,subprocess,sys,tempfile,time
 
 HERE=pathlib.Path(__file__).resolve().parent
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
@@ -73,9 +73,11 @@ def original_audit(auditor,expected_inode=None):
  for suffix in['-wal','-shm','-journal']:auditor.file_metadata(pathlib.Path(str(LEDGER)+suffix),uid,True)
  fd=os.open(LEDGER,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
-  fs=os.fstat(fd);need((fs.st_dev,fs.st_ino)==identity,'ORIGINAL_LEDGER_OPEN_IDENTITY_CHANGED');db=sqlite3.connect('file:'+str(LEDGER)+'?mode=ro',uri=True,timeout=1)
-  try:result=auditor.audit_snapshot(db)
-  finally:db.close()
+  fs=os.fstat(fd);need((fs.st_dev,fs.st_ino)==identity,'ORIGINAL_LEDGER_OPEN_IDENTITY_CHANGED')
+  with auditor.original_owner(uid,pwd.getpwnam('poe-runtime').pw_gid):
+   db=sqlite3.connect('file:'+str(LEDGER)+'?mode=ro',uri=True,timeout=1)
+   try:result=auditor.audit_snapshot(db)
+   finally:db.close()
   after=LEDGER.lstat();need((after.st_dev,after.st_ino)==identity,'ORIGINAL_LEDGER_INODE_CHANGED');return result
  finally:os.close(fd)
 def financial_rollback_equivalent(before,after):
@@ -106,14 +108,27 @@ def lease():
  except BaseException:os.close(fd);raise
  return fd
 def snapshot_backup(path,auditor,expected):
- need(not path.exists()and not path.is_symlink(),'BACKUP_MUST_BE_NEW');created=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600);created_stat=os.fstat(created);os.close(created);src=sqlite3.connect('file:'+str(LEDGER)+'?mode=ro',uri=True,timeout=1);dest=sqlite3.connect(path)
+ need(not path.exists()and not path.is_symlink(),'BACKUP_MUST_BE_NEW');owner=pwd.getpwnam('poe-runtime');temporary=None
+ # Every SQLite operation against the original source runs as its legitimate
+ # owner. A new same-owner temporary backup is validated/closed before root
+ # freezes exact bytes; root never creates the original ledger's WAL/SHM.
+ with auditor.original_owner(owner.pw_uid,owner.pw_gid):
+  temporary=pathlib.Path(tempfile.mkdtemp(prefix='poe-original-backup-'));os.chmod(temporary,0o700);copied=temporary/'ledger.sqlite';src=sqlite3.connect('file:'+str(LEDGER)+'?mode=ro',uri=True,timeout=1);dest=sqlite3.connect(copied)
+  try:
+   src.backup(dest);dest.commit();need(dest.execute('PRAGMA journal_mode=DELETE').fetchone()==('delete',),'SINGLE_FILE_RECOVERY_BACKUP_REQUIRED');observed=auditor.audit_snapshot(dest);need(expected is None or observed==expected,'BACKUP_EXACT_FINANCIAL_STATE_REQUIRED')
+  finally:dest.close();src.close()
+  os.chmod(copied,0o600)
+ raw=read(copied,128*MIB,owner.pw_uid);created=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
  try:
-  ds=path.lstat();need(stat.S_ISREG(ds.st_mode)and(ds.st_dev,ds.st_ino)==(created_stat.st_dev,created_stat.st_ino),'BACKUP_INODE_CHANGED');src.backup(dest);dest.commit();observed=auditor.audit_snapshot(dest);need(expected is None or observed==expected,'BACKUP_EXACT_FINANCIAL_STATE_REQUIRED')
- finally:dest.close();src.close()
- os.chmod(path,0o600);fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
- try:os.fsync(fd)
- finally:os.close(fd)
- syncdir(path.parent);return{'file':str(path),'bytes':path.stat().st_size,'sha256':sha(read(path,128*MIB)),'financial':observed,'restorePerformed':False}
+  offset=0
+  while offset<len(raw):
+   count=os.write(created,raw[offset:]);need(count>0,'FROZEN_BACKUP_WRITE_UNAVAILABLE');offset+=count
+  os.fsync(created)
+ finally:os.close(created)
+ syncdir(path.parent);need(read(path,128*MIB)==raw,'FROZEN_BACKUP_BYTES_CHANGED')
+ with auditor.original_owner(owner.pw_uid,owner.pw_gid):
+  need(list(temporary.iterdir())==[copied],'TEMPORARY_BACKUP_AUXILIARY_UNSETTLED');copied.unlink();temporary.rmdir()
+ return{'file':str(path),'bytes':len(raw),'sha256':sha(raw),'financial':observed,'restorePerformed':False,'sourceSqliteOwnerUid':owner.pw_uid,'temporaryCopyFrozen':True}
 def switch_current(target):
  need(target.parent==RELEASES and target.resolve(strict=True)==target,'EXACT_RELEASE_TARGET_REQUIRED');temporary=CURRENT.with_name('.current-'+str(os.getpid()));need(not temporary.exists()and not temporary.is_symlink(),'NO_PENDING_RELEASE_LINK');temporary.symlink_to(target);os.replace(temporary,CURRENT);syncdir(CURRENT.parent)
 def validate_host(auditor,supervisor):
@@ -169,19 +184,32 @@ def upgrade(expected_hash,auditor,supervisor):
  transition.update(phase='new-service-start-requested-runtime-and-render-verification-required',startRequestedAt=int(time.time()*1000));write_json(record_dir/'transition.json',transition);systemctl('start','poe-runtime.service');verification,financial_proof=post_start_verification(manifest,transition,auditor,uid,gid);transition.update(phase='post-start-read-only-verified-render-and-operation-still-unverified'if verification['complete']else'post-start-verification-incomplete-new-financial-source-retained',postStartVerification=verification,postStartFinancial=financial_proof);write_json(record_dir/'transition.json',transition);public_dir=pathlib.Path('/var/lib/poe-public');directory(public_dir,uid);need(stat.S_IMODE(public_dir.lstat().st_mode)==0o755,'EXISTING_PUBLIC_STATUS_DIRECTORY_REQUIRED');atomic(public_dir/'upgrade-verification.json',(json.dumps(verification,separators=(',',':'))+'\n').encode(),0,0,0o644);print(json.dumps(verification,separators=(',',':')))
  need(verification['complete'],'POST_START_VERIFICATION_INCOMPLETE_NEW_FINANCIAL_SOURCE_RETAINED')
 def verify_live_financial_prefix(auditor,stopped,backup,deadline_seconds=5):
- """One read-only WAL snapshot; compare every historical financial row."""
+ """Exact whole-column prefix streams; all original SQLite access is owner UID."""
  backup_path=pathlib.Path(backup['file']);need(backup_path.resolve(strict=True)==backup_path and backup_path.parent.parent==BACKUPS and backup_path.name=='ledger.sqlite','EXACT_STOPPED_BACKUP_PATH_REQUIRED');raw=read(backup_path,128*MIB);need(sha(raw)==backup['sha256']and len(raw)==backup['bytes'],'VERIFIED_STOPPED_BACKUP_CHANGED')
- uid=pwd.getpwnam('poe-runtime').pw_uid;need(LEDGER.resolve(strict=True)==LEDGER,'CANONICAL_ORIGINAL_LEDGER_REQUIRED');meta=auditor.file_metadata(LEDGER,uid,True);need(meta['exists'],'EXISTING_ORIGINAL_LEDGER_REQUIRED');identity=(meta['device'],meta['inode']);fd=os.open(LEDGER,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK);db=None
+ owner=pwd.getpwnam('poe-runtime');uid=owner.pw_uid;need(LEDGER.resolve(strict=True)==LEDGER,'CANONICAL_ORIGINAL_LEDGER_REQUIRED');meta=auditor.file_metadata(LEDGER,uid,True);need(meta['exists'],'EXISTING_ORIGINAL_LEDGER_REQUIRED');identity=(meta['device'],meta['inode']);fd=os.open(LEDGER,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK);prior=None;deadline=time.monotonic()+deadline_seconds
  try:
-  need((os.fstat(fd).st_dev,os.fstat(fd).st_ino)==identity,'ORIGINAL_LEDGER_OPEN_IDENTITY_CHANGED');db=sqlite3.connect('file:'+str(LEDGER)+'?mode=ro',uri=True,timeout=1);deadline=time.monotonic()+deadline_seconds;db.set_progress_handler(lambda:1 if time.monotonic()>deadline else 0,1000);db.execute('PRAGMA busy_timeout=1000');db.execute('PRAGMA trusted_schema=OFF');db.execute('PRAGMA cache_size=-8192');db.execute('PRAGMA temp_store=MEMORY');db.execute('PRAGMA hard_heap_limit=67108864');db.execute('PRAGMA query_only=ON');db.execute('ATTACH DATABASE ? AS prior',('file:'+str(backup_path)+'?mode=ro',));db.execute('BEGIN');current=auditor.audit_snapshot(db,existing_transaction=True)
-  unchanged=['accountId','inceptionAt','initialMicroUsd','inceptionPriceSha256','inceptionLamports','roundingResidualMicroUsd'];need(all(current[k]==stopped[k]for k in unchanged)and current['revision']>=stopped['revision'],'ORIGINAL_FUNDING_INCEPTION_OR_REVISION_CHANGED');prefix={}
-  for table in['actions','journal']:
-   columns=db.execute('PRAGMA main.table_info('+table+')').fetchall();prior_columns=db.execute('PRAGMA prior.table_info('+table+')').fetchall();need(columns==prior_columns and len(columns)>0,'FINANCIAL_PREFIX_SCHEMA_CHANGED');count=db.execute('SELECT count(*) FROM prior.'+table).fetchone()[0];need(count==stopped['tableCounts'][table],'STOPPED_BACKUP_ROW_COUNT_CHANGED');missing=db.execute('SELECT count(*) FROM (SELECT * FROM prior.'+table+' EXCEPT SELECT * FROM main.'+table+')').fetchone()[0];need(missing==0,'OLD_FINANCIAL_ROWS_MISSING_OR_MUTATED');prefix[table]={'priorRows':count,'exactPriorRowsRetained':True,'currentRows':current['tableCounts'][table]}
-  need(db.total_changes==0 and db.execute('PRAGMA query_only').fetchone()==(1,),'READ_ONLY_FINANCIAL_VERIFICATION_REQUIRED');need(time.monotonic()<=deadline,'FINANCIAL_PREFIX_VERIFICATION_DEADLINE');named=LEDGER.lstat();need((named.st_dev,named.st_ino)==identity,'ORIGINAL_LEDGER_INODE_CHANGED');return {'identityAndInceptionPreserved':True,'initialFundingAndRoundingPreserved':True,'journalAndActionPrefixPreserved':True,'priorRevision':stopped['revision'],'currentRevision':current['revision'],'currentStateBodySha256':current['stateBodySha256'],'prefix':prefix,'financialDatabaseWrites':0,'backupRestored':False,'financial':current}
+  need((os.fstat(fd).st_dev,os.fstat(fd).st_ino)==identity,'ORIGINAL_LEDGER_OPEN_IDENTITY_CHANGED')
+  # Root opens/initializes ONLY the private frozen backup, never the original.
+  # Its established read transaction and FDs remain usable during owner drop.
+  prior=sqlite3.connect('file:'+str(backup_path)+'?mode=ro',uri=True,timeout=1);prior.execute('PRAGMA query_only=ON');prior.execute('PRAGMA trusted_schema=OFF');prior.execute('PRAGMA cache_size=-8192');prior.execute('PRAGMA temp_store=MEMORY');prior.execute('PRAGMA hard_heap_limit=67108864');prior.set_progress_handler(lambda:1 if time.monotonic()>deadline else 0,1000);prior.execute('BEGIN');old_counts={name:prior.execute('SELECT count(*) FROM '+name).fetchone()[0]for name in['actions','journal']};old_columns={name:prior.execute('PRAGMA table_info('+name+')').fetchall()for name in old_counts}
+  with auditor.original_owner(uid,owner.pw_gid):
+   db=sqlite3.connect('file:'+str(LEDGER)+'?mode=ro',uri=True,timeout=1)
+   try:
+    db.execute('PRAGMA query_only=ON');db.execute('PRAGMA trusted_schema=OFF');db.execute('PRAGMA cache_size=-8192');db.execute('PRAGMA temp_store=MEMORY');db.set_progress_handler(lambda:1 if time.monotonic()>deadline else 0,1000);db.execute('BEGIN');current=auditor.audit_snapshot(db,existing_transaction=True);unchanged=['accountId','inceptionAt','initialMicroUsd','inceptionPriceSha256','inceptionLamports','roundingResidualMicroUsd'];need(all(current[k]==stopped[k]for k in unchanged)and current['revision']>=stopped['revision'],'ORIGINAL_FUNDING_INCEPTION_OR_REVISION_CHANGED');prefix={}
+    for table in['actions','journal']:
+     columns=db.execute('PRAGMA table_info('+table+')').fetchall();need(columns==old_columns[table]and len(columns)>0,'FINANCIAL_PREFIX_SCHEMA_CHANGED');count=old_counts[table];need(count==stopped['tableCounts'][table],'STOPPED_BACKUP_ROW_COUNT_CHANGED')
+     query='SELECT * FROM journal WHERE revision<=? ORDER BY revision'if table=='journal'else'SELECT a.* FROM actions a JOIN journal j ON j.action_id=a.id WHERE j.revision>0 AND j.revision<=? ORDER BY a.id';old_query='SELECT * FROM '+table+' ORDER BY '+('revision'if table=='journal'else'id');sentinel=object();checked=0
+     for old_row,current_row in itertools.zip_longest(prior.execute(old_query),db.execute(query,(stopped['revision'],)),fillvalue=sentinel):
+      need(old_row is not sentinel and current_row is not sentinel and old_row==current_row,'OLD_FINANCIAL_ROWS_MISSING_OR_MUTATED');checked+=1;need(time.monotonic()<=deadline,'FINANCIAL_PREFIX_VERIFICATION_DEADLINE')
+     need(checked==count,'FINANCIAL_PREFIX_ROW_COUNT_CHANGED');prefix[table]={'priorRows':count,'exactPriorRowsRetained':True,'currentRows':current['tableCounts'][table]}
+    need(db.total_changes==0 and prior.total_changes==0 and db.execute('PRAGMA query_only').fetchone()==(1,)and prior.execute('PRAGMA query_only').fetchone()==(1,),'READ_ONLY_FINANCIAL_VERIFICATION_REQUIRED');named=LEDGER.lstat();need((named.st_dev,named.st_ino)==identity,'ORIGINAL_LEDGER_INODE_CHANGED');return {'identityAndInceptionPreserved':True,'initialFundingAndRoundingPreserved':True,'journalAndActionPrefixPreserved':True,'priorRevision':stopped['revision'],'currentRevision':current['revision'],'currentStateBodySha256':current['stateBodySha256'],'prefix':prefix,'comparison':'whole-column-ordered-exact-prefix','originalSqliteOwnerUid':uid,'financialDatabaseWrites':0,'backupRestored':False,'financial':current}
+   finally:
+    if db.in_transaction:db.execute('ROLLBACK')
+    db.close()
  finally:
-  if db is not None:
-   if db.in_transaction:db.execute('ROLLBACK')
-   db.close()
+  if prior is not None:
+   if prior.in_transaction:prior.execute('ROLLBACK')
+   prior.close()
   os.close(fd)
 def wait_for_new_public_status(commit,uid,not_before,maximum_seconds=30):
  deadline=time.monotonic()+maximum_seconds

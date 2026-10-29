@@ -5,7 +5,7 @@ Run through existing owner/root access or as the existing poe-runtime user.
 No initialization, state import, checkpoint, service command, wallet, secret or
 provider operation occurs. An active WAL is included by SQLite's RO snapshot.
 """
-import errno,fcntl,hashlib,json,os,pathlib,pwd,sqlite3,stat,subprocess,sys,time
+import contextlib,errno,fcntl,hashlib,json,os,pathlib,pwd,sqlite3,stat,subprocess,sys,time
 ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e'
 INCEPTION=1793052456212
 INCEPTION_ISO='2026-10-26T22:07:36.212Z'
@@ -31,6 +31,19 @@ def read_regular(path,limit,uid,mode):
  try:
   s=os.fstat(fd);need(stat.S_ISREG(s.st_mode)and s.st_nlink==1 and s.st_uid==uid and stat.S_IMODE(s.st_mode)==mode and 0<s.st_size<=limit,'BOUNDED_EXACT_OWNER_READ_REQUIRED');raw=os.read(fd,s.st_size+1);a=os.fstat(fd);need(len(raw)==s.st_size and(s.st_size,s.st_mtime_ns,s.st_ctime_ns)==(a.st_size,a.st_mtime_ns,a.st_ctime_ns),'AUDIT_INPUT_CHANGED');return raw
  finally:os.close(fd)
+@contextlib.contextmanager
+def original_owner(uid,gid):
+ """Legitimate root-only privilege drop; SQLite auxiliaries remain app-owned."""
+ need(type(uid)is int and uid>0 and type(gid)is int and gid>=0,'ORIGINAL_NONROOT_SQLITE_OWNER_REQUIRED');before_uid=os.geteuid();before_gid=os.getegid();before_groups=os.getgroups();need(before_uid in[0,uid],'ORIGINAL_SQLITE_OWNER_ACCESS_REQUIRED');dropped=before_uid==0
+ if not dropped:
+  need(os.getegid()==gid,'ORIGINAL_SQLITE_GROUP_REQUIRED');yield;return
+ try:
+  os.setgroups([]);os.setegid(gid);os.seteuid(uid)
+  try:
+   need(os.geteuid()==uid and os.getegid()==gid,'ORIGINAL_SQLITE_OWNER_CONTEXT_REQUIRED');yield
+  finally:os.seteuid(0)
+ finally:
+  os.setegid(before_gid);os.setgroups(before_groups)
 def service_status():
  r=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property=MainPID,NRestarts,User,Group,LoadState,ActiveState,SubState,UnitFileState'],capture_output=True,text=True,timeout=5,env={'PATH':'/usr/bin:/bin','LANG':'C'},check=False);need(r.returncode==0 and len(r.stdout)<=4096 and len(r.stderr)<=4096,'ORIGINAL_SERVICE_METADATA_UNAVAILABLE');allowed={'MainPID','NRestarts','User','Group','LoadState','ActiveState','SubState','UnitFileState'};return{key:value for line in r.stdout.splitlines()for key,sep,value in[line.partition('=')]if sep and key in allowed}
 def process_ownership(database,owner_lock,uid,proc=pathlib.Path('/proc')):
@@ -76,9 +89,10 @@ def main():
    try:fcntl.flock(lease,fcntl.LOCK_EX|fcntl.LOCK_NB);owner_held=False;fcntl.flock(lease,fcntl.LOCK_UN)
    except BlockingIOError:owner_held=True
   finally:os.close(lease)
-  db=sqlite3.connect('file:'+str(DB)+'?mode=ro',uri=True,timeout=1)
-  try:result=audit_snapshot(db)
-  finally:db.close()
+  with original_owner(uid,pwd.getpwnam('poe-runtime').pw_gid):
+   db=sqlite3.connect('file:'+str(DB)+'?mode=ro',uri=True,timeout=1)
+   try:result=audit_snapshot(db)
+   finally:db.close()
   current=DB.lstat();need((current.st_dev,current.st_ino)==(dbmeta['device'],dbmeta['inode'])and(current.st_dev,current.st_ino)==(os.fstat(fd).st_dev,os.fstat(fd).st_ino),'ORIGINAL_LEDGER_INODE_CHANGED')
  finally:os.close(fd)
  ownership=process_ownership(dbmeta,locked,uid);after=service_status();sidecars={suffix:file_metadata(pathlib.Path(str(DB)+suffix),uid,True)for suffix in['-wal','-shm','-journal']};status=json.loads(read_regular(PUBLIC,4096,uid,0o644));need(status.get('accountId')==ACCOUNT and status.get('inceptionAt')==INCEPTION_ISO,'ORIGINAL_PUBLIC_IDENTITY_MISMATCH');safe_public={key:status.get(key)for key in['accountId','inceptionAt','release','strategy','generatedAt','entriesDisabled','flowVerified','reportingConfigured']}

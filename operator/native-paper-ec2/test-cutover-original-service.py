@@ -11,14 +11,24 @@ class Tests(unittest.TestCase):
  def test_post_start_prefix_allows_new_reconciliation_rows_preserving_every_prior_column(self):
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-post-start-prefix-')as t:
    d=pathlib.Path(t);db,writer,state,stopped,backups,backup=self.post_start_fixture(d);state['revision']=2;writer.execute('UPDATE financial_state SET body=?',(json.dumps(state),));writer.execute('INSERT INTO actions VALUES(?,?,?)',('new-action','NEW_HASH','NEW_RESULT'));writer.execute('INSERT INTO journal VALUES(?,?,?,?,?)',(2,'new-action',m.INCEPTION+2,'reconcile','NEW_DETAIL'));original_read=m.read
-   with patch.object(m,'LEDGER',db),patch.object(m,'BACKUPS',backups),patch.object(m.pwd,'getpwnam',return_value=types.SimpleNamespace(pw_uid=os.getuid())),patch.object(m,'read',side_effect=lambda path,limit,uid=0:original_read(path,limit,os.getuid())):proof=m.verify_live_financial_prefix(auditor,stopped,backup)
+   with patch.object(m,'LEDGER',db),patch.object(m,'BACKUPS',backups),patch.object(m.pwd,'getpwnam',return_value=types.SimpleNamespace(pw_uid=os.getuid(),pw_gid=os.getgid())),patch.object(m,'read',side_effect=lambda path,limit,uid=0:original_read(path,limit,os.getuid())):proof=m.verify_live_financial_prefix(auditor,stopped,backup)
    self.assertTrue(proof['journalAndActionPrefixPreserved']);self.assertEqual(proof['currentRevision'],2);self.assertEqual(proof['prefix']['actions'],{'priorRows':1,'exactPriorRowsRetained':True,'currentRows':2});self.assertEqual(proof['prefix']['journal']['priorRows'],2);self.assertFalse(proof['backupRestored']);writer.close()
  def test_post_start_prefix_rejects_mutated_historical_payloads_despite_unchanged_counts(self):
   for statement in["UPDATE journal SET detail='MUTATED_DETAIL' WHERE revision=1","UPDATE actions SET result='MUTATED_RESULT' WHERE id='old-action'","UPDATE actions SET payload_hash='MUTATED_HASH' WHERE id='old-action'"]:
    with self.subTest(statement=statement),tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-post-start-mutation-')as t:
     d=pathlib.Path(t);db,writer,state,stopped,backups,backup=self.post_start_fixture(d);writer.execute(statement);original_read=m.read
-    with patch.object(m,'LEDGER',db),patch.object(m,'BACKUPS',backups),patch.object(m.pwd,'getpwnam',return_value=types.SimpleNamespace(pw_uid=os.getuid())),patch.object(m,'read',side_effect=lambda path,limit,uid=0:original_read(path,limit,os.getuid())),self.assertRaisesRegex(m.Refused,'OLD_FINANCIAL_ROWS_MISSING_OR_MUTATED'):m.verify_live_financial_prefix(auditor,stopped,backup)
+    with patch.object(m,'LEDGER',db),patch.object(m,'BACKUPS',backups),patch.object(m.pwd,'getpwnam',return_value=types.SimpleNamespace(pw_uid=os.getuid(),pw_gid=os.getgid())),patch.object(m,'read',side_effect=lambda path,limit,uid=0:original_read(path,limit,os.getuid())),self.assertRaisesRegex(m.Refused,'OLD_FINANCIAL_ROWS_MISSING_OR_MUTATED'):m.verify_live_financial_prefix(auditor,stopped,backup)
     writer.close()
+ def test_preinitialized_private_backup_cursor_needs_no_path_access_during_owner_read(self):
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-private-backup-cursor-')as t:
+   d=pathlib.Path(t);db,writer,state,stopped,backups,backup=self.post_start_fixture(d);folder=pathlib.Path(backup['file']).parent;original_read=m.read
+   @contextlib.contextmanager
+   def inaccessible_backup_during_owner_read(uid,gid):
+    folder.chmod(0)
+    try:yield
+    finally:folder.chmod(0o700)
+   with patch.object(m,'LEDGER',db),patch.object(m,'BACKUPS',backups),patch.object(m.pwd,'getpwnam',return_value=types.SimpleNamespace(pw_uid=os.getuid(),pw_gid=os.getgid())),patch.object(m,'read',side_effect=lambda path,limit,uid=0:original_read(path,limit,os.getuid())),patch.object(auditor,'original_owner',side_effect=inaccessible_backup_during_owner_read):proof=m.verify_live_financial_prefix(auditor,stopped,backup)
+   self.assertTrue(proof['journalAndActionPrefixPreserved']);self.assertEqual(proof['comparison'],'whole-column-ordered-exact-prefix');writer.close()
  def test_public_source_wait_checks_new_actual_account_release_and_timestamp(self):
   now=int(time.time()*1000);at=datetime.datetime.fromtimestamp(now/1000,datetime.timezone.utc).isoformat().replace('+00:00','Z');value={'accountId':m.ACCOUNT_ID,'inceptionAt':'2026-10-26T22:07:36.212Z','release':'a'*40,'mode':'PAPER','liveTrading':False,'generatedAt':at}
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-new-public-status-')as t:
@@ -80,7 +90,7 @@ class Tests(unittest.TestCase):
    self.assertEqual(current.resolve(),releases/commit);self.assertEqual(drop.read_bytes(),b'NEW_FINANCIAL_DROPIN');self.assertEqual(manifest.read_bytes(),b'NEW_FINANCIAL_MANIFEST');self.assertEqual(events,[('stop','poe-runtime.service'),('daemon-reload',),('start','poe-runtime.service')]);self.assertEqual(json.loads((record_dir/'transition.json').read_text())['phase'],'observer-rollback-refused-current-financial-source-resumed');self.assertFalse((record_dir/'retired-dropin.conf').exists())
  def test_current_ledger_symlink_and_foreign_lock_are_refused(self):
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-cutover-files-')as t:
-   d=pathlib.Path(t);db=d/'TEST_ONLY.sqlite';writer,_=fixture.Tests().fixture(db);writer.close();db.chmod(0o600);db.with_name(db.name+'.owner.lock').touch(mode=0o600);owner=types.SimpleNamespace(pw_uid=os.getuid())
+   d=pathlib.Path(t);db=d/'TEST_ONLY.sqlite';writer,_=fixture.Tests().fixture(db);writer.close();db.chmod(0o600);db.with_name(db.name+'.owner.lock').touch(mode=0o600);owner=types.SimpleNamespace(pw_uid=os.getuid(),pw_gid=os.getgid())
    with patch.object(m,'LEDGER',db),patch.object(m.pwd,'getpwnam',return_value=owner):
     self.assertEqual(m.original_audit(auditor)['accountId'],m.ACCOUNT_ID);fd=m.lease();os.close(fd);db.with_name(db.name+'.owner.lock').chmod(0o644)
     with self.assertRaisesRegex(m.Refused,'FINANCIAL_OWNER_LEASE'):m.lease()
@@ -89,8 +99,24 @@ class Tests(unittest.TestCase):
  def test_backup_is_exact_current_wal_state_and_does_not_reseed_or_touch_source(self):
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-original-backup-')as t:
    d=pathlib.Path(t);db=d/'TEST_ONLY.sqlite';writer,state=fixture.Tests().fixture(db);writer.execute('PRAGMA journal_mode=WAL');state['revision']=1;writer.execute('UPDATE financial_state SET body=?',(json.dumps(state),));writer.execute('INSERT INTO actions VALUES(?)',('fixture',));writer.execute('INSERT INTO journal VALUES(1,?)',('fixture',));reader=sqlite3.connect('file:'+str(db)+'?mode=ro',uri=True);expected=auditor.audit_snapshot(reader);reader.close();dest=d/'TEST_ONLY-backup.sqlite';original_read=m.read
-   with patch.object(m,'LEDGER',db),patch.object(m,'read',side_effect=lambda path,limit,uid=0:original_read(path,limit,os.getuid())):result=m.snapshot_backup(dest,auditor,expected)
+   with patch.object(m,'LEDGER',db),patch.object(m.pwd,'getpwnam',return_value=types.SimpleNamespace(pw_uid=os.getuid(),pw_gid=os.getgid())),patch.object(m,'read',side_effect=lambda path,limit,uid=0:original_read(path,limit,os.getuid())):result=m.snapshot_backup(dest,auditor,expected)
    check=sqlite3.connect(dest);self.assertEqual(auditor.audit_snapshot(check),expected);check.close();self.assertEqual(result['financial']['revision'],1);self.assertFalse(result['restorePerformed']);self.assertEqual(state['initialMicroUsd'],'1000000000');self.assertEqual(writer.execute('SELECT count(*) FROM journal').fetchone(),(2,));writer.close()
+ def test_every_original_sqlite_open_occurs_inside_owner_context_and_auxiliaries_keep_owner(self):
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-owner-sqlite-')as t:
+   d=pathlib.Path(t);path=d/'TEST_ONLY.sqlite';writer,state=fixture.Tests().fixture(path);writer.execute('PRAGMA journal_mode=WAL');writer.close();path.chmod(0o600);active={'value':False};owner=types.SimpleNamespace(pw_uid=os.getuid(),pw_gid=os.getgid());real_connect=sqlite3.connect
+   @contextlib.contextmanager
+   def witness(uid,gid):
+    self.assertEqual((uid,gid),(os.getuid(),os.getgid()));active['value']=True
+    try:yield
+    finally:active['value']=False
+   def connect(name,*args,**kwargs):
+    if str(path)in str(name):self.assertTrue(active['value'],'original SQLite opened outside owner context')
+    return real_connect(name,*args,**kwargs)
+   with patch.object(m,'LEDGER',path),patch.object(m.pwd,'getpwnam',return_value=owner),patch.object(auditor,'original_owner',side_effect=witness),patch.object(m.sqlite3,'connect',side_effect=connect):result=m.original_audit(auditor)
+   self.assertEqual(result['accountId'],m.ACCOUNT_ID)
+   for suffix in['-wal','-shm']:
+    auxiliary=pathlib.Path(str(path)+suffix)
+    if auxiliary.exists():self.assertEqual(auxiliary.stat().st_uid,os.getuid())
  def test_dangling_backup_symlink_is_refused_without_creating_target(self):
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-backup-link-')as t:
    d=pathlib.Path(t);target=d/'DO_NOT_CREATE.sqlite';link=d/'TEST_ONLY-backup.sqlite';link.symlink_to(target)

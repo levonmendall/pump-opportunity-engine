@@ -93,8 +93,26 @@ status to identify the new original-account source. It verifies one live
 read-only WAL snapshot against the hash-verified stopped backup: original
 funding, inception, inception-price hash and rounding remain unchanged, revision
 does not decrease, and every column of every old `actions` and `journal` row is
-retained. New appended records are allowed. The prefix query has a five-second
+retained by ordered exact row streams bounded to the stopped revision. New
+appended records are allowed. The prefix query has a five-second
 progress deadline and a 64 MiB SQLite heap bound; it never restores a backup.
+
+Every original-database SQLite open, query, backup read and close runs under
+its existing `poe-runtime` effective UID/GID, with supplementary groups cleared
+when a legitimate root caller drops privileges and restored in `finally`.
+Read-only SQLite can create WAL/SHM auxiliary files, including for a clean WAL
+mode database. Those files must retain the application's owner; root must not
+open the original SQLite database merely because it uses `mode=ro`.
+
+Backups are constructed/audited/closed in a new private same-owner temporary
+directory, then exact validated single-file bytes are frozen into the exclusive
+root backup. This is a backup of the same original account, not initialization
+or an additional financial writer. The prefix verifier preinitializes only the
+protected frozen-backup read connection as root, then streams both immutable
+backup rows and the consistent live read snapshot while acting as the original
+owner. No live immutable-mode or no-lock VFS shortcut is used. A preopened root
+backup destination with an in-memory journal was rejected after a real
+nonroot restrictive-directory experiment returned a read-only database error.
 
 Root-private append-only phase receipts retain the detailed financial audit.
 One nonsecret receipt, `/var/lib/poe-public/upgrade-verification.json`, is written
