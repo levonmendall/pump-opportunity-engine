@@ -1,0 +1,93 @@
+{
+  "checkedAt": "2026-10-29T03:41:08.144Z",
+  "dashboardRelease": "d415184d541db5f1af0d234be631447fe213255f",
+  "networkRequests": 6,
+  "method": "Actual public GETs forwarded through verified-TLS session proxy; Chromium rendered returned live HTML/JSON",
+  "fixturesPublished": false,
+  "credentialsRead": false,
+  "financialFilesRead": false,
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "5e55d8b939de99698ddb311a282461931fcbc957",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T03:40:26.658Z",
+        "sequence": "5938",
+        "assessments": 132,
+        "passes": 5,
+        "entries": "paused",
+        "positions": 0,
+        "trades": 0,
+        "receiver": "2026-10-29T03:40:44.527Z"
+      },
+      "last": {
+        "generatedAt": "2026-10-29T03:40:42.345Z",
+        "sequence": "5939",
+        "assessments": 134,
+        "passes": 5,
+        "receiver": "2026-10-29T03:40:59.615Z",
+        "entries": "paused",
+        "market": "observing"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot",
+        "/api/snapshot",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "pnlVisible": true,
+      "liveMarketSource": true
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "5e55d8b939de99698ddb311a282461931fcbc957",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T03:40:42.345Z",
+        "sequence": "5939",
+        "assessments": 134,
+        "passes": 5,
+        "entries": "paused",
+        "positions": 0,
+        "trades": 0,
+        "receiver": "2026-10-29T03:40:59.615Z"
+      },
+      "last": {
+        "generatedAt": "2026-10-29T03:40:42.345Z",
+        "sequence": "5939",
+        "assessments": 134,
+        "passes": 5,
+        "receiver": "2026-10-29T03:40:59.615Z",
+        "entries": "paused",
+        "market": "observing"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "pnlVisible": true,
+      "liveMarketSource": true
+    }
+  ]
+}

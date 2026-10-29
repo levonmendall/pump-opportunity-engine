@@ -21,6 +21,18 @@ Current status supersedes the earlier staging/refusal history above: native sour
 
 The application artifact is frozen read-only at `/tmp/poe-native-paper-output-original-issue11-20261029` in this workspace. The installation payload is already at `/var/tmp/poe-issue11-staging` on EC2, private UID 994. The operating profile starts with six deep-observation slots and one PAPER position as initial exposure validation, preserving the frozen buying rule and existing financial limits. These are not permanent market-capacity limits. Fresh migration discovery supplies current candidates; no historical hint is assumed a supported current pool.
 
+## Current reporting result — installed and publicly verified
+
+Owner's corrected reporter installer applied without restarting supervisorPID2437741 or changing the ledger inode. Its 95-second verification ended before accepted source evidence was available; preserve that incomplete receipt. Subsequent real Render snapshots verify that the original publisher is active and authenticating. Do not rerun the installer.
+
+The existing dashboard now runs reviewed commit `d415184d541db5f1af0d234be631447fe213255f`, deployment `dep-dbhbvi8m7kps73eg0b6g`, live2026-10-29 03:39:50.135914UTC. It renders native diagnostics from the original financial snapshot; original P&L/manual refresh/auth/account/source remain intact. No new service/account/channel. Retired `/api/pilot` returns410; credentials and historical financial evidence have not been deleted.
+
+230full/48focused/36MJS tests, build/compile, offline browser guards and actual390/1280public browser rendering passed. Successive actual source timestamps/counters and unauthorizedPOST401 verified after the receiver restart. Financial executable remains5e55; reporter5735/2f6e and corrected installerb2fb are separately pinned in the current evidence.
+
+PAPER entries remain paused, no fills/positions/tradingP&L observed. Current private ACK/readiness gates cannot be read by the administration runner (EACCES13); public delivery receipt is absent although Render delivery is real. Offline installed-supervisor/publisher replay does not reproduce a defect. Next owner-only step is the bounded read-only [health/readiness command](../evidence/issue11-consolidation-20261028/reporting-delivery-20261029/OWNER_READINESS_DIAGNOSTIC.txt). This is an access requirement, not another trading authorization or service restart. Preserve all readiness/financial safeguards.
+
+Actual evidence: [reporting-delivery-20261029](../evidence/issue11-consolidation-20261028/reporting-delivery-20261029/verification.json). The staging/refusal history below is historical and does not supersede this result.
+
 ## Standard start completed; reporting diagnosis pending
 
 Owner ran the standard `systemctl start` command. Actual host run40806417023 confirms the native Python supervisor active at2026-10-29 02:26:29UTC. Subsequent runs40806962032/40807595487 confirm fresh original-account/source5e status and six currentshortlist candidates. The whole-unit supervisor remains stable; sourcechildgenerations changed, so uninterrupted child operation is not claimed. Keep the running financial manager; do not repeat bootstrap/ordering/start actions.
