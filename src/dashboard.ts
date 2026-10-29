@@ -216,7 +216,7 @@ body.poe-compact-view .compact-folded{min-height:0}
 <div class="cards" id="cards"><div class="stat top empty"><div class="stat-label">PORTFOLIO EQUITY</div><div class="stat-value">—</div><div class="stat-foot">Awaiting verified balance</div></div><div class="stat top empty"><div class="stat-label">TOTAL TRADING P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">No actual PAPER record</div></div><div class="stat top empty"><div class="stat-label">CASH / RESERVED SOL</div><div class="stat-value">—</div><div class="stat-foot">Awaiting account snapshot</div></div><div class="stat top empty"><div class="stat-label">ECONOMIC P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">Operating costs not yet reported</div></div></div></section>
 <section class="panel chart-panel" id="performance" aria-labelledby="performanceTitle">
 <div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio P&amp;L trajectory</h2><p class="panel-sub" id="chartBasis">Awaiting the source-reported P&amp;L convention</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
-<div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio trading profit and loss with explicit gaps for missing historical data"></svg></div>
+<div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio trading P&L line graph. Solid lines join verified readings, dashed lines mark short unsampled intervals, and longer gaps remain disconnected"></svg></div>
 <div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend" id="chartLegend">SOURCE P&amp;L / USD</span></div>
 <div class="chart-controls"><span class="chart-window-label" id="chartWindowLabel">RECENT 24H · ZOOMED VALUE SCALE</span><button class="chart-range-toggle" id="chartRangeToggle" type="button" aria-pressed="false" hidden>View full history</button></div>
 <div class="chart-note" id="chartNote">Actual observations only. Zero is the reference line; missing history is not treated as zero.</div>
@@ -344,6 +344,43 @@ function tradingPnlTimeline(points){
  }
  return timeline;
 }
+/** Build a real line from verified values. A source gap marker at +1ms is
+ * reporting metadata, not a distinct P&L observation. Ordinary ~15s samples
+ * are joined; short unavailable intervals are dashed and longer gaps stay blank.
+ * No financial source value or timestamp is modified. */
+function tradingPnlLines(rows){
+ const solid=[],shortGaps=[],isolated=[];
+ let run=[],previous=null,unavailable=false;
+ const flush=()=>{
+  if(run.length>1)solid.push(run);
+  else if(run.length===1)isolated.push(run[0]);
+  run=[];
+ };
+ for(const point of rows){
+  if(point.conflict){flush();previous=null;unavailable=true;continue;}
+  if(point.tradingUsd===null){
+   const delta=previous===null?Infinity:Date.parse(point.at)-Date.parse(previous.at);
+   // The publisher uses previous.at+1ms for a conservative gap marker.
+   // It is not an additional market/financial measurement.
+   if(delta>=0&&delta<=100)continue;
+   unavailable=true;
+   continue;
+  }
+  if(previous===null){run=[point];previous=point;unavailable=false;continue;}
+  const gapMs=Date.parse(point.at)-Date.parse(previous.at);
+  if(gapMs>0&&gapMs<=22000&&!unavailable){
+   run.push(point);
+  }else{
+   flush();
+   if(gapMs>0&&gapMs<=45000)shortGaps.push([previous,point]);
+   run=[point];
+  }
+  previous=point;unavailable=false;
+ }
+ flush();
+ const linked=new Set(shortGaps.flatMap(pair=>pair));
+ return {solid,shortGaps,isolated:isolated.filter(point=>!linked.has(point))};
+}
 function plot(points){
  const root=byId('chart');root.replaceChildren();
  const width=Math.max(305,Math.min(960,Math.floor(root.parentElement.clientWidth||900)));
@@ -382,23 +419,24 @@ function plot(points){
  const fmt=n=>(n<0?'−$':'$')+Math.abs(n).toFixed(precision);
  for(let i=0;i<5;i++){const value=high-(high-low)*i/4;root.append(makeSvg('text',{x:left-7,y:top+(bottom-top)*i/4+4,'text-anchor':'end',fill:'#a4b9d2','font-size':10},fmt(value)))}
  if(low<=0&&high>=0)root.append(makeSvg('line',{x1:left,y1:y(0),x2:right,y2:y(0),stroke:'#6489a5','stroke-dasharray':'5 4','stroke-width':1}));
- let group=[];
- const flush=()=>{
-  if(!group.length)return;
-  if(group.length>1){
-   const d=group.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.tradingUsd).toFixed(2)).join(' ');
-   root.append(makeSvg('path',{'data-chart-series':'trading-pnl-line',d,stroke:'#90f7df','stroke-width':3.2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
-  }
-  const last=group[group.length-1];
-  root.append(makeSvg('circle',{'data-chart-point':'last-verified',cx:x(last.at),cy:y(last.tradingUsd),r:3.4,fill:'#d4fff7',stroke:'#07121e','stroke-width':1.3}));
-  group=[];
- };
- for(const point of visible){
-  if(point.tradingUsd===null){flush();continue;}
-  if(group.length&&Date.parse(point.at)-Date.parse(group[group.length-1].at)>90000)flush();
-  group.push(point);
+ const series=tradingPnlLines(visible);
+ for(const segment of series.solid){
+  const d=segment.map((point,i)=>(i?'L':'M')+x(point.at).toFixed(2)+' '+y(point.tradingUsd).toFixed(2)).join(' ');
+  root.append(makeSvg('path',{'data-chart-series':'trading-pnl-line',d,stroke:'#92ffe7','stroke-width':3.8,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
  }
- flush();
+ for(const [before,after] of series.shortGaps){
+  const d='M'+x(before.at).toFixed(2)+' '+y(before.tradingUsd).toFixed(2)+' L'+x(after.at).toFixed(2)+' '+y(after.tradingUsd).toFixed(2);
+  const bridge=makeSvg('path',{'data-chart-gap-bridge':'short-unobserved-interval',d,stroke:'#a4d7d0','stroke-width':2.1,'stroke-dasharray':'3 5',fill:'none','stroke-linecap':'round'});
+  bridge.append(makeSvg('title',{},'Short interval without a verified intermediate P&L reading'));
+  root.append(bridge);
+ }
+ // Only genuinely isolated samples and the newest value need markers;
+ // thousands of markers would disguise the verified line as a dot chart.
+ for(const point of series.isolated){
+  root.append(makeSvg('circle',{'data-chart-point':'isolated',cx:x(point.at),cy:y(point.tradingUsd),r:2.8,fill:'#c6fbee',stroke:'#07121e','stroke-width':1}));
+ }
+ const newest=valid[valid.length-1];
+ if(newest)root.append(makeSvg('circle',{'data-chart-point':'last-verified',cx:x(newest.at),cy:y(newest.tradingUsd),r:4,fill:'#effffb',stroke:'#07121e','stroke-width':1.6}));
  root.append(makeSvg('text',{x:left,y:height-12,fill:'#9bacc5','font-size':10},new Date(from).toISOString().slice(5,16).replace('T',' ')+' UTC'));
  root.append(makeSvg('text',{x:right,y:height-12,'text-anchor':'end',fill:'#9bacc5','font-size':10},new Date(end).toISOString().slice(5,16).replace('T',' ')+' UTC'));
 }
@@ -414,7 +452,7 @@ function showSnapshot(s,received,f){
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
  put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED P&L LINE':'HISTORY UNAVAILABLE');
  put('freshness','Generated '+s.times.generatedAt+(s.intelligence?' · Financial valuation ':' · Market ')+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
- put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps. Line segments connect consecutive verified trading observations only; no missing values are interpolated.');
+ put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps. Solid lines connect closely spaced verified P&L readings. Dashed segments indicate short intervals without intermediate readings; longer gaps remain blank. No missing financial values are invented.');
  if(!s.intelligence){
   const state=String(f.state).toUpperCase();
   const bad=f.state==='stale'||f.state==='unavailable';
