@@ -1,0 +1,14 @@
+................................................F
+======================================================================
+FAIL: test_unreviewed_package_and_replaced_hotfix_refuse (__main__.Tests.test_unreviewed_package_and_replaced_hotfix_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py", line 141, in test_unreviewed_package_and_replaced_hotfix_refuse
+    with self.assertRaisesRegex(f.Refused,'EXACT_FORWARD_PACKAGE_IDENTITY_REQUIRED'):f.bundle(value.stage,os.getuid(),f.sha(f.encoded(index)),value.driver_sha,s)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refused not raised
+
+----------------------------------------------------------------------
+Ran 49 tests in 3.037s
+
+FAILED (failures=1)

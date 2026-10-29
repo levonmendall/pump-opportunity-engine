@@ -1,0 +1,29 @@
+{
+  "actualFutureBundlePublisherAndWorkerUsedAndPinned": true,
+  "blockingFindings": [],
+  "completedAt": 1793305826872,
+  "deepSlots": 4,
+  "exactHistoricalForensicHashFieldsPreserved": true,
+  "expectedGzipRoundTrips": 10,
+  "expectedIndexedArtifacts": 9,
+  "explicitTwoPositionStageAndConfigurationImport": true,
+  "hashesAfter": {
+    "/tmp/poe-prepare-two-position-package.py": "486a2c27558e483eafc386d4df0152429540ccd2cda89e9474dd640c772590d1",
+    "/tmp/poe-update-two-position-stager.py": "e3a40807f99e58e75df9150e1fc984baaaccd39499648f7d1caf60c68cb2bbef"
+  },
+  "hashesBefore": {
+    "/tmp/poe-prepare-two-position-package.py": "486a2c27558e483eafc386d4df0152429540ccd2cda89e9474dd640c772590d1",
+    "/tmp/poe-update-two-position-stager.py": "e3a40807f99e58e75df9150e1fc984baaaccd39499648f7d1caf60c68cb2bbef"
+  },
+  "kind": "POE_INDEPENDENT_TWO_POSITION_RECIPES_STATIC_REVIEW",
+  "localOnlyNoRootOrServiceControlCalls": true,
+  "noForensicExporterPayloadOrExecution": true,
+  "nonblockingNotes": [
+    "Stager recipe trusts package-pins transportSha256 rather than independently hashing transport.json; existing EC2 stager verifies the exact transport hash before staging, and final independent review remains required.",
+    "Final source/configuration/helper/artifact pins and existing workflow diff still require exact-byte review after freezing."
+  ],
+  "packageExists": false,
+  "scriptsExecuted": false,
+  "separateOldPublisherAndWorkerPins": true,
+  "syntaxAndAST": true
+}

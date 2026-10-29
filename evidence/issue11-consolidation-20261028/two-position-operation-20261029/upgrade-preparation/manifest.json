@@ -1,0 +1,71 @@
+{
+  "kind": "original-two-position-upgrade-draft-only",
+  "deployable": false,
+  "files": [
+    {
+      "file": "DRAFT_NOT_DEPLOYABLE.md",
+      "bytes": 3705,
+      "sha256": "1bd1be51d4a66733473c05d1679f2e2983d4f5faff4e81344a879ce7bfbc13f7"
+    },
+    {
+      "file": "FINAL_PIN_CHECKLIST.md",
+      "bytes": 4306,
+      "sha256": "8ad677b105675b095b1bd4ee42bfcc6454f523ec2d738fd8ed063fd1dec6e627"
+    },
+    {
+      "file": "build-and-config-skeleton.sh",
+      "bytes": 2934,
+      "sha256": "c4fe950ec719c0c6bcf32aae6e31bd330b2fbda09ab7166a38b30d7be80db6e4"
+    },
+    {
+      "file": "draft-helper-daily-loss-tests.txt",
+      "bytes": 152,
+      "sha256": "bddfd7d425b1780a73c128fc48fb3e24be83ff7381eb8d58f6b53021739088d2"
+    },
+    {
+      "file": "draft-helper-first-fixture-mismatch.txt",
+      "bytes": 928,
+      "sha256": "f2c86ae2251cdb87d7f6e3cd3993ae1dfed4fecaf5ea2e30e392627ddc3f2f8a"
+    },
+    {
+      "file": "draft-helper-tests.txt",
+      "bytes": 151,
+      "sha256": "68d61a801acffbe5bf56ae08c1c5622b40a6c23077302432076cab61620c3ace"
+    },
+    {
+      "file": "independent-draft-daily-loss-review.json",
+      "bytes": 4373,
+      "sha256": "28f74e2c9ba27a159200d1e864b6a64151ad04e66a91abd37c8b6679d55489fb"
+    },
+    {
+      "file": "independent-draft-daily-loss-tests.txt",
+      "bytes": 654,
+      "sha256": "a02b40c6439c1215052e9b64535a336051ce11dc4fa6ec5b9ef5a8da35572d47"
+    },
+    {
+      "file": "independent-draft-review.json",
+      "bytes": 2770,
+      "sha256": "12445217a162544a35fc36b317f45a3bc1f5ee99eaeeeb0e560f0f2fbb71b182"
+    },
+    {
+      "file": "independent-draft-tests.txt",
+      "bytes": 554,
+      "sha256": "29ee68f4e3131ffaf7df668600a39d18a45f4a37b7dd38d634744ba04850803d"
+    },
+    {
+      "file": "independent-recipes-static-review.json",
+      "bytes": 1489,
+      "sha256": "99a6214ce2ad97570e905ea6be8385340ce6bb886e6807b6e6cb34e9941331be"
+    },
+    {
+      "file": "prepare-existing-stager.py",
+      "bytes": 2100,
+      "sha256": "8ff0998051d35b4a517cf965c1ab264065d7c5c13f5834928ba4f64863efc7de"
+    },
+    {
+      "file": "prepare-package.py",
+      "bytes": 7979,
+      "sha256": "486a2c27558e483eafc386d4df0152429540ccd2cda89e9474dd640c772590d1"
+    }
+  ]
+}

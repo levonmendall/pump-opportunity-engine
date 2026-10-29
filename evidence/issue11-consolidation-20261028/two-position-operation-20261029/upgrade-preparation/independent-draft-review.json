@@ -1,0 +1,47 @@
+{
+  "actualEC2OrRootActions": false,
+  "actualFinancialAccountRead": false,
+  "completedAt": 1793305595455,
+  "currentPredecessorPackagePinsIndependentlyMatched": true,
+  "diffCheckExitCode": 0,
+  "explicitAuthorizedStageTransition": {
+    "after": "two",
+    "before": "single",
+    "deepSlots": 4,
+    "newStrategy": "persistent-buying-pilot-concurrent-stage-2-v1"
+  },
+  "financialPreservationFunctionsAndServiceCallsUnchanged": true,
+  "forensicExporterNoLongerIncludedOrExecuted": true,
+  "forensicReuseHardPin": {
+    "artifactPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-01/host-baseline/source-recovery-forensics.receipt-matched-original.json",
+    "bytes": 10694,
+    "rootPublicReceiptFileSha256": "ddfd31ecafa3bc6a568ab44a8c066f9eed7323ddf62aa5fc4d33313820275d24",
+    "rootPublicReceiptPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-01/host-baseline/host-40942583200.json",
+    "rootReceiptAndSanitizedProjectionMatch": true,
+    "sha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e",
+    "verifiedActualLocalArtifact": true
+  },
+  "hashesAfter": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "0e13bc4bca632fa4b17b8a9bd70846831fa98dce973635c08f0a4c2c5335d58e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "97e309c7a0dc7c47631a171e540ad50eee86a6d823df5e49d4983e50e3ea2749"
+  },
+  "hashesBefore": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "0e13bc4bca632fa4b17b8a9bd70846831fa98dce973635c08f0a4c2c5335d58e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "97e309c7a0dc7c47631a171e540ad50eee86a6d823df5e49d4983e50e3ea2749"
+  },
+  "hashesUnchanged": true,
+  "head": "3ef284cbc713010fcdf9f9e6f5842a64e153b093",
+  "indexedArtifacts": 9,
+  "kind": "POE_INDEPENDENT_TWO_POSITION_UPGRADE_DRAFT_REVIEW",
+  "missingDiagnosticCannotBypassFinancialGates": true,
+  "nonblockingComments": [],
+  "notDeployable": true,
+  "oldRootTrustAndCurrentV2SupervisorDistinct": true,
+  "postStartTwoPositionsAndPendingObligationsPreservedFixturePassed": true,
+  "resolvedReviewComment": "Reporter comment now correctly distinguishes old/new reporter pins.",
+  "targetConfigurationReporterWorkerPinsUnset": true,
+  "testCount": 52,
+  "testsExitCode": 0,
+  "testsLog": "/tmp/poe-independent-two-position-upgrade-draft-tests-20261029.txt",
+  "testsLogSha256": "29ee68f4e3131ffaf7df668600a39d18a45f4a37b7dd38d634744ba04850803d"
+}

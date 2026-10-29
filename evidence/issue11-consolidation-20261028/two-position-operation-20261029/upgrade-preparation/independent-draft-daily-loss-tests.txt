@@ -1,0 +1,12 @@
+Independent daily-loss preservation focused + full matrix
+{"/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "0e13bc4bca632fa4b17b8a9bd70846831fa98dce973635c08f0a4c2c5335d58e", "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "4d1d432eec7b2d351ecd27c87ca1b62e0d4656f0c3e4e796921d6e06cd202eeb"}
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.028s
+
+OK
+.....................................................
+----------------------------------------------------------------------
+Ran 53 tests in 3.708s
+
+OK

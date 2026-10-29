@@ -1,0 +1,7 @@
+Independent local-only two-position upgrade draft review
+{"/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "0e13bc4bca632fa4b17b8a9bd70846831fa98dce973635c08f0a4c2c5335d58e", "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "97e309c7a0dc7c47631a171e540ad50eee86a6d823df5e49d4983e50e3ea2749"}
+....................................................
+----------------------------------------------------------------------
+Ran 52 tests in 3.196s
+
+OK
