@@ -18,6 +18,13 @@ class Fixtures(unittest.TestCase):
   for key,v in [('accountId','wrong'),('inceptionAt',1),('runId','other'),('startedAt',1),('source',{}),('configurationSha256','0'*64),('mode','LIVE'),('liveTradingEnabled',True)]:
    d=self.status();d[key]=v
    with self.subTest(key=key),self.assertRaises(m.Refused):m.status_fact(d)
+ def test_immutable_source_metadata_is_bound_by_pins_without_leaking_metadata(self):
+  d=self.status();d['source']={**m.SOURCE,'builtAt':LEAK,'dirty':False,'version':LEAK,'dependencyLockSha256':LEAK};r=m.status_fact(d);self.assertTrue(r['available']);self.assertEqual(r['source'],m.SOURCE);self.assertNotIn(LEAK,json.dumps(r));d['source']['sha256']='0'*64
+  with self.assertRaises(m.Refused):m.status_fact(d)
+  e=self.event();e['source']={**m.SOURCE,'builtAt':LEAK};self.assertIsNotNone(m.event_fact(e));e['data']['source']={**m.SOURCE,'version':LEAK};self.assertIsNotNone(m.event_fact(e));e['data']['source']['commit']='0'*40;self.assertIsNone(m.event_fact(e))
+ def test_actual_ba33_rpc_http_and_audit_event_literals_preserve_measured_fields(self):
+  for kind in['pilot-rpc-unavailable','pilot-data-control-unavailable','pilot-derived-status-flush-unavailable','trader-pilot-execution-quote','native-audit-dispatch-state','native-candidate-window-audit-unavailable','http-response-timing','http-lifecycle-timing']:
+   r=m.event_fact(self.event(kind,data={'headersDelayMs':1300,'bodyAfterHeadersMs':20,'jsonDecodeMonotonicMs':1,'undiciHeadersDispatchDelayMs':40,'physicalSettled':True,'reservationsRetained':0,'remainingDecisionMs':-10,'endpoint':LEAK}));self.assertIsNotNone(r);self.assertEqual(r['data']['headersDelayMs'],1300);self.assertEqual(r['data']['remainingDecisionMs'],-10);self.assertNotIn(LEAK,json.dumps(r))
  def test_unknown_strings_hashed_and_cannot_smuggle_known_prefix(self):
   r=m.string_fact('COMPONENT_PHYSICAL_TIMEOUT '+LEAK);self.assertEqual(r['code'],'UNKNOWN_HASHED');self.assertNotIn(LEAK,json.dumps(r));self.assertEqual(r['sha256'],hashlib.sha256(('COMPONENT_PHYSICAL_TIMEOUT '+LEAK).encode()).hexdigest());self.assertEqual(m.string_fact('COMPONENT_PHYSICAL_TIMEOUT')['code'],'COMPONENT_PHYSICAL_TIMEOUT')
  def test_event_window_exact_bounds_and_attribution_honest(self):
@@ -53,6 +60,10 @@ class Fixtures(unittest.TestCase):
   with patch.object(m,'MAX_FACTS',2):r=m.collect(self.root,self.uid)
   self.assertTrue(r['diagnostics']['factCapacityReached']);self.assertEqual(len(r['diagnostics']['facts']),2)
   r=m.evidence_facts(d,{'available':True},self.uid,budget_seconds=0);self.assertTrue(r['scanBudgetReached']);self.assertEqual(r['facts'],[])
+ def test_dense_early_trace_cannot_hide_later_held_failure(self):
+  d=self.namespace();rows=[self.event('native-audit-dispatch-state',at=m.START+i)for i in range(10)]+[self.event('trader-held-evaluation',at=m.START+1000,data={'usable':False})];self.write(d/'diagnostic-000000000001.ndjson',b'\n'.join(json.dumps(x).encode()for x in rows)+b'\n')
+  with patch.object(m,'MAX_FACTS',2):r=m.collect(self.root,self.uid)
+  self.assertTrue(r['diagnostics']['factCapacityReached']);self.assertTrue(any(f['kind']=='trader-held-evaluation'for f in r['diagnostics']['facts']));self.assertEqual(r['diagnostics']['matchingKindCounts']['native-audit-dispatch-state'],10)
  def test_publication_atomic_bounded_and_existing_symlink_never_followed(self):
   p=self.root/'public';p.mkdir(mode=0o755);out=p/'export.json';r=m.publish(out,{'safe':True},self.uid);self.assertEqual(r['sha256'],hashlib.sha256(out.read_bytes()).hexdigest());self.assertEqual(out.stat().st_mode&0o777,0o644);out.unlink();target=self.root/'target';target.write_text('UNCHANGED');out.symlink_to(target)
   with self.assertRaises(m.Refused):m.publish(out,{},self.uid)
