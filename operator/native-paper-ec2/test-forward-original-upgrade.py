@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Offline disposable-account tests; never reaches host systemd or providers."""
-import contextlib,copy,importlib.util,io,json,os,pathlib,sqlite3,subprocess,tempfile,types,unittest
+import contextlib,copy,datetime,importlib.util,io,json,os,pathlib,socket,sqlite3,struct,subprocess,tempfile,threading,types,unittest
 from unittest.mock import patch
 HERE=pathlib.Path(__file__).resolve().parent
 def module(name,file):
@@ -12,7 +12,7 @@ def pinned_core():
  value=types.ModuleType('forward_test_pinned_core');value.__file__=str(path);exec(compile(raw,str(path),'exec'),value.__dict__);f.attach_stop_observer(value);return value
 def pinned_old_supervisor():
  raw=subprocess.run(['git','show','cd43ecf:operator/native-paper-ec2/run-authoritative-service.py'],cwd=HERE,capture_output=True,check=True).stdout;assert f.sha(raw)==f.INDEXED_SUPERVISOR,'Tests require the original d90 policy validator';value=types.ModuleType('forward_test_legacy_supervisor');value.__file__=str(HERE/'indexed-v1-supervisor.py');exec(compile(raw,value.__file__,'exec'),value.__dict__);return value
-f=module('forward_test_driver','forward-original-upgrade.py');m=pinned_core();a=module('forward_test_auditor','audit-original-account.py');s=module('forward_test_supervisor','run-authoritative-service.py');fixture=module('forward_test_fixture','test-audit-original-account.py');legacy=pinned_old_supervisor()
+f=module('forward_test_driver','forward-original-upgrade.py');m=pinned_core();a=module('forward_test_auditor','audit-original-account.py');s=module('forward_test_supervisor','run-authoritative-service.py');fixture=module('forward_test_fixture','test-audit-original-account.py');legacy=pinned_old_supervisor();owner_reset_impl=f.owner_daily_loss_reset;RESET_AT=int(datetime.datetime(2026,10,29,21,tzinfo=datetime.timezone.utc).timestamp()*1000)
 class Tests(unittest.TestCase):
  @contextlib.contextmanager
  def prepared(self,exposure=False,rows=3):
@@ -23,8 +23,9 @@ class Tests(unittest.TestCase):
    reader=sqlite3.connect('file:'+str(ledger)+'?mode=ro',uri=True);financial=a.audit_snapshot(reader);reader.close();before_inode=(ledger.stat().st_dev,ledger.stat().st_ino);backups=root/'backups';prior_backup=backups/'prior';prior_backup.mkdir(parents=True);frozen_backup=prior_backup/'ledger.sqlite';destination=sqlite3.connect(frozen_backup);writer.backup(destination);destination.close();frozen_backup.chmod(0o600);descriptor={'file':str(frozen_backup),'bytes':frozen_backup.stat().st_size,'sha256':f.sha(frozen_backup.read_bytes()),'financial':financial}
    etc=root/'etc';etc.mkdir();records=etc/'cutovers';prior_dir=records/f.PRIOR_RECORD;prior_dir.mkdir(parents=True,mode=0o700);backups.chmod(0o700);prior={'kind':'poe-original-forward-upgrade-v1','accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'source':f.OLD_SOURCE,'driverSha256':f.PRIOR_FORWARD_DRIVER_SHA,'packageIndexSha256':f.PRIOR_INDEX,'phase':'new-source-post-start-prefix-verified-render-gate-pending','postStartVerification':{'complete':True,'source':f.OLD_SOURCE,'configurationSha256':f.OLD_CONFIGURATION_SHA},'stoppedFinancial':financial,'backup':descriptor};(prior_dir/'transition.json').write_bytes(f.encoded(prior));(prior_dir/'phase-00-preserve.json').write_bytes(b'PRESERVE_ORIGINAL_FAILURE');reporting=prior_dir/'reporting-credential-v1';reporting.mkdir(mode=0o700);(reporting/'before-service.json').write_bytes(b'PRESERVE_REPORTER_BEFORE_IMAGE')
    releases=root/'releases';releases.mkdir();old=releases/f.OLD_SOURCE['commit'];old.mkdir();old_op=old/'operator/native-paper-ec2';old_op.mkdir(parents=True);old_supervisor=b'PINNED_UNCHANGED_RESOURCE_V2_SUPERVISOR';(old_op/'run-authoritative-service.py').write_bytes(old_supervisor);(old_op/'run-authoritative-service.py').chmod(0o640);current=root/'current';current.symlink_to(old);unit_dir=root/'unit.d';unit_dir.mkdir();dropin=unit_dir/'90-native-engine.conf';dropin.write_bytes(b'UNCHANGED_REVIEWED_RESOURCE_V2_PROFILE');dropin.chmod(0o644);(unit_dir/'00-legacy-entrypoint.conf').write_bytes(b'UNCHANGED_ORDERED_LEGACY');stage=root/'stage';stage.mkdir(mode=0o700);package_parent=root/'root-packages';package_parent.mkdir();public=root/'public';public.mkdir(mode=0o755);public.chmod(0o755);oldpackage=package_parent/'issue11';oldpackage.mkdir();(oldpackage/'index.json').write_bytes(b'PRESERVE_OLD_ROOT_INDEX')
-   bodies={'native-paper.mjs':b'NEW_TIMING_SOURCE','backup-worker.mjs':b'NEW_COMPILED_BACKUP','better_sqlite3.node':b'UNCHANGED_ADDON','metadata.json':f.encoded({'git':{'commit':'a'*40},'financialMode':'PAPER','liveTradingEnabled':False}),'snapshot-publisher.mjs':b'PRESERVED_CREDENTIAL_HOTFIX','run-authoritative-service.py':old_supervisor,'forward-original-upgrade.py':b'INDEPENDENTLY_PINNED_FORWARD_DRIVER','poe-runtime-persistent.conf':dropin.read_bytes(),f.FORENSIC_FILE:b'FIXTURE_REVIEWED_READONLY_EXPORTER'};unchanged={name:f.sha(bodies[name])for name in f.UNCHANGED};old_bodies={name:(b'OLD_NATIVE'if name=='native-paper.mjs'else b'OLD_METADATA'if name=='metadata.json'else b'OLD_COMPILED_BACKUP'if name=='backup-worker.mjs'else b'PRESERVED_CREDENTIAL_HOTFIX'if name=='snapshot-publisher.mjs'else bodies[name])for name in s.RELEASE_FILES}
-   old_manifest={'schemaVersion':1,'kind':'poe-authoritative-persistent-service-v1','source':f.OLD_SOURCE,'configurationSha256':f.OLD_CONFIGURATION_SHA,'stage':'single','deepSlots':4,'strategy':'persistent-buying-pilot-v1','files':[{'file':name,'bytes':len(body),'sha256':f.sha(body)}for name,body in old_bodies.items()],'policy':s.POLICY};new_manifest=copy.deepcopy(old_manifest);new_manifest['policy']=s.POLICY;new_manifest['configurationSha256']=f.NEW_CONFIGURATION_SHA;new_manifest['source']={'commit':'a'*40,'sha256':f.sha(bodies['native-paper.mjs'])};new_manifest['files']=[{'file':name,'bytes':len(bodies[name]),'sha256':f.sha(bodies[name])}for name in s.RELEASE_FILES];old_raw=f.encoded(old_manifest);(prior_dir/'after-service.json').write_bytes(old_raw);(prior_dir/'transition.json').write_bytes(f.encoded(prior));manifest=etc/'native-engine.json';manifest.write_bytes(old_raw);manifest.chmod(0o640)
+   historical=b'FIXTURE_ALREADY_EXPORTED_SANITIZED_FORENSIC_PROOF';historical_path=public/'source-recovery-forensics-20261029.json';historical_path.write_bytes(historical);historical_path.chmod(0o644);prior['forensicPreflight']={'schemaVersion':1,'kind':'POE_SOURCE_RECOVERY_PREFLIGHT','status':'EXPORTED','requestedAt':123,'scriptSha256':f.FORENSIC_SHA,'childUid':988,'childGid':982,'financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0,'receipt':{'kind':'POE_SOURCE_RECOVERY_EXPORT_RECEIPT','readerUid':988,'readerGid':982,'financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0,'path':str(historical_path),'bytes':len(historical),'sha256':f.sha(historical)}}
+   bodies={'native-paper.mjs':b'NEW_TIMING_SOURCE','backup-worker.mjs':b'NEW_COMPILED_BACKUP','better_sqlite3.node':b'UNCHANGED_ADDON','metadata.json':f.encoded({'git':{'commit':'a'*40},'financialMode':'PAPER','liveTradingEnabled':False}),'snapshot-publisher.mjs':b'NEW_ORIGINAL_REPORTER','run-authoritative-service.py':b'NEW_PINNED_ACTIVE_ADAPTIVE_SUPERVISOR','forward-original-upgrade.py':b'INDEPENDENTLY_PINNED_FORWARD_DRIVER','poe-runtime-persistent.conf':dropin.read_bytes()};unchanged={name:f.sha(bodies[name])for name in f.UNCHANGED};old_bodies={name:(b'OLD_NATIVE'if name=='native-paper.mjs'else b'OLD_METADATA'if name=='metadata.json'else b'OLD_COMPILED_BACKUP'if name=='backup-worker.mjs'else b'OLD_ORIGINAL_REPORTER'if name=='snapshot-publisher.mjs'else bodies[name])for name in s.RELEASE_FILES}
+   old_manifest={'schemaVersion':1,'kind':'poe-authoritative-persistent-service-v1','source':f.OLD_SOURCE,'configurationSha256':f.OLD_CONFIGURATION_SHA,'stage':'single','deepSlots':4,'strategy':'persistent-buying-pilot-v1','files':[{'file':name,'bytes':len(body),'sha256':f.sha(body)}for name,body in old_bodies.items()],'policy':s.POLICY};new_manifest=copy.deepcopy(old_manifest);new_manifest['policy']=s.POLICY;new_manifest['stage']=f.NEW_STAGE;new_manifest['strategy']=f.NEW_STRATEGY;new_manifest['configurationSha256']=f.NEW_CONFIGURATION_SHA;new_manifest['source']={'commit':'a'*40,'sha256':f.sha(bodies['native-paper.mjs'])};new_manifest['files']=[{'file':name,'bytes':len(bodies[name]),'sha256':f.sha(bodies[name])}for name in s.RELEASE_FILES];old_raw=f.encoded(old_manifest);(prior_dir/'after-service.json').write_bytes(old_raw);(prior_dir/'transition.json').write_bytes(f.encoded(prior));manifest=etc/'native-engine.json';manifest.write_bytes(old_raw);manifest.chmod(0o640)
    for name,body in old_bodies.items():(old/name).write_bytes(body);(old/name).chmod(0o640)
    baseline=f.encoded({'schemaVersion':1,'kind':'poe-research-baseline-checkpoint','physicalSettlement':{'physicalTransportsSettled':True},'counters':{'units':8959,'pendingReservedBytes':519831552}});(account/'research-baseline.json').write_bytes(baseline);(account/'research-baseline.json').chmod(0o600);input_value={'schemaVersion':1,'source':f.OLD_SOURCE,'dataContract':'confirmed-program-activity-v3-shadow','baselinePaths':[str(account/'research-baseline.json')],'baselineCheckpointSha256':f.sha(baseline),'priorPhysicalSettled':True,'reportingBinding':{'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'sourceStatusSha256':'e'*64},'priorCooldownUntil':1793239999999,'origins':[],'unknownFutureField':{'keep':['all','nested',8959]}};before_input=f.encoded(input_value);(account/'input.json').write_bytes(before_input);(account/'input.json').chmod(0o600);(account/'KEEP_COUNTERBOOK.json').write_bytes(b'KEEP_ALL_USAGE_AND_PENDING_OPERATIONS');(account/'operating.json').write_bytes(f.encoded({'schemaVersion':1,'authoritative':True,'experimental':False,'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'runs':['KEEP_OLD_RUN'],'counters':{'units':8959,'pendingBytes':519831552}}));(account/'operating.json').chmod(0o600);(account/'status.json').write_bytes(f.encoded({'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'source':{**f.OLD_SOURCE,'builtAt':'2026-10-29T00:00:00Z','dirty':False,'version':'0.1.0','dependencyLockSha256':'e'*64},'runId':'native-paper-20261029000000000','running':False,'generatedAt':f.now()+2000,'status':'graceful service stop; exposure and obligations retained'}));(account/'status.json').chmod(0o600);run_dir=account/'runs/native-paper-20261029000000000';run_dir.mkdir(parents=True,mode=0o700);(run_dir/'settlement.json').write_bytes(f.encoded({'at':f.now()+2000,'physicalSettlementConfirmed':True,'positions':int(exposure),'pending':int(exposure),'financialHistoryPreserved':True}));(run_dir/'settlement.json').chmod(0o600);bodies['service.json']=f.encoded(new_manifest)
    for name,body in bodies.items():(stage/name).write_bytes(body);(stage/name).chmod(0o600)
@@ -44,8 +45,8 @@ class Tests(unittest.TestCase):
     return target
    fake_supervisor=types.SimpleNamespace(validate_manifest=s.validate_manifest,RELEASE_FILES=s.RELEASE_FILES,release_verified=release_verified);new_supervisor=types.SimpleNamespace(validate_manifest=s.validate_manifest,RELEASE_FILES=s.RELEASE_FILES,release_verified=release_verified)
    with contextlib.ExitStack()as stack:
-    stack.enter_context(patch.multiple(m,ROOT=home,ACCOUNT=account,SERVICE=service,LEDGER=ledger,ETC=etc,RECORDS=records,BACKUPS=backups,RELEASES=releases,CURRENT=current,MANIFEST=manifest,DROPIN=dropin,PUBLIC_STATUS=public/'status.json'));stack.enter_context(patch.multiple(f,UID=os.getuid(),GID=os.getgid(),RUNNER=os.getuid(),STAGE=stage,PACKAGE=oldpackage,UNITDIR=unit_dir,OLD_MANIFEST=f.sha(old_raw),OLD_SUPERVISOR=f.sha(old_supervisor),OLD_REPORTER=f.sha(old_bodies['snapshot-publisher.mjs']),NATIVE_DROPIN_SHA=f.sha(dropin.read_bytes()),NEW_NATIVE_DROPIN_SHA=f.sha(bodies['poe-runtime-persistent.conf']),UNCHANGED=unchanged,OLD_BACKUP_WORKER_SHA=f.sha(old_bodies['backup-worker.mjs']),NEW_BACKUP_WORKER_SHA=f.sha(bodies['backup-worker.mjs']),FORENSIC_SHA=f.sha(bodies[f.FORENSIC_FILE])));forensic=stack.enter_context(patch.object(f,'forensic_preflight',return_value={'schemaVersion':1,'kind':'POE_SOURCE_RECOVERY_PREFLIGHT','status':'UNKNOWN','reasonCode':'FIXTURE_DIAGNOSTIC_UNAVAILABLE','financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0}));stack.enter_context(patch.object(f,'current_release_supervisor',return_value=fake_supervisor));stack.enter_context(patch.object(f,'release_supervisor',return_value=new_supervisor));stack.enter_context(patch.object(f,'read',side_effect=owner_read));stack.enter_context(patch.object(f,'local_preflight',side_effect=lambda *args:effective_unit()));stack.enter_context(patch.object(f,'process_owner'));stack.enter_context(patch.object(f,'unit',side_effect=effective_unit));stack.enter_context(patch.object(m,'read',side_effect=lambda path,limit,uid=0:core_read(path,limit,test_uid)));stack.enter_context(patch.object(m,'directory',side_effect=lambda path,uid,private=False:real_directory(path,test_uid,private)));stack.enter_context(patch.object(m,'make_dir',side_effect=create_dir));stack.enter_context(patch.object(m,'atomic',side_effect=save));stack.enter_context(patch.object(m.pwd,'getpwnam',return_value=owner));stack.enter_context(patch.object(m,'systemctl',side_effect=ctl));stack.enter_context(patch.object(m,'observe_stopped_writer',return_value=proof));stack.enter_context(patch.object(m,'wait_for_new_public_status',return_value={'available':True,'observedAt':f.now(),'release':'a'*40}));stack.enter_context(patch.object(f.os,'getuid',return_value=0));stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
-    yield types.SimpleNamespace(root=root,home=home,account=account,ledger=ledger,writer=writer,state=state,financial=financial,old=old,current=current,target=releases/('a'*40),record_dir=record_dir,manifest=manifest,old_raw=old_raw,before_input=before_input,bodies=bodies,index=index,expected=expected,driver_sha=driver_sha,events=events,proof=proof,baseline=baseline,prior_dir=prior_dir,oldpackage=oldpackage,stage=stage,backups=backups,inode=before_inode,supervisor=fake_supervisor,forensic=forensic)
+    stack.enter_context(patch.multiple(m,ROOT=home,ACCOUNT=account,SERVICE=service,LEDGER=ledger,ETC=etc,RECORDS=records,BACKUPS=backups,RELEASES=releases,CURRENT=current,MANIFEST=manifest,DROPIN=dropin,PUBLIC_STATUS=public/'status.json'));stack.enter_context(patch.multiple(f,UID=os.getuid(),GID=os.getgid(),RUNNER=os.getuid(),STAGE=stage,PACKAGE=oldpackage,UNITDIR=unit_dir,OLD_MANIFEST=f.sha(old_raw),OLD_SUPERVISOR=f.sha(old_supervisor),OLD_REPORTER=f.sha(old_bodies['snapshot-publisher.mjs']),NATIVE_DROPIN_SHA=f.sha(dropin.read_bytes()),NEW_NATIVE_DROPIN_SHA=f.sha(bodies['poe-runtime-persistent.conf']),UNCHANGED=unchanged,OLD_BACKUP_WORKER_SHA=f.sha(old_bodies['backup-worker.mjs']),NEW_BACKUP_WORKER_SHA=f.sha(bodies['backup-worker.mjs']),NEW_REPORTER=f.sha(bodies['snapshot-publisher.mjs']),NEW_SUPERVISOR=f.sha(bodies['run-authoritative-service.py']),FORENSIC_OUTPUT=str(historical_path),FORENSIC_ARTIFACT_SHA=f.sha(historical),FORENSIC_ARTIFACT_BYTES=len(historical)));stack.enter_context(patch.object(f,'owner_daily_loss_reset',side_effect=lambda core,manifest,record_dir,record:record.update(ownerDailyLossReset={'complete':True,'reasonCode':'FIXTURE_NATIVE_CONTROL_NOT_EXECUTED','attempts':[]})or record['ownerDailyLossReset']));stack.enter_context(patch.object(f,'current_release_supervisor',return_value=fake_supervisor));stack.enter_context(patch.object(f,'release_supervisor',return_value=new_supervisor));stack.enter_context(patch.object(f,'read',side_effect=owner_read));stack.enter_context(patch.object(f,'local_preflight',side_effect=lambda *args:effective_unit()));stack.enter_context(patch.object(f,'process_owner'));stack.enter_context(patch.object(f,'unit',side_effect=effective_unit));stack.enter_context(patch.object(m,'read',side_effect=lambda path,limit,uid=0:core_read(path,limit,test_uid)));stack.enter_context(patch.object(m,'directory',side_effect=lambda path,uid,private=False:real_directory(path,test_uid,private)));stack.enter_context(patch.object(m,'make_dir',side_effect=create_dir));stack.enter_context(patch.object(m,'atomic',side_effect=save));stack.enter_context(patch.object(m.pwd,'getpwnam',return_value=owner));stack.enter_context(patch.object(m,'systemctl',side_effect=ctl));stack.enter_context(patch.object(m,'observe_stopped_writer',return_value=proof));stack.enter_context(patch.object(m,'wait_for_new_public_status',return_value={'available':True,'observedAt':f.now(),'release':'a'*40}));stack.enter_context(patch.object(f.os,'getuid',return_value=0));stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+    yield types.SimpleNamespace(root=root,home=home,account=account,ledger=ledger,writer=writer,state=state,financial=financial,old=old,current=current,target=releases/('a'*40),record_dir=record_dir,manifest=manifest,old_raw=old_raw,before_input=before_input,bodies=bodies,index=index,expected=expected,driver_sha=driver_sha,events=events,proof=proof,baseline=baseline,prior_dir=prior_dir,oldpackage=oldpackage,stage=stage,backups=backups,inode=before_inode,supervisor=fake_supervisor,historical=historical,historical_path=historical_path)
    writer.close()
  def run_apply(self,value):return f.apply(value.expected,m,a,value.supervisor,value.driver_sha)
  def test_unfrozen_configuration_refuses_before_host_checks_or_mutation(self):
@@ -56,42 +57,183 @@ class Tests(unittest.TestCase):
   with patch.object(f.os,'getuid',return_value=0),patch.object(f.sys,'argv',['forward-original-upgrade.py','apply','a'*64]),patch.object(f,'NEW_CONFIGURATION_SHA',None),patch.object(f,'load_helpers')as helpers:
    with self.assertRaisesRegex(f.Refused,'FINAL_REVIEWED_CONFIGURATION_PIN_REQUIRED'):f.main()
    helpers.assert_not_called()
- def test_unfrozen_forensic_pin_refuses_before_host_checks_or_root_helpers(self):
-  with patch.object(f.os,'getuid',return_value=0),patch.object(f,'NEW_CONFIGURATION_SHA','f'*64),patch.object(f,'FORENSIC_SHA',None),patch.object(f,'local_preflight')as preflight,patch.object(f,'load_helpers')as helpers,patch.object(f.sys,'argv',['forward-original-upgrade.py','apply','a'*64]):
-   with self.assertRaisesRegex(f.Refused,'FINAL_REVIEWED_FORENSIC_PIN_REQUIRED'):f.apply('a'*64,None,None,None,'b'*64)
-   with self.assertRaisesRegex(f.Refused,'FINAL_REVIEWED_FORENSIC_PIN_REQUIRED'):f.main()
-   preflight.assert_not_called();helpers.assert_not_called()
- def test_forensic_tamper_even_with_reindexed_body_refuses_before_any_exec_or_stop(self):
+ def test_unfrozen_operational_pins_refuse_before_host_checks_or_root_helpers(self):
+  for missing in ['NEW_REPORTER','NEW_BACKUP_WORKER_SHA','NEW_SUPERVISOR']:
+   patch_value={name:None if name==missing else'a'*64 for name in ['NEW_REPORTER','NEW_BACKUP_WORKER_SHA','NEW_SUPERVISOR']}
+   with self.subTest(pins=patch_value),patch.object(f.os,'getuid',return_value=0),patch.object(f,'NEW_CONFIGURATION_SHA','f'*64),patch.multiple(f,**patch_value),patch.object(f,'local_preflight')as preflight,patch.object(f,'load_helpers')as helpers,patch.object(f.sys,'argv',['forward-original-upgrade.py','apply','a'*64]):
+    with self.assertRaisesRegex(f.Refused,'FINAL_REVIEWED_OPERATIONAL_HELPER_PINS_REQUIRED'):f.apply('a'*64,None,None,None,'b'*64)
+    with self.assertRaisesRegex(f.Refused,'FINAL_REVIEWED_OPERATIONAL_HELPER_PINS_REQUIRED'):f.main()
+    preflight.assert_not_called();helpers.assert_not_called()
+ def test_new_supervisor_is_verified_before_compilation(self):
+  raw=b'raise AssertionError("unverified code must not run")'
+  with patch.object(f,'NEW_SUPERVISOR','a'*64),self.assertRaisesRegex(f.Refused,'EXACT_NEW_STRATEGY_SUPERVISOR_PIN_REQUIRED'):f.release_supervisor({'run-authoritative-service.py':raw})
+ def test_new_supervisor_change_preserves_exact_old_supervisor_for_prestart_recovery(self):
   with self.prepared()as value:
-   raw=b'UNREVIEWED_EXPORTER';(value.stage/f.FORENSIC_FILE).write_bytes(raw);index=copy.deepcopy(value.index);row=next(row for row in index['files']if row['file']==f.FORENSIC_FILE);row.update(bytes=len(raw),sha256=f.sha(raw));body=f.encoded(index);(value.stage/'index.json').write_bytes(body)
-   with self.assertRaisesRegex(f.Refused,'INDEPENDENT_VERIFIED_FORENSIC_EXPORTER_REQUIRED'):f.apply(f.sha(body),m,a,value.supervisor,value.driver_sha)
-   value.forensic.assert_not_called();self.assertEqual(value.events,[]);self.assertFalse(value.record_dir.exists())
- def test_forensic_preflight_runs_before_first_stop_and_only_once_on_resume(self):
+   self.run_apply(value);self.assertEqual((value.target/'operator/native-paper-ec2/run-authoritative-service.py').read_bytes(),value.bodies['run-authoritative-service.py']);self.assertEqual((value.old/'operator/native-paper-ec2/run-authoritative-service.py').read_bytes(),b'PINNED_UNCHANGED_RESOURCE_V2_SUPERVISOR');self.assertNotEqual(f.NEW_SUPERVISOR,f.OLD_SUPERVISOR);self.assertNotIn('run-authoritative-service.py',f.UNCHANGED)
+ def test_prior_forensic_proof_reused_before_first_stop_without_any_new_export(self):
   with self.prepared(exposure=True)as value:
-   def forensic(raw):
-    self.assertEqual(raw,value.bodies[f.FORENSIC_FILE]);self.assertEqual(value.events,[]);self.assertEqual(value.current.resolve(),value.old);self.assertEqual(value.manifest.read_bytes(),value.old_raw);self.assertEqual((value.account/'input.json').read_bytes(),value.before_input);self.assertEqual((value.record_dir/f.FORENSIC_FILE).read_bytes(),raw);record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertIsInstance(record['forensicPreflightRequestedAt'],int);self.assertNotIn('stopRequestedAt',record);return {'kind':'POE_SOURCE_RECOVERY_PREFLIGHT','status':'UNKNOWN','reasonCode':'FIXTURE_TIMEOUT','financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0}
-   value.forensic.side_effect=forensic;result=self.run_apply(value);self.assertEqual(result['forensicPreflight']['status'],'UNKNOWN');value.events.clear();self.run_apply(value);self.assertEqual(value.forensic.call_count,1);self.assertEqual(value.events,[('start','poe-runtime.service')]);self.assertFalse((value.target/f.FORENSIC_FILE).exists());self.assertFalse((value.target/'operator/native-paper-ec2'/f.FORENSIC_FILE).exists());self.assertEqual((value.root/'root-packages'/('forward-'+'a'*40)/f.FORENSIC_FILE).read_bytes(),value.bodies[f.FORENSIC_FILE]);self.assertEqual((value.ledger.stat().st_dev,value.ledger.stat().st_ino),value.inode)
- def test_forensic_execution_uses_verified_stdin_and_unprivileged_identity(self):
-  raw=b'REVIEWED_EXPORTER';receipt={'kind':'POE_SOURCE_RECOVERY_EXPORT_RECEIPT','readerUid':988,'readerGid':982,'financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0,'path':f.FORENSIC_OUTPUT,'bytes':500,'sha256':'c'*64}
-  with patch.object(f,'FORENSIC_SHA',f.sha(raw)),patch.object(f.subprocess,'run',return_value=types.SimpleNamespace(returncode=0,stdout=f.encoded(receipt),stderr=b''))as run:
-   result=f.forensic_preflight(raw)
-  self.assertEqual(result['status'],'EXPORTED');self.assertEqual(result['receipt'],receipt);argv=run.call_args.args[0];kwargs=run.call_args.kwargs;self.assertEqual(argv[:4],['/usr/bin/python3','-B','-I','-c']);self.assertEqual(len(argv),5);self.assertNotIn(str(f.STAGE),argv[4]);self.assertIn('sys.stdin.buffer.read(65537)',argv[4]);self.assertIn(f.sha(raw),argv[4]);self.assertIn('os.getuid()==988',argv[4]);self.assertIn('os.getgroups()==[]',argv[4]);self.assertIn('resource.RLIMIT_AS',argv[4]);self.assertEqual(kwargs,{'input':raw,'capture_output':True,'check':False,'close_fds':True,'timeout':8,'user':988,'group':982,'extra_groups':[],'env':{'PATH':'/usr/bin:/bin','LANG':'C'}})
- def test_forensic_input_hash_mismatch_refuses_before_child_execution(self):
-  with patch.object(f,'FORENSIC_SHA','0'*64),patch.object(f.subprocess,'run')as run:
-   with self.assertRaisesRegex(f.Refused,'INDEPENDENT_VERIFIED_FORENSIC_EXPORTER_REQUIRED'):f.forensic_preflight(b'UNREVIEWED_EXPORTER')
-   run.assert_not_called()
- def test_forensic_failures_are_bounded_unknown_without_private_output(self):
-  raw=b'REVIEWED_EXPORTER';secret=b'PRIVATE_UNREVIEWED_SOURCE_TEXT';valid={'kind':'POE_SOURCE_RECOVERY_EXPORT_RECEIPT','readerUid':988,'readerGid':982,'financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0,'path':f.FORENSIC_OUTPUT,'bytes':500,'sha256':'c'*64}
-  cases=[types.SimpleNamespace(returncode=1,stdout=secret,stderr=secret),types.SimpleNamespace(returncode=0,stdout=secret,stderr=secret),types.SimpleNamespace(returncode=0,stdout=b'x'*8193,stderr=b''),types.SimpleNamespace(returncode=0,stdout=f.encoded({**valid,'readerUid':0}),stderr=b''),types.SimpleNamespace(returncode=0,stdout=f.encoded({**valid,'extra':secret.decode()}),stderr=b''),types.SimpleNamespace(returncode=0,stdout=f.encoded({**valid,'financialWrites':True}),stderr=b''),types.SimpleNamespace(returncode=0,stdout=f.encoded({**valid,'path':'/tmp/wrong'}),stderr=b'')]
-  for response in cases:
-   with self.subTest(response=response),patch.object(f,'FORENSIC_SHA',f.sha(raw)),patch.object(f.subprocess,'run',return_value=response):
-    result=f.forensic_preflight(raw);self.assertEqual(result['status'],'UNKNOWN');self.assertFalse(result['financialDatabaseOpened']);self.assertEqual(result['financialWrites'],0);self.assertEqual(result['serviceChanges'],0);self.assertNotIn(secret,f.encoded(result));self.assertLess(len(f.encoded(result)),1024)
-  for error in[subprocess.TimeoutExpired('fixed',8,output=secret,stderr=secret),PermissionError(secret.decode())]:
-   with self.subTest(error=type(error)),patch.object(f,'FORENSIC_SHA',f.sha(raw)),patch.object(f.subprocess,'run',side_effect=error):
-    result=f.forensic_preflight(raw);self.assertEqual(result['status'],'UNKNOWN');self.assertNotIn(secret,f.encoded(result));self.assertLess(len(f.encoded(result)),1024)
+   real=f.retain_prior_forensic_proof
+   def retain(*args):self.assertEqual(value.events,[]);self.assertEqual(value.current.resolve(),value.old);self.assertNotIn('stopRequestedAt',args[2]);return real(*args)
+   with patch.object(f,'retain_prior_forensic_proof',side_effect=retain),patch.object(f.subprocess,'run',side_effect=AssertionError('no new exporter, provider or service call')):result=self.run_apply(value)
+   self.assertEqual(result['forensicPreflight']['status'],'EXPORTED');self.assertEqual(result['forensicPreflight']['requestedAt'],123);self.assertTrue(result['forensicPreflightReuse']['verified']);self.assertFalse(result['forensicPreflightReuse']['newExporterExecuted']);self.assertFalse(result['forensicPreflightReuse']['privateSourceRead']);self.assertEqual((value.record_dir/'historical-source-recovery-forensics.json').read_bytes(),value.historical);self.assertEqual(value.historical_path.read_bytes(),value.historical);self.assertFalse(any('export-'in name for name in f.BOUNDS));self.assertFalse((value.target/'historical-source-recovery-forensics.json').exists())
+ def test_prior_forensic_reuse_failure_is_unknown_without_weakening_financial_guards(self):
+  for mode in('missing','changed','receipt','root-proof'):
+   with self.subTest(mode=mode),self.prepared(exposure=True)as value:
+    if mode=='missing':value.historical_path.unlink()
+    if mode=='changed':value.historical_path.write_bytes(b'CHANGED_PRIVATE_SENTINEL')
+    if mode in('receipt','root-proof'):
+     path=value.prior_dir/'transition.json';prior=json.loads(path.read_bytes())
+     if mode=='receipt':prior['forensicPreflight']['receipt']['sha256']='0'*64
+     else:prior['forensicPreflight']['scriptSha256']='0'*64
+     path.write_bytes(f.encoded(prior))
+    result=self.run_apply(value);self.assertEqual(result['forensicPreflight']['status'],'UNKNOWN');self.assertFalse(result['forensicPreflightReuse']['verified']);self.assertNotIn('PRIVATE_SENTINEL',json.dumps(result));self.assertTrue(result['verification']['financialVerification']['journalAndActionPrefixPreserved']);self.assertFalse(result['backupRestored']);self.assertEqual(value.events,[('stop','poe-runtime.service'),('daemon-reload',),('start','poe-runtime.service')]);self.assertEqual((value.ledger.stat().st_dev,value.ledger.stat().st_ino),value.inode)
+ def test_prior_forensic_reuse_does_not_reread_or_reexport_after_start_on_resume(self):
+  with self.prepared()as value:
+   first=self.run_apply(value);proof=first['forensicPreflight'];reuse=first['forensicPreflightReuse'];value.historical_path.unlink();value.events.clear();second=self.run_apply(value);self.assertEqual(second['forensicPreflight'],proof);self.assertEqual(second['forensicPreflightReuse'],reuse);self.assertEqual(value.events,[('start','poe-runtime.service')]);self.assertEqual((value.record_dir/'historical-source-recovery-forensics.json').read_bytes(),value.historical)
+ def test_authorized_two_position_manifest_is_explicit_and_other_profiles_are_refused(self):
+  self.assertEqual(f.COMPATIBILITY['authorizedPositionLimit'],{'before':1,'after':2});self.assertFalse(f.COMPATIBILITY['baselineEntryExitThresholdsPreserved']);self.assertTrue(f.COMPATIBILITY['strategyChanged']);self.assertEqual(f.COMPATIBILITY['authorizedStrategyTransition'],{'before':'persistent-buying-pilot-v1','after':'adaptive-momentum-v2-paper-v1','mode':'active-paper'});self.assertTrue(f.COMPATIBILITY['completeRelevantTradingEvidencePreserved']);self.assertEqual((f.OLD_STAGE,f.NEW_STAGE),('single','two'));self.assertEqual(f.NEW_STRATEGY,'adaptive-momentum-v2-paper-v1')
+  with self.prepared()as value:
+   old=json.loads(value.old_raw);new=json.loads(value.bodies['service.json']);f.preserved_manifest(old,new)
+   for stage in('single','three','shadow'):
+    changed=copy.deepcopy(new);changed['stage']=stage
+    with self.subTest(stage=stage),self.assertRaisesRegex(f.Refused,'EXACT_AUTHORIZED_SINGLE_TO_TWO_POSITION_TRANSITION_REQUIRED'):f.preserved_manifest(old,changed)
+   self.run_apply(value);installed=json.loads(value.manifest.read_bytes());self.assertEqual((installed['deepSlots'],installed['stage'],installed['strategy']),(4,'two',f.NEW_STRATEGY));self.assertEqual(value.events,[('stop','poe-runtime.service'),('daemon-reload',),('start','poe-runtime.service')])
+ def test_reused_historical_receipt_cannot_relabel_new_export_or_actual_source(self):
+  with self.prepared()as value:
+   result=self.run_apply(value);self.assertEqual(result['forensicPreflightReuse']['fromSource'],f.OLD_SOURCE);self.assertEqual(result['forensicPreflightReuse']['artifactSha256'],f.sha(value.historical));self.assertFalse(result['forensicPreflightReuse']['newExporterExecuted']);record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertEqual(result['forensicPreflightReuse']['fromRootTransitionSha256'],record['priorTransitionSha256']);self.assertEqual(record['forensicPreflight']['requestedAt'],123);self.assertEqual(record['forensicPreflight']['receipt']['path'],str(value.historical_path))
  def test_same_account_exposure_input_manifest_and_usage_preserved(self):
   with self.prepared(exposure=True)as value:
    result=self.run_apply(value);after_input=json.loads((value.account/'input.json').read_bytes());old_input=json.loads(value.before_input);self.assertEqual({k:v for k,v in after_input.items()if k!='source'},{k:v for k,v in old_input.items()if k!='source'});self.assertEqual(after_input['source']['commit'],'a'*40);self.assertEqual((value.account/'research-baseline.json').read_bytes(),value.baseline);self.assertEqual((value.account/'KEEP_COUNTERBOOK.json').read_bytes(),b'KEEP_ALL_USAGE_AND_PENDING_OPERATIONS');self.assertEqual(value.current.resolve(),value.target);self.assertEqual((value.ledger.stat().st_dev,value.ledger.stat().st_ino),value.inode);self.assertFalse(result['operationalAcceptance']);self.assertFalse(result['backupRestored']);self.assertEqual(json.loads(value.manifest.read_bytes())['policy'],s.POLICY);self.assertEqual((value.root/'unit.d/90-native-engine.conf').read_bytes(),value.bodies['poe-runtime-persistent.conf']);record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertEqual(record['stoppedFinancial']['openPositions'],1);self.assertEqual(record['stoppedFinancial']['pendingActions'],1);self.assertEqual(record['postStartFinancial']['financial']['positionsStateSha256'],value.financial['positionsStateSha256']);self.assertEqual(record['postStartFinancial']['financial']['pendingStateSha256'],value.financial['pendingStateSha256']);self.assertTrue(record['postStartFinancial']['journalAndActionPrefixPreserved']);self.assertEqual(value.events,[('stop','poe-runtime.service'),('daemon-reload',),('start','poe-runtime.service')]);self.assertEqual((value.oldpackage/'index.json').read_bytes(),b'PRESERVE_OLD_ROOT_INDEX');self.assertEqual((value.record_dir/'prior-root-records/phase-00-preserve.json').read_bytes(),b'PRESERVE_ORIGINAL_FAILURE');self.assertEqual((value.record_dir/'prior-root-records/reporting-credential-v1/before-service.json').read_bytes(),b'PRESERVE_REPORTER_BEFORE_IMAGE')
+ def test_two_capacity_install_and_resume_preserve_daily_loss_stop_and_utc_baseline(self):
+  with self.prepared()as value:
+   state=copy.deepcopy(value.state);state['controls'].update(entriesEnabled=False,stopRequested=False,reason='daily loss limit');state['daily'].update(day='2026-10-29',baselineMicroUsd='1012000000',paused=True,lossPaused=True,reconciledAt=1793306700000);value.writer.execute('UPDATE financial_state SET body=?',(json.dumps(state),));before=next(value.writer.execute('SELECT body FROM financial_state'))[0];self.run_apply(value);value.events.clear();self.run_apply(value);after=next(value.writer.execute('SELECT body FROM financial_state'))[0];self.assertEqual(after,before);retained=json.loads(after);self.assertFalse(retained['controls']['entriesEnabled']);self.assertTrue(retained['daily']['lossPaused']);self.assertEqual(retained['daily']['baselineMicroUsd'],'1012000000');self.assertEqual(retained['daily']['day'],'2026-10-29');self.assertEqual(json.loads(value.manifest.read_bytes())['stage'],'two');self.assertEqual(value.events,[('start','poe-runtime.service')]);self.assertEqual((value.ledger.stat().st_dev,value.ledger.stat().st_ino),value.inode)
+ def test_readonly_prefix_verifier_preserves_v2_position_strategy_and_round_trip_metadata(self):
+  with self.prepared(exposure=True)as value:
+   self.run_apply(value);value.events.clear();state=copy.deepcopy(value.state);state['revision']=4;state['positions']['KEEP_POSITION']['strategy']={'version':'adaptive-momentum-v2-paper-v1','cycle':2,'windowStartAt':1793306700000,'windowEndAt':1793306760000,'assessedAt':1793306760500,'signalId':'fixture-audited-signal','roundTripId':'fixture-second-entry','highWaterNetLamports':'500000000','highWaterAt':1793306800000};state['pending']['KEEP_PENDING']['entryStrategy']={k:v for k,v in state['positions']['KEEP_POSITION']['strategy'].items()if k not in ['roundTripId','highWaterNetLamports','highWaterAt']};value.writer.execute('UPDATE financial_state SET body=?',(json.dumps(state),));value.writer.execute('INSERT INTO actions VALUES(?,?,?)',('new-v2-action','KEEP_V2_HASH','KEEP_V2_RESULT'));value.writer.execute('INSERT INTO journal VALUES(?,?,?)',(4,'new-v2-action','KEEP_V2_DETAIL'));value.writer.execute('INSERT INTO metadata VALUES(?,?)',('paper_round_trip_v2:KEEP_POSITION',json.dumps({'schemaVersion':1,'mint':'KEEP_POSITION','cycle':2,'entryOrderId':'fixture-second-entry','entryWindowEndAt':1793306760000,'closedAt':None,'exitOrderId':None,'legacyEntryCutoff':False})));before=next(value.writer.execute('SELECT body FROM financial_state'))[0];metadata=list(value.writer.execute('SELECT * FROM metadata ORDER BY key'));result=self.run_apply(value);self.assertTrue(result['verification']['financialVerification']['journalAndActionPrefixPreserved']);self.assertEqual(next(value.writer.execute('SELECT body FROM financial_state'))[0],before);self.assertEqual(list(value.writer.execute('SELECT * FROM metadata ORDER BY key')),metadata);self.assertEqual(value.events,[('start','poe-runtime.service')]);self.assertEqual(value.current.resolve(),value.target);self.assertEqual((value.ledger.stat().st_dev,value.ledger.stat().st_ino),value.inode)
+ @contextlib.contextmanager
+ def control_fixture(self):
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-control-')as directory:
+   root=pathlib.Path(directory);private=root/'private';private.mkdir(mode=0o700);run=root/'run';run.mkdir(mode=0o700);path=run/'control.sock';listener=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM);listener.bind(str(path));path.chmod(0o600);listener.listen(1);manifest={'source':{'commit':'a'*40,'sha256':'b'*64},'configurationSha256':'c'*64};context=types.SimpleNamespace(ACCOUNT=private,ACCOUNT_ID=m.ACCOUNT_ID,INCEPTION=m.INCEPTION);status={'source':manifest['source'],'configurationSha256':manifest['configurationSha256'],'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'runtimePid':os.getpid(),'running':True,'generatedAt':f.now()};(private/'status.json').write_bytes(f.encoded(status));(private/'status.json').chmod(0o600)
+   with patch.multiple(f,CONTROL_SOCKET=path,UID=os.getuid(),GID=os.getgid()):
+    try:yield types.SimpleNamespace(path=path,listener=listener,manifest=manifest,context=context,status=status,private=private)
+    finally:listener.close()
+ def test_control_exchange_uses_only_current_verified_native_owner_unix_peer(self):
+  with self.control_fixture()as value:
+   seen=[]
+   def server():
+    connection,_=value.listener.accept()
+    with connection:seen.append(connection.recv(2048));connection.sendall(b'{"ok":true,"command":"reset-daily-loss"}\n')
+   worker=threading.Thread(target=server);worker.start();request={'command':'reset-daily-loss','requestId':'fixed-owner-action'};answer=f.owner_control_exchange(value.context,value.manifest,request);worker.join(2);self.assertFalse(worker.is_alive());self.assertEqual(answer,{'ok':True,'command':'reset-daily-loss'});self.assertEqual(seen,[f.encoded(request)]);self.assertEqual(json.loads((value.private/'status.json').read_bytes()),value.status)
+ def test_control_exchange_rejects_foreign_socket_and_wrong_current_source_before_connect(self):
+  with self.control_fixture()as value:
+   with patch.object(f.socket,'socket')as connection:
+    value.path.chmod(0o666)
+    with self.assertRaisesRegex(f.Refused,'EXACT_NATIVE_CONTROL_SOCKET_REQUIRED'):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+    value.path.chmod(0o600);changed=copy.deepcopy(value.status);changed['source']['commit']='0'*40;(value.private/'status.json').write_bytes(f.encoded(changed))
+    with self.assertRaisesRegex(f.Refused,'VERIFIED_NATIVE_CONTROL_OWNER_IDENTITY_REQUIRED'):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+    connection.assert_not_called()
+ def test_control_exchange_rejects_wrong_peer_oversize_and_incomplete_responses(self):
+  class Client:
+   def __init__(self,peer,parts):self.peer=peer;self.parts=list(parts);self.sent=[]
+   def __enter__(self):return self
+   def __exit__(self,*args):pass
+   def settimeout(self,value):pass
+   def connect(self,path):pass
+   def getsockopt(self,*args):return struct.pack('3i',*self.peer)
+   def sendall(self,raw):self.sent.append(raw)
+   def recv(self,maximum):
+    if not self.parts:return b''
+    part=self.parts.pop(0);self.assert_bound=maximum
+    if len(part)>maximum:self.parts.insert(0,part[maximum:]);part=part[:maximum]
+    return part
+  with self.control_fixture()as value:
+   for peer,parts,code in [((os.getpid()+1,os.getuid(),os.getgid()),[b'{}\n'],'CURRENT_NATIVE_CONTROL_PEER_REQUIRED'),((os.getpid(),os.getuid(),os.getgid()),[b'x'*(128*1024+1)],'OWNER_CONTROL_RESPONSE_BOUND'),((os.getpid(),os.getuid(),os.getgid()),[b'{}'],'OWNER_CONTROL_COMPLETE_SINGLE_RESPONSE_REQUIRED')]:
+    client=Client(peer,parts)
+    with self.subTest(code=code),patch.object(f.socket,'socket',return_value=client),self.assertRaisesRegex(f.Refused,code):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+    if code=='CURRENT_NATIVE_CONTROL_PEER_REQUIRED':self.assertEqual(client.sent,[])
+ def test_control_exchange_absolute_deadline_rejects_slow_trickle_without_renewing_timeout(self):
+  class Client:
+   def __init__(self):self.timeouts=[];self.reads=0
+   def __enter__(self):return self
+   def __exit__(self,*args):pass
+   def settimeout(self,value):self.timeouts.append(value)
+   def connect(self,path):pass
+   def getsockopt(self,*args):return struct.pack('3i',os.getpid(),os.getuid(),os.getgid())
+   def sendall(self,raw):pass
+   def recv(self,maximum):self.reads+=1;return b'x'
+  with self.control_fixture()as value:
+   client=Client();clock={'at':-.49}
+   def tick():clock['at']+=.49;return clock['at']
+   with patch.object(f.socket,'socket',return_value=client),patch.object(f.time,'monotonic',side_effect=tick),self.assertRaisesRegex(f.Refused,'OWNER_CONTROL_EXCHANGE_DEADLINE'):f.owner_control_exchange(value.context,value.manifest,{'command':'reset-daily-loss'})
+   self.assertEqual(client.reads,2);self.assertEqual(len(client.timeouts),4);self.assertTrue(all(a>b for a,b in zip(client.timeouts,client.timeouts[1:])))
+ def reset_response(self,manifest,kind='recorded',reason=None):
+  at=int(datetime.datetime(2026,10,29,21,tzinfo=datetime.timezone.utc).timestamp()*1000);previous={'day':'2026-10-29','baselineMicroUsd':'1012000000','lossPaused':True,'paused':True,'reconciledAt':at-500};following={**previous,'baselineMicroUsd':'960000000','lossPaused':False};receipt={'reset':True,'alreadyClear':False,'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'at':at,'reason':f.OWNER_RESET_REASON,'revisionBefore':3,'revisionAfter':4,'previousDaily':previous,'currentEquityMicroUsd':'960000000','nextDaily':following,'price':{'microUsdPerSol':'96000000','at':at-1000,'source':'disposable-fixture-usd'},'controlsPreserved':True,'entryPermissionGranted':False,'orderCreated':False};
+  if kind=='clear':receipt.update(reset=False,alreadyClear=True,previousDaily=copy.deepcopy(following),nextDaily=copy.deepcopy(following),currentEquityMicroUsd=None,price=None)
+  current={**following,'entriesEnabled':False,'stopRequested':False,'revision':4};ok=kind in['recorded','replay','clear'];reason=reason or({'recorded':'OWNER_RESET_RECORDED_FRESH_READINESS_REQUIRED','replay':'OWNER_RESET_REPLAYED','clear':'OWNER_RESET_ALREADY_CLEAR'}.get(kind,'OWNER_RESET_FRESH_RECONCILIATION_REQUIRED'));return {'ok':ok,'command':'reset-daily-loss','requestId':f.OWNER_RESET_ID,'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'source':manifest['source'],'runId':'native-paper-20261029210000000','reasonCode':reason,'retryable':reason in f.OWNER_RESET_RETRYABLE,'resetApplied':kind=='recorded','alreadyClear':kind=='clear','replayed':kind=='replay','receipt':receipt if kind in['recorded','replay','clear']else None,'current':current}
+ def reset_record(self,value):
+  self.run_apply(value);value.events.clear();record=json.loads((value.record_dir/'transition.json').read_bytes());record.pop('ownerDailyLossReset');return record,json.loads(value.manifest.read_bytes())
+ def test_owner_reset_records_exact_intent_before_native_action_and_never_repeats_completed_authorization(self):
+  with self.prepared(exposure=True)as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest);before=next(value.writer.execute('SELECT body FROM financial_state'))[0]
+   def exchange(core,target,request,**options):
+    saved=json.loads((value.record_dir/'transition.json').read_bytes())['ownerDailyLossReset'];self.assertEqual(saved['request'],{'command':'reset-daily-loss','requestId':'owner-daily-loss-reset-20261029'});self.assertEqual(saved['source'],manifest['source']);self.assertEqual(saved['accountId'],m.ACCOUNT_ID);self.assertFalse(saved['complete']);return response
+   with patch.object(f,'owner_control_exchange',side_effect=exchange)as control,patch.object(f,'now',return_value=RESET_AT):
+    first=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(first['complete']);second=owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(first,second);self.assertEqual(control.call_count,1)
+   self.assertEqual(value.events,[]);self.assertEqual(next(value.writer.execute('SELECT body FROM financial_state'))[0],before);self.assertEqual(first['financialDatabaseWritesByDriver'],0);self.assertFalse(first['entryPermissionGranted'])
+ def test_owner_reset_replay_reports_new_loss_without_granting_another_waiver(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest,'replay');response['current'].update(lossPaused=True,paused=True,stopRequested=True,revision=9)
+   with patch.object(f,'owner_control_exchange',return_value=response)as control,patch.object(f,'now',return_value=RESET_AT):result=owner_reset_impl(m,manifest,value.record_dir,record)
+   self.assertTrue(result['complete']);self.assertFalse(result['response']['resetApplied']);self.assertTrue(result['response']['replayed']);self.assertTrue(result['response']['current']['lossPaused']);self.assertTrue(result['response']['current']['stopRequested']);self.assertEqual(control.call_count,1);public=f.owner_reset_public_result(result,{'financial':{'dailyControls':{'lossPaused':True},'financialControls':{'stopRequested':True},'revision':9}});self.assertTrue(public['postVerificationDailyControls']['lossPaused']);self.assertTrue(public['nativeControlResponseIsHistorical']);self.assertFalse(public['entryPermissionGranted'])
+ def test_owner_reset_already_clear_is_consumed_without_rebase_or_future_retry(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest,'clear')
+   with patch.object(f,'owner_control_exchange',return_value=response)as control,patch.object(f,'now',return_value=RESET_AT):
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(result['complete']);self.assertFalse(result['response']['receipt']['reset']);self.assertTrue(result['response']['receipt']['alreadyClear']);owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,1)
+ def test_owner_reset_retries_only_temporary_failure_with_same_request_then_stops_on_terminal(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);temporary=self.reset_response(manifest,'failure');terminal=self.reset_response(manifest,'failure','OWNER_RESET_ACTION_UNAVAILABLE')
+   with patch.object(f,'owner_control_exchange',side_effect=[temporary,terminal])as control,patch.object(f.time,'sleep')as sleep,patch.object(f,'now',return_value=RESET_AT):
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertFalse(result['complete']);self.assertEqual(result['reasonCode'],'OWNER_RESET_ACTION_UNAVAILABLE');self.assertEqual(len(result['attempts']),2);self.assertEqual(control.call_args_list[0].args[2],control.call_args_list[1].args[2]);sleep.assert_called_once_with(2);owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,2);self.assertEqual(len(result['attempts']),2)
+ def test_owner_reset_invalid_identity_is_terminal_across_installer_resume(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest);response['requestId']='wrong-authorization'
+   with patch.object(f,'owner_control_exchange',return_value=response)as control,patch.object(f,'now',return_value=RESET_AT),patch.object(f.time,'sleep')as sleep:
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertFalse(result['complete']);self.assertFalse(result['retryable']);self.assertEqual(result['reasonCode'],'EXACT_OWNER_RESET_RESPONSE_IDENTITY_REQUIRED');owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,1);sleep.assert_not_called()
+ def test_owner_reset_recovers_stale_local_status_within_same_bounded_authorization(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest)
+   with patch.object(f,'owner_control_exchange',side_effect=[f.Refused('FRESH_NATIVE_CONTROL_OWNER_STATUS_REQUIRED'),response])as control,patch.object(f,'now',return_value=RESET_AT),patch.object(f.time,'sleep')as sleep:
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(result['complete']);self.assertEqual(control.call_count,2);self.assertEqual(control.call_args_list[0].args[2],control.call_args_list[1].args[2]);sleep.assert_called_once_with(2)
+ def test_owner_reset_lost_durable_noop_reply_replays_without_clearing_new_loss(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);response=self.reset_response(manifest,'clear');receipt=copy.deepcopy(response['receipt']);response.update(reasonCode='OWNER_RESET_REPLAYED',alreadyClear=False,replayed=True);response['current'].update(lossPaused=True,paused=True,revision=9)
+   with patch.object(f,'owner_control_exchange',side_effect=[OSError('lost first noop reply'),response])as control,patch.object(f,'now',return_value=RESET_AT),patch.object(f.time,'sleep')as sleep:
+    result=owner_reset_impl(m,manifest,value.record_dir,record);self.assertTrue(result['complete']);self.assertEqual(result['response']['receipt'],receipt);self.assertTrue(result['response']['current']['lossPaused']);self.assertFalse(result['response']['resetApplied']);self.assertTrue(result['response']['replayed']);self.assertEqual(control.call_count,2);owner_reset_impl(m,manifest,value.record_dir,record);self.assertEqual(control.call_count,2)
+ def test_owner_reset_expired_day_refuses_before_any_socket_request(self):
+  with self.prepared()as value:
+   record,manifest=self.reset_record(value);future=int(datetime.datetime(2026,10,30,1,tzinfo=datetime.timezone.utc).timestamp()*1000)
+   with patch.object(f,'now',return_value=future),patch.object(f,'owner_control_exchange')as control:result=owner_reset_impl(m,manifest,value.record_dir,record)
+   self.assertFalse(result['complete']);self.assertEqual(result['reasonCode'],'OWNER_RESET_AUTHORIZATION_DAY_EXPIRED');control.assert_not_called();self.assertEqual(value.events,[])
+ def test_owner_reset_mismatched_receipt_or_waiver_flags_are_rejected(self):
+  manifest={'source':{'commit':'a'*40,'sha256':'b'*64}}
+  for change in [('requestId','a-different-authorization'),('source',{'commit':'0'*40,'sha256':'b'*64}),('retryable',True)]:
+   response=self.reset_response(manifest);response[change[0]]=change[1]
+   with self.subTest(change=change),self.assertRaises(f.Refused):f.validate_owner_reset_response(m,manifest,response)
+  for change in [('entryPermissionGranted',True),('controlsPreserved',False),('orderCreated',True),('reason','changed owner authorization')]:
+   response=self.reset_response(manifest);response['receipt'][change[0]]=change[1]
+   with self.subTest(receiptChange=change),self.assertRaises(f.Refused):f.validate_owner_reset_response(m,manifest,response)
+ def test_owner_reset_durable_noop_wrong_day_and_reset_unpaused_baseline_are_rejected(self):
+  manifest={'source':{'commit':'a'*40,'sha256':'b'*64}};noop=self.reset_response(manifest,'clear');noop['receipt']['previousDaily']['day']='2026-10-28';noop['receipt']['nextDaily']['day']='2026-10-28'
+  with self.assertRaisesRegex(f.Refused,'EXACT_DATED_OWNER_RESET_BASELINES_REQUIRED'):f.validate_owner_reset_response(m,manifest,noop)
+  reset=self.reset_response(manifest);reset['receipt']['previousDaily']['paused']=False
+  with self.assertRaisesRegex(f.Refused,'OWNER_RESET_REBASE_AND_READINESS_PROOF_REQUIRED'):f.validate_owner_reset_response(m,manifest,reset)
+ def test_owner_reset_hook_occurs_only_after_verified_new_source_and_keeps_new_manager_if_unavailable(self):
+  with self.prepared()as value:
+   def reset(core,manifest,record_dir,record):
+    self.assertEqual(value.current.resolve(),value.target);self.assertEqual(value.events[-1],('start','poe-runtime.service'));record['ownerDailyLossReset']={'complete':False,'reasonCode':'OWNER_RESET_ACTION_UNAVAILABLE','attempts':[]};return record['ownerDailyLossReset']
+   with patch.object(f,'owner_daily_loss_reset',side_effect=reset),self.assertRaisesRegex(f.Refused,'NEW_FINANCIAL_MANAGER_RETAINED_OWNER_RESET_NOT_VERIFIED'):self.run_apply(value)
+   self.assertEqual(value.current.resolve(),value.target);self.assertEqual(value.events.count(('stop','poe-runtime.service')),1);self.assertEqual(value.events[-1],('start','poe-runtime.service'));record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertTrue(record['postStartVerification']['complete']);self.assertTrue(record['postStartVerification']['ownerResetFinancialPrefixReverified']);self.assertTrue(record['postStartFinancial']['journalAndActionPrefixPreserved']);public=json.loads((value.root/'public/upgrade-verification.json').read_bytes());self.assertTrue(public['installationVerified']);self.assertFalse(public['complete']);self.assertFalse(public['ownerDailyLossReset']['complete'])
  def test_full_previous_47662_row_prefix_plus_new_rows_verified(self):
   with self.prepared(rows=47662)as value:
    value.state['revision']=47663;value.writer.execute('UPDATE financial_state SET body=?',(json.dumps(value.state),));value.writer.execute('INSERT INTO actions VALUES(?,?,?)',('new-after-native','NEW_HASH','NEW_RESULT'));value.writer.execute('INSERT INTO journal VALUES(?,?,?)',(47663,'new-after-native','NEW_DETAIL'));self.run_apply(value);record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertEqual(record['originalFinancialPrefix']['prefix']['actions']['priorRows'],47662);self.assertEqual(record['originalFinancialPrefix']['prefix']['journal']['priorRows'],47663);self.assertEqual(record['beforeStopVerifiedBackup']['financial']['revision'],47663);self.assertEqual(record['postStartFinancial']['prefix']['actions']['priorRows'],47663)
@@ -121,7 +263,7 @@ class Tests(unittest.TestCase):
    intermediate=value.prior_dir/'prior-root-records';intermediate.mkdir(mode=0o700);(intermediate/'transition.json').write_bytes(b'PRESERVE_A977_FORWARD_TRANSITION');original=intermediate/'prior-root-records';original.mkdir(mode=0o700);(original/'transition.json').write_bytes(b'ORIGINAL_5E55_ROOT_TRANSITION');(original/'index.json').write_bytes(b'ORIGINAL_FA_INDEX');self.run_apply(value)
    copied=value.record_dir/'prior-root-records/prior-root-records';self.assertEqual((copied/'transition.json').read_bytes(),b'PRESERVE_A977_FORWARD_TRANSITION');self.assertEqual((copied/'prior-root-records/transition.json').read_bytes(),b'ORIGINAL_5E55_ROOT_TRANSITION');self.assertEqual((copied/'prior-root-records/index.json').read_bytes(),b'ORIGINAL_FA_INDEX');record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertEqual(record['previousSource'],f.OLD_SOURCE);self.assertTrue(any(row['file']=='prior-root-records/prior-root-records/transition.json'for row in record['copiedPriorRootRecords']))
  def test_root_indexed_supervisor_is_distinct_from_current_financial_supervisor(self):
-  repository=HERE.parent.parent;index_path=repository/'evidence/issue11-consolidation-20261028/prepared-original-upgrade/index.json';raw=index_path.read_bytes();self.assertEqual(f.sha(raw),f.OLD_INDEX);current=repository/'evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/upgrade-package/index.json';previous=current.read_bytes();self.assertEqual(f.sha(previous),f.PRIOR_INDEX);rows={row['file']:row for row in json.loads(previous)['files']};self.assertEqual(rows['run-authoritative-service.py']['sha256'],f.OLD_SUPERVISOR);self.assertEqual(rows['snapshot-publisher.mjs']['sha256'],f.OLD_REPORTER);self.assertNotEqual(f.OLD_SUPERVISOR,f.INDEXED_SUPERVISOR)
+  repository=HERE.parent.parent;index_path=repository/'evidence/issue11-consolidation-20261028/prepared-original-upgrade/index.json';raw=index_path.read_bytes();self.assertEqual(f.sha(raw),f.OLD_INDEX);current=repository/'evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/upgrade-package/index.json';previous=current.read_bytes();self.assertEqual(f.sha(previous),f.PRIOR_INDEX);rows={row['file']:row for row in json.loads(previous)['files']};self.assertEqual(rows['run-authoritative-service.py']['sha256'],f.OLD_SUPERVISOR);self.assertEqual(rows['snapshot-publisher.mjs']['sha256'],f.OLD_REPORTER);self.assertNotEqual(f.OLD_SUPERVISOR,f.INDEXED_SUPERVISOR)
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-root-helper-pins-')as directory:
    root=pathlib.Path(directory);package=root/'packages/issue11';tools=root/'tools/issue11';package.mkdir(parents=True);tools.mkdir(parents=True);folders={package.parent,package,tools.parent,tools};real_lstat=pathlib.Path.lstat
    def lstat(path):return types.SimpleNamespace(st_mode=0o40700,st_uid=0)if path in folders else real_lstat(path)
@@ -133,31 +275,31 @@ class Tests(unittest.TestCase):
    old=json.loads(value.old_raw);new=json.loads(value.bodies['service.json'])
    for key,changed in[('strategy','other')]:
     modified=copy.deepcopy(new);modified[key]=changed
-    with self.subTest(key=key),self.assertRaisesRegex(f.Refused,'OPERATING_MANIFEST_MUST_BE_PRESERVED'):f.preserved_manifest(old,modified)
-   for key,changed in[('stage','two'),('deepSlots',6)]:
+    with self.subTest(key=key),self.assertRaisesRegex(f.Refused,'EXACT_AUTHORIZED_SINGLE_TO_TWO_POSITION_TRANSITION_REQUIRED'):f.preserved_manifest(old,modified)
+   for key,changed in[('stage','three'),('deepSlots',6)]:
     modified=copy.deepcopy(new);modified[key]=changed
-    with self.subTest(key=key),self.assertRaisesRegex(f.Refused,'APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED'):f.preserved_manifest(old,modified)
+    with self.subTest(key=key),self.assertRaisesRegex(f.Refused,'EXACT_AUTHORIZED_SINGLE_TO_TWO_POSITION_TRANSITION_REQUIRED'if key=='stage'else'APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED'):f.preserved_manifest(old,modified)
    for key,changed,code in[('configurationSha256','b'*64,'EXACT_RESOURCE_CONFIGURATION_TRANSITION_REQUIRED'),('policy',{},'EXACT_RESOURCE_POLICY_TRANSITION_REQUIRED')]:
     modified=copy.deepcopy(new);modified[key]=changed
     with self.subTest(key=key),self.assertRaisesRegex(f.Refused,code):f.preserved_manifest(old,modified)
  def test_unreviewed_package_and_replaced_hotfix_refuse(self):
   with self.prepared()as value:
    with self.assertRaisesRegex(f.Refused,'REVIEWED_FORWARD_INDEX_PIN_REQUIRED'):f.bundle(value.stage,os.getuid(),'0'*64,value.driver_sha,s)
-   index=copy.deepcopy(value.index);index['compatibility']['riskChanged']=True;(value.stage/'index.json').write_bytes(f.encoded(index))
+   index=copy.deepcopy(value.index);index['compatibility']['riskChanged']=False;(value.stage/'index.json').write_bytes(f.encoded(index))
    with self.assertRaisesRegex(f.Refused,'EXACT_FORWARD_PACKAGE_IDENTITY_REQUIRED'):f.bundle(value.stage,os.getuid(),f.sha(f.encoded(index)),value.driver_sha,s)
- def test_unchanged_reporter_and_current_supervisor_remain_exactly_pinned(self):
+ def test_old_and_new_reporters_and_unchanged_current_supervisor_are_exactly_pinned(self):
   with self.prepared()as value:
-   old_reporter=(value.old/'snapshot-publisher.mjs').read_bytes();self.assertEqual(value.bodies['snapshot-publisher.mjs'],old_reporter);_,new,data,_=f.bundle(value.stage,os.getuid(),value.expected,value.driver_sha,s);f.preserved_manifest(json.loads(value.old_raw),new);self.run_apply(value);self.assertEqual((value.target/'snapshot-publisher.mjs').read_bytes(),data['snapshot-publisher.mjs']);self.assertEqual((value.old/'snapshot-publisher.mjs').read_bytes(),old_reporter);self.assertEqual(next(row['sha256']for row in json.loads((value.record_dir/'before-service.json').read_bytes())['files']if row['file']=='snapshot-publisher.mjs'),f.sha(old_reporter))
+   old_reporter=(value.old/'snapshot-publisher.mjs').read_bytes();self.assertNotEqual(value.bodies['snapshot-publisher.mjs'],old_reporter);_,new,data,_=f.bundle(value.stage,os.getuid(),value.expected,value.driver_sha,s);f.preserved_manifest(json.loads(value.old_raw),new);self.run_apply(value);self.assertEqual((value.target/'snapshot-publisher.mjs').read_bytes(),data['snapshot-publisher.mjs']);self.assertEqual((value.old/'snapshot-publisher.mjs').read_bytes(),old_reporter);self.assertEqual(next(row['sha256']for row in json.loads((value.record_dir/'before-service.json').read_bytes())['files']if row['file']=='snapshot-publisher.mjs'),f.sha(old_reporter))
  def test_tampered_new_reporter_or_unknown_old_reporter_is_refused(self):
   with self.prepared()as value:
    (value.stage/'snapshot-publisher.mjs').write_bytes(b'UNREVIEWED_NEW_REPORTER')
    with self.assertRaisesRegex(f.Refused,'FORWARD_PACKAGE_FILE_HASH_REQUIRED'):f.bundle(value.stage,os.getuid(),value.expected,value.driver_sha,s)
    self.assertEqual(value.events,[]);self.assertFalse(value.record_dir.exists());old=json.loads(value.old_raw);new=json.loads(value.bodies['service.json']);next(row for row in old['files']if row['file']=='snapshot-publisher.mjs')['sha256']='0'*64
-   with self.assertRaisesRegex(f.Refused,'CURRENT_REPORTER_HOTFIX_REQUIRED'):f.preserved_manifest(old,new)
+   with self.assertRaisesRegex(f.Refused,'EXACT_OLD_AND_NEW_ORIGINAL_REPORTERS_REQUIRED'):f.preserved_manifest(old,new)
  def test_new_reporter_manifest_must_match_exact_approved_file(self):
   with self.prepared()as value:
    body=b'ALTERNATE_REVIEWED_REPORTER';(value.stage/'snapshot-publisher.mjs').write_bytes(body);index=copy.deepcopy(value.index);row=next(row for row in index['files']if row['file']=='snapshot-publisher.mjs');row.update(bytes=len(body),sha256=f.sha(body));raw=f.encoded(index);(value.stage/'index.json').write_bytes(raw)
-   with self.assertRaisesRegex(f.Refused,'PRESERVED_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
+   with self.assertRaisesRegex(f.Refused,'EXACT_NEW_ORIGINAL_REPORTER_REQUIRED'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
  def test_helpers_and_sqlite_remain_pinned_even_if_new_index_and_manifest_agree(self):
   for name in['backup-worker.mjs','better_sqlite3.node','snapshot-publisher.mjs','run-authoritative-service.py']:
    with self.subTest(file=name),self.prepared()as value:
@@ -168,7 +310,7 @@ class Tests(unittest.TestCase):
      if row['file']==name:row.update(bytes=len(body),sha256=f.sha(body))
      if row['file']=='service.json':row.update(bytes=len(manifest_raw),sha256=f.sha(manifest_raw))
     raw=f.encoded(index);(value.stage/'index.json').write_bytes(raw)
-    with self.assertRaisesRegex(f.Refused,'EXACT_NEW_COMPILED_BACKUP_WORKER_REQUIRED'if name=='backup-worker.mjs'else'PRESERVED_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
+    with self.assertRaisesRegex(f.Refused,'EXACT_NEW_COMPILED_BACKUP_WORKER_REQUIRED'if name=='backup-worker.mjs'else'EXACT_NEW_ORIGINAL_REPORTER_REQUIRED'if name=='snapshot-publisher.mjs'else'EXACT_NEW_STRATEGY_SUPERVISOR_PIN_REQUIRED'if name=='run-authoritative-service.py'else'PRESERVED_OPERATIONAL_HELPERS_AND_SQLITE_ABI_REQUIRED'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
  def test_distinct_compiled_backup_workers_are_pinned_for_old_and_new_sources(self):
   with self.prepared()as value:
    old=json.loads(value.old_raw);new=json.loads(value.bodies['service.json']);self.assertNotEqual(f.OLD_BACKUP_WORKER_SHA,f.NEW_BACKUP_WORKER_SHA);f.preserved_manifest(old,new);self.run_apply(value);self.assertEqual((value.old/'backup-worker.mjs').read_bytes(),b'OLD_COMPILED_BACKUP');self.assertEqual((value.target/'backup-worker.mjs').read_bytes(),b'NEW_COMPILED_BACKUP')
@@ -191,7 +333,7 @@ class Tests(unittest.TestCase):
  def test_six_slot_target_is_rejected_even_with_approved_transport_hashes(self):
   with self.prepared()as value:
    manifest=json.loads(value.bodies['service.json']);manifest['deepSlots']=6;body=f.encoded(manifest);(value.stage/'service.json').write_bytes(body);index=copy.deepcopy(value.index);next(row for row in index['files']if row['file']=='service.json').update(bytes=len(body),sha256=f.sha(body));raw=f.encoded(index);(value.stage/'index.json').write_bytes(raw)
-   with self.assertRaisesRegex(f.Refused,'APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
+   with self.assertRaisesRegex((f.Refused,s.Guard),'APPROVED_FOUR_SLOT_CAPACITY_MUST_BE_PRESERVED|ADAPTIVE_STRATEGY_REQUIRES_TWO_POSITION_FOUR_SLOT_PROFILE'):f.bundle(value.stage,os.getuid(),f.sha(raw),value.driver_sha,s)
    self.assertEqual(value.events,[])
  def test_new_configuration_must_match_approved_resource_profile_during_staging(self):
   with self.prepared()as value:
@@ -212,18 +354,20 @@ class Tests(unittest.TestCase):
    with patch.object(f,'local_preflight',return_value={'ActiveState':'active','SubState':'running','MainPID':'123',**f.RESOURCE_BEFORE,'CPUQuotaPerSecUSec':'500ms'}),self.assertRaisesRegex(f.Refused,'STARTED_RESOURCE_PROFILE_MUST_BE_RETAINED'):self.run_apply(value)
    self.assertEqual(value.events,[]);self.assertEqual(value.current.resolve(),value.target);self.assertEqual(dropin.read_bytes(),new);self.assertEqual(value.manifest.read_bytes(),value.bodies['service.json'])
  def test_bootstrap_v1_and_current_v2_validators_are_separate(self):
-  manifest=json.loads((HERE.parent.parent/'evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/upgrade-package/service.json').read_bytes())
+  manifest=json.loads((HERE.parent.parent/'evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/upgrade-package/service.json').read_bytes())
   self.assertEqual(s.validate_manifest(manifest),manifest)
   with self.assertRaisesRegex(legacy.Guard,'REVIEWED_SERVICE_POLICY_REQUIRED'):legacy.validate_manifest(manifest)
-  raw=(HERE/'run-authoritative-service.py').read_bytes();self.assertEqual(f.sha(raw),f.OLD_SUPERVISOR);module=f.release_supervisor({'run-authoritative-service.py':raw});self.assertEqual(module.validate_manifest(manifest),manifest);self.assertEqual(f.policy_sha(module.POLICY),f.OLD_POLICY_SHA)
+  raw=(HERE/'run-authoritative-service.py').read_bytes();self.assertNotEqual(f.sha(raw),f.OLD_SUPERVISOR)
+  with patch.object(f,'NEW_SUPERVISOR',f.sha(raw)):module=f.release_supervisor({'run-authoritative-service.py':raw})
+  self.assertEqual(module.validate_manifest(manifest),manifest);self.assertEqual(f.policy_sha(module.POLICY),f.OLD_POLICY_SHA)
   expected=HERE.parent.parent/'fixture-release'/f.OLD_SOURCE['commit']/'operator/native-paper-ec2/run-authoritative-service.py'
   with patch.object(f,'reviewed_module',return_value=module)as reviewed:
    self.assertEqual(f.current_release_supervisor(types.SimpleNamespace(RELEASES=HERE.parent.parent/'fixture-release')),module)
    self.assertEqual(reviewed.call_args.args,('poe_forward_current_supervisor',expected,f.OLD_SUPERVISOR))
   changed=raw.replace(b"'sourceHeapMiB':1024",b"'sourceHeapMiB':2048");self.assertNotEqual(changed,raw)
-  with self.assertRaisesRegex(f.Refused,'EXACT_REVIEWED_NEW_RESOURCE_SUPERVISOR_REQUIRED'):f.release_supervisor({'run-authoritative-service.py':changed})
+  with patch.object(f,'NEW_SUPERVISOR',f.sha(changed)),self.assertRaisesRegex(f.Refused,'EXACT_REVIEWED_NEW_RESOURCE_SUPERVISOR_REQUIRED'):f.release_supervisor({'run-authoritative-service.py':changed})
  def test_current_supervisor_loads_only_exact_pinned_v2_bytes(self):
-  raw=(HERE/'run-authoritative-service.py').read_bytes();context=types.SimpleNamespace(RELEASES=HERE.parent.parent/'fixture-releases')
+  raw=(HERE.parent.parent/'evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/upgrade-package/run-authoritative-service.py').read_bytes();self.assertEqual(f.sha(raw),f.OLD_SUPERVISOR);context=types.SimpleNamespace(RELEASES=HERE.parent.parent/'fixture-releases')
   with patch.object(f,'read',return_value=raw):current=f.current_release_supervisor(context)
   self.assertEqual(current.POLICY,s.POLICY);self.assertEqual(f.policy_sha(current.POLICY),f.OLD_POLICY_SHA)
   with patch.object(f,'read',return_value=raw+b'\n# UNAPPROVED CHANGE\n'),self.assertRaisesRegex(f.Refused,'REVIEWED_ROOT_HELPER_HASH_REQUIRED'):f.current_release_supervisor(context)
@@ -263,6 +407,9 @@ class Tests(unittest.TestCase):
     if args[0]=='start':raise m.Refused('INJECTED_START_TIMEOUT')
    with patch.object(m,'systemctl',side_effect=ctl),self.assertRaisesRegex(m.Refused,'INJECTED_START_TIMEOUT'):self.run_apply(value)
    record=json.loads((value.record_dir/'transition.json').read_bytes());self.assertTrue(record['startRequestedAt']);self.assertEqual(value.current.resolve(),value.target);value.events.clear();self.run_apply(value);self.assertEqual(value.events,[('start','poe-runtime.service')]);self.assertEqual(value.current.resolve(),value.target)
+ def test_resume_retains_two_new_source_positions_and_all_pending_obligations(self):
+  with self.prepared(exposure=True)as value:
+   self.run_apply(value);value.events.clear();state=copy.deepcopy(value.state);state['revision']=4;state['positions']['SECOND_POSITION']={'lamports':'321','protection':'KEEP_SECOND_PROTECTION'};state['pending']['SECOND_PENDING']={'reserved':'654'};state['lockedDeposits']['SECOND_POSITION']='987';value.writer.execute('UPDATE financial_state SET body=?',(json.dumps(state),));value.writer.execute('INSERT INTO actions VALUES(?,?,?)',('new-two-position-action','KEEP_NEW_HASH','KEEP_NEW_RESULT'));value.writer.execute('INSERT INTO journal VALUES(?,?,?)',(4,'new-two-position-action','KEEP_NEW_DETAIL'));before=next(value.writer.execute('SELECT body FROM financial_state'))[0];result=self.run_apply(value);self.assertEqual(next(value.writer.execute('SELECT body FROM financial_state'))[0],before);self.assertEqual(value.current.resolve(),value.target);self.assertEqual(value.events,[('start','poe-runtime.service')]);self.assertEqual(result['verification']['financialVerification']['prefix']['actions']['currentRows'],4);self.assertEqual((value.ledger.stat().st_dev,value.ledger.stat().st_ino),value.inode);self.assertEqual(json.loads(value.manifest.read_bytes())['stage'],'two');self.assertEqual(len(json.loads(before)['positions']),2);self.assertEqual(len(json.loads(before)['pending']),2)
  def test_poststart_prefix_failure_retains_new_and_suspends_only_admission(self):
   with self.prepared(exposure=True)as value:
    real=m.verify_live_financial_prefix;count={'n':0}
