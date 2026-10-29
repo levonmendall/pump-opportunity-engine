@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-29T01:44:22.832Z",
+  "method": "POST",
+  "path": "/api/snapshot",
+  "authorizationSupplied": false,
+  "status": 401,
+  "body": {
+    "error": "unauthorized"
+  },
+  "priorProbe": {
+    "made": true,
+    "receiptBodyNotRetained": true,
+    "error": "Probe incorrectly required accepted:false in addition to401; no claim from that probe"
+  },
+  "claim": "Actual unauthenticated write response; no valid snapshot or financial write submitted."
+}

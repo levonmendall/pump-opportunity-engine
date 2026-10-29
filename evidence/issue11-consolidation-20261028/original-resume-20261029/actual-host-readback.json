@@ -1,0 +1,73 @@
+{
+  "kind": "POE_ORIGINAL_CUTOVER_REFUSAL_READ_ONLY",
+  "checkedAt": 1793236341550,
+  "service": {
+    "Restart": "on-failure",
+    "MainPID": "2431222",
+    "ControlPID": "0",
+    "Result": "success",
+    "NRestarts": "0",
+    "ExecMainStartTimestamp": "Thu 2026-10-29 01:02:38 UTC",
+    "ExecMainExitTimestamp": "",
+    "ExecMainPID": "2431222",
+    "ExecMainCode": "0",
+    "ExecMainStatus": "0",
+    "ControlGroup": "/system.slice/poe-runtime.service",
+    "TasksCurrent": "11",
+    "User": "poe-runtime",
+    "Group": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running",
+    "StateChangeTimestamp": "Thu 2026-10-29 01:02:38 UTC",
+    "ActiveEnterTimestamp": "Thu 2026-10-29 01:02:38 UTC",
+    "InactiveEnterTimestamp": "Thu 2026-10-29 01:02:38 UTC",
+    "Job": ""
+  },
+  "lastExecStop": {
+    "ignore_errors": "no",
+    "start_time": "[n/a]",
+    "stop_time": "[n/a]",
+    "pid": "0",
+    "code": "(null)",
+    "status": "0/0"
+  },
+  "serviceReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 742,
+    "stderrBytes": 0,
+    "stdoutSha256": "30339f4689cd2b2057240db8d60dc9c8d237aa1d4638878a5839984bef2c140f",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "publicStatus": {
+    "sha256": "e1ca89aecdc8591b12af6e47099f68bcca72d802c88d24a6c981597ad8e2029b",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED",
+    "generatedAt": "2026-10-29T01:12:18.930Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false
+  },
+  "currentReleaseLink": null,
+  "currentCgroup": {
+    "available": true,
+    "pids": [
+      2431222
+    ]
+  },
+  "managerJournal": [],
+  "journalReceipt": {
+    "exitCode": 1,
+    "stdoutBytes": 0,
+    "stderrBytes": 62,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "69290b924ebefd68d1806a463f5c072523b1c5ed4c35e4096eee215ff5916e2e"
+  },
+  "financialDatabaseOpened": false,
+  "credentialReads": 0,
+  "serviceChanges": 0,
+  "providerRequests": 0
+}

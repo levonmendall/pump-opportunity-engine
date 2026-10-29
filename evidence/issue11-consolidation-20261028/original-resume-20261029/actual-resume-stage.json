@@ -1,0 +1,28 @@
+{
+  "kind": "POE_ORIGINAL_CONTINUATION_STAGED_NOT_EXECUTED",
+  "at": 1793238085272,
+  "file": "/var/tmp/poe-issue11-resume-93f23cb1/resume-original-service.py",
+  "bytes": 42341,
+  "sha256": "93f23cb18b67f72749b34f11c28e8af777195da2832a25b68867d80ea89d8b3e",
+  "unchangedOriginalPackageIndex": "fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd",
+  "serviceBefore": {
+    "MainPID": "2431222",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceAfter": {
+    "MainPID": "2431222",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceUnchanged": true,
+  "originalPreparationModified": false,
+  "financialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "providerRequests": 0,
+  "executed": false
+}
