@@ -1,0 +1,7 @@
+{
+  "kind": "exact-root-receipt-hash-matched-sanitized-artifact",
+  "sha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e",
+  "bytes": 10694,
+  "exporterSha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986",
+  "method": "Retain verified structured public projection; restore only exact fixed diagnostic prose from approved exporter AST, then require exact original root-receipt bytecount and SHA. This is not an additional host read or invented market evidence."
+}

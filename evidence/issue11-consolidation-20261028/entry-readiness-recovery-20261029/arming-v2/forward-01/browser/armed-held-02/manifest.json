@@ -1,0 +1,34 @@
+{
+  "kind": "enabled-held-browser-evidence-manifest-v1",
+  "at": "2026-10-29T20:00:40.998879+00:00",
+  "files": {
+    "README.md": {
+      "bytes": 2176,
+      "sha256": "55ecc70ba3396c8bd69765a04258d804eaa72f3298b98886c4f8742359bfb277"
+    },
+    "browser-raw.txt": {
+      "bytes": 23306,
+      "sha256": "465233995207fdbed8f31f3a083d20e4a421d606b944deeb9c087dfebed92743"
+    },
+    "live-1280.png": {
+      "bytes": 2919703,
+      "sha256": "e54b34076b04484de7c44bf1199b1e3d22dd146b7b7d5538a08a3afcd12fcabf"
+    },
+    "live-390.png": {
+      "bytes": 1710656,
+      "sha256": "3efd87510bfb42ca2e83a6755887ca450f9167a48ae62b8e8496fadc6839825b"
+    },
+    "live-browser.json": {
+      "bytes": 34280,
+      "sha256": "1022ca4b1a0c1f949a47a7cd5b087ed9ea9266a14723dd5de084e21433828d88"
+    },
+    "verification.json": {
+      "bytes": 8807,
+      "sha256": "430f2ba9f8d7abdd82b909198c9ffa8edc8676e52aa17b0f078681a03f7bf8cb"
+    },
+    "verify-browser.mjs": {
+      "bytes": 9297,
+      "sha256": "289e6bd8dfcdb3cb69c582538e1dfacb3ca414727958b171174bfe29de15f5ab"
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "classification": "VERIFIED_TARGET_INSTALLED_PREFIX_PRESERVED_RENDER_ACCEPTANCE_PENDING",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "installedInputSha256": "ab41f3674521875b29897b7ef5eb785e0732e41ea421e0369231027b39e14dae",
+  "fourSlotConfiguration": {
+    "exactActualConfigurationHashMatchesFrozenFourSlotSingleStage": true,
+    "frozenManifestDeepSlots": 4,
+    "frozenManifestStage": "single",
+    "currentShortlist": 4,
+    "financialPositionLimit": 1
+  },
+  "financialVerification": {
+    "identityAndInceptionPreserved": true,
+    "initialFundingAndRoundingPreserved": true,
+    "journalAndActionPrefixPreserved": true,
+    "priorRevision": 52405,
+    "currentRevision": 52407,
+    "currentStateBodySha256": "8f0f67919bb098b6f18b4f61d99877d0ae58d24d048d1a2c85a4777f552586dc",
+    "prefix": {
+      "actions": {
+        "priorRows": 52405,
+        "exactPriorRowsRetained": true,
+        "currentRows": 52407
+      },
+      "journal": {
+        "priorRows": 52406,
+        "exactPriorRowsRetained": true,
+        "currentRows": 52408
+      }
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "interruption": {
+    "stopRequestedAt": 1793302939748,
+    "physicalStopVerifiedAt": 1793302942621,
+    "startRequestedAt": 1793302942864,
+    "localVerificationAt": 1793302944824,
+    "stopToStartMs": 243,
+    "observedNewSource": {
+      "available": true,
+      "sourceTimestamp": "2026-10-29T19:42:24.233Z",
+      "statusSha256": "345693dda3f9f263b1426fa319a3722967d2658f7431c334d71ea53fcee9498b",
+      "observedAt": 1793302944389,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "5648606bf78f6687c47632be5c789af5e7f19772"
+    },
+    "continuousCoverageClaimed": false
+  },
+  "service": {
+    "MainPID": "2469893",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "ownedProcesses": [
+    {
+      "pid": 2469893,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 0.42,
+      "rssBytes": 31244288,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [],
+      "argvExported": false
+    },
+    {
+      "pid": 2469896,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 8.41,
+      "rssBytes": 307261440,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        1024
+      ],
+      "argvExported": false
+    },
+    {
+      "pid": 2469897,
+      "role": "original-publisher",
+      "ownerUid": 988,
+      "cpuSeconds": 0.4,
+      "rssBytes": 96186368,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        128
+      ],
+      "argvExported": false
+    }
+  ],
+  "actualPublicSource": {
+    "sha256": "3711dd9e84ae56ee8ee05a577549afd531c4380ea632a214127c998b87004e3e",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "strategy": "persistent-buying-pilot-v1",
+    "generatedAt": "2026-10-29T19:42:56.016Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "POE_ENTRY_SAFE_STOP",
+    "shortlistCount": 4,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-29T19:42:55.231Z",
+    "lastReconciledAt": "2026-10-29T19:42:55.231Z",
+    "lastMigrationReceivedAt": null,
+    "reportingConfigured": true
+  },
+  "actualForensicReceipt": {
+    "schemaVersion": 1,
+    "kind": "POE_SOURCE_RECOVERY_PREFLIGHT",
+    "status": "EXPORTED",
+    "financialDatabaseOpened": false,
+    "financialWrites": 0,
+    "serviceChanges": 0,
+    "requestedAt": 1793302938981,
+    "scriptSha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986",
+    "childUid": 988,
+    "childGid": 982,
+    "timeoutSeconds": 8,
+    "completedAt": 1793302939038,
+    "returncode": 0,
+    "receipt": {
+      "kind": "POE_SOURCE_RECOVERY_EXPORT_RECEIPT",
+      "readerUid": 988,
+      "readerGid": 982,
+      "financialDatabaseOpened": false,
+      "financialWrites": 0,
+      "serviceChanges": 0,
+      "path": "/var/lib/poe-public/source-recovery-forensics-20261029.json",
+      "bytes": 10694,
+      "sha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e"
+    }
+  },
+  "sanitizedForensicArtifactVerified": {
+    "sha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e",
+    "bytes": 10694,
+    "rootReceiptHashAndSchemaVerified": true
+  },
+  "acceptedSourceAtFirstHostCheck": {
+    "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9"
+  },
+  "targetRunAckVerified": false,
+  "operationalAcceptance": false,
+  "limitations": [
+    "Protected /opt/poe/current symlink is unreadable to UID994; target identity is verified by root adapter/current private startup provenance and subsequent actual public source.",
+    "Backup descriptors and physical-stop details remain in root-owned transition records; this public receipt carries completed verification and observed financial prefix.",
+    "No current target-source Render acknowledgment existed at this first host check; do not treat the old f96 acknowledgment as new-source oversight.",
+    "A point resource baseline and healthy process state do not prove uninterrupted market or position coverage."
+  ]
+}

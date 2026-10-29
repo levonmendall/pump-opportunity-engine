@@ -1,0 +1,21 @@
+{
+  "kind": "combined-operating-repair-pretest-source-v1",
+  "at": "2026-10-29T20:16:18.446146+00:00",
+  "head": "3ef284cbc713010fcdf9f9e6f5842a64e153b093",
+  "installedComparison": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "files": {
+    "scripts/capture-independent-two-hour-reference.ts": "b27840c0895ff285f308ffadace4ebdd3ae0e245bbf23f18cf3ff357aa1fc668",
+    "src/native-candidate-runner.ts": "96f2cd8814a26d1f42760f63225d073444656cf516e84b1892c9cb9c8ed3857c",
+    "src/pilot-rpc.ts": "acd18fb2f41124d23e2abb4dbd79d3bbd26a6a56f929b1d254f806f2ff1cec73",
+    "src/run-native-paper.ts": "4619d9e412cf2c24434ffcae824a88ee3722d91cdb16b03facd4ba4748818f9d",
+    "src/snapshot-publisher.ts": "5999a8eeb9ce5490b7f5738c44ab419af1311da4782517100fcb4db04ce5a10a",
+    "test/native-candidate-runner.test.ts": "5f0d218740eefbb8bf063674d35259c0b608a5af5f047e939994d7a5d5592599",
+    "test/native-paper-launcher.test.ts": "2f09356ba72a0c65c810a9b9ca92a92ba01bc6a962dac61d0a3a8b4bcacd46c1",
+    "test/persistent-independent-reference.test.ts": "7cccdcc79de62e2981cc001333f4c7151fabb5ca155b3c9c37f1b9c0b04759f9",
+    "test/pilot-rpc.test.ts": "6d482475d0599e9cedd4978bbfe49640db19ae6ce03cd582bdcad8de42a48712",
+    "test/snapshot-file-publisher.test.ts": "3bc78ec4f248105fb144632c3739f65075a680db2cde384432765a7b76dd85f8"
+  },
+  "financialMaximumPositions": 1,
+  "maximumDeep": 4,
+  "operatingSourceChanged": false
+}

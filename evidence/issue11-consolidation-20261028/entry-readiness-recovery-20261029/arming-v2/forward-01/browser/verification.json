@@ -1,0 +1,66 @@
+{
+  "kind": "actual-authoritative-dashboard-browser-verification-v1",
+  "verifiedAt": "2026-10-29T19:48:10.875Z",
+  "dashboardRelease": "de37c6a11ad94e6b8e0d53beed783fa5f67dd9f2",
+  "financialRelease": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "state": "BROWSER_RENDERING_AND_SOURCE_ATTRIBUTION_VERIFIED",
+  "entryReadinessVerified": false,
+  "operationalAcceptance": false,
+  "viewports": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "firstSequence": "9787",
+      "lastSequence": "9788",
+      "firstSourceAt": "2026-10-29T19:46:57.111Z",
+      "lastSourceAt": "2026-10-29T19:47:12.166Z",
+      "entries": "paused",
+      "entryRestriction": "POE_ENTRY_SAFE_STOP",
+      "reasonCodes": [
+        "POE_ENTRY_SAFE_STOP"
+      ],
+      "equityGraphSeries": 1,
+      "noJSErrors": true,
+      "noHorizontalOverflow": true
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "firstSequence": "9788",
+      "lastSequence": "9789",
+      "firstSourceAt": "2026-10-29T19:47:12.166Z",
+      "lastSourceAt": "2026-10-29T19:47:27.169Z",
+      "entries": "paused",
+      "entryRestriction": "POE_ENTRY_SAFE_STOP",
+      "reasonCodes": [
+        "DISCOVERY_LOST",
+        "POE_ENTRY_SAFE_STOP"
+      ],
+      "equityGraphSeries": 1,
+      "noJSErrors": true,
+      "noHorizontalOverflow": true
+    }
+  ],
+  "priorVerifierFailure": {
+    "file": "browser-raw.txt",
+    "reason": "Old exact raw ISO body assertion assumed millisecond display. Current owner de37 deliberately renders UTC seconds. Corrected verifier compares displayed UTC seconds to the same exact raw latest timestamp, retained separately; no runtime/source/freshness condition changed."
+  },
+  "financialAccountWrites": 0,
+  "serviceControls": 0,
+  "providerRequests": 0,
+  "publishingRequests": 0,
+  "fixturesUsed": false,
+  "credentialsRead": false,
+  "noApplicationChanges": true,
+  "limitations": [
+    "Actual snapshots remained SAFE_STOP; rendering success is not arming success.",
+    "Desktop final snapshot also reported DISCOVERY_LOST; actual warning remained visible.",
+    "Two source cycles per viewport are not sustained operating acceptance.",
+    "One-position limit is bound by the verified configuration identity; the public UI does not independently expose that numeric limit."
+  ]
+}

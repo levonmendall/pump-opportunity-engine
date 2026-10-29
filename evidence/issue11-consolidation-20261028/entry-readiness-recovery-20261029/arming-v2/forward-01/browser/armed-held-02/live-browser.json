@@ -1,0 +1,889 @@
+{
+  "checkedAt": "2026-10-29T19:58:57.826Z",
+  "dashboardRelease": "de37c6a11ad94e6b8e0d53beed783fa5f67dd9f2",
+  "networkRequests": 8,
+  "method": "Actual public GETs forwarded through verified-TLS session proxy; Chromium rendered returned live HTML/JSON",
+  "operatingEngineUnchanged": true,
+  "providerCalls": 0,
+  "fixturesPublished": false,
+  "credentialsRead": false,
+  "financialFilesRead": false,
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T19:58:06.653Z",
+        "sequence": "9831",
+        "assessments": 1883,
+        "passes": 90,
+        "entries": "enabled",
+        "positions": 1,
+        "positionDetails": [
+          {
+            "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "label": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "quantity": "271921178563",
+            "enteredAt": "2026-10-29T19:50:56.681Z",
+            "entryCostUsd": 49.699531,
+            "netLiquidationUsd": 61.525722,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+          }
+        ],
+        "balances": {
+          "cashSol": "9.292099721",
+          "reservedSol": "0",
+          "equitySol": "9.925709208",
+          "equityUsd": 992.025007,
+          "realizedUsd": -15.4851,
+          "unrealizedUsd": 11.893231,
+          "tradingPnlUsd": -3.591868,
+          "economicPnlUsd": null,
+          "positionCostUsd": 49.699531,
+          "markedExposureUsd": 61.525722,
+          "drawdownUsd": null,
+          "executionCostsUsd": null,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 995.616875,
+          "solPriceUsd": 99.945
+        },
+        "trades": 11,
+        "tradeDetails": [
+          {
+            "id": "paper-fill:8f94d82f6f8d0cb7cd235b91a9ef4d44",
+            "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "side": "buy",
+            "quantity": "271921178563",
+            "at": "2026-10-29T19:50:56.681Z",
+            "valueUsd": 49.698831,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:52923:1793303455037"
+          },
+          {
+            "id": "paper-fill:def906f7b2cc4a0c2732c63eefbe322c",
+            "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+            "side": "sell",
+            "quantity": "195070637",
+            "at": "2026-10-29T19:28:56.225Z",
+            "valueUsd": 49.555833,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:51615:1793302135089"
+          },
+          {
+            "id": "paper-fill:d5775daf8c2b9df708b307a2a99cb33c",
+            "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+            "side": "buy",
+            "quantity": "195070637",
+            "at": "2026-10-29T19:13:54.251Z",
+            "valueUsd": 49.698274,
+            "executionCostsUsd": 0.000701,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:51167:1793301232511"
+          },
+          {
+            "id": "paper-fill:a3642f8273dedd56f127555852b6bf13",
+            "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+            "side": "sell",
+            "quantity": "1028422062926",
+            "at": "2026-10-29T17:25:39.189Z",
+            "valueUsd": 42.251924,
+            "executionCostsUsd": 0.000711,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:48201:1793294738055"
+          },
+          {
+            "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+            "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+            "side": "buy",
+            "quantity": "1028422062926",
+            "at": "2026-10-29T17:20:07.003Z",
+            "valueUsd": 49.694512,
+            "executionCostsUsd": 0.00071,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+          },
+          {
+            "id": "paper-fill:8c86a04e730c26bd139f4d3e5783a07c",
+            "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+            "side": "sell",
+            "quantity": "319987598",
+            "at": "2026-10-29T16:23:37.938Z",
+            "valueUsd": 49.63868,
+            "executionCostsUsd": 0.000715,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:47355:1793291016775"
+          },
+          {
+            "id": "paper-fill:c5c94babc37540a39bd3cf70c18d4cf2",
+            "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+            "side": "buy",
+            "quantity": "319987598",
+            "at": "2026-10-29T16:08:35.958Z",
+            "valueUsd": 49.690465,
+            "executionCostsUsd": 0.00072,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:46914:1793290114273"
+          },
+          {
+            "id": "paper-fill:6dd8e14067d2b21a203ce5f5f1ecb921",
+            "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+            "side": "sell",
+            "quantity": "6411268419",
+            "at": "2026-10-29T15:16:50.857Z",
+            "valueUsd": 50.035441,
+            "executionCostsUsd": 0.000714,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:46296:1793287009656"
+          },
+          {
+            "id": "paper-fill:783fb910281022ac56bff60190469d36",
+            "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+            "side": "buy",
+            "quantity": "6411268419",
+            "at": "2026-10-29T15:01:47.821Z",
+            "valueUsd": 49.694031,
+            "executionCostsUsd": 0.000711,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:45874:1793286106180"
+          },
+          {
+            "id": "paper-fill:4f60a80e3a2a1138b54933655b1b7c13",
+            "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+            "side": "sell",
+            "quantity": "400582323928",
+            "at": "2026-10-29T09:18:01.660Z",
+            "valueUsd": 41.245086,
+            "executionCostsUsd": 0.000701,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:41776:1793265480459"
+          },
+          {
+            "id": "paper-fill:f57e6eff547ba02b388fd8a44502d794",
+            "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+            "side": "buy",
+            "quantity": "400582323928",
+            "at": "2026-10-29T09:15:17.693Z",
+            "valueUsd": 49.698409,
+            "executionCostsUsd": 0.000701,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:41696:1793265315521"
+          }
+        ],
+        "cards": [
+          {
+            "label": "PORTFOLIO EQUITY",
+            "value": "$992.03"
+          },
+          {
+            "label": "TOKEN TRADING P&L",
+            "value": "-$3.59"
+          },
+          {
+            "label": "CASH / RESERVED SOL",
+            "value": "9.292099721 / 0"
+          },
+          {
+            "label": "TRADING AFTER OPERATING COSTS",
+            "value": "Unavailable"
+          },
+          {
+            "label": "REALIZED TRADING P&L",
+            "value": "-$15.49"
+          },
+          {
+            "label": "UNREALIZED TRADING P&L",
+            "value": "$11.89"
+          },
+          {
+            "label": "MODELED EXECUTION COSTS",
+            "value": "Unavailable"
+          },
+          {
+            "label": "OPERATING COSTS",
+            "value": "Unavailable"
+          },
+          {
+            "label": "POSITION COST / EXPOSURE",
+            "value": "$49.70 / $61.53"
+          },
+          {
+            "label": "DRAWDOWN",
+            "value": "Unavailable"
+          },
+          {
+            "label": "PASSIVE SOL BENCHMARK",
+            "value": "$995.62"
+          },
+          {
+            "label": "INCEPTION REFERENCE",
+            "value": "$1,000.00"
+          }
+        ],
+        "positionText": "Token / quantityEntry / net liquidationCostsStatusCNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump · CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump / 271921178563$49.70 / $61.53$0.00PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)",
+        "positionExpectedMark": "$61.53",
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "fresh",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 16709,
+          "receivedAgeMs": 8916,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": null,
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": true,
+            "valuationAgeMs": 18362,
+            "reconciliationAgeMs": 17058
+          },
+          "protection": {
+            "state": "monitored",
+            "completedAt": "2026-10-29T19:58:06.318Z",
+            "completedAgeAtSourceMs": 335,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": []
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries enabled · source reporting current · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9831",
+        "receiver": "2026-10-29T19:58:14.446Z",
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 48643532,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 392,
+          "verifiedOrigins": 151,
+          "known": 174,
+          "watch": 86,
+          "eligible": 56,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 53,
+          "promoted": 4063,
+          "repromoted": 3743,
+          "demoted": 4053,
+          "completeWindows": 1861,
+          "auditedWindows": 1883,
+          "uniqueEvaluated": 33,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1883,
+          "predictivePasses": 90,
+          "predictiveFailures": 1771,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": null,
+          "waitMaximumMs": 1913486,
+          "olderSelected": 24
+        },
+        "run": {
+          "id": "native-paper-20261029194223241",
+          "startedAt": "2026-10-29T19:42:23.241Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "provider": {
+          "rpcRequests": 592,
+          "rpcResponseBytes": 59830383,
+          "nativeStreamBytes": 852774211,
+          "broadWatchBytes": 46509390377,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 392,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 38,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T19:49:33.059Z",
+          "historyCooldownUntil": "2026-10-29T19:51:30.714Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T19:58:06.377Z",
+          "cpuOneCoreFraction": 0.3734912930962518,
+          "rssBytes": 410210304,
+          "availableMemoryBytes": 6858960896,
+          "availableDiskBytes": 288382582784,
+          "eventLoopLagMs": 30.982143,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T19:58:06.318Z",
+          "maximumCompletedGapMs": 2315,
+          "maximumQuoteAgeAtUseMs": 59,
+          "breaches": 0,
+          "unavailableChecks": 0
+        }
+      },
+      "last": {
+        "positions": [
+          {
+            "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "label": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "quantity": "271921178563",
+            "enteredAt": "2026-10-29T19:50:56.681Z",
+            "entryCostUsd": 49.699531,
+            "netLiquidationUsd": 56.087034,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+          }
+        ],
+        "balances": {
+          "cashSol": "9.292099721",
+          "reservedSol": "0",
+          "equitySol": "9.871123997",
+          "equityUsd": 986.865622,
+          "realizedUsd": -15.489748,
+          "unrealizedUsd": 6.439645,
+          "tradingPnlUsd": -9.050102,
+          "economicPnlUsd": null,
+          "positionCostUsd": 49.699531,
+          "markedExposureUsd": 56.087034,
+          "drawdownUsd": null,
+          "executionCostsUsd": null,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 995.915725,
+          "solPriceUsd": 99.975
+        },
+        "trades": 11,
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T19:58:22.229Z",
+          "maximumCompletedGapMs": 2315,
+          "maximumQuoteAgeAtUseMs": 59,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "entryRestriction": null,
+        "equityGraph": {
+          "title": "Portfolio equity trajectory",
+          "legend": "PORTFOLIO EQUITY · USD",
+          "note": "Source: verified Portfolio Equity (USD), sampled up to once per minute for a rolling 24 hours. History begins with this reporting receiver; earlier equity values are not inferred.",
+          "lineSeries": 1,
+          "svgChildren": 13
+        },
+        "generatedAt": "2026-10-29T19:58:22.229Z",
+        "sequence": "9832",
+        "assessments": 1885,
+        "passes": 90,
+        "receiver": "2026-10-29T19:58:29.548Z",
+        "entries": "enabled",
+        "market": "observing",
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "fresh",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 16527,
+          "receivedAgeMs": 9208,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": null,
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": true,
+            "valuationAgeMs": 17756,
+            "reconciliationAgeMs": 16541
+          },
+          "protection": {
+            "state": "monitored",
+            "completedAt": "2026-10-29T19:58:22.229Z",
+            "completedAgeAtSourceMs": 0,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": []
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries enabled · source reporting current · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9832"
+      },
+      "visibleTime": {
+        "displayed": "Last source report 2026-10-29 19:58:06 UTC",
+        "expected": "Last source report 2026-10-29 19:58:06 UTC",
+        "originalGeneratedAt": "2026-10-29T19:58:06.653Z"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot",
+        "/api/snapshot",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "ownerEquityGraphVisible": true,
+      "liveMarketSource": true
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T19:58:22.229Z",
+        "sequence": "9832",
+        "assessments": 1885,
+        "passes": 90,
+        "entries": "enabled",
+        "positions": 1,
+        "positionDetails": [
+          {
+            "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "label": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "quantity": "271921178563",
+            "enteredAt": "2026-10-29T19:50:56.681Z",
+            "entryCostUsd": 49.699531,
+            "netLiquidationUsd": 56.087034,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+          }
+        ],
+        "balances": {
+          "cashSol": "9.292099721",
+          "reservedSol": "0",
+          "equitySol": "9.871123997",
+          "equityUsd": 986.865622,
+          "realizedUsd": -15.489748,
+          "unrealizedUsd": 6.439645,
+          "tradingPnlUsd": -9.050102,
+          "economicPnlUsd": null,
+          "positionCostUsd": 49.699531,
+          "markedExposureUsd": 56.087034,
+          "drawdownUsd": null,
+          "executionCostsUsd": null,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 995.915725,
+          "solPriceUsd": 99.975
+        },
+        "trades": 11,
+        "tradeDetails": [
+          {
+            "id": "paper-fill:8f94d82f6f8d0cb7cd235b91a9ef4d44",
+            "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "side": "buy",
+            "quantity": "271921178563",
+            "at": "2026-10-29T19:50:56.681Z",
+            "valueUsd": 49.698831,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:52923:1793303455037"
+          },
+          {
+            "id": "paper-fill:def906f7b2cc4a0c2732c63eefbe322c",
+            "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+            "side": "sell",
+            "quantity": "195070637",
+            "at": "2026-10-29T19:28:56.225Z",
+            "valueUsd": 49.555833,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:51615:1793302135089"
+          },
+          {
+            "id": "paper-fill:d5775daf8c2b9df708b307a2a99cb33c",
+            "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+            "side": "buy",
+            "quantity": "195070637",
+            "at": "2026-10-29T19:13:54.251Z",
+            "valueUsd": 49.698274,
+            "executionCostsUsd": 0.000701,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:51167:1793301232511"
+          },
+          {
+            "id": "paper-fill:a3642f8273dedd56f127555852b6bf13",
+            "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+            "side": "sell",
+            "quantity": "1028422062926",
+            "at": "2026-10-29T17:25:39.189Z",
+            "valueUsd": 42.251924,
+            "executionCostsUsd": 0.000711,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:48201:1793294738055"
+          },
+          {
+            "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+            "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+            "side": "buy",
+            "quantity": "1028422062926",
+            "at": "2026-10-29T17:20:07.003Z",
+            "valueUsd": 49.694512,
+            "executionCostsUsd": 0.00071,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+          },
+          {
+            "id": "paper-fill:8c86a04e730c26bd139f4d3e5783a07c",
+            "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+            "side": "sell",
+            "quantity": "319987598",
+            "at": "2026-10-29T16:23:37.938Z",
+            "valueUsd": 49.63868,
+            "executionCostsUsd": 0.000715,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:47355:1793291016775"
+          },
+          {
+            "id": "paper-fill:c5c94babc37540a39bd3cf70c18d4cf2",
+            "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+            "side": "buy",
+            "quantity": "319987598",
+            "at": "2026-10-29T16:08:35.958Z",
+            "valueUsd": 49.690465,
+            "executionCostsUsd": 0.00072,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:46914:1793290114273"
+          },
+          {
+            "id": "paper-fill:6dd8e14067d2b21a203ce5f5f1ecb921",
+            "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+            "side": "sell",
+            "quantity": "6411268419",
+            "at": "2026-10-29T15:16:50.857Z",
+            "valueUsd": 50.035441,
+            "executionCostsUsd": 0.000714,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:46296:1793287009656"
+          },
+          {
+            "id": "paper-fill:783fb910281022ac56bff60190469d36",
+            "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+            "side": "buy",
+            "quantity": "6411268419",
+            "at": "2026-10-29T15:01:47.821Z",
+            "valueUsd": 49.694031,
+            "executionCostsUsd": 0.000711,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:45874:1793286106180"
+          },
+          {
+            "id": "paper-fill:4f60a80e3a2a1138b54933655b1b7c13",
+            "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+            "side": "sell",
+            "quantity": "400582323928",
+            "at": "2026-10-29T09:18:01.660Z",
+            "valueUsd": 41.245086,
+            "executionCostsUsd": 0.000701,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:41776:1793265480459"
+          },
+          {
+            "id": "paper-fill:f57e6eff547ba02b388fd8a44502d794",
+            "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+            "side": "buy",
+            "quantity": "400582323928",
+            "at": "2026-10-29T09:15:17.693Z",
+            "valueUsd": 49.698409,
+            "executionCostsUsd": 0.000701,
+            "status": "PAPER filled",
+            "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:41696:1793265315521"
+          }
+        ],
+        "cards": [
+          {
+            "label": "PORTFOLIO EQUITY",
+            "value": "$986.87"
+          },
+          {
+            "label": "TOKEN TRADING P&L",
+            "value": "-$9.05"
+          },
+          {
+            "label": "CASH / RESERVED SOL",
+            "value": "9.292099721 / 0"
+          },
+          {
+            "label": "TRADING AFTER OPERATING COSTS",
+            "value": "Unavailable"
+          },
+          {
+            "label": "REALIZED TRADING P&L",
+            "value": "-$15.49"
+          },
+          {
+            "label": "UNREALIZED TRADING P&L",
+            "value": "$6.44"
+          },
+          {
+            "label": "MODELED EXECUTION COSTS",
+            "value": "Unavailable"
+          },
+          {
+            "label": "OPERATING COSTS",
+            "value": "Unavailable"
+          },
+          {
+            "label": "POSITION COST / EXPOSURE",
+            "value": "$49.70 / $56.09"
+          },
+          {
+            "label": "DRAWDOWN",
+            "value": "Unavailable"
+          },
+          {
+            "label": "PASSIVE SOL BENCHMARK",
+            "value": "$995.92"
+          },
+          {
+            "label": "INCEPTION REFERENCE",
+            "value": "$1,000.00"
+          }
+        ],
+        "positionText": "Token / quantityEntry / net liquidationCostsStatusCNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump · CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump / 271921178563$49.70 / $56.09$0.00PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)",
+        "positionExpectedMark": "$56.09",
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "fresh",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 18851,
+          "receivedAgeMs": 11532,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": null,
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": true,
+            "valuationAgeMs": 20080,
+            "reconciliationAgeMs": 18865
+          },
+          "protection": {
+            "state": "monitored",
+            "completedAt": "2026-10-29T19:58:22.229Z",
+            "completedAgeAtSourceMs": 0,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": []
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries enabled · source reporting current · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9832",
+        "receiver": "2026-10-29T19:58:29.548Z",
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 58001264,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 392,
+          "verifiedOrigins": 151,
+          "known": 174,
+          "watch": 88,
+          "eligible": 57,
+          "deepActive": 2,
+          "deepMaximum": 4,
+          "queued": 54,
+          "promoted": 4063,
+          "repromoted": 3743,
+          "demoted": 4055,
+          "completeWindows": 1863,
+          "auditedWindows": 1885,
+          "uniqueEvaluated": 35,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1885,
+          "predictivePasses": 90,
+          "predictiveFailures": 1773,
+          "predictiveUnavailable": 3,
+          "waitMeanMs": null,
+          "waitMaximumMs": 1929063,
+          "olderSelected": 24
+        },
+        "run": {
+          "id": "native-paper-20261029194223241",
+          "startedAt": "2026-10-29T19:42:23.241Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "provider": {
+          "rpcRequests": 609,
+          "rpcResponseBytes": 65236230,
+          "nativeStreamBytes": 857508273,
+          "broadWatchBytes": 46530004319,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 392,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 46,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T19:49:33.059Z",
+          "historyCooldownUntil": "2026-10-29T19:51:30.714Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T19:58:21.078Z",
+          "cpuOneCoreFraction": 0.3854315062740421,
+          "rssBytes": 415178752,
+          "availableMemoryBytes": 6856134656,
+          "availableDiskBytes": 288373858304,
+          "eventLoopLagMs": 31.506431,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T19:58:22.229Z",
+          "maximumCompletedGapMs": 2315,
+          "maximumQuoteAgeAtUseMs": 59,
+          "breaches": 0,
+          "unavailableChecks": 0
+        }
+      },
+      "last": {
+        "positions": [
+          {
+            "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "label": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+            "quantity": "271921178563",
+            "enteredAt": "2026-10-29T19:50:56.681Z",
+            "entryCostUsd": 49.699531,
+            "netLiquidationUsd": 53.600781,
+            "executionCostsUsd": 0.0007,
+            "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+          }
+        ],
+        "balances": {
+          "cashSol": "9.292099721",
+          "reservedSol": "0",
+          "equitySol": "9.846362531",
+          "equityUsd": 984.193167,
+          "realizedUsd": -15.486649,
+          "unrealizedUsd": 3.963324,
+          "tradingPnlUsd": -11.523324,
+          "economicPnlUsd": null,
+          "positionCostUsd": 49.699531,
+          "markedExposureUsd": 53.600781,
+          "drawdownUsd": null,
+          "executionCostsUsd": null,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 995.716492,
+          "solPriceUsd": 99.955
+        },
+        "trades": 11,
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-29T19:58:36.602Z",
+          "maximumCompletedGapMs": 2315,
+          "maximumQuoteAgeAtUseMs": 59,
+          "breaches": 0,
+          "unavailableChecks": 0
+        },
+        "entryRestriction": null,
+        "equityGraph": {
+          "title": "Portfolio equity trajectory",
+          "legend": "PORTFOLIO EQUITY · USD",
+          "note": "Source: verified Portfolio Equity (USD), sampled up to once per minute for a rolling 24 hours. History begins with this reporting receiver; earlier equity values are not inferred.",
+          "lineSeries": 1,
+          "svgChildren": 13
+        },
+        "generatedAt": "2026-10-29T19:58:37.394Z",
+        "sequence": "9833",
+        "assessments": 1886,
+        "passes": 90,
+        "receiver": "2026-10-29T19:58:44.654Z",
+        "entries": "enabled",
+        "market": "observing",
+        "operating": {
+          "kind": "operating-source-v1",
+          "state": "fresh",
+          "market": "observing",
+          "reporting": "current",
+          "sourceAgeMs": 18839,
+          "receivedAgeMs": 11579,
+          "selectedCapture": true,
+          "discovery": true,
+          "watch": true,
+          "entryRestriction": null,
+          "financial": {
+            "usdValuation": "available",
+            "reconciled": true,
+            "valuationAgeMs": 21233,
+            "reconciliationAgeMs": 19645
+          },
+          "protection": {
+            "state": "monitored",
+            "completedAt": "2026-10-29T19:58:36.602Z",
+            "completedAgeAtSourceMs": 792,
+            "boundaryMs": 4000
+          },
+          "reasonCodes": []
+        },
+        "headline": "RUNNING · OBSERVING",
+        "detail": "PAPER entries enabled · source reporting current · account poe-3123e352-4581-455b-85db-acd7e825e99e · sequence 9833"
+      },
+      "visibleTime": {
+        "displayed": "Last source report 2026-10-29 19:58:22 UTC",
+        "expected": "Last source report 2026-10-29 19:58:22 UTC",
+        "originalGeneratedAt": "2026-10-29T19:58:22.229Z"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot",
+        "/api/snapshot",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "ownerEquityGraphVisible": true,
+      "liveMarketSource": true
+    }
+  ]
+}

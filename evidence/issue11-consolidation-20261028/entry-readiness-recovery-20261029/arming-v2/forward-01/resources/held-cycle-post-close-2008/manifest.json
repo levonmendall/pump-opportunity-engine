@@ -1,0 +1,44 @@
+{
+  "kind": "versioned-actual-post-close-held-workload-resource-evidence",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 2505,
+      "sha256": "d812ac536827f19b245fc34ca9664e91c340ab5bfe65f0a8d729b4332236c3cf"
+    },
+    {
+      "file": "analyze-held-cycle.py",
+      "bytes": 6218,
+      "sha256": "ae183141034116ce87a6b1bf52b61ccfa1c99edd00dfef98007d5a836ce83809"
+    },
+    {
+      "file": "host-40946393746.json",
+      "bytes": 43356,
+      "sha256": "b00b10727c2b41abc221396ba61f3ae9232639c36e0d25653814d86d3628fdfc"
+    },
+    {
+      "file": "host-40946393746.raw.txt",
+      "bytes": 51234,
+      "sha256": "63ee0fa4202041e2407d9693fa6bf22940deaa059ac3711cc08cdcb16f284a9a"
+    },
+    {
+      "file": "host-40946393746.run.json",
+      "bytes": 278,
+      "sha256": "0f89ea54fcc002ecd3bac3894b303ae00b60aef04e71f70811591c5f12a33b44"
+    },
+    {
+      "file": "interval-summary.json",
+      "bytes": 2547,
+      "sha256": "88830d6634a16acd3947546b072d0c1d1df32ae5dbf97f3f7322e43d606626fe"
+    },
+    {
+      "file": "resource-series-analysis.json",
+      "bytes": 18401,
+      "sha256": "d385fc6bb8c9193c87aa9a5a245c81ab5619a7f85565e47976f2403afa02e7cf"
+    }
+  ]
+}

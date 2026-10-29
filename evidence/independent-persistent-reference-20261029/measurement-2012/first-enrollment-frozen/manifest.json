@@ -1,0 +1,53 @@
+{
+  "frozenAt": "2026-10-29T20:29:56.525257+00:00",
+  "meaning": "Immutable initial independent enrollment; collector continues separately. No outcome or recall claim.",
+  "rows": 120,
+  "selected": 5,
+  "requests": 6,
+  "files": {
+    "plan.json": {
+      "bytes": 3117,
+      "sha256": "272dd087af416996c4b90d69c8407d6583922c80419426b32dcc259e757fc553"
+    },
+    "source-before-start.json": {
+      "bytes": 17236,
+      "sha256": "26fa5faaa698b686064312317a09b3165cbcdcefbeb309d8d2aa6e879c533dc6"
+    },
+    "launch.json": {
+      "bytes": 1327,
+      "sha256": "84425fe9d4bd00e2aac66d3d5468249cfbf7ae91aa3f9e09b62e238f4a6678fa"
+    },
+    "cohort-freeze-1.json": {
+      "bytes": 6050,
+      "sha256": "4d4010f407fffd4a58a6f79896f759eb160ae1c591159796add90d441ef929a2"
+    },
+    "receipt.json": {
+      "bytes": 126291,
+      "sha256": "fe60d93285af1d31f7cf1c86188c6f0e666f3d45beee48a9afa6024d020811cb"
+    },
+    "raw/02.json": {
+      "bytes": 35495,
+      "sha256": "d4d698f69f98d8b3a73ed538fd37ada40fb8765804a8df0c7695e7d965759cd9"
+    },
+    "raw/03.json": {
+      "bytes": 35981,
+      "sha256": "dfe562fa8dd9ca45074f89f6bf3487eb87e782942241230e214ae239c1f2d2fc"
+    },
+    "raw/05.json": {
+      "bytes": 36135,
+      "sha256": "a0bed53b4fdf698564afdba020021694fc0e3ed8d69882d44a41cdc228fdfbdd"
+    },
+    "raw/06.json": {
+      "bytes": 37965,
+      "sha256": "994a7138d7085f45d4e2c48a625a01472092f7d2e764638f0876779cd630a273"
+    },
+    "raw/04.json": {
+      "bytes": 35461,
+      "sha256": "3421b9853cf19ecee9564dc3799d12d95499454771f11c6aefc6f05397502f47"
+    },
+    "raw/01.json": {
+      "bytes": 35585,
+      "sha256": "21159a1d56bfaef0e252ffbec910dad924c39aee7a00d96e5f57ca50c9bf6b37"
+    }
+  }
+}

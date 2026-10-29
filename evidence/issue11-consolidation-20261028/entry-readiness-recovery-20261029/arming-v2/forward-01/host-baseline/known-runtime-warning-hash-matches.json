@@ -1,0 +1,11 @@
+{
+  "method": "Offline hash match against fixed public Node runtime warning literals only",
+  "matches": [],
+  "unmatchedHashes": [
+    "00a4d170ab41e28106b6898e309b58402fc1cbe339aa0512ce2183b18459decb",
+    "8b75fb682e67f3ff0027f798bdd7768f72c7b9b44a1dc347e8ede5c846bc1d72",
+    "c7d9ed720cca320649137b1f2f74d86c48b3651871e85a8c31b786d22bc1c728",
+    "cdf7ee598459c470c51f19a667d6d16085c70e5e6b26ee57d7239068fd7611fa"
+  ],
+  "causalAttribution": "Warnings are untimestamped; hashes do not prove the source exit cause."
+}

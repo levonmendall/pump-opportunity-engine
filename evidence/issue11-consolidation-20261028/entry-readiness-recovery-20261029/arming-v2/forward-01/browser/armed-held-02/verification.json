@@ -1,0 +1,293 @@
+{
+  "kind": "actual-enabled-held-dashboard-verification-v1",
+  "verifiedAt": "2026-10-29T19:58:57.826Z",
+  "dashboardRelease": "de37c6a11ad94e6b8e0d53beed783fa5f67dd9f2",
+  "financialRelease": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "state": "SOURCE_REPORTED_ENABLED_AND_HELD_DISPLAY_VERIFIED",
+  "browserDisplayParityVerified": true,
+  "independentLedgerInspection": false,
+  "sustainedAcceptance": false,
+  "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+  "entryFillId": "paper-fill:8f94d82f6f8d0cb7cd235b91a9ef4d44",
+  "entryAt": "2026-10-29T19:50:56.681Z",
+  "quantity": "271921178563",
+  "views": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sourceAt": [
+        "2026-10-29T19:58:06.653Z",
+        "2026-10-29T19:58:22.229Z"
+      ],
+      "sequence": [
+        "9831",
+        "9832"
+      ],
+      "entries": [
+        "enabled",
+        "enabled"
+      ],
+      "headline": "RUNNING \u00b7 OBSERVING",
+      "entryRestriction": null,
+      "reasonCodes": [],
+      "positions": [
+        {
+          "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+          "label": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+          "quantity": "271921178563",
+          "enteredAt": "2026-10-29T19:50:56.681Z",
+          "entryCostUsd": 49.699531,
+          "netLiquidationUsd": 56.087034,
+          "executionCostsUsd": 0.0007,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "fills": 11,
+      "cardsAtFirst": [
+        {
+          "label": "PORTFOLIO EQUITY",
+          "value": "$992.03"
+        },
+        {
+          "label": "TOKEN TRADING P&L",
+          "value": "-$3.59"
+        },
+        {
+          "label": "CASH / RESERVED SOL",
+          "value": "9.292099721 / 0"
+        },
+        {
+          "label": "TRADING AFTER OPERATING COSTS",
+          "value": "Unavailable"
+        },
+        {
+          "label": "REALIZED TRADING P&L",
+          "value": "-$15.49"
+        },
+        {
+          "label": "UNREALIZED TRADING P&L",
+          "value": "$11.89"
+        },
+        {
+          "label": "MODELED EXECUTION COSTS",
+          "value": "Unavailable"
+        },
+        {
+          "label": "OPERATING COSTS",
+          "value": "Unavailable"
+        },
+        {
+          "label": "POSITION COST / EXPOSURE",
+          "value": "$49.70 / $61.53"
+        },
+        {
+          "label": "DRAWDOWN",
+          "value": "Unavailable"
+        },
+        {
+          "label": "PASSIVE SOL BENCHMARK",
+          "value": "$995.62"
+        },
+        {
+          "label": "INCEPTION REFERENCE",
+          "value": "$1,000.00"
+        }
+      ],
+      "balancesAtFirst": {
+        "cashSol": "9.292099721",
+        "reservedSol": "0",
+        "equitySol": "9.925709208",
+        "equityUsd": 992.025007,
+        "realizedUsd": -15.4851,
+        "unrealizedUsd": 11.893231,
+        "tradingPnlUsd": -3.591868,
+        "economicPnlUsd": null,
+        "positionCostUsd": 49.699531,
+        "markedExposureUsd": 61.525722,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 995.616875,
+        "solPriceUsd": 99.945
+      },
+      "balancesAtLast": {
+        "cashSol": "9.292099721",
+        "reservedSol": "0",
+        "equitySol": "9.871123997",
+        "equityUsd": 986.865622,
+        "realizedUsd": -15.489748,
+        "unrealizedUsd": 6.439645,
+        "tradingPnlUsd": -9.050102,
+        "economicPnlUsd": null,
+        "positionCostUsd": 49.699531,
+        "markedExposureUsd": 56.087034,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 995.915725,
+        "solPriceUsd": 99.975
+      },
+      "protectionAtLast": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:58:22.229Z",
+        "maximumCompletedGapMs": 2315,
+        "maximumQuoteAgeAtUseMs": 59,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "equityLineSeries": 1,
+      "errors": [],
+      "noHorizontalOverflow": true
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "sourceAt": [
+        "2026-10-29T19:58:22.229Z",
+        "2026-10-29T19:58:37.394Z"
+      ],
+      "sequence": [
+        "9832",
+        "9833"
+      ],
+      "entries": [
+        "enabled",
+        "enabled"
+      ],
+      "headline": "RUNNING \u00b7 OBSERVING",
+      "entryRestriction": null,
+      "reasonCodes": [],
+      "positions": [
+        {
+          "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+          "label": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+          "quantity": "271921178563",
+          "enteredAt": "2026-10-29T19:50:56.681Z",
+          "entryCostUsd": 49.699531,
+          "netLiquidationUsd": 53.600781,
+          "executionCostsUsd": 0.0007,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ],
+      "fills": 11,
+      "cardsAtFirst": [
+        {
+          "label": "PORTFOLIO EQUITY",
+          "value": "$986.87"
+        },
+        {
+          "label": "TOKEN TRADING P&L",
+          "value": "-$9.05"
+        },
+        {
+          "label": "CASH / RESERVED SOL",
+          "value": "9.292099721 / 0"
+        },
+        {
+          "label": "TRADING AFTER OPERATING COSTS",
+          "value": "Unavailable"
+        },
+        {
+          "label": "REALIZED TRADING P&L",
+          "value": "-$15.49"
+        },
+        {
+          "label": "UNREALIZED TRADING P&L",
+          "value": "$6.44"
+        },
+        {
+          "label": "MODELED EXECUTION COSTS",
+          "value": "Unavailable"
+        },
+        {
+          "label": "OPERATING COSTS",
+          "value": "Unavailable"
+        },
+        {
+          "label": "POSITION COST / EXPOSURE",
+          "value": "$49.70 / $56.09"
+        },
+        {
+          "label": "DRAWDOWN",
+          "value": "Unavailable"
+        },
+        {
+          "label": "PASSIVE SOL BENCHMARK",
+          "value": "$995.92"
+        },
+        {
+          "label": "INCEPTION REFERENCE",
+          "value": "$1,000.00"
+        }
+      ],
+      "balancesAtFirst": {
+        "cashSol": "9.292099721",
+        "reservedSol": "0",
+        "equitySol": "9.871123997",
+        "equityUsd": 986.865622,
+        "realizedUsd": -15.489748,
+        "unrealizedUsd": 6.439645,
+        "tradingPnlUsd": -9.050102,
+        "economicPnlUsd": null,
+        "positionCostUsd": 49.699531,
+        "markedExposureUsd": 56.087034,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 995.915725,
+        "solPriceUsd": 99.975
+      },
+      "balancesAtLast": {
+        "cashSol": "9.292099721",
+        "reservedSol": "0",
+        "equitySol": "9.846362531",
+        "equityUsd": 984.193167,
+        "realizedUsd": -15.486649,
+        "unrealizedUsd": 3.963324,
+        "tradingPnlUsd": -11.523324,
+        "economicPnlUsd": null,
+        "positionCostUsd": 49.699531,
+        "markedExposureUsd": 53.600781,
+        "drawdownUsd": null,
+        "executionCostsUsd": null,
+        "operatingCostsUsd": null,
+        "passiveSolEquityUsd": 995.716492,
+        "solPriceUsd": 99.955
+      },
+      "protectionAtLast": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T19:58:36.602Z",
+        "maximumCompletedGapMs": 2315,
+        "maximumQuoteAgeAtUseMs": 59,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "equityLineSeries": 1,
+      "errors": [],
+      "noHorizontalOverflow": true
+    }
+  ],
+  "priorPausedEvidencePreserved": "../verification.json and original screenshots remain unchanged",
+  "financialAccountWrites": 0,
+  "serviceControls": 0,
+  "providerRequests": 0,
+  "publishingRequests": 0,
+  "fixturesPublished": false,
+  "credentialsRead": false,
+  "applicationChanges": false,
+  "limitations": [
+    "Verifies actual source/UI permission and financial-display parity; it is not independent private-ledger reconciliation or whole-system acceptance.",
+    "Realized/unrealized USD are source projections; positive unrealized values are not closed or sustainable profit.",
+    "At most one position was observed; financial maximum1 is bound by the host-verified configuration, not inferred from absence of a second UI row.",
+    "Both browser intervals ended with this position still open; later exit results require later source evidence."
+  ]
+}

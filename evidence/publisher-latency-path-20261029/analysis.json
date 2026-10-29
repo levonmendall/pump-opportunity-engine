@@ -1,0 +1,106 @@
+{
+  "kind": "read-only-authoritative-publisher-latency-path-v1",
+  "createdAt": "2026-10-29T19:55:54.757921+00:00",
+  "installedSource": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "installedPublisherSha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f",
+  "installedSupervisorSha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed",
+  "matchedReceipts": [
+    {
+      "sequence": "9792",
+      "runId": "native-paper-20261029194223241",
+      "sourceAtMs": 1793303292484,
+      "renderReceivedAt": "2026-10-29T19:48:39.984Z",
+      "renderReceivedAtMs": 1793303319984,
+      "publisherAcknowledgedAtMs": 1793303320000,
+      "supervisorObservedAtMs": 1793303320190,
+      "sourceToRenderReportedWallMs": 27500,
+      "sourceToPublisherAcknowledgedMs": 27516,
+      "renderToPublisherAcknowledgedReportedWallMs": 16,
+      "publisherAckToSupervisorObservedMs": 190
+    },
+    {
+      "sequence": "9800",
+      "runId": "native-paper-20261029194223241",
+      "sourceAtMs": 1793303414149,
+      "renderReceivedAt": "2026-10-29T19:50:41.408Z",
+      "renderReceivedAtMs": 1793303441408,
+      "publisherAcknowledgedAtMs": 1793303441426,
+      "supervisorObservedAtMs": 1793303441459,
+      "sourceToRenderReportedWallMs": 27259,
+      "sourceToPublisherAcknowledgedMs": 27277,
+      "renderToPublisherAcknowledgedReportedWallMs": 18,
+      "publisherAckToSupervisorObservedMs": 33
+    }
+  ],
+  "inputs": [
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-01/resources/host-40943421169.json",
+      "bytes": 43325,
+      "sha256": "99691fbcf4ac55633f4638c62923b37ed842008bdc2d6878fd1d6c6533ea75c7"
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-01/resources/host-40943717309.json",
+      "bytes": 43347,
+      "sha256": "05e0300d396572b9c89583011270725f32a54a93a47926be71b0f7e6d106ecb7"
+    },
+    {
+      "path": "operator/native-paper-ec2/run-authoritative-service.py",
+      "bytes": 37498,
+      "sha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed"
+    },
+    {
+      "path": "src/snapshot-publisher.ts",
+      "bytes": 8582,
+      "sha256": "b414ebc201a6220b17dedf933ba0acf9dd33e4698d6407f918948ba8b05aee80"
+    },
+    {
+      "path": "src/reporting.ts",
+      "bytes": 23111,
+      "sha256": "b7f15754f77fe6f6fefbfbc0a8750766b78d2516c018232758774d39ab966887"
+    }
+  ],
+  "path": [
+    {
+      "stage": "native source report",
+      "location": "src/run-native-paper.ts:127",
+      "behavior": "15s report eligibility; local financial/candidate deadline admission can defer it; original source timestamp retained"
+    },
+    {
+      "stage": "file inspection and offer",
+      "location": "src/snapshot-publisher.ts:40",
+      "behavior": "Independent file child polls every1000ms and validates latest file; offer admitted only every15000ms, so newer verified file need not replace queued object immediately"
+    },
+    {
+      "stage": "network publication",
+      "location": "src/reporting.ts:192",
+      "behavior": "offer only replaces in-memory latest; sender does not wake. Sender waits15000ms after request completion, with bounded exponential backoff on failure and5000ms configured abort"
+    },
+    {
+      "stage": "receiver acceptance / publisher ACK",
+      "location": "src/reporting.ts:222",
+      "behavior": "ACK timestamp is actual client Date.now after response body read/validation; not later supervisor sample timestamp"
+    },
+    {
+      "stage": "supervisor acknowledgement witness",
+      "location": "operator/native-paper-ec2/run-authoritative-service.py:212",
+      "behavior": "Drains stdout/caches current source each0.5s step; resource samples15s and health writes5s are separate from ACK matching/publication"
+    }
+  ],
+  "finding": "Two independent15s publisher offer/send gates can queue an older snapshot after a newer source file is already available. Actual supervisor acknowledgement witness adds190ms/33ms, not a15s gate. Matched reported source-to-receiver delays are27.500s/27.259s.",
+  "smallestCandidateCorrection": "Offer each changed, valid source sequence/hash at the existing1s poll while retaining the existing single15s network pacing, one inflight request, bounded latest-only queue, timeout/backoff, source identity and source timestamps. This is a proposed change only, not implemented or forward verified.",
+  "unknown": [
+    "Actual HTTP start/TTFB/body duration and offer-time timestamps are not retained; individual queue/network stage attribution is unavailable.",
+    "Reported receiver/publisher timestamps are different UTC clock domains; the16ms/18ms deltas are not independently synchronized network RTT measurements.",
+    "Code proves possible avoidable serial phase delay, not exact per-frame offer/send times or a verified post-repair latency.",
+    "Material-event immediate-publication policy requires preserving backoff and bounded inflight behavior; no such change was made."
+  ],
+  "actions": {
+    "networkRequests": 0,
+    "providerRequests": 0,
+    "privateFinancialReads": 0,
+    "credentialsRead": 0,
+    "applicationChanges": 0,
+    "serviceControls": 0,
+    "deployments": 0
+  }
+}
