@@ -15,16 +15,23 @@ export function snapshotFilePublisherArguments(args:string[]):SnapshotFilePublis
  const file=values.get('--file')??'',identity={accountId:values.get('--account-id')??'',inceptionAt:values.get('--inception-at')??'',release:values.get('--release')??'',strategy:values.get('--strategy')??''};
  if(!watch&&!once||values.size!==5||!isAbsolute(file)||resolve(file)!==file||basename(file)!=='snapshot.json'||identity.accountId!==ORIGINAL_POE_ACCOUNT||identity.inceptionAt!==ORIGINAL_POE_INCEPTION||!/^[a-f0-9]{40}$/.test(identity.release)||!identity.strategy||identity.strategy.length>128||/[\u0000-\u001f]/.test(identity.strategy))throw Error('PUBLISHER_EXACT_ORIGINAL_BINDING_REQUIRED');return {file,identity,watch,...(once?{once:true as const}:{})};
 }
-function privateRead(path:string,maximum:number,credential=false){
+const SYSTEMD_CREDENTIAL_DIRECTORY='/run/credentials/poe-runtime.service';
+export function publisherFileOwnerModeAccepted(path:string,file:{uid:number;gid:number;mode:number},uid:number|undefined,credential=false,credentialDirectory?:string){
+ // systemd LoadCredential mounts can be root:root 0440. Accept that shape only
+ // for our exact service credential; ordinary files remain owner-private.
+ const systemd=credential&&credentialDirectory===SYSTEMD_CREDENTIAL_DIRECTORY&&path===SYSTEMD_CREDENTIAL_DIRECTORY+'/poe-ingest-secret'&&file.uid===0&&file.gid===0&&(file.mode&0o7777)===0o440;
+ return systemd||(file.mode&0o077)===0&&(file.uid===uid||credential&&file.uid===0);
+}
+function privateRead(path:string,maximum:number,credential=false,credentialDirectory?:string){
  const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
- try{const a=fstatSync(fd),uid=process.getuid?.();if(!a.isFile()||a.nlink!==1||a.size<=0||a.size>maximum||(a.mode&0o077)!==0||a.uid!==uid&&!(credential&&a.uid===0))throw Error('PRIVATE_PUBLISHER_FILE');const raw=readFileSync(fd),b=fstatSync(fd);if(raw.length!==a.size||a.ino!==b.ino||a.size!==b.size||a.mtimeMs!==b.mtimeMs||a.ctimeMs!==b.ctimeMs)throw Error('PUBLISHER_FILE_CHANGED');return raw;}finally{closeSync(fd);}
+ try{const a=fstatSync(fd),uid=process.getuid?.();if(!a.isFile()||a.nlink!==1||a.size<=0||a.size>maximum||!publisherFileOwnerModeAccepted(path,a,uid,credential,credentialDirectory))throw Error('PRIVATE_PUBLISHER_FILE');const raw=readFileSync(fd),b=fstatSync(fd);if(raw.length!==a.size||a.ino!==b.ino||a.size!==b.size||a.mtimeMs!==b.mtimeMs||a.ctimeMs!==b.ctimeMs)throw Error('PUBLISHER_FILE_CHANGED');return raw;}finally{closeSync(fd);}
 }
 export function publisherCredentialPath(env:NodeJS.ProcessEnv){
  const directory=env.CREDENTIALS_DIRECTORY,explicit=env.POE_PUBLISH_SECRET_FILE;
  const path=explicit??(directory?join(directory,'poe-ingest-secret'):null);
  if(!path||!isAbsolute(path)||resolve(path)!==path||path!=='/etc/poe/secrets/ingest-secret'&&!(directory&&isAbsolute(directory)&&resolve(directory)===directory&&dirname(path)===directory&&basename(path)==='poe-ingest-secret'))throw Error('ORIGINAL_PUBLISHER_CREDENTIAL_BINDING_REQUIRED');return path;
 }
-export function readPublisherCredential(env:NodeJS.ProcessEnv){const raw=privateRead(publisherCredentialPath(env),4096,true),secret=raw.toString('utf8').trim();if(!/^[A-Za-z0-9._~+/=-]{24,512}$/.test(secret))throw Error('ORIGINAL_PUBLISHER_CREDENTIAL_FORMAT');return secret;}
+export function readPublisherCredential(env:NodeJS.ProcessEnv){const raw=privateRead(publisherCredentialPath(env),4096,true,env.CREDENTIALS_DIRECTORY),secret=raw.toString('utf8').trim();if(!/^[A-Za-z0-9._~+/=-]{24,512}$/.test(secret))throw Error('ORIGINAL_PUBLISHER_CREDENTIAL_FORMAT');return secret;}
 export function readSnapshotFileWithProvenance(file:string,identity:ReportingIdentity){const raw=privateRead(file,128*1024);return {snapshot:validateSnapshot(JSON.parse(raw.toString('utf8')),identity),rawSourceSha256:createHash('sha256').update(raw).digest('hex')};}
 export function readSnapshotFile(file:string,identity:ReportingIdentity){return readSnapshotFileWithProvenance(file,identity).snapshot;}
 export class SnapshotFilePublisher{
@@ -47,4 +54,4 @@ export async function runSnapshotFilePublisher(args=process.argv.slice(2),env=pr
  let stopped=false;const stop=()=>{stopped=true;};process.once('SIGTERM',stop);process.once('SIGINT',stop);publisher.start();
  try{while(!stopped)await new Promise<void>(r=>setTimeout(r,250));}finally{await publisher.stop();process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}return publisher.metrics();
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href)runSnapshotFilePublisher().catch(()=>{process.stderr.write('POE original snapshot publisher unavailable\n');process.exitCode=1;});
+if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href)runSnapshotFilePublisher().catch((error:unknown)=>{const allowed=['PRIVATE_PUBLISHER_FILE','PUBLISHER_FILE_CHANGED','ORIGINAL_PUBLISHER_CREDENTIAL_FORMAT','EACCES','EPERM','ENOENT','ERR_ACCESS_DENIED'];const code=error instanceof Error?('code'in error?String(error.code):error.message):'';process.stderr.write('POE original snapshot publisher unavailable\n'+JSON.stringify({kind:'POE_ORIGINAL_PUBLISHER_UNAVAILABLE',reasonCode:allowed.includes(code)?code:'PUBLISHER_STARTUP_UNAVAILABLE'})+'\n');process.exitCode=1;});

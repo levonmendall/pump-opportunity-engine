@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-10-29T03:08:00.191850+00:00",
+  "ownerSuppliedCredentialMetadata": {
+    "provenance": "owner terminal screenshot, read-only stat through service namespace",
+    "type": "regular file",
+    "uid": 0,
+    "gid": 0,
+    "modeOctal": "0440",
+    "links": 1,
+    "bytes": 64
+  },
+  "defect": "Original publisher rejects all group permission bits, including observed root:root0440 LoadCredential. The open itself may also fail; corrected runtime must establish actual read access.",
+  "correction": "Only exact original systemd service credential with exact CREDENTIALS_DIRECTORY accepts root:root0440. All ordinary file protections remain. Startup failures add sanitized fixed reason code.",
+  "financialSourceUnchanged": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "actualDeployment": "NOT YET INSTALLED",
+  "tests": {
+    "focused": 27,
+    "full": 1685,
+    "build": "PASS"
+  },
+  "independentReview": "No blocking issue; actual UID988 kernel/ACL read access remains to verify.",
+  "originalAccount": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "liveTrading": false
+}
