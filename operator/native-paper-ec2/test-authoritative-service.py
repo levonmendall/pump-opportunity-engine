@@ -40,6 +40,10 @@ class Tests(unittest.TestCase):
   code='import os,resource,json;print(json.dumps({"keys":sorted(os.environ),"cpu":resource.getrlimit(resource.RLIMIT_CPU),"file":resource.getrlimit(resource.RLIMIT_FSIZE)}))'
   with patch.dict(os.environ,{'SECRET_SENTINEL':'NO_EXPORT','NODE_OPTIONS':'--bad','HOME':'/PRIVATE'},clear=False):p=m.spawn([sys.executable,'-c',code]);raw,_=p.communicate(timeout=5)
   v=json.loads(raw);self.assertTrue(set(v['keys'])<={'LANG','LC_CTYPE','PATH','TZ'});self.assertTrue({'LANG','PATH','TZ'}<=set(v['keys']));self.assertEqual(v['cpu'],list(resource.getrlimit(resource.RLIMIT_CPU)));self.assertEqual(v['file'],list(resource.getrlimit(resource.RLIMIT_FSIZE)));self.assertNotIn(b'SECRET_SENTINEL',raw)
+ def test_actual_publisher_child_environment_matches_typescript_credential_boundary_fixture(self):
+  with patch.dict(os.environ,{'CREDENTIALS_DIRECTORY':'/run/credentials/poe-runtime.service','SECRET_SENTINEL':'NEVER_EXPORT'},clear=False):
+   child=m.spawn([sys.executable,'-c','import os,json;print(json.dumps(dict(os.environ)))'],publisher=True);raw,_=child.communicate(timeout=5)
+  value=json.loads(raw);value.pop('LC_CTYPE',None);expected=json.loads(p.with_name('fixture-authoritative-publisher-env.json').read_text());self.assertEqual(value,expected);self.assertNotIn('SECRET_SENTINEL',value);self.assertEqual(value['CREDENTIALS_DIRECTORY'],'/run/credentials/poe-runtime.service');self.assertEqual(value['POE_PUBLISH_SECRET_FILE'],value['CREDENTIALS_DIRECTORY']+'/poe-ingest-secret')
  def test_real_process_group_settles_before_any_replacement(self):
   p=m.spawn([sys.executable,'-c','import time;time.sleep(30)']);self.assertTrue(m.stop_child(p,.1,uid=os.getuid()));self.assertIsNotNone(p.poll());self.assertEqual(m.group_members(p.pid,os.getuid()),[]);self.assertTrue(p.stdout.closed)
  def test_eof_closes_old_pipe_and_selector_registration_before_unbounded_restarts(self):

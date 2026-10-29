@@ -82,7 +82,8 @@ def spawn(args,publisher=False):
   # and rolling CPU rate; this helper separately observes own process groups.
   resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_NOFILE,(128,128));os.nice(19)
  env={'PATH':'/usr/bin:/bin','LANG':'C','TZ':'UTC'}
- if publisher:env['POE_PUBLISH_SECRET_FILE']=str(credential_path())
+ if publisher:
+  credential=credential_path();env['CREDENTIALS_DIRECTORY']=str(credential.parent);env['POE_PUBLISH_SECRET_FILE']=str(credential)
  p=subprocess.Popen(args,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env,start_new_session=True,preexec_fn=prepare,bufsize=0);os.set_blocking(p.stdout.fileno(),False);return p
 
 def group_members(group,uid=UID):
