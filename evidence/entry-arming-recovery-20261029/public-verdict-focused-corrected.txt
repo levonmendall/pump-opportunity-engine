@@ -1,0 +1,44 @@
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (542.112916ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (22.1453ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (60.153574ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (19.077794ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (51.752473ms)
+✔ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (44.118268ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (30.686298ms)
+  ✔ unknown-stop:CONTROLLED (23.626977ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (55.073243ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (29.123237ms)
+✔ ordinary per-entry capacity refusal preserves independently armed financial permission and creates no order (21.519038ms)
+✔ routine checkpoint preserves a buy with uncertain commit, without an invented financial outcome (47.610533ms)
+✔ routine checkpoint retains an existing sell and its holding until actual-size delayed exit execution completes (54.945282ms)
+✔ a new hard failure after inherited internal stop cannot be laundered by its older machine-stop proof (24.083174ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (33.659972ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (47.125372ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (46.050247ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (59.683723ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (25.184409ms)
+✔ one authoritative projection preserves unavailable facts and separates predictive from financial evaluation (3.910578ms)
+✔ experimental account, wrong inception and incoherent strategy cannot enter original intelligence (2.986085ms)
+✔ pending orders retain exact ledger reservation integers and future modeled execution without marking a fill (1.728557ms)
+✔ source timestamps cannot be freshened by telemetry and snapshot heartbeats do not conceal stale market state (14.386137ms)
+✔ unknown diagnostic fields, secret-shaped extras, oversized arrays, counters and invalid protection ownership fail closed (1.301452ms)
+✔ single channel duplicate/reordered semantics include intelligence immutably without refreshing receipt (2.248519ms)
+✔ current held protection uses actual completion age and primary availability, not a stale or cumulative risk classification (0.604007ms)
+✔ flat portfolio retains measured protection history after a completed holding without inventing never-held measurements (0.588734ms)
+✔ missing ownership is not projected as a flat account or an empty pending-action set (0.333545ms)
+✔ optional admission diagnostics preserve legacy intelligence without fabricating readiness (1.890889ms)
+✔ normal CPU and memory do not conceal a separate evidence admission refusal or source recovery (2.236021ms)
+✔ missing or invalid admission values remain unavailable while valid zero counters and false gates are retained (0.316019ms)
+✔ admission reasons export only known static codes and never provider text, credentials or local paths (0.595635ms)
+✔ receiver rejects malformed admission groups, secret-shaped extras and unsupported reason or proof codes (1.046734ms)
+✔ proof preparation states distinguish not-started from pending, completed and failed without implying financial readiness (0.849682ms)
+✔ internal checkpoint proof verdict uses the existing bounded public refusal list without financial IDs or a schema change (0.78138ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2184.403991

@@ -1,0 +1,1342 @@
+
+> pump-opportunity-engine@0.1.0 test
+> node --import tsx --test test/*.test.ts
+
+✔ production mode remains closed across reconciliation/restart and never reseeds (67.053512ms)
+✔ fresh runtime readiness resumes an admin pause but never clears a sticky day loss (15.867877ms)
+✔ safe stop preserves open exposure and exit orders, cancels entries, and refuses safe exit (12.862967ms)
+✔ foreign databases and non-durable production paths are refused without adding POE tables (9.785827ms)
+✔ wrong-size liquidation marks stay unknown and cannot support reconciliation (11.60609ms)
+✔ startup entry cancellation leaves uncertainty on exits and does not request full stop (8.11689ms)
+✔ snapshot sequence survives restart and reporting counters never alter financial revision (9.598094ms)
+✔ reporting history is bounded, preserves real gaps/inception, and survives SQLite backup (1483.592215ms)
+✔ too many actual gap boundaries become an explicitly limited window, never invented points (602.367119ms)
+✔ malformed first-attempt amounts still finalize a failure and count gas exactly once (27.409258ms)
+✔ held-position exits can consume the gas reserve while new entries cannot (20.565809ms)
+✔ semantically corrupt JSON in valid SQLite refuses recovery without reseeding or rewriting (122.130299ms)
+✔ a missing financial singleton with existing history is recovery failure, never new inception (26.666486ms)
+✔ projection distinguishes unknown USD, actual SOL balance, and passive SOL price effect (8.908344ms)
+✔ offline commands require explicit init and restore a consistent account without reseeding (94.85519ms)
+✔ compiled and TSX account CLIs dispatch through directory symlinks and preserve existing inception (13536.824238ms)
+✔ actual continuation evidence maps two direct Token2022 Sell instructions with exact executed amounts (32.381352ms)
+✔ actual continuation refusal preserves unknown capacity, cross-pass repeated pool and missing live observations (0.539942ms)
+✔ current actual v1 CPI-invoked Sell preserves executed amounts and real inner identity (12.03099ms)
+✔ actual burst-truncated activity refuses the stream before support pricing (25.70417ms)
+✔ blocking validation preparation delays feature availability without changing executed evidence or amounts (16.580493ms)
+✔ RPC receipt before the five-second deadline cannot rescue normalization completed after it (4.080427ms)
+✔ the actual clock controls availability even when the caller supplies an earlier RPC receipt (3.865999ms)
+✔ all synthetic multi-swap rows validate before any row enters feature windows (9.37716ms)
+✔ recorder callbacks cannot observe a half-ingested synthetic multi-swap transaction (3.920531ms)
+✔ lean readiness matches quiet and actual-trade warming, queued and physical enrichment, and completed information (15.728208ms)
+✔ lean readiness preserves capacity gaps, missing information, expiry and explicit rewarming (1.149296ms)
+✔ lean readiness retains corrections and every required trade/gap record while making no feature-record callback (19.663009ms)
+✔ actual retained Sell enriches once at actual availability, and a signature hint never supplies UI amounts (21.931647ms)
+✔ closed receive bins warm only after sufficient observation and are not a completeness or strategy pass (5.081303ms)
+✔ pending enrichment stops fully-enriched warm duration at the actual admission boundary (21.682697ms)
+✔ queue capacity, invalid selected fields and expired requests invalidate rather than silently omit selected evidence (2.509645ms)
+✔ failed and excessively delayed confirmed responses cannot manufacture usable flow (0.647211ms)
+✔ observation end freezes warming while bounded late confirmations remain labeled late (3.865749ms)
+✔ actual-size pricing uses original coherent-batch age, counts modeled gas once and preserves a fixed hypothetical baseline (3.311356ms)
+✔ explicit same-context bank Clock remains distinct from block time; unknown timing, stale Clock and mismatched slots are refused (0.538099ms)
+✔ audit duplicates are harmless but transfer quality corrections invalidate the historical experiment window (15.294374ms)
+✔ three-minute20Hz polling records changed closed buckets while current features and executed evidence remain intact (77.42837ms)
+✔ feature emission cursor advances before a recorder callback can reenter snapshot (0.514874ms)
+✔ read-only feature snapshots remain current after recorder exhaustion without invoking it or appending history (8.892801ms)
+✔ diagnostic coalescing preserves pending-count changes and quality transitions with one-second emission pacing (0.937342ms)
+✔ hundred changed-view retention is independent of current snapshot clock and feature duration integration (1.101936ms)
+✔ combined runner retains selected raw fields and enriches at actual completion without a network connection (1424.871912ms)
+✔ shutdown aborts an in-flight enrichment within the reserve and observes its settlement before returning (5455.938304ms)
+✔ available finalized event corrections invalidate a previously matched interior audit (16.54492ms)
+✔ audit refuses a genuine compiled selected-pool swap whose event CPI is missing (7.071277ms)
+✔ audit denominator counts two compiled swaps in one transaction instead of one signature (22.184142ms)
+✔ audit honors the chosen call allocation and rejects out-of-authority bounds (3.343324ms)
+✔ actual compiled canonical swap is extracted; current custom quote and bare address mentions are excluded (11.246224ms)
+✔ two verified recent swaps and coherent support quote pass without claiming migration age or strategy evidence (21.194663ms)
+✔ a full twenty-row pool page inside the lookback refuses unknown capacity before quote or feed (11.553791ms)
+✔ null times, young baseline and projected enrichment exhaustion are explicit refusals (37.578015ms)
+✔ zero activity, unknown scoped transfer quality and insufficient genuine swaps never pass admission (13.711183ms)
+✔ read cap includes quote requests, and stale or wrong-scope supported quotes refuse admission (35.830549ms)
+✔ preflight requires agreement of signature history and transaction context (1.177878ms)
+✔ one bounded pass skips a saturated distinct pool then supports a moderate pool without revisiting rejects (37.497876ms)
+✔ distinct-candidate, exact response-byte and elapsed caps stop starts without retrying (33.5076ms)
+✔ compiled swap denominator retains repeated invocations while candidate identities deduplicate (6.014768ms)
+✔ a single wider program sample stays inside explicit pass and support-call bounds (8.359239ms)
+✔ persisted rejected pool is skipped across attempts without another history/support read; expiry requires a fresh full pass (35.998859ms)
+✔ prior guards do not consume distinct-new-pool admission slots or hide reason and expiry (35.90495ms)
+✔ endpoint throttle is propagated without per-pool cooldown or automatic next candidate (8.383245ms)
+✔ global pacing halt ends selection without poisoning a pool record or trying another candidate (11.518008ms)
+✔ unavailable rejection lookup ends the pass before pool history and without attempting a rejection write (1.539214ms)
+✔ full selector composes paced shared accounting, support reads and cross-attempt guards without network (37.442974ms)
+✔ fixed2/5/10 schedules use fewer requests but do not pretend their old cache stays fresh (37.313606ms)
+✔ a real notification trigger requests a new coherent quote independently of old safe risk classification (2.347785ms)
+✔ silent lost notifications with healthy heartbeats can make five-second hybrid miss a transient stop (0.816362ms)
+✔ notification changes arriving during an RPC remain dirty and coalesce without becoming prices (0.942529ms)
+✔ all request classes share actual start spacing and bounded physical occupancy (1.535128ms)
+✔ long nonprotection RPC cannot release an imaginary slot; its delay and candidate loss remain visible (0.951132ms)
+✔ disconnection fallback restores subscriptions and keeps a missing held pool unreconciled (1.051922ms)
+✔ a targeted trigger refreshes the coherent held union and avoids staggered duplicate polls (1.689397ms)
+✔ maximum-holding timer reserves a fresh evaluation even under the ten-second policy (1.532836ms)
+✔ failed or stale quotes cannot create an actionable exit, free fill or disappearance (1.65708ms)
+✔ sparse captured replay preserves original availability and never refreshes an old quote at poll time (0.701301ms)
+✔ failed first delayed execution is final and its cost is explicit, with no favorable later retry (4.056672ms)
+✔ counterfactual monitoring and actual first-exit exposure denominators remain distinct (1.014085ms)
+✔ an exit that cannot get its first permitted attempt before expiry stays unresolved without a later fill (0.675723ms)
+✔ exit slippage compares gross SDK proceeds before gas exactly as Trader.reserveExit (1.406819ms)
+✔ response at or beyond exact order expiry expires before any modeled attempt gas (0.974567ms)
+✔ a fresh sparse quote from before modeled executeAt cannot fill an exit (0.447525ms)
+✔ audit CLI permits only the named retained capture and one isolated new output (1.811028ms)
+✔ offline pair preparation isolates the one actual short Buy and preserves all original failed-window evidence and Sell fingerprints (29.230905ms)
+✔ finality mode permits only the fixed08→09 pair and recovers the original first two targets after recorded cooldown (33.115221ms)
+✔ finality recovery refuses an unrelated original gap, missing match, changed throttle or existing recheck before requesting (63.976592ms)
+✔ offline finalized comparison mechanics require identical identity, transfers, chain context and instruction layout (21.265349ms)
+✔ consistent backup works while sole writer is active and restores account/history without reseeding (344.407104ms)
+✔ backup API tolerates a financial write during its await without a second source writer (257.585599ms)
+✔ retention keeps exactly two validated backups, no sidecars, and leaves source intact (780.909853ms)
+✔ interrupted or invalid new copies preserve both earlier good backups (1054.623727ms)
+✔ unexpected promotion target is preserved together with both old backups and validated pending copy (607.01632ms)
+✔ corrupt latest falls back to last good copy and blocks pruning uncertain files (729.457792ms)
+✔ valid SQLite with a corrupt inception conversion is rejected in favor of the earlier backup (731.533317ms)
+✔ the writer recovery validator rejects semantically corrupt controls in an otherwise valid SQLite copy (682.971454ms)
+✔ missing middle financial journal history is rejected even when latest state and SQLite integrity are valid (681.333152ms)
+✔ reporting metadata rejected by runtime recovery cannot become the selected latest backup (657.750905ms)
+✔ corrupt or wrong-account operating costs cannot become the selected latest backup (1114.163471ms)
+✔ pending recovery rejects missing cost metadata evidenced in actions or journal and preserves every copy (1049.090272ms)
+✔ async pending maintenance preserves uncertainty and completes only a valid backup artifact (818.121699ms)
+✔ large artifact validation runs off the live event loop while the sole writer can advance (24149.564177ms)
+ℹ {"disposableSourceBytes":78913536,"synchronousTwoCopyValidationMs":377.9594279999983,"workerMaxTimerGapMs":49.36146899999585,"timerTicks":566}
+
+Interrupted while running:
+
+⚠ test/backup.test.ts (test/backup.test.ts:1:1)
+⚠ test/batch-market.test.ts (test/batch-market.test.ts:1:1)
+⚠ test/candidate-cadence.test.ts (test/candidate-cadence.test.ts:1:1)
+⚠ test/component-budget.test.ts (test/component-budget.test.ts:1:1)
+⚠ test/component-history-batch.test.ts (test/component-history-batch.test.ts:1:1)
+⚠ test/component-http-dispatch-timing.test.ts (test/component-http-dispatch-timing.test.ts:1:1)
+⚠ test/component-launcher.test.ts (test/component-launcher.test.ts:1:1)
+⚠ test/component-live-evidence.test.ts (test/component-live-evidence.test.ts:1:1)
+⚠ test/component-parity.test.ts (test/component-parity.test.ts:1:1)
+⚠ test/component-results.test.ts (test/component-results.test.ts:1:1)
+⚠ test/component-selection.test.ts (test/component-selection.test.ts:1:1)
+⚠ test/component-transport.test.ts (test/component-transport.test.ts:1:1)
+⚠ test/costs.test.ts (test/costs.test.ts:1:1)
+⚠ test/credential-install.test.ts (test/credential-install.test.ts:1:1)
+⚠ test/dashboard-holographic.test.ts (test/dashboard-holographic.test.ts:1:1)
+⚠ test/dependencies.test.ts (test/dependencies.test.ts:1:1)
+⚠ test/entry-data-comparison.test.ts (test/entry-data-comparison.test.ts:1:1)
+⚠ test/execution.test.ts (test/execution.test.ts:1:1)
+⚠ test/feed-measurement.test.ts (test/feed-measurement.test.ts:1:1)
+⚠ test/forward-profile.test.ts (test/forward-profile.test.ts:1:1)
+⚠ test/free-data-failures.test.ts (test/free-data-failures.test.ts:1:1)
+⚠ test/http-latency-component.test.ts (test/http-latency-component.test.ts:1:1)
+⚠ test/independent-two-hour-reference.test.ts (test/independent-two-hour-reference.test.ts:1:1)
+⚠ test/instruction-layout-callers.test.ts (test/instruction-layout-callers.test.ts:1:1)
+⚠ test/internal-shutdown-provenance.test.ts (test/internal-shutdown-provenance.test.ts:1:1)
+⚠ test/ledger-costs.test.ts (test/ledger-costs.test.ts:1:1)
+⚠ test/ledger-scoped-cancel.test.ts (test/ledger-scoped-cancel.test.ts:1:1)
+⚠ test/ledger.test.ts (test/ledger.test.ts:1:1)
+⚠ test/log-native-capacity.test.ts (test/log-native-capacity.test.ts:1:1)
+⚠ test/migration-identity.test.ts (test/migration-identity.test.ts:1:1)
+⚠ test/missing-audit-adjudication.test.ts (test/missing-audit-adjudication.test.ts:1:1)
+⚠ test/monitoring-ledger-parity.test.ts (test/monitoring-ledger-parity.test.ts:1:1)
+⚠ test/native-account-control.test.ts (test/native-account-control.test.ts:1:1)
+⚠ test/native-age-study-integration.test.ts (test/native-age-study-integration.test.ts:1:1)
+⚠ test/native-audit-session.test.ts (test/native-audit-session.test.ts:1:1)
+⚠ test/native-candidate-launcher.test.ts (test/native-candidate-launcher.test.ts:1:1)
+⚠ test/native-candidate-origin.test.ts (test/native-candidate-origin.test.ts:1:1)
+⚠ test/native-candidate-runner.test.ts (test/native-candidate-runner.test.ts:1:1)
+⚠ test/native-control-recovery.test.ts (test/native-control-recovery.test.ts:1:1)
+⚠ test/native-failed-high-volume.test.ts (test/native-failed-high-volume.test.ts:1:1)
+⚠ test/native-failed-packet-diagnostics.test.ts (test/native-failed-packet-diagnostics.test.ts:1:1)
+⚠ test/native-flow-audit-batch.test.ts (test/native-flow-audit-batch.test.ts:1:1)
+⚠ test/native-flow-audit-tail.test.ts (test/native-flow-audit-tail.test.ts:1:1)
+⚠ test/native-flow-audit.test.ts (test/native-flow-audit.test.ts:1:1)
+⚠ test/native-flow-heartbeat.test.ts (test/native-flow-heartbeat.test.ts:1:1)
+⚠ test/native-flow-service-policy.test.ts (test/native-flow-service-policy.test.ts:1:1)
+⚠ test/native-input-checkpoint-handoff.test.ts (test/native-input-checkpoint-handoff.test.ts:1:1)
+⚠ test/native-managed-cancel-settlement.test.ts (test/native-managed-cancel-settlement.test.ts:1:1)
+⚠ test/native-original-boundary.test.ts (test/native-original-boundary.test.ts:1:1)
+⚠ test/native-paper-bundle.test.ts (test/native-paper-bundle.test.ts:1:1)
+⚠ test/native-paper-contract.test.ts (test/native-paper-contract.test.ts:1:1)
+⚠ test/native-paper-hooks.test.ts (test/native-paper-hooks.test.ts:1:1)
+⚠ test/native-paper-integration.test.ts (test/native-paper-integration.test.ts:1:1)
+⚠ test/native-paper-interop.test.ts (test/native-paper-interop.test.ts:1:1)
+⚠ test/native-paper-launcher.test.ts (test/native-paper-launcher.test.ts:1:1)
+⚠ test/native-paper-management-reserve.test.ts (test/native-paper-management-reserve.test.ts:1:1)
+⚠ test/native-paper-observation-reporting.test.ts (test/native-paper-observation-reporting.test.ts:1:1)
+⚠ test/native-paper-readiness.test.ts (test/native-paper-readiness.test.ts:1:1)
+⚠ test/native-paper-service.test.ts (test/native-paper-service.test.ts:1:1)
+⚠ test/native-paper-startup.test.ts (test/native-paper-startup.test.ts:1:1)
+⚠ test/native-paper.test.ts (test/native-paper.test.ts:1:1)
+⚠ test/native-research-profile-integration.test.ts (test/native-research-profile-integration.test.ts:1:1)
+⚠ test/native-research-profile.test.ts (test/native-research-profile.test.ts:1:1)
+⚠ test/native-settled-recovery.test.ts (test/native-settled-recovery.test.ts:1:1)
+⚠ test/native-source-fatal-policy.test.ts (test/native-source-fatal-policy.test.ts:1:1)
+✖ test/backup.test.ts (42244.073266ms)
+✔ shared decoder matches independent same-byte full-size sells for 1 pool(s), using three calls (58.115351ms)
+✔ shared decoder matches independent same-byte full-size sells for 2 pool(s), using three calls (49.161579ms)
+✔ shared decoder matches independent same-byte full-size sells for 3 pool(s), using three calls (52.615157ms)
+✔ bad initial identity or one missing vault does not erase another supported holding (41.066618ms)
+✔ batch bounds and duplicates reject before network; shared stale/regressing contexts cannot quote (10.022227ms)
+✔ batch retains original receive time after slow validation and snapshots requested quantities (6.312671ms)
+✔ evidence storage pressure propagates instead of becoming a pool exclusion (9.962038ms)
+✔ all observations, identities, amounts, duplicates and confirmations reach unchanged closed-bin core (3.793392ms)
+✔ gap/correction/reversal block quality immediately rather than waiting for calculation cadence (0.828069ms)
+✔ late scheduling never backdates calculations or refreshes cached availability (0.577517ms)
+✔ synthetic full workload preserves common-boundary exact features and all ingestion while reducing calculations90percent (323.138843ms)
+✔ external risk-resume between boundaries can delay qualification; it must not be reported as blanket equivalence (4.231292ms)
+✔ context-triggered calculation uses current availability, preserves next boundary and cannot bypass quality warming (0.431501ms)
+✔ explicit passive receipt after chapter expiry preserves bytes but cannot admit a late operation (15.368535ms)
+✔ all HTTP/upgrade/subscription starts share durable cumulative counters, pacing and one source baseline (9.625318ms)
+✔ recent prior starts participate in rolling ceilings and all70 new units include WS management (27.658329ms)
+✔ cancel while waiting consumes no new request or reservation and does not rewrite the stored book (7.911354ms)
+✔ actual transport invocations remain spaced when durable reservation writes have variable latency (3.912559ms)
+✔ timeout retains a stalled physical operation and uncertain bytes without a second attempt (12.250556ms)
+✔ continuous accounting lets admitted physical work cross its chapter without shortening the caller timeout (45.913698ms)
+✔ continuous accounting preserves the actual timeout and occupied physical slot after its chapter expires (65.605606ms)
+✔ bounded research still ends admitted work at its original chapter deadline (26.39295ms)
+✔ HTTP429 is charged once, stops the new grant and remains sticky without changing historical refusal (11.349809ms)
+✔ passive WS bytes count without request units; HTTP category retains cancellation headroom (6.984898ms)
+✔ oversized actual response bytes are retained and halt before any further operation (5.562918ms)
+✔ grant deadline and explicit cooldown are enforced during pacing before another start (3.322181ms)
+✔ explicit ten-minute migration listener duration persists and cannot be enlarged or silently resumed with another duration (8.000377ms)
+✔ minimum duration is bounded and free migration permission does not permit metered or trading subscriptions (2.501714ms)
+✔ signing/simulation/trading, concurrent ownership and malformed baseline are denied offline (4.906224ms)
+✔ the dispatcher observes the authoritative pacing gate without taking its slot or charging requests (2.806056ms)
+✔ latest physical-start deadline is checked before pacing and again after durable reservation latency (5.076656ms)
+✔ slow start diagnostics cannot move the actual stamp ahead of transport or shrink later start spacing (3.661065ms)
+✔ failed diagnostic after invocation retains the physical slot until actual settlement (10.855135ms)
+✔ legacy defaults retain lifetime caps and do not add a limits field to historical books (12.211263ms)
+✔ explicit standing limits carry cumulative calls and accounted bytes beyond historical caps with250ms physical spacing (9.008648ms)
+✔ standing rolling10/10s and60/minute caps constrain bursts independently of250ms spacing (20.043004ms)
+✔ standing mode still enforces per-run request and byte ceilings and keeps failed response uncertainty (11.176091ms)
+✔ monotonic admission closes without a reservation before or after pacing (3.972747ms)
+✔ admission closure during durable reservation never invokes transport and conservatively retains the charged unit and bytes (3.234992ms)
+✔ malformed or unbounded run-limit settings are refused before creating a counterbook (0.723874ms)
+✔ read-only targeted logs management shares physical units and rejects financial methods (8.203828ms)
+✔ physical timeout diagnostics expose scheduled versus actual callback timing without releasing unknown occupancy (10.69743ms)
+✔ six independent queries use one HTTP start, preserve original params/IDs and expose later validation time (46.119775ms)
+✔ caller and recorder mutations cannot replace validated pool identity or slot floors before physical start (5.741963ms)
+✔ ordinary per-item RPC failure leaves successful siblings independent and never logs provider text (5.674234ms)
+✔ per-item -32005 retains partial results and stops future gate admission after physical settlement (6.375364ms)
+✔ per-item 429 retains partial results and stops future gate admission after physical settlement (4.896379ms)
+✔ HTTP429 retains body uncertainty and six logical attempts without reading or retrying its error body (22.575648ms)
+✔ malformed single batch cannot associate another query response with a pool (6.940938ms)
+✔ malformed missing batch cannot associate another query response with a pool (5.039321ms)
+✔ malformed duplicate batch cannot associate another query response with a pool (4.651474ms)
+✔ malformed unknown batch cannot associate another query response with a pool (4.506349ms)
+✔ malformed wrong-id-type batch cannot associate another query response with a pool (3.894011ms)
+✔ malformed both-result-error batch cannot associate another query response with a pool (3.629408ms)
+✔ malformed invalid-error-code batch cannot associate another query response with a pool (3.898428ms)
+✔ total batch response keeps the existing2MiB limit and charges received overflow before stopping (10.907692ms)
+✔ timeout and cancellation cannot release a physical batch that ignores AbortSignal (15.561206ms)
+✔ invalid size, non-readonly request shape or pre-admission cancellation consumes no request (4.370908ms)
+✔ injected fetch without real dispatcher events remains explicitly unavailable (23.08575ms)
+✔ dispatch timing matches its invocation context/request and never touches payload, headers or socket addresses (6.558646ms)
+✔ same socket object across transports proves prior observed request use, not first-observation newness (7.290122ms)
+✔ ambiguous nested matching request cannot claim timings or connection reuse (0.319724ms)
+✔ multiple header sends on one request are bounded ambiguity, not inferred automatic retry success (0.229961ms)
+✔ malformed diagnostic properties cannot throw into network or financial work (0.395296ms)
+✔ error metadata is request matched, allowlisted, and does not claim physical settlement (0.341457ms)
+✔ abort error is captured before physical-work cleanup without changing accounting (16.051509ms)
+✔ logical timeout cannot remove observers before actual fetch work settles; late events stay source timed (14.783666ms)
+✔ Node actual loopback fetch emits request/send/headers events and observed socket reuse without provider access (43.290794ms)
+✔ exact active budget temp can vanish between readdir and stat; full transient headroom remains counted (1.814133ms)
+✔ present atomic temp is rounded up inside the fixed128KiB transient slot, never omitted or counted twice (0.43151ms)
+✔ stable file deletion and another writer temp deletion still fail closed (0.964802ms)
+✔ root, stable and recognized temporary symlinks are all refused (1.100785ms)
+✔ oversized or directory-shaped atomic temp is refused; nested lookalike gets no disappearance exception (0.997621ms)
+✔ transient slot is reserved on every scan, including an empty active directory (0.415927ms)
+✔ only proc ENOENT waits for the child exit event; permissions and stable missing evidence stop immediately (0.932053ms)
+✔ actual component starts are paced and linked cumulative usage preserves the historical429 (2.272794ms)
+✔ retained actual routed swap has no SOL-quoted hop; decoding the new route does not create an eligible pool (14.386488ms)
+✔ retained successful address-only transaction is not a PumpSwap invocation or a pricing result (0.415367ms)
+✔ same-byte Clock parity preserves all layout fields, established SDK math and native backing without network (44.23344ms)
+✔ parity refuses incomplete dependency sets, stale original Clock and insufficient native backing (16.65031ms)
+✔ historical same-byte decoding uses preserved receipt time and never relabels bank Clock as blockTime (10.87132ms)
+✔ quiet current state and ACK/reconnect/fresh retrieval can pass without changed delivery or protection (1.559345ms)
+✔ later throttle or missing optional activity never erases captured basic evidence (0.171565ms)
+✔ ACK duplicates and an unmatched change cannot manufacture restoration or notification proof (0.430869ms)
+✔ only a later validated matching account version proves a delivered sample; sparse quotes do not reveal exact crossing time (0.998623ms)
+✔ changing hypothetical size or pool cannot be counted as a market price move (0.258674ms)
+✔ fresh RPC state after upgrade is independent of complete subscription restoration (0.203623ms)
+✔ one current actual compiled swap selects hypothetical full units without fetching support or opening transport (9.132107ms)
+✔ quiet historical seed can use exactly one bounded program page without fabricating seed activity (6.451859ms)
+✔ persisted seed refusal skips its history; a guarded actual pool cannot become eligible (2.383399ms)
+✔ address membership, failed or old transactions are not accepted as actual current swaps (2.207137ms)
+✔ HTTP429 and source/context faults terminate without an automatic retry (2.49907ms)
+✔ the four-read cap and six-second elapsed bound leave the caller setup reserve intact (3.977725ms)
+✔ basic purpose uses retained independently verified identity with zero history reads, not fresh activity (1.762517ms)
+✔ basic ignores old flow capacity and quiet guards but never hides an older structural guard (2.077695ms)
+✔ global refusal still blocks both purposes; an expired structural cooldown only permits fresh support checks (1.350004ms)
+✔ retained proof helper rejects mismatched canonical identity and missing executed-transfer evidence (7.290805ms)
+✔ changing purpose only checks supplied migration identity and separately verifies a current actual swap (6.221487ms)
+✔ changing purpose requires explicit seeds; quiet activity is inconclusive and never falls back to broad program sampling (1.516261ms)
+✔ two explicit migration seeds share four reads; address mentions and quiet seeds never become current swap evidence (6.421663ms)
+✔ purpose preparation preserves throttle refusal, elapsed bounds, cancellation and no automatic retry (2.481073ms)
+✔ changing pricing ignores full-flow capacity guards but retains quiet and structural refusals (14.90588ms)
+✔ hypothetical token amounts must fit the on-chain unsigned64-bit range without shrinking (1.3473ms)
+✔ HTTP429 stops at headers, retains uncertain body reserve and prior refusal, and never retries (35.604108ms)
+✔ a fully received bounded HTTP503 body is charged exactly without an unknown response reservation (20.57046ms)
+✔ stalled HTTP503 body times out, charges partial receipt and preserves uncertain response bytes (14.244798ms)
+✔ canceling a partially received HTTP503 cannot turn cancellation into a complete response (6.636593ms)
+✔ declared oversize HTTP503 is canceled before reading and preserves uncertainty (5.189945ms)
+✔ streamed oversize HTTP503 charges delivered chunks and cannot mark a partial body complete (4.897641ms)
+✔ truncated HTTP503 body does not clear uncertainty when the identity Content-Length disagrees (4.858133ms)
+✔ upgrade, ACK and passive data share counters without double-counting socket/payload (7.708163ms)
+✔ raw partial and oversized receipt is charged before application parsing (4.950079ms)
+✔ notification before subscribe ACK preserves receipt time and resolves only the acknowledged scope (3.343113ms)
+✔ rejected invalid ACK halts without an automatic second request (7.371784ms)
+✔ rejected error ACK halts without an automatic second request (3.695255ms)
+✔ missing ACK cancellation retains uncertain response and cannot release a replacement request (3.498534ms)
+✔ planned reconnect waits for CLOSED and ignores stale first-socket events (3.618182ms)
+✔ close timeout halts without opening a second session (7.366506ms)
+✔ unsupported request methods are denied before network and budget use (2.453353ms)
+✔ HTTP lifecycle separates headers, body transfer and JSON availability without claiming pool reuse (3.861002ms)
+✔ HTTP lifecycle retains partial successful-body timing after timeout without logging payload (14.101476ms)
+✔ HTTP lifecycle does not emit a settled-body claim while timed-out fetch still owns physical gate (14.683399ms)
+✔ HTTP lifecycle distinguishes fully received malformed JSON from a validated response (5.070949ms)
+✔ default unknown operating costs are not an actual zero or a manufactured economic P&L (2.503366ms)
+✔ complete sourced zero-expense coverage is distinct from missing data (2.830833ms)
+✔ operating expense is subtracted once from trading P&L that already contains simulated execution costs (1.541298ms)
+✔ funding amounts, balance floors, rent returns and modeled execution gas are rejected as operating categories (1.275593ms)
+✔ native SOL expense uses the actual incurrence quote and explicit conservative integer rounding (1.961141ms)
+✔ missing SOL valuation stays unknown despite complete coverage; later journal-backed valuation resolves it (2.680039ms)
+✔ later valuation refuses a different original, wrong account or absent unresolved expense (0.920917ms)
+✔ actual, estimated and allocated costs stay separate and mixed economic estimates are labeled (2.098586ms)
+✔ coverage gaps, explicit unknown revisions and future intervals do not manufacture complete history (2.24986ms)
+✔ malformed, future, backward or wrong-account expense facts are rejected without changing state (2.917591ms)
+✔ summary retains only last50 operations while totals and unresolved SOL amounts survive cache eviction (44.550441ms)
+✔ damaged persisted cost state is refused instead of defaulting missing totals or coverage to zero (1.946971ms)
+✔ credential installation is exclusive, secret-silent and excludes the recovery key (408.823299ms)
+✔ holographic presentation is deterministic and idempotent (4.055952ms)
+✔ all original data targets and original scripts survive unchanged (2.254698ms)
+✔ hero has one ornamental orbital illustration and no false performance data (2.117013ms)
+✔ one authoritative portfolio and existing diagnostic sections remain visible (1.775766ms)
+✔ visual layer adds no new client script, external dependency or request (1.887712ms)
+✔ responsive, reduced-motion, keyboard focus and overflow protections exist (1.164399ms)
+✔ actual public HTTP viewer contains the new UI and keeps machine publishing protected (55.120824ms)
+✔ content-checked fallback patch is repeatable and native bigint binding stays unloaded (69.439732ms)
+✔ fallback patch rejects unreviewed version or contents without changing them (105.629937ms)
+✔ SPL u64 mint/account layouts retain integer values with JS fallback (0.583436ms)
+✔ current SDK CommonJS entry preserves known canonical PDA and versioned signed pool decoding (5.267319ms)
+✔ SDK quotes retain signed effective reserves, dynamic fee tier and ceil/floor behavior (3.216254ms)
+✔ scoped Jayson upgrade retains web3 browser-client request/callback interface (1.439887ms)
+✔ scoped TOML upgrade preserves Anchor local configuration parsing (2.500272ms)
+✔ frozen screen starts a complete fresh flow warmup and never backfills baseline data (5.263294ms)
+✔ price challenger uses a separate frozen information hypothesis and never fabricates flow features (0.621502ms)
+✔ thin liquidity remains excluded equally, while preliminary quote work is counted separately (0.366914ms)
+✔ stale/outage evidence cannot qualify until appropriate fresh observations have recovered (2.515855ms)
+✔ screening can cost more than quiet flow; field retention and local discard do not save provider retrieval (41.382167ms)
+✔ integer fixed-size return rejects size mixing and conservatively rounds a negative move (0.473774ms)
+✔ actual retained transaction projection changes serialized storage only, never fetches or incoming broad traffic (12.954613ms)
+✔ equivalent predictive short-circuit changes retrieval/refusal evidence without changing provided-oracle signals (5.717379ms)
+✔ recovery closes entries; delayed first buy and full-size sell complete on the existing writer only (34.955281ms)
+✔ concurrent drains coalesce and no SQLite write transaction crosses an asynchronous quote (12.829765ms)
+✔ future and already-expired decisions cannot reserve cash or move the financial clock (5.599222ms)
+✔ timeout fails once, ignores late favorable state and prevents an uncanceled adapter backlog (24.699616ms)
+✔ missing USD cancels entry before quote/gas while an expired order cannot request or fill state (7.26146ms)
+✔ an uncanceled adapter schedules pending expiry rather than a past due hot loop, then wakes once (28.588183ms)
+✔ a quote arriving after expiry never fills and stale first state cannot be replaced by another quote (15.76989ms)
+✔ SELL actions precede entries and may execute with unknown USD using actual held units (17.260573ms)
+✔ restart cancels obsolete entries but preserves uncertain exits until expiry without a favorable re-quote (17.163834ms)
+✔ stored outcomes remain indexed after later journal windows without another quote, debit or revision (31.994385ms)
+✔ financial commit uncertainty preserves the order and blocks re-quote/new entries until expiry (8.978559ms)
+✔ operator cancellation during quote preparation cannot produce a late fill or gas debit (7.652781ms)
+✔ persistent expiry writes back off without a scheduling loop, another quote or discarded action (7.728393ms)
+✔ an already-due entry blocked by another uncertain action cannot create a past-due scheduler loop (7.344603ms)
+✔ a thrown return path after durable commit resolves through the stored outcome without another fill (6.544655ms)
+✔ an optional bounded drain services one due exit and retains immediate wake and exact ownership for the rest (16.879648ms)
+✔ bounded expiry needs no quote or gas, while a quarantined exit cannot starve a separately owned fresh due exit (29.57549ms)
+✔ source expiry during a fresh entry quote makes held equity unavailable before gas without deleting exposure (12.99453ms)
+✔ potential charges count before duplicate/malformed discard and inventory never returns raw values (20.585429ms)
+✔ event ceiling requests upstream unsubscribe and in-flight headroom remains charged, never filtered free (50.855795ms)
+✔ wallet floor, both SOL and USD caps, stale evidence and per-event USD rounding gate admission (2.221638ms)
+✔ held monitoring reserves precede admission and measurement never unsubscribes a held token (0.496006ms)
+✔ gaps require a fresh uninterrupted 60 seconds and cannot be added together as continuous operation (0.382487ms)
+✔ late admission, UTC boundary and repeated subscription acknowledgement do not fake a full window (0.765747ms)
+✔ unknown USD cost remains unknown after refresh, and a stop request cannot silently resume (0.349589ms)
+✔ batch, oversized and inventory-limited payloads remain bounded and are still potentially charged (0.657897ms)
+✔ observed-rate projections report a ceiling failure without pretending short bursts are full observation (9.977101ms)
+✔ monotonic durations prevent a wall-clock jump from diluting measured costs or fabricating elapsed observation (0.648153ms)
+✔ approved profile is explicit, observes75s from open, preserves the original default and keeps all research gates closed (40.936385ms)
+✔ one selected invalid field or mapping failure stops the profile and retains its original quality evidence (6.882978ms)
+✔ selected enrichment deadlines and scheduler refusals end the only capture rather than silently continuing with incomplete windows (6.212873ms)
+✔ a stale or unavailable actual-size quote stops, while an unfrozen2s evaluation-target miss alone remains diagnostic (54.4324ms)
+✔ an eleventh selected transaction stops without another enrichment and preserves the cap refusal (47.213063ms)
+✔ socket stops include all broad incoming bytes and terminate before the140MiB hard ceiling when headroom is available (0.690615ms)
+✔ standing18 profile requires the proposed dispatcher and explicit75s cutoff without changing old limits (28.89243ms)
+✔ nineteenth selected event remains recorded and invalidates the capped standing candidate while held pricing continues (80.103964ms)
+✔ provider429 and exhausted quota make full-size protection unavailable without zeros or provider-body leakage (34.052826ms)
+✔ missing, partial, malformed and oversized RPC responses preserve hypothetical holdings as unknown (18.427225ms)
+✔ delayed source validation cannot turn stale pool bytes into a fresh mark (17.578434ms)
+✔ rolling RPC quota refuses repeated work without a retry queue or additional provider calls (47.60532ms)
+✔ PaperTrader recognizes an RPC exit without flow/USD, fails its due unavailable attempt once, and preserves holdings on restart (55.93121ms)
+✔ restarting PaperTrader warms a new receive-time window instead of inheriting unavailable outage flow (8.045624ms)
+✔ fixed diagnostic plan permits only selected public endpoint and historical exact first-page shape (2.650054ms)
+✔ standalone Clock closure agrees with established decoder and refuses ownership,layout,context and source-age faults (1.041055ms)
+✔ nine physical calls are serial, paced and alternate historical/fresh order after validated Clock (32.793131ms)
+✔ genuine undici socket-object hooks report reuse without exporting credentials or requiring successful keepalive closure (1.164268ms)
+✔ unknown abort settlement stops immediately and retains full uncertainty even for small Clock responses (0.829211ms)
+✔ 429 preserves Retry-After and stops without a second application request (1.58307ms)
+✔ a complete malformed body is a validation refusal, not missing physical settlement or a successful retry (0.812255ms)
+✔ response, RSS and aggregate shutdown guards prevent unbounded follow-up work (0.721351ms)
+✔ never-settled reader cancellation cannot leak into another physical request (4.055781ms)
+✔ host wrapper proves source isolation, old rate fence and actual parent-death/lease settlement without provider calls (157.192351ms)
+✔ probe refusal cooldown is append-only handoff; long Retry-After is never shortened (0.417169ms)
+✔ actual fetch invocation spacing survives variable durable-reservation latency (2.222079ms)
+✔ a durable reservation crossing the physical-admission cutoff causes no request and no fabricated timeout (0.282639ms)
+✔ v3 fixes one keyless alternative endpoint and restores baseline100-row pages without arbitrary routing (1.766422ms)
+✔ retained independent OHLC schema stays token-bound, chronological and distinct from executable returns (2.039487ms)
+✔ canonical SOL indexed0–24h leads are selection hints while wrong DEX/quote/address/age rows never enter either control group (15.004013ms)
+✔ prospective selection fixes four active and four low-activity controls without using subsequent price appreciation (35.545076ms)
+✔ unknown index metrics remain unavailable and cannot fabricate active or quiet controls (2.8831ms)
+✔ outcome diagnostics include only fully contained candles and leave missing minutes unavailable (0.717195ms)
+✔ append-only prior usage accepts historical ISO and current numeric receipts while preserving cooldown and uncertainty (0.43782ms)
+✔ two prospective passes and final outcomes stay independent, paced, single-operation and append-only without a source-end credit (339.455538ms)
+✔ graceful cancellation keeps the settled checkpoint and never fabricates an actual source end (30.473417ms)
+✔ actual source-end attestation stops new admissions and stays separate from reference completion/planned end (31.042552ms)
+✔ provider429 stops once before reading its error body and retains prior plus current uncertainty (2.518729ms)
+✔ declared and delivered listing overflow stop without a retry and resource pressure blocks admission (2.649013ms)
+✔ no prospective indexed cohort is an explicit bounded refusal after both listing passes (18.104305ms)
+✔ frozen bounds and arithmetic overflow are explicit instead of silent nonfinite JSON conversions (0.337932ms)
+✔ in-flight graceful stop preserves the actual invocation checkpoint and waits for physical settlement (7.956811ms)
+✔ post-invocation checkpoint failure aborts but does not release a pending physical fetch or erase its durable uncertainty (1.764739ms)
+✔ actual observed two-u64 exact-quote Buy is one genuine compiled swap in the selector denominator (5.985465ms)
+✔ synthetic audit wiring recognizes the observed layout without claiming the absent volume flag or packaged byte parity (19.146783ms)
+✔ unrecognized truncation or extra-byte layouts cannot become a supported selector swap or a zero-swap audit pass (12.318096ms)
+✔ all internal stop/finally intents survive many later one-second reconciliations and do not clear the raw stop (245.938894ms)
+✔ a failed resume cannot hide an owner stop or become the successful recovery boundary (13.280995ms)
+✔ only the last successful resume is an anchor and a later failed resume does not discard internal stops (13.975717ms)
+✔ resume result reasons must match the exact durable success and failure outcomes (19.027155ms)
+✔ absence of a successful resume uses validated inception and every control intention, never a bounded journal tail (135.762288ms)
+✔ owner, unknown-run and malformed-looking stop identities remain blocked even after an internal finally (41.454399ms)
+✔ hard or owner pause intent cannot be masked by later internal stops and restore markers (100.769371ms)
+✔ restore-hard-pause with safe-stop wording requires an earlier already-proven internal stop (9.806949ms)
+✔ only typed temporary readiness and ordinary shutdown pauses are recoverable provenance (11.214017ms)
+✔ unknown or invalid run sets and future/inconsistent source times fail closed (33.068895ms)
+✔ more than128 stops or512 filtered control intentions are unavailable rather than silently truncated (162.367894ms)
+✔ malformed joined actions, payloads and current control state do not yield provenance proof (58.360556ms)
+✔ missing cost metadata is a read-only unknown default, not a seeded zero-expense account (27.905185ms)
+✔ sourced actual-zero coverage is distinct from unknown and does not reseed virtual capital (16.65267ms)
+✔ operating expenses affect economic P&L once without debiting virtual cash or subtracting execution gas twice (14.510331ms)
+✔ durable action identity handles old repeats before mutable chronology checks and rejects conflicting retries (12.857016ms)
+✔ restart and consistent SQLite backup preserve cost totals, identity, inception and coverage (22.422306ms)
+✔ journal-authenticated late SOL valuation rejects a forged evicted original and later duplicate resolution (56.268224ms)
+✔ known SOL fees are valued once at incurrence while unvalued costs keep economic results unknown (10.36712ms)
+✔ principal funding, unsupported costs and wrong-account events cannot alter financial or cost history (5.640643ms)
+✔ corrupt cost metadata is refused unchanged during reads and startup instead of resetting amounts (8.689624ms)
+✔ a missing cost projection with durable cost history is recovery failure, not a new unknown-default book (9.466273ms)
+✔ surviving valuation actions or journal rows also block silently replacing missing cost metadata (7.744557ms)
+✔ mint-scoped entry cancellation is durable, idempotent and cannot remove unrelated entries or exits (30.893182ms)
+✔ fixture-only identity, fixed loaded SQLite, integer conversion and one-time inception (26.32173ms)
+✔ delayed full lifecycle counts gas once, locks/refunds deposits, preserves idempotency (10.238239ms)
+✔ failed single attempt charges gas and cannot cherry-pick a retry; expiry cannot fill (8.687742ms)
+✔ missing state never fills and pre-delay or stale quotes never become execution evidence (12.413804ms)
+✔ unknown liquidation blocks new risk, never converts an open position to zero (5.60456ms)
+✔ sticky day loss survives recovery, price recovery and restart; fresh next day can resume (14.015727ms)
+✔ entry pause cancels pending buys without abandoning position exit management (5.49014ms)
+✔ entry size includes gas/deposit, prevents adds and keeps reserved capital exclusive (5.936393ms)
+✔ wrong-sized exit cannot remove held tokens or refund its deposit (6.342957ms)
+✔ restart recovers unresolved reservations; SQLite backup restores coherent financial state (23.168223ms)
+✔ separate advisory flock rejects a second writer while external SQLite readers remain available (308.972999ms)
+✔ owner lease rejects symlinks, shared permissions, hardlinks and nonregular files without touching their targets (1.901904ms)
+✔ database open errors release the separate lease and disposable memory accounts need no file lease (6.631004ms)
+✔ database and directory aliases cannot establish a second financial writer (5.781983ms)
+✔ backward wall time cannot clear a persisted day pause (3.882033ms)
+✔ SOL exits work during USD outage and deposits stay locked until explicit refund (6.204711ms)
+✔ SIGKILL after durable order commit retains reservation and inception (280.268215ms)
+✔ SIGKILL during uncommitted write rolls back without reseeding account (229.716083ms)
+✔ retained direct Sell and routed Buy/Sell logs match full-mapper integers, event bytes and trader roles (34.794022ms)
+✔ repeated notification has the same actual log-index identity, never fabricated compiled indices (2.770653ms)
+✔ altered TransferChecked bytes cannot be detected from unchanged event logs or receive sampled transfer proof (4.314495ms)
+✔ malformed stack, failed/truncated/incomplete logs, bad commitment and event suffix cannot create usable evidence (10.56199ms)
+✔ protocol labels cannot be interpreted as an ordinary buyer even when a BuyEvent shape is decodable (1.629649ms)
+✔ payload and canonical scope bounds fail closed before parsing large or unrelated input (1.047796ms)
+✔ retained exact24-byte ordinary Buy compatibility preserves actual amounts, roles, fees and absent-volume truth (9.274848ms)
+✔ legacy24-byte Buy role/event/transfer corruption and unverified26-byte tails retain strict refusals (22.650245ms)
+✔ selected log compression preserves exact recorded bytes and first cutoff precedes settlement (60.817075ms)
+✔ native validated admission respects failure, early logical cutoff and exact boundary (1.039453ms)
+✔ actual custom migration identifies base/quote roles and rejects the custom quote instead of deriving from feed mint (8.024723ms)
+✔ retained real SOL migration returns actual canonical identity but never claims current support or entry eligibility (11.556857ms)
+✔ retry-only migrate, failed status, missing fields and unrelated same-outer creation cannot establish identity (5.717738ms)
+✔ event authority/layout/roles, index, canonical PDA and creator cannot be inferred or bypassed (13.882839ms)
+✔ multiple genuine creations are ambiguous and legacy discriminator support is explicitly synthetic (8.94585ms)
+✔ current successful migration hints with no inner instructions provide no creation bytes or original migration time (5.111698ms)
+✔ retained outside-family migration is a seed exclusion only after successful structural validation (2.110313ms)
+✔ unknown Pump and AMM invocations remain unverified rather than outside-family (1.190667ms)
+✔ actual executed trade classification preserves amounts/roles/transfers and never admits the historical window (13.926704ms)
+✔ exact known non-swap fixture is distinguishable from unknown/missing trade data (3.869344ms)
+✔ unknown instruction, missing event, mismatched slot and absent transaction cannot be excused as nontrades (3.560996ms)
+✔ fixed two-case diagnostic uses only finalized getTransaction with one physical operation and actual750ms pacing (25.549228ms)
+✔ plan refuses duplicate/unbounded identities, endpoint changes and fabricated source roles before network (0.630816ms)
+✔ provider429 stops after one request, records Retry-After and retains unknown response reservation without retry (1.814033ms)
+✔ physical timeout with unsettled injected fetch stops every further request and retains uncertainty (16.04528ms)
+✔ pre-start durable admission overrun sends no request and cannot fabricate uncertainty or an earlier availability (0.669484ms)
+✔ offline adjudication verifies raw response hash and actual response availability (20.708883ms)
+✔ actual CLI refuses privileged execution before touching paths or providers (0.298213ms)
+✔ actual hook row endpoint is wired and error/socket settlement precedes the next physical case (3.434719ms)
+✔ any explicit Retry-After stops further cases and survives a successful response without fabricating HTTPstatus (0.721591ms)
+✔ unparseable or negative retry hints remain unresolved with conservative recovery headroom (0.813888ms)
+✔ prepared six-case population retains actual source provenance and historical windows (0.142131ms)
+✔ unvalidated transaction version cannot prove either a missing trade or a harmless pool reference (0.345373ms)
+✔ a version1 label is not attributed to an expected transaction before identity and success checks (0.421296ms)
+✔ monitoring replay filled gross-slip boundary agrees with existing disposable writer/coordinator (35.695391ms)
+✔ monitoring replay failed gross-slip boundary preserves exposure and charges exactly existing failed gas (10.402778ms)
+✔ exact-expiry replay matches existing writer: no fill, no exit gas and retained exposure (8.010822ms)
+✔ after-expiry replay matches existing writer: no late favorable fill or exit gas (9.488867ms)
+✔ one post-delay coherent Clock batch can serve coordinator context and exit quote; invalid reuse fails closed (103.415693ms)
+✔ existing runtime control client reaches one owner and safe-stop does not abandon exposure (16.487456ms)
+✔ malformed, expanded, oversized or unsupported requests never dispatch financial callbacks (8.332149ms)
+✔ private canonical parent and existing live/foreign paths remain protected (2.47866ms)
+✔ stale owned socket recovery preserves the pathname safety check and supports a restart (21.552175ms)
+✔ owner callback failures disclose neither secrets nor a successful operation (1.614507ms)
+✔ native socket close retains a file that replaced its pathname (1.162386ms)
+✔ launcher observation opt-in is separate from finite resource profile and frozen configuration identity (1.866892ms)
+✔ default8-hour identity remains outside observation; explicit study selects it without entry permission (17.076521ms)
+✔ fresh hint reselects already-selected age-only EXPIRED metadata in both default2–6h and study6–24h cohorts (22.773167ms)
+✔ stale and future activity cannot reselect an existing age-expired study identity (13.505669ms)
+✔ strict origin bytes and current-support availability remain independent gates for selected24-hour allocation (8.070861ms)
+✔ study selection preserves structural/manual exclusions, financial obligations and explicit technical defers (30.916692ms)
+✔ study checkpoint retains strict public origin for8-hour recovery and ends new observation exactly at24 hours (12.530181ms)
+✔ 2 deferred pages use existing validation and permit explicit controls between caller dispatches (31.180869ms)
+✔ 3 deferred pages use existing validation and permit explicit controls between caller dispatches (21.578072ms)
+✔ 4 deferred pages use existing validation and permit explicit controls between caller dispatches (27.9142ms)
+✔ 5 deferred pages use existing validation and permit explicit controls between caller dispatches (32.925028ms)
+✔ 6 deferred pages use existing validation and permit explicit controls between caller dispatches (35.936017ms)
+✔ late page identity and cancellation never release a caller-owned physical operation or create an audit pass (14.668646ms)
+✔ same-bucket deadline expires deferred work without timers, hidden retries, later information or a false pass (8.625034ms)
+✔ provider refusal is returned by the existing helper with actual availability and no automatic retry (9.81456ms)
+✔ captured source inputs are immutable and existing malformed-history checks remain authoritative (6.06983ms)
+✔ abort before or during a pending page is observable and never starts a physical client (13.190921ms)
+✔ custom audit injection still receives only a deferred caller and the original fixed bucket deadline (9.914759ms)
+✔ complete validation available only after the fixed deadline is never admitted as an earlier pass (10.736348ms)
+✔ oversized retained source input is refused before a cloning or deferred-call session (6.462083ms)
+✔ adaptive deferred pages expose their actual100 then1000 limits and count each physical page separately (2.796752ms)
+✔ adaptive escalation cannot survive cancellation or the original same-bucket deadline (5.607745ms)
+✔ candidate launcher public binding validation creates no account and refuses financial or credential input (2.332122ms)
+✔ candidate launcher remains finite and contains no financial implementation imports or transaction execution call (0.78788ms)
+✔ root execution refusal precedes reading private inputs or opening the network (0.175831ms)
+✔ one failed source stop cannot skip the other stop or report physical settlement (1.587216ms)
+✔ publisher-compatible status discloses lost broad awareness independently of native health and keeps unknown protection null (0.597146ms)
+✔ shadow source contract is explicit in public input and frozen configuration without changing strategy or financial permissions (0.51901ms)
+✔ fresh WATCH hint reselects an age-expired2–6h identity without widening entry eligibility (16.09264ms)
+✔ stale WATCH activity cannot select an older cohort or resurrect an expired identity (8.146413ms)
+✔ older re-selection preserves an outstanding technical capacity cause and defer rather than inventing qualification (9.193108ms)
+✔ older re-selection never clears an existing explicit defer deadline (14.44533ms)
+✔ oldest WATCH metadata without proof cannot block a ready real origin and retries exact known canonical identity (19.274043ms)
+✔ retained strict actual origin imports without RPC; candidate warming begins only at actual source ACK (14.240551ms)
+✔ fresh complete quiet window receives independent audit and same-bucket predictive rejection without financial authorization (14.800952ms)
+✔ late independently verified audit stays recorded but cannot be backdated into an earlier predictive decision bucket (8.472688ms)
+✔ missing independent pool history invalidates candidate data instead of becoming a strategy failure (8.084381ms)
+✔ SYNTHETIC six-slot saturation preserves seventh watch identity and releases actual unsubscribe ownership before replacement (23.92686ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 50 ms jitter (28.56165ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 100 ms jitter (29.244554ms)
+✔ verification refusal retains its exact seed and respects the watch retry time instead of disappearing (3.074354ms)
+✔ a complete audit helper cannot start near native liveness deadline; bounded heartbeat preparation creates a new service interval (10.140795ms)
+✔ absolute support-refresh runway deadline is advanced by its own domain without moving the other deadline (8.075037ms)
+✔ absolute heartbeat runway deadline is advanced by its own domain without moving the other deadline (7.239818ms)
+✔ future peer-pong runway blocker waits for its own service without inventing a heartbeat (7.811106ms)
+✔ future unsubscribe runway blocker waits for its own service without inventing a heartbeat (7.06577ms)
+✔ early heartbeat runway preparation respects the control gate without moving support or requesting a blocked heartbeat (6.911399ms)
+✔ closed owner admission and unsettled shared physical gate start no verification, audit or source work (1.519746ms)
+✔ due native setup retains its service opportunity after deferred, busy or backoff outcomes without origin-preparation fallthrough (16.62511ms)
+✔ due native control uses the shared control window during an HTTP-only cooldown (6.734497ms)
+✔ due native support and ready audits use the RPC window during a control-only cooldown (11.881658ms)
+✔ an RPC cooldown defers audit preparation without manufacturing completeness or a source gap (5.006963ms)
+✔ known structural outside-family seed is excluded once without converting its provisional token into an unsupported market (0.978623ms)
+✔ SYNTHETIC migration churn prunes evicted verification seeds and does not strand newest retained identities (1243.995596ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 50 ms step jitter and 200 ms audit responses (161.503896ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 100 ms step jitter and 200 ms audit responses (99.682902ms)
+✔ SYNTHETIC slow settled audit response exceeds its per-page operation envelope without a false predictive decision or hidden retry (8.437576ms)
+✔ served-node context below the audit floor cannot become an independent predictive pass (8.099063ms)
+✔ SYNTHETIC protocol-aware audited predictive pass remains shadow-only with strict baseline unavailable and no financial qualification (10.116508ms)
+✔ SYNTHETIC busy audit yields one page per step and services a due native control between pages without backdating (113.41713ms)
+✔ SYNTHETIC gap after page one cancels its generation and cannot qualify using later retained history (115.497959ms)
+✔ SYNTHETIC graceful stop preserves a between-page audit diagnostic without dispatching more history (109.54317ms)
+✔ independent lower-fence warming is not a scheduler deadline miss; the next complete target can still be assessed (5.573214ms)
+✔ independently fence-ready work still misses its deadline when the shared physical gate prevents every dispatch (4.177782ms)
+✔ a partial physical history timeout remains an unavailable evaluation and a true deadline miss (4.293925ms)
+✔ a known independent lower context does not copy a busy notification ledger merely to classify dispatch readiness (8.804601ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (none) (6.104602ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (connection) (4.712796ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (closed-admission) (4.849288ms)
+✔ SYNTHETIC one pool timeout does not retry its unavailable target or starve five other ready audits (13.474313ms)
+✔ audit dispatch evidence coalesces repeated physical waits without inventing a provider failure or physical start (7.964964ms)
+✔ audit state transition retention is bounded and target expiry preserves the actual last wait and full reason counts (9.02684ms)
+✔ actual audit page admission and validated outcome remain separate from local readiness diagnostics (6.09558ms)
+✔ ready peer diagnostics identify the single selected mint without claiming every target was dispatched (10.566445ms)
+✔ a settled but unrecoverable chapter guard is distinguished from an actual in-flight request in audit diagnostics (6.593098ms)
+✔ an expired between-page audit cannot relabel a newly observed target or erase its first-ready timestamp (104.859517ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (none) (10.03672ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (rpc-item) (10.120656ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (malformed-item) (10.236898ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (retired-item) (12.567578ms)
+✔ a pre-dispatch quiet-batch admission refusal retains logical pages for a separately admitted next service turn (8.076792ms)
+✔ one cooling peer is excluded from a healthy quiet batch without dropping its own pending audit target (17.913354ms)
+✔ closed admission and occupied shared physical work prevent every quiet-batch start (8.829458ms)
+✔ SYNTHETIC one busy pool and five quiet peers keep fair service with six-page ceiling and original deadline (667ms responses) (301.384642ms)
+✔ SYNTHETIC one busy pool and five quiet peers keep fair service with six-page ceiling and original deadline (1500ms responses) (298.625811ms)
+✔ a disabled quiet-batch optimization falls back to separately paced complete audits without losing candidate evidence (29.313921ms)
+✔ COHERENT future first window reserves discretionary runway before any predictive assessment exists (11.968248ms)
+✔ COHERENT one origin coroutine yields after every physical read and progresses between rolling audits (15.814057ms)
+✔ COHERENT six declared two-second page obligations are disclosed as infeasible, without dropping scopes or evidence (94.369037ms)
+✔ COHERENT paused origin continuation cancels on stop without dispatching its pending read or admitting partial proof (5.385966ms)
+✔ COHERENT stale support during HTTP cooldown does not indefinitely suppress local degraded reporting (5.987259ms)
+✔ COHERENT deadline admission reads bounded readiness scalars without repeating feature or notification-ledger work (5.51656ms)
+✔ COHERENT an expired heartbeat cannot hide a live PONG deadline from local or physical admission (0.322128ms)
+✔ HISTORY ROUTE oldest cooling target does not starve a healthy peer or invent the cooled target assessment (7.950784ms)
+✔ HISTORY ROUTE primary cooldown permits separately ready audits only with a usable current bank ceiling (13.76733ms)
+✔ HISTORY ROUTE six ready targets blocked past deadline remain unusable while bounded degraded reporting retains service (11.197284ms)
+✔ PLANNING CLOCK actual readiness helper serves three peers with 1ms computation jitter (9.131968ms)
+✔ PLANNING CLOCK actual readiness helper serves three peers with 5ms computation jitter (6.961665ms)
+✔ PLANNING CLOCK actual readiness helper serves three peers with 50ms computation jitter (7.499023ms)
+✔ PLANNING CLOCK real future query cooling still yields to healthy peers under advancing time (7.34226ms)
+✔ malformed peer close: an unadmitted library reply is not written, and recovery remains paced (16.777647ms)
+✔ normal peer close: an unadmitted library reply is not written, and recovery remains paced (5.513485ms)
+✔ malformed close during another physical operation cannot settle or bypass that occupied gate (5.010818ms)
+✔ an explicitly scheduled close still writes one counted frame and settles on the real ws close handshake (4.731644ms)
+{"classification":"SYNTHETIC_FAILED_PACKET_CAPACITY_NOT_FORWARD_AUDIT_OR_PROFIT","failed":7193,"successful":1318,"elapsedSyntheticMs":60001,"wallMs":1894.2944670000002,"cpuMicros":2262360,"rssBefore":133148672,"peakRss":224256000,"retainedRequiredRows":1318,"retainedFailedFenceRows":6,"fullTransactionMetadata":1318,"compactFingerprints":7193,"warm":true,"independentAuditPassed":false,"recordSink":"All source record calls/bytes counted; fixture discards its synthetic record callback rather than archiving them in unbounded test memory"}
+{"classification":"SYNTHETIC_FAILED_PACKET_CAPACITY_NOT_FORWARD_AUDIT_OR_PROFIT","failed":17000,"successful":1318,"elapsedSyntheticMs":60001,"wallMs":2813.249961,"cpuMicros":3164003,"rssBefore":224940032,"peakRss":270512128,"retainedRequiredRows":1318,"retainedFailedFenceRows":6,"fullTransactionMetadata":1318,"compactFingerprints":17000,"warm":true,"independentAuditPassed":false,"recordSink":"All source record calls/bytes counted; fixture discards its synthetic record callback rather than archiving them in unbounded test memory"}
+✔ executed-flow diagnostics handle7193 or17000 failed packets plus1318 successful events without artificial ledger overflow (4742.682063ms)
+✔ 8192 successful notifications remain intact when optional failed fences cannot fit the unchanged audit input bound (5179.075786ms)
+✔ failed interiors remain bounded diagnostics while real pre/post fences keep exact timestamps and generation (186.178545ms)
+✔ delayed receipt cannot masquerade as a postwindow anchor, and unavailable retained pre-fences use no invented boundary (0.80838ms)
+✔ independent history must establish omitted failed interiors; an independently successful row remains blocking (2.983459ms)
+✔ six independent strict-window audits share one physical batch without merging their params, fences or availability (8.257129ms)
+✔ preflight no-call failures cannot deadlock valid siblings or an entirely ineligible batch (1.36025ms)
+✔ ordinary per-item errors affect only that candidate and preserve all transport receipt metadata (1.108385ms)
+✔ overload closes every current admission but retains valid sibling response facts and blocks future shared-gate use explicitly (3.090488ms)
+✔ per-item429 is a shared provider refusal even if the receipt flag is missing (0.636255ms)
+✔ individual cancellations, expired starts and closed admission are explicit without dispatching those queries (0.959013ms)
+✔ a late individual cancellation invalidates its information but does not cancel or lose its sibling (0.616716ms)
+✔ latestStartAt applies at request admission; actual information still must meet its separate validity deadline (0.569816ms)
+✔ outer cancellation does not finish the audit until the one physical operation actually settles (0.729833ms)
+✔ transport failure and refused starts are not mislabeled as known physical or provider-query consumption (0.763644ms)
+✔ the original audit still rejects missing history, malformed rows, corrections and saturated history (30.075971ms)
+✔ context-fence and notification-fence jobs preserve their distinct history cursors and original Clock provenance (0.732718ms)
+✔ a reused old transport receipt cannot be presented as a fresh independent audit (0.527583ms)
+✔ bounded collector rejects duplicate jobs, mixed targets and seven jobs without provider work (1.143668ms)
+✔ the actual batch transport plus existing semantic audits use one injected HTTP response and one durable physical start (40.743128ms)
+✔ missing transport items returns keyed unavailable results and safe aggregate evidence instead of throwing from final recording (0.915399ms)
+✔ actual cancelled stalled fetch keeps physical ownership and uncertainty after the collector returns unavailable (22.871982ms)
+✔ a partial context-not-reached error cannot verify that pool while six logical query identities remain intact (2.060759ms)
+✔ recorded mWT3 late packets corroborate history without changing the original60s information or making extra requests (33.844526ms)
+✔ recorded vv2 known tail packets cannot waive its1unknown successful history row or become ordinary flow (6.573079ms)
+✔ late successful/failed status reversal, correction, unusable packet and hash change remain blocking (44.699741ms)
+✔ tail packets require exact pool/mint/connection/subscription and actual post-snapshot availability (141.795953ms)
+✔ tail refresh preserves8192row bounds and never changes a fence to admit delayed information (303.44432ms)
+✔ cancelled or expired sessions do not refresh diagnostics, admit information or imply physical settlement (8.903297ms)
+✔ deadline or admission closing during diagnostic callback leaves the audit unavailable with honest final availability (51.976776ms)
+✔ deferred completion refreshes actual mWT diagnostic tail once while generation input remains immutable (19.211561ms)
+✔ strict interior signature audit verifies a complete target using actual pre/post window fences (10.372279ms)
+✔ failed and nontrade captured signatures participate without becoming executed trades (1.161424ms)
+✔ an unobserved successful or failed interior pool transaction makes the window unusable without inventing a swap (4.173646ms)
+✔ a target signature absent from independent history is unavailable, not a silent complete pass (0.655884ms)
+✔ same-slot target boundaries and missing before/after fences cannot establish coverage (1.517623ms)
+✔ three bounded history pages follow actual last-row cursors and cover all required unique signatures (32.46574ms)
+✔ saturated four-page history retains an explicit incomplete denominator and performs no fifth read (26.192335ms)
+✔ duplicate capture preserves the earliest availability; corrections and confirmed status disagreement are not accepted (2.563065ms)
+✔ malformed and duplicate independent history rows fail closed without extra requests (1.12482ms)
+✔ provider refusal, elapsed time, abort and closed admission retain honest availability and never retry (1.28677ms)
+✔ recording delay is included in audit availability and immutable source-window timestamps are never backdated (0.290581ms)
+✔ quiet interval can verify bounded signature absence only with genuine temporal fences and independent history coverage (0.260056ms)
+✔ invalid target, candidate identity and excessive input bounds perform no provider request (0.601703ms)
+✔ fresh coherent bank Clock ceiling independently audits quiet history without an invented notification anchor (0.34315ms)
+✔ old, future or time-unbound context ceilings are unavailable before any history request (0.490949ms)
+✔ context quiet audit still rejects unobserved interior activity and ambiguous target boundary slots (0.332334ms)
+✔ empty independent history does not prove quietness when it never reaches the known lower context (0.211504ms)
+✔ a genuine newer pre-window notification narrows context history without hiding target activity (0.358312ms)
+✔ SYNTHETIC busy1000-row page verifies every strict-interior signature in one bounded callback (76.852076ms)
+✔ saturated1000 history that cannot reach its lower fence is explicit capacity-unknown, never a partial pass (59.833931ms)
+✔ 1000-row response has an explicit1MiB processing bound and preserves known rejected payload bytes (25.68356ms)
+✔ 1000-page mode preserves exact row validation, provider failure and accepted option values (1.160093ms)
+✔ a node behind the upper slot floor cannot verify quiet history in either fence mode (0.42389ms)
+✔ Clock-fenced pagination retains the original served-node floor as history cursors move backward (13.361236ms)
+✔ adaptive quiet audit requests100 rows and keeps the original strict coverage checks (0.453333ms)
+✔ adaptive103-row quiet history escalates only after a full100-row page cannot reach the lower fence (2.871453ms)
+✔ adaptive busy2200-row history starts1000 and counts three separate physical pages without raising the cap (135.447784ms)
+✔ adaptive sizing refuses a response larger than the actual100 request and does not escalate a short uncovered page (3.746401ms)
+✔ adaptive history remains incomplete after four full pages and performs no fifth read (78.034241ms)
+✔ executed-flow scope retains independently failed missing packets as explicit diagnostics without claiming full notification coverage (0.859676ms)
+✔ executed-flow scope still rejects missing successful activity and every captured/history status reversal (0.870512ms)
+✔ a failed source hint without independently confirmed failed history remains unavailable, and malformed status cannot waive evidence (1.955083ms)
+✔ adaptive paging preserves actual elapsed/refusal failures and never retries them as an escalation (3.270475ms)
+✔ final admission clock failure clears packet and executed-flow completeness flags (1.177048ms)
+✔ protocol heartbeat requires matching pong, cleans listeners and preserves a healthy connection (1.377795ms)
+✔ missing pong and cancellation settle only after transport close; a fresh connection works afterward (0.683725ms)
+✔ protocol ping shares physical accounting and pacing; JSON-RPC ping and signing remain forbidden (9.701518ms)
+✔ cancelled ping cannot settle on queued pong before actual close, including an already closed pre-aborted socket (0.495365ms)
+✔ coherent service policy defers new setup without forgetting identity or creating an ACK/window (15.175209ms)
+✔ current support refresh excludes unverified replacement setup when audits own the runway (16.773682ms)
+✔ shared service plan and actual dispatch select the nearest mandatory deadline, not fixed support order (4.150832ms)
+✔ complete service calendar retains future source and round-trip deadlines behind immediately eligible work (7.771513ms)
+✔ bounded retirement deferral retains physical ownership and peer evidence, then services the same planned unsubscribe (9.619952ms)
+✔ already ACKed capture can recover while new setup is disabled, retaining a fresh-window requirement (7.820831ms)
+✔ hard peer-PONG deadline precedes an already-late periodic heartbeat target (6.608456ms)
+✔ legacy exporter input keeps its exact explicit source list and does not inspect an anchor (1.436172ms)
+✔ first sealed input provides only untrusted raw candidates until original source guards and exact handoff verification run (3.265317ms)
+✔ multiple anchors, absent source list and unsafe anchor names refuse before file access (0.498329ms)
+✔ a changed anchor cannot be adopted merely because its sources are plausible (0.84903ms)
+✔ recursive seals and duplicate/self-referential source lists are explicitly unsupported for this first handoff (1.470152ms)
+✔ updating the local anchor pin cannot hide a changed counter or archived source (1.189006ms)
+✔ importing exporter has no CLI side effects and invalid explicit arguments refuse before accessing an account (1.194032ms)
+✔ repinning an anchor cannot erase or backdate unknown physical demand during adoption (2.392101ms)
+✔ only the fixed zero-request local timeout refusal accepts an append-only source identity correction (4.109891ms)
+✔ both retained preparation vocabularies require explicit disabled financial declarations and a separate runtime receipt (1.338797ms)
+✔ cancelled managed unsubscribe retains actual physical ownership through a queued ACK until transport close (16.144829ms)
+✔ actual original publisher child environment resolves the existing systemd credential without a second secret (1.700916ms)
+✔ unbundled helper cannot grant compiled PAPER provenance (1.393199ms)
+✔ compiled PAPER provenance pins executable worker addon source and exact input without initializing account (59.216915ms)
+✔ native PAPER contract is separately versioned, deeply frozen, hash pinned and preserves baseline thresholds (1.835996ms)
+✔ canonical fingerprint keeps every closed-window feature while allowing actual asOf time to advance within its bucket (3.309744ms)
+✔ exact current audited evidence can be admitted only through the explicit new PAPER contract (2.192004ms)
+✔ generation, source identity, actual current feature window and fingerprint must agree exactly (1.344906ms)
+✔ actual audit/admission availability and unchanged bucket cutoff prevent backdating or stale certificate reuse (1.032583ms)
+✔ only independently verified executed completeness can waive a missing failed packet; warming or provisional flow never qualifies as ready (1.173062ms)
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (28.646479ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (16.484579ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (19.039934ms)
+✔ status/report work cannot backdate the next certificate read or extend an expired certificate (8.820118ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (8.589866ms)
+✔ resolved unfilled entry keeps genuinely continuous observation but invalidates the old certificate before a new audited decision (10.184163ms)
+✔ resolved entry after a real observation gap cannot preserve the former subscription or old certificate (7.906231ms)
+✔ an unfilled pending action resolving after observation age expires retires normally rather than restoring ineligible deep state (6.947346ms)
+✔ entry cost and exact-size quote evidence survives diagnostic rotation without protecting unrelated diagnostics (0.395457ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (587.543446ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (28.863281ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (96.773314ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (19.383313ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (40.826736ms)
+✔ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (44.598733ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✖ operator-stop:CONTROLLED (41.239223ms)
+  ✖ unknown-stop:CONTROLLED (36.030394ms)
+✖ owner or unknown stop is not armed by an otherwise complete weak audit (78.118327ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (48.032887ms)
+✔ ordinary per-entry capacity refusal preserves independently armed financial permission and creates no order (26.789942ms)
+✔ routine checkpoint preserves a buy with uncertain commit, without an invented financial outcome (53.563308ms)
+✔ routine checkpoint retains an existing sell and its holding until actual-size delayed exit execution completes (62.042081ms)
+✔ a new hard failure after inherited internal stop cannot be laundered by its older machine-stop proof (36.012226ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (51.378915ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (60.562853ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (45.495429ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (75.954549ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (26.704315ms)
+✔ DISPOSABLE native fields→audited window→real SDK PAPER entry→retained pending-exit restart→fresh exit reconcile (144.58373ms)
+✔ DISPOSABLE shadow source cannot bypass financial readiness, and a later bucket cannot reuse an older audit (21.65347ms)
+✔ DISPOSABLE reserve-changing protocol slot raises SDK quote floor without inventing a buyer trade (19.005662ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (6.975899ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (7.451145ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (29.209815ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.624558ms)
+✔ financial reporting admission is versioned and only gates new risk, never native capture or owned work (0.633531ms)
+✔ COHERENT report and checkpoint service obey committed candidate latest-start alongside owned financial priority (0.188941ms)
+✔ known44candidate history timeouts preserve actual SDK holding quotes and close candidate work before the chapter reserve (5351.044199ms)
+✔ reserve decisions include next source request and never consume protected units, response headroom, or future chapters (0.454635ms)
+✔ native PAPER reports real native flow even when the WATCH hint feed has zero normalized trades (2.468615ms)
+✔ native PAPER combines independent and financial decisions chronologically without leaking additional fields (0.344802ms)
+✔ merged native PAPER decisions retain only the latest50 actual timestamps (0.407025ms)
+✔ missing native engine remains unknown rather than borrowing WATCH zeroes or financial events (0.228539ms)
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (66.166612ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (15.200315ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (8.195747ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (6.69523ms)
+  ✔ stop (7.674748ms)
+  ✔ loss (10.779758ms)
+  ✔ admission (9.756888ms)
+  ✔ connection (7.326532ms)
+  ✔ certificate (6.959121ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (50.874013ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (8.518826ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (9.535726ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (8.260604ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (7.596978ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (113.098697ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (10.598444ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (9.117805ms)
+✔ historical restriction latch clears only after the real complete candidate-preparation path succeeds (15.855488ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (14.923395ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (1.420128ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (11.053599ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.15485ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (8.605204ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (16.444983ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (7.655424ms)
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (1.825981ms)
+✔ actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates (50.616431ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.997692ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.293286ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (1.004993ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (7.997238ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.446283ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.249351ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.555214ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.479643ms)
+✔ only explicit supplementary representatives and local phase metrics may omit capacity diagnostics (0.180117ms)
+✔ an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow (0.142481ms)
+✔ required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations (0.297592ms)
+✔ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (2.374147ms)
+✔ actual continuous recorder optional omission preserves complete required proof and financial-essential recording through caller wiring (16.782115ms)
+✔ resumed exposure is evaluated before each discretionary startup connection (1.482121ms)
+✔ unavailable or unusable recovery defers only source startup and can be retried after a fresh financial check (0.279906ms)
+✔ management-only recovery attempts owned obligations while never connecting candidate/discovery feeds (0.288478ms)
+✔ management-only is explicit and frozen into configuration rather than implied by source failure (0.775622ms)
+✔ reported all-position completion uses the final actual callback, not the oldest scheduling watermark (0.826468ms)
+✔ candidate CPU work gives way before management handoff without weakening quote or cadence contracts (0.691137ms)
+✔ native bridge retains every same-packet event when callback recording advances the clock (46.286946ms)
+✔ full frozen position capacity avoids proof/rent/quote work while holding protection continues (21.368676ms)
+✔ pending buys occupy capacity without cancellation or unneeded candidate preparation (13.602453ms)
+✔ a free concurrent-stage slot still permits preparation and feature-only assessment without forcing a fill (17.043444ms)
+✔ launcher uses legacy defaults unless its exact larger research profile is explicit (1.641558ms)
+✔ watch/discovery feed permits extended finite bounds only under the explicit profile (2.608714ms)
+✔ native selected flow extends duration/receipt/retention without raising slot or memory limits (1.653004ms)
+✔ profile validation refuses excessive existing history before creating a run or source (2.331362ms)
+✔ one captured status object is delivered identically to disk and bounded evidence without changing source facts (0.452712ms)
+✔ two-hour source file updates continue while full evidence archives are sparse and source timestamps stay original (2.273457ms)
+✔ reporting snapshot limit applies before writing and final reduction preserves truthful stopped source facts (121.89953ms)
+✔ bounded full-status fixture measures sparse periodic evidence separately from retained market data (20.850457ms)
+ℹ {"classification":"SYNTHETIC_BOUNDED_STORAGE_ESTIMATE_NOT_LIVE","oneSnapshotBytes":2018836,"snapshotCount":7,"projectedSnapshotBytes":14131852,"globalEvidenceCap":1073741824,"remainingForOtherEvidence":1059609972,"assumption":"174fullhistoryrows and12143retained request timestamps, duplicated engine/outer projections; first4plus hourly archives and both final records, not activity or2h completion proof"}
+✔ actual shared RPC/support/native/feed/runner constructors compose under the explicit two-hour study profile without IO or financial writer (5.906502ms)
+✔ two-hour resource envelope requires explicit version selection and remains candidate-only (1.241554ms)
+✔ larger finite allowances do not raise request rate, concurrency, freshness or strategy windows (0.687911ms)
+✔ two-hour append-only accounting and disk envelopes keep explicit bounded headroom (0.129903ms)
+✔ profile provenance matches retained actual observations and labels six-pool scaling as a projection (1.220994ms)
+✔ explicit90/minute research is a different closed profile; every other existing two-hour resource stays unchanged (0.310812ms)
+✔ two-hour90 profile requires the explicit matching rate and old two-hour profile cannot be relabeled90 (0.636305ms)
+✔ actual offline RPC/native/watch constructor composition keeps default, two-hour60 and explicit two-hour90 identities coherent (56.411642ms)
+✖ test/native-settled-recovery.test.ts (421.731656ms)
+✖ test/native-source-fatal-policy.test.ts (79.983511ms)
+✖ test/native-startup-integration.test.ts
+✖ test/native-support-context-retention.test.ts
+✖ test/native-transaction-retention.test.ts
+✖ test/native-transport-yield.test.ts
+✖ test/native-two-hour-accounting.test.ts
+✖ test/network.test.ts
+✖ test/observation-age-study.test.ts
+✖ test/observation-age.test.ts
+✖ test/observation-cutoff.test.ts
+✖ test/observation.test.ts
+✖ test/observed-multi-hop.test.ts
+✖ test/operating-intelligence.test.ts
+✖ test/operating-pnl-reporting.test.ts
+✖ test/origin-network-policy.test.ts
+✖ test/overnight-corrected-replay.test.ts
+✖ test/overnight-field.test.ts
+✖ test/overnight-notifications.test.ts
+✖ test/paper-mode-readiness.test.ts
+✖ test/paper-service-policy.test.ts
+✖ test/persistent-data-window.test.ts
+✖ test/pilot-capacity-recovery.test.ts
+✖ test/pilot-concurrency.test.ts
+✖ test/pilot-cpu-assessment.test.ts
+✖ test/pilot-discovery.test.ts
+✖ test/pilot-feeds.test.ts
+✖ test/pilot-integration.test.ts
+✖ test/pilot-launcher.test.ts
+✖ test/pilot-mapper-forward.test.ts
+✖ test/pilot-market-registry.test.ts
+✖ test/pilot-market.test.ts
+✖ test/pilot-native-flow.test.ts
+✖ test/pilot-origin-recovery.test.ts
+✖ test/pilot-reporting.test.ts
+✖ test/pilot-rpc-derived-status.test.ts
+✖ test/pilot-rpc-history-batch.test.ts
+✖ test/pilot-rpc-minute-research.test.ts
+✖ test/pilot-rpc-query-timeout.test.ts
+✖ test/pilot-rpc.test.ts
+✖ test/pilot-stage.test.ts
+✖ test/pilot-start-configuration.test.ts
+✖ test/pilot-trader.test.ts
+✖ test/pilot-watch-feed.test.ts
+✖ test/pilot-watch-lookup.test.ts
+✖ test/pilot-watch-prepared-selection.test.ts
+✖ test/pilot-watch.test.ts
+✖ test/pool.test.ts
+✖ test/predictive-assessment.test.ts
+✖ test/prepare-original-accounting.test.ts
+✖ test/prepare-standing-subject.test.ts
+✖ test/program-log-identity.test.ts
+✖ test/program-log-mapping.test.ts
+✖ test/progressive-pilot-fixture.test.ts
+✖ test/progressive-scheduler.test.ts
+✖ test/protocol-classic-burn.test.ts
+✖ test/protocol-cleanup-proof.test.ts
+✖ test/protocol-flow-evidence.test.ts
+✖ test/protocol-pool-effect.test.ts
+✖ test/public-status.test.ts
+✖ test/pumpapi-exact-buy.test.ts
+✖ test/pumpapi-field-capture.test.ts
+✖ test/pumpapi-mapping.test.ts
+✖ test/pumpapi-probe.test.ts
+✖ test/pumpapi-short-exact-buy.test.ts
+✖ test/reporting.test.ts
+✖ test/research-baseline.test.ts
+✖ test/research-checkpoint.test.ts
+✖ test/research-clock-pricing.test.ts
+✖ test/research-dispatch.test.ts
+✖ test/research-end-to-end.test.ts
+✖ test/research-held-market.test.ts
+✖ test/research-pacing.test.ts
+✖ test/research-phase.test.ts
+✖ test/research-pricing.test.ts
+✖ test/research-rpc.test.ts
+✖ test/research-scheduler-execution.test.ts
+✖ test/retained-recorder.test.ts
+✖ test/rpc-market.test.ts
+✖ test/rpc-minute-workload.test.ts
+✖ test/runtime.test.ts
+✖ test/scheduler-forward-audit.test.ts
+✖ test/scheduler-forward-evidence.test.ts
+✖ test/scheduler-forward-launcher.test.ts
+✖ test/scheduler-forward-preflight.test.ts
+✖ test/scheduler-forward-runner.test.ts
+✖ test/scheduler-proposal.test.ts
+✖ test/selection-rejections.test.ts
+✖ test/shared-scheduler-trace.test.ts
+✖ test/snapshot-file-publisher.test.ts
+✖ test/source-version.test.ts
+✖ test/standing-research.test.ts
+✖ test/strategy.test.ts
+✖ test/summarize-pilot.test.ts
+✖ test/trader.test.ts
+✖ test/valuation.test.ts
+ℹ tests 826
+ℹ suites 0
+ℹ pass 726
+ℹ fail 3
+ℹ cancelled 97
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 50970.456985
+
+✖ failing tests:
+
+test at test/backup.test.ts:1:1
+✖ test/backup.test.ts (42244.073266ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-paper-integration.test.ts:1:23970
+✖ operator-stop:CONTROLLED (41.239223ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 1
+  
+      at TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-integration.test.ts:89:417)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-integration.test.ts:89:73)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-paper-integration.test.ts:1:23970
+✖ unknown-stop:CONTROLLED (36.030394ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 1
+  
+      at TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-integration.test.ts:89:417)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-integration.test.ts:89:73)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-settled-recovery.test.ts:1:1
+✖ test/native-settled-recovery.test.ts (421.731656ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-source-fatal-policy.test.ts:1:1
+✖ test/native-source-fatal-policy.test.ts (79.983511ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-startup-integration.test.ts:1:1
+✖ test/native-startup-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-support-context-retention.test.ts:1:1
+✖ test/native-support-context-retention.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-transaction-retention.test.ts:1:1
+✖ test/native-transaction-retention.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-transport-yield.test.ts:1:1
+✖ test/native-transport-yield.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-two-hour-accounting.test.ts:1:1
+✖ test/native-two-hour-accounting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/network.test.ts:1:1
+✖ test/network.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-age-study.test.ts:1:1
+✖ test/observation-age-study.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-age.test.ts:1:1
+✖ test/observation-age.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-cutoff.test.ts:1:1
+✖ test/observation-cutoff.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation.test.ts:1:1
+✖ test/observation.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observed-multi-hop.test.ts:1:1
+✖ test/observed-multi-hop.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/operating-intelligence.test.ts:1:1
+✖ test/operating-intelligence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/operating-pnl-reporting.test.ts:1:1
+✖ test/operating-pnl-reporting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/origin-network-policy.test.ts:1:1
+✖ test/origin-network-policy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-corrected-replay.test.ts:1:1
+✖ test/overnight-corrected-replay.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-field.test.ts:1:1
+✖ test/overnight-field.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-notifications.test.ts:1:1
+✖ test/overnight-notifications.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/paper-mode-readiness.test.ts:1:1
+✖ test/paper-mode-readiness.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/paper-service-policy.test.ts:1:1
+✖ test/paper-service-policy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/persistent-data-window.test.ts:1:1
+✖ test/persistent-data-window.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-capacity-recovery.test.ts:1:1
+✖ test/pilot-capacity-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-concurrency.test.ts:1:1
+✖ test/pilot-concurrency.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-cpu-assessment.test.ts:1:1
+✖ test/pilot-cpu-assessment.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-discovery.test.ts:1:1
+✖ test/pilot-discovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-feeds.test.ts:1:1
+✖ test/pilot-feeds.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-integration.test.ts:1:1
+✖ test/pilot-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-launcher.test.ts:1:1
+✖ test/pilot-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-mapper-forward.test.ts:1:1
+✖ test/pilot-mapper-forward.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-market-registry.test.ts:1:1
+✖ test/pilot-market-registry.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-market.test.ts:1:1
+✖ test/pilot-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-native-flow.test.ts:1:1
+✖ test/pilot-native-flow.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-origin-recovery.test.ts:1:1
+✖ test/pilot-origin-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-reporting.test.ts:1:1
+✖ test/pilot-reporting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-derived-status.test.ts:1:1
+✖ test/pilot-rpc-derived-status.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-history-batch.test.ts:1:1
+✖ test/pilot-rpc-history-batch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-minute-research.test.ts:1:1
+✖ test/pilot-rpc-minute-research.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-query-timeout.test.ts:1:1
+✖ test/pilot-rpc-query-timeout.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc.test.ts:1:1
+✖ test/pilot-rpc.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-stage.test.ts:1:1
+✖ test/pilot-stage.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-start-configuration.test.ts:1:1
+✖ test/pilot-start-configuration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-trader.test.ts:1:1
+✖ test/pilot-trader.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-feed.test.ts:1:1
+✖ test/pilot-watch-feed.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-lookup.test.ts:1:1
+✖ test/pilot-watch-lookup.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-prepared-selection.test.ts:1:1
+✖ test/pilot-watch-prepared-selection.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch.test.ts:1:1
+✖ test/pilot-watch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pool.test.ts:1:1
+✖ test/pool.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/predictive-assessment.test.ts:1:1
+✖ test/predictive-assessment.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/prepare-original-accounting.test.ts:1:1
+✖ test/prepare-original-accounting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/prepare-standing-subject.test.ts:1:1
+✖ test/prepare-standing-subject.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/program-log-identity.test.ts:1:1
+✖ test/program-log-identity.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/program-log-mapping.test.ts:1:1
+✖ test/program-log-mapping.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/progressive-pilot-fixture.test.ts:1:1
+✖ test/progressive-pilot-fixture.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/progressive-scheduler.test.ts:1:1
+✖ test/progressive-scheduler.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-classic-burn.test.ts:1:1
+✖ test/protocol-classic-burn.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-cleanup-proof.test.ts:1:1
+✖ test/protocol-cleanup-proof.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-flow-evidence.test.ts:1:1
+✖ test/protocol-flow-evidence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-pool-effect.test.ts:1:1
+✖ test/protocol-pool-effect.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/public-status.test.ts:1:1
+✖ test/public-status.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-exact-buy.test.ts:1:1
+✖ test/pumpapi-exact-buy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-field-capture.test.ts:1:1
+✖ test/pumpapi-field-capture.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-mapping.test.ts:1:1
+✖ test/pumpapi-mapping.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-probe.test.ts:1:1
+✖ test/pumpapi-probe.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-short-exact-buy.test.ts:1:1
+✖ test/pumpapi-short-exact-buy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/reporting.test.ts:1:1
+✖ test/reporting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-baseline.test.ts:1:1
+✖ test/research-baseline.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-checkpoint.test.ts:1:1
+✖ test/research-checkpoint.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-clock-pricing.test.ts:1:1
+✖ test/research-clock-pricing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-dispatch.test.ts:1:1
+✖ test/research-dispatch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-end-to-end.test.ts:1:1
+✖ test/research-end-to-end.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-held-market.test.ts:1:1
+✖ test/research-held-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-pacing.test.ts:1:1
+✖ test/research-pacing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-phase.test.ts:1:1
+✖ test/research-phase.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-pricing.test.ts:1:1
+✖ test/research-pricing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-rpc.test.ts:1:1
+✖ test/research-rpc.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-scheduler-execution.test.ts:1:1
+✖ test/research-scheduler-execution.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/retained-recorder.test.ts:1:1
+✖ test/retained-recorder.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/rpc-market.test.ts:1:1
+✖ test/rpc-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/rpc-minute-workload.test.ts:1:1
+✖ test/rpc-minute-workload.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/runtime.test.ts:1:1
+✖ test/runtime.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-audit.test.ts:1:1
+✖ test/scheduler-forward-audit.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-evidence.test.ts:1:1
+✖ test/scheduler-forward-evidence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-launcher.test.ts:1:1
+✖ test/scheduler-forward-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-preflight.test.ts:1:1
+✖ test/scheduler-forward-preflight.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-runner.test.ts:1:1
+✖ test/scheduler-forward-runner.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-proposal.test.ts:1:1
+✖ test/scheduler-proposal.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/selection-rejections.test.ts:1:1
+✖ test/selection-rejections.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/shared-scheduler-trace.test.ts:1:1
+✖ test/shared-scheduler-trace.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/snapshot-file-publisher.test.ts:1:1
+✖ test/snapshot-file-publisher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/source-version.test.ts:1:1
+✖ test/source-version.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/standing-research.test.ts:1:1
+✖ test/standing-research.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/strategy.test.ts:1:1
+✖ test/strategy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/summarize-pilot.test.ts:1:1
+✖ test/summarize-pilot.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/trader.test.ts:1:1
+✖ test/trader.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/valuation.test.ts:1:1
+✖ test/valuation.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'

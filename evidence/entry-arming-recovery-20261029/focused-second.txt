@@ -1,0 +1,187 @@
+✔ all internal stop/finally intents survive many later one-second reconciliations and do not clear the raw stop (254.652065ms)
+✔ a failed resume cannot hide an owner stop or become the successful recovery boundary (9.979428ms)
+✔ only the last successful resume is an anchor and a later failed resume does not discard internal stops (11.262141ms)
+✔ absence of a successful resume uses validated inception and every control intention, never a bounded journal tail (147.092185ms)
+✔ owner, unknown-run and malformed-looking stop identities remain blocked even after an internal finally (50.071219ms)
+✔ hard or owner pause intent cannot be masked by later internal stops and restore markers (128.526311ms)
+✔ restore-hard-pause with safe-stop wording requires an earlier already-proven internal stop (10.15248ms)
+✔ only typed temporary readiness and ordinary shutdown pauses are recoverable provenance (12.284539ms)
+✔ unknown or invalid run sets and future/inconsistent source times fail closed (28.684824ms)
+✔ more than128 stops or512 filtered control intentions are unavailable rather than silently truncated (215.506994ms)
+✔ malformed joined actions, payloads and current control state do not yield provenance proof (53.8322ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (513.206264ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (31.068282ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (71.798299ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (22.171159ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (43.111712ms)
+✖ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (32.970493ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (32.815273ms)
+  ✔ unknown-stop:CONTROLLED (26.907017ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (60.320247ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (35.714366ms)
+✔ routine checkpoint preserves a buy with uncertain commit and pending exits, without an invented financial outcome (41.208078ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (47.738388ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (54.026248ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (44.971682ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (55.825273ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (22.298044ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (2.580019ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (2.927534ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (21.739303ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.622975ms)
+✖ financial reporting admission is versioned and only gates new risk, never native capture or owned work (5.421885ms)
+✔ COHERENT report and checkpoint service obey committed candidate latest-start alongside owned financial priority (0.322538ms)
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (40.267143ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (10.654623ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (12.442346ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (6.722066ms)
+  ✔ stop (8.252027ms)
+  ✔ loss (5.849962ms)
+  ✔ admission (5.177404ms)
+  ✔ connection (4.865191ms)
+  ✔ certificate (5.874078ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (37.894992ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (8.26103ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (6.368131ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (6.497258ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (5.988347ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (110.818915ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (6.99352ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (7.740284ms)
+✔ historical restriction latch clears only after the real complete candidate-preparation path succeeds (14.133602ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (10.879808ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (1.024711ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (8.133341ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.179917ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (7.247817ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (15.364734ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (6.229946ms)
+ℹ tests 58
+ℹ suites 0
+ℹ pass 56
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2506.059967
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:20438
+✖ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (32.970493ms)
+  TypeError: Cannot read properties of undefined (reading 'slice')
+      at buildPilotPortfolio (/workspace/poe-entry-arming-repair/src/pilot-reporting.ts:89:36)
+      at TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-integration.test.ts:84:334)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at test/native-paper-launcher.test.ts:1:4542
+✖ financial reporting admission is versioned and only gates new risk, never native capture or owned work (5.421885ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /monitoringAvailable:riskCapacity\(at,false\)/. Input:
+  
+  '/** Resume-only isolated native PAPER launcher. No signer, wallet credential,\n' +
+    ' * transaction builder, blockchain simulation or real submission interface. */\n' +
+    "import {constants,openSync,closeSync,readFileSync,writeFileSync,mkdirSync,lstatSync,realpathSync,renameSync,fsyncSync,statfsSync,existsSync,readdirSync,unlinkSync} from 'node:fs';\n" +
+    "import {dirname,join,resolve} from 'node:path';\n" +
+    "import {fileURLToPath,pathToFileURL} from 'node:url';\n" +
+    "import {spawnSync} from 'node:child_process';\n" +
+    "import {createHash,randomUUID} from 'node:crypto';\n" +
+    "import {hostname} from 'node:os';\n" +
+    "import {performance,monitorEventLoopDelay} from 'node:perf_hooks';\n" +
+    "import {PaperLedger,type UsdPrice} from './ledger.js';\n" +
+    "import {PilotMarket} from './pilot-market.js';\n" +
+    "import {PilotRpc,PilotRpcUnavailable,type PilotRpcCallOptions} from './pilot-rpc.js';\n" +
+    "import {PUBLICNODE_HISTORY_ROUTE} from './component-transport.js';\n" +
+    "import {PilotNativeFlow} from './pilot-native-flow.js';\n" +
+    "import {PilotFeeds} from './pilot-feeds.js';\n" +
+    "import {NativeCandidateRunner} from './native-candidate-runner.js';\n" +
+    "import {ResearchClockPositionPricer} from './research-clock-pricing.js';\n" +
+    "import {Recorder,BoundedRotatingRecorder} from './recorder.js';\n" +
+    "import {serveNativeAccountControl} from './native-account-control.js';\n" +
+    "import {projectOperatingIntelligence} from './operating-intelligence.js';\n" +
+    "import {POE_OPERATING_ACCOUNT,assertPoeOperatingAccount} from './poe-operating-account.js';\n" +
+    "import {operatingPnlReporting} from './operating-pnl-reporting.js';\n" +
+    "import {writePoePublicStatus} from './public-status.js';\n" +
+    "import {PaperServiceResources,PAPER_SERVICE_POLICY,paperServiceSupervision,readHostMemoryAvailable} from './paper-service-policy.js';\n" +
+    "import {NativePaper,NATIVE_PAPER_FINANCIAL_READINESS_POLICY,nativePaperDerivedEntryBlocker,type NativePaperPool,type NativeQualificationProof} from './native-paper.js';\n" +
+    "import {TECHNICAL_REEVALUATION_POLICY} from './pilot-watch.js';\n" +
+    "import {readResearchBaseline,verifyResearchCheckpointSourceHandoff,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';\n" +
+    "import {NATIVE_PAPER_CONTRACT,NATIVE_PAPER_CONTRACT_SHA256,NATIVE_PAPER_DATA_CONTRACT_VERSION} from './native-paper-contract.js';\n" +
+    "import {validateNativeCandidateInput,nativeCandidateWatchControlRequest,nativeCandidateReportingProjection} from './run-native-candidates.js';\n" +
+    "import {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,PILOT_TIMING,pilotOpenProtectionGaps,pilotCurrentContextMarks} from './pilot.js';\n" +
+    "import {FinancialBackupStore,BackupPreparationDeferred} from './backup.js';\n" +
+    "import {fetchPublicUsdPrice} from './valuation.js';\n" +
+    "import {buildPilotPortfolio,boundOperatingSnapshot,pilotReportingPoints,pilotPortfolioReconciled,projectPilotFilledTrades,pilotExperimentalAccounting,pilotPortfolioProjectionFailure,type PilotPortfolioProjectionStage} from './pilot-reporting.js';\n" +
+    "import {readSourceVersion} from './source-version.js';\n" +
+    "import {verifyNativePaperBundleSource} from './native-paper-bundle.js';\n" +
+    "import {CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW} from './program-log-mapping.js';\n" +
+    'const MIB=1024*1024;\n' +
+    'function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}\n' +
+    "const hash=(value:Buffer|string)=>createHash('sha256').update(value).digest('hex');\n" +
+    "function atomic(path:string,value:unknown,maximum=4*MIB){const body=JSON.stringify(value)+'\\n';need(Buffer.byteLength(body)<=maximum,'NATIVE_PAPER_STATUS_BOUND');const tmp=path+'.pending-'+process.pid+'-'+randomUUID(),fd=openSync(tmp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);try{writeFileSync(fd,body);fsyncSync(fd);}finally{closeSync(fd);}renameSync(tmp,path);const parent=openSync(dirname(path),constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(parent);}finally{closeSync(parent);}}\n" +
+    "function directory(path:string){const s=lstatSync(path);need(s.isDirectory()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&(s.mode&0o077)===0&&realpathSync(path)===path,'NATIVE_PAPER_PRIVATE_OWNER_DIRECTORY');}\n" +
+    "function file(path:string,maximum:number){const s=lstatSync(path);need(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&s.nlink===1&&s.size<=maximum,'NATIVE_PAPER_PRIVATE_BOUNDED_FILE');return readFileSync(path);}\n" +
+    "function lease(path:string){const fd=openSync(path,constants.O_RDWR|constants.O_CREAT|constants.O_NOFOLLOW,0o600),s=lstatSync(path);need(s.isFile()&&s.uid===process.getuid?.()&&s.nlink===1&&(s.mode&0o077)===0,'NATIVE_PAPER_LEASE_OWNER');if(spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',fd],timeout:5000}).status!==0){closeSync(fd);throw Error('NATIVE_PAPER_RESEARCH_OWNER_EXISTS');}return fd;}\n" +
+    '/** Captured once, before opening the financial writer. Reporting never queries\n' +
+    ' * mutable git. Compiled JS is accepted only through the separately verified\n' +
+    ' * executable/worker/addon closure; arbitrary tsc output remains refused. */\n' +
+    "function startupSource(input:{commit:string;sha256:string}){const path=fileURLToPath(import.meta.url);if(path.endsWith('.ts')){const version=readSourceVersion(dirname(path));need(version.commit===input.commit&&!version.dirty,'NATIVE_PAPER_FROZEN_SOURCE_REQUIRED');const root=dirname(path),files=[...readdirSync(root).filter(f=>f.endsWith('.ts')).sort(),'../package.json','../package-lock.json'],sha256=hash(JSON.stringify(Object.fromEntries(files.map(name=>[name,hash(readFileSync(join(root,name)))]))));return Object.freeze({commit:version.commit!,sha256,kind:'immutable-startup-typescript-source-tree',inputSha256:input.sha256});}return verifyNativePaperBundleSource(path,input,{allowRootOwnedRelease:true});}\n" +
+    '/** Reporting is discretionary local projection work. Its proposed budget is\n' +
+    ' * measured, not a provider or disk-latency guarantee; overruns close new risk.\n' +
+    ' * In particular a >500ms holding request must not permanently erase its next\n' +
+    ' * reporting opportunity. Network publication runs in the existing independent\n' +
+    ' * publisher, outside this financial process. */\n' +
+    '/** The broad feed supplies WATCH hints, not native executed trades. Reuse the\n' +
+    " * candidate reporter's measured native+broad totals and independently audited\n" +
+    " * assessments; financial counters/portfolio remain the trader's separate facts.\n" +
+    ' * This helper is pure and never requests quotes or changes admission. */\n' +
+    "export function nativePaperObservationReporting(input:{engine:ReturnType<NativeCandidateRunner['status']>|undefined;feeds:ReturnType<PilotFeeds['usage']>|undefined;financialDecisions:ReturnType<NativePaper['trader']['decisions']>;eventLoopDelayP95Ms:number|null}){\n" +
+    " const observed=nativeCandidateReportingProjection(input.engine,input.feeds,input.eventLoopDelayP95Ms,true,'');\n" +
+    ' const decisions=[...observed.decisions.slice(-50),...input.financialDecisions.slice(-50)].sort((a,b)=>a.at-b.at).slice(-50).map(({at,mint,stage,reason})=>({at,mint,stage,reason}));\n' +
+    ' return {observationAgePolicy:observed.observationAgePolicy,\n' +
+    '  // Independent failures are not executable-strategy rejections. The latter\n' +
+    '  // count is not maintained by this native WATCH registry, so do not invent0.\n' +
+    '  watch:observed.watch?{...observed.watch,summary:{...observed.watch.summary,strategyRejections:null}}:null,\n' +
+    '  decisions,feeds:{...input.feeds,...observed.usage.feeds},\n' +
+    '  independentPredictive:input.engine?{assessments:input.engine.counters.predictiveAssessments,failed:input.engine.counters.predictiveFailed,notRejected:input.engine.counters.predictiveNotRejected,unavailable:input.engine.counters.predictiveUnavailable,uniqueEvaluated:input.engine.counters.uniqueEvaluated}:null,\n' +
+    "  meaning:'Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens.'};\n" +
+    '}\n' +
+    '/** Actual6d source:12/17 multi-query envelopes stalled after partial delivery.\n' +
+    ' * Preserve the same strict audit sessions using separately paced single pages.\n' +
+    ' * c189 single-page timeouts are retained. Targeted keyless history routing\n' +
+    ' * follows a separately measured same-pool probe; pricing/support/WS stay put.\n' +
+    ' * This is provider-specific operating policy, not a changed evidence rule. */\n' +
+    "export const NATIVE_PAPER_HISTORY_TRANSPORT_POLICY=Object.freeze({version:'publicnode-single-history-pages-v2',batchEnabled:false,historyRoute:PUBLICNODE_HISTORY_ROUTE,primaryHttpEndpoint:'https://api.mainnet.solana.com',notificationEndpoint:'wss://api.mainnet.solana.com',failureDomains:'independent history/primary HTTP/control cooldowns; one physical/rate/byte budget; no automatic fallback'});\n" +
+    "export const NATIVE_PAPER_FINANCIAL_REPORTING_POLICY='validated-financial-projection-before-new-risk-v1';\n" +
+    'export const NATIVE_PAPER_REPORT_BUDGET_MS=250;\n' +
+    '/** Sample certificate availability at its actual use time. Reporting can advance\n' +
+    ' * receive-time windows, so an earlier loop/report timestamp cannot be reused. */\n' +
+    "export function nativePaperCurrentCertificates(engine:Pick<NativeCandidateRunner,'certifiedCandidateMints'>,now:()=>number=Date.now){const at=now();return {at,mints:engine.certifiedCandidateMints(at)};}\n" +
+    '/** Async proof retention is a background preparation, never a held/pending\n' +
+    ' * financial tick. A later entry must revalidate its exact current certificate. */\n' +
+    'export class NativePaperProofPreparation{\n' +
+    " private task:{proof:NativeQualificationProof;state:'pending'|'complete'|'failed';availableAt:number|null;error:string|null}|null=null;\n" +
+    ' constructor(private readonly now:()=>number=Date.now){}\n' +
+    ' prepare(proof:NativeQualificationProof,pin:(proof:NativeQualificationProof)=>Promise<void>){\n' +
+    "  if(this.task?.proof.proofId===proof.proofId)return this.task.state==='complete'&&this.task.availableAt!==null&&this.task.availableAt<=this.now()&&this.now()<=proof.deadlineAt;\n" +
+    "  if(this.task?.state==='pending')return false;\n" +
+    "  const task={proof:{...proof},state:'pending' as 'pending'|'complete'|'failed',availableAt:null as number|null,error:null as string|null};this.task=task;\n" +
+    "  void Promise.resolve().then(()=>pin(proof)).then(()=>{task.state='complete';task.availableA"... 78951 more characters
+  
+      at TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-launcher.test.ts:37:372)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "/** Resume-only isolated native PAPER launcher. No signer, wallet credential,\n * transaction builder, blockchain simulation or real submission interface. */\nimport {constants,openSync,closeSync,readFileSync,writeFileSync,mkdirSync,lstatSync,realpathSync,renameSync,fsyncSync,statfsSync,existsSync,readdirSync,unlinkSync} from 'node:fs';\nimport {dirname,join,resolve} from 'node:path';\nimport {fileURLToPath,pathToFileURL} from 'node:url';\nimport {spawnSync} from 'node:child_process';\nimport {createHash,randomUUID} from 'node:crypto';\nimport {hostname} from 'node:os';\nimport {performance,monitorEventLoopDelay} from 'node:perf_hooks';\nimport {PaperLedger,type UsdPrice} from './ledger.js';\nimport {PilotMarket} from './pilot-market.js';\nimport {PilotRpc,PilotRpcUnavailable,type PilotRpcCallOptions} from './pilot-rpc.js';\nimport {PUBLICNODE_HISTORY_ROUTE} from './component-transport.js';\nimport {PilotNativeFlow} from './pilot-native-flow.js';\nimport {PilotFeeds} from './pilot-feeds.js';\nimport {NativeCandidateRunner} from './native-candidate-runner.js';\nimport {ResearchClockPositionPricer} from './research-clock-pricing.js';\nimport {Recorder,BoundedRotatingRecorder} from './recorder.js';\nimport {serveNativeAccountControl} from './native-account-control.js';\nimport {projectOperatingIntelligence} from './operating-intelligence.js';\nimport {POE_OPERATING_ACCOUNT,assertPoeOperatingAccount} from './poe-operating-account.js';\nimport {operatingPnlReporting} from './operating-pnl-reporting.js';\nimport {writePoePublicStatus} from './public-status.js';\nimport {PaperServiceResources,PAPER_SERVICE_POLICY,paperServiceSupervision,readHostMemoryAvailable} from './paper-service-policy.js';\nimport {NativePaper,NATIVE_PAPER_FINANCIAL_READINESS_POLICY,nativePaperDerivedEntryBlocker,type NativePaperPool,type NativeQualificationProof} from './native-paper.js';\nimport {TECHNICAL_REEVALUATION_POLICY} from './pilot-watch.js';\nimport {readResearchBaseline,verifyResearchCheckpointSourceHandoff,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';\nimport {NATIVE_PAPER_CONTRACT,NATIVE_PAPER_CONTRACT_SHA256,NATIVE_PAPER_DATA_CONTRACT_VERSION} from './native-paper-contract.js';\nimport {validateNativeCandidateInput,nativeCandidateWatchControlRequest,nativeCandidateReportingProjection} from './run-native-candidates.js';\nimport {resolvePilotStage,recordPilotStageTransition,pilotLowerPriorityAdmission,PILOT_TIMING,pilotOpenProtectionGaps,pilotCurrentContextMarks} from './pilot.js';\nimport {FinancialBackupStore,BackupPreparationDeferred} from './backup.js';\nimport {fetchPublicUsdPrice} from './valuation.js';\nimport {buildPilotPortfolio,boundOperatingSnapshot,pilotReportingPoints,pilotPortfolioReconciled,projectPilotFilledTrades,pilotExperimentalAccounting,pilotPortfolioProjectionFailure,type PilotPortfolioProjectionStage} from './pilot-reporting.js';\nimport {readSourceVersion} from './source-version.js';\nimport {verifyNativePaperBundleSource} from './native-paper-bundle.js';\nimport {CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW} from './program-log-mapping.js';\nconst MIB=1024*1024;\nfunction need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}\nconst hash=(value:Buffer|string)=>createHash('sha256').update(value).digest('hex');\nfunction atomic(path:string,value:unknown,maximum=4*MIB){const body=JSON.stringify(value)+'\\n';need(Buffer.byteLength(body)<=maximum,'NATIVE_PAPER_STATUS_BOUND');const tmp=path+'.pending-'+process.pid+'-'+randomUUID(),fd=openSync(tmp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);try{writeFileSync(fd,body);fsyncSync(fd);}finally{closeSync(fd);}renameSync(tmp,path);const parent=openSync(dirname(path),constants.O_RDONLY|constants.O_DIRECTORY);try{fsyncSync(parent);}finally{closeSync(parent);}}\nfunction directory(path:string){const s=lstatSync(path);need(s.isDirectory()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&(s.mode&0o077)===0&&realpathSync(path)===path,'NATIVE_PAPER_PRIVATE_OWNER_DIRECTORY');}\nfunction file(path:string,maximum:number){const s=lstatSync(path);need(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&s.nlink===1&&s.size<=maximum,'NATIVE_PAPER_PRIVATE_BOUNDED_FILE');return readFileSync(path);}\nfunction lease(path:string){const fd=openSync(path,constants.O_RDWR|constants.O_CREAT|constants.O_NOFOLLOW,0o600),s=lstatSync(path);need(s.isFile()&&s.uid===process.getuid?.()&&s.nlink===1&&(s.mode&0o077)===0,'NATIVE_PAPER_LEASE_OWNER');if(spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',fd],timeout:5000}).status!==0){closeSync(fd);throw Error('NATIVE_PAPER_RESEARCH_OWNER_EXISTS');}return fd;}\n/** Captured once, before opening the financial writer. Reporting never queries\n * mutable git. Compiled JS is accepted only through the separately verified\n * executable/worker/addon closure; arbitrary tsc output remains refused. */\nfunction startupSource(input:{commit:string;sha256:string}){const path=fileURLToPath(import.meta.url);if(path.endsWith('.ts')){const version=readSourceVersion(dirname(path));need(version.commit===input.commit&&!version.dirty,'NATIVE_PAPER_FROZEN_SOURCE_REQUIRED');const root=dirname(path),files=[...readdirSync(root).filter(f=>f.endsWith('.ts')).sort(),'../package.json','../package-lock.json'],sha256=hash(JSON.stringify(Object.fromEntries(files.map(name=>[name,hash(readFileSync(join(root,name)))]))));return Object.freeze({commit:version.commit!,sha256,kind:'immutable-startup-typescript-source-tree',inputSha256:input.sha256});}return verifyNativePaperBundleSource(path,input,{allowRootOwnedRelease:true});}\n/** Reporting is discretionary local projection work. Its proposed budget is\n * measured, not a provider or disk-latency guarantee; overruns close new risk.\n * In particular a >500ms holding request must not permanently erase its next\n * reporting opportunity. Network publication runs in the existing independent\n * publisher, outside this financial process. */\n/** The broad feed supplies WATCH hints, not native executed trades. Reuse the\n * candidate reporter's measured native+broad totals and independently audited\n * assessments; financial counters/portfolio remain the trader's separate facts.\n * This helper is pure and never requests quotes or changes admission. */\nexport function nativePaperObservationReporting(input:{engine:ReturnType<NativeCandidateRunner['status']>|undefined;feeds:ReturnType<PilotFeeds['usage']>|undefined;financialDecisions:ReturnType<NativePaper['trader']['decisions']>;eventLoopDelayP95Ms:number|null}){\n const observed=nativeCandidateReportingProjection(input.engine,input.feeds,input.eventLoopDelayP95Ms,true,'');\n const decisions=[...observed.decisions.slice(-50),...input.financialDecisions.slice(-50)].sort((a,b)=>a.at-b.at).slice(-50).map(({at,mint,stage,reason})=>({at,mint,stage,reason}));\n return {observationAgePolicy:observed.observationAgePolicy,\n  // Independent failures are not executable-strategy rejections. The latter\n  // count is not maintained by this native WATCH registry, so do not invent0.\n  watch:observed.watch?{...observed.watch,summary:{...observed.watch.summary,strategyRejections:null}}:null,\n  decisions,feeds:{...input.feeds,...observed.usage.feeds},\n  independentPredictive:input.engine?{assessments:input.engine.counters.predictiveAssessments,failed:input.engine.counters.predictiveFailed,notRejected:input.engine.counters.predictiveNotRejected,unavailable:input.engine.counters.predictiveUnavailable,uniqueEvaluated:input.engine.counters.uniqueEvaluated}:null,\n  meaning:'Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens.'};\n}\n/** Actual6d source:12/17 multi-query envelopes stalled after partial delivery.\n * Preserve the same strict audit sessions using separately paced single pages.\n * c189 single-page timeouts are retained. Targeted keyless history routing\n * follows a separately measured same-pool probe; pricing/support/WS stay put.\n * This is provider-specific operating policy, not a changed evidence rule. */\nexport const NATIVE_PAPER_HISTORY_TRANSPORT_POLICY=Object.freeze({version:'publicnode-single-history-pages-v2',batchEnabled:false,historyRoute:PUBLICNODE_HISTORY_ROUTE,primaryHttpEndpoint:'https://api.mainnet.solana.com',notificationEndpoint:'wss://api.mainnet.solana.com',failureDomains:'independent history/primary HTTP/control cooldowns; one physical/rate/byte budget; no automatic fallback'});\nexport const NATIVE_PAPER_FINANCIAL_REPORTING_POLICY='validated-financial-projection-before-new-risk-v1';\nexport const NATIVE_PAPER_REPORT_BUDGET_MS=250;\n/** Sample certificate availability at its actual use time. Reporting can advance\n * receive-time windows, so an earlier loop/report timestamp cannot be reused. */\nexport function nativePaperCurrentCertificates(engine:Pick<NativeCandidateRunner,'certifiedCandidateMints'>,now:()=>number=Date.now){const at=now();return {at,mints:engine.certifiedCandidateMints(at)};}\n/** Async proof retention is a background preparation, never a held/pending\n * financial tick. A later entry must revalidate its exact current certificate. */\nexport class NativePaperProofPreparation{\n private task:{proof:NativeQualificationProof;state:'pending'|'complete'|'failed';availableAt:number|null;error:string|null}|null=null;\n constructor(private readonly now:()=>number=Date.now){}\n prepare(proof:NativeQualificationProof,pin:(proof:NativeQualificationProof)=>Promise<void>){\n  if(this.task?.proof.proofId===proof.proofId)return this.task.state==='complete'&&this.task.availableAt!==null&&this.task.availableAt<=this.now()&&this.now()<=proof.deadlineAt;\n  if(this.task?.state==='pending')return false;\n  const task={proof:{...proof},state:'pending' as 'pending'|'complete'|'failed',availableAt:null as number|null,error:null as string|null};this.task=task;\n  void Promise.resolve().then(()=>pin(proof)).then(()=>{task.state='complete';task.availableA"... 78951 more characters,
+    expected: /monitoringAvailable:riskCapacity\(at,false\)/,
+    operator: 'match',
+    diff: 'simple'
+  }

@@ -50,6 +50,11 @@ export type ExecutionQuote = {
   refundedDepositLamports?: string; refundEvidence?: string;
 };
 export type OrderOutcome = { status: 'filled' | 'failed' | 'expired'; reason: string; at: number };
+export type InternalShutdownRecoveryProof={verified:true;accountId:string;inceptionAt:number;stateRevision:number;lastSuccessfulResumeRevision:number;stops:Array<{revision:number;actionId:string;at:number}>;proofSha256:string}|{verified:false;reason:string};
+/** Provenance only. Neither this bounded read nor its digest grants permission
+ * to enter, changes a stop, or substitutes for fresh financial/market evidence. */
+const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v1',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
+const INTERNAL_SHUTDOWN_SOFT_PAUSES=new Set(['graceful native PAPER segment ended; exposure retained','native PAPER process closing; obligations retained','native PAPER routine checkpoint: fresh audited readiness required','execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained']);
 const L = 1_000_000_000n;
 const INITIAL = 1_000_000_000n; // $1,000 in microUSD
 const MAX_PRICE_AGE = 10_000;
@@ -499,6 +504,74 @@ export class PaperLedger {
     if (!id || id.length > 160) throw new Error('bounded action identity required');
     const row = this.db.prepare('SELECT result FROM actions WHERE id=?').get(id) as { result: string } | undefined;
     return row ? JSON.parse(row.result) : undefined;
+  }
+  /** Inspect ordered control intentions, not the latest N general journal rows:
+   * cash reconciliation can run every second without hiding an owner stop or
+   * making a failed resume look like an accepted recovery boundary. */
+  internalShutdownRecoveryProof(knownRunIds:readonly string[],at:number):InternalShutdownRecoveryProof {
+    const no=(reason:string):InternalShutdownRecoveryProof=>({verified:false,reason});
+    try{
+      const s=this.state();this.assertState(s);
+      if(!Number.isSafeInteger(at)||at<s.lastAt)return no('INTERNAL_SHUTDOWN_PROOF_TIME');
+      if(!s.controls.stopRequested||s.controls.entriesEnabled)return no('INTERNAL_SHUTDOWN_NOT_REQUESTED');
+      const p=INTERNAL_SHUTDOWN_PROOF_POLICY;
+      if(!Array.isArray(knownRunIds)||knownRunIds.length<1||knownRunIds.length>p.maximumRuns||new Set(knownRunIds).size!==knownRunIds.length)return no('INTERNAL_SHUTDOWN_RUN_SET');
+      const runs=new Map<string,number>();
+      for(const id of knownRunIds){
+        if(typeof id!=='string'||!/^native-paper-\d{17}$/.test(id))return no('INTERNAL_SHUTDOWN_RUN_SET');
+        const n=id.slice(13),started=Date.UTC(Number(n.slice(0,4)),Number(n.slice(4,6))-1,Number(n.slice(6,8)),Number(n.slice(8,10)),Number(n.slice(10,12)),Number(n.slice(12,14)),Number(n.slice(14,17)));
+        if(!Number.isSafeInteger(started)||started<s.inceptionAt||started>at||new Date(started).toISOString().replace(/[^0-9]/g,'')!==n)return no('INTERNAL_SHUTDOWN_RUN_TIME');runs.set(id,started);
+      }
+      type Row={revision:number;actionId:string;at:number;kind:string;detail:string;payloadHash:string|null;result:string|null};
+      const select="SELECT j.revision,CASE WHEN length(j.action_id)<=160 THEN j.action_id END actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,CASE WHEN length(a.payload_hash)=64 THEN a.payload_hash END payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
+      // json_valid is explicit: malformed later resume results are not silently
+      // treated as an enabled anchor; ordered validation below rejects them.
+      const anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get() as Row|undefined;
+      const inception=this.db.prepare('SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0').get() as {actionId:string;at:number;kind:string;detail:string}|undefined;
+      if(!inception||inception.actionId!=='inception'||inception.at!==s.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string')return no('INTERNAL_SHUTDOWN_INCEPTION');
+      const inceptionPayload=JSON.parse(inception.detail);
+      if(!isDeepStrictEqual(inceptionPayload,{price:s.inceptionPrice,gasReserve:s.gasReserve,mode:s.mode}))return no('INTERNAL_SHUTDOWN_INCEPTION');
+      const boundary=anchor?.revision??0;
+      if(!Number.isSafeInteger(boundary)||boundary<0||boundary>s.revision)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
+      const size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary) as {count:number;bytes:number};
+      if(size.count>p.maximumControlIntents||size.bytes>p.maximumControlBytes)return no('INTERNAL_SHUTDOWN_HISTORY_BOUND');
+      const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision ASC LIMIT ?").all(boundary,p.maximumControlIntents+1) as Row[];
+      if(rows.length!==size.count||rows.length>p.maximumControlIntents)return no('INTERNAL_SHUTDOWN_HISTORY_BOUND');
+      const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
+      const read=(r:Row)=>{
+        if(!Number.isSafeInteger(r.revision)||r.revision<1||r.revision>s.revision||!Number.isSafeInteger(r.at)||r.at<s.inceptionAt||r.at>s.lastAt||!boundedText(r.actionId,160)||typeof r.detail!=='string'||Buffer.byteLength(r.detail)>65536||typeof r.result!=='string'||Buffer.byteLength(r.result)>65536||typeof r.payloadHash!=='string'||!/^[a-f0-9]{64}$/.test(r.payloadHash))throw Error('malformed');
+        const payload=JSON.parse(r.detail),result=JSON.parse(r.result);if(!object(payload)||payload.now!==r.at||!object(result)||r.payloadHash!==digest({kind:r.kind,payload}))throw Error('malformed');return {payload,result};
+      };
+      const resume=(r:Row,expectedEnabled:boolean)=>{
+        const {payload,result}=read(r),q=payload.readiness;
+        if(r.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!object(payload.price)||!object(payload.marks)||!object(q)||Object.keys(q).sort().join(',')!=='budgetAvailable,candidateWindowsReady,evidence,marketAt,recoveryComplete,version'||!boundedText(q.version,128)||!boundedText(q.evidence)||!Number.isSafeInteger(q.marketAt)||q.marketAt>r.at||r.at-q.marketAt>MAX_QUOTE_AGE||q.recoveryComplete!==true||q.candidateWindowsReady!==true||q.budgetAvailable!==true||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==expectedEnabled||result.reason!==(expectedEnabled?'explicit verified runtime readiness':'fresh reconciliation or next UTC-day loss reset required'))throw Error('malformed');
+        priceAt(payload.price as UsdPrice,r.at);return {payload,result};
+      };
+      if(anchor)resume(anchor,true);
+      let previousAt=anchor?.at??s.inceptionAt,previousRevision=boundary,internalStop=false,lastControl:{at:number;reason:string}|null=null;
+      const stops:Array<{revision:number;actionId:string;at:number}>=[],intents:Array<{revision:number;actionId:string;at:number;kind:string;payloadHash:string|null;resultSha256:string}>=[];
+      for(const r of rows){
+        if(r.revision<=previousRevision||r.at<previousAt)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');previousRevision=r.revision;previousAt=r.at;
+        const {payload,result}=read(r);intents.push({revision:r.revision,actionId:r.actionId,at:r.at,kind:r.kind,payloadHash:r.payloadHash,resultSha256:digest(result)});
+        if(r.kind==='resume'){resume(r,false);continue;}
+        if(r.kind==='safe-stop'){
+          if(Object.keys(payload).join(',')!=='now'||typeof result.safeToExit!=='boolean'||!['management-required','stopped-safe'].includes(result.state)||!Number.isSafeInteger(result.openPositions)||result.openPositions<0||!Number.isSafeInteger(result.uncertainActions)||result.uncertainActions<0||!Array.isArray(result.canceledEntries)||result.canceledEntries.length>3||!result.canceledEntries.every((id:unknown)=>boundedText(id,100))||result.safeToExit!==(result.openPositions===0&&result.uncertainActions===0)||result.state!==(result.safeToExit?'stopped-safe':'management-required'))return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
+          const match=/^native-paper-(?:stop|finally):(native-paper-\d{17})$/.exec(r.actionId),run=match?runs.get(match[1]!):undefined;
+          if(!match||run===undefined||r.at<run)return no('INTERNAL_SHUTDOWN_OWNER_OR_UNKNOWN_STOP');
+          if(stops.length>=p.maximumStops)return no('INTERNAL_SHUTDOWN_STOP_BOUND');stops.push({revision:r.revision,actionId:r.actionId,at:r.at});internalStop=true;lastControl={at:r.at,reason:'safe stop requested'};continue;
+        }
+        if(r.kind!=='pause'||Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
+        const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(r.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(r.actionId),recovery=r.actionId===`execution-recovery:${s.accountId}:${r.revision-1}`;
+        const stamp=ordinary??restored,typed=stamp&&Number(stamp[1])===r.revision-1&&Number.isSafeInteger(Number(stamp[2]))&&Number(stamp[2])>=s.inceptionAt&&Number(stamp[2])<=at;
+        if(payload.reason==='safe stop requested'&&restored&&typed&&internalStop){lastControl={at:r.at,reason:payload.reason};continue;}
+        if(!INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||!(ordinary&&typed||recovery&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return no('INTERNAL_SHUTDOWN_HARD_OR_UNKNOWN_PAUSE');
+        lastControl={at:r.at,reason:payload.reason};
+      }
+      if(!internalStop||!lastControl)return no('INTERNAL_SHUTDOWN_CHAIN_ABSENT');
+      if(s.controls.changedAt!==lastControl.at||s.controls.reason!==lastControl.reason||this.state().revision!==s.revision)return no('INTERNAL_SHUTDOWN_STATE_CHANGED');
+      const identity={accountId:s.accountId,inceptionAt:s.inceptionAt,stateRevision:s.revision,lastSuccessfulResumeRevision:boundary};
+      return {verified:true,...identity,stops,proofSha256:digest({version:p.version,...identity,knownRunIds:[...runs.keys()].sort(),anchor:anchor?{revision:anchor.revision,actionId:anchor.actionId,at:anchor.at,payloadHash:anchor.payloadHash,resultSha256:digest(JSON.parse(anchor.result!))}:null,intents})};
+    }catch{return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');}
   }
   /** Bounded read model; absence means unknown coverage, never assumed free operations. */
   getOperatingCosts(): OperatingCostState {

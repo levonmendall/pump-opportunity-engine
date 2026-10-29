@@ -58,3 +58,7 @@ test('proof preparation states distinguish not-started from pending, completed a
  for(const state of ['pending','complete','failed']){const i=projectOperatingIntelligence({...status(),proofPreparation:{state,deadlineAt:T+100,availableAt:T-1},reporting:{financialProjectionReady:false}});assert.equal(i.admission!.proofPreparationState,state);assert.equal(i.admission!.financialProjectionReady,false);validateOperatingIntelligence(i,iso(T));}
  const i=projectOperatingIntelligence({...status(),proofPreparation:null});assert.equal(i.admission!.proofPreparationState,'not-started');validateOperatingIntelligence(i,iso(T));
 });
+
+test('internal checkpoint proof verdict uses the existing bounded public refusal list without financial IDs or a schema change',()=>{
+ for(const code of ['INTERNAL_SHUTDOWN_OWNER_OR_UNKNOWN_STOP','INTERNAL_SHUTDOWN_HARD_OR_UNKNOWN_PAUSE','INTERNAL_SHUTDOWN_HISTORY_BOUND']){const raw=status()as any;raw.refusals={...raw.refusals,['internal-stop-proof:'+code]:1};const projected=projectOperatingIntelligence(raw);assert.ok(projected.refusals.some(r=>r.reason==='internal-stop-proof:'+code&&r.count===1));validateOperatingIntelligence(projected,iso(T));assert.ok(!JSON.stringify(projected.refusals).includes('native-paper-finally:'));}
+});

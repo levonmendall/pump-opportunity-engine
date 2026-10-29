@@ -1,0 +1,36 @@
+{
+  "kind": "independent-entry-arming-final-ten-file-review-v1",
+  "state": "OFFLINE_APPROVED_EXACT_FROZEN_SOURCE",
+  "reviewedAt": "2026-10-29T19:28:57.271179+00:00",
+  "sourceManifestSha256": "927be670ea7079ce3abcf55da5b7f4a0389bb99fb2d3b2152ed4404280805a2b",
+  "base": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "files": {
+    "src/ledger.ts": "071b83b6a937fd18b17f0a142e981f88948ee16507e9f5845f85c1c351c92b8b",
+    "src/native-candidate-runner.ts": "21b3621853bdce2573974e8bf084fe405e1cf9d70de9c92a12775bffce4f87ef",
+    "src/native-paper.ts": "c7bd8a655e7a61716edaec2f26014d25824e50418082f5beffbec08d970e37ef",
+    "src/run-native-paper.ts": "feae8730e40f5d688abae695d5a844e2bb309f1b8777700a6487c9ee4c334687",
+    "src/trader.ts": "4660376629f38458fc7bd399fb27a60ff9261b38a1501727e26936ccc068aa37",
+    "test/internal-shutdown-provenance.test.ts": "7149007febdf67772bf7fbd5db3525843ab802163bc5592be9c71041b54b3833",
+    "test/native-paper-integration.test.ts": "8bccc3418ed4d23692b10ca6376a767f77ef7126e617a3339a46ad614c7497bf",
+    "test/native-paper-launcher.test.ts": "2023d34428df484569ba1a8024274fb8707028884f93f120c6ab4bc060489c46",
+    "test/native-paper-readiness.test.ts": "bb8cf97eea8c49048a0d2abd184037129a0311cb768afaec3d9a46810cf61553",
+    "test/operating-intelligence.test.ts": "41f50a05cad18bbb8b8862baca3a0459ff3a6c34d1263e82a6abd368e73837a0"
+  },
+  "priorNineCoreReviewSha256": "659e92b7bd2695f12b7600a9e8918d6fc5363212722fc31634d4220e307b3766",
+  "deltaTests": {
+    "passed": 35,
+    "failed": 0,
+    "command": "node --import tsx --test test/native-paper-integration.test.ts test/operating-intelligence.test.ts",
+    "rawFile": "evidence/entry-arming-recovery-20261029/independent-review/final-ten-file-focused-tests.txt",
+    "rawSha256": "76a9e9e90f7336882d75ae470a4809d64739376c910609a2c49d384720aceb3f"
+  },
+  "deltaFindings": [
+    "Public denial counters contain only closed static INTERNAL_SHUTDOWN codes, deduplicated on actual verdict change; success and not-evaluated produce no failure row.",
+    "Full anchor/count/revision verdict stays private; no financial action IDs, arbitrary text, source provenance or account history is exposed by these refusal rows.",
+    "Current negative known-run test uses a legitimate account-era run identity and reaches OWNER_OR_UNKNOWN_STOP rather than an unrelated fixture-time refusal.",
+    "Existing bounded original public refusal schema accepts intended negative rows without a new channel or schema.",
+    "Previously approved stop-provenance, weak-audit arming, routine shutdown, freshness, risk and order controls are unchanged."
+  ],
+  "blockingFindings": [],
+  "runtimeLimit": "No EC2 deployment or private financial access by reviewer; genuine current f96 live PAPER trade predates and is independent of this undeployed v2 source."
+}

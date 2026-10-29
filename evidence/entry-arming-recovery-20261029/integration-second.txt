@@ -1,0 +1,38 @@
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (456.615883ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (23.972031ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (59.538646ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (17.338968ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (34.859591ms)
+✖ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (29.16104ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (26.306425ms)
+  ✔ unknown-stop:CONTROLLED (24.232788ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (51.094747ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (25.804861ms)
+✔ routine checkpoint preserves a buy with uncertain commit and pending exits, without an invented financial outcome (33.272781ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (38.723029ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (49.826626ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (40.093813ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (47.978332ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (28.674884ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1917.285078
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:20438
+✖ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (29.16104ms)
+  RangeError: Invalid time value
+      at Date.toISOString (<anonymous>)
+      at iso (/workspace/poe-entry-arming-repair/src/pilot-reporting.ts:18:37)
+      at buildPilotPortfolio (/workspace/poe-entry-arming-repair/src/pilot-reporting.ts:84:191)
+      at TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-integration.test.ts:84:334)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

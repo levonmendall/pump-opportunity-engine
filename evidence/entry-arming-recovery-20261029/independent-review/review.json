@@ -1,0 +1,42 @@
+{
+  "kind": "independent-entry-arming-safety-review-v1",
+  "state": "OFFLINE_VERIFIED_FOR_FROZEN_PACKAGE",
+  "reviewedAt": "2026-10-29T19:12:35.854776+00:00",
+  "base": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "sourceManifestSha256": "ad206f6c001558e01aee4d91b2293afdf99cf56aa94d6b9671b729ebed53a736",
+  "files": {
+    "src/ledger.ts": "071b83b6a937fd18b17f0a142e981f88948ee16507e9f5845f85c1c351c92b8b",
+    "src/native-candidate-runner.ts": "21b3621853bdce2573974e8bf084fe405e1cf9d70de9c92a12775bffce4f87ef",
+    "src/native-paper.ts": "a4b1d28ef77607f33f2ea10cf15e8e68f93067ee21a5838f9d85ab31bbce1669",
+    "src/run-native-paper.ts": "3bf1366a30ec6f73a641ab45938cd4a013ef18b729684453085b15e02ba866c5",
+    "src/trader.ts": "4660376629f38458fc7bd399fb27a60ff9261b38a1501727e26936ccc068aa37",
+    "test/internal-shutdown-provenance.test.ts": "7149007febdf67772bf7fbd5db3525843ab802163bc5592be9c71041b54b3833",
+    "test/native-paper-integration.test.ts": "1ab60d105b6d8b398c2f69646087325f852a01765d1a903be1278cd8d7918230",
+    "test/native-paper-launcher.test.ts": "2023d34428df484569ba1a8024274fb8707028884f93f120c6ab4bc060489c46",
+    "test/native-paper-readiness.test.ts": "bb8cf97eea8c49048a0d2abd184037129a0311cb768afaec3d9a46810cf61553"
+  },
+  "focusedTests": {
+    "command": "node --import tsx --test test/internal-shutdown-provenance.test.ts test/native-paper-readiness.test.ts test/native-paper-integration.test.ts test/native-paper-launcher.test.ts",
+    "passed": 62,
+    "failed": 0,
+    "exitCode": 0,
+    "rawSha256": "0658dc8881f257ee6bf90f9c9b0df73ea528f07dd67f88b7f52c6b3cc2100d67",
+    "rawFile": "evidence/entry-arming-recovery-20261029/independent-review/focused-tests.txt"
+  },
+  "reviewFindings": [
+    "Routine checkpoints no longer create owner safe-stop intent; existing owner/stop/hard/uncertain obligations remain preserved.",
+    "Legacy proof reads all ordered relevant controls after last successful resume or validated inception; failed resumes do not create a boundary; owner/unknown/hard/truncated/malformed histories fail closed.",
+    "Current actual account/revision and original audited cutoff are rechecked before permission resume; SQL time cannot become fake source freshness.",
+    "Weak audited evidence callback follows mandatory assessment recording and precedes candidate retirement; it cannot qualify or quote or reserve an entry.",
+    "General permission no longer depends on a current candidate certificate, ordinary physical-slot occupancy, or current one-position capacity. Actual candidate risk/proof/SDK/execution guards are unchanged.",
+    "Known unattempted buys may cancel at routine checkpoint; uncertain buys and exits/held protection remain owned.",
+    "Fresh financial reconciliation<=2s, original USD<=10s, actual entry quote guards, strategy and one-position/four-slot settings remain intact."
+  ],
+  "remainingClaims": [
+    "No deployment or private account access by independent reviewer.",
+    "Full-suite/build status must come from final repository run.",
+    "Live arming and automatic recovery remain unverified until corrected source runs on original service.",
+    "One-time legacy SQL scan must be measured at retained size; steady 1Hz maintenance does not invoke it after recovery."
+  ],
+  "blockingFindings": []
+}
