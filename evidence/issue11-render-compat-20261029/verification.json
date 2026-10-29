@@ -1,0 +1,96 @@
+{
+  "checkedAt": "2026-10-29T01:20:15.764789+00:00",
+  "classification": "OFFLINE_COMPATIBILITY_RECEIVER_PREPARATION_NOT_DEPLOYED",
+  "sourceCommit": "8e12e393a2077d8dc333feab33057d33310ad26e",
+  "baseMain": "c41c82bce9e63470e055997d96303205f369f8b3",
+  "trackedWorkingTree": "",
+  "node": "v24.19.0",
+  "commands": [
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "tests": 228,
+      "pass": 228,
+      "fail": 0
+    },
+    {
+      "command": "node --import tsx --test test/operating-intelligence.test.ts test/reporting.test.ts test/dashboard-holographic.test.ts test/dashboard-pilot-portfolio.test.ts",
+      "exitCode": 0,
+      "tests": 44,
+      "pass": 44,
+      "fail": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:pilot-reporting",
+      "exitCode": 0,
+      "tests": 36,
+      "pass": 36,
+      "fail": 0,
+      "includesCompile": true
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "src/reporting.ts",
+      "sha256": "75e348bb91c34c043fb4deab377a3a070b97cc3131f62c4bc207cb725e198f90"
+    },
+    {
+      "file": "src/operating-intelligence.ts",
+      "sha256": "357a0f9e1906a1f013158cc2f727101e490fbe140c54ee17b5d3c915257c737c"
+    },
+    {
+      "file": "test/operating-intelligence.test.ts",
+      "sha256": "d1fbea0bdcd102569113ea3e178ee353d0fa42fd8d7b4a0915fa997516d78b08"
+    }
+  ],
+  "unchangedFromActualMain": [
+    "src/dashboard.ts",
+    "src/dashboard-holographic.ts",
+    "src/dashboard-connectivity.ts",
+    "src/dashboard-connections.ts",
+    "src/pilot-telemetry.ts",
+    "src/pilot-portfolio-ui.ts",
+    "scripts/publish-pilot-status.mjs",
+    "package.json"
+  ],
+  "logs": [
+    {
+      "file": "full-tests.txt",
+      "bytes": 25298,
+      "sha256": "e84cb0c9729ae815fdac5b208f0d2124eaacb2e1e5c2ba2e384468d168992c76"
+    },
+    {
+      "file": "focused-tests.txt",
+      "bytes": 5008,
+      "sha256": "3a7566a5e7b300bce3a504cdeca56f6ff37d0c76031c25004aa1435c69d8f7a8"
+    },
+    {
+      "file": "build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "transition-reporting-tests.txt",
+      "bytes": 3655,
+      "sha256": "6fb77ea0c14df32fb9673a3a20bcb48bb0835c9e5321d278dffb4b0db2dd6c4d"
+    }
+  ],
+  "sourceReviewPatch": {
+    "file": "source-review.patch",
+    "bytes": 31316,
+    "sha256": "5bc5bdebc808126002fbff7925ec3bcb0170abfc53941610370ec94525d21213"
+  },
+  "operatingAccountOpened": false,
+  "productionLedgerRead": false,
+  "testFixturesOnly": true,
+  "marketDataRequests": 0,
+  "mainPushed": false,
+  "renderDeployed": false,
+  "environmentChanged": false,
+  "credentialChanged": false,
+  "experimentalChannelRetired": false
+}
