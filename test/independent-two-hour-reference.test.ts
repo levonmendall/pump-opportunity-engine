@@ -7,7 +7,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PublicKey} from '@solana/web3.js';
 import {canonicalPumpPoolPda} from '../src/sdk.js';
-import {REFERENCE_LIMITS,REFERENCE_SCHEDULE,normalizeReferencePool,selectReferenceCohort,validateReferenceOhlcv,referenceOutcome,priorReferenceUsage,runIndependentReference} from '../scripts/capture-independent-two-hour-reference.js';
+import {REFERENCE_LIMITS,REFERENCE_SCHEDULE,normalizeReferencePool,selectReferenceCohort,validateReferenceOhlcv,validateReferenceOhlcvInterval,referenceOutcome,priorReferenceUsage,runIndependentReference} from '../scripts/capture-independent-two-hour-reference.js';
 const T=Date.parse('2026-10-28T05:00:00.000Z'),SOL='So11111111111111111111111111111111111111112',MIB=1024*1024;
 const fixtureRoot='evidence/opportunity-coverage-20261027/reference-raw';
 const fixtureJson=(name:string)=>JSON.parse(readFileSync(join(fixtureRoot,name),'utf8'));
@@ -114,4 +114,22 @@ test('post-invocation checkpoint failure aborts but does not release a pending p
  const f=runFixture(t);let release!:(response:Response)=>void,finished=false,physicalSettled=false,signal:AbortSignal|undefined,failure:unknown;
  const pending=runIndependentReference({directory:f.directory,segment:f.segment,priorReceiptPath:f.priorReceiptPath,sourceEndPath:f.sourceEndPath},{...f.deps,fetcher:(async(_url,init)=>{signal=init?.signal??undefined;writeFileSync(f.sourceEndPath,'INVALID_OFFLINE_SOURCE_END_JSON',{mode:0o600});try{return await new Promise<Response>(resolve=>{release=resolve;});}finally{physicalSettled=true;}})as typeof fetch}).then(()=>{finished=true;},error=>{finished=true;failure=error;});
  await new Promise<void>(resolve=>setImmediate(resolve));const returnedBeforeSettlement=finished,abortedBeforeSettlement=signal?.aborted;release(new Response('{}'));await pending;assert.equal(returnedBeforeSettlement,false);assert.equal(abortedBeforeSettlement,true);assert.equal(physicalSettled,true);assert.ok(failure instanceof Error,'invalid attestation/final checkpoint remains a truthful run failure');const durable=JSON.parse(readFileSync(join(f.directory,'receipt.json'),'utf8'));assert.equal(durable.completedAt,null);assert.equal(durable.requests[0].settled,false);assert.equal(durable.requests[0].invoked,false,'the prior durable checkpoint preserves uncertainty rather than claiming an unrecorded start did not happen');assert.equal(durable.usage.uncertainInvocationReservations,1);assert.equal(durable.usage.uncertainBodyBytes,REFERENCE_LIMITS.listingResponseBytes);assert.notEqual(durable.physicalTransportsSettled,true);assert.equal(durable.stopReason,'running','a final checkpoint failure is not fabricated into a graceful completed receipt');
+});
+
+
+test('frozen outcome interval excludes unrelated duplicate history but retains strict relevant evidence',()=>{
+ const mint='OFFLINE interval token',bar=(at:number)=>[at,1,2,1,2,5],sec=T/1000;
+ const raw={meta:{base:{address:mint},quote:{address:SOL}},data:{attributes:{ohlcv_list:[bar(sec-600),bar(sec-600),bar(sec),bar(sec+60),bar(sec+120)]}}};
+ assert.throws(()=>validateReferenceOhlcv(raw,mint),/OHLC_BAR/);
+ const v=validateReferenceOhlcvInterval(raw,mint,T,T+120000);assert.deepEqual(v.bars,[bar(sec),bar(sec+60)]);assert.equal(v.scope.excludedRowCount,3);assert.deepEqual(v.scope.excludedDuplicateTimestamps,[sec-600]);
+ const partial=validateReferenceOhlcvInterval(raw,mint,T+1,T+119999);assert.deepEqual(partial.bars,[]);
+ for(const kind of ['duplicate','bad-price','unknown-time','identity'] as const){const bad=structuredClone(raw);if(kind==='duplicate')bad.data.attributes.ohlcv_list.push(bar(sec));if(kind==='bad-price')bad.data.attributes.ohlcv_list[2]![1]=-1;if(kind==='unknown-time')bad.data.attributes.ohlcv_list[0]![0]=NaN;if(kind==='identity')bad.meta.base.address='wrong';assert.throws(()=>validateReferenceOhlcvInterval(bad,mint,T,T+120000),/OHLC_BAR|OHLC_IDENTITY/);}
+});
+
+test('irrelevant duplicate history does not abort other frozen cohort outcomes, but relevant duplicates do',async t=>{
+ for(const relevantDuplicate of [false,true]){
+  const f=runFixture(t,{response:url=>{if(!url.pathname.endsWith('/ohlcv/minute'))return;const s=T/1000,old=[s-600,1,2,1,2,5],good=[s+3900,1,2,1,2,5];return new Response(JSON.stringify({meta:{base:{address:url.searchParams.get('token')},quote:{address:SOL}},data:{attributes:{ohlcv_list:relevantDuplicate?[old,good,good]:[old,old,good]}}}));}}),r=await f.run();
+  if(relevantDuplicate){assert.equal(r.stopReason,'OHLC_BAR');assert.equal(r.outcomes.length,0);assert.equal(r.requests.filter((x:any)=>x.purpose.startsWith('frozen-outcome-')).length,1);}
+  else{assert.equal(r.outcomes.length,16);assert.equal(r.requests.length,28);assert.ok(r.outcomes.every((x:any)=>x.scope.excludedRowCount===2&&x.scope.excludedDuplicateTimestamps.length===1));assert.match(r.stopReason,/all planned bounded requests completed/);}
+ }
 });
