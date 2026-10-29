@@ -1,8 +1,10 @@
 import { createHash } from 'node:crypto';
+import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
 
 export const MAX_SNAPSHOT_BYTES = 128 * 1024;
 export type ReportingIdentity = { accountId: string; inceptionAt: string; release: string; strategy: string };
 export type Snapshot = {
+  intelligence?: OperatingIntelligence;
   project: 'pump-opportunity-engine'; mode: 'PAPER'; liveTrading: false; schemaVersion: 1;
   account: { id: string; inceptionAt: string; initialUsd: 1000 };
   sequence: string; source: { release: string; strategy: string };
@@ -58,7 +60,8 @@ export function validateIdentity(identity: ReportingIdentity) {
 /** Full snapshots only; unknown fields are rejected so secrets cannot ride through exports. */
 export function validateSnapshot(value: unknown, expected: ReportingIdentity, now = Date.now()): Snapshot {
   validateIdentity(expected);
-  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics']);
+  const hasIntelligence=!!value&&typeof value==='object'&&Object.hasOwn(value,'intelligence');
+  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics',...(hasIntelligence?['intelligence']:[])]);
   oneOf(s.project, ['pump-opportunity-engine']); oneOf(s.mode, ['PAPER']); oneOf(s.liveTrading, [false]); oneOf(s.schemaVersion, [1]);
   const a = object(s.account, ['id','inceptionAt','initialUsd']);
   if (a.id !== expected.accountId || a.inceptionAt !== expected.inceptionAt || a.initialUsd !== 1000) throw new Error('wrong account/inception');
@@ -102,6 +105,7 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   for (const key of ['processingLagMs','eventLoopLagMs','projectedDailyDataSol','budgetRemainingSol']) nullable(m[key], v => number(v, true));
   for (const key of ['providerEvents','rpcRequests']) if (!Number.isSafeInteger(m[key]) || (m[key] as number) < 0) throw new Error('nonnegative usage counter required');
   oneOf(m.budgetStatus, ['available','degraded','unavailable']); text(m.coverage, 512); text(m.latency, 256);
+  if(hasIntelligence){if(expected.accountId!==ORIGINAL_POE_ACCOUNT||expected.inceptionAt!==ORIGINAL_POE_INCEPTION)throw Error('operating intelligence requires original account');const intelligence=validateOperatingIntelligence(s.intelligence,ts.generatedAt as string);if(intelligence.run.strategyVersion!==source.strategy)throw Error('operating strategy/source mismatch');const atoms=(v:string)=>{const [whole,part='']=v.split('.');return BigInt(whole!)*1000000000n+BigInt(part.padEnd(9,'0'));};if(intelligence.pendingOrders.reduce((n,o)=>n+atoms(o.reservedSol),0n)!==atoms(b.reservedSol as string))throw Error('operating reservation mismatch');if((s.positions as unknown[]).length>0&&intelligence.protection.state==='flat')throw Error('operating ownership mismatch');}
   if (Buffer.byteLength(JSON.stringify(s)) > MAX_SNAPSHOT_BYTES) throw new Error('snapshot payload limit');
   return s as Snapshot;
 }
@@ -111,6 +115,8 @@ function canonical(value: unknown): string {
   return JSON.stringify(value);
 }
 const hash = (s: Snapshot) => createHash('sha256').update(canonical(s)).digest('hex');
+export const snapshotFingerprint=hash;
+export type SnapshotAcknowledgement={published:true;result:'accepted'|'duplicate';accountId:string;inceptionAt:string;release:string;sequence:string;sourceAtMs:number;fingerprint:string;acknowledgedAtMs:number;rawSourceSha256?:string};
 
 export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
@@ -147,7 +153,7 @@ export class SnapshotCache {
 
 /** Latest-slot publisher. It receives projections only; it has no financial or market access. */
 export class SnapshotPublisher {
-  private latest: { snapshot: Snapshot; body: string; fingerprint: string } | null = null;
+  private latest: { snapshot: Snapshot; body: string; fingerprint: string; rawSourceSha256?:string } | null = null;
   private highest: { sequence: bigint; fingerprint: string } | null = null;
   private timer: ReturnType<typeof setTimeout> | undefined;
   private active: AbortController | undefined;
@@ -157,19 +163,22 @@ export class SnapshotPublisher {
   constructor(private readonly options: {
     url: string; secret: string; identity: ReportingIdentity; intervalMs?: number; timeoutMs?: number;
     maxBackoffMs?: number; fetch?: typeof fetch;
+    onAcknowledgement?:(ack:SnapshotAcknowledgement)=>void;
   }) {
     const u = new URL(options.url);
     if (u.protocol !== 'https:' || u.username || u.password || u.search || u.hash || options.secret.length < 24) throw new Error('HTTPS endpoint and dedicated ingestion secret required');
     validateIdentity(options.identity);
     for (const n of [options.intervalMs ?? 30_000, options.timeoutMs ?? 3000, options.maxBackoffMs ?? 300_000]) if (!Number.isSafeInteger(n) || n < 10 || n > 300_000) throw new Error('bounded publisher timing required');
   }
-  offer(value: Snapshot) {
+  offer(value: Snapshot, rawSourceSha256?:string) {
+    if(rawSourceSha256!==undefined&&!/^[a-f0-9]{64}$/.test(rawSourceSha256))throw Error('publisher source hash');
     const snapshot = validateSnapshot(value, this.options.identity); const fingerprint = hash(snapshot); const sequence = BigInt(snapshot.sequence);
     if (this.highest && (sequence < this.highest.sequence || sequence === this.highest.sequence && fingerprint !== this.highest.fingerprint)) throw new Error('publisher sequence regression/conflict');
     this.highest = { sequence, fingerprint };
-    this.latest = { snapshot: structuredClone(snapshot), body: JSON.stringify(snapshot), fingerprint };
+    this.latest = { snapshot: structuredClone(snapshot), body: JSON.stringify(snapshot), fingerprint, ...(rawSourceSha256===undefined?{}:{rawSourceSha256}) };
   }
   queuedSequence() { return this.latest?.snapshot.sequence ?? null; }
+  async publishOnce(){if(this.running||this.inflight||this.active)throw Error('publisher already active');this.inflight=this.publish();try{await this.inflight;}finally{this.inflight=undefined;}return {...this.metrics};}
   start() { if (!this.running) { this.running = true; this.schedule(0); } }
   private schedule(delay: number) {
     if (this.running) this.timer = setTimeout(() => { this.inflight = this.publish(); }, delay);
@@ -184,9 +193,15 @@ export class SnapshotPublisher {
         method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${this.options.secret}` },
         body: current.body, signal: this.active.signal, redirect: 'error',
       });
-      // Bound response consumption: no dependency on remote text/log content.
-      await response.body?.cancel();
-      if (!response.ok) throw new Error(`http_${response.status}`);
+      if (!response.ok) {await response.body?.cancel();throw new Error(`http_${response.status}`);}
+      if(this.options.onAcknowledgement){
+        if(response.headers.get('content-type')?.split(';')[0]!=='application/json'||!response.body)throw Error('invalid_acknowledgement');
+        const reader=response.body.getReader();let size=0;const chunks:Uint8Array[]=[];
+        try{for(;;){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>2048){await reader.cancel();throw Error('invalid_acknowledgement');}chunks.push(part.value);}}finally{reader.releaseLock();}
+        const ack=JSON.parse(Buffer.concat(chunks).toString('utf8')) as {result?:unknown};
+        if(!ack||typeof ack!=='object'||Array.isArray(ack)||Object.keys(ack).join('|')!=='result'||!['accepted','duplicate'].includes(ack.result as string))throw Error('invalid_acknowledgement');
+        this.options.onAcknowledgement({published:true,result:ack.result as 'accepted'|'duplicate',accountId:current.snapshot.account.id,inceptionAt:current.snapshot.account.inceptionAt,release:current.snapshot.source.release,sequence:current.snapshot.sequence,sourceAtMs:Date.parse(current.snapshot.times.generatedAt),fingerprint:current.fingerprint,acknowledgedAtMs:Date.now(),...(current.rawSourceSha256===undefined?{}:{rawSourceSha256:current.rawSourceSha256})});
+      }else await response.body?.cancel();
       this.metrics.successes++; this.metrics.consecutiveFailures = 0; this.metrics.lastSuccessAt = new Date().toISOString(); this.metrics.lastError = null;
       if (this.latest?.fingerprint === current.fingerprint) this.latest = null;
     } catch (e) {

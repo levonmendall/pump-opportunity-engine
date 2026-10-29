@@ -1,3 +1,5 @@
+> RETIRED by issue #11. Historical design only; do not configure or start this separate channel. The original account and `/api/snapshot` are the sole operating target. See [REPORTING.md](REPORTING.md).
+
 # Separate pilot diagnostics
 
 Reporting-only repair of the existing Render dashboard. The EC2 portfolio keeps

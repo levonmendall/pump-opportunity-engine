@@ -4,7 +4,6 @@ import {readFileSync} from 'node:fs';
 import {once} from 'node:events';
 import type {AddressInfo} from 'node:net';
 import {holographicDashboard,HOLOGRAPHIC_VERSION} from '../src/dashboard-holographic.js';
-import {withConnectionDiagnostics} from '../src/dashboard-connectivity.js';
 import {createDashboard} from '../src/dashboard.js';
 
 const source=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8');
@@ -13,7 +12,7 @@ const start=source.indexOf(marker)+marker.length;
 const end=source.indexOf('`;\n',start);
 assert.ok(start>=marker.length && end>start,'actual dashboard template must exist');
 const original=source.slice(start,end);
-const full=()=>withConnectionDiagnostics(original);
+const full=()=>holographicDashboard(original);
 const ids=(s:string)=>Array.from(s.matchAll(/\bid="([^"]+)"/g),m=>m[1]!);
 const scripts=(s:string)=>Array.from(s.matchAll(/<script>([\s\S]*?)<\/script>/g),m=>m[1]!);
 
@@ -45,18 +44,11 @@ test('hero has one ornamental orbital illustration and no false performance data
  assert.ok(!rendered.includes('NaN'));
 });
 
-test('original account panels remain, experimental sections are absent and the P&L chart stays visible',()=>{
- const rendered=full(),elements=ids(rendered);
- for(const id of ['reportingConnections','refreshNow','portfolio','performance','chart','funnel','metrics','decisions'])assert.equal(elements.filter(x=>x===id).length,1,id);
- for(const id of ['pilot-telemetry-panel','experimental-portfolio','pilot-link-state','pilot-funnel','pilot-decisions'])assert.ok(!elements.includes(id),'remove '+id);
- assert.ok(!rendered.includes("panelFold('#performance'"),'chart must not be collapsed');
- assert.ok(rendered.indexOf('id="overview"')<rendered.indexOf('id="portfolio"'));
- assert.ok(rendered.indexOf('id="portfolio"')<rendered.indexOf('id="performance"'));
- assert.ok(rendered.indexOf('id="performance"')<rendered.indexOf('id="activity"'));
- assert.ok(rendered.indexOf('id="activity"')<rendered.indexOf('id="system"'));
- assert.ok(rendered.indexOf('id="system"')<rendered.indexOf('id="decisions"'));
- assert.match(rendered,/SYSTEM STATUS &amp; REPORTING/);
- assert.match(rendered,/Candidate progression &amp; decisions/);
+test('one authoritative portfolio and existing diagnostic sections remain visible',()=>{
+ const rendered=full();for(const id of ['portfolio','positions','trades','orders','metrics','decisions','refreshNow'])assert.equal(ids(rendered).filter(x=>x===id).length,1,id);
+ assert.doesNotMatch(rendered,/experimental-portfolio|pilot-telemetry-panel|Pilot intelligence/);
+ assert.ok(rendered.indexOf('id="portfolio"')<rendered.indexOf('id="performance"'));assert.ok(rendered.indexOf('id="performance"')<rendered.indexOf('id="activity"'));assert.match(rendered,/SYSTEM STATUS &amp; REPORTING/);assert.match(rendered,/Candidate progression &amp; decisions/);
+ assert.doesNotMatch(rendered,/panelFold\('#performance'/,'preserve the live main change keeping P&L trajectory always visible');assert.match(rendered,/'#performance','P&L trajectory'/);assert.match(rendered,/byId\('refreshNow'\)\.addEventListener/);
 });
 
 test('visual layer adds no new client script, external dependency or request',()=>{
@@ -82,15 +74,12 @@ test('actual public HTTP viewer contains the new UI and keeps machine publishing
  const url='http://127.0.0.1:'+(app.server.address() as AddressInfo).port;
  const response=await fetch(url+'/');assert.equal(response.status,200);const html=await response.text();
  assert.match(html,/id="poe-holographic-style"/);
- assert.doesNotMatch(html,/id="pilot-telemetry-panel"/);
- assert.doesNotMatch(html,/id="experimental-portfolio"/);
- assert.match(html,/id="performance"/);
+ assert.match(html,/id="portfolio"/);assert.doesNotMatch(html,/experimental-portfolio|pilot-telemetry-panel/);
  assert.match(response.headers.get('content-security-policy')??'',/connect-src 'self'/);
  assert.equal(response.headers.get('cache-control'),'no-store');
  assert.equal(response.headers.get('www-authenticate'),null);
  assert.equal((await fetch(url+'/api/snapshot',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})).status,401);
  assert.equal((await fetch(url+'/api/snapshot')).status,503);
  assert.equal((await fetch(url+'/healthz')).status,200);
- const connections=await fetch(url+'/api/connections').then(r=>r.json()) as {source:unknown};
- assert.equal(connections.source,null);
+ assert.equal((await fetch(url+'/api/connections')).status,404);assert.equal((await fetch(url+'/api/pilot')).status,410);
 });
