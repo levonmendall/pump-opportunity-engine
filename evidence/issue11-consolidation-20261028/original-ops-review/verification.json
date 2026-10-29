@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "kind": "POE_ORIGINAL_OPS_OFFLINE_VERIFICATION",
+  "sourceCommit": "de049889bc92a03b09380e1aedeeb7e0f0da9c88",
+  "verifiedAt": "2026-10-29T00:06:37.407476+00:00",
+  "tests": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-authoritative-service.py"
+      ],
+      "exitCode": 0,
+      "outputSha256": "dd8330aaf17a0f57489d2446c06f4f8d2b6c7a8b420d567e29bc1501cbd5328d",
+      "outputBytes": 120
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-cutover-original-service.py"
+      ],
+      "exitCode": 0,
+      "outputSha256": "2d407504d003cfe404f23be48347e686ae1f67393860d4067d9a0bf06b1ddd60",
+      "outputBytes": 109
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-audit-original-account.py"
+      ],
+      "exitCode": 0,
+      "outputSha256": "baf49b59538192f3e136ca0404cac516ecb8dd2fe5ba1416604056f3080fa49c",
+      "outputBytes": 103
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-prepare-original-service-package.py"
+      ],
+      "exitCode": 0,
+      "outputSha256": "35eec749ee91f3e157faa13b048a05a526c176aa0dfd086232e02f998a4706f7",
+      "outputBytes": 98
+    }
+  ],
+  "files": [
+    {
+      "file": "operator/native-paper-ec2/cutover-original-service.py",
+      "sha256": "daa431303119261adae772e5576cb391e4e5d5f1f513b330b1431c76cf480433",
+      "bytes": 24126
+    },
+    {
+      "file": "operator/native-paper-ec2/prepare-original-service-package.py",
+      "sha256": "b3024774a501a05bd6335a66867c52ca95d75c8cbdab93177b039e0020acc9a8",
+      "bytes": 3980
+    },
+    {
+      "file": "operator/native-paper-ec2/run-authoritative-service.py",
+      "sha256": "32b15301429969ad680284f9da9a6954da2f804d095d173f3c3931ec32dfc4b9",
+      "bytes": 32969
+    },
+    {
+      "file": "operator/native-paper-ec2/audit-original-account.py",
+      "sha256": "5cd11e3e9f4c7631515205fd651d5ae21265880c687276f825338dac4be69627",
+      "bytes": 11396
+    },
+    {
+      "file": "operator/native-paper-ec2/poe-runtime-persistent.conf",
+      "sha256": "02086524f05593a85034bf13626f0c2c0a4caac2379cc4ae76cfa92d93d4b682",
+      "bytes": 926
+    },
+    {
+      "file": "operator/native-paper-ec2/fixture-authoritative-marker.json",
+      "sha256": "9005a81f20d30617d9b49c06f73bc187e018fd3954efaa588c78ea6a213b1927",
+      "bytes": 442
+    }
+  ],
+  "originalFinancialLedgerRead": false,
+  "ec2HostMutation": false,
+  "serviceStarted": false,
+  "renderDeployment": false,
+  "existingAccessBlocker": "UID994 administration runner has no POE-specific root start/install permission; only unrelated fixed-purpose helpers. Owner-only root cutover remains necessary.",
+  "runtimeConclusion": "OFFLINE VERIFIED ONLY. Start-request receipt is not actual original-engine, Render, trading or acceptance proof."
+}
