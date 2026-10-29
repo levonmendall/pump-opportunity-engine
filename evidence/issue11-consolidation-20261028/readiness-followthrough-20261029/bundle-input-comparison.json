@@ -1,0 +1,14 @@
+{
+  "oldSource": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "newSource": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+  "changedInputs": [
+    "src/native-paper.ts",
+    "src/run-native-paper.ts",
+    "src/snapshot-publisher.ts",
+    "src/trader.ts"
+  ],
+  "unchangedAllOtherInputs": true,
+  "unchangedStrategyLedgerExecution": true,
+  "nativeNewSha256": "a44243b03673f29061db4030524b326b4f8929ff2a7bf5b057807ec1d0af049d",
+  "reporterNewSha256": "2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa"
+}

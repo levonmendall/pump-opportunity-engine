@@ -1,0 +1,12 @@
+sudo /usr/bin/python3 -B -I -c 'import os,stat,hashlib,sys
+r="/var/lib/poe-cutover/forward-a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5/forward-original-upgrade.py"
+p=r if os.path.lexists(r) else "/var/tmp/poe-original-forward-upgrade/forward-original-upgrade.py"
+f=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+s=os.fstat(f)
+assert stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_uid==(0 if p==r else 994) and stat.S_IMODE(s.st_mode)==0o600 and 0<s.st_size<=131072
+b=os.read(f,s.st_size+1)
+os.close(f)
+h=hashlib.sha256(b).hexdigest()
+assert len(b)==s.st_size and h=="b7363a7e7c95ce653591c6fa055c11051dafb8dc419169e4eede54a88de8e8af"
+sys.argv=[p,"apply","0a98a283f798021cb164048123254046fc560fc32927aabd761c15f93125e44d"]
+exec(compile(b,p,"exec"),{"__name__":"__main__","__file__":p,"__poe_verified_driver_sha256__":h})'
