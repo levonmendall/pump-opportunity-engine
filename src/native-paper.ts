@@ -41,8 +41,8 @@ export class NativePaper {
  opened=(row:{mint:string;at:number})=>{if(!this.pools.has(row.mint))return;this.trader.activateFlow(row.mint,'native actual confirmed subscription ACK',row.at);};
  trade: PilotNativeFlowOptions['onTrade']=row=>{if(!this.pools.has(row.trade.mint))return;this.trader.ingest(row.trade,'curve');this.slot(row.trade.mint,row.trade.slot!);};
  protocol:NonNullable<PilotNativeFlowOptions['onProtocolEffect']>=row=>{if(this.pools.has(row.mint))this.slot(row.mint,row.slot);};
- private slot(mint:string,slot:number){this.options.market.minimumSlot(mint,slot);if(this.trader.candidateFeatures(mint,this.now()))this.trader.noteCandidateSlot(mint,slot);}
- gap=(row:{mint?:string;at:number;reason:string})=>{const mints=row.mint?[row.mint]:[...this.pools.keys()];for(const mint of mints)if(this.trader.candidateFeatures(mint,this.now()))this.trader.candidateGap(mint,row.reason);};
+ private slot(mint:string,slot:number){this.options.market.minimumSlot(mint,slot);if(this.trader.hasCandidate(mint))this.trader.noteCandidateSlot(mint,slot);}
+ gap=(row:{mint?:string;at:number;reason:string})=>{const mints=row.mint?[row.mint]:[...this.pools.keys()];for(const mint of mints)if(this.trader.hasCandidate(mint))this.trader.candidateGap(mint,row.reason);};
  retiredCandidate=(mint:string,reason:string)=>{this.gap({mint,at:this.now(),reason});this.retired.add(mint);};
  ownership=(mint:string):'HELD'|'ENTRY_PENDING'|null=>{const state=this.options.ledger.state();return state.positions[mint]?'HELD':Object.values(state.pending).some(o=>o.mint===mint)?'ENTRY_PENDING':null;};
  ready(mint:string,at=this.now()){

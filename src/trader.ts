@@ -133,6 +133,8 @@ export class PaperTrader{
   }
   activateFlow(mint:string,evidence:string,openedAt?:number){const c=this.candidates.get(mint);if(!c||!validText(evidence))throw new Error('admitted pool and actual subscription evidence required');const now=this.clock(),at=openedAt??now;if(!Number.isSafeInteger(at)||at<0||at>now)throw new Error('actual nonfuture subscription ACK time required');if(at<c.admittedAt)throw new Error('information cannot be observed before it became available');c.window.features(now);if(c.everActivated||c.interrupted){if(openedAt===undefined)c.window.invalidate(at,'feed-gap');else c.window=new FlowWindow(mint,at);}else c.window=new FlowWindow(mint,at);c.everActivated=true;c.active=true;c.informationPending=false;c.evaluatedBucket=-1;this.record('trader-input',{kind:'flow-start',at,mint,evidence});}
   noteCandidateSlot(mint:string,slot:number){const c=this.candidates.get(mint);if(!c||!Number.isSafeInteger(slot)||slot<0)throw Error('admitted candidate and actual slot required');c.knownSlot=Math.max(c.knownSlot??0,slot);}
+  /** Presence checks must not advance the candidate's receive-time window. */
+  hasCandidate(mint:string){return this.candidates.has(mint);}
   candidateFeatures(mint:string,at=this.clock()){const c=this.candidates.get(mint);return c?c.window.features(at):null;}
   setCandidateInformationPending(mint:string,pending:boolean){const c=this.candidates.get(mint);if(!c||typeof pending!=='boolean')throw Error('admitted candidate and explicit information state required');c.informationPending=pending;this.record('trader-input',{kind:'candidate-information-pending',at:this.clock(),mint,pending});}
   /** A single incomplete candidate cannot cancel another candidate's entries

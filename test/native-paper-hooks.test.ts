@@ -14,6 +14,7 @@ import {NativeCandidateRunner,type NativeAuditCertificate} from '../src/native-c
 import {decodeMigrationIdentity} from '../src/migration-identity.js';
 import {PUMP_AMM_PROGRAM_ID} from '../src/sdk.js';
 import type {NativeNotification} from '../src/pilot-native-flow.js';
+import {nativePaperCurrentCertificates} from '../src/run-native-paper.js';
 const T=Date.parse('2026-10-27T12:00:00Z'),MINT=bs58.encode(Buffer.alloc(32,41));
 function traderFixture(t:TestContext,inject?:(kind:string,data:any,trader:PaperTrader)=>void){
  const dir=mkdtempSync(join(tmpdir(),'poe-OFFLINE-native-hooks-')),ledger=new PaperLedger(join(dir,'fixture.sqlite'),'poe-pilot-native-hooks-fixture');let at=T,trader:PaperTrader;const rows:Array<{kind:string;data:any}>=[];
@@ -51,6 +52,13 @@ function runnerFixture(){
 
 test('audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement',async()=>{
  const f=runnerFixture();await f.runner.step();assert.deepEqual(f.allocations,[identity.baseMint]);assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);f.warm();for(let i=0;i<4&&!f.certificates.length;i++)await f.runner.step();assert.equal(f.certificates.length,1,JSON.stringify(f.runner.status().counters));const c=f.runner.currentAuditCertificate(identity.baseMint)!;assert.ok(c);assert.equal(c.executedFlowCompletenessVerified,true);c.subscriptionId=999;assert.equal(f.runner.currentAuditCertificate(identity.baseMint)!.subscriptionId,42,'consumer cannot mutate stored certificate');f.at=c.deadlineAt+1;assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);f.reconnect();assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);f.warm();for(let i=0;i<4&&f.certificates.length<2;i++)await f.runner.step();const fresh=f.runner.currentAuditCertificate(identity.baseMint)!;assert.ok(fresh);assert.equal(fresh.connectionId,2);assert.equal(fresh.subscriptionId,43);assert.notEqual(fresh.openedAt,c.openedAt);f.runner.onGap({mint:identity.baseMint,at:f.at,reason:'OFFLINE lost source'});assert.equal(f.runner.currentAuditCertificate(identity.baseMint),null);assert.deepEqual(f.retirements,[identity.baseMint]);await f.runner.stop();
+});
+
+test('status/report work cannot backdate the next certificate read or extend an expired certificate',async()=>{
+ const f=runnerFixture();await f.runner.step();f.warm();for(let i=0;i<4&&!f.certificates.length;i++)await f.runner.step();const certificate=f.runner.currentAuditCertificate(identity.baseMint)!;assert.ok(certificate);
+ const loopAt=f.at;f.at++;f.runner.status();assert.throws(()=>f.runner.certifiedCandidateMints(loopAt),/information cannot be observed before it became available/,'the prior caller ordering reproduces the frozen runtime failure');
+ const reportView=nativePaperCurrentCertificates(f.runner,()=>f.at);assert.equal(reportView.at,f.at);assert.deepEqual(reportView.mints,[identity.baseMint]);f.at++;f.runner.status();const candidateView=nativePaperCurrentCertificates(f.runner,()=>f.at);assert.equal(candidateView.at,loopAt+2);assert.deepEqual(candidateView.mints,[identity.baseMint]);
+ f.at=certificate.deadlineAt+1;f.runner.status();assert.deepEqual(nativePaperCurrentCertificates(f.runner,()=>f.at).mints,[],'fresh sampling fails closed at actual expiry');assert.equal(certificate.admittedAt,f.certificates[0]!.admittedAt,'no certificate or trade timestamps are rewritten');await f.runner.stop();
 });
 
 test('financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof',async()=>{

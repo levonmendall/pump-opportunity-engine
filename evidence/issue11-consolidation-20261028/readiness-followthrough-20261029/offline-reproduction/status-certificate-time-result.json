@@ -1,0 +1,54 @@
+{
+  "kind": "OFFLINE_FROZEN_STATUS_CERTIFICATE_TIME_REGRESSION_REPRODUCED",
+  "financialSourceCommit": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "sourceSha256": {
+    "native-candidate-runner.ts": "1fe9411dbc9a4f5946be6bb29b421d9fbf34fe6435529a99d51fe23a7071abc6",
+    "strategy.ts": "ed4ca8b601da4105af5d3b003d195a664f75171647a6739e032eed0372cff07f",
+    "native-paper-contract.ts": "55c687fc859f3ede7c3f901256c46e5a6d716991c60a79cfcac3cb21a05fd0a1"
+  },
+  "fixtureOnly": true,
+  "originalAccountOpened": false,
+  "financialDatabaseOpened": false,
+  "networkRequests": 0,
+  "credentialsRead": false,
+  "oldAt": 1793244442000,
+  "statusAt": 1793244442001,
+  "clockAdvancedMs": 1,
+  "initialCertificatePresent": true,
+  "oldTimestampCertificateError": "information cannot be observed before it became available",
+  "oldTimestampSelectionError": "information cannot be observed before it became available",
+  "freshTimestampCertificatePresent": true,
+  "exactFeaturesHashUnchanged": true,
+  "originalCertificateMetadataUnchanged": true,
+  "expiredCertificateStillRejected": true,
+  "snapshotCalls": [
+    {
+      "at": 1793244442000,
+      "now": 1793244442000
+    },
+    {
+      "at": 1793244442000,
+      "now": 1793244442000
+    },
+    {
+      "at": 1793244442001,
+      "now": 1793244442001
+    },
+    {
+      "at": 1793244442000,
+      "now": 1793244442001
+    },
+    {
+      "at": 1793244442000,
+      "now": 1793244442001
+    },
+    {
+      "at": 1793244442001,
+      "now": 1793244442001
+    },
+    {
+      "at": 1793244442001,
+      "now": 1793244442001
+    }
+  ]
+}

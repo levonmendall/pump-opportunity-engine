@@ -76,6 +76,16 @@ class Tests(unittest.TestCase):
    d=pathlib.Path(t);private=d/'private';private.mkdir(mode=0o700);public=d/'public';public.mkdir(mode=0o755);public.chmod(0o755);body=snapshot(at);body['financial']='FINANCIAL_BODY_DO_NOT_PROJECT';raw=(json.dumps(body,separators=(',',':'))+'\n').encode();(private/'snapshot.json').write_bytes(raw);(private/'snapshot.json').chmod(0o600);a=ack(at,raw_source_sha256=m.sha(raw));c.pending_acks.append(a)
    with patch.object(m,'ACCOUNT',private),patch.object(m,'SERVICE',private),patch.object(m,'PUBLIC',public):c.cache_source_snapshot(at+100)
    path=public/'accepted-source.json';v=json.loads(path.read_text());self.assertEqual(path.stat().st_mode&0o777,0o644);self.assertEqual(path.stat().st_uid,os.getuid());self.assertLessEqual(path.stat().st_size,4096);self.assertEqual(v['rawSourceSha256'],m.sha(raw));self.assertEqual(v['fingerprint'],a['fingerprint']);self.assertEqual(v['sequence'],a['sequence']);self.assertEqual(v['sourceAtMs'],at);self.assertEqual(v['accountId'],m.ACCOUNT_ID);self.assertEqual(v['runId'],c.last_source['runId']);self.assertNotIn('FINANCIAL_BODY_DO_NOT_PROJECT',path.read_text());self.assertNotIn('financial',v);self.assertEqual(json.loads((private/'accepted-source-0.json').read_text()),body);self.assertEqual(json.loads((private/'accepted-source-latest.json').read_text())['rawSourceSha256'],m.sha(raw))
+ def test_public_receipt_accepts_actual_native_bundle_provenance_without_losing_the_source_pin(self):
+  at=m.INCEPTION+100000;actual=status(at);actual['source']={**SOURCE,'kind':'immutable-startup-native-paper-bundle-closure','metadataSha256':'c'*64,'sqliteVersion':'13.0.3','addonSha256':'d'*64,'backupWorkerSha256':'e'*64,'packageLockSha256':'f'*64};self.assertEqual(m.validate_status(actual,manifest(),at-2000,123,at),actual)
+  raw=json.dumps(snapshot(at)).encode();a=ack(at,raw_source_sha256=m.sha(raw))
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-actual-provenance-')as t:
+   public=pathlib.Path(t);public.chmod(0o755)
+   with patch.object(m,'PUBLIC',public):
+    value=m.publish_public_ack(manifest(),actual,a,raw,1,at+100);self.assertEqual(value['source'],SOURCE);self.assertEqual(actual['source']['kind'],'immutable-startup-native-paper-bundle-closure')
+    for key in['commit','sha256']:
+     wrong=copy.deepcopy(actual);wrong['source'][key]='0'*len(SOURCE[key])
+     with self.assertRaisesRegex(m.Guard,'CURRENT_ORIGINAL_ACK'):m.publish_public_ack(manifest(),wrong,a,raw,2,at+100)
  def test_public_ack_rejects_unmatched_raw_hash_and_unsafe_target_without_touching_files(self):
   at=m.INCEPTION+100000;raw=json.dumps(snapshot(at)).encode();a=ack(at,raw_source_sha256=m.sha(raw))
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-public-ack-guard-')as t:

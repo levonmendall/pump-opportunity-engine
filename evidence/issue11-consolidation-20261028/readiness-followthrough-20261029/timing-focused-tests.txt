@@ -1,0 +1,23 @@
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (30.035384ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (14.985735ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (17.650609ms)
+✔ status/report work cannot backdate the next certificate read or extend an expired certificate (7.152853ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (6.888671ms)
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (2.041579ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.427424ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.265964ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (0.845084ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (7.640366ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.403769ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.231453ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.255449ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.668011ms)
+✔ native bridge retains every same-packet event when callback recording advances the clock (42.907292ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1232.506552

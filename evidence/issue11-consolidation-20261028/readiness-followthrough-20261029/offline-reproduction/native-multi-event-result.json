@@ -1,0 +1,17 @@
+{
+  "classification": "OFFLINE_CONTROLLED_ACTUAL_NATIVE_PAPER_CALLBACK_REPRO",
+  "proposedFix": false,
+  "availableAt": 1793242800100,
+  "firstRecordCompletedAt": 1793242800101,
+  "nativeAcceptedEvents": 2,
+  "bridgeRecordedEvents": 1,
+  "recordedReceivedAt": [
+    1793242800100
+  ],
+  "completedFeaturesEqual": null,
+  "error": "information cannot be observed before it became available",
+  "positions": 0,
+  "pending": 0,
+  "networkRequests": 0,
+  "directory": "/tmp/poe-OFFLINE-multi-event-3F3Dzw"
+}
