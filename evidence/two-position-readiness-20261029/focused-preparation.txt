@@ -1,0 +1,12 @@
+✔ OFFLINE real RPC gate prices and reconciles two holdings under candidate pressure, then closes once after same-account recovery (470.967855ms)
+ℹ {"classification":"OFFLINE_DISPOSABLE_REAL_RPC_GATE_AND_NATIVE_BRIDGE","networkRequests":0,"positionsOpened":2,"positionsClosed":2,"modeledGasLamports":"28000","coherentProtectionChecks":12,"maximumCompletedGapMs":2000,"candidatePressurePages":10,"physicalStarts":62,"physicalMaximum":1,"accountedResponseBytes":328973,"uncertainResponseBytes":0,"simulatedRealizedLamports":"-2339677","limitation":"Synthetic bank, flow, USD and120ms transport latency; direct bridge sequencing is not installed scheduler, provider capacity, natural profitability or live two-position protection acceptance."}
+✔ OFFLINE two held positions survive HTTP429 and an unsettled physical timeout without false marks, duplicate actions or lost accounting (233.360642ms)
+ℹ {"classification":"OFFLINE_DISPOSABLE_ADVERSE_CONTROL","networkRequests":0,"positionsPreserved":2,"pendingActions":0,"modeledGasLamports":"14000","explicitHttp429":1,"realTimerTimeoutMs":20,"unsettledTransportBlockedReplacement":true,"uncertainResponseBytes":4194304,"physicalMaximum":1,"financialInceptionPreserved":true,"limitation":"Injected429 and real timer over a fake fetch that ignores cancellation; not provider failure-frequency or installed supervisor recovery acceptance. No adverse simulated fill was manufactured."}
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1747.058415
