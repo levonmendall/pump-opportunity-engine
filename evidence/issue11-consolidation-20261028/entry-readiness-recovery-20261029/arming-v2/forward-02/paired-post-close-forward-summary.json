@@ -1,0 +1,696 @@
+{
+  "kind": "independent-post-close-forward-supervision-summary-v1",
+  "createdAt": "2026-10-29T20:58:21.666890+00:00",
+  "classification": "REAL_SOURCE_COUNTERS_AND_READONLY_EC2_PAIR_WITH_EXPLICIT_GAPS_NOT_ACCEPTANCE",
+  "source": {
+    "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "run": {
+    "id": "native-paper-20261029194223241",
+    "startedAt": "2026-10-29T19:42:23.241Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+    "strategyVersion": "persistent-buying-pilot-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "frozenSourceInput": {
+    "path": "post-close-source-interval.snapshots.ndjson",
+    "bytes": 2905097,
+    "sha256": "8416846cb6629203584ef67f2fba5d227b95f3b941f79d3f20136e1935c64ea1",
+    "frames": 169,
+    "from": "2026-10-29T20:08:17.026Z",
+    "until": "2026-10-29T20:55:23.645Z"
+  },
+  "sourceRunOrConfigurationChanges": false,
+  "additionalFinancialLifecycleSinceIntervalStart": {
+    "primaryQualifications": 0,
+    "newFills": 0,
+    "heldPositionsObserved": 0,
+    "pendingOrdersObserved": 0,
+    "historicalFillRowsAtEnd": 12,
+    "financialFunnelAtEnd": {
+      "discovered": 214,
+      "supported": 214,
+      "sufficientlyObserved": 1,
+      "evaluated": 1,
+      "qualified": 1,
+      "attempted": 2,
+      "paperFilled": 1,
+      "exited": 1,
+      "reconciled": 3900
+    }
+  },
+  "counterDeltasSameRun": {
+    "intelligence.candidates.migrationsReceived": {
+      "before": 400,
+      "after": 435,
+      "delta": 35
+    },
+    "intelligence.candidates.verifiedOrigins": {
+      "before": 157,
+      "after": 185,
+      "delta": 28
+    },
+    "intelligence.candidates.promoted": {
+      "before": 4093,
+      "after": 4232,
+      "delta": 139
+    },
+    "intelligence.candidates.repromoted": {
+      "before": 3766,
+      "after": 3877,
+      "delta": 111
+    },
+    "intelligence.candidates.completeWindows": {
+      "before": 1885,
+      "after": 1959,
+      "delta": 74
+    },
+    "intelligence.candidates.auditedWindows": {
+      "before": 1907,
+      "after": 1981,
+      "delta": 74
+    },
+    "intelligence.candidates.uniqueEvaluated": {
+      "before": 55,
+      "after": 92,
+      "delta": 37
+    },
+    "intelligence.candidates.predictivePasses": {
+      "before": 92,
+      "after": 92,
+      "delta": 0
+    },
+    "intelligence.candidates.predictiveFailures": {
+      "before": 1793,
+      "after": 1867,
+      "delta": 74
+    },
+    "intelligence.quality.qualityGaps": {
+      "before": 1109,
+      "after": 1174,
+      "delta": 65
+    },
+    "intelligence.quality.auditUnavailable": {
+      "before": 95,
+      "after": 105,
+      "delta": 10
+    },
+    "intelligence.quality.auditUnusable": {
+      "before": 142,
+      "after": 151,
+      "delta": 9
+    },
+    "intelligence.quality.decisionDeadlineMisses": {
+      "before": 108,
+      "after": 118,
+      "delta": 10
+    },
+    "intelligence.provider.rpcRequests": {
+      "before": 1119,
+      "after": 2159,
+      "delta": 1040
+    },
+    "intelligence.provider.rpcResponseBytes": {
+      "before": 104650355,
+      "after": 288889209,
+      "delta": 184238854
+    },
+    "intelligence.provider.httpTimeouts": {
+      "before": 398,
+      "after": 450,
+      "delta": 52
+    },
+    "intelligence.provider.httpErrors": {
+      "before": 0,
+      "after": 0,
+      "delta": 0
+    },
+    "intelligence.provider.throttles": {
+      "before": 0,
+      "after": 0,
+      "delta": 0
+    },
+    "intelligence.provider.nativeStreamBytes": {
+      "before": 877591865,
+      "after": 934628364,
+      "delta": 57036499
+    },
+    "intelligence.provider.broadWatchBytes": {
+      "before": 47639364691,
+      "after": 52450188528,
+      "delta": 4810823837
+    },
+    "funnel.qualified": {
+      "before": 1,
+      "after": 1,
+      "delta": 0
+    },
+    "funnel.attempted": {
+      "before": 2,
+      "after": 2,
+      "delta": 0
+    },
+    "funnel.paperFilled": {
+      "before": 1,
+      "after": 1,
+      "delta": 0
+    },
+    "funnel.exited": {
+      "before": 1,
+      "after": 1,
+      "delta": 0
+    },
+    "funnel.reconciled": {
+      "before": 1098,
+      "after": 3900,
+      "delta": 2802
+    }
+  },
+  "effectivePermissionStates": [
+    {
+      "entries": "enabled",
+      "reason": null,
+      "samples": 119
+    },
+    {
+      "entries": "paused",
+      "reason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "samples": 13
+    },
+    {
+      "entries": "paused",
+      "reason": "POE_ENTRY_DAILY_LOSS",
+      "samples": 37
+    }
+  ],
+  "observedPermissionTransitions": [
+    {
+      "fromSequence": "9879",
+      "toSequence": "9880",
+      "fromAt": "2026-10-29T20:10:20.156Z",
+      "toAt": "2026-10-29T20:10:35.180Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15024,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9880",
+      "toSequence": "9881",
+      "fromAt": "2026-10-29T20:10:35.180Z",
+      "toAt": "2026-10-29T20:10:50.431Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15251,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9900",
+      "toSequence": "9901",
+      "fromAt": "2026-10-29T20:15:36.144Z",
+      "toAt": "2026-10-29T20:15:51.360Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15216,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9901",
+      "toSequence": "9902",
+      "fromAt": "2026-10-29T20:15:51.360Z",
+      "toAt": "2026-10-29T20:16:06.401Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15041,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9922",
+      "toSequence": "9923",
+      "fromAt": "2026-10-29T20:21:10.063Z",
+      "toAt": "2026-10-29T20:21:25.070Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15007,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9923",
+      "toSequence": "9924",
+      "fromAt": "2026-10-29T20:21:25.070Z",
+      "toAt": "2026-10-29T20:21:40.084Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15014,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9931",
+      "toSequence": "9932",
+      "fromAt": "2026-10-29T20:23:25.660Z",
+      "toAt": "2026-10-29T20:23:40.697Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15037,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9932",
+      "toSequence": "9933",
+      "fromAt": "2026-10-29T20:23:40.697Z",
+      "toAt": "2026-10-29T20:23:55.936Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15239,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9971",
+      "toSequence": "9972",
+      "fromAt": "2026-10-29T20:33:37.021Z",
+      "toAt": "2026-10-29T20:33:53.160Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 16139,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9972",
+      "toSequence": "9973",
+      "fromAt": "2026-10-29T20:33:53.160Z",
+      "toAt": "2026-10-29T20:34:08.983Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15823,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9998",
+      "toSequence": "9999",
+      "fromAt": "2026-10-29T20:40:30.483Z",
+      "toAt": "2026-10-29T20:40:45.526Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15043,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "9999",
+      "toSequence": "10000",
+      "fromAt": "2026-10-29T20:40:45.526Z",
+      "toAt": "2026-10-29T20:41:00.531Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15005,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "10004",
+      "toSequence": "10005",
+      "fromAt": "2026-10-29T20:42:00.656Z",
+      "toAt": "2026-10-29T20:42:16.581Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15925,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "10005",
+      "toSequence": "10006",
+      "fromAt": "2026-10-29T20:42:16.581Z",
+      "toAt": "2026-10-29T20:42:31.620Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15039,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "10008",
+      "toSequence": "10009",
+      "fromAt": "2026-10-29T20:43:02.066Z",
+      "toAt": "2026-10-29T20:43:18.008Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15942,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "10009",
+      "toSequence": "10010",
+      "fromAt": "2026-10-29T20:43:18.008Z",
+      "toAt": "2026-10-29T20:43:33.057Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15049,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "10012",
+      "toSequence": "10013",
+      "fromAt": "2026-10-29T20:44:04.621Z",
+      "toAt": "2026-10-29T20:44:19.666Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "elapsedSampleTimeMs": 15045,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "10017",
+      "toSequence": "10018",
+      "fromAt": "2026-10-29T20:45:19.789Z",
+      "toAt": "2026-10-29T20:45:34.801Z",
+      "from": "paused",
+      "to": "enabled",
+      "previousReason": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "currentReason": null,
+      "elapsedSampleTimeMs": 15012,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    },
+    {
+      "fromSequence": "10020",
+      "toSequence": "10021",
+      "fromAt": "2026-10-29T20:46:04.854Z",
+      "toAt": "2026-10-29T20:46:20.257Z",
+      "from": "enabled",
+      "to": "paused",
+      "previousReason": null,
+      "currentReason": "POE_ENTRY_DAILY_LOSS",
+      "elapsedSampleTimeMs": 15403,
+      "meaning": "Observed effective permission change; not an exact ledger control mutation or duration."
+    }
+  ],
+  "subsequentPredictivePassAttribution": {
+    "passesAlreadyIncludedBefore20_08": [
+      {
+        "id": "native-paper-20261029194223241:2:1793304362367",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "at": "2026-10-29T20:06:02.367Z",
+        "stage": "shadow-predictive-not-rejected",
+        "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+      },
+      {
+        "id": "native-paper-20261029194223241:3:1793304375369",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "at": "2026-10-29T20:06:15.369Z",
+        "stage": "shadow-predictive-not-rejected",
+        "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+      }
+    ],
+    "sameMintPreviouslyCompletedTrades": [
+      {
+        "id": "paper-fill:c5c94babc37540a39bd3cf70c18d4cf2",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "side": "buy",
+        "quantity": "319987598",
+        "at": "2026-10-29T16:08:35.958Z",
+        "valueUsd": 49.690465,
+        "executionCostsUsd": 0.00072,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:46914:1793290114273"
+      },
+      {
+        "id": "paper-fill:8c86a04e730c26bd139f4d3e5783a07c",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "side": "sell",
+        "quantity": "319987598",
+        "at": "2026-10-29T16:23:37.938Z",
+        "valueUsd": 49.63868,
+        "executionCostsUsd": 0.000715,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:47355:1793291016775"
+      }
+    ],
+    "rule": "Frozen NativePaper.candidateDue and technical retry refuse a mint with an earlier PAPER fill. These independent passes are not a second executable trading qualification.",
+    "afterIntervalStartNotRejectedDecisions": 0
+  },
+  "resourcePair": {
+    "from": "host-40946393746.json",
+    "until": "host-40951639293.json",
+    "generation": [
+      "2469893",
+      2469896,
+      "native-paper-20261029194223241",
+      "5648606bf78f6687c47632be5c789af5e7f19772",
+      "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c"
+    ],
+    "seconds": 2109.06,
+    "serviceCpuOneCoreFraction": 0.1955722369207135,
+    "throttledUsecDelta": 0,
+    "serviceIoCounterDeltas": {
+      "rbytes": 8192,
+      "wbytes": 2055577600,
+      "rios": 2,
+      "wios": 45580,
+      "dbytes": 0,
+      "dios": 0
+    },
+    "serviceIoBytesPerSecond": {
+      "rbytes": 3.8841948545797655,
+      "wbytes": 974641.5938854277
+    },
+    "nativeCpuOneCoreFraction": 0.18280655837197618,
+    "nativeRssBytes": {
+      "start": 412839936,
+      "end": 404152320
+    },
+    "cgroupMemoryBytes": {
+      "start": 600989696,
+      "end": 632360960,
+      "peakAtEnd": 724099072
+    },
+    "hostAvailableMemoryBytes": {
+      "start": 6735106048,
+      "end": 6694416384
+    },
+    "hostAvailableDiskBytes": {
+      "start": 288415498240,
+      "end": 288416124928
+    },
+    "hostNetworkCounterDeltas": {
+      "lo": {
+        "receivedBytes": 373562,
+        "transmittedBytes": 373562,
+        "receivedPackets": 3276,
+        "transmittedPackets": 3276
+      },
+      "ens5": {
+        "receivedBytes": 3633787344,
+        "transmittedBytes": 59735224,
+        "receivedPackets": 2781858,
+        "transmittedPackets": 720868
+      }
+    },
+    "hostMetricAttribution": "Host memory, free disk and network include unrelated applications; no POE-only attribution. Cgroup I/O includes evidence, ledger, backups and filesystem amplification without separation."
+  },
+  "resourceSampleIdentity": [
+    "2469893",
+    2469896,
+    "native-paper-20261029194223241",
+    "5648606bf78f6687c47632be5c789af5e7f19772",
+    "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c"
+  ],
+  "hostSourceAck": {
+    "checkedAt": 1793306643668,
+    "acceptedSourceAt": 1793306613057,
+    "acknowledgedAt": 1793306628340,
+    "sourceToAckMs": 15283,
+    "acceptedAckAgeAtHostCheckMs": 15328,
+    "acceptedDistinctSourcesThisSupervisor": 232,
+    "sourceAt": "2026-10-29T20:43:48.070Z",
+    "reconciliationAgeAtSourceMs": 292,
+    "staticSource": {
+      "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+      "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+    },
+    "runId": "native-paper-20261029194223241"
+  },
+  "sourceAndObserverLatency": {
+    "sourceToObserverMs": {
+      "count": 169,
+      "minimum": 15385,
+      "median": 18680,
+      "p95": 31093,
+      "maximum": 32057
+    },
+    "receiverReceiptAgeAtObserverMs": {
+      "count": 169,
+      "minimum": 147,
+      "median": 5771,
+      "p95": 14442,
+      "maximum": 15207
+    },
+    "staleSampleCounts": 0
+  },
+  "evidenceRetention": {
+    "allAdmissionAllowed": true,
+    "allRefusedRecordCountsZero": true,
+    "diagnosticBytesMinimum": 3226527,
+    "diagnosticBytesMaximum": 63293018,
+    "interpretation": "Repeated lower diagnostic byte totals demonstrate retirement/rotation, not elimination of mandatory evidence; pressure recovery beyond threshold was not independently exercised."
+  },
+  "protectedFinancialReadiness": {
+    "flatReconciliationAgeMs": {
+      "count": 169,
+      "minimum": 3,
+      "median": 456,
+      "p95": 965,
+      "maximum": 999
+    },
+    "originalFlatUsdAgeMs": {
+      "count": 169,
+      "minimum": 536,
+      "median": 2345,
+      "p95": 4501,
+      "maximum": 4922
+    },
+    "freshFxStaleReconciliationSamples": [],
+    "priorPositionProtectionCountersUnchanged": true,
+    "latestPositionProtection": {
+      "state": "flat",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-29T20:05:57.316Z",
+      "maximumCompletedGapMs": 2315,
+      "maximumQuoteAgeAtUseMs": 73,
+      "breaches": 0,
+      "unavailableChecks": 0
+    }
+  },
+  "actualNewExceptions": {
+    "dailyLoss": {
+      "firstSource": "2026-10-29T20:46:20.257Z",
+      "evidence": "daily-loss-2046/daily-loss-analysis.json",
+      "status": "Preserved genuine reported daily USD-equity loss latch; private baseline/exact trigger quote unknown."
+    },
+    "selectedNativeCapture": {
+      "episodes": [
+        {
+          "firstObservedAt": "2026-10-29T20:28:16.739Z",
+          "firstSequence": "9950",
+          "samples": 8,
+          "lastObservedAt": "2026-10-29T20:30:01.923Z",
+          "lastSequence": "9957",
+          "firstSubsequentHealthySampleAt": "2026-10-29T20:30:16.942Z"
+        },
+        {
+          "firstObservedAt": "2026-10-29T20:51:52.170Z",
+          "firstSequence": "10043",
+          "samples": 8,
+          "lastObservedAt": "2026-10-29T20:53:37.360Z",
+          "lastSequence": "10050",
+          "firstSubsequentHealthySampleAt": "2026-10-29T20:53:52.467Z"
+        }
+      ],
+      "latestSourceCaptureConnected": true,
+      "broadDiscoveryContinued": true,
+      "watchContinued": true,
+      "status": "Two genuine selected-flow capture interruptions and automatic capture recovery are observed. The underlying transport/per-scope cause and avoidability remain under separate review; capture true does not by itself establish a newly complete60-second window."
+    }
+  },
+  "observationGaps": [
+    {
+      "after": 9890,
+      "before": 9892,
+      "unretainedSourceSequences": 1,
+      "meaning": "Not retained by this observer; not proof of a runtime outage."
+    },
+    {
+      "after": 9981,
+      "before": 9998,
+      "unretainedSourceSequences": 16,
+      "meaning": "Not retained by this observer; not proof of a runtime outage."
+    },
+    {
+      "after": 10001,
+      "before": 10003,
+      "unretainedSourceSequences": 1,
+      "meaning": "Not retained by this observer; not proof of a runtime outage."
+    }
+  ],
+  "sourceFrameGaps": [
+    {
+      "from": "2026-10-29T20:13:05.696Z",
+      "to": "2026-10-29T20:13:35.770Z",
+      "elapsedMs": 30074,
+      "meaning": "Unobserved source-generation interval; runtime activity between frames is unknown."
+    },
+    {
+      "from": "2026-10-29T20:36:10.195Z",
+      "to": "2026-10-29T20:40:30.483Z",
+      "elapsedMs": 260288,
+      "meaning": "Unobserved source-generation interval; runtime activity between frames is unknown."
+    },
+    {
+      "from": "2026-10-29T20:41:15.559Z",
+      "to": "2026-10-29T20:41:45.613Z",
+      "elapsedMs": 30054,
+      "meaning": "Unobserved source-generation interval; runtime activity between frames is unknown."
+    }
+  ],
+  "rootReportedCloudObserverAbsence": {
+    "from": "2026-10-29T20:36:41Z",
+    "until": "2026-10-29T20:41:01Z",
+    "meaning": "No active Cloud supervision claimed. Same EC2 process/run and later receipts do not fill missing observations or prove continuous market coverage."
+  },
+  "remainingDefectsOrUnknowns": [
+    "Selected native capture actually failed twice while broad discovery/watch and financial reconciliation continued, then recovered automatically. Recurring outage cause/avoidability remains under investigation; no repair is certified by recovery alone.",
+    "Audit-unavailable,unusable,deadline-miss and quality-gap counters increased. Aggregates alone do not establish which provider/local scheduling mechanism caused each case.",
+    "Current daily-loss gate legitimately prevents new entries; baseline/trigger certification is not available from public snapshots and was not bypassed.",
+    "No independent whole-market executable-opportunity denominator or new profitability/continuous-operation acceptance is established."
+  ],
+  "operationsByThisReview": {
+    "readonlyHostWorkflowRun": "40951639293",
+    "hostWorkflowServiceChanges": 0,
+    "hostWorkflowFinancialDbReads": 0,
+    "credentialReads": 0,
+    "providerRequests": 0,
+    "appChanges": 0,
+    "financialWrites": 0,
+    "additionalDashboardCollectors": 0
+  },
+  "analysisVersion": "paired-post-close-forward-v2-explicit-recovery",
+  "observedMarketStates": {
+    "observing": 153,
+    "unavailable": 16
+  }
+}

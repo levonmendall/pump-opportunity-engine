@@ -1,0 +1,21 @@
+# Retained post-close forward evidence
+
+Frozen source: `5648606bf78f6687c47632be5c789af5e7f19772`, executable `cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb`, configuration `96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c`, run `native-paper-20261029194223241`. The original account, four deep slots, and one-position limit are unchanged.
+
+The 169 distinct retained source frames cover 20:08:17.026–20:55:23.645 UTC. This is sampled evidence with explicit observer gaps, including the parent-reported Cloud absence from 20:36:41 to 20:41:01. No uninterrupted acceptance interval is claimed.
+
+`paired-post-close-forward-summary.json` is the main result. `post-close-source-interval.snapshots.ndjson` freezes the exact inputs; `source-freeze-provenance.json` preserves input prefix hashes. The generic scorecard counts trades since runtime startup, so its one buy/one sell are the already completed CNtd trade. There were **zero additional qualifications, attempts, fills, positions, or pending orders in this post-close interval**; the original twelve historical fills remain.
+
+- Current-run unique evaluated tokens increased by 37 and audited windows by 74. These are different measures; overlapping windows are not independent market minutes.
+- Quality gaps increased by 65, unavailable audits by 10, unusable audits by 9, deadline misses by 10, and HTTP timeouts by 52. HTTP error and throttle counters remained zero. These adverse results are retained; aggregate counters alone do not establish each cause.
+- Later retained independent passes at 20:06:02.367 and 20:06:15.369 belong to a mint already bought and sold earlier. They occurred before this interval and do not establish a missed executable opportunity under the unchanged re-entry prohibition.
+- Provider cooldowns produced explicit temporary entry restrictions and subsequent recovery. Financial reconciliation remained within two seconds and available original flat USD quotes within ten seconds in the frozen frames.
+- A reported daily-loss latch first appears at source sequence 10021, 20:46:20.257. Native cash/equity and trade counts are unchanged; reported SOL/USD drops from 98.55 to 96.77, explaining the contemporaneous USD-equity change within rounding. The stored UTC-day baseline and exact triggering quote are private and unknown. The risk latch was preserved, never cleared or weakened. See `daily-loss-2046/`.
+- Selected native capture genuinely failed during 20:28:16.739–20:30:01.923, with first healthy sample at 20:30:16.942, and again during 20:51:52.170–20:53:37.360, with first healthy sample at 20:53:52.467. Broad discovery/watch continued. The recurring cause remains under separate investigation. Recovery of connectivity alone does not prove a new complete audited window.
+- Diagnostic bytes rotated downward while evidence admission stayed allowed and refused-record counts stayed zero. No source resource pressure or mandatory evidence loss is established by this interval. Pressure recovery beyond the configured diagnostic threshold was not independently exercised.
+
+One existing authorized read-only EC2 workflow was dispatched: `40951639293`, using unchanged admin commit `798b52b07ca9cc64095914153949447f8f48ff0a`. Its reviewed workflow, inspector, raw receipt, and source hashes are under `resources/host-2043/`. It performed zero service changes, financial database reads, credential reads, or provider calls.
+
+The actual same-process EC2 pair spans 20:08:54.608–20:44:03.668: average service CPU 0.1956 core, zero throttling, native RSS 412.8→404.2 MB, cgroup memory 601.0→632.4 MB with 724.1 MB peak, and zero memory-pressure events. Device writes averaged 974,642 bytes/s; cumulative writes are not disk-space growth. Host memory, disk availability, and network also include unrelated workloads. The latest matched current-run source acknowledgment took 15.283 seconds; the current source reconciliation age was 292 ms at generation.
+
+This review changed no application, runtime, risk parameter, financial record, account, or dashboard. It started no additional market/dashboard collector. The only new remote operation was the coordinated fixed read-only EC2 workflow. The existing sampler continues under root supervision.

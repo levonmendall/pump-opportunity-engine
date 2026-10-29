@@ -17,6 +17,7 @@ DEFAULT_INPUT=ROOT/'coherent-entry-forward-20261029/rolling-supervision'
 MAX_FILE=64*1024*1024
 MAX_LINE=512*1024
 SOURCE_FIELDS=('account','source','sequence','times','status','intelligence','funnel','balances','positions','trades')
+ANALYSIS_VERSION='retained-forward-financial-permission-v2'
 
 def encoded(value):return json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -113,7 +114,10 @@ def analyze(rows,source,config):
    if field(r,'source.strategy')!=STRATEGY:invalid.append('STRATEGY_MISMATCH')
    if field(r,'intelligence.candidates.deepMaximum')!=4 or (field(r,'intelligence.candidates.deepActive') or 0)>4:invalid.append('FOUR_SLOT_LIMIT_MISMATCH')
    if held>1:invalid.append('ONE_POSITION_LIMIT_EXCEEDED')
-   if s.get('entries')=='enabled' and (s.get('runtime')!='running' or s.get('reconciled') is not True or recon is None or recon<0 or recon>2000 or not fact['usdAvailable'] or held>=1):invalid.append('ENABLED_PERMISSION_INCONSISTENT_WITH_REQUIRED_SOURCE_FACTS')
+   # General financial permission is separate from the one-position entry
+   # capacity. Holding one protected position is not an integrity failure.
+   # The explicit held>1 check above still enforces the financial limit.
+   if s.get('entries')=='enabled' and (s.get('runtime')!='running' or s.get('reconciled') is not True or recon is None or recon<0 or recon>2000 or not fact['usdAvailable']):invalid.append('ENABLED_PERMISSION_INCONSISTENT_WITH_REQUIRED_SOURCE_FACTS')
    if s.get('entries')=='enabled' and fx is not None and (fx<0 or fx>10000):invalid.append('ENABLED_WITH_STALE_FLAT_USD')
    if invalid:integrity.append({'sequence':r.get('sequence'),'at':field(r,'times.generatedAt'),'failures':invalid})
    for d in i.get('decisions') or []:
@@ -150,6 +154,7 @@ def analyze(rows,source,config):
   resources={k:stats(field(r,'intelligence.resources.'+k) for r in rr) for k in ('cpuOneCoreFraction','rssBytes','availableMemoryBytes','availableDiskBytes','eventLoopLagMs')}
   block_counts=dict(collections.Counter(f['entryBlocker'] or 'NONE' for f in facts))
   result['runs'].append({'runId':run_id,'runtimeStartedAt':field(rr[0],'intelligence.run.startedAt'),'firstSourceAt':field(rr[0],'times.generatedAt'),'lastSourceAt':field(rr[-1],'times.generatedAt'),'sampledSpanMs':last_at-stamp(field(rr[0],'times.generatedAt')),'sourceSamples':len(rr),'firstSequence':rr[0].get('sequence'),'lastSequence':rr[-1].get('sequence'),'sourceTimestampGapObservations':source_gaps,'unretainedSourceSequenceRanges':sequence_gaps,'runtimeStateCounts':dict(collections.Counter(f['runtime'] for f in facts)),'entryStateCounts':dict(collections.Counter(f['entries'] for f in facts)),'entryBlockerCounts':block_counts,'sourceToObserverAgeMs':stats(f['sourceToObserverAgeMs'] for f in facts),'renderReceiptAgeMs':stats(f['renderReceiptAgeAtObserverMs'] for f in facts),'sourceOrRenderStaleSamples':[f for f in facts if (f['sourceToObserverAgeMs'] or 0)>90000 or (f['renderReceiptAgeAtObserverMs'] or 0)>90000],'flatReconciliationAgeMs':stats(f['reconciliationAgeAtSourceMs'] for f in facts if not f['heldPositions']),'observablyHealthyFlatReconciliationAgeMs':stats(f['reconciliationAgeAtSourceMs'] for f in healthy_flat),'flatOriginalUsdAgeMs':stats(f['flatUsdAgeAtSourceMs'] for f in facts),'freshFxFlatStaleReconciliationSamples':stale_flat,'staleReconciliationInterpretation':'Investigate with private work/cash-maintenance facts; active financial preparation may legitimately defer the cash callback. A sample alone is not attributed to scheduling.','selectedCaptureInterruptionEpisodes':episodes(rr,lambda r:field(r,'intelligence.quality.captureConnected') is False),'broadDiscoveryInterruptionEpisodes':episodes(rr,lambda r:field(r,'intelligence.provider.discoveryConnected') is False),'watchInterruptionEpisodes':episodes(rr,lambda r:field(r,'intelligence.provider.watchConnected') is False),'permissionTransitions':transitions,'counterChanges':counters,'counterRegressions':regressions,'distinctEvaluatedTokensInRetainedDecisionsLowerBound':len(distinct_evaluated),'distinctQualifiedMintsInRetainedDecisions':sorted({d['mint'] for d in new_decisions if d.get('stage')=='qualified'}),'newRunTrades':new_trades,'newRunBuyFills':sum(t.get('side')=='buy' for t in new_trades),'newRunSellFills':sum(t.get('side')=='sell' for t in new_trades),'historicalFillIdsRetained':len(trades)-len(new_trades),'pendingOrderIdsObserved':sorted(order_reservations),'duplicateOrderFillEvidence':duplicate_order_fills,'reentryEvidence':reentries,'conflictingTradeIds':trade_conflicts,'sourceFactIntegrityFailures':integrity,'resources':resources,'protectionLatest':field(rr[-1],'intelligence.protection'),'latestBalances':rr[-1].get('balances'),'latestPositions':rr[-1].get('positions'),'latestPending':field(rr[-1],'intelligence.pendingOrders'),'sampleFacts':facts})
+ result['analysisVersion']=ANALYSIS_VERSION
  return result,selected
 
 def main():

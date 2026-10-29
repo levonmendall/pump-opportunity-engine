@@ -1,0 +1,112 @@
+{
+  "kind": "owned-forward-evidence-manifest-v1",
+  "createdAt": "2026-10-29T21:03:43.145862+00:00",
+  "leadBaseAtTask": "e8209e4",
+  "installedRuntimeSource": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "evidenceClass": "RETAINED_FORWARD_SOURCE_SNAPSHOTS_AND_FIXED_READONLY_EC2_METADATA",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 4278,
+      "sha256": "37c5e331856b095d7d2f7508a81d344bc869f8f6f0a1454f3f5ced6e2b413477"
+    },
+    {
+      "file": "daily-loss-2046/daily-loss-analysis.json",
+      "bytes": 45789,
+      "sha256": "b0ab8c1c447b9dfebc81aa33c6e8ff300d8889c95a21f7bea079c06c20a3a003"
+    },
+    {
+      "file": "daily-loss-2046/source-brackets.snapshots.ndjson",
+      "bytes": 189089,
+      "sha256": "e5c9d8bb73aee1201c27912296ef4d15f1b90457178dc751e4042a94c1b72795"
+    },
+    {
+      "file": "paired-post-close-forward-summary.json",
+      "bytes": 23096,
+      "sha256": "670276dcdb83868e64fc941a789c698df0e72af2f8a5389f3966961c154f6519"
+    },
+    {
+      "file": "post-close-interval-scorecard.scorecard.json",
+      "bytes": 225632,
+      "sha256": "41d7ec2ae9a7b351d1b595e6c202810fd2e84bc3096f6c5b51fe40eda191130b"
+    },
+    {
+      "file": "post-close-interval-scorecard.snapshots.ndjson",
+      "bytes": 2905097,
+      "sha256": "1c5e8bcb291076f726596e9947f18b04e38d9b2b76720201550c99828b16a469"
+    },
+    {
+      "file": "post-close-source-interval.snapshots.ndjson",
+      "bytes": 2905097,
+      "sha256": "8416846cb6629203584ef67f2fba5d227b95f3b941f79d3f20136e1935c64ea1"
+    },
+    {
+      "file": "resources/host-2043/analyze-resource-pair.py",
+      "bytes": 6234,
+      "sha256": "e86b5bbf5ea69639e4e8e1aa193ca5267c2565498083e41ae992a4509db91a4d"
+    },
+    {
+      "file": "resources/host-2043/dispatch.json",
+      "bytes": 381,
+      "sha256": "ec0c7dc89665f6a40086cd23a8f865bcb2381daec5e976dc90cc8d7151f54877"
+    },
+    {
+      "file": "resources/host-2043/host-40951639293.json",
+      "bytes": 43361,
+      "sha256": "35dc28a1ba2f332f0ecdb0878d869d963584166809f58b55d420178f2b7a23a2"
+    },
+    {
+      "file": "resources/host-2043/host-40951639293.raw.txt",
+      "bytes": 51239,
+      "sha256": "49704b4051fc78626c9b815625591bee297067f432ee4993bd30b7906f057c6e"
+    },
+    {
+      "file": "resources/host-2043/host-40951639293.run.json",
+      "bytes": 1121,
+      "sha256": "7e1b2e80e2af2701ecc6168a962829f02faab550bbea97c24b719677ca6afe7b"
+    },
+    {
+      "file": "resources/host-2043/inspector.py",
+      "bytes": 29211,
+      "sha256": "ff37c016fa552dc2103abdfbb006cee57b1e9f861eae16782add8909bb26406f"
+    },
+    {
+      "file": "resources/host-2043/resource-series-analysis.json",
+      "bytes": 11989,
+      "sha256": "15c93d9386e4520f8652f34835795bfe4020e6189c4c98229b91f51e5f730422"
+    },
+    {
+      "file": "resources/host-2043/source-provenance.json",
+      "bytes": 406,
+      "sha256": "7290ae09584bd415afba99095663a918d303d3ad93947e6f10ff4c51aa21b46f"
+    },
+    {
+      "file": "resources/host-2043/workflow.yml",
+      "bytes": 1953,
+      "sha256": "8da35ffeeef3e7c8ae8fdd42b919404cd3910fe4ffb7f70d3f89a0bf7485be95"
+    },
+    {
+      "file": "source-freeze-provenance.json",
+      "bytes": 3152,
+      "sha256": "fdd8f7785e15a1b1de938af1dbc87351b12286a8450ef3401a17f4698a9bac4a"
+    }
+  ],
+  "sharedOwnedAnalyzer": {
+    "file": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/forward-01/analyze-retained.py",
+    "sha256": "7010454233c06da587d7b3944a1643ddf8ec2a9156976862a15034348d055a11",
+    "change": "Correct prior offline predicate: one held position does not by itself invalidate general financial permission. Actual one-position,2s reconciliation,10s flat USD and equity availability checks remain."
+  },
+  "validation": {
+    "sourceFactConflicts": 0,
+    "resourcePairGenerationMatched": true,
+    "captureEpisodesWithObservedRecovery": 2,
+    "additionalFinancialFillsAfter20_08": 0,
+    "privateFinancialReads": 0,
+    "financialWrites": 0,
+    "serviceChanges": 0,
+    "newProviderRequests": 0,
+    "newDashboardCollectors": 0
+  },
+  "acceptance": "NOT YET PROVEN"
+}
