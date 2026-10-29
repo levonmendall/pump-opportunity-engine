@@ -73,7 +73,7 @@ export function createDashboard(config: DashboardConfig) {
       const current = cache.read();
       if (!current) { send(res, 503, { state: 'waiting', message: 'Awaiting POE data' }); return; }
       if (path === '/api/export') res.setHeader('content-disposition', 'attachment; filename="poe-bounded-snapshot.json"');
-      send(res, 200, { ...current, freshness: cache.status() }); return;
+      send(res, 200, { ...current, freshness: cache.status(), equityHistory: cache.equityHistory() }); return;
     }
     if (path !== '/') { send(res, 404, { error: 'not found' }); return; }
     res.writeHead(200, {
@@ -117,13 +117,6 @@ main{max-width:1480px;margin:0 auto}
 .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.stat{border:1px solid var(--border);border-radius:13px;padding:21px;min-width:0;min-height:137px;position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(20,36,59,.89),rgba(11,22,38,.85));box-shadow:0 12px 36px rgba(0,0,0,.07),inset 0 1px 0 rgba(189,220,255,.03);transition:transform .22s,border-color .22s}.stat:hover{transform:translateY(-3px);border-color:rgba(83,216,238,.42)}.stat:before{content:"";position:absolute;width:120px;height:120px;right:-40px;top:-65px;background:radial-gradient(circle,rgba(88,150,220,.14),transparent 70%)}.stat.top{background:linear-gradient(130deg,rgba(20,53,70,.8),rgba(13,23,46,.96));border-color:rgba(67,212,219,.27)}.stat.top:after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:2px;background:linear-gradient(90deg,rgba(80,240,236,.8),transparent)}.stat-label{font:600 10px var(--mono);color:#91a5c1;letter-spacing:1.15px;line-height:1.4;min-height:14px}.stat-value{font-weight:740;font-size:clamp(22px,2.25vw,33px);letter-spacing:-1.4px;color:#eaf6ff;line-height:1.2;margin:19px 0 10px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.stat-value.long{font-size:18px;letter-spacing:-.5px}.stat-value.positive{color:var(--mint)}.stat-value.negative{color:var(--red)}.stat-foot{font:10px var(--mono);color:#6683a1;line-height:1.4}.stat.empty .stat-value{color:#56708e}.stat.empty .stat-foot{color:#6d829c}
 .panel{background:linear-gradient(150deg,rgba(14,27,45,.92),rgba(8,17,33,.94));border:1px solid var(--border);border-radius:16px;padding:25px;min-width:0;box-shadow:0 17px 45px rgba(0,0,0,.07);position:relative;overflow:hidden}.panel:before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,rgba(80,240,236,.2),rgba(132,178,245,.05),transparent)}.panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:22px}.panel-heading h2{font-size:21px;margin:5px 0 0}.panel-sub{margin:7px 0 0;color:#7993b1;font:11px var(--mono)}.panel-tag{border:1px solid rgba(81,173,194,.26);border-radius:5px;padding:7px 10px;color:var(--cyan);font:600 9px var(--mono);letter-spacing:1px;white-space:nowrap}
 .chart-panel{margin-top:18px;padding:25px 25px 20px}.chart-shell{position:relative;overflow:hidden;border:1px solid rgba(117,169,219,.12);border-radius:10px;background:linear-gradient(180deg,rgba(3,12,25,.38),rgba(5,14,30,.18));min-height:280px}.chart-shell:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 44px,rgba(83,153,197,.065) 45px 46px),repeating-linear-gradient(90deg,transparent 0 83px,rgba(83,153,197,.05) 84px 85px)}.chart-shell:after{content:"";pointer-events:none;position:absolute;inset:0;opacity:.35;background:linear-gradient(90deg,rgba(60,192,234,.03),transparent,rgba(116,105,223,.05))}.chart-shell svg{width:100%;height:280px;display:block;position:relative;z-index:1;overflow:visible}.chart-meta{display:flex;justify-content:space-between;gap:24px;padding:14px 2px 0;color:#7c93af;font:10px var(--mono);line-height:1.7}.chart-meta span{overflow-wrap:anywhere}.chart-legend{white-space:nowrap;color:#a1bad0}.chart-legend:before{content:"";display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:8px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}.chart-note{font:10px var(--mono);color:#6684a3;margin-top:6px}
-.chart-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:7px 2px 0}
-.chart-window-label{color:#94a9c4;font:600 9px/1.5 var(--mono);letter-spacing:.7px}
-.chart-range-toggle{border:1px solid rgba(138,245,219,.28);border-radius:7px;padding:7px 11px;background:rgba(93,208,181,.06);color:#b4f4e6;cursor:pointer;font:600 10px var(--mono)}
-.chart-range-toggle:hover{border-color:rgba(138,245,219,.65)}
-.chart-range-toggle:focus-visible{outline:2px solid #96ffec;outline-offset:3px}
-.chart-range-toggle[hidden]{display:none!important}
-
 .two-up,.system-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;margin-top:17px}.data-panel{min-height:286px}.data-panel .panel-heading{margin-bottom:16px}.table-wrap{width:100%;overflow-x:auto}.data-table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}.data-table th{text-align:left;font:600 9px var(--mono);letter-spacing:1.1px;color:#6b8aa9;text-transform:uppercase;padding:11px 11px 13px;border-bottom:1px solid rgba(105,149,197,.17)}.data-table td{padding:15px 11px;color:#bed0e1;border-bottom:1px solid rgba(105,149,197,.12);max-width:210px;overflow-wrap:anywhere;vertical-align:top}.data-table tr:last-child td{border-bottom:0}.no-records{min-height:155px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#7d95b1;gap:10px;padding:20px}.no-records:before{content:"";display:block;width:35px;height:35px;border:1px dashed rgba(80,240,236,.33);border-radius:10px;background:radial-gradient(circle,rgba(80,240,236,.12),transparent 68%);transform:rotate(45deg)}.no-records strong{font:600 11px var(--mono);color:#aec9e1;letter-spacing:.8px}.no-records span{font:11px var(--mono);color:#617c9a;max-width:300px}
 /* Native disclosure keeps the verified trade count visible while conserving dashboard space. */
 .data-panel.paper-trades-panel{min-height:0;align-self:start}
@@ -215,11 +208,10 @@ body.poe-compact-view .compact-folded{min-height:0}
 <section aria-labelledby="portfolioTitle" id="portfolio"><div class="section-heading"><div><div class="section-index">01 / PORTFOLIO INTELLIGENCE</div><h2 id="portfolioTitle">Portfolio overview</h2></div><div class="section-note">AUTHORITATIVE EC2 DATA ONLY<br>NO SYNTHETIC BALANCES OR TRADES</div></div>
 <div class="cards" id="cards"><div class="stat top empty"><div class="stat-label">PORTFOLIO EQUITY</div><div class="stat-value">—</div><div class="stat-foot">Awaiting verified balance</div></div><div class="stat top empty"><div class="stat-label">TOTAL TRADING P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">No actual PAPER record</div></div><div class="stat top empty"><div class="stat-label">CASH / RESERVED SOL</div><div class="stat-value">—</div><div class="stat-foot">Awaiting account snapshot</div></div><div class="stat top empty"><div class="stat-label">ECONOMIC P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">Operating costs not yet reported</div></div></div></section>
 <section class="panel chart-panel" id="performance" aria-labelledby="performanceTitle">
-<div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio P&amp;L trajectory</h2><p class="panel-sub" id="chartBasis">Awaiting the source-reported P&amp;L convention</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
-<div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio trading P&L line graph. Solid lines join verified readings, dashed lines mark short unsampled intervals, and longer gaps remain disconnected"></svg></div>
-<div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend" id="chartLegend">SOURCE P&amp;L / USD</span></div>
-<div class="chart-controls"><span class="chart-window-label" id="chartWindowLabel">RECENT 24H · ZOOMED VALUE SCALE</span><button class="chart-range-toggle" id="chartRangeToggle" type="button" aria-pressed="false" hidden>View full history</button></div>
-<div class="chart-note" id="chartNote">Actual observations only. Zero is the reference line; missing history is not treated as zero.</div>
+<div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio equity trajectory</h2><p class="panel-sub" id="chartBasis">USD portfolio equity from the same verified source as Portfolio Overview.</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
+<div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio equity over time in US dollars, sourced from verified Portfolio Overview equity values"></svg></div>
+<div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend" id="chartLegend">PORTFOLIO EQUITY · USD</span></div>
+<div class="chart-note" id="chartNote">Recorded from accepted Portfolio Equity reports. Earlier equity values are not backfilled.</div>
 </section>
 <div class="two-up" id="activity"><section class="panel data-panel" aria-labelledby="positionsTitle"><div class="panel-heading"><div><div class="section-index">03 / EXPOSURE</div><h2 id="positionsTitle">Open positions</h2></div><div class="panel-tag" id="positionsCount">—</div></div><div id="positions"><div class="no-records"><strong>NO POSITION DATA</strong><span>Waiting for an authoritative PAPER portfolio snapshot.</span></div></div></section>
 <section class="panel data-panel paper-trades-panel" aria-labelledby="tradesTitle"><details class="paper-trades-disclosure"><summary class="panel-heading paper-trades-summary" aria-controls="paperTradesBody"><div><div class="section-index">04 / EXECUTION LOG</div><h2 id="tradesTitle">Recent PAPER trades</h2></div><div class="paper-trades-actions"><div class="panel-tag" id="tradesCount">—</div><span class="paper-trades-icon" aria-hidden="true"></span></div></summary><div class="paper-trades-body" id="paperTradesBody"><h3 class="panel-sub">Pending orders and reservations</h3><div id="orders"><div class="no-records"><strong>PENDING ACTIONS UNAVAILABLE</strong><span>Waiting for verified order and reservation details.</span></div></div><h3 class="panel-sub">Completed PAPER executions</h3><div id="trades"><div class="no-records"><strong>NO TRADE DATA</strong><span>Execution records will appear after verified reporting begins.</span></div></div></div></details></section></div>
@@ -240,7 +232,7 @@ const money=n=>n===null?'Unavailable':new Intl.NumberFormat('en-US',{style:'curr
 const put=(id,value)=>{byId(id).textContent=String(value)};
 const add=(p,t,value,cls)=>{const n=document.createElement(t);if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;p.append(n);return n};
 const makeSvg=(tag,attrs,txt)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,String(v));if(txt!==undefined)e.textContent=txt;return e};
-let latest=null,latestReceivedAt=null,readFailure=null;
+let latest=null,latestReceivedAt=null,readFailure=null,latestEquityHistory=null;
 function renderCandidateIntelligence(){
  if(!latest){put('funnelSource','AWAITING SOURCE');put('decisionsCount','—');return;}
  const intelligence=latest.intelligence||null,isObserver=latest.source.strategy==='UNIMPLEMENTED_FLOW_BLOCKED'&&!intelligence;
@@ -328,131 +320,60 @@ function renderMetrics(m,source,intelligence=null){
  q.limitations.forEach(note=>add(p,'p',note,'panel-sub'));
 }
 
-let chartRange='recent';
-/** A same-time null placeholder does not erase a verified trading value.
- * Missing values at distinct timestamps and conflicting duplicate values remain gaps. */
-function tradingPnlTimeline(points){
- const timeline=[];
- for(const point of points){
-  const prior=timeline[timeline.length-1];
-  if(prior&&prior.at===point.at){
-   if(point.tradingUsd!==null&&!prior.conflict){
-    if(prior.tradingUsd!==null&&prior.tradingUsd!==point.tradingUsd){prior.tradingUsd=null;prior.conflict=true;}
-    else prior.tradingUsd=point.tradingUsd;
-   }
-  }else timeline.push({at:point.at,tradingUsd:point.tradingUsd,conflict:false});
- }
- return timeline;
-}
-/** Build a real line from verified values. A source gap marker at +1ms is
- * reporting metadata, not a distinct P&L observation. Ordinary ~15s samples
- * are joined; short unavailable intervals are dashed and longer gaps stay blank.
- * No financial source value or timestamp is modified. */
-function tradingPnlLines(rows){
- const solid=[],shortGaps=[],isolated=[];
- let run=[],previous=null,unavailable=false;
- const flush=()=>{
-  if(run.length>1)solid.push(run);
-  else if(run.length===1)isolated.push(run[0]);
-  run=[];
- };
- for(const point of rows){
-  if(point.conflict){flush();previous=null;unavailable=true;continue;}
-  if(point.tradingUsd===null){
-   const delta=previous===null?Infinity:Date.parse(point.at)-Date.parse(previous.at);
-   // The publisher uses previous.at+1ms for a conservative gap marker.
-   // It is not an additional market/financial measurement.
-   if(delta>=0&&delta<=100)continue;
-   unavailable=true;
-   continue;
-  }
-  if(previous===null){run=[point];previous=point;unavailable=false;continue;}
-  const gapMs=Date.parse(point.at)-Date.parse(previous.at);
-  if(gapMs>0&&gapMs<=22000&&!unavailable){
-   run.push(point);
-  }else{
-   flush();
-   if(gapMs>0&&gapMs<=45000)shortGaps.push([previous,point]);
-   run=[point];
-  }
-  previous=point;unavailable=false;
- }
- flush();
- const linked=new Set(shortGaps.flatMap(pair=>pair));
- return {solid,shortGaps,isolated:isolated.filter(point=>!linked.has(point))};
-}
+/** Single simple series: exact USD equity values from accepted authoritative
+ * portfolio reports. Never derive it from trading P&L or initial funding. */
 function plot(points){
  const root=byId('chart');root.replaceChildren();
  const width=Math.max(305,Math.min(960,Math.floor(root.parentElement.clientWidth||900)));
  const height=280;root.setAttribute('viewBox','0 0 '+width+' '+height);
- const left=width<500?58:77,right=width-20,top=20,bottom=height-34;
- for(let i=0;i<5;i++){const yy=top+(bottom-top)*i/4;root.append(makeSvg('line',{x1:left,y1:yy,x2:right,y2:yy,stroke:'rgba(118,167,207,.15)','stroke-dasharray':'3 6'}))}
- const timeline=tradingPnlTimeline(points),latestAt=timeline.length?Date.parse(timeline[timeline.length-1].at):0;
- const recentCutoff=latestAt-24*60*60*1000,recent=timeline.filter(p=>Date.parse(p.at)>=recentCutoff);
- const recentReady=recent.filter(p=>p.tradingUsd!==null).length>=2;
- const hasEarlier=timeline.some(p=>Date.parse(p.at)<recentCutoff);
- const focused=chartRange==='recent'&&recentReady;
- const visible=focused?recent:timeline;
- const rangeToggle=byId('chartRangeToggle');
- rangeToggle.hidden=!hasEarlier||!recentReady;
- rangeToggle.textContent=chartRange==='all'?'View recent 24h':'View full history';
- rangeToggle.setAttribute('aria-pressed',String(chartRange==='all'));
- put('chartWindowLabel',focused?'RECENT 24H · ZOOMED VALUE SCALE':'FULL REPORTED HISTORY · ZERO-BASED SCALE');
- const valid=visible.filter(p=>p.tradingUsd!==null);
- if(!valid.length){
-  root.append(makeSvg('text',{x:width/2,y:127,'text-anchor':'middle',fill:'#9dc5d9','font-size':width<420?13:15,'font-weight':650,'letter-spacing':1},'NO VERIFIED P&L SERIES'));
-  root.append(makeSvg('text',{x:width/2,y:153,'text-anchor':'middle',fill:'#637e9f','font-size':11},'Chart will populate from actual PAPER history'));
+ const left=width<500?67:79,right=width-17,top=20,bottom=height-37;
+ const valid=Array.isArray(points)?points.filter(p=>p&&typeof p.equityUsd==='number'&&Number.isFinite(p.equityUsd)&&typeof p.at==='string'&&Number.isFinite(Date.parse(p.at))):[];
+ if(valid.length<2){
+  root.append(makeSvg('text',{x:width/2,y:128,'text-anchor':'middle',fill:'#a9c7dc','font-size':width<420?12:14,'font-weight':600},'RECORDING PORTFOLIO EQUITY'));
+  root.append(makeSvg('text',{x:width/2,y:153,'text-anchor':'middle',fill:'#7b90aa','font-size':10},'Line forms as verified equity reports arrive'));
   return;
  }
- const from=Date.parse(visible[0].at),end=Math.max(from+1,Date.parse(visible[visible.length-1].at));
- const values=valid.map(p=>p.tradingUsd),smallest=Math.min(...values),largest=Math.max(...values);
- let low,high;
- if(focused){
-  const center=(smallest+largest)/2,half=Math.max((largest-smallest)*.62,.015,Math.abs(center)*.0025);
-  low=center-half;high=center+half;
- }else{
-  low=Math.min(0,smallest);high=Math.max(0,largest);
-  const span=Math.max(.01,high-low);low-=span*.14;high+=span*.14;
+ const from=Date.parse(valid[0].at),end=Math.max(from+1,Date.parse(valid[valid.length-1].at));
+ const values=valid.map(p=>p.equityUsd),minimum=Math.min(...values),maximum=Math.max(...values);
+ const padding=Math.max(2,(maximum-minimum)*.15),low=minimum-padding,high=maximum+padding;
+ const x=at=>left+(Date.parse(at)-from)/(end-from)*(right-left);
+ const y=value=>bottom-(value-low)/(high-low)*(bottom-top);
+ const format=value=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2,minimumFractionDigits:2}).format(value);
+ for(let i=0;i<5;i++){
+  const lineY=top+(bottom-top)*i/4;
+  root.append(makeSvg('line',{x1:left,y1:lineY,x2:right,y2:lineY,stroke:'rgba(144,167,209,.13)','stroke-width':1}));
+  root.append(makeSvg('text',{x:left-7,y:lineY+4,'text-anchor':'end',fill:'#a3b4c9','font-size':10},format(high-(high-low)*i/4)));
  }
- const x=at=>left+(Date.parse(at)-from)/(end-from)*(right-left),y=n=>bottom-(n-low)/(high-low)*(bottom-top);
- const precision=high-low<.02?4:high-low<.2?3:high-low<10?2:0;
- const fmt=n=>(n<0?'−$':'$')+Math.abs(n).toFixed(precision);
- for(let i=0;i<5;i++){const value=high-(high-low)*i/4;root.append(makeSvg('text',{x:left-7,y:top+(bottom-top)*i/4+4,'text-anchor':'end',fill:'#a4b9d2','font-size':10},fmt(value)))}
- if(low<=0&&high>=0)root.append(makeSvg('line',{x1:left,y1:y(0),x2:right,y2:y(0),stroke:'#6489a5','stroke-dasharray':'5 4','stroke-width':1}));
- const series=tradingPnlLines(visible);
- for(const segment of series.solid){
-  const d=segment.map((point,i)=>(i?'L':'M')+x(point.at).toFixed(2)+' '+y(point.tradingUsd).toFixed(2)).join(' ');
-  root.append(makeSvg('path',{'data-chart-series':'trading-pnl-line',d,stroke:'#92ffe7','stroke-width':3.8,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
+ const segments=[];let current=[];
+ for(const point of valid){
+  if(current.length&&Date.parse(point.at)-Date.parse(current[current.length-1].at)>5*60*1000){
+   if(current.length>=2)segments.push(current);
+   current=[];
+  }
+  current.push(point);
  }
- for(const [before,after] of series.shortGaps){
-  const d='M'+x(before.at).toFixed(2)+' '+y(before.tradingUsd).toFixed(2)+' L'+x(after.at).toFixed(2)+' '+y(after.tradingUsd).toFixed(2);
-  const bridge=makeSvg('path',{'data-chart-gap-bridge':'short-unobserved-interval',d,stroke:'#a4d7d0','stroke-width':2.1,'stroke-dasharray':'3 5',fill:'none','stroke-linecap':'round'});
-  bridge.append(makeSvg('title',{},'Short interval without a verified intermediate P&L reading'));
-  root.append(bridge);
+ if(current.length>=2)segments.push(current);
+ for(const segment of segments){
+  const d=segment.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.equityUsd).toFixed(2)).join(' ');
+  root.append(makeSvg('path',{'data-chart-series':'portfolio-equity-usd',d,stroke:'#91f9e2','stroke-width':3.2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
  }
- // Only genuinely isolated samples and the newest value need markers;
- // thousands of markers would disguise the verified line as a dot chart.
- for(const point of series.isolated){
-  root.append(makeSvg('circle',{'data-chart-point':'isolated',cx:x(point.at),cy:y(point.tradingUsd),r:2.8,fill:'#c6fbee',stroke:'#07121e','stroke-width':1}));
- }
- const newest=valid[valid.length-1];
- if(newest)root.append(makeSvg('circle',{'data-chart-point':'last-verified',cx:x(newest.at),cy:y(newest.tradingUsd),r:4,fill:'#effffb',stroke:'#07121e','stroke-width':1.6}));
- root.append(makeSvg('text',{x:left,y:height-12,fill:'#9bacc5','font-size':10},new Date(from).toISOString().slice(5,16).replace('T',' ')+' UTC'));
- root.append(makeSvg('text',{x:right,y:height-12,'text-anchor':'end',fill:'#9bacc5','font-size':10},new Date(end).toISOString().slice(5,16).replace('T',' ')+' UTC'));
+ root.append(makeSvg('text',{x:left,y:height-13,fill:'#9eacc4','font-size':10},new Date(from).toISOString().slice(5,16).replace('T',' ')+' UTC'));
+ root.append(makeSvg('text',{x:right,y:height-13,'text-anchor':'end',fill:'#9eacc4','font-size':10},new Date(end).toISOString().slice(5,16).replace('T',' ')+' UTC'));
 }
-function showSnapshot(s,received,f){
+function showSnapshot(s,received,f,equityHistory=null){
  latest=s;latestReceivedAt=received;readFailure=null;
+ latestEquityHistory=equityHistory&&equityHistory.accountId===s.account.id&&equityHistory.source==='accepted-authoritative-portfolio-equity'?equityHistory:null;
  renderCards(s);
  put('positionsCount',s.positions.length+' REPORTED');
  put('tradesCount',s.trades.length+' REPORTED');
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.');
  renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.');
- renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(s.pnl);
- put('chartBasis',s.intelligence?'Net token trading result translated at current SOL/USD; not historical realized USD profit':'Legacy equity change includes passive SOL/USD; do not interpret as pure trading profit');put('chartLegend',s.intelligence?'TOKEN TRADING · CURRENT USD':'LEGACY EQUITY CHANGE · USD');
+ renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[]);
+ put('chartBasis','Actual portfolio equity in USD, matching Portfolio Overview.');put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
- put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED P&L LINE':'HISTORY UNAVAILABLE');
- put('freshness','Generated '+s.times.generatedAt+(s.intelligence?' · Financial valuation ':' · Market ')+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
- put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps. Solid lines connect closely spaced verified P&L readings. Dashed segments indicate short intervals without intermediate readings; longer gaps remain blank. No missing financial values are invented.');
+ put('chartTag',(latestEquityHistory?.points?.length??0)>=2?'EQUITY HISTORY':'COLLECTING EQUITY');
+ put('freshness','Last source report '+s.times.generatedAt.slice(0,19).replace('T',' ')+' UTC');
+ put('chartNote','Source: verified Portfolio Equity (USD), sampled up to once per minute for a rolling 24 hours. History begins with this reporting receiver; earlier equity values are not inferred.');
  if(!s.intelligence){
   const state=String(f.state).toUpperCase();
   const bad=f.state==='stale'||f.state==='unavailable';
@@ -470,7 +391,7 @@ async function refresh(){
   if(!resp.ok)throw new Error(resp.status===503?'SOURCE_NOT_CONFIGURED':'REPORTING_HTTP_'+resp.status);
   const result=await resp.json();
   if(!result||!result.snapshot||!result.freshness)throw new Error('SNAPSHOT_UNAVAILABLE');
-  showSnapshot(result.snapshot,result.receivedAt,result.freshness);
+  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.equityHistory??null);
  }catch(error){
   const reason=error instanceof Error?error.message:'REPORTING_UNAVAILABLE';
   readFailure=reason;
@@ -508,8 +429,7 @@ function paintFreshness(){
 clock();setInterval(()=>{clock();paintFreshness()},1000);plot([]);refresh();setInterval(refresh,15000);
 window.addEventListener('focus',()=>{void refresh()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh()});
 byId('refreshNow').addEventListener('click',()=>{void refresh()});
-byId('chartRangeToggle').addEventListener('click',()=>{chartRange=chartRange==='recent'?'all':'recent';plot(latest?latest.pnl:[]);});
-window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
+window.addEventListener('resize',()=>plot(latestEquityHistory?.points??[]));
 
 /** UI-only progressive disclosure. All projections, API endpoints and financial boundaries are unchanged. */
 (function compactCommandView(){
