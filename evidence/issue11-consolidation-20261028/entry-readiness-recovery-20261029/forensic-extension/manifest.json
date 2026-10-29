@@ -54,5 +54,9 @@
     "Current financial controls are not substituted for historical state. Malformed, missing, bounded or tied control history stays unknown.",
     "Reconciliation facts and raw entry controls are independent; unavailable reconciliation does not erase established controls.",
     "Private EC2 results remain unknown until owner execution and validated artifact retrieval."
-  ]
+  ],
+  "stageVerifiedAt": "2026-10-29T18:09:16.440000+00:00",
+  "adminCommit": "c41af6981de27e9cfd7d5306d025399daba187a6",
+  "stageWorkflowRun": 40928082335,
+  "stageVerified": true
 }
