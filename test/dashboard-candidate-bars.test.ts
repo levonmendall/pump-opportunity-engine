@@ -18,7 +18,7 @@ class FakeElement{
  style:Record<string,string>={};
  readonly classes=new Set<string>();
  readonly classList={add:(name:string)=>this.classes.add(name)};
- get lastElementChild(){return this.children.at(-1)??null;}
+ get lastElementChild():FakeElement|null{return this.children.at(-1)??null;}
  replaceChildren(){this.children=[];}
  querySelector(selector:string):FakeElement|null{
   const name=selector.startsWith('.')?selector.slice(1):selector;
