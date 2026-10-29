@@ -1,0 +1,26 @@
+✖ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (4342.22871ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5365.259454
+
+✖ failing tests:
+
+test at evidence/two-position-operating-20261029/guarded-two-position.mts:1:20246
+✖ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (4342.22871ms)
+  AssertionError [ERR_ASSERTION]: completed protection gap 4880ms
+      at assertProtection (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:81:705)
+      at TestContext.<anonymous> (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:96:16)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

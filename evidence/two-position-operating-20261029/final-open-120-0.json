@@ -1,0 +1,1630 @@
+{
+  "at": 1793058323990,
+  "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+  "watch": {
+    "signature": "4aZevwackNQz9Sv6aLDhXUS1RiZLdKqEmDqCHovMY52mjSZMUoRLsyXqVojr413M3cMcjdUYeDsx182fBm6XiMfr",
+    "feedMint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+    "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+    "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+    "migrationAt": 1793057660000,
+    "verifiedAt": 1793058260000,
+    "firstSeenAt": 1793058260000,
+    "state": "DEEP_OBSERVATION",
+    "reason": "fresh native confirmed pool observation allocated; no financial permission",
+    "lastActivityAt": null,
+    "lastActivityEvidence": null,
+    "lastDemotedAt": null,
+    "deepSince": 1793058260000,
+    "deferUntil": 0,
+    "waitingSince": 1793058260000,
+    "promotions": 1,
+    "repromotions": 0,
+    "demotions": 0,
+    "completeWindows": 1,
+    "everHadWindow": true,
+    "lastWindowAt": 1793058320370,
+    "history": [
+      {
+        "at": 1793058260000,
+        "state": "DISCOVERED",
+        "reason": "processed migration hint; base/quote/pool identity and time unverified"
+      },
+      {
+        "at": 1793058260000,
+        "state": "WATCH",
+        "reason": "canonical migration identity verified; current support and fresh observation still required"
+      },
+      {
+        "at": 1793058260000,
+        "state": "DEEP_OBSERVATION",
+        "reason": "fresh native confirmed pool observation allocated; no financial permission"
+      }
+    ]
+  },
+  "engine": {
+    "version": "native-candidate-only-v1",
+    "mode": "candidate-evaluation",
+    "experimental": true,
+    "authoritative": false,
+    "running": true,
+    "generatedAt": 1793058323990,
+    "strategyVersion": "persistent-buying-v0-unfrozen",
+    "dataContract": "confirmed-program-activity-v3-shadow",
+    "auditProfile": {
+      "version": "native-resumable-executed-flow-quiet-first-batch-v5",
+      "pageLimit": 1000,
+      "adaptivePageSizing": true,
+      "completenessScope": "executed-transactions",
+      "postSnapshotTail": true,
+      "maximumPages": 6,
+      "physicalTimeoutMs": 1500,
+      "operationBoundMs": 2000,
+      "maximumAuditSpanMs": 9999,
+      "predictiveCadenceMs": 10000,
+      "meaning": "One physical page per step, initially100 for quiet windows and up to1000 when required; controls may run between pages. Independently confirmed failed transactions remain packet-coverage diagnostics, not executed flow. Actual post-snapshot packets may corroborate history at final availability without changing original target features. All pages and predictive admission must complete in the original ten-second decision bucket. Quiet100-row first pages may share one bounded HTTP envelope; busy continuations remain individual. Six is an opportunistic page ceiling, not a promise that six2s bounds fit this bucket; every page retains actual deadline admission. Initial100 plus five1000 pages covers at most5100rows. This is not a two-second whole-audit or holding-protection bound."
+    },
+    "auditDispatchDiagnostics": {
+      "version": "bounded-native-audit-dispatch-v1",
+      "maximumTransitionRecordsPerTarget": 16,
+      "meaning": "Coalesced local eligibility/admission observations, not physical-start or provider-saturation claims. Actual physical starts and settlement remain separately recorded."
+    },
+    "observationAgePolicy": {
+      "version": "observation-age-v1",
+      "minimumObservationAgeMs": 0,
+      "recentMaximumAgeMs": 7200000,
+      "selectedOlderMaximumAgeMs": 21600000,
+      "olderActivityMaximumAgeMs": 60000,
+      "primaryWatchCapacity": 150,
+      "olderWatchCapacity": 24,
+      "totalWatchCapacity": 174,
+      "maximumOlderDeep": 1
+    },
+    "financialExecutionAuthorized": false,
+    "financialWriterOpened": false,
+    "liveTradingEnabled": false,
+    "watch": {
+      "rows": [
+        {
+          "signature": "4aZevwackNQz9Sv6aLDhXUS1RiZLdKqEmDqCHovMY52mjSZMUoRLsyXqVojr413M3cMcjdUYeDsx182fBm6XiMfr",
+          "feedMint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+          "migrationAt": 1793057660000,
+          "verifiedAt": 1793058260000,
+          "firstSeenAt": 1793058260000,
+          "state": "DEEP_OBSERVATION",
+          "reason": "fresh native confirmed pool observation allocated; no financial permission",
+          "lastActivityAt": null,
+          "lastActivityEvidence": null,
+          "lastDemotedAt": null,
+          "deepSince": 1793058260000,
+          "deferUntil": 0,
+          "waitingSince": 1793058260000,
+          "promotions": 1,
+          "repromotions": 0,
+          "demotions": 0,
+          "completeWindows": 1,
+          "everHadWindow": true,
+          "lastWindowAt": 1793058320370,
+          "history": [
+            {
+              "at": 1793058260000,
+              "state": "DISCOVERED",
+              "reason": "processed migration hint; base/quote/pool identity and time unverified"
+            },
+            {
+              "at": 1793058260000,
+              "state": "WATCH",
+              "reason": "canonical migration identity verified; current support and fresh observation still required"
+            },
+            {
+              "at": 1793058260000,
+              "state": "DEEP_OBSERVATION",
+              "reason": "fresh native confirmed pool observation allocated; no financial permission"
+            }
+          ]
+        },
+        {
+          "signature": "26Usi4UHnwyVqwUxqyRpkKAMquZ7fie2Y1dHJXxZQoBS5TmJVj1gdq1yn5d9FfAfpnD2BMd78RgM8BNw6NANZnPD",
+          "feedMint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "migrationAt": 1793057660000,
+          "verifiedAt": 1793058260000,
+          "firstSeenAt": 1793058260000,
+          "state": "DEEP_OBSERVATION",
+          "reason": "fresh native confirmed pool observation allocated; no financial permission",
+          "lastActivityAt": null,
+          "lastActivityEvidence": null,
+          "lastDemotedAt": null,
+          "deepSince": 1793058260000,
+          "deferUntil": 0,
+          "waitingSince": 1793058260000,
+          "promotions": 1,
+          "repromotions": 0,
+          "demotions": 0,
+          "completeWindows": 1,
+          "everHadWindow": true,
+          "lastWindowAt": 1793058320120,
+          "history": [
+            {
+              "at": 1793058260000,
+              "state": "DISCOVERED",
+              "reason": "processed migration hint; base/quote/pool identity and time unverified"
+            },
+            {
+              "at": 1793058260000,
+              "state": "WATCH",
+              "reason": "canonical migration identity verified; current support and fresh observation still required"
+            },
+            {
+              "at": 1793058260000,
+              "state": "DEEP_OBSERVATION",
+              "reason": "fresh native confirmed pool observation allocated; no financial permission"
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "observationAgePolicy": {
+          "version": "observation-age-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 21600000,
+          "olderActivityMaximumAgeMs": 60000,
+          "primaryWatchCapacity": 150,
+          "olderWatchCapacity": 24,
+          "totalWatchCapacity": 174,
+          "maximumOlderDeep": 1
+        },
+        "discovered": 2,
+        "duplicates": 0,
+        "verified": 2,
+        "promoted": 2,
+        "repromoted": 0,
+        "demoted": 0,
+        "expired": 0,
+        "capacityExclusions": 0,
+        "structuralExclusions": 0,
+        "completeWindows": 2,
+        "evicted": 0,
+        "activityHints": 0,
+        "promotionWaitTotalMs": 0,
+        "promotionWaitMaximumMs": 0,
+        "known": 2,
+        "maximumIdentities": 174,
+        "maximumOlderResearchIdentities": 24,
+        "minimumPrimaryIdentityCapacity": 150,
+        "observationEligibleKnown": 2,
+        "observationCapacityAwaiting": 0,
+        "observationCapacityProbeReady": 0,
+        "observationQueued": 0,
+        "ageCohorts": {
+          "preEntry": 0,
+          "entryEligible": 2,
+          "olderSelected": 0
+        },
+        "watch": 0,
+        "capacityAwaiting": 0,
+        "capacityProbeReady": 0,
+        "unverified": 0,
+        "eligibleKnown": 2,
+        "deepActive": 2,
+        "maximumDeep": 4,
+        "queued": 0,
+        "waitMs": {
+          "mean": 0,
+          "maximum": 0
+        },
+        "promotionWaitMs": {
+          "mean": 0,
+          "maximum": 0,
+          "entryAgePromotions": 2
+        },
+        "coverage": {
+          "denominator": "currently entry-age-eligible verified identities retained in this bounded registry; at least one audited window during this eligibility horizon",
+          "eligibleKnown": 2,
+          "atLeastOneValidWindow": 2,
+          "percent": 100,
+          "wholeMarketPercent": null
+        },
+        "states": {
+          "DISCOVERED": 0,
+          "VERIFYING": 0,
+          "WATCH": 0,
+          "DEEP_OBSERVATION": 2,
+          "QUALIFIED": 0,
+          "ENTRY_PENDING": 0,
+          "HELD": 0,
+          "DEFERRED": 0,
+          "EXPIRED": 0,
+          "PERMANENTLY_UNSUPPORTED": 0
+        }
+      }
+    },
+    "counters": {
+      "migrationHints": 0,
+      "verificationQueueRefusals": 0,
+      "verificationAttempts": 0,
+      "verifiedOrigins": 2,
+      "verificationRefusals": 0,
+      "normalizedEvents": 13,
+      "qualityGaps": 0,
+      "featureViews": 4,
+      "auditedWindows": 2,
+      "predictiveAssessments": 2,
+      "predictiveFailed": 0,
+      "predictiveNotRejected": 2,
+      "predictiveUnavailable": 0,
+      "auditUnavailable": 0,
+      "auditUnusable": 0,
+      "decisionDeadlineMisses": 0,
+      "auditFenceWarmingWindows": 0,
+      "uniqueEvaluated": 2,
+      "strictV2BaselineUnavailableViews": 0,
+      "protocolAwareShadowViews": 2
+    },
+    "maximumSimultaneousCandidates": 2,
+    "verificationQueue": 0,
+    "lastDispatchAt": 1793058320500,
+    "lastOutcome": "audit:7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+    "admissionsClosedReason": null,
+    "decisions": [
+      {
+        "at": 1793058320120,
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "stage": "shadow-predictive-not-rejected",
+        "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+      },
+      {
+        "at": 1793058320370,
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "stage": "shadow-predictive-not-rejected",
+        "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed"
+      }
+    ],
+    "lastAuditAt": 1793058320370,
+    "lastPredictiveAt": 1793058320370,
+    "candidates": [
+      {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "migrationAt": 1793057660000,
+        "allocatedAt": 1793058260000,
+        "openedAt": 1793058260000,
+        "lastAssessmentEnd": 1793058320000,
+        "auditDispatch": {
+          "version": "bounded-native-audit-dispatch-v1",
+          "windowEndAt": 1793058320000,
+          "decisionDeadlineAt": 1793058329999,
+          "firstReadyAt": 1793058320000,
+          "lastAt": 1793058320120,
+          "reasonCounts": {
+            "eligible": 1,
+            "native-service-dispatch": 1,
+            "audit-selected": 1,
+            "page-admission": 1,
+            "page-response": 1
+          },
+          "transitionRecords": 5,
+          "omittedTransitions": 0,
+          "lastState": {
+            "reason": "page-response",
+            "nextAction": "validate-logical-session",
+            "context": {
+              "requestedLimit": 100,
+              "responseRows": 7,
+              "readyOrder": 0,
+              "readyCandidates": 1,
+              "page": 1,
+              "sessionOpened": true
+            }
+          },
+          "final": true
+        },
+        "auditSession": null,
+        "snapshot": {
+          "scope": {
+            "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+            "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD"
+          },
+          "dataContract": "confirmed-program-activity-v3-shadow",
+          "openedAt": 1793058260000,
+          "connectionId": 1,
+          "subscription": 41,
+          "connected": true,
+          "sourceSupportFresh": true,
+          "hasQualityLoss": false,
+          "warm": true,
+          "features": {
+            "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+            "asOf": 1793058323990,
+            "windowStartAt": 1793058260000,
+            "windowEndAt": 1793058320000,
+            "sufficientlyObserved": true,
+            "qualityReason": null,
+            "buyLamports": "1800000000",
+            "sellLamports": "0",
+            "netBuyLamports": "1800000000",
+            "tradeCount": 6,
+            "provisionalTradeCount": 0,
+            "distinctBuyerWallets": 6,
+            "largestBuyerBps": 1667,
+            "positiveNetBuckets": 6,
+            "priceReturnBps": 5000,
+            "firstPrice": {
+              "quoteLamports": "300000000",
+              "tokenUnits": "300000"
+            },
+            "lastPrice": {
+              "quoteLamports": "300000000",
+              "tokenUnits": "200000"
+            }
+          },
+          "supportContext": {
+            "slot": 461852059,
+            "availableAt": 1793058323990,
+            "bankClockAt": 1793058323000
+          },
+          "openingSupportContext": {
+            "slot": 461852043,
+            "availableAt": 1793058260000,
+            "bankClockAt": 1793058260000
+          },
+          "supportContexts": [
+            {
+              "slot": 461852043,
+              "availableAt": 1793058260000,
+              "bankClockAt": 1793058260000
+            },
+            {
+              "slot": 461852059,
+              "availableAt": 1793058323990,
+              "bankClockAt": 1793058323000
+            }
+          ],
+          "strictV2Unavailable": false
+        }
+      },
+      {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "migrationAt": 1793057660000,
+        "allocatedAt": 1793058260000,
+        "openedAt": 1793058260000,
+        "lastAssessmentEnd": 1793058320000,
+        "auditDispatch": {
+          "version": "bounded-native-audit-dispatch-v1",
+          "windowEndAt": 1793058320000,
+          "decisionDeadlineAt": 1793058329999,
+          "firstReadyAt": 1793058320000,
+          "lastAt": 1793058320370,
+          "reasonCounts": {
+            "eligible": 1,
+            "native-service-dispatch": 1,
+            "peer-selected": 1,
+            "audit-selected": 1,
+            "page-admission": 1,
+            "page-response": 1
+          },
+          "transitionRecords": 6,
+          "omittedTransitions": 0,
+          "lastState": {
+            "reason": "page-response",
+            "nextAction": "validate-logical-session",
+            "context": {
+              "requestedLimit": 100,
+              "responseRows": 7,
+              "readyOrder": 0,
+              "readyCandidates": 1,
+              "page": 1,
+              "sessionOpened": true
+            }
+          },
+          "final": true
+        },
+        "auditSession": null,
+        "snapshot": {
+          "scope": {
+            "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+            "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv"
+          },
+          "dataContract": "confirmed-program-activity-v3-shadow",
+          "openedAt": 1793058260000,
+          "connectionId": 1,
+          "subscription": 42,
+          "connected": true,
+          "sourceSupportFresh": true,
+          "hasQualityLoss": false,
+          "warm": true,
+          "features": {
+            "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+            "asOf": 1793058323990,
+            "windowStartAt": 1793058260000,
+            "windowEndAt": 1793058320000,
+            "sufficientlyObserved": true,
+            "qualityReason": null,
+            "buyLamports": "1800000000",
+            "sellLamports": "0",
+            "netBuyLamports": "1800000000",
+            "tradeCount": 6,
+            "provisionalTradeCount": 0,
+            "distinctBuyerWallets": 6,
+            "largestBuyerBps": 1667,
+            "positiveNetBuckets": 6,
+            "priceReturnBps": 5000,
+            "firstPrice": {
+              "quoteLamports": "300000000",
+              "tokenUnits": "300000"
+            },
+            "lastPrice": {
+              "quoteLamports": "300000000",
+              "tokenUnits": "200000"
+            }
+          },
+          "supportContext": {
+            "slot": 461852059,
+            "availableAt": 1793058323990,
+            "bankClockAt": 1793058323000
+          },
+          "openingSupportContext": {
+            "slot": 461852043,
+            "availableAt": 1793058260000,
+            "bankClockAt": 1793058260000
+          },
+          "supportContexts": [
+            {
+              "slot": 461852043,
+              "availableAt": 1793058260000,
+              "bankClockAt": 1793058260000
+            },
+            {
+              "slot": 461852059,
+              "availableAt": 1793058323990,
+              "bankClockAt": 1793058323000
+            }
+          ],
+          "strictV2Unavailable": false
+        }
+      }
+    ],
+    "flow": {
+      "dataContract": "confirmed-program-activity-v3-shadow",
+      "candidates": 2,
+      "retiring": 0,
+      "nextServiceAt": 1793058343990,
+      "fatal": null,
+      "physicalTransportsSettled": false
+    },
+    "rpc": {
+      "persistent": true,
+      "lifetimeCapsEnabled": false,
+      "lifetimeLimits": null,
+      "recoveryBaselinePaths": [
+        "/tmp/poe-OFFLINE-native-paper-t2iK2h/prior-rpc.json"
+      ],
+      "recoveryBaselineCheckpointSha256": null,
+      "compactedAccountingEpochs": 0,
+      "historyRoute": {
+        "version": "publicnode-history-only-v1",
+        "endpoint": "https://solana-rpc.publicnode.com",
+        "method": "getSignaturesForAddress"
+      },
+      "signatureHistoryBatch": {
+        "scope": "THIS_PILOT_RUN",
+        "plans": 0,
+        "logicalQueriesRequested": 0,
+        "physicalHttpStarts": 0,
+        "logicalQueriesInvoked": 0,
+        "logicalQueriesValidated": 0,
+        "successfulLogicalQueries": 0,
+        "rpcErrorResponses": 0,
+        "providerBackoffBatches": 0,
+        "logicalQueriesWithoutValidatedResponse": 0,
+        "maximumResponseBytes": 524288,
+        "disabledReason": null,
+        "meaning": "Validated counts describe JSON-RPC envelopes, not audited pool windows. One physical HTTP envelope contains multiple provider queries; provider batch eligibility and metering remain unverified."
+      },
+      "queryTimeoutIsolation": {
+        "scope": "opt-in independently scheduled history only",
+        "isolatedTimeouts": 0,
+        "globalEscalations": 0,
+        "maximumQueries": 64,
+        "rows": [],
+        "outagePolicy": "three distinct history query timeouts within10s retain history-provider backoff; primary HTTP/control remain independently gated",
+        "restartMeaning": "Local research backoff only; actual provider cooldown remains separately persisted"
+      },
+      "persistence": {
+        "attempts": 16,
+        "totalMs": 1.9971929999996973,
+        "maximumMs": 0.24716699999999037
+      },
+      "derivedStatus": {
+        "maximumDelayMs": 1000,
+        "passiveReceiptCalls": 0,
+        "coalescedPassiveReceipts": 0,
+        "timerFlushes": 0,
+        "flushFailures": 0,
+        "lastFailureAt": null,
+        "maximumObservedDirtyAgeMs": 0,
+        "lastGeneratedAt": 1793058323990,
+        "dirty": false,
+        "pendingSinceAt": null,
+        "pendingAgeMs": 0,
+        "authority": "Derived metadata only; chapter counterbooks durably account every receipt. Not a market-data timestamp.",
+        "timing": "At most1s scheduled delay; actual flush can be late during event-loop stalls and remains source-timestamped."
+      },
+      "profile": "candidate-native-two-hour-90-research-v1",
+      "runId": "offline-two-position-paced",
+      "startedAt": 1793058260000,
+      "deadlineAt": null,
+      "remainingMs": null,
+      "chapter": 1,
+      "chapterPaths": [
+        "/tmp/poe-OFFLINE-native-paper-t2iK2h/prior-rpc.json"
+      ],
+      "baselineCheckpointSha256": null,
+      "activeChapterPath": "/tmp/poe-OFFLINE-native-paper-t2iK2h/rpc/chapter-001.json",
+      "cumulativeUnits": 13,
+      "newUnits": 13,
+      "accountedCumulativeResponseBytes": 42166,
+      "newAccountedResponseBytes": 42166,
+      "maximumNewUnits": 11500,
+      "maximumNewResponseBytes": 268435456,
+      "requestLimits": {
+        "maxStartsPer10s": 20,
+        "maxGetTransactionStartsPer10s": 8,
+        "maxStartsPerMinute": 90,
+        "minSpacingMs": 250,
+        "physicalInFlight": 1
+      },
+      "methodPacing": {
+        "getTransactionStartsLast10s": [],
+        "capacityRefusals": 0,
+        "baselineUnknownMethodsCountConservatively": true
+      },
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "uncertainResponseBytes": 0,
+      "currentChapterUncertainResponseBytes": 0,
+      "inheritedUncertaintyIsRetainedInBaseline": true,
+      "cooldownUntil": 0,
+      "controlCooldownUntil": 0,
+      "historyCooldownUntil": 0,
+      "lastFailureWasDataControl": false,
+      "closed": false,
+      "fatal": null,
+      "chapterUsage": {
+        "continuousAccounting": true,
+        "persistence": {
+          "attempts": 66,
+          "totalMs": 5.7724720000003344,
+          "maximumMs": 0.40552200000001903
+        },
+        "grantId": "offline-two-position-paced-1",
+        "limits": {
+          "maxNewUnits": 200,
+          "maxCumulativeUnits": null,
+          "maxHttpBytes": 268435456,
+          "maxWsBytes": 268435456,
+          "maxCombinedBytes": 268435456,
+          "maxCumulativeBytes": null,
+          "minSpacingMs": 250,
+          "maxStartsPerMinute": 90,
+          "maxStartsPer10s": 20
+        },
+        "baseline": {
+          "calls": 0,
+          "bytes": 0,
+          "starts": [],
+          "refusal": "RPC_HTTP_429",
+          "refusalAt": 1793058140000,
+          "sha256": "615e97de3e505553ce07cb0dac0d2ad5be00205402851712b30f972a24e0c0fd"
+        },
+        "cumulativeUnits": 13,
+        "newUnits": 13,
+        "actualInvokedUnits": 13,
+        "cumulativeResponseBytes": 42166,
+        "httpBytes": 42166,
+        "wsBytes": 0,
+        "newResponseBytes": 42166,
+        "remainingGrantUnits": 187,
+        "remainingCumulativeUnits": null,
+        "remainingGrantResponseBytes": 268393290,
+        "remainingCumulativeResponseBytes": null,
+        "pending": [],
+        "uncertainResponseBytes": 0,
+        "rolling60SecondStarts": 13,
+        "rolling10SecondStarts": 13,
+        "starts": [
+          1793058320000,
+          1793058320250,
+          1793058320500,
+          1793058320750,
+          1793058321000,
+          1793058321250,
+          1793058321500,
+          1793058321750,
+          1793058322000,
+          1793058323120,
+          1793058323370,
+          1793058323620,
+          1793058323870
+        ],
+        "actualInvocations": [
+          {
+            "id": 1,
+            "at": 1793058320000
+          },
+          {
+            "id": 2,
+            "at": 1793058320250
+          },
+          {
+            "id": 3,
+            "at": 1793058320500
+          },
+          {
+            "id": 4,
+            "at": 1793058320750
+          },
+          {
+            "id": 5,
+            "at": 1793058321000
+          },
+          {
+            "id": 6,
+            "at": 1793058321250
+          },
+          {
+            "id": 7,
+            "at": 1793058321500
+          },
+          {
+            "id": 8,
+            "at": 1793058321750
+          },
+          {
+            "id": 9,
+            "at": 1793058322000
+          },
+          {
+            "id": 10,
+            "at": 1793058323120
+          },
+          {
+            "id": 11,
+            "at": 1793058323370
+          },
+          {
+            "id": 12,
+            "at": 1793058323620
+          },
+          {
+            "id": 13,
+            "at": 1793058323870
+          }
+        ],
+        "reservationStarts": [
+          1793058320000,
+          1793058320250,
+          1793058320500,
+          1793058320750,
+          1793058321000,
+          1793058321250,
+          1793058321500,
+          1793058321750,
+          1793058322000,
+          1793058323120,
+          1793058323370,
+          1793058323620,
+          1793058323870
+        ],
+        "byOperation": {
+          "http:getSignaturesForAddress": 2,
+          "http:getMultipleAccounts": 5,
+          "http:getMinimumBalanceForRentExemption": 6
+        },
+        "durationsMs": [
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120
+        ],
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "haltedReason": null,
+        "startedAt": 1793058320000,
+        "totalMs": 300000,
+        "deadlineAt": 1793058620000,
+        "closed": false,
+        "storageFailed": false
+      },
+      "rawChapterDispatchWindow": {
+        "readyAt": 1793058324120,
+        "waitMs": 130,
+        "physicalBusy": false,
+        "haltedReason": null
+      },
+      "dispatchWindow": {
+        "readyAt": 1793058324120,
+        "waitMs": 130,
+        "physicalBusy": false,
+        "haltedReason": null,
+        "actualPhysicalBusy": false,
+        "needsChapterRecovery": false,
+        "recoveryAdmissible": false,
+        "uncertainResponseReservationsRetained": 0
+      },
+      "rpcDispatchWindow": {
+        "readyAt": 1793058324120,
+        "waitMs": 130,
+        "physicalBusy": false,
+        "haltedReason": null,
+        "actualPhysicalBusy": false,
+        "needsChapterRecovery": false,
+        "recoveryAdmissible": false,
+        "uncertainResponseReservationsRetained": 0
+      },
+      "controlDispatchWindow": {
+        "readyAt": 1793058324120,
+        "waitMs": 130,
+        "physicalBusy": false,
+        "haltedReason": null,
+        "actualPhysicalBusy": false,
+        "needsChapterRecovery": false,
+        "recoveryAdmissible": false,
+        "uncertainResponseReservationsRetained": 0
+      },
+      "historyDispatchWindow": {
+        "readyAt": 1793058324120,
+        "waitMs": 130,
+        "physicalBusy": false,
+        "haltedReason": null,
+        "actualPhysicalBusy": false,
+        "needsChapterRecovery": false,
+        "recoveryAdmissible": false,
+        "uncertainResponseReservationsRetained": 0
+      },
+      "automaticRequestRetries": 0
+    },
+    "economicResults": "unavailable; no financial writer or execution"
+  },
+  "decisions": [
+    {
+      "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+      "at": 1793058322120,
+      "stage": "qualified",
+      "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+      "ruleVersion": "persistent-buying-pilot-concurrent-stage-2-v1",
+      "features": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "asOf": 1793058322120,
+        "windowStartAt": 1793058260000,
+        "windowEndAt": 1793058320000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "1800000000",
+        "sellLamports": "0",
+        "netBuyLamports": "1800000000",
+        "tradeCount": 6,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 6,
+        "largestBuyerBps": 1667,
+        "positiveNetBuckets": 6,
+        "priceReturnBps": 5000,
+        "firstPrice": {
+          "quoteLamports": "300000000",
+          "tokenUnits": "300000"
+        },
+        "lastPrice": {
+          "quoteLamports": "300000000",
+          "tokenUnits": "200000"
+        }
+      },
+      "quote": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "side": "buy",
+        "inputUnits": "47992665",
+        "outputUnits": "22273040838",
+        "at": 1793058321620,
+        "evidence": "rpc-market:24d0e303e9f4faab308980db12f23441a3ce99b3c28b04379451b26f1de35857",
+        "slot": 461852057,
+        "effectiveQuoteLiquidityLamports": "117583801706",
+        "requiredDepositLamports": "2000335",
+        "depositEvidence": "pilot-entry-validated-costs:f2c282a8b85e794484aaea567a4d74dd788bea4d44a1013ac17ab4adbd6b361a"
+      }
+    }
+  ],
+  "technical": [
+    {
+      "kind": "native-paper-entry-permission",
+      "data": {
+        "at": 1793058321370,
+        "result": {
+          "enabled": true,
+          "reason": "explicit verified runtime readiness"
+        },
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "windowEndAt": 1793058320000
+      }
+    }
+  ],
+  "audit": [
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "at": 1793058320000,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9999,
+        "reason": "eligible",
+        "nextAction": "await-shared-dispatch",
+        "context": {
+          "readyOrder": 0,
+          "readyCandidates": 1,
+          "page": null,
+          "sessionOpened": false
+        },
+        "transitionRecord": 1,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "at": 1793058320000,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9999,
+        "reason": "eligible",
+        "nextAction": "await-shared-dispatch",
+        "context": {
+          "readyOrder": 0,
+          "readyCandidates": 1,
+          "page": null,
+          "sessionOpened": false
+        },
+        "transitionRecord": 1,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "at": 1793058320000,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9999,
+        "reason": "native-service-dispatch",
+        "nextAction": "perform-required-native-service",
+        "context": {
+          "rpcReadyAt": null,
+          "historyReadyAt": null,
+          "controlReadyAt": null,
+          "physicalBusy": null,
+          "actualPhysicalBusy": null,
+          "inFlight": 0,
+          "waitingOrOperating": false,
+          "rolling60SecondStarts": null,
+          "rolling10SecondStarts": null,
+          "startsPerMinuteLimit": 90,
+          "startsPer10SecondLimit": 20,
+          "providerCooldownUntil": 0,
+          "historyCooldownUntil": 0,
+          "controlCooldownUntil": 0,
+          "nextNativeServiceAt": 1793058340000,
+          "nextNativeServiceDomain": null,
+          "nextNativeServiceAction": null,
+          "nativeServiceSlackMs": 19800,
+          "pageOperationBoundMs": 2000,
+          "readyOrder": 0,
+          "readyCandidates": 2,
+          "page": null,
+          "sessionOpened": false
+        },
+        "transitionRecord": 2,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "at": 1793058320000,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9999,
+        "reason": "native-service-dispatch",
+        "nextAction": "perform-required-native-service",
+        "context": {
+          "rpcReadyAt": null,
+          "historyReadyAt": null,
+          "controlReadyAt": null,
+          "physicalBusy": null,
+          "actualPhysicalBusy": null,
+          "inFlight": 0,
+          "waitingOrOperating": false,
+          "rolling60SecondStarts": null,
+          "rolling10SecondStarts": null,
+          "startsPerMinuteLimit": 90,
+          "startsPer10SecondLimit": 20,
+          "providerCooldownUntil": 0,
+          "historyCooldownUntil": 0,
+          "controlCooldownUntil": 0,
+          "nextNativeServiceAt": 1793058340000,
+          "nextNativeServiceDomain": null,
+          "nextNativeServiceAction": null,
+          "nativeServiceSlackMs": 19800,
+          "pageOperationBoundMs": 2000,
+          "readyOrder": 1,
+          "readyCandidates": 2,
+          "page": null,
+          "sessionOpened": false
+        },
+        "transitionRecord": 2,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "at": 1793058320000,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9999,
+        "reason": "audit-selected",
+        "nextAction": "dispatch-audit-page",
+        "context": {
+          "rpcReadyAt": null,
+          "historyReadyAt": null,
+          "controlReadyAt": null,
+          "physicalBusy": null,
+          "actualPhysicalBusy": null,
+          "inFlight": 0,
+          "waitingOrOperating": false,
+          "rolling60SecondStarts": null,
+          "rolling10SecondStarts": null,
+          "startsPerMinuteLimit": 90,
+          "startsPer10SecondLimit": 20,
+          "providerCooldownUntil": 0,
+          "historyCooldownUntil": 0,
+          "controlCooldownUntil": 0,
+          "nextNativeServiceAt": 1793058340000,
+          "nextNativeServiceDomain": null,
+          "nextNativeServiceAction": null,
+          "nativeServiceSlackMs": 19800,
+          "pageOperationBoundMs": 2000,
+          "selectedMint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "selectedJob": "audit:2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "jobDeadlineAt": 1793058329999,
+          "latestStartAt": 1793058327999,
+          "readyOrder": 0,
+          "readyCandidates": 2,
+          "page": null,
+          "sessionOpened": false
+        },
+        "transitionRecord": 3,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "at": 1793058320000,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9999,
+        "reason": "peer-selected",
+        "nextAction": "await-selected-peer-audit-page",
+        "context": {
+          "rpcReadyAt": null,
+          "historyReadyAt": null,
+          "controlReadyAt": null,
+          "physicalBusy": null,
+          "actualPhysicalBusy": null,
+          "inFlight": 0,
+          "waitingOrOperating": false,
+          "rolling60SecondStarts": null,
+          "rolling10SecondStarts": null,
+          "startsPerMinuteLimit": 90,
+          "startsPer10SecondLimit": 20,
+          "providerCooldownUntil": 0,
+          "historyCooldownUntil": 0,
+          "controlCooldownUntil": 0,
+          "nextNativeServiceAt": 1793058340000,
+          "nextNativeServiceDomain": null,
+          "nextNativeServiceAction": null,
+          "nativeServiceSlackMs": 19800,
+          "pageOperationBoundMs": 2000,
+          "selectedMint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "selectedJob": "audit:2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "jobDeadlineAt": 1793058329999,
+          "latestStartAt": 1793058327999,
+          "readyOrder": 1,
+          "readyCandidates": 2,
+          "page": null,
+          "sessionOpened": false
+        },
+        "transitionRecord": 3,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-candidate-audit-session-open",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058320000,
+        "targetEndAt": 1793058320000,
+        "deadlineAt": 1793058329999,
+        "maximumPages": 6,
+        "onePhysicalPagePerStep": true,
+        "notHoldingProtectionAcceptance": true
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "at": 1793058320000,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9999,
+        "reason": "page-admission",
+        "nextAction": "invoke-shared-rpc",
+        "context": {
+          "requestedLimit": 100,
+          "operationBoundMs": 2125,
+          "latestStartAt": 1793058327874,
+          "readyOrder": 0,
+          "readyCandidates": 1,
+          "page": 1,
+          "sessionOpened": true
+        },
+        "transitionRecord": 4,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "at": 1793058320120,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9879,
+        "reason": "page-response",
+        "nextAction": "validate-logical-session",
+        "context": {
+          "requestedLimit": 100,
+          "responseRows": 7,
+          "readyOrder": 0,
+          "readyCandidates": 1,
+          "page": 1,
+          "sessionOpened": true
+        },
+        "transitionRecord": 5,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-flow-audit-post-snapshot-tail",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "target": {
+          "startAt": 1793058260000,
+          "endAt": 1793058320000
+        },
+        "originalSnapshot": {
+          "capturedAt": 1793058320000,
+          "rows": 6,
+          "requiredRows": 6
+        },
+        "enabled": true,
+        "generation": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "openedAt": 1793058260000,
+          "connectionId": 1,
+          "subscriptionId": 41
+        },
+        "refreshedAt": 1793058320120,
+        "rows": 0,
+        "addedSignatures": [],
+        "addedPackets": [],
+        "matchedInteriorSignatures": [],
+        "meaning": "Actual post-snapshot packet diagnostics only; original target availability and features unchanged.",
+        "requiredTargetSignaturesUnchanged": true,
+        "featureInformationBackdated": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-summary",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "at": 1793058320120,
+        "outcome": "audit-result:verified",
+        "version": "bounded-native-audit-dispatch-v1",
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "lastAt": 1793058320120,
+        "reasonCounts": {
+          "eligible": 1,
+          "native-service-dispatch": 1,
+          "audit-selected": 1,
+          "page-admission": 1,
+          "page-response": 1
+        },
+        "transitionRecords": 5,
+        "omittedTransitions": 0,
+        "lastState": {
+          "reason": "page-response",
+          "nextAction": "validate-logical-session",
+          "context": {
+            "requestedLimit": 100,
+            "responseRows": 7,
+            "readyOrder": 0,
+            "readyCandidates": 1,
+            "page": 1,
+            "sessionOpened": true
+          }
+        },
+        "final": true,
+        "physicalSettlementClaimed": false
+      }
+    },
+    {
+      "kind": "native-candidate-window-audit",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "result": {
+          "schemaVersion": 1,
+          "classification": "BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT",
+          "status": "verified",
+          "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+          "complete": true,
+          "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "target": {
+            "startAt": 1793058260000,
+            "endAt": 1793058320000
+          },
+          "startedAt": 1793058320000,
+          "availableAt": 1793058320120,
+          "anchor": null,
+          "lowerFence": null,
+          "strictInteriorSlots": {
+            "lower": 461852043,
+            "upper": 461852057
+          },
+          "anchorKind": "confirmed-bank-context",
+          "contextFences": {
+            "lower": {
+              "slot": 461852043,
+              "availableAt": 1793058260000,
+              "bankClockAt": 1793058260000
+            },
+            "upper": {
+              "slot": 461852057,
+              "availableAt": 1793058320000,
+              "bankClockAt": 1793058320000
+            }
+          },
+          "historyRangeCovered": true,
+          "requestAttempts": 1,
+          "maximumPages": 6,
+          "pageLimit": 1000,
+          "adaptivePageSizing": true,
+          "completenessScope": "executed-transactions",
+          "notificationCompletenessVerified": true,
+          "executedFlowCompletenessVerified": true,
+          "pages": [
+            {
+              "page": 1,
+              "requestedLimit": 100,
+              "rows": 7,
+              "newestSlot": 461852054,
+              "oldestSlot": 461852042,
+              "receivedAt": 1793058320120,
+              "validatedAt": 1793058320120
+            }
+          ],
+          "historyPayloadBytes": 1319,
+          "historyRows": 7,
+          "interiorRows": 6,
+          "requiredSignatures": [
+            "LjRVE4MLfvjqXDhhRJCvw8NoWAGNKiT8E1TKdmRdFcASHciqxUcSsDbwyhYhevEgKqV7HWF6LPowXQqfYpYotCP",
+            "YKzdEos2cvK47VNNJKrFG9zgDNUVKGDQ5g81fZWJEsT1N16mpBBKDgBb8ngX97byjjzwfTJD3C2J4htKyAcNpFZ",
+            "jvZmFZNiZutGhm33BMVZbBcYvagcJoyfwLnhhMayE8jaSPUhfskBa8mEHspLdJyH9eWn3QMKjzEebzvzPWfwkJj",
+            "wX8uGJtQWuTVJ2hi4P8svDERdntjJMjwo1TPj9feDQ29WmrdXaK3vbLsSxxA7WLaZZ2cRMQSSnT19HyeorjWgMu",
+            "297i3H4Q6Tu2htJNNwQnCFErJM16rHuWDeg85kwkKCfJibAEZPGsvH3vWc45ybhhsyTYSoJTZ9afMgb2KECo5cR5",
+            "2LiHBHounQtbvUa33pSRWaGUB4DJyHTGVWLnmnjpzBvbHfYcVEySndWW9m9Do5u5BPN4HBFWfrNsiDt4yeYreYUF"
+          ],
+          "comparedSignatures": [
+            "2LiHBHounQtbvUa33pSRWaGUB4DJyHTGVWLnmnjpzBvbHfYcVEySndWW9m9Do5u5BPN4HBFWfrNsiDt4yeYreYUF",
+            "297i3H4Q6Tu2htJNNwQnCFErJM16rHuWDeg85kwkKCfJibAEZPGsvH3vWc45ybhhsyTYSoJTZ9afMgb2KECo5cR5",
+            "wX8uGJtQWuTVJ2hi4P8svDERdntjJMjwo1TPj9feDQ29WmrdXaK3vbLsSxxA7WLaZZ2cRMQSSnT19HyeorjWgMu",
+            "jvZmFZNiZutGhm33BMVZbBcYvagcJoyfwLnhhMayE8jaSPUhfskBa8mEHspLdJyH9eWn3QMKjzEebzvzPWfwkJj",
+            "YKzdEos2cvK47VNNJKrFG9zgDNUVKGDQ5g81fZWJEsT1N16mpBBKDgBb8ngX97byjjzwfTJD3C2J4htKyAcNpFZ",
+            "LjRVE4MLfvjqXDhhRJCvw8NoWAGNKiT8E1TKdmRdFcASHciqxUcSsDbwyhYhevEgKqV7HWF6LPowXQqfYpYotCP"
+          ],
+          "missingNotifications": [],
+          "missingFailedNotifications": [],
+          "missingSuccessfulNotifications": [],
+          "unconfirmedCapturedSignatures": [],
+          "statusDisagreements": [],
+          "boundaryExcludedSignatures": [],
+          "duplicateNotifications": 0,
+          "retryAt": null,
+          "scope": "Exact target application-availability executed-transaction flow, with missing independently confirmed failed packets retained separately; not full notification coverage.",
+          "limitations": [
+            "The denominator is bounded confirmed pool-address history between strict slot fences, not a whole-market census or proof that every row is a swap.",
+            "Boundary slots are excluded. Every target-window signature must lie strictly inside both fences; ambiguous boundaries do not pass.",
+            "Local receipt and complete-validation timestamps remain distinct from chain blockTime. Historical information is available only after this audit completes.",
+            "The anchor is an actual captured confirmed notification, not a separately fetched full transaction. Signature history does not establish SPL transfer checks or missing trade amounts.",
+            "Every history page requests minContextSlot at the original upper fence. This is a served-node lower bound, not a per-response bank context or an atomic history snapshot.",
+            "Context-fence mode uses caller-validated coherent confirmed SDK/Clock state. Its bank Clock is not getBlockTime or an invented wall-time timestamp for each trade.",
+            "Caller must separately require a fresh complete source window, unchanged candidate generation, supported identity and current strategy eligibility.",
+            "Injected scheduler owns physical request counts, response bytes, timeouts, cooldowns and cancellation settlement; requestAttempts are callback attempts, not additional provider allowances.",
+            "Opt-in executed-transactions completeness may retain missing independently confirmed failed rows as diagnostics; this is not full notification completeness and never excuses missing successful or unknown-status activity.",
+            "Each page records its actual requested limit. Adaptive sizing does not skip history rows, extend deadlines, raise page count or establish provider throughput.",
+            "An opt-in local post-snapshot tail may corroborate interior history after actual arrival, without changing original target signatures, slot fences or feature availability. Missing successful activity remains blocking."
+          ],
+          "notificationSnapshot": {
+            "capturedAt": 1793058320000,
+            "rows": 6,
+            "requiredRows": 6
+          },
+          "postSnapshotTail": {
+            "enabled": true,
+            "generation": {
+              "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+              "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+              "openedAt": 1793058260000,
+              "connectionId": 1,
+              "subscriptionId": 41
+            },
+            "refreshedAt": 1793058320120,
+            "rows": 0,
+            "addedSignatures": [],
+            "addedPackets": [],
+            "matchedInteriorSignatures": [],
+            "meaning": "Actual post-snapshot packet diagnostics only; original target availability and features unchanged."
+          }
+        },
+        "availableAt": 1793058320120,
+        "notBackdated": true
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "at": 1793058320250,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9749,
+        "reason": "audit-selected",
+        "nextAction": "dispatch-audit-page",
+        "context": {
+          "rpcReadyAt": 1793058320250,
+          "historyReadyAt": 1793058320250,
+          "controlReadyAt": 1793058320250,
+          "physicalBusy": false,
+          "actualPhysicalBusy": false,
+          "inFlight": 0,
+          "waitingOrOperating": false,
+          "rolling60SecondStarts": 1,
+          "rolling10SecondStarts": 1,
+          "startsPerMinuteLimit": 90,
+          "startsPer10SecondLimit": 20,
+          "providerCooldownUntil": 0,
+          "historyCooldownUntil": 0,
+          "controlCooldownUntil": 0,
+          "nextNativeServiceAt": 1793058340250,
+          "nextNativeServiceDomain": null,
+          "nextNativeServiceAction": null,
+          "nativeServiceSlackMs": 19800,
+          "pageOperationBoundMs": 2000,
+          "selectedMint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "selectedJob": "audit:7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "jobDeadlineAt": 1793058329999,
+          "latestStartAt": 1793058327999,
+          "readyOrder": 0,
+          "readyCandidates": 1,
+          "page": null,
+          "sessionOpened": false
+        },
+        "transitionRecord": 4,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-candidate-audit-session-open",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "at": 1793058320250,
+        "targetEndAt": 1793058320000,
+        "deadlineAt": 1793058329999,
+        "maximumPages": 6,
+        "onePhysicalPagePerStep": true,
+        "notHoldingProtectionAcceptance": true
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "at": 1793058320250,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9749,
+        "reason": "page-admission",
+        "nextAction": "invoke-shared-rpc",
+        "context": {
+          "requestedLimit": 100,
+          "operationBoundMs": 2125,
+          "latestStartAt": 1793058327874,
+          "readyOrder": 0,
+          "readyCandidates": 1,
+          "page": 1,
+          "sessionOpened": true
+        },
+        "transitionRecord": 5,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-state",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "at": 1793058320370,
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "remainingDecisionMs": 9629,
+        "reason": "page-response",
+        "nextAction": "validate-logical-session",
+        "context": {
+          "requestedLimit": 100,
+          "responseRows": 7,
+          "readyOrder": 0,
+          "readyCandidates": 1,
+          "page": 1,
+          "sessionOpened": true
+        },
+        "transitionRecord": 6,
+        "physicalStartClaimed": false
+      }
+    },
+    {
+      "kind": "native-flow-audit-post-snapshot-tail",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "target": {
+          "startAt": 1793058260000,
+          "endAt": 1793058320000
+        },
+        "originalSnapshot": {
+          "capturedAt": 1793058320250,
+          "rows": 6,
+          "requiredRows": 6
+        },
+        "enabled": true,
+        "generation": {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+          "openedAt": 1793058260000,
+          "connectionId": 1,
+          "subscriptionId": 42
+        },
+        "refreshedAt": 1793058320370,
+        "rows": 0,
+        "addedSignatures": [],
+        "addedPackets": [],
+        "matchedInteriorSignatures": [],
+        "meaning": "Actual post-snapshot packet diagnostics only; original target availability and features unchanged.",
+        "requiredTargetSignaturesUnchanged": true,
+        "featureInformationBackdated": false
+      }
+    },
+    {
+      "kind": "native-audit-dispatch-summary",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "at": 1793058320370,
+        "outcome": "audit-result:verified",
+        "version": "bounded-native-audit-dispatch-v1",
+        "windowEndAt": 1793058320000,
+        "decisionDeadlineAt": 1793058329999,
+        "firstReadyAt": 1793058320000,
+        "lastAt": 1793058320370,
+        "reasonCounts": {
+          "eligible": 1,
+          "native-service-dispatch": 1,
+          "peer-selected": 1,
+          "audit-selected": 1,
+          "page-admission": 1,
+          "page-response": 1
+        },
+        "transitionRecords": 6,
+        "omittedTransitions": 0,
+        "lastState": {
+          "reason": "page-response",
+          "nextAction": "validate-logical-session",
+          "context": {
+            "requestedLimit": 100,
+            "responseRows": 7,
+            "readyOrder": 0,
+            "readyCandidates": 1,
+            "page": 1,
+            "sessionOpened": true
+          }
+        },
+        "final": true,
+        "physicalSettlementClaimed": false
+      }
+    },
+    {
+      "kind": "native-candidate-window-audit",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "result": {
+          "schemaVersion": 1,
+          "classification": "BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT",
+          "status": "verified",
+          "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+          "complete": true,
+          "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+          "target": {
+            "startAt": 1793058260000,
+            "endAt": 1793058320000
+          },
+          "startedAt": 1793058320250,
+          "availableAt": 1793058320370,
+          "anchor": null,
+          "lowerFence": null,
+          "strictInteriorSlots": {
+            "lower": 461852043,
+            "upper": 461852057
+          },
+          "anchorKind": "confirmed-bank-context",
+          "contextFences": {
+            "lower": {
+              "slot": 461852043,
+              "availableAt": 1793058260000,
+              "bankClockAt": 1793058260000
+            },
+            "upper": {
+              "slot": 461852057,
+              "availableAt": 1793058320250,
+              "bankClockAt": 1793058320000
+            }
+          },
+          "historyRangeCovered": true,
+          "requestAttempts": 1,
+          "maximumPages": 6,
+          "pageLimit": 1000,
+          "adaptivePageSizing": true,
+          "completenessScope": "executed-transactions",
+          "notificationCompletenessVerified": true,
+          "executedFlowCompletenessVerified": true,
+          "pages": [
+            {
+              "page": 1,
+              "requestedLimit": 100,
+              "rows": 7,
+              "newestSlot": 461852055,
+              "oldestSlot": 461852042,
+              "receivedAt": 1793058320370,
+              "validatedAt": 1793058320370
+            }
+          ],
+          "historyPayloadBytes": 1319,
+          "historyRows": 7,
+          "interiorRows": 6,
+          "requiredSignatures": [
+            "MtgQE8hi4ptxaeUAWQAry2jnmt5ypfpxDB7zSM2tkXthCFm39FGXuGG7VcG5oYB1U2Y6KhYoc5ENn99LC49xybu",
+            "ZVFYEtDQ1pUBAv8qPRpBJ4MfV6J6pDbE4qngU97ZjoBGGe8xzwqQFiqkehPuHjYJsw3vhebvJsSjKSBzcQDXuf5",
+            "m5pgFdj5xp3PmBoWGTTVd5yYCJWDomMVvWTNVwCEj4TqM2WtreQGcBRPonXimvucHqZm5bf31ff5rjEf2kH6qiF",
+            "xgPpGPEmuoccMTUB9V6ox7bQuWiLoK7mnB84XjGuiKkQRQtpiLy8xe12xsfYG8Guhk5bTYi9iTsSQ2HKT6LfmmR",
+            "2AGxxH8kTroBpwj8r2Wk8H9DHcivTnrt3dqnkZXMahb2yVoGka3Y1K6ag7xoMkKeD7ebRqVmGRG5nwKKysSQEhpb",
+            "2MsY6HtG9onm3XzoWuYPScAqAKw8anQeKVWTSbKSFgrKYaBegRk6sfZAKH3wBEX1WXZ7GDSpP84J9UcNeHnTodsm"
+          ],
+          "comparedSignatures": [
+            "2MsY6HtG9onm3XzoWuYPScAqAKw8anQeKVWTSbKSFgrKYaBegRk6sfZAKH3wBEX1WXZ7GDSpP84J9UcNeHnTodsm",
+            "2AGxxH8kTroBpwj8r2Wk8H9DHcivTnrt3dqnkZXMahb2yVoGka3Y1K6ag7xoMkKeD7ebRqVmGRG5nwKKysSQEhpb",
+            "xgPpGPEmuoccMTUB9V6ox7bQuWiLoK7mnB84XjGuiKkQRQtpiLy8xe12xsfYG8Guhk5bTYi9iTsSQ2HKT6LfmmR",
+            "m5pgFdj5xp3PmBoWGTTVd5yYCJWDomMVvWTNVwCEj4TqM2WtreQGcBRPonXimvucHqZm5bf31ff5rjEf2kH6qiF",
+            "ZVFYEtDQ1pUBAv8qPRpBJ4MfV6J6pDbE4qngU97ZjoBGGe8xzwqQFiqkehPuHjYJsw3vhebvJsSjKSBzcQDXuf5",
+            "MtgQE8hi4ptxaeUAWQAry2jnmt5ypfpxDB7zSM2tkXthCFm39FGXuGG7VcG5oYB1U2Y6KhYoc5ENn99LC49xybu"
+          ],
+          "missingNotifications": [],
+          "missingFailedNotifications": [],
+          "missingSuccessfulNotifications": [],
+          "unconfirmedCapturedSignatures": [],
+          "statusDisagreements": [],
+          "boundaryExcludedSignatures": [],
+          "duplicateNotifications": 0,
+          "retryAt": null,
+          "scope": "Exact target application-availability executed-transaction flow, with missing independently confirmed failed packets retained separately; not full notification coverage.",
+          "limitations": [
+            "The denominator is bounded confirmed pool-address history between strict slot fences, not a whole-market census or proof that every row is a swap.",
+            "Boundary slots are excluded. Every target-window signature must lie strictly inside both fences; ambiguous boundaries do not pass.",
+            "Local receipt and complete-validation timestamps remain distinct from chain blockTime. Historical information is available only after this audit completes.",
+            "The anchor is an actual captured confirmed notification, not a separately fetched full transaction. Signature history does not establish SPL transfer checks or missing trade amounts.",
+            "Every history page requests minContextSlot at the original upper fence. This is a served-node lower bound, not a per-response bank context or an atomic history snapshot.",
+            "Context-fence mode uses caller-validated coherent confirmed SDK/Clock state. Its bank Clock is not getBlockTime or an invented wall-time timestamp for each trade.",
+            "Caller must separately require a fresh complete source window, unchanged candidate generation, supported identity and current strategy eligibility.",
+            "Injected scheduler owns physical request counts, response bytes, timeouts, cooldowns and cancellation settlement; requestAttempts are callback attempts, not additional provider allowances.",
+            "Opt-in executed-transactions completeness may retain missing independently confirmed failed rows as diagnostics; this is not full notification completeness and never excuses missing successful or unknown-status activity.",
+            "Each page records its actual requested limit. Adaptive sizing does not skip history rows, extend deadlines, raise page count or establish provider throughput.",
+            "An opt-in local post-snapshot tail may corroborate interior history after actual arrival, without changing original target signatures, slot fences or feature availability. Missing successful activity remains blocking."
+          ],
+          "notificationSnapshot": {
+            "capturedAt": 1793058320250,
+            "rows": 6,
+            "requiredRows": 6
+          },
+          "postSnapshotTail": {
+            "enabled": true,
+            "generation": {
+              "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+              "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+              "openedAt": 1793058260000,
+              "connectionId": 1,
+              "subscriptionId": 42
+            },
+            "refreshedAt": 1793058320370,
+            "rows": 0,
+            "addedSignatures": [],
+            "addedPackets": [],
+            "matchedInteriorSignatures": [],
+            "meaning": "Actual post-snapshot packet diagnostics only; original target availability and features unchanged."
+          }
+        },
+        "availableAt": 1793058320370,
+        "notBackdated": true
+      }
+    }
+  ]
+}

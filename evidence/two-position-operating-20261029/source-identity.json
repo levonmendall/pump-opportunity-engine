@@ -1,0 +1,25 @@
+{
+  "classification": "OFFLINE_DISPOSABLE_SOURCE_IDENTITY",
+  "generatedAt": "2026-10-29T21:05:20.806021+00:00",
+  "baseCommit": "3ef284cbc713010fcdf9f9e6f5842a64e153b093",
+  "node": "v24.19.0",
+  "files": {
+    "src/native-paper.ts": "af71607f9aaedd2b366c4d9f2d5e5aa42abc4e7377c1df97cc115815c66b2e7b",
+    "src/run-native-paper.ts": "d289df8d5b1333f1c0bbc7ae0c592509b0940c036d6ad5c6c69bab100394abef",
+    "test/native-paper-integration.test.ts": "de0224b16c1f416f0d8c8297a46999eae7aacf30e4e382af7bb70c6722b59d44",
+    "test/native-paper-readiness.test.ts": "1b7fa2881e5c61eaeb8d38834b8c681484116e6233ef51af85cb84c04b7249ac",
+    "test/native-paper-service.test.ts": "a41c8f1c27d09af75e4041cc93bdd2d5b37c15f283df58a4c6af27e2e6302acd",
+    "test/native-paper-information-admission.test.ts": "464ddd0b5fdd02635ad71d3e4d09284a60e95db52f9b70c2105a5a3ba1f9c86c",
+    "evidence/two-position-operating-20261029/guarded-two-position.mts": "98f23f2231480361b05b490c011b1af6adbde59a29b3ab4f593547298ec7990e"
+  },
+  "sourceDiffSha256": "5152b7d3ab89bd3ce5c4a05e5d106a7998b9a4840585c6d84fb6aa56e791aa25",
+  "targetConfigurationSha256": "7e1d449a053a8cad89ff7b5e9dc84c01f118cbeeeaeea9958473b75f6a547292",
+  "finalSdkFocusedOutputSha256": "cf25716aee0eeed997fb8262da1d2642a65ccfcac648583c1be042feaaaca848",
+  "finalCaptureFocusedOutputSha256": "035ba5ac3971547f2e2bf350b1c30394d30b807fe4c1e7dcec9cb4af67611948",
+  "finalBuildOutputSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+  "completeSuiteOutputSha256": "984a53d3ff7131233d65c2bdd7422881d5293874bbd0759228adf276c1cf06f2",
+  "completeSuiteResult": "1829/1830 on earlier draft; obsolete hard-stop bypass expectation corrected and focused test passed; final combined full suite remains coordinator responsibility",
+  "installed": false,
+  "networkRequests": 0,
+  "finalGuardedOutputSha256": "a94686f147434459328d9ede4f0c55e63d435fad8dd54269e44ef02287dee170"
+}

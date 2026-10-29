@@ -1,0 +1,40 @@
+✖ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (6989.295005ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8131.382025
+
+✖ failing tests:
+
+test at evidence/two-position-operating-20261029/guarded-two-position.mts:1:19528
+✖ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (6989.295005ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   '2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump': {
+  +     costMicroUsd: '47999665',
+  +     deposit: '2000335',
+  +     enteredAt: 1793058465300,
+  +     entryGas: '7000',
+  +     entryLamports: '47992665',
+  +     mint: '2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump',
+  +     units: '90518293342'
+  +   }
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:100:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { '2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump': { mint: '2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump', units: '90518293342', entryLamports: '47992665', entryGas: '7000', costMicroUsd: '47999665', deposit: '2000335', enteredAt: 1793058465300 } },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

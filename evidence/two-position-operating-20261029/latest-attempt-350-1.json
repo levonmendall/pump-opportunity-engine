@@ -1,0 +1,1280 @@
+{
+  "at": 1793058393800,
+  "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+  "outcome": {
+    "kind": "evaluated"
+  },
+  "decisions": [
+    {
+      "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+      "at": 1793058323150,
+      "stage": "qualified",
+      "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+      "ruleVersion": "persistent-buying-pilot-concurrent-stage-2-v1",
+      "features": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "asOf": 1793058323150,
+        "windowStartAt": 1793058260000,
+        "windowEndAt": 1793058320000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "1800000000",
+        "sellLamports": "0",
+        "netBuyLamports": "1800000000",
+        "tradeCount": 6,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 6,
+        "largestBuyerBps": 1667,
+        "positiveNetBuckets": 6,
+        "priceReturnBps": 5000,
+        "firstPrice": {
+          "quoteLamports": "300000000",
+          "tokenUnits": "300000"
+        },
+        "lastPrice": {
+          "quoteLamports": "300000000",
+          "tokenUnits": "200000"
+        }
+      },
+      "quote": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "side": "buy",
+        "inputUnits": "47992665",
+        "outputUnits": "22273040838",
+        "at": 1793058322450,
+        "evidence": "rpc-market:b50b8d9bea68321a067ab33eb9b8a88eb70138238ca01b1757da3cf4db267baa",
+        "slot": 461852057,
+        "effectiveQuoteLiquidityLamports": "117583801706",
+        "requiredDepositLamports": "2000335",
+        "depositEvidence": "pilot-entry-validated-costs:632b105f97a1b8a920b36e546218e305089e46ed3d9fc0f6280529dbe60a9272"
+      }
+    },
+    {
+      "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+      "at": 1793058393450,
+      "stage": "qualified",
+      "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+      "ruleVersion": "persistent-buying-pilot-concurrent-stage-2-v1",
+      "features": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "asOf": 1793058393450,
+        "windowStartAt": 1793058330000,
+        "windowEndAt": 1793058390000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "1800000000",
+        "sellLamports": "0",
+        "netBuyLamports": "1800000000",
+        "tradeCount": 6,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 6,
+        "largestBuyerBps": 1667,
+        "positiveNetBuckets": 6,
+        "priceReturnBps": 3,
+        "firstPrice": {
+          "quoteLamports": "300000000",
+          "tokenUnits": "149970"
+        },
+        "lastPrice": {
+          "quoteLamports": "300000000",
+          "tokenUnits": "149920"
+        }
+      },
+      "quote": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "side": "buy",
+        "inputUnits": "47992665",
+        "outputUnits": "90518293342",
+        "at": 1793058392750,
+        "evidence": "rpc-market:a7591db0f950b3851956b5ef47251ed5dedef646ee92b14a577d6a949ce753f0",
+        "slot": 461853025,
+        "effectiveQuoteLiquidityLamports": "99999999270",
+        "requiredDepositLamports": "2000335",
+        "depositEvidence": "pilot-entry-validated-costs:2001f3b8b7d4a1e7fcef472005fe21960b7fe88a086b4b800564224839bcde55"
+      }
+    }
+  ],
+  "lastRecords": [
+    {
+      "kind": "http-lifecycle-timing",
+      "data": {
+        "id": 71,
+        "method": "getMultipleAccounts",
+        "endpoint": "https://api.mainnet.solana.com",
+        "requestedAt": 1793058392400,
+        "headersAt": 1793058392750,
+        "firstBodyAt": 1793058392750,
+        "lastBodyAt": 1793058392750,
+        "bodyCompleteAt": 1793058392750,
+        "jsonDecodedAt": 1793058392750,
+        "httpWorkEndedAt": 1793058392750,
+        "status": 200,
+        "responseBytes": 9604,
+        "chunksReceived": 1,
+        "outcome": "json-decoded",
+        "aborted": false,
+        "headersDelayMs": 350,
+        "bodyAfterHeadersMs": 0,
+        "jsonDecodeMonotonicMs": 0.021931999999651453,
+        "elapsedMonotonicMs": 0.3950460000014573,
+        "undiciObservation": "unavailable-no-matched-events",
+        "undiciRequestCreatedAt": null,
+        "undiciSendHeadersHookAt": null,
+        "undiciResponseHeadersAt": null,
+        "undiciRequestErrorAt": null,
+        "undiciRequestCreatedDelayMs": null,
+        "undiciHeadersDispatchDelayMs": null,
+        "undiciResponseHeadersDelayMs": null,
+        "undiciSocketId": null,
+        "undiciSocketPreviouslyObserved": null,
+        "undiciSocketPreviousRequestAt": null,
+        "undiciResponseStatus": null,
+        "undiciRequestErrorCode": null,
+        "undiciMatchedRequestCount": 0,
+        "undiciSendHeadersHookCount": 0,
+        "undiciObservedEvents": 0,
+        "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+        "undiciMeaning": "Local Undici lifecycle only; sendHeaders is a pre-write hook, not proof bytes were transmitted. Not provider origin time or physical settlement; first socket observation does not prove a new connection.",
+        "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 71,
+        "at": 1793058392750,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "research-clock-pool-state",
+      "data": {
+        "requestedAt": "2026-10-26T23:46:32.400Z",
+        "receivedAt": "2026-10-26T23:46:32.750Z",
+        "addresses": [
+          "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw",
+          "5PHirr8joyTMp9JMm6nW7hNDVyEYdkzDqazxPD7RaTjx",
+          "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "So11111111111111111111111111111111111111112",
+          "6VCbdm3ZFD9oXDubKuKMd56dFPtuc9yE892RoC26GAXA",
+          "BYFJC7DSYinhm1QZ6Cmim3fcYxrU6yX5RZw9WxEwua6a",
+          "SysvarC1ock11111111111111111111111111111111"
+        ],
+        "context": {
+          "slot": 461853025
+        },
+        "value": [
+          {
+            "data": [
+              "8ZptBBGxbbz/AADVAI7OqPYfCjo+lJ/TogWbV9pQ9obhbOZcIxsy87ggcBvlwR943WwDGf6W/ruk0+veN3Cj1leSLnu0I2DA60+PBpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAFRGoOyKDJcIsc0Js4pUM6MaHcUg9hnmKMpv8tBHaA6f1GDz2m+nrDNgC2W3sV4Q5PSJDP/FQQ2rRdBtXPKXx4hnJYKEk0/dbQoaWeesy03OC5G/eXkH9F050t55lKLycemKWPqGQAAALIR+Ofcc4cd64w7dZG85hP/lQGphAjyPdUccz22g93HAQAm/f//////////////////AAAAAAAAAAAAACgCAAAAAAAAsgAAAAAAAAA=",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 2108200,
+            "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "rentEpoch": 18446744073709552000,
+            "space": 287
+          },
+          {
+            "data": [
+              "lQicyqD8sNnTu4yrNBzgUoRX8sOBfTJ4RBlj3NVf7Vi6JMmZ3awCqhQAAAAAAAAABQAAAAAAAAAASsL40N1cvJfjKJwZfLUGKlTz2Va5zm5RFfllZ6pcs+ZgjMwd/OlhtDt3nBkVBabi079F1aTbRhitdsgtYXVFNWODcwAOoiyyZNNK/2SgS176v7t03c0EiZexmBVH19EQg4R0KS5nWpS0NuywqZiJQjKKg93GIzgClhJnxc1hF8uNGBoMhJ+pN6bzSt7TCB75VwCqywybs9kJpLkUdSek69eqj7Bg2CkbTE1HXa/3Yslr3A2s6zbAEurRLtOpSEFh4ATIfOuY+lzkf4A4Bv0seUXSlSSVmuwA3tl4FPOPeEb/g4OBi6j6KMPNO21ek/n6uPCXm8NyFazFskaHe6jDyQUAAAAAAAAAByFdmUB5NpThFgZs5Fm4GP35u6DHtBt4P6OhIMpBlTKii1/SarR5pqnMbL9rCyPrYYhaNx4BIKypE77vPROKeOiTFB+xjp8VdNgQ4XjhnjBgTjF1qi5KMt/IYAcn0QcJATWEU2JWCU+RKBkSfvpORGtDM3IXk9E4dvmq2/PcfQtfbnUBgiD5QmdwAyN7TWtFN1m0pcaQtZw12bsYegkMvSozmHqeuxNnmatZklsT5dyLMIHfAF20J8FHj6Rv+MNHoHTpVD8+N6LQRiJ63ctOnHdMRCWMQ+3ySqiq4fACFGZb2kw4zW23Q49ZtAi7nsO0yp6K0fHyRlPEmbV5bCDb+bMt3Z7qPzmzchFccYR8GEXPpTbGhQdOAw5E0CHePvnjXEy3gPCO4v7oS+xEald4Jdpo1Dn6il2jsMXP9Q9j9FRrAUOeZRDAPWX62THonQS+C7cNUZcfUcQV+zRMB9tBnyEiAiNVFqkXE0xnWIxJOCCuFV7pZmVXesG3GNpH3c8qBQ7mp+IgaLuIZAqlf5CTCMYf73EaAWP1p1XAcLyGDR9jZyB87NpbzGyx6vDxbWhARWaxjVbSSBrLMXAyZW6QVRx4RJZB+ElY3HOnaoXYdW9VwCzayom6GTJ5DDaKsVfpLXPFS5a1yTGUHkbqS+Lg4xEndE/Gt0z7RV7+r4vVcXks7UT8H3j5SjPQkJxea1+wIVcK2Nutjej9s9IO0c2Z645Oh3AVfuvrZ4plXbmbN/axMmx2V9uQz7ioer74x7byyGmIEwAAAAAAAPSEYofB0vyr1vGBX2l/VABW/RZVaGEbANPK6XSCwSxlAQEsAQAAAAAAAA==",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 9272823,
+            "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "rentEpoch": 18446744073709552000,
+            "space": 949
+          },
+          {
+            "data": [
+              "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AAAAAAAAAAAAFAAAAAAAAAAFAAAAAAAAABQAAAAAAAAAAPCrdaQNAAAAAAAAAAAAABQAAAAAAAAABQAAAAAAAAASAAAAAAAAAAAAUUqNDgAAAAAAAAAAAAAUAAAAAAAAAAUAAAAAAAAADwAAAAAAAAAAEPYedg8AAAAAAAAAAAAAFAAAAAAAAAAFAAAAAAAAAA0AAAAAAAAAACCb814QAAAAAAAAAAAAABQAAAAAAAAABQAAAAAAAAAKAAAAAAAAAAAwQMhHEQAAAAAAAAAAAAAUAAAAAAAAAAUAAAAAAAAACAAAAAAAAAAAQOWcMBIAAAAAAAAAAAAAFAAAAAAAAAAFAAAAAAAAAAUAAAAAAAAAFAAAAAAAAAAFAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 33103977,
+            "owner": "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ",
+            "rentEpoch": 18446744073709552000,
+            "space": 4097
+          },
+          {
+            "data": [
+              "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACNSf0aBwAGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARIAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvlwR943WwDGf6W/ruk0+veN3Cj1leSLnu0I2DA60+PEwCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG+XBH3jdbAMZ/pb+u6TT6943cKPWV5Iue7QjYMDrT48MAAAAT1RURVJQUkVORVVSBQAAAE9UVEVSQwAAAGh0dHBzOi8vaXBmcy5pby9pcGZzL1FtUU1jRG9nR2R6VTdmQ1RaYWJtZHV5NE5WcTl6Z1VnUGdIYjNoTU1ienh0Rm4AAAAA",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 2692400,
+            "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "rentEpoch": 18446744073709552000,
+            "space": 402
+          },
+          {
+            "data": [
+              "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 1859475976191,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          },
+          {
+            "data": [
+              "G+XBH3jdbAMZ/pb+u6TT6943cKPWV5Iue7QjYMDrT4+/hK4cgpTzSKeBtCdKVVQ0NNtfLd73S4pqHl/onSQPDPRq6eetrQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgcAAAA=",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 1513840,
+            "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "rentEpoch": 18446744073709552000,
+            "space": 170
+          },
+          {
+            "data": [
+              "BpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAG/hK4cgpTzSKeBtCdKVVQ0NNtfLd73S4pqHl/onSQPDADodkgXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAA4thYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 100001488440,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 165
+          },
+          {
+            "owner": "Sysvar1111111111111111111111111111111111111",
+            "data": [
+              "YVGHGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABY5t9qAAAAAA==",
+              "base64"
+            ],
+            "lamports": 1169280,
+            "executable": false,
+            "rentEpoch": 0
+          }
+        ]
+      }
+    },
+    {
+      "kind": "research-clock-buy-quote",
+      "data": {
+        "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "slot": 461853025,
+        "commitment": "confirmed",
+        "requestedAt": "2026-10-26T23:46:32.400Z",
+        "receivedAt": "2026-10-26T23:46:32.750Z",
+        "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "mintExtensions": [
+          "MetadataPointer",
+          "TokenMetadata"
+        ],
+        "decimals": 6,
+        "poolFlags": {
+          "mayhem": true,
+          "cashback": false,
+          "holderReward": false
+        },
+        "rawBaseReserve": "190962431781620",
+        "rawQuoteReserve": "100000000000",
+        "virtualQuoteReserves": "-730",
+        "effectiveQuoteReserve": "99999999270",
+        "feeBuckets": "730",
+        "feeBps": {
+          "lpFeeBps": "20",
+          "protocolFeeBps": "5",
+          "creatorFeeBps": "95"
+        },
+        "creatorFeeApplied": true,
+        "baseAssociatedAccount": {
+          "accountLengthBytes": 170,
+          "accountExtensions": [
+            "ImmutableOwner"
+          ],
+          "rentLamports": null,
+          "rentStatus": "requires-current-RPC-and-account-existence-check",
+          "depositTreatment": "refundable locked capital when a new account is required"
+        },
+        "quoteAssociatedAccount": {
+          "accountLengthBytes": 165,
+          "accountExtensions": [],
+          "rentLamports": null,
+          "rentStatus": "requires-current-RPC-and-account-existence-check",
+          "depositTreatment": "refundable locked capital when a new account is required"
+        },
+        "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+        "mode": "QUOTE_ONLY",
+        "timeEvidence": "confirmed-bank-clock",
+        "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+        "clockSlot": 461853025,
+        "marketClockUnixSeconds": 1793058392,
+        "maxMarketAgeMs": 30000,
+        "validatedAt": "2026-10-26T23:46:32.750Z",
+        "researchOnly": true,
+        "buy": {
+          "inputLamports": "47992665",
+          "outputBaseUnits": "90518293342",
+          "internalQuoteWithoutFees": "47423580"
+        },
+        "correspondingSell": {
+          "inputBaseUnits": "90518293342",
+          "outputLamports": "46810095"
+        },
+        "embeddedCosts": {
+          "buyBudgetAboveInternalCurveInputLamports": "569085",
+          "buyClassification": "SDK fee budget and integer rounding; not an itemized charged-fee total",
+          "correspondingSellPoolFeeLamports": "568546"
+        },
+        "limitations": [
+          "Same-state independent buy and sell estimates; no financial fill or future execution guarantee.",
+          "Pool deductions are already embedded in amounts; do not debit them again. Buy budget difference includes SDK rounding.",
+          "Excludes gas/rent/priority costs at quote layer; accounting must add them.",
+          "Confirmed batch context is retained; no claim of cross-source atomicity."
+        ]
+      }
+    },
+    {
+      "kind": "fixture-physical-admission",
+      "data": {
+        "at": 1793058392750,
+        "work": "candidate",
+        "options": {},
+        "lastCompleted": 1793058392400,
+        "view": {
+          "admitted": true,
+          "latestStartAt": 1793058393750,
+          "reason": "bounded-physical-segment-fits"
+        },
+        "critical": {
+          "admitted": true,
+          "latestStartAt": 1793058398675,
+          "view": {
+            "at": 1793058392750,
+            "targets": [
+              {
+                "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+                "eligibleAt": 1793058400000,
+                "deadlineAt": 1793058409999,
+                "ready": false,
+                "prospective": true,
+                "continuing": false,
+                "minimumPageWorkMs": 2125,
+                "historyReadyAt": 1793058392750,
+                "serviceableBeforeDeadline": true
+              }
+            ],
+            "readyCount": 0,
+            "nextEligibleAt": 1793058400000,
+            "earliestDeadlineAt": 1793058409999,
+            "discretionaryUntil": 1793058400000,
+            "minimumReadyWorkMs": 0,
+            "unavailableReadyCount": 0,
+            "conservativeReadyEnvelopeFits": true,
+            "requiredNativeAt": 1793058412750,
+            "requiredNativeAction": null,
+            "meaning": "Bounded commitments/future first windows; actual rate, occupancy, provider and financial admission still apply. Unknown extra pages are not guaranteed."
+          },
+          "reason": "shared-deadline-slack"
+        },
+        "pending": null
+      }
+    },
+    {
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793058392750,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "latestStartAt": 1793058393750
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "data": {
+        "id": 72,
+        "at": 1793058392750,
+        "enqueuedAt": 1793058392750,
+        "reservedAt": 1793058392750,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        }
+      }
+    },
+    {
+      "kind": "http-headers",
+      "data": {
+        "id": 72,
+        "method": "getMinimumBalanceForRentExemption",
+        "endpoint": "https://api.mainnet.solana.com",
+        "status": 200,
+        "retryAfter": null,
+        "at": 1793058393100,
+        "byteAccounting": "measured-body; response-header-and-wire-overhead-unmeasured"
+      }
+    },
+    {
+      "kind": "http-response-timing",
+      "data": {
+        "id": 72,
+        "method": "getMinimumBalanceForRentExemption",
+        "requestedAt": 1793058392750,
+        "availableAt": 1793058393100,
+        "responseBytes": 42,
+        "status": 200
+      }
+    },
+    {
+      "kind": "http-lifecycle-timing",
+      "data": {
+        "id": 72,
+        "method": "getMinimumBalanceForRentExemption",
+        "endpoint": "https://api.mainnet.solana.com",
+        "requestedAt": 1793058392750,
+        "headersAt": 1793058393100,
+        "firstBodyAt": 1793058393100,
+        "lastBodyAt": 1793058393100,
+        "bodyCompleteAt": 1793058393100,
+        "jsonDecodedAt": 1793058393100,
+        "httpWorkEndedAt": 1793058393100,
+        "status": 200,
+        "responseBytes": 42,
+        "chunksReceived": 1,
+        "outcome": "json-decoded",
+        "aborted": false,
+        "headersDelayMs": 350,
+        "bodyAfterHeadersMs": 0,
+        "jsonDecodeMonotonicMs": 0.008572999999159947,
+        "elapsedMonotonicMs": 3.2531440000002476,
+        "undiciObservation": "unavailable-no-matched-events",
+        "undiciRequestCreatedAt": null,
+        "undiciSendHeadersHookAt": null,
+        "undiciResponseHeadersAt": null,
+        "undiciRequestErrorAt": null,
+        "undiciRequestCreatedDelayMs": null,
+        "undiciHeadersDispatchDelayMs": null,
+        "undiciResponseHeadersDelayMs": null,
+        "undiciSocketId": null,
+        "undiciSocketPreviouslyObserved": null,
+        "undiciSocketPreviousRequestAt": null,
+        "undiciResponseStatus": null,
+        "undiciRequestErrorCode": null,
+        "undiciMatchedRequestCount": 0,
+        "undiciSendHeadersHookCount": 0,
+        "undiciObservedEvents": 0,
+        "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+        "undiciMeaning": "Local Undici lifecycle only; sendHeaders is a pre-write hook, not proof bytes were transmitted. Not provider origin time or physical settlement; first socket observation does not prove a new connection.",
+        "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 72,
+        "at": 1793058393100,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "fixture-physical-admission",
+      "data": {
+        "at": 1793058393100,
+        "work": "candidate",
+        "options": {},
+        "lastCompleted": 1793058392400,
+        "view": {
+          "admitted": true,
+          "latestStartAt": 1793058393750,
+          "reason": "bounded-physical-segment-fits"
+        },
+        "critical": {
+          "admitted": true,
+          "latestStartAt": 1793058398675,
+          "view": {
+            "at": 1793058393100,
+            "targets": [
+              {
+                "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+                "eligibleAt": 1793058400000,
+                "deadlineAt": 1793058409999,
+                "ready": false,
+                "prospective": true,
+                "continuing": false,
+                "minimumPageWorkMs": 2125,
+                "historyReadyAt": 1793058393100,
+                "serviceableBeforeDeadline": true
+              }
+            ],
+            "readyCount": 0,
+            "nextEligibleAt": 1793058400000,
+            "earliestDeadlineAt": 1793058409999,
+            "discretionaryUntil": 1793058400000,
+            "minimumReadyWorkMs": 0,
+            "unavailableReadyCount": 0,
+            "conservativeReadyEnvelopeFits": true,
+            "requiredNativeAt": 1793058413100,
+            "requiredNativeAction": null,
+            "meaning": "Bounded commitments/future first windows; actual rate, occupancy, provider and financial admission still apply. Unknown extra pages are not guaranteed."
+          },
+          "reason": "shared-deadline-slack"
+        },
+        "pending": null
+      }
+    },
+    {
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793058393100,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "latestStartAt": 1793058393750
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "data": {
+        "id": 73,
+        "at": 1793058393100,
+        "enqueuedAt": 1793058393100,
+        "reservedAt": 1793058393100,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        }
+      }
+    },
+    {
+      "kind": "http-headers",
+      "data": {
+        "id": 73,
+        "method": "getMinimumBalanceForRentExemption",
+        "endpoint": "https://api.mainnet.solana.com",
+        "status": 200,
+        "retryAfter": null,
+        "at": 1793058393450,
+        "byteAccounting": "measured-body; response-header-and-wire-overhead-unmeasured"
+      }
+    },
+    {
+      "kind": "http-response-timing",
+      "data": {
+        "id": 73,
+        "method": "getMinimumBalanceForRentExemption",
+        "requestedAt": 1793058393100,
+        "availableAt": 1793058393450,
+        "responseBytes": 42,
+        "status": 200
+      }
+    },
+    {
+      "kind": "http-lifecycle-timing",
+      "data": {
+        "id": 73,
+        "method": "getMinimumBalanceForRentExemption",
+        "endpoint": "https://api.mainnet.solana.com",
+        "requestedAt": 1793058393100,
+        "headersAt": 1793058393450,
+        "firstBodyAt": 1793058393450,
+        "lastBodyAt": 1793058393450,
+        "bodyCompleteAt": 1793058393450,
+        "jsonDecodedAt": 1793058393450,
+        "httpWorkEndedAt": 1793058393450,
+        "status": 200,
+        "responseBytes": 42,
+        "chunksReceived": 1,
+        "outcome": "json-decoded",
+        "aborted": false,
+        "headersDelayMs": 350,
+        "bodyAfterHeadersMs": 0,
+        "jsonDecodeMonotonicMs": 0.006550000000061118,
+        "elapsedMonotonicMs": 0.3790320000007341,
+        "undiciObservation": "unavailable-no-matched-events",
+        "undiciRequestCreatedAt": null,
+        "undiciSendHeadersHookAt": null,
+        "undiciResponseHeadersAt": null,
+        "undiciRequestErrorAt": null,
+        "undiciRequestCreatedDelayMs": null,
+        "undiciHeadersDispatchDelayMs": null,
+        "undiciResponseHeadersDelayMs": null,
+        "undiciSocketId": null,
+        "undiciSocketPreviouslyObserved": null,
+        "undiciSocketPreviousRequestAt": null,
+        "undiciResponseStatus": null,
+        "undiciRequestErrorCode": null,
+        "undiciMatchedRequestCount": 0,
+        "undiciSendHeadersHookCount": 0,
+        "undiciObservedEvents": 0,
+        "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+        "undiciMeaning": "Local Undici lifecycle only; sendHeaders is a pre-write hook, not proof bytes were transmitted. Not provider origin time or physical settlement; first socket observation does not prove a new connection.",
+        "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 73,
+        "at": 1793058393450,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "rpc-market-quote",
+      "data": {
+        "request": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "side": "buy",
+          "inputUnits": "47992665",
+          "minSlot": 461853025
+        },
+        "quote": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "side": "buy",
+          "inputUnits": "47992665",
+          "minSlot": 461853025,
+          "outputUnits": "90518293342",
+          "at": 1793058392750,
+          "evidence": "rpc-market:a7591db0f950b3851956b5ef47251ed5dedef646ee92b14a577d6a949ce753f0",
+          "slot": 461853025,
+          "effectiveQuoteLiquidityLamports": "99999999270",
+          "requiredDepositLamports": "2000335",
+          "depositEvidence": "pilot-entry-validated-costs:2001f3b8b7d4a1e7fcef472005fe21960b7fe88a086b4b800564224839bcde55"
+        },
+        "source": {
+          "slot": 461853025,
+          "commitment": "confirmed",
+          "requestedAt": "2026-10-26T23:46:32.400Z",
+          "receivedAt": "2026-10-26T23:46:32.750Z",
+          "validatedAt": "2026-10-26T23:46:32.750Z",
+          "timeEvidence": "confirmed-bank-clock",
+          "clockSlot": 461853025,
+          "marketClockUnixSeconds": 1793058392,
+          "migrationSlot": 461852043
+        },
+        "costs": {
+          "depositLamports": "2000335",
+          "plan": {
+            "baseExists": false,
+            "quoteExists": false,
+            "at": 1793058392750,
+            "evidence": "pilot-entry-costs:ac48e111a610ccccf993471a6378de040ce63dcd3268659924c78bcf4a66f7aa"
+          },
+          "rents": {
+            "165": "1000165",
+            "170": "1000170"
+          },
+          "gas": {
+            "baseFeeLamports": "5000",
+            "priorityFeeLamports": "2000",
+            "evidence": "OFFLINE explicit7000 modeled gas"
+          },
+          "gasLamports": "7000",
+          "classification": "simulated"
+        }
+      }
+    },
+    {
+      "kind": "trader-quote",
+      "data": {
+        "at": 1793058393450,
+        "purpose": "decision",
+        "request": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "side": "buy",
+          "inputUnits": "47992665",
+          "requiredDepositLamports": "2000335",
+          "minSlot": 461853019
+        },
+        "quote": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "side": "buy",
+          "inputUnits": "47992665",
+          "outputUnits": "90518293342",
+          "at": 1793058392750,
+          "evidence": "rpc-market:a7591db0f950b3851956b5ef47251ed5dedef646ee92b14a577d6a949ce753f0",
+          "slot": 461853025,
+          "effectiveQuoteLiquidityLamports": "99999999270",
+          "requiredDepositLamports": "2000335",
+          "depositEvidence": "pilot-entry-validated-costs:2001f3b8b7d4a1e7fcef472005fe21960b7fe88a086b4b800564224839bcde55"
+        }
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058393450,
+        "stage": "qualified",
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-2-v1",
+        "features": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "asOf": 1793058393450,
+          "windowStartAt": 1793058330000,
+          "windowEndAt": 1793058390000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "1800000000",
+          "sellLamports": "0",
+          "netBuyLamports": "1800000000",
+          "tradeCount": 6,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 6,
+          "largestBuyerBps": 1667,
+          "positiveNetBuckets": 6,
+          "priceReturnBps": 3,
+          "firstPrice": {
+            "quoteLamports": "300000000",
+            "tokenUnits": "149970"
+          },
+          "lastPrice": {
+            "quoteLamports": "300000000",
+            "tokenUnits": "149920"
+          }
+        },
+        "quote": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "side": "buy",
+          "inputUnits": "47992665",
+          "outputUnits": "90518293342",
+          "at": 1793058392750,
+          "evidence": "rpc-market:a7591db0f950b3851956b5ef47251ed5dedef646ee92b14a577d6a949ce753f0",
+          "slot": 461853025,
+          "effectiveQuoteLiquidityLamports": "99999999270",
+          "requiredDepositLamports": "2000335",
+          "depositEvidence": "pilot-entry-validated-costs:2001f3b8b7d4a1e7fcef472005fe21960b7fe88a086b4b800564224839bcde55"
+        }
+      }
+    },
+    {
+      "kind": "trader-predictive-assessment",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058393450,
+        "windowEndAt": 1793058390000,
+        "status": "not-rejected",
+        "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed",
+        "features": {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "asOf": 1793058393450,
+          "windowStartAt": 1793058330000,
+          "windowEndAt": 1793058390000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "1800000000",
+          "sellLamports": "0",
+          "netBuyLamports": "1800000000",
+          "tradeCount": 6,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 6,
+          "largestBuyerBps": 1667,
+          "positiveNetBuckets": 6,
+          "priceReturnBps": 3,
+          "firstPrice": {
+            "quoteLamports": "300000000",
+            "tokenUnits": "149970"
+          },
+          "lastPrice": {
+            "quoteLamports": "300000000",
+            "tokenUnits": "149920"
+          }
+        },
+        "riskDecision": {
+          "kind": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+        },
+        "meaning": "Predictive predicates only; no eligibility, quote, risk or entry permission is granted."
+      }
+    },
+    {
+      "kind": "fixture-physical-admission",
+      "data": {
+        "at": 1793058393450,
+        "work": "protection",
+        "options": {},
+        "lastCompleted": 1793058392400,
+        "view": {
+          "admitted": false,
+          "latestStartAt": 1793058393125,
+          "reason": "higher-priority-completion-envelope-reserved"
+        },
+        "critical": null,
+        "pending": 1793058394450
+      }
+    },
+    {
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793058393450,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "latestStartAt": 9007199254735991
+      }
+    },
+    {
+      "kind": "component-physical-start",
+      "data": {
+        "id": 74,
+        "at": 1793058393450,
+        "enqueuedAt": 1793058393450,
+        "reservedAt": 1793058393450,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        }
+      }
+    },
+    {
+      "kind": "http-headers",
+      "data": {
+        "id": 74,
+        "method": "getMultipleAccounts",
+        "endpoint": "https://api.mainnet.solana.com",
+        "status": 200,
+        "retryAfter": null,
+        "at": 1793058393800,
+        "byteAccounting": "measured-body; response-header-and-wire-overhead-unmeasured"
+      }
+    },
+    {
+      "kind": "http-response-timing",
+      "data": {
+        "id": 74,
+        "method": "getMultipleAccounts",
+        "requestedAt": 1793058393450,
+        "availableAt": 1793058393800,
+        "responseBytes": 9644,
+        "status": 200
+      }
+    },
+    {
+      "kind": "http-lifecycle-timing",
+      "data": {
+        "id": 74,
+        "method": "getMultipleAccounts",
+        "endpoint": "https://api.mainnet.solana.com",
+        "requestedAt": 1793058393450,
+        "headersAt": 1793058393800,
+        "firstBodyAt": 1793058393800,
+        "lastBodyAt": 1793058393800,
+        "bodyCompleteAt": 1793058393800,
+        "jsonDecodedAt": 1793058393800,
+        "httpWorkEndedAt": 1793058393800,
+        "status": 200,
+        "responseBytes": 9644,
+        "chunksReceived": 1,
+        "outcome": "json-decoded",
+        "aborted": false,
+        "headersDelayMs": 350,
+        "bodyAfterHeadersMs": 0,
+        "jsonDecodeMonotonicMs": 0.022763999999369844,
+        "elapsedMonotonicMs": 0.41197099999953934,
+        "undiciObservation": "unavailable-no-matched-events",
+        "undiciRequestCreatedAt": null,
+        "undiciSendHeadersHookAt": null,
+        "undiciResponseHeadersAt": null,
+        "undiciRequestErrorAt": null,
+        "undiciRequestCreatedDelayMs": null,
+        "undiciHeadersDispatchDelayMs": null,
+        "undiciResponseHeadersDelayMs": null,
+        "undiciSocketId": null,
+        "undiciSocketPreviouslyObserved": null,
+        "undiciSocketPreviousRequestAt": null,
+        "undiciResponseStatus": null,
+        "undiciRequestErrorCode": null,
+        "undiciMatchedRequestCount": 0,
+        "undiciSendHeadersHookCount": 0,
+        "undiciObservedEvents": 0,
+        "connectionReuse": "not-instrumented; inherited fetch dispatcher retained",
+        "undiciMeaning": "Local Undici lifecycle only; sendHeaders is a pre-write hook, not proof bytes were transmitted. Not provider origin time or physical settlement; first socket observation does not prove a new connection.",
+        "validationScope": "HTTP body/JSON only; caller owns envelope/domain validation and physical settlement"
+      }
+    },
+    {
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 74,
+        "at": 1793058393800,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "kind": "research-clock-pool-state",
+      "data": {
+        "requestedAt": "2026-10-26T23:46:33.450Z",
+        "receivedAt": "2026-10-26T23:46:33.800Z",
+        "addresses": [
+          "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+          "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw",
+          "5PHirr8joyTMp9JMm6nW7hNDVyEYdkzDqazxPD7RaTjx",
+          "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "So11111111111111111111111111111111111111112",
+          "6h1i3tBmhNB8jszmNeER8T2t74YpMrtb3pkMHcuVtSyx",
+          "BLQj4CkbcDfDUkt3KLvMunTKKsFa5BsjRY4jAfixrU7d",
+          "SysvarC1ock11111111111111111111111111111111"
+        ],
+        "context": {
+          "slot": 461853025
+        },
+        "value": [
+          {
+            "data": [
+              "8ZptBBGxbbz/AACDWJnn4kyIK74oeKklgv2TI0XuFgFFjY+dfEeOCfY2pGV7YlAqkFwJLKL8lTevMZCmFHOGI29oYsZG0Km62aAvBpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAEl8vP+Td6BMBUIzIx+AYIm7A+AmBnT7bV0jy3+/h0qpFSKd533He6N5lYFH+4fiXW4Xwq/n+UHVcCxJaYs055jmY27DeO00ckjFprLRNJh6nXDakC/TRkeHlKR7CRDiwTsQmtZ0AMAAEcZD3IwdHtSzGmnvJ2+7dVhmXeV4grokzk5Dc+V1CC7AABqhRMYBAAAAAAAAAAAAAAAAAAAAAAAAAAAAKpYAAAAAAAAtGMKAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 2179320,
+            "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "rentEpoch": 18446744073709552000,
+            "space": 301
+          },
+          {
+            "data": [
+              "lQicyqD8sNnTu4yrNBzgUoRX8sOBfTJ4RBlj3NVf7Vi6JMmZ3awCqhQAAAAAAAAABQAAAAAAAAAASsL40N1cvJfjKJwZfLUGKlTz2Va5zm5RFfllZ6pcs+ZgjMwd/OlhtDt3nBkVBabi079F1aTbRhitdsgtYXVFNWODcwAOoiyyZNNK/2SgS176v7t03c0EiZexmBVH19EQg4R0KS5nWpS0NuywqZiJQjKKg93GIzgClhJnxc1hF8uNGBoMhJ+pN6bzSt7TCB75VwCqywybs9kJpLkUdSek69eqj7Bg2CkbTE1HXa/3Yslr3A2s6zbAEurRLtOpSEFh4ATIfOuY+lzkf4A4Bv0seUXSlSSVmuwA3tl4FPOPeEb/g4OBi6j6KMPNO21ek/n6uPCXm8NyFazFskaHe6jDyQUAAAAAAAAAByFdmUB5NpThFgZs5Fm4GP35u6DHtBt4P6OhIMpBlTKii1/SarR5pqnMbL9rCyPrYYhaNx4BIKypE77vPROKeOiTFB+xjp8VdNgQ4XjhnjBgTjF1qi5KMt/IYAcn0QcJATWEU2JWCU+RKBkSfvpORGtDM3IXk9E4dvmq2/PcfQtfbnUBgiD5QmdwAyN7TWtFN1m0pcaQtZw12bsYegkMvSozmHqeuxNnmatZklsT5dyLMIHfAF20J8FHj6Rv+MNHoHTpVD8+N6LQRiJ63ctOnHdMRCWMQ+3ySqiq4fACFGZb2kw4zW23Q49ZtAi7nsO0yp6K0fHyRlPEmbV5bCDb+bMt3Z7qPzmzchFccYR8GEXPpTbGhQdOAw5E0CHePvnjXEy3gPCO4v7oS+xEald4Jdpo1Dn6il2jsMXP9Q9j9FRrAUOeZRDAPWX62THonQS+C7cNUZcfUcQV+zRMB9tBnyEiAiNVFqkXE0xnWIxJOCCuFV7pZmVXesG3GNpH3c8qBQ7mp+IgaLuIZAqlf5CTCMYf73EaAWP1p1XAcLyGDR9jZyB87NpbzGyx6vDxbWhARWaxjVbSSBrLMXAyZW6QVRx4RJZB+ElY3HOnaoXYdW9VwCzayom6GTJ5DDaKsVfpLXPFS5a1yTGUHkbqS+Lg4xEndE/Gt0z7RV7+r4vVcXks7UT8H3j5SjPQkJxea1+wIVcK2Nutjej9s9IO0c2Z645Oh3AVfuvrZ4plXbmbN/axMmx2V9uQz7ioer74x7byyGmIEwAAAAAAAPSEYofB0vyr1vGBX2l/VABW/RZVaGEbANPK6XSCwSxlAQEsAQAAAAAAAA==",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 9272823,
+            "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "rentEpoch": 18446744073709552000,
+            "space": 949
+          },
+          {
+            "data": [
+              "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AAAAAAAAAAAAFAAAAAAAAAAFAAAAAAAAABQAAAAAAAAAAPCrdaQNAAAAAAAAAAAAABQAAAAAAAAABQAAAAAAAAASAAAAAAAAAAAAUUqNDgAAAAAAAAAAAAAUAAAAAAAAAAUAAAAAAAAADwAAAAAAAAAAEPYedg8AAAAAAAAAAAAAFAAAAAAAAAAFAAAAAAAAAA0AAAAAAAAAACCb814QAAAAAAAAAAAAABQAAAAAAAAABQAAAAAAAAAKAAAAAAAAAAAwQMhHEQAAAAAAAAAAAAAUAAAAAAAAAAUAAAAAAAAACAAAAAAAAAAAQOWcMBIAAAAAAAAAAAAAFAAAAAAAAAAFAAAAAAAAAAUAAAAAAAAAFAAAAAAAAAAFAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 33103977,
+            "owner": "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ",
+            "rentEpoch": 18446744073709552000,
+            "space": 4097
+          },
+          {
+            "data": [
+              "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0pKtAZKJAwAGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARIAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGV7YlAqkFwJLKL8lTevMZCmFHOGI29oYsZG0Km62aAvEwCxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZXtiUCqQXAksovyVN68xkKYUc4Yjb2hixkbQqbrZoC8MAAAAR1RBIE9ubGluZSA2BQAAAEdUQSA2UAAAAGh0dHBzOi8vaXBmcy5pby9pcGZzL2JhZmtyZWlic21mb2t2ZG95Y3YycXUzd2p5cmhibG40MmllZWI2YmNndW5rb25henE0Ym1lZjJuMnA0AAAAAA==",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 2758440,
+            "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "rentEpoch": 18446744073709552000,
+            "space": 415
+          },
+          {
+            "data": [
+              "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 1859475976191,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          },
+          {
+            "data": [
+              "ZXtiUCqQXAksovyVN68xkKYUc4Yjb2hixkbQqbrZoC9ZHoODfNkJrU17yCgrc16Ks7gPyFa/Cs3f7YlRc3g92VIpwNA4MgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgcAAAA=",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 1513840,
+            "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "rentEpoch": 18446744073709552000,
+            "space": 170
+          },
+          {
+            "data": [
+              "BpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAFZHoODfNkJrU17yCgrc16Ks7gPyFa/Cs3f7YlRc3g92QDodkgXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAA4thYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "base64"
+            ],
+            "executable": false,
+            "lamports": 100001488440,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 165
+          },
+          {
+            "owner": "Sysvar1111111111111111111111111111111111111",
+            "data": [
+              "YVGHGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABZ5t9qAAAAAA==",
+              "base64"
+            ],
+            "lamports": 1169280,
+            "executable": false,
+            "rentEpoch": 0
+          }
+        ]
+      }
+    },
+    {
+      "kind": "research-clock-position-sell-quote",
+      "data": {
+        "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "slot": 461853025,
+        "commitment": "confirmed",
+        "requestedAt": "2026-10-26T23:46:33.450Z",
+        "receivedAt": "2026-10-26T23:46:33.800Z",
+        "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "mintExtensions": [
+          "MetadataPointer",
+          "TokenMetadata"
+        ],
+        "decimals": 6,
+        "poolFlags": {
+          "mayhem": false,
+          "cashback": false,
+          "holderReward": false
+        },
+        "rawBaseReserve": "55219601811794",
+        "rawQuoteReserve": "100000000000",
+        "virtualQuoteReserves": "17583801706",
+        "effectiveQuoteReserve": "117583801706",
+        "feeBuckets": "703582",
+        "feeBps": {
+          "lpFeeBps": "20",
+          "protocolFeeBps": "5",
+          "creatorFeeBps": "90"
+        },
+        "creatorFeeApplied": true,
+        "baseAssociatedAccount": {
+          "accountLengthBytes": 170,
+          "accountExtensions": [
+            "ImmutableOwner"
+          ],
+          "rentLamports": null,
+          "rentStatus": "requires-current-RPC-and-account-existence-check",
+          "depositTreatment": "refundable locked capital when a new account is required"
+        },
+        "quoteAssociatedAccount": {
+          "accountLengthBytes": 165,
+          "accountExtensions": [],
+          "rentLamports": null,
+          "rentStatus": "requires-current-RPC-and-account-existence-check",
+          "depositTreatment": "refundable locked capital when a new account is required"
+        },
+        "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+        "mode": "QUOTE_ONLY",
+        "timeEvidence": "confirmed-bank-clock",
+        "clockAccount": "SysvarC1ock11111111111111111111111111111111",
+        "clockSlot": 461853025,
+        "marketClockUnixSeconds": 1793058393,
+        "maxMarketAgeMs": 30000,
+        "validatedAt": "2026-10-26T23:46:33.800Z",
+        "researchOnly": true,
+        "sell": {
+          "inputBaseUnits": "22273040838",
+          "outputLamports": "46863558",
+          "grossCurveOutputLamports": "47408760",
+          "embeddedPoolFeeLamports": "545202"
+        },
+        "limitations": [
+          "Current supported-pool full-size sell estimate only; no live fill or stop-price guarantee.",
+          "Embedded pool fees already reduce output; do not debit them again.",
+          "Output excludes network/priority fees and any separately evidenced account-deposit refund.",
+          "Confirmed state/context and original receive time are retained; callers must enforce execution/mark freshness."
+        ]
+      }
+    },
+    {
+      "kind": "research-held-market-context",
+      "data": {
+        "at": 1793058393800,
+        "context": {
+          "price": {
+            "microUsdPerSol": "1000000000",
+            "at": 1793058393800,
+            "source": "OFFLINE synthetic USD1000/SOL"
+          },
+          "marks": {
+            "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump": {
+              "netLamports": "46856558",
+              "pricedBaseUnits": "22273040838",
+              "at": 1793058393800,
+              "evidence": "research-held-market:8b76c8f0ce10235d00a1ee6c654f50256895c92443b4969a42d09f51c2f3b1f9"
+            }
+          },
+          "sourceValidUntil": 1793058423000
+        },
+        "classification": "ISOLATED_RESEARCH_ONLY",
+        "gasLamports": "7000",
+        "gasClassification": "simulated; subtracted once from marks, gross sell quote excludes separate execution gas"
+      }
+    },
+    {
+      "kind": "trader-context",
+      "data": {
+        "at": 1793058393800,
+        "context": {
+          "price": {
+            "microUsdPerSol": "1000000000",
+            "at": 1793058393800,
+            "source": "OFFLINE synthetic USD1000/SOL"
+          },
+          "marks": {
+            "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump": {
+              "netLamports": "46856558",
+              "pricedBaseUnits": "22273040838",
+              "at": 1793058393800,
+              "evidence": "research-held-market:8b76c8f0ce10235d00a1ee6c654f50256895c92443b4969a42d09f51c2f3b1f9"
+            }
+          },
+          "sourceValidUntil": 1793058423000
+        }
+      }
+    },
+    {
+      "kind": "trader-input",
+      "data": {
+        "kind": "tick",
+        "at": 1793058393800
+      }
+    },
+    {
+      "kind": "trader-held-evaluation",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "units": "22273040838",
+        "evaluatedAt": 1793058393800,
+        "completedAt": 1793058393800,
+        "quoteAt": 1793058393800,
+        "sourceValidUntil": 1793058423000,
+        "usable": true,
+        "action": "hold",
+        "reason": "no-provisional-exit-trigger",
+        "pendingExit": false,
+        "outcome": "hold"
+      }
+    }
+  ],
+  "calls": [
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058381900,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058382300,
+      "accounts": 8
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058384300,
+      "accounts": 8
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058386300,
+      "accounts": 8
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058388300,
+      "accounts": 8
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058390300,
+      "accounts": 8
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "at": 1793058390650,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058391000,
+      "accounts": 8
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058391350,
+      "accounts": 0
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058391700,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058392050,
+      "accounts": 8
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058392400,
+      "accounts": 8
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058392750,
+      "accounts": 0
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058393100,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058393450,
+      "accounts": 8
+    }
+  ],
+  "positions": {
+    "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump": {
+      "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+      "units": "22273040838",
+      "entryLamports": "47992665",
+      "entryGas": "7000",
+      "costMicroUsd": "47999665",
+      "deposit": "2000335",
+      "enteredAt": 1793058325200
+    }
+  },
+  "pending": {
+    "buy:45:1793058393450": {
+      "id": "buy:45:1793058393450",
+      "side": "buy",
+      "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+      "decidedAt": 1793058393450,
+      "executeAt": 1793058394450,
+      "expiresAt": 1793058398450,
+      "gas": "7000",
+      "deposit": "2000335",
+      "maxSpend": "47992665",
+      "minReceive": "89613110408",
+      "decisionEvidence": "rpc-market:a7591db0f950b3851956b5ef47251ed5dedef646ee92b14a577d6a949ce753f0",
+      "reserved": "50000000"
+    }
+  }
+}

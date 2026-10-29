@@ -1,0 +1,13 @@
+✔ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (8819.578354ms)
+ℹ {"latency":120,"positionsOpened":2,"positionsClosed":2,"maximumCompletedGapMs":2770,"completedChecks":692,"physicalStarts":594,"maximumRollingStartsPerMinute":54,"networkRequests":0}
+✔ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (7057.711636ms)
+ℹ {"latency":350,"positionsOpened":2,"positionsClosed":2,"maximumCompletedGapMs":3100,"completedChecks":622,"physicalStarts":573,"maximumRollingStartsPerMinute":53,"networkRequests":0}
+✔ OFFLINE provider429 retains first holding and withholds second exposure after a genuine protection interruption (383.95213ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17915.163404

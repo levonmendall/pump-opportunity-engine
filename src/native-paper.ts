@@ -91,6 +91,24 @@ export class NativePaper {
   if(!pool||!features||!certificate||!this.entryCapacity().available||this.ownership(mint)||!entryAgeEligible(pool.identity.chainBlockTime*1000,at)||!this.ready(mint,at)||assessPredictiveBuying(features,at).status!=='not-rejected')return null;
   return {proofId:['entry',mint,features.windowEndAt,certificate.admittedAt,certificate.featuresSha256].join(':'),mint,startAt:features.windowStartAt,throughAt:at,windowEndAt:features.windowEndAt,featuresSha256:certificate.featuresSha256,certificateAt:certificate.admittedAt,deadlineAt:certificate.deadlineAt};
  }
+ /** A qualifying market window is not authority to clear an owner or hard
+  * financial stop. Recheck current state after every awaited preparation: a
+  * stop can arrive while SDK/RPC work is in flight. The only stopped-account
+  * exception is the same account/revision-bound internal shutdown proof used
+  * by cash readiness; ordinary temporary preparation pauses remain retryable. */
+ private candidateEntryAuthority(){
+  const state=this.options.ledger.state(),safety=this.trader.entryReadinessSafety();
+  if(state.daily.lossPaused||!safety.recoveryComplete||!safety.idle||!safety.evidenceAvailable||!safety.financialAvailable||safety.uncertainActions||safety.newHardPauseObserved)return false;
+  const proof=(state.controls.stopRequested||!safety.automaticRecoveryAllowed)?this.options.internalShutdownRecovery?.(this.now()):null;
+  const provedInternal=proof?.verified===true&&proof.stateRevision===state.revision&&proof.accountId===state.accountId&&proof.inceptionAt===state.inceptionAt;
+  if(state.controls.stopRequested&&!provedInternal||!safety.automaticRecoveryAllowed&&!provedInternal)return false;
+  return state.controls.entriesEnabled||provedInternal||NATIVE_PAPER_FINANCIAL_READINESS_POLICY.recoverablePauseReasons.includes(state.controls.reason as never)||state.controls.reason==='startup: observation only; explicit runtime readiness required';
+ }
+ private refuseCandidateEntryAuthority(mint:string,at:number,windowEndAt:number){
+  this.options.onEvaluationComplete?.(mint,this.now());this.lastCandidateBucket.set(mint,windowEndAt);
+  this.options.record('native-paper-entry-unavailable',{mint,at,windowEndAt,reason:'financial-entry-control-authority-unavailable',predictiveOnly:true,executableQualification:false,orderCreated:false,existingFinancialActionsPreserved:true});
+  return {kind:'entry-permission-refused' as const};
+ }
  async candidate(mint:string,admitNewRisk:boolean){
   const at=this.now(),pool=this.pools.get(mint),features=this.trader.candidateFeatures(mint,at);if(!pool||!features||!this.ready(mint,at)||this.lastCandidateBucket.get(mint)===features.windowEndAt){this.technical(mint,'entry-preparation-unavailable',true);return {kind:'unavailable' as const};}
   // Required position slots are already committed by held exposure and pending
@@ -98,14 +116,22 @@ export class NativePaper {
   // existing action merely to reject another candidate later in PaperTrader.
   const capacity=this.entryCapacity();if(!capacity.available){this.options.onEvaluationComplete?.(mint,this.now());this.options.record('native-paper-entry-unavailable',{mint,at,windowEndAt:features.windowEndAt,reason:'simulated-position-capacity-reserved',...capacity,predictiveOnly:true,executableQualification:false,orderCreated:false,existingFinancialActionsPreserved:true});this.lastCandidateBucket.set(mint,features.windowEndAt);return {kind:'capacity-refused' as const};}
   if(!admitNewRisk||this.options.admitNewRisk?.(at)!==true){this.options.onEvaluationComplete?.(mint,this.now());this.options.record('native-paper-entry-unavailable',{mint,at,windowEndAt:features.windowEndAt,reason:'monitoring/time/request/response or pending-action reserve unavailable',predictiveOnly:true,executableQualification:false,orderCreated:false});this.lastCandidateBucket.set(mint,features.windowEndAt);return {kind:'capacity-refused' as const};}
+  if(!this.candidateEntryAuthority())return this.refuseCandidateEntryAuthority(mint,at,features.windowEndAt);
   const assessment=assessPredictiveBuying(features,at);
   if(assessment.status==='not-rejected'&&entryAgeEligible(pool.identity.chainBlockTime*1000,at)&&!this.ownership(mint)){
    try{if(this.options.pinQualification){const proof=this.qualificationProof(mint,this.now());need(proof,'NATIVE_PAPER_QUALIFICATION_PROOF_UNAVAILABLE');this.options.pinQualification(proof);need(this.ready(mint,this.now())&&this.options.admitNewRisk?.(this.now())===true,'NATIVE_PAPER_PINNED_PROOF_EXPIRED');}const plan=await this.options.market.prepareEntryCosts(mint,new AbortController().signal);this.trader.setPilotEntryDeposit(plan.depositLamports,plan.evidence,mint);
-    if(this.ready(mint,this.now())){await this.protection();const when=this.now(),context=this.context,state=this.options.ledger.state();if(context.price&&this.ready(mint,when)&&this.options.admitNewRisk?.(when)===true){const result=this.options.ledger.resume('native-paper-ready:'+state.revision+':'+when,when,context.price,context.marks,{version:NATIVE_PAPER_DATA_CONTRACT_VERSION,evidence:'current exact audited native window and isolated PAPER monitoring reserve',marketAt:plan.at,recoveryComplete:true,candidateWindowsReady:this.ready(mint,when),budgetAvailable:this.options.admitNewRisk?.(when)===true});if(result.enabled)this.trader.verifiedEntryReadinessRecovered();this.options.record('native-paper-entry-permission',{at:when,result,mint,windowEndAt:features.windowEndAt});}}
-   }catch(error){this.trader.pauseNewEntries('entry preparation or reconciliation unavailable');this.options.record('native-paper-entry-preparation-unavailable',{mint,at:this.now(),windowEndAt:features.windowEndAt,predictiveOnly:true,executableQualification:false,orderCreated:false,reason:error instanceof Error?error.message.slice(0,180):'unavailable'});this.lastCandidateBucket.set(mint,features.windowEndAt);this.technical(mint,'entry-preparation-unavailable');return {kind:'preparation-unavailable' as const};}
+    if(!this.candidateEntryAuthority())return this.refuseCandidateEntryAuthority(mint,this.now(),features.windowEndAt);
+    if(this.ready(mint,this.now())){await this.protection();const when=this.now(),context=this.context,state=this.options.ledger.state();if(!this.candidateEntryAuthority())return this.refuseCandidateEntryAuthority(mint,when,features.windowEndAt);if(context.price&&this.ready(mint,when)&&this.options.admitNewRisk?.(when)===true){const result=this.options.ledger.resume('native-paper-ready:'+state.revision+':'+when,when,context.price,context.marks,{version:NATIVE_PAPER_DATA_CONTRACT_VERSION,evidence:'current exact audited native window and isolated PAPER monitoring reserve',marketAt:plan.at,recoveryComplete:true,candidateWindowsReady:this.ready(mint,when),budgetAvailable:this.options.admitNewRisk?.(when)===true});if(result.enabled)this.trader.verifiedEntryReadinessRecovered();this.options.record('native-paper-entry-permission',{at:when,result,mint,windowEndAt:features.windowEndAt});}}
+   }catch(error){if(!this.candidateEntryAuthority())return this.refuseCandidateEntryAuthority(mint,this.now(),features.windowEndAt);this.trader.pauseNewEntries('entry preparation or reconciliation unavailable');this.options.record('native-paper-entry-preparation-unavailable',{mint,at:this.now(),windowEndAt:features.windowEndAt,predictiveOnly:true,executableQualification:false,orderCreated:false,reason:error instanceof Error?error.message.slice(0,180):'unavailable'});this.lastCandidateBucket.set(mint,features.windowEndAt);this.technical(mint,'entry-preparation-unavailable');return {kind:'preparation-unavailable' as const};}
   }
   if(!this.ready(mint,this.now())){if(assessment.status==='not-rejected')this.technical(mint,'entry-preparation-unavailable');return {kind:'unavailable' as const};}
-  const before=this.trader.funnel.evaluated;await this.tick({candidateMint:mint,reuseFreshContext:true,maximumDueActions:1});if(this.trader.funnel.evaluated>before){this.lastCandidateBucket.set(mint,features.windowEndAt);const decision=this.trader.decisions().filter(d=>d.mint===mint&&d.at>=at).at(-1);if(!this.ownership(mint)){if(assessment.status==='not-rejected'&&(decision?.stage==='qualified'||decision?.stage==='missing-data'&&decision.reason==='fresh-size-specific-quote-unavailable'))this.technical(mint,'entry-quote-unavailable');else this.options.onEvaluationComplete?.(mint,this.now());}}else this.technical(mint,'entry-preparation-unavailable',true);return {kind:'evaluated' as const};
+  const before=this.trader.funnel.evaluated;await this.tick({candidateMint:mint,reuseFreshContext:true,maximumDueActions:1});
+  // Decision pricing can consume material time after the tick's earlier held
+  // evaluation. Yield back to existing exposure before a newly reserved buy's
+  // modeled delay/attempt. Obtain a fresh shared exact-size mark rather than
+  // making an earlier quote appear to advance the completed protection clock.
+  if(Object.keys(this.options.ledger.state().positions).length)await this.protection();
+  if(this.trader.funnel.evaluated>before){this.lastCandidateBucket.set(mint,features.windowEndAt);const decision=this.trader.decisions().filter(d=>d.mint===mint&&d.at>=at).at(-1);if(!this.ownership(mint)){if(assessment.status==='not-rejected'&&(decision?.stage==='qualified'||decision?.stage==='missing-data'&&decision.reason==='fresh-size-specific-quote-unavailable'))this.technical(mint,'entry-quote-unavailable');else this.options.onEvaluationComplete?.(mint,this.now());}}else this.technical(mint,'entry-preparation-unavailable',true);return {kind:'evaluated' as const};
  }
  poolsForRecovery(){return Object.fromEntries([...this.pools].map(([mint,pool])=>[mint,structuredClone(pool)]));}
  valuation(){return this.context;}

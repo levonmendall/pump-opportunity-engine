@@ -1,0 +1,10 @@
+✔ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (7029.657057ms)
+ℹ {"latency":350,"positionsOpened":2,"positionsClosed":2,"maximumCompletedGapMs":3550,"completedChecks":1041,"physicalStarts":873,"maximumRollingStartsPerMinute":79,"networkRequests":0}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8299.644173

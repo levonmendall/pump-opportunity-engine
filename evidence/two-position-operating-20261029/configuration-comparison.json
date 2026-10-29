@@ -1,0 +1,52 @@
+{
+  "classification": "SOURCE_DERIVED_NOT_INSTALLED",
+  "operatingAccount": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": 1793052456212,
+    "initialMicroUsd": "1000000000",
+    "ledgerPath": "/var/lib/poe/state/ledger.sqlite"
+  },
+  "stage": "two",
+  "deepSlots": 4,
+  "configurationSha256": "7e1d449a053a8cad89ff7b5e9dc84c01f118cbeeeaeea9958473b75f6a547292",
+  "strategyVersion": "persistent-buying-pilot-concurrent-stage-2-v1",
+  "contractSha256": "416dda5b84dd2e282534fcf20c77137afd61afb7de178d418bf2772bd6f2f100",
+  "oldRisk": {
+    "initialMicroUsd": "1000000000",
+    "maximumInitialCostMicroUsd": "50000000",
+    "maximumSimultaneousPositions": 1,
+    "baselinePositionLimit": 3,
+    "maximumAggregatePositionCostMicroUsd": "150000000",
+    "utcDailyLossPauseMicroUsd": "50000000",
+    "leverage": false,
+    "adds": false,
+    "reentry": false
+  },
+  "newRisk": {
+    "initialMicroUsd": "1000000000",
+    "maximumInitialCostMicroUsd": "50000000",
+    "maximumSimultaneousPositions": 2,
+    "baselinePositionLimit": 3,
+    "maximumAggregatePositionCostMicroUsd": "150000000",
+    "utcDailyLossPauseMicroUsd": "50000000",
+    "leverage": false,
+    "adds": false,
+    "reentry": false
+  },
+  "unchangedBaseline": true,
+  "unchangedExecution": true,
+  "providerConfiguration": {
+    "persistent": true,
+    "profile": "candidate-native-two-hour-90-research-v1",
+    "maxStartsPerMinute": 90,
+    "maxStartsPer10s": 20,
+    "maxGetTransactionStartsPer10s": 8
+  },
+  "managementPolicy": {
+    "version": "rolling-shared-provider-short-and-minute-headroom-v2",
+    "entryStarts": 6,
+    "observationStarts": 4,
+    "informationCapture": "Existing validated notification capture obeys actual resource/evidence/liveness cutoff, independently of physical RPC headroom.",
+    "meaning": "Reserve the existing entry/management start envelope in BOTH physical rolling windows; callbacks recheck after reservation and before invocation. No provider allowance is raised."
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "classification": "INDEPENDENT_AGENT_SOURCE_REVIEW",
+  "sourceHashes": {
+    "src/native-paper.ts": "af71607f9aaedd2b366c4d9f2d5e5aa42abc4e7377c1df97cc115815c66b2e7b",
+    "src/run-native-paper.ts": "d289df8d5b1333f1c0bbc7ae0c592509b0940c036d6ad5c6c69bab100394abef"
+  },
+  "verdict": "APPROVED_NO_SOURCE_BLOCKERS",
+  "reviews": [
+    {
+      "reviewer": "/root/two_risk_review",
+      "focusedTests": "75/75 PASS reported independently",
+      "findings": "Identified and verified correction of native information/physical work admission coupling; owner/hard race, strict quoteAt and both rolling-window reserves reviewed."
+    },
+    {
+      "reviewer": "/root/two_position_protection/review_two_position_path",
+      "focusedTests": "83/83 PASS reported independently",
+      "findings": "Real native6\u21925\u21924\u21923 and genuine cutoff controls, pending identity, fresh held-first pricing, stop authority and explicit live limitations verified."
+    }
+  ],
+  "notVerified": [
+    "installed stage-two service",
+    "genuine live concurrent holdings",
+    "EC2 resource envelope",
+    "Render parity",
+    "protection through physical provider outages"
+  ]
+}

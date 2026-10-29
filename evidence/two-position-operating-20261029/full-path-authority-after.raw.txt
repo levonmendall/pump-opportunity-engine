@@ -1,0 +1,55 @@
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (505.035361ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (36.721754ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (79.965592ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (38.77608ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (42.096272ms)
+✔ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (33.051744ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (27.967992ms)
+  ✔ unknown-stop:CONTROLLED (24.615879ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (53.268426ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (46.47037ms)
+✔ ordinary per-entry capacity refusal preserves independently armed financial permission and creates no order (28.552418ms)
+✔ routine checkpoint preserves a buy with uncertain commit, without an invented financial outcome (49.166075ms)
+✔ routine checkpoint retains an existing sell and its holding until actual-size delayed exit execution completes (70.569828ms)
+✔ a new hard failure after inherited internal stop cannot be laundered by its older machine-stop proof (26.389595ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (39.976757ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (48.921658ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (56.839318ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (60.89514ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (24.039003ms)
+✔ a full SDK-priced candidate cannot clear owner-stop merely because new-risk capacity is available (26.780571ms)
+✔ a full SDK-priced candidate cannot clear owner-pause merely because new-risk capacity is available (22.939147ms)
+✔ a full SDK-priced candidate cannot clear hard-pause merely because new-risk capacity is available (16.077513ms)
+✖ a owner-stop arriving during awaited SDK preparation is retained at its current revision (22.833384ms)
+✔ a owner-pause arriving during awaited SDK preparation is retained at its current revision (21.42152ms)
+✔ a hard-pause arriving during awaited SDK preparation is retained at its current revision (19.928646ms)
+✔ temporary second-entry preparation refusal recovers from a new audited window while first holding stays owned and protected (85.002221ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 25
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2411.481234
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:38679
+✖ a owner-stop arriving during awaited SDK preparation is retained at its current revision (22.833384ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /during/. Input:
+  
+  'safe stop requested'
+  
+      at TestContext.<anonymous> (/workspace/poe-two-position-operating/test/native-paper-integration.test.ts:158:172)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'safe stop requested',
+    expected: /during/,
+    operator: 'match',
+    diff: 'simple'
+  }

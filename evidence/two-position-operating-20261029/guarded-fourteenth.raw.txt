@@ -1,0 +1,12 @@
+✔ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (5942.940363ms)
+ℹ {"latency":120,"positionsOpened":2,"positionsClosed":2,"maximumCompletedGapMs":2770,"completedChecks":692,"physicalStarts":594,"maximumRollingStartsPerMinute":54,"networkRequests":0}
+✔ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (6341.953594ms)
+ℹ {"latency":350,"positionsOpened":2,"positionsClosed":2,"maximumCompletedGapMs":3100,"completedChecks":622,"physicalStarts":573,"maximumRollingStartsPerMinute":53,"networkRequests":0}
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13503.92907

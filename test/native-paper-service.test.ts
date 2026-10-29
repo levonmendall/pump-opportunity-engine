@@ -125,3 +125,11 @@ test('actual continuous recorder optional omission preserves complete required p
   assert.equal(write('trader-quote',{fixture:'HELD_FINANCIAL_QUOTE_RETAINED'},true),true);const proof=await recorder.pinRange('OFFLINE-current-required-window',now,now);assert.equal(proof.complete,true);const raw=proof.files.map(file=>readFileSync(join(directory,file),'utf8')).join('');assert.match(raw,/REQUIRED_FLOW_ONE/);assert.match(raw,/REQUIRED_FLOW_TWO/);assert.equal(healthy,true);
  }finally{await recorder.close();}
 });
+
+test('rolling short-window financial reserve blocks new risk before a burst consumes protection and pending-entry starts',()=>{
+ const normal={chapter:2,newUnits:20,maximumNewUnits:1500,newAccountedResponseBytes:10000,maximumNewResponseBytes:256*1024*1024,requestLimits:{maxStartsPerMinute:90,maxStartsPer10s:20},chapterUsage:{rolling60SecondStarts:20,rolling10SecondStarts:14}};
+ assert.equal(nativePaperManagementReserve(normal,true).entryAllowed,true);assert.equal(nativePaperManagementReserve(normal,true).rolling10SecondStartHeadroom,6);
+ assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:15}},true).entryAllowed,false,'ample minute budget cannot authorize entry that consumes the held/pending short-window reserve');
+ assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:16}},true).candidateWorkWithExposureAllowed,true);assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:17}},true).candidateWorkWithExposureAllowed,false);
+ assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{rolling60SecondStarts:20,rolling10SecondStarts:0}},true).entryAllowed,true,'rolling headroom recovers without a restart or cumulative allowance reset');
+});
