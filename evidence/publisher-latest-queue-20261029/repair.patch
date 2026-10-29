@@ -1,0 +1,70 @@
+diff --git a/src/snapshot-publisher.ts b/src/snapshot-publisher.ts
+index fda77a4..97af795 100644
+--- a/src/snapshot-publisher.ts
++++ b/src/snapshot-publisher.ts
+@@ -35,13 +35,16 @@ export function readPublisherCredential(env:NodeJS.ProcessEnv){const raw=private
+ export function readSnapshotFileWithProvenance(file:string,identity:ReportingIdentity){const raw=privateRead(file,128*1024);return {snapshot:validateSnapshot(JSON.parse(raw.toString('utf8')),identity),rawSourceSha256:createHash('sha256').update(raw).digest('hex')};}
+ export function readSnapshotFile(file:string,identity:ReportingIdentity){return readSnapshotFileWithProvenance(file,identity).snapshot;}
+ export class SnapshotFilePublisher{
+- private timer:ReturnType<typeof setTimeout>|undefined;private running=false;private lastOfferAt=-Infinity;private sourceAvailability:boolean|null=null;
++ private timer:ReturnType<typeof setTimeout>|undefined;private running=false;private lastOfferAt=-Infinity;private lastOfferedSourceHash:string|null=null;private sourceAvailability:boolean|null=null;
+  private readonly publisher:SnapshotPublisher;
+  constructor(private readonly options:{file:string;identity:ReportingIdentity;secret:string;fetch?:typeof fetch;now?:()=>number;monotonic?:()=>number;pollMs?:number;offerMs?:number;publishIntervalMs?:number;onAcknowledgement?:(ack:SnapshotAcknowledgement)=>void;onSourceState?:(value:{sourceAvailable:boolean;at:number;reason:string|null})=>void}){
+   this.publisher=new SnapshotPublisher({url:ORIGINAL_SNAPSHOT_URL,secret:options.secret,identity:options.identity,intervalMs:options.publishIntervalMs??15000,timeoutMs:5000,maxBackoffMs:60000,fetch:options.fetch,onAcknowledgement:options.onAcknowledgement??(()=>{})});
+   if(!Number.isSafeInteger(options.pollMs??1000)||(options.pollMs??1000)<10||!Number.isSafeInteger(options.offerMs??15000)||(options.offerMs??15000)<10)throw Error('PUBLISHER_CADENCE');
+  }
+- private inspect(){if(!this.running)return;const at=(this.options.now??Date.now)(),mono=(this.options.monotonic??(()=>performance.now()))();try{const {snapshot,rawSourceSha256}=readSnapshotFileWithProvenance(this.options.file,this.options.identity);if(mono-this.lastOfferAt>=(this.options.offerMs??15000)){this.publisher.offer(snapshot,rawSourceSha256);this.lastOfferAt=mono;}if(this.sourceAvailability!==true){this.sourceAvailability=true;this.options.onSourceState?.({sourceAvailable:true,at,reason:null});}}catch{if(this.sourceAvailability!==false){this.sourceAvailability=false;this.options.onSourceState?.({sourceAvailable:false,at,reason:'verified_snapshot_unavailable'});}}finally{if(this.running){this.timer=setTimeout(()=>this.inspect(),this.options.pollMs??1000);this.timer.unref();}}}
++ // A changed verified file refreshes only the bounded latest-value queue.
++ // Network cadence/backoff remain owned by SnapshotPublisher; unchanged
++ // snapshots are still reoffered periodically for receiver-restart recovery.
++ private inspect(){if(!this.running)return;const at=(this.options.now??Date.now)(),mono=(this.options.monotonic??(()=>performance.now()))();try{const {snapshot,rawSourceSha256}=readSnapshotFileWithProvenance(this.options.file,this.options.identity);if(rawSourceSha256!==this.lastOfferedSourceHash||mono-this.lastOfferAt>=(this.options.offerMs??15000)){this.publisher.offer(snapshot,rawSourceSha256);this.lastOfferAt=mono;this.lastOfferedSourceHash=rawSourceSha256;}if(this.sourceAvailability!==true){this.sourceAvailability=true;this.options.onSourceState?.({sourceAvailable:true,at,reason:null});}}catch{if(this.sourceAvailability!==false){this.sourceAvailability=false;this.options.onSourceState?.({sourceAvailable:false,at,reason:'verified_snapshot_unavailable'});}}finally{if(this.running){this.timer=setTimeout(()=>this.inspect(),this.options.pollMs??1000);this.timer.unref();}}}
+  start(){if(this.running)return;this.running=true;this.inspect();this.publisher.start();}
+  async stop(){this.running=false;clearTimeout(this.timer);await this.publisher.stop();}
+  metrics(){return {...this.publisher.metrics,sourceAvailable:this.sourceAvailability};}
+diff --git a/test/snapshot-file-publisher.test.ts b/test/snapshot-file-publisher.test.ts
+index b1ccf6a..3b4442a 100644
+--- a/test/snapshot-file-publisher.test.ts
++++ b/test/snapshot-file-publisher.test.ts
+@@ -1,4 +1,4 @@
+-import{test}from'node:test';import assert from'node:assert/strict';import{mkdtempSync,writeFileSync,chmodSync,rmSync,symlinkSync}from'node:fs';import{tmpdir}from'node:os';import{join}from'node:path';
++import{test,type TestContext}from'node:test';import assert from'node:assert/strict';import{mkdtempSync,writeFileSync,chmodSync,rmSync,symlinkSync}from'node:fs';import{tmpdir}from'node:os';import{join}from'node:path';
+ import{SnapshotFilePublisher,publisherCredentialPath,publisherFileOwnerModeAccepted,readPublisherCredential,readSnapshotFile,readSnapshotFileWithProvenance,snapshotFilePublisherArguments,ORIGINAL_SNAPSHOT_URL}from'../src/snapshot-publisher.js';
+ import{createHash}from'node:crypto';
+ import{spawnSync}from'node:child_process';import{fileURLToPath,pathToFileURL}from'node:url';
+@@ -35,3 +35,36 @@ test('persistent file watcher republishes unchanged source after receiver restar
+  const p=new SnapshotFilePublisher({file,identity,secret,fetch:fetcher,pollMs:10,offerMs:20,publishIntervalMs:20,onAcknowledgement:a=>acknowledgements.push(a),onSourceState:s=>states.push(s)});p.start();try{await until(()=>acknowledgements.length>=2);assert.equal(acknowledgements[0]!.result,'accepted');assert.equal(acknowledgements[1]!.result,'duplicate');assert.equal(cache.read()!.receivedAt,iso(T+1000));cache=new SnapshotCache(identity);await until(()=>acknowledgements.filter(a=>a.result==='accepted').length>=2);assert.equal(cache.read()!.snapshot.sequence,'12');assert.ok(acknowledgements.every(a=>a.sourceAtMs===T&&a.accountId===ORIGINAL_POE_ACCOUNT));assert.ok(!JSON.stringify(acknowledgements).includes(secret));writeFileSync(file,'{"invalid":true}');await until(()=>p.metrics().sourceAvailable===false);assert.equal(cache.read()!.snapshot.times.generatedAt,iso(T));writeFileSync(file,JSON.stringify(snapshot()));await until(()=>p.metrics().sourceAvailable===true);assert.ok(states.length>=3);}finally{await p.stop();}});
+ test('network and malformed acknowledgements recover with bounded retry; an HTTP200 alone is not an accepted source witness',async()=>{let calls=0;const acks:SnapshotAcknowledgement[]=[];const p=new SnapshotPublisher({url:ORIGINAL_SNAPSHOT_URL,secret,identity,intervalMs:10,maxBackoffMs:40,timeoutMs:500,onAcknowledgement:a=>acks.push(a),fetch:(async()=>{calls++;if(calls===1)throw Error('SECRET_NETWORK_ERROR_DO_NOT_EXPORT');if(calls===2)return new Response('<html>not acknowledged</html>',{status:200});return new Response('{"result":"accepted"}',{status:200,headers:{'content-type':'application/json'}});})as typeof fetch});p.offer(snapshot());p.start();try{await until(()=>acks.length===1);assert.equal(calls,3);assert.equal(p.metrics.failures,2);assert.equal(p.metrics.successes,1);assert.equal(acks[0]!.fingerprint.length,64);assert.ok(!JSON.stringify(acks).includes(secret));assert.ok(!JSON.stringify(p.metrics).includes('SECRET_NETWORK'));}finally{await p.stop();}});
+ test('oversized acknowledgement body is cancelled and does not become a successful report',async()=>{let cancelled=false;const body=new ReadableStream<Uint8Array>({start(c){c.enqueue(new Uint8Array(2049));},cancel(){cancelled=true;}});const p=new SnapshotPublisher({url:ORIGINAL_SNAPSHOT_URL,secret,identity,intervalMs:100,maxBackoffMs:1000,timeoutMs:500,onAcknowledgement:()=>assert.fail('not a real acknowledgement'),fetch:(async()=>new Response(body,{headers:{'content-type':'application/json'}}))as typeof fetch});p.offer(snapshot());p.start();try{await until(()=>p.metrics.failures===1);assert.equal(cancelled,true);assert.equal(p.metrics.successes,0);}finally{await p.stop();}});
++
++// Two independent production15s timers previously let a newer verified file
++// miss the sender's next turn. These controlled clocks exercise the actual
++// file watcher and HTTP publisher together, with no network or financial files.
++async function advancePublisherClock(t:TestContext,milliseconds:number){
++ let remaining=milliseconds;while(remaining>0){const n=Math.min(1000,remaining);t.mock.timers.tick(n);await new Promise<void>(r=>setImmediate(r));remaining-=n;}
++}
++function freshSnapshot(sequence:string,at:number):Snapshot{return {...snapshot(),sequence,times:{...snapshot().times,generatedAt:iso(at)}};}
++test('a changed verified file replaces the queued generation before the independently paced15s send',async t=>{
++ const{file}=fixture(t);t.mock.timers.enable({apis:['setTimeout','Date'],now:T});const calls:{at:number;sequence:string;generatedAt:string}[]=[],acks:SnapshotAcknowledgement[]=[];
++ const p=new SnapshotFilePublisher({file,identity,secret,monotonic:()=>Date.now()-T,onAcknowledgement:a=>acks.push(a),fetch:(async(_url:unknown,options:any)=>{const v=JSON.parse(options.body);calls.push({at:Date.now()-T,sequence:v.sequence,generatedAt:v.times.generatedAt});return new Response('{"result":"accepted"}',{headers:{'content-type':'application/json'}});})as typeof fetch});
++ p.start();try{t.mock.timers.tick(0);await new Promise<void>(r=>setImmediate(r));assert.deepEqual(calls.map(c=>c.sequence),['12']);
++  await advancePublisherClock(t,11000);for(const sequence of['13','14','15']){writeFileSync(file,JSON.stringify(freshSnapshot(sequence,Date.now())));await advancePublisherClock(t,1000);}
++  await advancePublisherClock(t,999);assert.equal(calls.length,1,'file changes cannot add network sends');await advancePublisherClock(t,1);
++  assert.deepEqual(calls.map(c=>[c.at,c.sequence]),[[0,'12'],[15000,'15']]);assert.equal(calls[1]!.generatedAt,iso(T+13000));assert.equal(acks[1]!.sourceAtMs,T+13000);assert.equal(acks[1]!.rawSourceSha256,createHash('sha256').update(JSON.stringify(freshSnapshot('15',T+13000))).digest('hex'));
++ }finally{await p.stop();t.mock.timers.reset();}
++});
++test('newer verified files coalesce during failure backoff without waking or shortening the paced retry',async t=>{
++ const{file}=fixture(t);t.mock.timers.enable({apis:['setTimeout','Date'],now:T});const calls:{at:number;sequence:string}[]=[];
++ const p=new SnapshotFilePublisher({file,identity,secret,monotonic:()=>Date.now()-T,fetch:(async(_url:unknown,options:any)=>{calls.push({at:Date.now()-T,sequence:JSON.parse(options.body).sequence});if(calls.length===1)throw Error('OFFLINE transport failure');return new Response('{"result":"accepted"}',{headers:{'content-type':'application/json'}});})as typeof fetch});
++ p.start();try{t.mock.timers.tick(0);await new Promise<void>(r=>setImmediate(r));assert.equal(p.metrics().failures,1);
++  await advancePublisherClock(t,5000);writeFileSync(file,JSON.stringify(freshSnapshot('13',Date.now())));await advancePublisherClock(t,19000);writeFileSync(file,JSON.stringify(freshSnapshot('14',Date.now())));await advancePublisherClock(t,5999);assert.equal(calls.length,1);await advancePublisherClock(t,1);
++  assert.deepEqual(calls, [{at:0,sequence:'12'},{at:30000,sequence:'14'}]);assert.equal(p.metrics().successes,1);assert.equal(p.metrics().failures,1);
++ }finally{await p.stop();t.mock.timers.reset();}
++});
++test('unchanged heartbeats survive receiver replacement without advancing source freshness or accepting a conflicting identity',async t=>{
++ const{file}=fixture(t);t.mock.timers.enable({apis:['setTimeout','Date'],now:T});let cache=new SnapshotCache(identity);const sent:Snapshot[]=[],acks:SnapshotAcknowledgement[]=[];
++ const p=new SnapshotFilePublisher({file,identity,secret,monotonic:()=>Date.now()-T,onAcknowledgement:a=>acks.push(a),fetch:(async(_url:unknown,options:any)=>{const v=JSON.parse(options.body);sent.push(v);return new Response(JSON.stringify({result:cache.accept(v,Date.now())}),{headers:{'content-type':'application/json'}});})as typeof fetch});
++ p.start();try{t.mock.timers.tick(0);await new Promise<void>(r=>setImmediate(r));await advancePublisherClock(t,30000);assert.equal(sent.length,2);assert.equal(acks[1]!.result,'duplicate');assert.equal(cache.read()!.receivedAt,iso(T));
++  cache=new SnapshotCache(identity);await advancePublisherClock(t,30000);assert.equal(cache.read()!.snapshot.times.generatedAt,iso(T));assert.equal(acks.at(-1)!.result,'accepted');assert.ok(sent.every(v=>v.times.generatedAt===iso(T)));assert.ok(acks.every(a=>a.sourceAtMs===T));
++  const wrong=freshSnapshot('13',Date.now());wrong.account={...wrong.account,id:'not-the-original-account'};writeFileSync(file,JSON.stringify(wrong));await advancePublisherClock(t,1000);assert.equal(p.metrics().sourceAvailable,false);assert.ok(sent.every(v=>v.account.id===ORIGINAL_POE_ACCOUNT));assert.equal(cache.read()!.snapshot.account.id,ORIGINAL_POE_ACCOUNT);
++ }finally{await p.stop();t.mock.timers.reset();}
++});

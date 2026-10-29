@@ -1,0 +1,7 @@
+{
+  "base": "8bd509fd683781ba69bd69bea4600de0f85fd99f",
+  "files": {
+    "src/snapshot-publisher.ts": "5999a8eeb9ce5490b7f5738c44ab419af1311da4782517100fcb4db04ce5a10a",
+    "test/snapshot-file-publisher.test.ts": "3bc78ec4f248105fb144632c3739f65075a680db2cde384432765a7b76dd85f8"
+  }
+}

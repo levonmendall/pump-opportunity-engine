@@ -1,0 +1,37 @@
+✔ cache starts empty, accepts whole snapshots atomically, retains gaps and clones read model (9.487861ms)
+✔ identical retries ignore JSON key order without refreshing receiver/source time; regression/conflict rejected (2.808335ms)
+✔ wrong account/source, unexpected fields, nonfinite values and inconsistent chronology are rejected (0.762631ms)
+✔ fresh publishing heartbeat cannot disguise stale market/accounting, stopped runtime, or unreconciled data (0.916399ms)
+✔ dashboard separates public liveness, owner viewer and machine-only ingestion (71.942285ms)
+✔ explicit public dashboard needs no viewer credentials but never permits unauthenticated ingestion (71.090397ms)
+✔ public viewer never weakens ingestion secret or permits partial source identity (0.812094ms)
+✔ command center UI is accessible and purely cosmetic, not a trading control (12.055458ms)
+✔ HTTP rejects wrong account, conflict, regressions, malformed and oversized payloads (27.464129ms)
+✔ bounded exports contain no configuration secrets; HTML uses safe DOM and mobile layout (21.052ms)
+✔ publisher does not send on construction; outages retain only latest snapshot and recover independently (29.462773ms)
+✔ publisher timeout is bounded, retains latest, sanitizes errors and never follows redirects (14.144557ms)
+✔ unconfigured source is a deployable authenticated waiting page and never adopts a sender identity (24.816783ms)
+✔ partial source identity fails configuration and credentials remain mandatory before source setup (0.496316ms)
+✔ single portfolio viewer retires the experimental channel and retains original authenticated snapshots (20.145686ms)
+✔ source funnel distinguishes observer placeholders, predictive assessments, actual financial decisions and unavailable unique counts (18.457131ms)
+✔ compact one-account command view keeps metrics accessible without a duplicate portfolio (6.677993ms)
+✔ first snapshot paint immediately preserves stopped and stale source truth (11.885346ms)
+✔ observed root 0440 systemd credential is accepted only for the bound service path; snapshots and ordinary secrets stay private (0.961516ms)
+✔ CLI is bound to original account, exact source, existing snapshot namespace and original credential names (3.772935ms)
+✔ private verified snapshot reader refuses symlinks, permissive files, wrong identity and source payload extras (1.631199ms)
+✔ accepted file acknowledgement binds exact original raw bytes through concurrent snapshot replacement (123.392184ms)
+✔ actual one-shot CLI publishes a stopped original snapshot once and exits without a retry on failure (542.217919ms)
+✔ persistent file watcher republishes unchanged source after receiver restart and duplicates never refresh source chronology (116.389255ms)
+✔ network and malformed acknowledgements recover with bounded retry; an HTTP200 alone is not an accepted source witness (67.631006ms)
+✔ oversized acknowledgement body is cancelled and does not become a successful report (12.061251ms)
+✔ a changed verified file replaces the queued generation before the independently paced15s send (10.046328ms)
+✔ newer verified files coalesce during failure backoff without waking or shortening the paced retry (6.81075ms)
+✔ unchanged heartbeats survive receiver replacement without advancing source freshness or accepting a conflicting identity (10.334075ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2492.123591

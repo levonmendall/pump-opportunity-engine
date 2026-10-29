@@ -1,0 +1,93 @@
+✔ observed root 0440 systemd credential is accepted only for the bound service path; snapshots and ordinary secrets stay private (2.005092ms)
+✔ CLI is bound to original account, exact source, existing snapshot namespace and original credential names (3.070872ms)
+✔ private verified snapshot reader refuses symlinks, permissive files, wrong identity and source payload extras (1.633151ms)
+✔ accepted file acknowledgement binds exact original raw bytes through concurrent snapshot replacement (94.649973ms)
+✔ actual one-shot CLI publishes a stopped original snapshot once and exits without a retry on failure (498.613806ms)
+✔ persistent file watcher republishes unchanged source after receiver restart and duplicates never refresh source chronology (88.958521ms)
+✔ network and malformed acknowledgements recover with bounded retry; an HTTP200 alone is not an accepted source witness (71.816732ms)
+✔ oversized acknowledgement body is cancelled and does not become a successful report (10.930292ms)
+✖ a changed verified file replaces the queued generation before the independently paced15s send (7.721715ms)
+✖ newer verified files coalesce during failure backoff without waking or shortening the paced retry (6.524852ms)
+✖ unchanged heartbeats survive receiver replacement without advancing source freshness or accepting a conflicting identity (3.758692ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 8
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1079.551616
+
+✖ failing tests:
+
+test at test/snapshot-file-publisher.test.ts:1:13075
+✖ a changed verified file replaces the queued generation before the independently paced15s send (7.721715ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        0,
+        '12'
+      ],
+  -   [
+  -     15000,
+  -     '15'
+  -   ]
+    ]
+  
+      at TestContext.<anonymous> (/workspace/poe-publisher-latest-queue/test/snapshot-file-publisher.test.ts:52:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 0, '12' ] ],
+    expected: [ [ 0, '12' ], [ 15000, '15' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/snapshot-file-publisher.test.ts:1:14483
+✖ newer verified files coalesce during failure backoff without waking or shortening the paced retry (6.524852ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+        at: 0,
+        sequence: '12'
+      },
+      {
+        at: 30000,
+  +     sequence: '13'
+  -     sequence: '14'
+      }
+    ]
+  
+      at TestContext.<anonymous> (/workspace/poe-publisher-latest-queue/test/snapshot-file-publisher.test.ts:60:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { at: 0, sequence: '12' }, { at: 30000, sequence: '13' } ],
+    expected: [ { at: 0, sequence: '12' }, { at: 30000, sequence: '14' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/snapshot-file-publisher.test.ts:1:15677
+✖ unchanged heartbeats survive receiver replacement without advancing source freshness or accepting a conflicting identity (3.758692ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (/workspace/poe-publisher-latest-queue/test/snapshot-file-publisher.test.ts:66:126)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

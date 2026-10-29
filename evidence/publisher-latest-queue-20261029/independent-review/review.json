@@ -1,0 +1,43 @@
+{
+  "kind": "independent-latest-verified-snapshot-queue-review-v1",
+  "completedAt": "2026-10-29T20:00:22.753625+00:00",
+  "verdict": "APPROVED_OFFLINE",
+  "base": "8bd509fd683781ba69bd69bea4600de0f85fd99f",
+  "files": {
+    "src/snapshot-publisher.ts": "5999a8eeb9ce5490b7f5738c44ab419af1311da4782517100fcb4db04ce5a10a",
+    "test/snapshot-file-publisher.test.ts": "3bc78ec4f248105fb144632c3739f65075a680db2cde384432765a7b76dd85f8",
+    "src/reporting.ts": "b7f15754f77fe6f6fefbfbc0a8750766b78d2516c018232758774d39ab966887"
+  },
+  "sourceHashesUnchangedDuringReview": true,
+  "tests": {
+    "command": "node --import tsx --test test/snapshot-file-publisher.test.ts test/reporting.test.ts",
+    "passed": 29,
+    "failed": 0,
+    "exitCode": 0,
+    "rawSha256": "69e6185e6315d8c928a662fdbc449f9d8ee8cb3d8edee4f3974ea45a75ec39bd"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "rawSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "findings": [
+    "Changed verified file hash replaces only existing bounded latest-value queue; sender scheduling and physical network pacing are unchanged.",
+    "Source identity/schema/private-reader validation and monotonic sequence/fingerprint protection precede hash acceptance; rejected offers cannot poison last accepted hash.",
+    "Original generatedAt/marketAt/reconciledAt and exact raw-file acknowledgement provenance remain unchanged; unchanged heartbeat retries do not refresh source timestamps.",
+    "Existing periodic unchanged-source offer remains, preserving receiver-restart republishing.",
+    "One inflight request,15s default sender interval,5s timeout and bounded exponential backoff remain in unchanged src/reporting.ts.",
+    "New offset-timer and coalescing tests verify the newest queued generation without extra sends, and failure-backoff test verifies source changes do not wake or shorten retries.",
+    "Actual source-to-Render latency improvement remains unverified until a reviewed future deployment and forward observation."
+  ],
+  "blockingFindings": [],
+  "actions": {
+    "applicationEdits": 0,
+    "providerRequests": 0,
+    "networkRequests": 0,
+    "financialReads": 0,
+    "credentialsRead": 0,
+    "serviceControls": 0,
+    "deployments": 0
+  }
+}
