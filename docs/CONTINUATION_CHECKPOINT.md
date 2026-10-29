@@ -1,4 +1,4 @@
-Updated 2026-10-29 after owner ran standard systemctl start. One original portfolio/writer/channel; PAPER only. Issue#11.
+Updated 2026-10-29 03:14UTC after actual credential metadata and verified reporting-repair staging. One original portfolio/writer/channel; PAPER only. Issue#11.
 
 CURRENT STATE — ORIGINAL NATIVE SOURCE RUNNING, PUBLICATION STILL UNAVAILABLE
 - DO NOT ask owner to rerunstart/bootstrap/ordering scripts or restart healthy source. Actual systemctl start succeeded and is independently verified.
@@ -7,13 +7,15 @@ CURRENT STATE — ORIGINAL NATIVE SOURCE RUNNING, PUBLICATION STILL UNAVAILABLE
 - SourcechildPIDchanged2437744→2438167→2438621 while supervisorstayedalive. Actualcause/privatehealth unavailable; doNOTclaimuninterruptedchildgeneration or provider/resourcecause. LatestsourceRSS239108096B; supervisorRSS28704768B. NoEC2sustainedcapacityclaim.
 - ORIGINALfinancialhistory check before actualsource start preserved36834actions/36835journal/revision36834/account/inception/funding. Currentpost-start fullhistoricalprefix/positions/orders/PnL stillrequirefreshverification. No reseed/import/restore/newaccount.
 
-REMAINING BLOCKER — REPORTING CHILD STARTUP / PROTECTED DIAGNOSTICS
-- Publisherabsent in actualcgroup/process-role checks; Render/api/snapshot503AwaitingPOEdata despitepreparedreceiver/sourcebinding. Do notclaimfullyoperational or24hacceptance. Do notcreateCloudfallbackpublisher oranotherchannel/account.
-- Offline exactfrozenpublisherNode24.19flags/CLI +syntheticprivatecredential stayedalivewithmissing snapshot; invalid0644credential metadata reproducedimmediateexit; mockreceiver acceptedvalid5esource/intelligence. These are offlinefixtures, no realcredential/financialreads orPOSTs, not actualhostcause.
-- Currentstronghypothesispre-watchstartup/credentialvalidation; snapshot/HTTPfailures normallyleavethewatchprocessalive. Needactualmetadata/diagnosticsbeforechangingsecurity/credentials. Originalsecret remainsunchanged; neverdisplay/readwallet/providersecrets.
-- ActualUID994accessprobesreturnedEACCES13 for supervisorhealth, publisherlog and reportingcredentialmetadata through/proc/supervisor/root. No permissionbypass/otherapphelper. Genuineowner-onlyaccessdependency remains.
-- Smallest readonlynextownercommand: evidence/issue11-consolidation-20261028/running-original-native-20261029/OWNER_READONLY_CREDENTIAL_METADATA.txt. Itprints onlytype/UID/GID/mode/linkcount/size incorrectservice namespace, not keycontents; no restart orfinancialmutation. Interpret credentialowner againstACTUALruntimeUID988orroot, not runner994. Ifmetadatapasses, nextboundedprivatehealth/log orformatvalidationneeded; donotinventcause.
-- Currentactual/raw/zero-networkfixtureevidence: evidence/issue11-consolidation-20261028/running-original-native-20261029/. Earliernegativeproofsremainseparate. ExistingRender79195/configdeploymentdep-dbhai58n74is73cqva40/source5e strategyv1accountsecretpreserved.
+REMAINING BLOCKER — REPORTING-ONLY REPAIR STAGED, ROOT INSTALL PENDING
+- Owner supplied actual credential metadata: regular root:root0440, nlink1,size64. Oldpublisher rejects all groupbits. This proves an incompatible guard; actual UID988 kernel/ACL read access stillrequiresliveverification.
+- Correctedreporter source5735db2ca8abc6af6f99bb0ad855c19cdebaf864 permitsroot:root0440 ONLY at exact /run/credentials/poe-runtime.service/poe-ingest-secret with matching CREDENTIALS_DIRECTORY. Ordinarysecret/snapshotguards unchanged; sanitizedstartupcodesadded. No financiallogicchange.
+- PASS1685fulltests,27focused,build+compile,5installerchecks, exactbundle syntheticFD0440watchalive/0644refused. Independentreviewfoundnoblockingissue. HostACL and actualdeliveryremainunverified; no fixturekey/network/financialread.
+- ReportingbundleSHA2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa; driverSHAd8dbe104d4200409da0374f4c5e5ec17c5a07d58d5951ae1e2420f57be96baf8. Admin ef2916e1ef01d9b38ce3be0b8f87916bf98db0cd; actualstage40810934646PASS03:13:46UTC. StagingleftMainPID2437741/NRestarts163unchanged; no servicecontrol/secret/DBread.
+- EXACTNEXT: owner runs operator/native-paper-ec2/publisher-credential-repair/OWNER_APPLY.txt (staged /var/tmp/poe-original-publisher-credential-20261029). GenuineUID994runner cannotwriteprotectedrootartifact/manifest. One-timehashverifiedisolatedrootinstaller replacesONLYreporter+startupmanifestrow, rootbacksupbefore/after+driver; doesNOservicecontrol. Existingparent retriespublisher; observe<=95s for2distinctacceptedsource timestamps/sameparent. Norestart/bootstrap/account/channel/secretchange.
+- Rollback/rootretainedresume documented README/OWNER_ROLLBACK.txt. Rollbackonlydisk/futurechildretry; healthychildnotstopped. Two-file crashwindow is recoverablebyrerunningreviewedhelper; financialstate neverrestored. Partial/incompletephasesexplicit and applynonzeroiftwoACKs/sameparentunverified.
+- Actualreadonly40810104478at03:05UTC: originalsourcefresh03:05:04.959,feedconnected,shortlist6,entriesdisabled; publisherstillabsent. Render503AwaitingPOEdata beforeinstall. Sourcechild2439639changedagainwhileparentstable; donotclaimuninterruptedchildcoverage or causewithouthealth.
+- Evidence: evidence/issue11-consolidation-20261028/systemd-credential-20261029/. Priornegative/rawproofspreserved. Needactualrootreceipt+>=2Rendercycles, post-startfinancialprefix/scorecard, sourcechildrecoveryreason, thencompleteissue#11. Nooperationalacceptance.
 
 FROZEN APPLICATION / FINANCIAL RECOVERY
 - Source5e55d8b939de99698ddb311a282461931fcbc957; nativeSHA531012e82b6cb86149350ec4478c1f7a7b87b6f35f08f3b1f32447f05cd31eaa; configSHA5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344; installedinputSHAfa880202d449cffc0a8dfc2dd8d30a0d5faa048a60e1c6854523426bb9161ec7.

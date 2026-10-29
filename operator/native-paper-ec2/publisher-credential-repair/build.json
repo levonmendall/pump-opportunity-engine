@@ -1,0 +1,60 @@
+{
+  "kind": "poe-original-reporting-only-hotfix-v1",
+  "reporterSourceCommit": "5735db2ca8abc6af6f99bb0ad855c19cdebaf864",
+  "financialSourceUnchanged": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "node": "v24.19.0",
+  "esbuild": "0.27.7",
+  "options": {
+    "bundle": true,
+    "platform": "node",
+    "target": "node24",
+    "format": "esm",
+    "packages": "bundle",
+    "mainFields": [
+      "main",
+      "module"
+    ],
+    "conditions": [
+      "node"
+    ],
+    "minify": false,
+    "sourcemap": false,
+    "treeShaking": true,
+    "legalComments": "none",
+    "charset": "utf8",
+    "define": {
+      "process.env.WS_NO_BUFFER_UTIL": "\"1\"",
+      "process.env.WS_NO_UTF_8_VALIDATE": "\"1\""
+    },
+    "banner": {
+      "js": "import { createRequire as __poeCreateRequire } from \"node:module\"; const require = __poeCreateRequire(import.meta.url);"
+    },
+    "entryPoints": [
+      "src/snapshot-publisher.ts"
+    ],
+    "outfile": "operator/native-paper-ec2/publisher-credential-repair/snapshot-publisher.mjs",
+    "write": false,
+    "metafile": true
+  },
+  "inputs": [
+    {
+      "path": "src/operating-intelligence.ts",
+      "sha256": "357a0f9e1906a1f013158cc2f727101e490fbe140c54ee17b5d3c915257c737c"
+    },
+    {
+      "path": "src/reporting.ts",
+      "sha256": "b7f15754f77fe6f6fefbfbc0a8750766b78d2516c018232758774d39ab966887"
+    },
+    {
+      "path": "src/snapshot-publisher.ts",
+      "sha256": "b414ebc201a6220b17dedf933ba0acf9dd33e4698d6407f918948ba8b05aee80"
+    }
+  ],
+  "bundle": {
+    "file": "operator/native-paper-ec2/publisher-credential-repair/snapshot-publisher.mjs",
+    "bytes": 29872,
+    "sha256": "2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa"
+  },
+  "financialImports": false,
+  "credentialsRead": false
+}
