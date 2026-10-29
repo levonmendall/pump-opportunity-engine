@@ -1,0 +1,84 @@
+{
+  "kind": "partial-independent-reference-outcome-recovery-manifest-v1",
+  "at": "2026-10-29T22:14:54.232784+00:00",
+  "files": {
+    "plan.json": {
+      "bytes": 3117,
+      "sha256": "272dd087af416996c4b90d69c8407d6583922c80419426b32dcc259e757fc553"
+    },
+    "cohort-freeze-2.json": {
+      "bytes": 1353,
+      "sha256": "1968bf8e82256e46b4b4d14ed542b5ab2bce854654d2305e3f12e4bc9438342f"
+    },
+    "collector.log": {
+      "bytes": 561,
+      "sha256": "c27135dbf161240484537407632b0e9eb69349d143a407154fdd088507135d37"
+    },
+    "build.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "focused-tests.txt": {
+      "bytes": 4302,
+      "sha256": "747a1f8d8162296ae0f7dd0b54a4e88bad8c1fe6bb999114cfe481bb26d221c2"
+    },
+    "launch.json": {
+      "bytes": 1266,
+      "sha256": "601c883ccc6aee69899ae30a8c80de6c1953c18aeb6f1e6dedeb582e0ce269ef"
+    },
+    "partial-outcome-analysis.json": {
+      "bytes": 11415,
+      "sha256": "76632385bddafc84e200922f1f0890c8b809079c1730fbc55a9f69e95df1ee62"
+    },
+    "runtime-observations.ndjson": {
+      "bytes": 86973,
+      "sha256": "3c8cce50d6d314222481d1358967c70593e08c209dabe493941b0d5e2a756f7c"
+    },
+    "cohort-freeze-1.json": {
+      "bytes": 6050,
+      "sha256": "4d4010f407fffd4a58a6f79896f759eb160ae1c591159796add90d441ef929a2"
+    },
+    "verification.json": {
+      "bytes": 1182,
+      "sha256": "76f023b4b4493ff3ebbb1692056c9bf5be480959c632c879407c9d15f0b6bfad"
+    },
+    "analyze-retained-outcomes.ts": {
+      "bytes": 3727,
+      "sha256": "fa5fcc99afd28bba395db4df2ee4c1cbf9616a142b1aee3520e88baa992093c1"
+    },
+    "receipt.json": {
+      "bytes": 346427,
+      "sha256": "dc7fbedfb202b02c38dd1211333e2d4bae497ceb15b9833f5541a4c9f6154763"
+    },
+    "README.md": {
+      "bytes": 3433,
+      "sha256": "5754c7b0ffc8663456acf2309a5b94a82d83a89bb26429fa05e4f491548d0fff"
+    },
+    "independent-review/tests.txt": {
+      "bytes": 4189,
+      "sha256": "eee1149e4dc5dcd1c995302a7be8872444c2dec4882590ae863acd3b7aeab323"
+    },
+    "independent-review/build.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "independent-review/review.json": {
+      "bytes": 1353,
+      "sha256": "b182c4ab84ecc1b5b5b30b86d844ff363af86aac2f049e83d7641e6fef13aa56"
+    },
+    "raw/13.json": {
+      "bytes": 33397,
+      "sha256": "edec98b8aeef685ac954bd7d15312752b678d33288487a96b85bf7387abab813"
+    },
+    "raw/14.json": {
+      "bytes": 118429,
+      "sha256": "24c8f487b642fb22ba1cdd789be3c297e95e286bdae4fea99b4ba960b4700e33"
+    }
+  },
+  "newProviderRequestsDuringFinalRecovery": 0,
+  "serviceChanges": 0,
+  "financialActions": 0,
+  "measurementExtended": false,
+  "allSixOutcomesCollected": false,
+  "actualRuntimeContinuityEstablished": false
+}

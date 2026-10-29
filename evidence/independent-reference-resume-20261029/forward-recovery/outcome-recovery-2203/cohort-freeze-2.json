@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "pass": 2,
+  "frozenAt": 1793308421958,
+  "rowsAvailableBeforeFreeze": 120,
+  "selected": [
+    {
+      "sourceLabel": "pumpswap-volume-page5",
+      "position": 12,
+      "observedAt": 1793308410137,
+      "pool": "BQJzersGUgNhav8C1m3VC4WA6MgQBAE8T2W7EpTSDKW4",
+      "mint": "ANVLA6eKiAq4nstD2Sg3SZhfVkSEwfnGccn12UQWpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "dexId": "pumpswap",
+      "name": "HEXN / SOL",
+      "indexedCreatedAt": "2026-10-29T16:56:13Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "indexedAgeAtReceiptMs": 15437137,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "provisionalSampleEligible": true,
+      "classification": "INDEXED_LEAD_REQUIRES_STRICT_ORIGIN_AND_CURRENT_SUPPORT",
+      "reportedM5VolumeUsd": 12853.2605185816,
+      "reportedM5Transactions": 348,
+      "reportedReserveUsd": 68120.6992,
+      "reportedPriceChanges": {
+        "m5": "-12.096",
+        "m15": "-22.392",
+        "h1": "-22.62",
+        "h6": "262.773",
+        "h24": "262.773"
+      },
+      "pass": 2,
+      "arm": "indexed-active",
+      "frozenAt": 1793308421958,
+      "selectionReason": "highest reported m5 volume among bounded eligible indexed sample before outcomes; not a winner label"
+    }
+  ],
+  "noHindsightOutcomeSelection": true
+}

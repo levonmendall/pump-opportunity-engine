@@ -1,0 +1,35 @@
+{
+  "kind": "independent-frozen-interval-validation-review-v1",
+  "reviewedAt": "2026-10-29T22:13:55.682096+00:00",
+  "sourceSha256": "d5f8597e3d0f442567809983cc171a9f08de06a456c63fedfafed810bcdd6469",
+  "approved": true,
+  "tests": {
+    "passed": 33,
+    "failed": 0
+  },
+  "buildExitCode": 0,
+  "logs": {
+    "tests": {
+      "sha256": "eee1149e4dc5dcd1c995302a7be8872444c2dec4882590ae863acd3b7aeab323",
+      "bytes": 4189
+    },
+    "build": {
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "bytes": 55
+    }
+  },
+  "reviewedSemantics": [
+    "Global strict validator unchanged",
+    "Every raw row must have a safe aligned timestamp before exclusion",
+    "Relevant bars still require complete strict OHLC values and unique timestamps",
+    "Scope fixed by prospective cohort frozenAt and existing measurement outcome offset",
+    "Invalid unrelated historical duplicates remain raw diagnostics",
+    "Partial original receipt remains OHLC_BAR with one original captured outcome",
+    "Local-only two-outcome analysis preserves actual raw receipt availability, four unknown outcomes and historical uncertain bytes",
+    "No automatic request replay or extension of original measurement"
+  ],
+  "providerRequests": 0,
+  "financialActions": 0,
+  "runtimeChanges": 0,
+  "liveOperationalAcceptance": false
+}

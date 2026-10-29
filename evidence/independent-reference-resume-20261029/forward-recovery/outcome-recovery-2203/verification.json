@@ -1,0 +1,30 @@
+{
+  "kind": "partial-independent-reference-interval-repair-verification-v1",
+  "sourceCommit": "49adaed2d8e36b40b0f8cf5fb29ffe3955416976",
+  "sourceSha256": "d5f8597e3d0f442567809983cc171a9f08de06a456c63fedfafed810bcdd6469",
+  "focusedTests": {
+    "command": "node --import tsx --test test/independent-two-hour-reference.test.ts test/persistent-independent-reference.test.ts test/independent-reference-resume.test.ts",
+    "passed": 34,
+    "failed": 0,
+    "exitCode": 0,
+    "rawSha256": "747a1f8d8162296ae0f7dd0b54a4e88bad8c1fe6bb999114cfe481bb26d221c2"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "rawSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "independentReview": {
+    "sourceApproved": true,
+    "independentTests": 33,
+    "buildExitCode": 0,
+    "note": "Final additional all-cohort integration test passed in 34-test parent rerun; source unchanged from independently approved bytes."
+  },
+  "newProviderRequests": 0,
+  "financialActions": 0,
+  "serviceOperations": 0,
+  "originalReceiptChanged": false,
+  "measurementExtended": false,
+  "forwardCoverageAcceptance": false,
+  "executableRecall": null
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "existing-independent-outcome-recovery-launch-v1",
+  "preparedAt": "2026-10-29T22:04:22.138761+00:00",
+  "collectorCommit": "0a17765824d2d7b17e78ecc0765c0d4b6b52cd28",
+  "collectorSha256": "43141c6aaa0c69e5100085edb10ec5ffd3eaaa643614b16013f477c1a98541b5",
+  "priorCollectorPid": 129181,
+  "oldSession50289": "UNKNOWN_PROCESS_ID",
+  "priorCheckpointSha256": "bfd7d194b6906a5988c82e0947149deb3f02918ee476529ac8afb8b4d00f9a97",
+  "lastRetainedCollectorObservationAt": 1793308602187,
+  "causeOfCollectorTermination": "UNKNOWN; no assumption of EC2 outage or continuous Cloud supervision",
+  "measurement": {
+    "startedAt": 1793304761728,
+    "plannedEndAt": 1793311961728,
+    "sourceSnapshotPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/latest.json"
+  },
+  "source": {
+    "runId": "native-paper-20261029194223241",
+    "sourceCommit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "startedAt": 1793302943241
+  },
+  "requestsBefore": 12,
+  "outcomesBefore": 0,
+  "cumulativeBefore": {
+    "requestStarts": 70,
+    "measuredBodyBytes": 2120751,
+    "uncertainBodyBytes": 262416
+  },
+  "serviceOperations": 0,
+  "financialOperations": 0,
+  "SolanaRpcRequests": 0
+}

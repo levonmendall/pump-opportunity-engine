@@ -1,0 +1,281 @@
+{
+  "kind": "retained-partial-independent-outcomes-local-analysis-v1",
+  "analyzedAt": "2026-10-29T22:13:11.803Z",
+  "planSha256": "272dd087af416996c4b90d69c8407d6583922c80419426b32dcc259e757fc553",
+  "originalReceiptSha256": "dc7fbedfb202b02c38dd1211333e2d4bae497ceb15b9833f5541a4c9f6154763",
+  "measurement": {
+    "startedAt": 1793304761728,
+    "plannedEndAt": 1793311961728,
+    "sourceSnapshotPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/latest.json"
+  },
+  "originalStopReason": "OHLC_BAR",
+  "selected": 6,
+  "originalCapturedOutcomes": 1,
+  "locallyValidatedRetainedOutcomes": 2,
+  "unrequestedOutcomePools": [
+    {
+      "pool": "2qvq4k9MGpySbyA1AmoKjm1kDXCtWfodaW7kyvuRJihL",
+      "mint": "AfPhjrZx3oyh38G28ZVViP4p7h53N5kTxEeg5tzhpump",
+      "name": "CATCULUS / SOL",
+      "reason": "Not requested before retained collector stopped; no retrospective opportunity outcome asserted."
+    },
+    {
+      "pool": "EncKEJiLDHLbyMrtDHn7MeNyJfyf5XU37hk3DKjKudz",
+      "mint": "5D4wLGzJuNjEPEsCueRwUC1bE6Ewthw5Gzaxgezgpump",
+      "name": "RTROLL / SOL",
+      "reason": "Not requested before retained collector stopped; no retrospective opportunity outcome asserted."
+    },
+    {
+      "pool": "Gk1VvHPKSmf6eeqVzwBf1adABAkfBEJ89x5RYKzygwAb",
+      "mint": "B41bvvrSQfgCvFNh5245pBQmNcrraZH3YaQZ9JvBpump",
+      "name": "BLOBO / SOL",
+      "reason": "Not requested before retained collector stopped; no retrospective opportunity outcome asserted."
+    },
+    {
+      "pool": "BQJzersGUgNhav8C1m3VC4WA6MgQBAE8T2W7EpTSDKW4",
+      "mint": "ANVLA6eKiAq4nstD2Sg3SZhfVkSEwfnGccn12UQWpump",
+      "name": "HEXN / SOL",
+      "reason": "Not requested before retained collector stopped; no retrospective opportunity outcome asserted."
+    }
+  ],
+  "usage": {
+    "requestStarts": 14,
+    "plannedRequests": 14,
+    "uncertainInvocationReservations": 0,
+    "measuredBodyBytes": 583860,
+    "uncertainBodyBytes": 0,
+    "rawRetainedBytes": 583860,
+    "auxiliaryEvidenceBytes": 949685,
+    "retainedBytesExcludingReceipt": 1533545,
+    "elapsedMs": 6713443.03708,
+    "maximumInFlight": 1
+  },
+  "cumulative": {
+    "requestStarts": 72,
+    "measuredBodyBytes": 2272577,
+    "uncertainBodyBytes": 262416
+  },
+  "newProviderRequests": 0,
+  "newFinancialOperations": 0,
+  "originalReceiptModified": false,
+  "measurementExtended": false,
+  "continuousCollectionClaim": false,
+  "marketRecall": null,
+  "executableMissedProfits": null,
+  "recovered": [
+    {
+      "pool": "7suxTJGPEm1Z1MoticxGEo5JT9pBmNPcYK32w7cfQHis",
+      "mint": "GJKnJsRiM5ATS4yhwjYRegT3iRsXUvcW1dafJPh8pump",
+      "name": "AgenC / SOL",
+      "arm": "indexed-active",
+      "frozenAt": 1793304822661,
+      "rawAvailableAt": 1793311463731,
+      "rawFile": "raw/13.json",
+      "rawSha256": "edec98b8aeef685ac954bd7d15312752b678d33288487a96b85bf7387abab813",
+      "validationScope": {
+        "fromAt": 1793304822661,
+        "untilAt": 1793311361728,
+        "fullyContainedBarsOnly": true,
+        "excludedRowCount": 232,
+        "excludedDuplicateTimestamps": [],
+        "meaning": "Excluded timestamps are outside the frozen outcome interval. Raw response and its diagnostics remain retained; no completeness or executable-return claim."
+      },
+      "originalCollectorCaptured": true,
+      "outcome": {
+        "fromAt": 1793304822661,
+        "untilAt": 1793311361728,
+        "fullyContainedBars": 42,
+        "firstBarAt": 1793304840000,
+        "lastBarEndAt": 1793310780000,
+        "missingMinuteGaps": [
+          {
+            "nextBarAt": 1793305140000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793305500000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793306100000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793306520000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793306820000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793307060000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793307180000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793307600000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793307780000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793308140000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793308260000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793308560000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793308980000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793309280000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793309400000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793309580000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793309940000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793310360000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793310720000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          }
+        ],
+        "firstToLastCloseChangePct": -47.990673809722814,
+        "reportedVolumeUsd": 7833.111591260291,
+        "arithmeticUnavailableReasons": [],
+        "meaning": "Retrospective indicative indexed USD close endpoints/volume available only at retrieval; no trade flow, executable return or migration proof."
+      },
+      "executableOpportunityVerified": false,
+      "financialReturnVerified": false
+    },
+    {
+      "pool": "9CnCbMdSHu7P4VvPzoELHbB6rmBy3quiAby36KqcswvW",
+      "mint": "dyw5fDNv91eknniMG4tGCU1ZrzjuxbpsLiEzih6pump",
+      "name": "CATBOT / SOL",
+      "arm": "indexed-active",
+      "frozenAt": 1793304822661,
+      "rawAvailableAt": 1793311475878,
+      "rawFile": "raw/14.json",
+      "rawSha256": "24c8f487b642fb22ba1cdd789be3c297e95e286bdae4fea99b4ba960b4700e33",
+      "validationScope": {
+        "fromAt": 1793304822661,
+        "untilAt": 1793311361728,
+        "fullyContainedBarsOnly": true,
+        "excludedRowCount": 978,
+        "excludedDuplicateTimestamps": [
+          1793251320
+        ],
+        "meaning": "Excluded timestamps are outside the frozen outcome interval. Raw response and its diagnostics remain retained; no completeness or executable-return claim."
+      },
+      "originalCollectorCaptured": false,
+      "outcome": {
+        "fromAt": 1793304822661,
+        "untilAt": 1793311361728,
+        "fullyContainedBars": 22,
+        "firstBarAt": 1793304840000,
+        "lastBarEndAt": 1793311140000,
+        "missingMinuteGaps": [
+          {
+            "nextBarAt": 1793305260000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793305380000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793305800000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793306040000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793306220000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793306700000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793306940000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793307360000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793307600000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793308020000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793309580000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793310000000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793310180000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793310480000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          },
+          {
+            "nextBarAt": 1793311020000,
+            "meaning": "missing indexed minutes; not interpolated or proof of no trading"
+          }
+        ],
+        "firstToLastCloseChangePct": -0.028205171910689053,
+        "reportedVolumeUsd": 150.77982127448038,
+        "arithmeticUnavailableReasons": [],
+        "meaning": "Retrospective indicative indexed USD close endpoints/volume available only at retrieval; no trade flow, executable return or migration proof."
+      },
+      "executableOpportunityVerified": false,
+      "financialReturnVerified": false
+    }
+  ],
+  "limitations": [
+    "Six fixed index leads are not six verified migration identities or executable opportunities.",
+    "Local scoped validation happened after raw retrieval. Candle data was never decision-time predictive evidence.",
+    "All missing indexed minutes remain unknown; no interpolation or proof of no trading.",
+    "Collector stopped at22:04 with OHLC_BAR and did not complete the remaining four outcomes. Original measurement deadline remains unchanged.",
+    "Cloud observer gaps do not establish EC2 runtime downtime or continuous operation.",
+    "Historical cumulative uncertainBodyBytes remain262416."
+  ]
+}
