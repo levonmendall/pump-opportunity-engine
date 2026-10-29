@@ -1,0 +1,56 @@
+{
+  "actualEC2RootServiceFinancialActions": false,
+  "allDriverFunctionsASTIdenticalToReviewedDraft": true,
+  "blockingFindings": [],
+  "completedAt": 1793310058984,
+  "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+  "dailyLossAndUTCControlsPreservedByTests": true,
+  "diffCheckExitCode": 0,
+  "driverSha256": "65a2f6dd65836a8e644d90e18acdcce2966a5feb3afd5c721c2725b9c20ee891",
+  "frozenImport": {
+    "baselineTwoConfigurationSha256": "7e1d449a053a8cad89ff7b5e9dc84c01f118cbeeeaeea9958473b75f6a547292",
+    "computedPolicySha256": "b4fa586df1b6d89c04b250a1ff3ea4e394a4cbf9b7900c7a3ebd0317c7c56a07",
+    "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+    "contractSha256": "8e404a11d1868e3a2c3a4a708133f9831a555a590201c8e70e62c35a44c4d0bb",
+    "financialAccountRead": false,
+    "legacyRiskFallback": "initial $50 entry/$150 aggregate; no appreciation ceiling; preserve actual daily loss control",
+    "maximumPositions": 2,
+    "measurementExecuted": false,
+    "policySha256": "b4fa586df1b6d89c04b250a1ff3ea4e394a4cbf9b7900c7a3ebd0317c7c56a07",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "gzipRoundTrips": 10,
+  "hashesAfter": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "65a2f6dd65836a8e644d90e18acdcce2966a5feb3afd5c721c2725b9c20ee891",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "eee790bf8441ee93e8b5262564d1942ed744cba778ff6a433d6c1162dc18d9ff"
+  },
+  "hashesBefore": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "65a2f6dd65836a8e644d90e18acdcce2966a5feb3afd5c721c2725b9c20ee891",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "eee790bf8441ee93e8b5262564d1942ed744cba778ff6a433d6c1162dc18d9ff"
+  },
+  "hashesUnchanged": true,
+  "indexSha256": "bfa036228776da29de43ad110b9f7a07827d8ced815fa1e43b2bb9b20e072b8a",
+  "indexedArtifacts": 9,
+  "kind": "POE_INDEPENDENT_FINAL_ACTIVE_ADAPTIVE_UPGRADE_REVIEW",
+  "manifestSha256": "cdc92021f45aed08bc903a91699b7a8783a0a9cc9e5f8fcdc1f99c8204d8a8fd",
+  "newSupervisorReporterWorkerPinsVerified": true,
+  "old564TrustAndRollbackSourceArgsPreserved": true,
+  "ownerCommandSha256": "1f223219f88d46731136e918900c6d51603c30dd0521014d630b34a93c7e13c3",
+  "packedBytes": 2062993,
+  "parentFrozenDirectory": "/tmp/poe-native-paper-output-adaptive-v2-final",
+  "parentFrozenFiveArtifactsExact": true,
+  "parentReportedFullApplicationSuite": "1893/1893 plus build passed; not rerun by reviewer",
+  "policyUnitAddonUnchanged": true,
+  "rawBytes": 7736293,
+  "runtimeActivationEstablished": false,
+  "source": {
+    "commit": "8410390e31e1248f584406f27030b3e0e2cf4484",
+    "sha256": "c414ac4640d5da7239d5a934e3932fc15f72d996a6141f0e9f6a3b89583ec1f0"
+  },
+  "testCount": 56,
+  "testsExitCode": 0,
+  "testsLog": "/tmp/poe-independent-final-adaptive-upgrade-tests-20261029.txt",
+  "testsLogSha256": "7402140558ad8553adca45d047e94eafb63cf04b68a9321d9ff7d5d1ea985af7",
+  "transportSha256": "b52f1f29847f4f87e92479ad8e099ba88213102a9a6ee2cede170c9d3a189ff1",
+  "v2PositionPendingAndRoundTripMetadataPreservedByTests": true
+}

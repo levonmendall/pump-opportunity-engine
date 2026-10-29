@@ -1,0 +1,91 @@
+{
+  "kind": "poe-original-active-adaptive-v2-upgrade-pins-v1",
+  "source": {
+    "commit": "8410390e31e1248f584406f27030b3e0e2cf4484",
+    "sha256": "c414ac4640d5da7239d5a934e3932fc15f72d996a6141f0e9f6a3b89583ec1f0"
+  },
+  "previousSource": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+  "previousConfigurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "driverSha256": "65a2f6dd65836a8e644d90e18acdcce2966a5feb3afd5c721c2725b9c20ee891",
+  "indexSha256": "bfa036228776da29de43ad110b9f7a07827d8ced815fa1e43b2bb9b20e072b8a",
+  "manifestSha256": "cdc92021f45aed08bc903a91699b7a8783a0a9cc9e5f8fcdc1f99c8204d8a8fd",
+  "transportSha256": "b52f1f29847f4f87e92479ad8e099ba88213102a9a6ee2cede170c9d3a189ff1",
+  "ownerCommandSha256": "1f223219f88d46731136e918900c6d51603c30dd0521014d630b34a93c7e13c3",
+  "stage": "/var/tmp/poe-original-adaptive-v2-upgrade",
+  "strategyVersion": "adaptive-momentum-v2-paper-v1",
+  "previousStrategyVersion": "persistent-buying-pilot-v1",
+  "deepSlots": 4,
+  "financialPositionLimit": 2,
+  "activeStrategyContractSha256": "8e404a11d1868e3a2c3a4a708133f9831a555a590201c8e70e62c35a44c4d0bb",
+  "pureAdaptivePolicySha256": "b4fa586df1b6d89c04b250a1ff3ea4e394a4cbf9b7900c7a3ebd0317c7c56a07",
+  "riskFallbacks": {
+    "initialCommitmentUsd": 50,
+    "aggregatePositionCostUsd": 150,
+    "status": "temporary-technical-legacy-fallback"
+  },
+  "strategyChanged": true,
+  "baselineEntryExitThresholdsPreserved": false,
+  "completeRelevantTradingEvidencePreserved": true,
+  "supervisorTransition": {
+    "oldSha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed",
+    "newSha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e",
+    "oldNativeReceivesStrategyFlag": false
+  },
+  "historicalForensicReuse": {
+    "artifactSha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e",
+    "artifactBytes": 10694,
+    "previousRootProofRequired": true,
+    "newExporterExecuted": false
+  },
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5156157,
+      "sha256": "c414ac4640d5da7239d5a934e3932fc15f72d996a6141f0e9f6a3b89583ec1f0"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 75375,
+      "sha256": "7ff2e950011cf10fb2d3b820f31099e3acac46fcf64abcf8d5bf800abba43062"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154709,
+      "sha256": "857f7adf980280854db995a9e2a831d67d7245a649de38458fed3be1af653e3f"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 32314,
+      "sha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37955,
+      "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 49115,
+      "sha256": "65a2f6dd65836a8e644d90e18acdcce2966a5feb3afd5c721c2725b9c20ee891"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1715,
+      "sha256": "cdc92021f45aed08bc903a91699b7a8783a0a9cc9e5f8fcdc1f99c8204d8a8fd"
+    }
+  ]
+}

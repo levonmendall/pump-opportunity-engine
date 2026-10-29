@@ -1,0 +1,28 @@
+{
+  "actualEC2Actions": false,
+  "blockingFindings": [],
+  "completedAt": 1793310094233,
+  "diffCheckExitCode": 0,
+  "embeddedPythonAST": true,
+  "gzipRoundTrips": 10,
+  "head": "798b52b07ca9cc64095914153949447f8f48ff0a",
+  "kind": "POE_INDEPENDENT_FINAL_ADAPTIVE_NONROOT_STAGER_REVIEW",
+  "metadataOnlySystemctlShowPreserved": true,
+  "newStage": "/var/tmp/poe-original-adaptive-v2-upgrade",
+  "noApplyMainFinancialOrExporterCalls": true,
+  "packedBytes": 2062993,
+  "payloadExactCopyOfReviewedFinalTransport": true,
+  "payloadFilesIncludingTransport": 11,
+  "pins": {
+    "driver_sha": "65a2f6dd65836a8e644d90e18acdcce2966a5feb3afd5c721c2725b9c20ee891",
+    "index_sha": "bfa036228776da29de43ad110b9f7a07827d8ced815fa1e43b2bb9b20e072b8a",
+    "transport_sha": "b52f1f29847f4f87e92479ad8e099ba88213102a9a6ee2cede170c9d3a189ff1"
+  },
+  "rawBytes": 7736293,
+  "reverseSubstitutionsRecoverPriorWorkflowExactly": true,
+  "rootOrServiceControlActions": false,
+  "sameSupervisorBeforeAfterRequired": true,
+  "uid994AndBoundedWrapperPreserved": true,
+  "workflowSha256": "109d18de6916c267936005cca94fdbf2ec4aef15d054b1556a96289786bff74f",
+  "workflowUnchangedDuringReview": true
+}

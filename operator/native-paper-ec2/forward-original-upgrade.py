@@ -41,7 +41,8 @@ NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa2646
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
 NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 OLD_CONFIGURATION_SHA='96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c'
-# Final active-strategy source/executable/configuration pins are deliberately unset.
+# Target pins are unset until the lead freezes the owner-reset-capable source.
+# The reviewed source8410390 package is retained only as superseded evidence.
 NEW_CONFIGURATION_SHA=None
 # Historical source-exit diagnostics were already exported under the previous
 # reviewed owner command. Reuse the exact root-bound proof; never rerun it.

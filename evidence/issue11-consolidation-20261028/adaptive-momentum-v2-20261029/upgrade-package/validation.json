@@ -1,0 +1,35 @@
+{
+  "kind": "poe-original-active-adaptive-v2-offline-validation-v1",
+  "offlineBundleValidation": "PASS actual inert bundle/old025abb-to-active-profile supervisor transition",
+  "exactCurrentManifestSha256": "18363e1e925239d7b5fcd9d2e032b68be9fdc8bbb8a48a079ba46d5e9d92a417",
+  "fourSlotsPreserved": true,
+  "singleToTwoPositionStageVerified": true,
+  "strategyVersion": "adaptive-momentum-v2-paper-v1",
+  "exactPreservedManifestValidation": "PASS",
+  "metadataCommit": "8410390e31e1248f584406f27030b3e0e2cf4484",
+  "unchangedAddonUnit": true,
+  "supervisorTransitionSeparatelyPinned": {
+    "oldSha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed",
+    "newSha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e"
+  },
+  "oldAndNewReportersSeparatelyPinned": {
+    "oldSha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f",
+    "newSha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44"
+  },
+  "oldAndNewCompiledBackupWorkerPins": {
+    "previousSha256": "815f2a215111d09a9216f3fa2235481865e6f22f76773636e2f10022957ac656",
+    "newSha256": "7ff2e950011cf10fb2d3b820f31099e3acac46fcf64abcf8d5bf800abba43062"
+  },
+  "unitAndPolicyUnchanged": true,
+  "ownerCommandPythonSyntaxAndShellRoundTrip": "PASS",
+  "historicalForensicProofOnly": true,
+  "newDiagnosticExportRequired": false,
+  "packageFileCount": 9,
+  "transportFileCount": 10,
+  "transportSha256": "b52f1f29847f4f87e92479ad8e099ba88213102a9a6ee2cede170c9d3a189ff1",
+  "rootCommandExecuted": false,
+  "serviceControlled": false,
+  "financialDatabaseOpened": false,
+  "deployed": false,
+  "ownerCommandSha256": "1f223219f88d46731136e918900c6d51603c30dd0521014d630b34a93c7e13c3"
+}
