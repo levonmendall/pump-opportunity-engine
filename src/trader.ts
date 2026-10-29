@@ -4,6 +4,8 @@ import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,typ
 import {FlowWindow,copyEventIdentity,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
 import {assertPilotBaseline,resolvePilotBinding,type PilotBinding,type ResolvedPilotBinding} from './pilot-contract.js';
 import {ADAPTIVE_MOMENTUM_V2_VERSION,ADAPTIVE_MOMENTUM_V2_POLICY,assessAdaptiveBuying,evaluateAdaptivePrimary,evaluateAdaptiveExit,type AdaptiveRuleContext} from './adaptive-momentum-v2.js';
+import {TechnicalProtectionRecoveryTracker,type TechnicalProtectionRecoveryAuthority,type TechnicalProtectionRecoveryProof} from './technical-protection-recovery.js';
+export type {TechnicalProtectionRecoveryProof} from './technical-protection-recovery.js';
 
 export type CandidateEvidence={mint:string;migrationAt:number;migrationVerified:boolean;supportedPool:boolean;evidence:string};
 export type SizeRequest={mint:string;side:'buy'|'sell';inputUnits:string;minSlot?:number;requiredDepositLamports?:string};
@@ -73,6 +75,7 @@ export class PaperTrader{
   private financialUnavailable=false;
   private nonRecoverablePauseObserved=false;
   private newHardPauseObserved=false;
+  private readonly technicalProtectionRecovery=new TechnicalProtectionRecoveryTracker();
   private readonly uncertainOrders=new Set<string>();
   private started=false;
   private readonly execution:PaperExecutionCoordinator;
@@ -128,8 +131,25 @@ export class PaperTrader{
   setPilotEntryDeposit(lamports:string,evidence:string,mint?:string){if(!this.pilot||!validText(evidence)||mint!==undefined&&!validText(mint,96)||Object.values(this.options.ledger.state().pending).some(o=>o.side==='buy'&&(mint===undefined||o.mint===mint)))throw Error('pilot deposit preparation requires no pending entry for the selected mint');if(this.pilotConfig?.stage!==null&&mint===undefined)throw Error('concurrent pilot deposit preparation requires an explicit mint');if(mint!==undefined&&!this.pilotDeposits.has(mint)&&this.pilotDeposits.size>=this.maximumCandidates+3)throw Error('bounded pilot deposit capacity');unsigned(lamports);const plan=Object.freeze({lamports,evidence,preparedAt:this.clock()});if(mint===undefined)this.pilotDeposit=plan;else this.pilotDeposits.set(mint,plan);this.record('trader-pilot-entry-deposit',{...plan,...(mint===undefined?{}:{mint}),classification:'required refundable locked capital; not a permanent execution fee'});}
   clearPilotEntryDeposit(mint:string){if(!this.pilot||!validText(mint,96))throw Error('isolated pilot and bounded mint required');const state=this.options.ledger.state();if(state.positions[mint]||Object.values(state.pending).some(order=>order.mint===mint))throw Error('held/pending deposit preparation must be retained');const removed=this.pilotDeposits.delete(mint);if(removed)this.record('trader-pilot-entry-deposit-cleared',{mint,at:this.clock(),reason:'unowned preparation released; financial history unchanged'});return removed;}
   pauseNewEntries(reason:string){if(!validText(reason))throw Error('bounded entry-pause reason required');this.pause(reason);}
+  /** A private hard latch is not a generic transient pause. Only the ledger's
+   * authenticated technical-control history plus a new measured safe interval
+   * can produce this one-use, revision-bound recovery proof. */
+  technicalProtectionRecoveryProof(authority:TechnicalProtectionRecoveryAuthority,operationalHealthy:boolean,at=this.clock()){
+    const safety=this.entryReadinessSafety(),safe=safety.recoveryComplete&&safety.idle&&safety.evidenceAvailable&&safety.financialAvailable&&!safety.uncertainActions;
+    return this.technicalProtectionRecovery.proof(authority,this.options.ledger.state(),this.context,at,operationalHealthy,safe);
+  }
+  technicalProtectionRecoveryCommitted(proof:TechnicalProtectionRecoveryProof){
+    const safety=this.entryReadinessSafety(),safe=safety.recoveryComplete&&safety.idle&&safety.evidenceAvailable&&safety.financialAvailable&&!safety.uncertainActions;
+    const issued=this.technicalProtectionRecovery.hasIssued(proof);
+    const valid=this.technicalProtectionRecovery.committed(proof,this.options.ledger.state(),this.clock())&&safe;
+    if(valid){this.nonRecoverablePauseObserved=false;this.newHardPauseObserved=false;}
+    else if(issued&&this.options.ledger.state().controls.entriesEnabled)this.pause('PAPER protection unavailable; exposure retained');
+    return valid;
+  }
+  technicalProtectionRecoveryStatus(){return this.technicalProtectionRecovery.view();}
   private id(kind:string){return `trader:${kind}:${this.options.ledger.state().revision}:${this.clock()}`;}
   private pause(reason:string,preserveUnsettled=false){
+    this.technicalProtectionRecovery.reset();
     if(this.candidateEvaluationOnly){this.assertCandidateOnlyState();return;}
     // A later safety failure must not be hidden by an earlier transient reason
     // whose durable controls were already closed. Ordinary reconciliation does
@@ -139,7 +159,10 @@ export class PaperTrader{
     if(state.controls.entriesEnabled||hard&&(TEMPORARY_ENTRY_READINESS_PAUSES.includes(state.controls.reason as never)||firstNewHard&&state.controls.reason!==reason))this.options.ledger.pause(this.id('pause'),at,reason);
     if(buys&&!this.financialUnavailable&&!this.uncertainOrders.size&&(!preserveUnsettled||this.execution.readinessSafety().idle&&!this.outstanding))this.options.ledger.cancelEntryOrders(this.id('cancel'),at,reason);
   }
-  private record(kind:string,data:unknown){try{this.options.recorder.record(kind,data);}catch{this.evidenceUnavailable=true;this.pause('selected evidence unavailable; entries closed');}}
+  private record(kind:string,data:unknown){try{this.options.recorder.record(kind,data);if(kind==='trader-held-evaluation'){
+    const e=data as {mint:string;units:string;quoteAt:number|null;usable:boolean},execution=this.execution.readinessSafety();
+    this.technicalProtectionRecovery.observeHeld(this.options.ledger.state(),this.context,e,this.clock(),this.started&&execution.recoveryComplete&&execution.idle&&!this.evidenceUnavailable&&!this.financialUnavailable&&!this.uncertainOrders.size&&!execution.uncertainActions);
+  }}catch{this.evidenceUnavailable=true;this.pause('selected evidence unavailable; entries closed');}}
   private decision(decision:Decision){const effective={...decision,ruleVersion:decision.holdingPolicyVersion??this.effectiveVersion};this.recent.push(structuredClone(effective));if(this.recent.length>50)this.recent.shift();this.record('trader-decision',effective);}
   start(){if(this.started)return;if(this.candidateEvaluationOnly)this.assertCandidateOnlyState();else{const prior=this.options.ledger.state(),hardClosed=!prior.controls.entriesEnabled&&!TEMPORARY_ENTRY_READINESS_PAUSES.includes(prior.controls.reason as never)&&prior.controls.reason!=='startup: observation only; explicit runtime readiness required';for(const id of this.execution.recover().uncertainExitOrders)this.uncertainOrders.add(id);if(hardClosed){this.nonRecoverablePauseObserved=true;this.options.ledger.pause(this.id('restore-hard-pause'),this.clock(),prior.controls.reason);}}this.started=true;this.record('trader-config',{mode:this.options.ledger.state().mode,candidateEvaluationOnly:this.candidateEvaluationOnly,financialExecutionAuthorized:!this.candidateEvaluationOnly,accountId:this.options.ledger.accountId,rule:this.adaptive?ADAPTIVE_MOMENTUM_V2_POLICY:{...PROVISIONAL_RULE,version:this.effectiveVersion},costs:{...this.options.costs},flowVerification:this.options.flowVerification??{verified:false,evidence:'unverified'},quoteRetrieval:this.options.deferPredictivelyRejectedQuotes===true?'RESEARCH_DEFER_ALREADY_REJECTED_PREDICTIVE_QUOTES':'EXISTING_QUOTE_FIRST_ORDER',...(this.pilotConfig?{pilot:{version:this.pilotConfig.version,contractSha256:this.pilotConfig.contractSha256,maxPositions:this.pilotConfig.maxPositions,...(this.pilotConfig.stage===null?{}:{stage:this.pilotConfig.stage}),amountConvention:'curve',entryDepositPreparation:'required-before-entry',contract:this.pilotConfig.contract}}:{})});}
   admit(input:CandidateEvidence){
