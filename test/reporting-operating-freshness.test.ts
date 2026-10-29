@@ -41,6 +41,7 @@ const currentEntryMessages = {
   POE_ENTRY_SOURCE_UNAVAILABLE: 'Required market observation is unavailable or recovering',
   POE_ENTRY_MONITORING_UNAVAILABLE: 'New-entry monitoring or shared RPC capacity is temporarily reserved; position safeguards remain enforced.',
   POE_ENTRY_READINESS_REQUIRED: 'Fresh complete audited market evidence and financial readiness are required',
+  POE_ENTRY_PROTECTION_RECOVERY_REQUIRED: 'New entries remain closed after a position-protection failure; verified protection recovery is required',
   POE_ENTRY_FINANCIAL_PAUSED: 'The ledger entry control is paused; verified recovery is still required',
 };
 
