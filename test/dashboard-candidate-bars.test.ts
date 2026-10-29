@@ -85,8 +85,8 @@ test('observer fallback retains its original distinction between discovery and i
 });
 
 test('holographic desktop and mobile styles provide visible bar tracks rather than a 15px column',()=>{
- assert.match(holographicSource,/\\.funnel-track\\{height:8px/);
- assert.match(holographicSource,/grid-template-columns:minmax\\(100px,1\\.05fr\\) minmax\\(90px,1\\.4fr\\)/);
- assert.match(holographicSource,/grid-template-columns:minmax\\(95px,1fr\\) minmax\\(65px,\\.9fr\\)/);
- assert.doesNotMatch(holographicSource,/grid-template-columns:minmax\\(95px,1fr\\) 15px/);
+ assert.ok(holographicSource.includes('.funnel-track{height:8px'));
+ assert.ok(holographicSource.includes('grid-template-columns:minmax(100px,1.05fr) minmax(90px,1.4fr)'));
+ assert.ok(holographicSource.includes('grid-template-columns:minmax(95px,1fr) minmax(65px,.9fr)'));
+ assert.ok(!holographicSource.includes('grid-template-columns:minmax(95px,1fr) 15px'));
 });
