@@ -1,0 +1,48 @@
+✖ a stable managed-round-trip minute resets retry escalation after an isolated later disconnect (53.867803ms)
+✔ successful upgrade and quick re-subscription do not reset a flapping transport (38.009055ms)
+✖ an unserviced minute plus one late proof cannot impersonate continuous managed health (16.432239ms)
+✔ healthy recovery does not override an independent provider control cooldown or fresh-window requirement (78.782602ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1188.364635
+
+✖ failing tests:
+
+test at test/native-flow-transport-recovery.test.ts:1:752
+✖ a stable managed-round-trip minute resets retry escalation after an isolated later disconnect (53.867803ms)
+  AssertionError [ERR_ASSERTION]: a later isolated failure must not inherit lifetime escalation
+  
+  5000 !== 2000
+  
+      at TestContext.<anonymous> (/workspace/poe-native-transport-backoff/test/native-flow-transport-recovery.test.ts:14:139)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 5000,
+    expected: 2000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-flow-transport-recovery.test.ts:1:1561
+✖ an unserviced minute plus one late proof cannot impersonate continuous managed health (16.432239ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  -60000 !== 5000
+  
+      at TestContext.<anonymous> (/workspace/poe-native-transport-backoff/test/native-flow-transport-recovery.test.ts:22:192)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: -60000,
+    expected: 5000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
