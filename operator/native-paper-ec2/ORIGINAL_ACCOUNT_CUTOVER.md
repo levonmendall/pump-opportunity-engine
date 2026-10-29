@@ -124,6 +124,17 @@ Check source-age/stopped behavior; a publisher heartbeat must not freshen market
 information. Measure real EC2 CPU, memory, disk, network and provider demand.
 No synthetic result establishes a natural PAPER entry, exit or profit.
 
+The existing supervisor also projects matched original-channel delivery
+metadata to `/var/lib/poe-public/accepted-source.json` (source-owned 0644, at most
+4 KiB). This contains source/run/sequence, original account identity, unchanged
+source time, exact source-file SHA, canonical receiver fingerprint and ACK time.
+It contains no snapshot body, ledger data or credentials. The private original
+source witnesses remain intact. The existing unprivileged administration path
+can read this duplicate receipt and compare two distinct accepted sources with
+Render after the single owner command. A local receipt-write failure does not
+invalidate a genuine Render ACK or stop financial management. This adds no
+publisher, API, account or reporting channel.
+
 The service has no healthy cumulative CPU, elapsed, request or evidence-stop
 budget. Systemd bounds rolling CPU and cgroup memory; source admission reacts
 to pressure, unknown measurements and reporting failures while retaining

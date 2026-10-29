@@ -70,6 +70,38 @@ class Tests(unittest.TestCase):
   at=m.INCEPTION+100000;c=self.controller();c.last_source=status(at)
   with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-source-witness-')as t,patch.object(m,'ACCOUNT',pathlib.Path(t)),patch.object(m,'SERVICE',pathlib.Path(t)):
    raw=(json.dumps(snapshot(at),separators=(',',':'))+'\n').encode();p=pathlib.Path(t)/'snapshot.json';p.write_bytes(raw);p.chmod(0o600);c.pending_acks.append(ack(at,fingerprint='f'*64));c.cache_source_snapshot(at+100);self.assertIsNone(c.last_ack);c.pending_acks.append(ack(at,raw_source_sha256=m.sha(raw)));c.cache_source_snapshot(at+101);self.assertEqual(c.last_ack['rawSourceSha256'],m.sha(raw));self.assertEqual(c.last_ack['fingerprint'],'e'*64);self.assertEqual(c.accepted_source_count,1);self.assertTrue((pathlib.Path(t)/'accepted-source-0.json').exists())
+ def test_public_ack_projects_only_matched_metadata_and_preserves_private_source_witness(self):
+  at=m.INCEPTION+100000;c=self.controller();c.last_source=status(at)
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-public-ack-')as t:
+   d=pathlib.Path(t);private=d/'private';private.mkdir(mode=0o700);public=d/'public';public.mkdir(mode=0o755);public.chmod(0o755);body=snapshot(at);body['financial']='FINANCIAL_BODY_DO_NOT_PROJECT';raw=(json.dumps(body,separators=(',',':'))+'\n').encode();(private/'snapshot.json').write_bytes(raw);(private/'snapshot.json').chmod(0o600);a=ack(at,raw_source_sha256=m.sha(raw));c.pending_acks.append(a)
+   with patch.object(m,'ACCOUNT',private),patch.object(m,'SERVICE',private),patch.object(m,'PUBLIC',public):c.cache_source_snapshot(at+100)
+   path=public/'accepted-source.json';v=json.loads(path.read_text());self.assertEqual(path.stat().st_mode&0o777,0o644);self.assertEqual(path.stat().st_uid,os.getuid());self.assertLessEqual(path.stat().st_size,4096);self.assertEqual(v['rawSourceSha256'],m.sha(raw));self.assertEqual(v['fingerprint'],a['fingerprint']);self.assertEqual(v['sequence'],a['sequence']);self.assertEqual(v['sourceAtMs'],at);self.assertEqual(v['accountId'],m.ACCOUNT_ID);self.assertEqual(v['runId'],c.last_source['runId']);self.assertNotIn('FINANCIAL_BODY_DO_NOT_PROJECT',path.read_text());self.assertNotIn('financial',v);self.assertEqual(json.loads((private/'accepted-source-0.json').read_text()),body);self.assertEqual(json.loads((private/'accepted-source-latest.json').read_text())['rawSourceSha256'],m.sha(raw))
+ def test_public_ack_rejects_unmatched_raw_hash_and_unsafe_target_without_touching_files(self):
+  at=m.INCEPTION+100000;raw=json.dumps(snapshot(at)).encode();a=ack(at,raw_source_sha256=m.sha(raw))
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-public-ack-guard-')as t:
+   public=pathlib.Path(t)/'public';public.mkdir(mode=0o755);public.chmod(0o755);target=pathlib.Path(t)/'DO_NOT_TOUCH';target.write_bytes(b'PRIVATE_FINANCIAL_SENTINEL');path=public/'accepted-source.json'
+   with patch.object(m,'PUBLIC',public):
+    with self.assertRaisesRegex(m.Guard,'MATCHED_RAW_SOURCE'):m.publish_public_ack(manifest(),status(at),{**a,'rawSourceSha256':'0'*64},raw,1,at+100)
+    self.assertFalse(path.exists());path.symlink_to(target)
+    with self.assertRaisesRegex(m.Guard,'OWNED_PUBLIC_ACK'):m.publish_public_ack(manifest(),status(at),a,raw,1,at+100)
+    self.assertTrue(path.is_symlink());self.assertEqual(target.read_bytes(),b'PRIVATE_FINANCIAL_SENTINEL');path.unlink();public.chmod(0o700)
+    with self.assertRaisesRegex(m.Guard,'ORIGINAL_PUBLIC_STATUS_DIRECTORY'):m.publish_public_ack(manifest(),status(at),a,raw,1,at+100)
+ def test_public_receipt_failure_preserves_private_witness_and_real_receiver_ack(self):
+  at=m.INCEPTION+100000;c=self.controller();c.last_source=status(at)
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-public-ack-failure-')as t,patch.object(m,'ACCOUNT',pathlib.Path(t)),patch.object(m,'SERVICE',pathlib.Path(t)),patch.object(m,'publish_public_ack',side_effect=m.Guard('LOCAL_PUBLIC_RECEIPT_UNAVAILABLE')):
+   raw=(json.dumps(snapshot(at))+'\n').encode();p=pathlib.Path(t)/'snapshot.json';p.write_bytes(raw);p.chmod(0o600);a=ack(at,raw_source_sha256=m.sha(raw));c.pending_acks.append(a);c.cache_source_snapshot(at+100);self.assertEqual(c.last_ack,a);self.assertEqual(c.accepted_source_count,1);self.assertEqual(c.output_errors,1);self.assertTrue((pathlib.Path(t)/'accepted-source-0.json').exists());self.assertTrue((pathlib.Path(t)/'accepted-source-latest.json').exists())
+ def test_repeated_public_replace_and_write_failures_do_not_accumulate_temporary_files(self):
+  at=m.INCEPTION+100000;raw=json.dumps(snapshot(at)).encode();a=ack(at,raw_source_sha256=m.sha(raw))
+  with tempfile.TemporaryDirectory(prefix='poe-TEST-ONLY-public-ack-cleanup-')as t:
+   public=pathlib.Path(t);public.chmod(0o755)
+   with patch.object(m,'PUBLIC',public):
+    m.publish_public_ack(manifest(),status(at),a,raw,1,at+100);original=(public/'accepted-source.json').read_bytes()
+    for function in['replace','write']:
+     for _ in range(12):
+      with patch.object(m.os,function,side_effect=OSError('injected local delivery failure')),self.assertRaises(OSError):m.publish_public_ack(manifest(),status(at),a,raw,1,at+100)
+      self.assertEqual(list(public.glob('*.pending')),[]);self.assertEqual((public/'accepted-source.json').read_bytes(),original)
+    with patch.object(m.os,'fsync',side_effect=[None,OSError('injected post-rename directory failure')]),self.assertRaises(OSError):m.publish_public_ack(manifest(),status(at),a,raw,2,at+101)
+    self.assertTrue((public/'accepted-source.json').exists());self.assertEqual(json.loads((public/'accepted-source.json').read_text())['rawSourceSha256'],m.sha(raw));self.assertEqual(list(public.glob('*.pending')),[])
  def test_cross_language_marker_fixture_is_generated_by_the_live_marker_function(self):
   fixture=json.loads(p.with_name('fixture-authoritative-marker.json').read_text());actual=m.marker({'source':SOURCE},{'runId':'native-paper-20261029000000000'},False,'fixture verified current-run reporting and resource headroom',1793318400000);self.assertEqual(actual,fixture)
  def test_unknown_active_process_census_closes_risk_without_forcing_restart(self):

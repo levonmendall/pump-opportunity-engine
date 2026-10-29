@@ -13,6 +13,7 @@ ACCOUNT=ROOT/'native-engine'
 LEDGER=ROOT/'state/ledger.sqlite'
 SERVICE=ROOT/'service'
 MANIFEST=pathlib.Path('/etc/poe/native-engine.json')
+PUBLIC=pathlib.Path('/var/lib/poe-public')
 RELEASES=pathlib.Path('/opt/poe/releases')
 NODE=pathlib.Path('/opt/poe/node/bin/node')
 ACCOUNT_ID='poe-3123e352-4581-455b-85db-acd7e825e99e'
@@ -172,6 +173,34 @@ def parse_ack(line,now,release):
  if type(v)is dict and v.get('published')is True and v.get('result')in['accepted','duplicate']and v.get('accountId')==ACCOUNT_ID and v.get('inceptionAt')==INCEPTION_ISO and v.get('release')==release and integer(v.get('sourceAtMs'))and INCEPTION<=v['sourceAtMs']<=now+5000 and integer(v.get('acknowledgedAtMs'))and v['sourceAtMs']<=v['acknowledgedAtMs']<=now+5000 and hashed(v.get('fingerprint'))and hashed(v.get('rawSourceSha256'))and isinstance(v.get('sequence'),str)and v['sequence'].isdigit()and 1<=len(v['sequence'])<=40:return v
  return None
 
+def publish_public_ack(manifest,source,ack,raw_body,accepted_count,now):
+ """A bounded duplicate DELIVERY receipt, never a snapshot or financial writer."""
+ need(type(raw_body)is bytes and 0<len(raw_body)<=128*1024 and sha(raw_body)==ack.get('rawSourceSha256'),'MATCHED_RAW_SOURCE_REQUIRED')
+ need(type(source)is dict and source.get('accountId')==ACCOUNT_ID and source.get('inceptionAt')==INCEPTION and source.get('source')==manifest['source']and parse_ack(json.dumps(ack),now,manifest['source']['commit'])==ack and source['startedAt']<=ack['sourceAtMs']<=source['generatedAt']and integer(accepted_count)and accepted_count>0,'CURRENT_ORIGINAL_ACK_WITNESS_REQUIRED')
+ value={'schemaVersion':1,'kind':'poe-original-snapshot-delivery-receipt-v1','accountId':ACCOUNT_ID,'inceptionAt':INCEPTION_ISO,'source':manifest['source'],'runId':source['runId'],'sourceAtMs':ack['sourceAtMs'],'sequence':ack['sequence'],'fingerprint':ack['fingerprint'],'rawSourceSha256':ack['rawSourceSha256'],'acknowledgedAtMs':ack['acknowledgedAtMs'],'observedBySupervisorAtMs':now,'acceptedDistinctSourcesThisSupervisor':accepted_count,'meaning':'Duplicate metadata of an already matched original-channel Render acknowledgement; source timestamp is unchanged. No financial or market evidence is replaced.'}
+ raw=(json.dumps(value,separators=(',',':'))+'\n').encode();need(len(raw)<=4096,'PUBLIC_ACK_METADATA_BOUND');directory=PUBLIC.lstat();need(stat.S_ISDIR(directory.st_mode)and not stat.S_ISLNK(directory.st_mode)and directory.st_uid==os.getuid()and stat.S_IMODE(directory.st_mode)==0o755 and PUBLIC.resolve(strict=True)==PUBLIC,'ORIGINAL_PUBLIC_STATUS_DIRECTORY_REQUIRED');path=PUBLIC/'accepted-source.json'
+ try:
+  old=path.lstat();need(stat.S_ISREG(old.st_mode)and not stat.S_ISLNK(old.st_mode)and old.st_uid==os.getuid()and old.st_nlink==1 and stat.S_IMODE(old.st_mode)==0o644 and old.st_size<=4096,'OWNED_PUBLIC_ACK_FILE_REQUIRED')
+ except FileNotFoundError:pass
+ temporary=PUBLIC/('.accepted-source-'+str(os.getpid())+'-'+str(time.time_ns())+'.pending');fd=os.open(temporary,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600);created=os.fstat(fd)
+ try:
+  offset=0
+  while offset<len(raw):
+   written=os.write(fd,raw[offset:]);need(written>0,'PUBLIC_ACK_WRITE_UNAVAILABLE');offset+=written
+  os.fchmod(fd,0o644);os.fsync(fd);os.replace(temporary,path);parent=os.open(PUBLIC,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+  try:os.fsync(parent)
+  finally:os.close(parent)
+ except BaseException:
+  # Only the inode created by THIS call may be removed. A successful rename
+  # leaves no temporary path; never remove the accepted target on later error.
+  try:
+   current=temporary.lstat()
+   if(current.st_dev,current.st_ino)==(created.st_dev,created.st_ino)and current.st_uid==os.getuid()and stat.S_ISREG(current.st_mode)and current.st_nlink==1:temporary.unlink()
+  except OSError:pass
+  raise
+ finally:os.close(fd)
+ return value
+
 class Supervisor:
  def __init__(self,manifest,helpers,logs):
   self.manifest,self.helpers,self.logs=manifest,helpers,logs;self.selector=selectors.DefaultSelector();self.source=None;self.publisher=None;self.source_started=0;self.started=time.monotonic();self.last_source=None;self.last_ack=None;self.stopping=False;self.source_failures=0;self.publisher_failures=0;self.next_source=0;self.next_publisher=0;self.last_sample=-float('inf');self.healthy_samples=0;self.last_marker=0;self.resource={'critical':False,'newRiskPressure':False,'healthy':False,'publisherRestart':False};self.cpu={'source':RollingCpu(),'publisher':RollingCpu()};self.source_status_unavailable_since=None;self.source_group_unsettled=False;self.buffers={'source':b'','publisher':b''};self.restart_history=collections.deque(maxlen=32);self.bytes={'source':0,'publisher':0};self.output_errors=0;self.last_health=0;self.source_had_status=False;self.snapshot_cache=collections.OrderedDict();self.pending_acks=collections.deque(maxlen=4);self.accepted_source_count=0;self.last_accepted_fingerprint=None;self.snapshot_at=None;self.source_began_mono=0;self.publisher_began_mono=0
@@ -220,6 +249,8 @@ class Supervisor:
     # decision evidence remain authoritative and are never deleted here.
     slot=(self.accepted_source_count-1)%4;path=SERVICE/('accepted-source-'+str(slot)+'.json');atomic(path,json.loads(body),256*1024);atomic(SERVICE/'accepted-source-latest.json',{'schemaVersion':1,'accountId':ACCOUNT_ID,'inceptionAt':INCEPTION_ISO,'source':self.manifest['source'],'sourceAtMs':ack['sourceAtMs'],'sequence':ack['sequence'],'fingerprint':ack['fingerprint'],'rawSourceSha256':ack['rawSourceSha256'],'acknowledgedAtMs':ack['acknowledgedAtMs'],'sourceFile':path.name,'acceptedDistinctSourcesThisSupervisor':self.accepted_source_count,'cacheFiles':4,'cacheMeaning':'Bounded duplicate public source evidence; eviction does not remove financial records or original market proofs.'})
    except(OSError,Guard):self.output_errors+=1
+   try:publish_public_ack(self.manifest,self.last_source,ack,body,self.accepted_source_count,now)
+   except(OSError,ValueError,KeyError,TypeError,Guard):self.output_errors+=1
  def source_stop(self,reason):
   self.record('source-stop-request',{'reason':reason,'positions':None if self.last_source is None else len(self.last_source['positions']),'pending':None if self.last_source is None else len(self.last_source['pending']),'financialFlatnessInferred':False})
   settled=stop_child(self.source,POLICY['gracefulSourceStopSeconds'],drain=self.drain);self.source_group_unsettled=not settled
