@@ -1,0 +1,12 @@
+{
+  "sessionId": 50289,
+  "nodePid": 129181,
+  "shellPid": 129178,
+  "observedRunningAt": "2026-10-29T21:01:34.917583+00:00",
+  "measurementDirectory": "/workspace/pump-opportunity-engine/evidence/independent-persistent-reference-20261029/measurement-2012",
+  "measurementEnd": "2026-10-29T22:12:41.728Z",
+  "nextEnrollment": "2026-10-29T21:12:41.728Z",
+  "outcomes": "2026-10-29T22:02:41.728Z",
+  "serviceOperations": 0,
+  "financialOperations": 0
+}

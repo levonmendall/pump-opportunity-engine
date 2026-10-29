@@ -1,0 +1,41 @@
+{
+  "kind": "independent-measurement-recovery-launch-v1",
+  "preparedAt": "2026-10-29T21:00:36.931544+00:00",
+  "collectorCommit": "0a17765824d2d7b17e78ecc0765c0d4b6b52cd28",
+  "collectorSha256": "43141c6aaa0c69e5100085edb10ec5ffd3eaaa643614b16013f477c1a98541b5",
+  "originalPlanSha256": "272dd087af416996c4b90d69c8407d6583922c80419426b32dcc259e757fc553",
+  "previousCheckpointSha256": "89960f0d10b26e0b1d7cd5dce267e388c2f9ae93e2e6a064caf272da72fc8774",
+  "previousCollectorPid": 108957,
+  "measurement": {
+    "startedAt": 1793304761728,
+    "plannedEndAt": 1793311961728,
+    "sourceSnapshotPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/latest.json"
+  },
+  "source": {
+    "runId": "native-paper-20261029194223241",
+    "sourceCommit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "startedAt": 1793302943241
+  },
+  "requestsBefore": 6,
+  "cumulativeBefore": {
+    "requestStarts": 64,
+    "measuredBodyBytes": 1905339,
+    "uncertainBodyBytes": 262416
+  },
+  "args": [
+    "node",
+    "--use-env-proxy",
+    "--import",
+    "tsx",
+    "scripts/capture-independent-two-hour-reference.ts",
+    "--capture",
+    "--resume-checkpoint",
+    "--previous-collector-pid",
+    "108957",
+    "--directory",
+    "/workspace/pump-opportunity-engine/evidence/independent-persistent-reference-20261029/measurement-2012"
+  ],
+  "serviceOperations": 0,
+  "financialOperations": 0,
+  "SolanaRpcRequests": 0
+}

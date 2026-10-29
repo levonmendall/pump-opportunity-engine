@@ -1,0 +1,48 @@
+{
+  "kind": "actual-independent-collector-resume-snapshot-v1",
+  "retainedAt": "2026-10-29T21:01:34.917583+00:00",
+  "collectorCommit": "0a17765824d2d7b17e78ecc0765c0d4b6b52cd28",
+  "collectorSha256": "43141c6aaa0c69e5100085edb10ec5ffd3eaaa643614b16013f477c1a98541b5",
+  "sessionId": 50289,
+  "nodePid": 129181,
+  "shellPid": 129178,
+  "resumeAt": 1793307637569,
+  "measurement": {
+    "startedAt": 1793304761728,
+    "plannedEndAt": 1793311961728,
+    "sourceSnapshotPath": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/latest.json"
+  },
+  "source": {
+    "runId": "native-paper-20261029194223241",
+    "sourceCommit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "startedAt": 1793302943241
+  },
+  "requests": 6,
+  "selected": 5,
+  "cumulative": {
+    "requestStarts": 64,
+    "measuredBodyBytes": 1905339,
+    "uncertainBodyBytes": 262416
+  },
+  "collectorGaps": [
+    {
+      "fromLastObservedAt": 1793306204300,
+      "resumedAt": 1793307637569,
+      "meaning": "Cloud collector sampling gap only; actual runtime continuity unknown between retained public observations. No runtime end or provider call invented."
+    }
+  ],
+  "originalPlanSha256": "272dd087af416996c4b90d69c8407d6583922c80419426b32dcc259e757fc553",
+  "files": {
+    "runtime-observations.ndjson": {
+      "bytes": 53644,
+      "sha256": "b116a05d8213ef755ae64dc3adf3e246a852795944cec5c3e414c3899d34961f"
+    },
+    "receipt.json": {
+      "bytes": 127940,
+      "sha256": "b6a008cacf9a97e9accb7321d450d67257efd7324f22b2810004a8f7b74f6472"
+    }
+  },
+  "networkRequestsSinceResume": 0,
+  "financialOperations": 0,
+  "serviceOperations": 0
+}
