@@ -219,6 +219,14 @@ test('WATCH reconnect defers physical starts while selected native controls are 
  nativeDue=false;await f.advance(10000);assert.equal(f.operations.length,2);assert.equal(f.feeds.usage().pumpApiConnected,true);await f.feeds.stop();
 });
 
+test('global activity reconnect local scheduling deferrals never become provider backoff and catch the next idle opportunity',async()=>{
+ let nativeBusy=false;const f=setup({persistent:true,marketIntake:true,admitControl:()=>nativeBusy?false:{}});
+ await f.feeds.startWatchActivity();nativeBusy=true;f.sockets[0]!.drop();await f.advance(45000);
+ assert.equal(f.sockets.length,1,'native work keeps priority; local polling starts no sockets');assert.equal(f.operations.length,1);
+ const blocked=f.feeds.usage().marketDiscovery.recovery.pumpapi!;assert.ok(blocked.localDeferrals>20);assert.equal(blocked.networkReconnects,1);assert.equal(blocked.providerBackoffLevel,1);assert.equal(blocked.lastLocalDeferralReason,'local-control-admission');
+ nativeBusy=false;await f.advance(250);assert.equal(f.sockets.length,2,'first spare quarter-second opportunity is used rather than waiting60seconds');assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);await f.feeds.stop();
+});
+
 
 test('persistent discovery survives elapsed/evidence and reconnect-count research bounds with fresh subscriptions',async()=>{
  const f=setup({persistent:true,durationMs:1000,maximumRecordedBytes:65536});await f.feeds.startDiscovery();await f.advance(2000);

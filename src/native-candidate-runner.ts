@@ -123,7 +123,7 @@ export class NativeCandidateRunner{
   this.registry.transaction(()=>{const row=this.watch.discover(seed);if(row)this.queueProof(row,at);});this.counters.migrationHints++;
  }
  onMarketIdentity(row:MarketIdentityHint){this.registry.observeIdentity(row);}
- onMarketActivity(row:MarketActivityHint){this.registry.observeActivity(row);this.onActivity({mint:row.mint,at:row.receivedAt,evidence:row.evidence});}
+ onMarketActivity(row:MarketActivityHint){this.registry.transaction(()=>{this.registry.observeActivity(row);this.onActivity({mint:row.mint,at:row.receivedAt,evidence:row.evidence});});}
  onMarketFeed(row:MarketFeedStatus){this.registry.observeFeed(row);}
  /** Select one measured shared-stream opportunity only when the existing
   * origin-work dispatcher has actual spare runway. A trade signature is a

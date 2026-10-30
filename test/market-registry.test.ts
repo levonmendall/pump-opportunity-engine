@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,rmSync} from 'node:fs';
+import {mkdtempSync,rmSync,readFileSync,statSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {MarketRegistry} from '../src/market-registry.js';
@@ -62,7 +62,7 @@ test('conditional origin enrichment uses real recent shared signatures without r
 test('SQLite contention is visible and candidate admission can recover only after a real successful write',async()=>{
  const {default:Database}=await import('better-sqlite3');const dir=mkdtempSync(join(tmpdir(),'poe-market-lock-'));const path=join(dir,'market.sqlite');const r=new MarketRegistry(path,{now:()=>AT});const lock=new Database(path);
  try{
-  lock.exec('BEGIN IMMEDIATE');assert.throws(()=>r.observeIdentity({mint:'not-persisted',receivedAt:AT,source:'pumpportal-new-token',kind:'creation'}),/locked/);assert.equal(r.health().available,false);assert.equal(r.health().storageFailures,1);assert.equal(r.coverageSnapshot(AT).persistence.state,'unavailable');assert.ok(r.coverageSnapshot(AT).limitations.includes('REGISTRY_STORAGE_UNAVAILABLE'));
+  lock.exec('BEGIN IMMEDIATE');assert.throws(()=>r.observeIdentity({mint:'not-persisted',receivedAt:AT,source:'pumpportal-new-token',kind:'creation'}),/locked/);assert.equal(r.health().available,false);assert.equal(r.health().storageFailures,1);assert.equal(r.coverageSnapshot(AT).persistence.state,'unavailable');assert.ok(r.coverageSnapshot(AT).limitations.includes('REGISTRY_STORAGE_UNAVAILABLE'));r.transaction(()=>r.getMetadata('createdAt'));assert.equal(r.health().available,false,'successful read must not clear a failed durable-write gate');
   lock.exec('ROLLBACK');r.observeIdentity({mint:'persisted',receivedAt:AT,source:'pumpportal-new-token',kind:'creation'});assert.equal(r.health().available,true);assert.equal(r.health().storageFailures,1);assert.equal(r.coverageSnapshot(AT).lifetime.uniqueTokensDiscovered,1);
  }finally{lock.close();r.close();rmSync(dir,{recursive:true,force:true});}
 });
@@ -100,4 +100,13 @@ test('re-observation readiness and last completed decision remain indexed and su
   r.put(gated);r.put(row(2));assert.equal(r.count('w.reobserve_ready=1'),1);assert.equal(r.count('w.last_decision_kind=? AND w.last_decision_at=?',['economic-rejection',AT]),1);
   r.close();r=new MarketRegistry(path,{now:()=>AT});assert.equal(r.count('w.reobserve_ready=0'),1);gated.reobservation.ready={at:AT+1,reason:'new independently supported evidence',evidence:'verified pool state changed'};r.put(gated);assert.equal(r.count('w.reobserve_ready=1'),2);
  }finally{r.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('read-only watch transactions never mutate commit metadata or require a FULL WAL write lock',async()=>{
+ const {default:Database}=await import('better-sqlite3');const dir=mkdtempSync(join(tmpdir(),'poe-market-read-'));const path=join(dir,'market.sqlite');let now=AT;const r=new MarketRegistry(path,{now:()=>now});const other=new Database(path);try{
+  r.put(row(1));const committed=r.getMetadata<number>('updatedAt');const health=r.health();const checkpointBefore=other.pragma('wal_checkpoint(PASSIVE)');const walBefore=readFileSync(path+'-wal');const walBytesBefore=statSync(path+'-wal').size;now+=1000;other.exec('BEGIN IMMEDIATE');
+  assert.equal(r.transaction(()=>r.lookup('mint-1'))?.mint,'mint-1');assert.equal(r.transaction(()=>r.queryRows({limit:4})).length,1);assert.equal(r.transaction(()=>undefined),undefined);
+  assert.equal(r.getMetadata('updatedAt'),committed);assert.equal(r.health().lastSuccessfulWriteAt,health.lastSuccessfulWriteAt);assert.equal(r.health().storageFailures,0);assert.equal(r.health().transactions.writeCommits,health.transactions.writeCommits);assert.equal(r.health().transactions.readOnlyCommits,health.transactions.readOnlyCommits+3);assert.equal(statSync(path+'-wal').size,walBytesBefore);assert.deepEqual(readFileSync(path+'-wal'),walBefore);other.exec('ROLLBACK');assert.deepEqual(other.pragma('wal_checkpoint(PASSIVE)'),checkpointBefore);
+  r.observeIdentity({mint:'really-new',at:now,source:'pumpportal-new-token',kind:'creation'});assert.equal(r.getMetadata('updatedAt'),now);
+ }finally{if(other.inTransaction)other.exec('ROLLBACK');other.close();r.close();rmSync(dir,{recursive:true,force:true});}
 });

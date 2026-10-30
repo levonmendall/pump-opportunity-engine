@@ -6,13 +6,14 @@ export const MARKET_COVERAGE_FEED_SOURCES=['pumpportal-new-token','pumpportal-mi
 export const MARKET_COVERAGE_FEED_SCOPES=['CREATION_HINTS','MIGRATION_HINTS','SHARED_ACTIVITY_HINTS','WATCHED_ACTIVITY_HINTS','UNKNOWN'] as const;
 export const MARKET_COVERAGE_LIMITATIONS=['MARKET_DENOMINATOR_UNKNOWN','PROVIDER_HINTS_UNVERIFIED','PREMIGRATION_EXECUTION_NOT_SUPPORTED','SOURCE_OUTAGES_NOT_RECONSTRUCTED','SHARED_ACTIVITY_PARTIAL_WHEN_FEED_UNAVAILABLE','PREEXISTING_MARKET_BACKFILL_UNAVAILABLE','UNVERIFIED_ORIGIN_DISCOVERY_PENDING','SHARED_HINT_DEDUP_RETENTION_1H','REGISTRY_STORAGE_UNAVAILABLE','OTHER_UNEXPORTED_LIMITATION'] as const;
 type Count=number|null;
+export type RegistryTransactionReporting={scope:'CURRENT_SOURCE_PROCESS';runId:string;attempted:number;readOnlyCommits:number;writeCommits:number;failed:number;fsyncEligibleCommits:number};
 export type MarketCoverageReporting={
  version:typeof MARKET_COVERAGE_REPORTING_VERSION;generatedAt:string;
  persistence:{state:'sqlite-wal'|'unavailable';createdAt:string|null;updatedAt:string|null};
  lifetime:{uniqueTokensDiscovered:Count;lightweightScreened:Count;lightweightWithActivity:Count;lightweightUnavailable:Count;deepAdmitted:Count;verifiedAudited:Count};
  currentHour:{startedAt:string|null;uniqueTokensDiscovered:Count};
  active:{trackedIdentities:Count;awaitingLightweight:Count;awaitingOrigin:Count;awaitingVerification:Count;awaitingDeep:Count;deepObserving:Count};
- resource:{durableVerificationBacklog:Count;oldestVerificationAt:string|null;maximumVerificationWaitMs:Count;storageFailures:Count;maximumWriteMs:number|null;meanWriteMs:number|null};
+ resource:{durableVerificationBacklog:Count;oldestVerificationAt:string|null;maximumVerificationWaitMs:Count;storageFailures:Count;maximumWriteMs:number|null;meanWriteMs:number|null;registryTransactions?:RegistryTransactionReporting|null};
  financial:{scope:'current-source-instance';qualified:Count;entries:Count;exits:Count};
  feeds:{source:typeof MARKET_COVERAGE_FEED_SOURCES[number];connected:boolean|null;lastObservedAt:string|null;scope:typeof MARKET_COVERAGE_FEED_SCOPES[number];coverageGaps:Count}[];
  marketDenominator:null;wholeMarketCoveragePercent:null;limitations:typeof MARKET_COVERAGE_LIMITATIONS[number][];
@@ -24,6 +25,11 @@ const duration=(v:unknown):number|null=>typeof v==='number'&&Number.isFinite(v)&
 const iso=(v:unknown,generated:number):string|null=>count(v)!==null&&Number(v)>=INCEPTION&&Number(v)<=generated?new Date(Number(v)).toISOString():null;
 function need(v:unknown):asserts v {if(!v)throw Error('MARKET_COVERAGE_REPORTING_INVALID');}
 function exact(v:unknown,keys:string){const r=record(v);need(Object.getPrototypeOf(v)===Object.prototype&&Object.keys(r).sort().join(' ')===keys.split(' ').sort().join(' '));return r;}
+function registryTransactions(value:unknown,runId:unknown):RegistryTransactionReporting|null {
+ const r=record(value),keys=['attempted','readOnlyCommits','writeCommits','failed','fsyncEligibleCommits'];
+ if(typeof runId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9:_-]{0,127}$/.test(runId)||keys.some(key=>count(r[key])===null)||r.attempted!==r.readOnlyCommits+r.writeCommits+r.failed||r.fsyncEligibleCommits!==r.writeCommits)return null;
+ return {scope:'CURRENT_SOURCE_PROCESS',runId,attempted:r.attempted,readOnlyCommits:r.readOnlyCommits,writeCommits:r.writeCommits,failed:r.failed,fsyncEligibleCommits:r.fsyncEligibleCommits};
+}
 /** No registry, provider, financial writer or arbitrary provider text is loaded here. */
 export function projectMarketCoverageReporting(status:unknown,generated:number):MarketCoverageReporting|undefined {
  const s=record(status),m=record(s.marketCoverage);
@@ -47,7 +53,7 @@ export function projectMarketCoverageReporting(status:unknown,generated:number):
  return validateMarketCoverageReporting({version:MARKET_COVERAGE_REPORTING_VERSION,generatedAt:new Date(asOf).toISOString(),persistence:{state:p.state==='sqlite-wal'?'sqlite-wal':'unavailable',createdAt:iso(p.createdAt,asOf),updatedAt:iso(p.updatedAt,asOf)},
   lifetime:values(l,'uniqueTokensDiscovered lightweightScreened lightweightWithActivity lightweightUnavailable deepAdmitted verifiedAudited'),currentHour,
   active:values(a,'trackedIdentities awaitingLightweight awaitingOrigin awaitingVerification awaitingDeep deepObserving'),
-  resource:{durableVerificationBacklog:count(r.durableVerificationBacklog),oldestVerificationAt:iso(r.oldestVerificationAt,asOf),maximumVerificationWaitMs:count(r.maximumVerificationWaitMs),storageFailures:count(r.storageFailures),maximumWriteMs:duration(r.maximumWriteMs),meanWriteMs:duration(r.meanWriteMs)},
+  resource:{durableVerificationBacklog:count(r.durableVerificationBacklog),oldestVerificationAt:iso(r.oldestVerificationAt,asOf),maximumVerificationWaitMs:count(r.maximumVerificationWaitMs),storageFailures:count(r.storageFailures),maximumWriteMs:duration(r.maximumWriteMs),meanWriteMs:duration(r.meanWriteMs),registryTransactions:registryTransactions(r.registryTransactions,s.runId)},
   financial:{scope:'current-source-instance',qualified:count(f.qualified),entries:count(f.paperFilled),exits:count(f.exited)},feeds,marketDenominator:null,wholeMarketCoveragePercent:null,limitations:[...limitations]},generated);
  }catch{return undefined;}
 }
@@ -62,7 +68,8 @@ export function validateMarketCoverageReporting(value:unknown,generated:number):
  const l=m.lifetime;for(const key of ['lightweightScreened','lightweightWithActivity','lightweightUnavailable','deepAdmitted','verifiedAudited'])need(l[key]===null||l.uniqueTokensDiscovered===null||l[key]<=l.uniqueTokensDiscovered);
  need(l.lightweightWithActivity===null||l.lightweightScreened===null||l.lightweightWithActivity<=l.lightweightScreened);
  const h=exact(m.currentHour,'startedAt uniqueTokensDiscovered');time(h.startedAt,true);n(h.uniqueTokensDiscovered);need(h.startedAt===null?h.uniqueTokensDiscovered===null:Date.parse(h.startedAt)===Math.floor(asOf/3600000)*3600000);need(h.uniqueTokensDiscovered===null||l.uniqueTokensDiscovered===null||h.uniqueTokensDiscovered<=l.uniqueTokensDiscovered);
- const r=exact(m.resource,'durableVerificationBacklog oldestVerificationAt maximumVerificationWaitMs storageFailures maximumWriteMs meanWriteMs');time(r.oldestVerificationAt,true);for(const key of ['durableVerificationBacklog','maximumVerificationWaitMs','storageFailures'])n(r[key]);for(const key of ['maximumWriteMs','meanWriteMs'])need(r[key]===null||duration(r[key])!==null);
+ const r=exact(m.resource,'durableVerificationBacklog oldestVerificationAt maximumVerificationWaitMs storageFailures maximumWriteMs meanWriteMs'+(Object.hasOwn(record(m.resource),'registryTransactions')?' registryTransactions':''));time(r.oldestVerificationAt,true);for(const key of ['durableVerificationBacklog','maximumVerificationWaitMs','storageFailures'])n(r[key]);for(const key of ['maximumWriteMs','meanWriteMs'])need(r[key]===null||duration(r[key])!==null);
+ if(Object.hasOwn(r,'registryTransactions')&&r.registryTransactions!==null){const tx=exact(r.registryTransactions,'scope runId attempted readOnlyCommits writeCommits failed fsyncEligibleCommits');need(tx.scope==='CURRENT_SOURCE_PROCESS'&&registryTransactions(tx,tx.runId)!==null);}
  const f=exact(m.financial,'scope qualified entries exits');need(f.scope==='current-source-instance');for(const key of ['qualified','entries','exits'])n(f[key]);
  need(Array.isArray(m.feeds)&&m.feeds.length<=MARKET_COVERAGE_FEED_SOURCES.length);const seen=new Set<string>();
  for(const row of m.feeds){const feed=exact(row,'source connected lastObservedAt scope coverageGaps');need((MARKET_COVERAGE_FEED_SOURCES as readonly unknown[]).includes(feed.source)&&!seen.has(feed.source)&&(MARKET_COVERAGE_FEED_SCOPES as readonly unknown[]).includes(feed.scope));seen.add(feed.source);need(feed.connected===null||typeof feed.connected==='boolean');time(feed.lastObservedAt,true);n(feed.coverageGaps);}

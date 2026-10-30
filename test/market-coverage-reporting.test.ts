@@ -53,3 +53,15 @@ test('actual SQLite producer projects imported identities and new shared activit
   assert.equal(m.lifetime.uniqueTokensDiscovered,2);assert.equal(m.lifetime.lightweightScreened,2);assert.equal(m.lifetime.lightweightWithActivity,1);assert.equal(m.lifetime.lightweightUnavailable,1);assert.equal(m.currentHour.uniqueTokensDiscovered,1);assert.equal(m.feeds[0]!.source,'pumpapi-broad');assert.equal(m.marketDenominator,null);assert.deepEqual(m.financial,{scope:'current-source-instance',qualified:2,entries:1,exits:0});
  }finally{registry.close();}
 });
+test('actual registry reports read-only transactions without fabricating write or OS-fsync counts',()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>T});
+ try{
+  registry.observeIdentity({mint:'retained-identity',at:T,source:'fixture'});const before=registry.health().transactions;
+  for(let i=0;i<20;i++)registry.transaction(()=>registry.getMetadata('createdAt'));
+  const after=registry.health().transactions;assert.equal(after.attempted-before.attempted,20);assert.equal(after.readOnlyCommits-before.readOnlyCommits,20);assert.equal(after.writeCommits,before.writeCommits);assert.equal(after.fsyncEligibleCommits,before.fsyncEligibleCommits);
+  const raw=source();raw.marketCoverage=registry.coverage(T) as any;const i=projectOperatingIntelligence(raw),tx=i.marketCoverage!.resource.registryTransactions!;validateOperatingIntelligence(i,iso(T));assert.equal(tx.scope,'CURRENT_SOURCE_PROCESS');assert.equal(tx.runId,raw.runId);assert.equal(tx.writeCommits,after.writeCommits);assert.equal(tx.readOnlyCommits,after.readOnlyCommits);
+  const mismatch=structuredClone(i);mismatch.marketCoverage!.resource.registryTransactions!.runId='other-process';assert.throws(()=>validateOperatingIntelligence(mismatch,iso(T)),/PROCESS_BINDING/);
+  const extra=structuredClone(i);(extra.marketCoverage!.resource.registryTransactions as any).apiKey='DO_NOT_EXPORT';assert.throws(()=>validateOperatingIntelligence(extra,iso(T)),/INVALID/);
+ }finally{registry.close();}
+ assert.equal(projectMarketCoverageReporting(source(),T)!.resource.registryTransactions,null,'old source metrics remain unavailable');
+});

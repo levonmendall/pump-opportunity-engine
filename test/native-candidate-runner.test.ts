@@ -578,3 +578,17 @@ test('shared-activity origin work never occupies held-protection runway or inven
  const f=fixture({sourceWorkAdmission:()=>false}),mint=new PublicKey(Buffer.alloc(32,176)).toBase58();f.runner.onMarketActivity({mint,signature:sig(45603),receivedAt:f.now,source:'pumpapi-broad',kind:'activity',side:'buy',quoteMint:'So11111111111111111111111111111111111111112',quoteLamports:'5000000000',evidence:'unverified-provider-activity-hint'});await f.steps(5);assert.equal(f.resolveCalls,0);assert.equal(f.runner.status().verificationQueue,0);assert.equal(f.records.some(r=>r.kind==='native-shared-activity-origin-lookup-selected'),false);await f.runner.stop();
  const unknown=fixture();unknown.runner.onMarketActivity({mint,signature:sig(45604),receivedAt:unknown.now,source:'pumpapi-broad',kind:'activity',side:'buy',evidence:'unverified-provider-activity-hint'});await unknown.steps(5);assert.equal(unknown.resolveCalls,0);assert.equal(unknown.runner.status().marketCoverage.lifetime.lightweightUnavailable,1);await unknown.runner.stop();
 });
+
+test('shared activity commits hint and known-watch updates once per packet without read-lookup fsync amplification',async()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>baseAt}),f=fixture({registry});try{
+  const known=f.importActual(),unknown=new PublicKey(Buffer.alloc(32,181)).toBase58();f.setAllow(false);
+  for(const [mint,signature] of [[unknown,sig(58001)],[known,sig(58002)]] as const){
+   const before=registry.health().transactions.writeCommits;
+   f.runner.onMarketActivity({mint,signature,receivedAt:f.now,source:'pumpapi-broad',kind:'activity',side:'buy',quoteMint:'So11111111111111111111111111111111111111112',quoteLamports:'100000000',evidence:'unverified-provider-activity-hint'});
+   assert.equal(registry.health().transactions.writeCommits-before,1,'one outer FULL-WAL commit preserves both awareness and any watch changes');
+   assert.equal(registry.marketEvidence(mint)?.buyLamports,'100000000');
+  }
+  assert.equal(f.runner.watch.lookupIdentity(known,f.now)?.lastActivityAt,f.now);assert.equal(f.resolveCalls,0);assert.equal(f.rpcCalls.length,0);assert.equal(f.runner.status().verificationQueue,0);
+  const beforeLookups=registry.health().transactions.writeCommits;for(let i=0;i<100;i++)f.runner.watch.lookupIdentity(unknown,f.now);assert.equal(registry.health().transactions.writeCommits,beforeLookups,'read-only lookups never become dirty WAL commits');await f.runner.stop();
+ }finally{registry.close();}
+});
