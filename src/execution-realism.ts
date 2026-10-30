@@ -44,3 +44,9 @@ export function planPaperExecution(input:{plannedAt:number;decisionQuoteAt:numbe
  return validatePaperExecutionPlan(plan)?plan:null;
 }
 export function executionAttempt(plan:PaperExecutionPlan,landed:boolean,expired=false):PaperExecutionAttempt{return {version:PAPER_EXECUTION_MODEL_VERSION,planSha256:paperExecutionPlanSha256(plan),stage:landed?'scenario-landed':'preflight-unsubmitted',feeLamports:landed?paperExecutionFee(plan):'0',reasonCode:landed?'SCENARIO_LANDING_SUPPORTED':expired?'ORDER_EXPIRED_UNSUBMITTED':'LANDING_STATE_UNAVAILABLE'};}
+
+/** Component fallback is confined to an existing held obligation. It does not
+ * claim v1 unsigned construction/landing fidelity or admit another entry. */
+export type PaperProtectionExecutionFallback={version:'legacy-paper-protection-fallback-v1';mint:string;units:string;at:number;sourceEvidence:string;reasonCode:'UNSIGNED_CONSTRUCTION_UNAVAILABLE'|'SIMULATED_ACCOUNT_RENT_UNAVAILABLE'};
+export function validatePaperProtectionExecutionFallback(value:unknown):value is PaperProtectionExecutionFallback{if(!object(value)||!exact(value,'version,mint,units,at,sourceEvidence,reasonCode'))return false;return value.version==='legacy-paper-protection-fallback-v1'&&typeof value.mint==='string'&&value.mint.length>0&&value.mint.length<=96&&amount(value.units)&&BigInt(value.units)>0n&&integer(value.at)&&typeof value.sourceEvidence==='string'&&value.sourceEvidence.length>0&&value.sourceEvidence.length<=512&&!/[\u0000-\u001f]/.test(value.sourceEvidence)&&['UNSIGNED_CONSTRUCTION_UNAVAILABLE','SIMULATED_ACCOUNT_RENT_UNAVAILABLE'].includes(String(value.reasonCode));}
+export function paperProtectionFallbackEvidence(value:PaperProtectionExecutionFallback,orderId:string):string{return value.version+':'+hash({orderId,...value});}

@@ -1,5 +1,5 @@
 import {performance} from 'node:perf_hooks';
-import {validatePaperExecutionPlan,validatePaperExecutionLanding,executionAttempt,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt} from './execution-realism.js';
+import {validatePaperExecutionPlan,validatePaperExecutionLanding,validatePaperProtectionExecutionFallback,paperProtectionFallbackEvidence,executionAttempt,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt,type PaperProtectionExecutionFallback} from './execution-realism.js';
 import {PaperLedger,type ExecutionQuote,type Mark,type Order,type OrderOutcome,type UsdPrice} from './ledger.js';
 
 export type ExecutionContext={price:UsdPrice|null;marks:Record<string,Mark>;/** Original bank-source expiry for every required holding; never a publishing heartbeat. */sourceValidUntil?:number};
@@ -16,7 +16,7 @@ export type ExecutionOptions={
   /** Total context/quote preparation deadline, also capped by order expiry. */
   timeoutMs?:number;
   /** New reservations only; no provider work or mutation inside this planner. */
-  executionPlan?:(order:Omit<Order,'reserved'>)=>PaperExecutionPlan|null;
+  executionPlan?:(order:Omit<Order,'reserved'|'allocation'>)=>PaperExecutionPlan|PaperProtectionExecutionFallback|null;
   /** Optional scheduling wake after a timed-out adapter actually settles. */
   onAdapterSettled?:()=>void;
 };
@@ -62,14 +62,14 @@ export class PaperExecutionCoordinator{
   /** Gas (base + priority) and refundable deposit are explicit simulated order
    * assumptions. Pool fees/impact belong in the adapter's size-specific quote.
    */
-  reserve(order:Omit<Order,'reserved'>,context:ExecutionContext){
+  reserve(order:Omit<Order,'reserved'|'allocation'>,context:ExecutionContext){
     if(!this.recovered)throw new Error('execution recovery required');
     const now=this.clock();
     if(!Number.isSafeInteger(order.decidedAt)||order.decidedAt>now||!Number.isSafeInteger(order.expiresAt)||order.expiresAt<=now)throw new Error('current nonexpired decision required; future information is unavailable');
     if(order.side==='buy'&&this.uncertain.size)throw new Error('financial uncertainty blocks new entries');
     if(order.side==='buy'&&this.outstanding)throw new Error('execution adapter unavailable for new entries');
     let prepared=order;
-    if(this.options.executionPlan){const plan=this.options.executionPlan(Object.freeze({...order}));if(!plan||!validatePaperExecutionPlan(plan)||plan.plannedAt!==order.decidedAt)throw Error('PAPER execution preparation unavailable');prepared={...order,executeAt:plan.executeAt,expiresAt:plan.expiresAt,executionModel:plan} as typeof prepared;}
+    if(this.options.executionPlan){const plan=this.options.executionPlan(Object.freeze({...order}));if(validatePaperProtectionExecutionFallback(plan)){const held=this.options.ledger.state().positions[order.mint];if(order.side!=='sell'||plan.mint!==order.mint||plan.units!==held?.units||plan.sourceEvidence!==order.decisionEvidence||plan.at>now||now-plan.at>2000)throw Error('PAPER execution preparation unavailable');prepared={...order,decisionEvidence:paperProtectionFallbackEvidence(plan,order.id)};}else{if(!plan||!validatePaperExecutionPlan(plan)||plan.plannedAt!==order.decidedAt)throw Error('PAPER execution preparation unavailable');prepared={...order,executeAt:plan.executeAt,expiresAt:plan.expiresAt,executionModel:plan} as typeof prepared;}}
     return this.options.ledger.order(prepared,context.price??UNKNOWN_PRICE,context.marks);
   }
   readinessSafety(){return {recoveryComplete:this.recovered,idle:!this.active&&!this.outstanding,uncertainActions:this.uncertain.size};}

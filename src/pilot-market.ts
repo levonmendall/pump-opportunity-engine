@@ -3,7 +3,7 @@
 import {createHash} from 'node:crypto';
 import {performance} from 'node:perf_hooks';
 import {buildPaperUnsignedPumpSwap,type PaperUnsignedConstruction} from './paper-unsigned-pumpswap.js';
-import {PAPER_EXECUTION_MODEL_VERSION,PAPER_EXECUTION_POLICY,PAPER_EXECUTION_POLICY_SHA256,planPaperExecution,paperExecutionFee,paperExecutionPlanSha256,validatePaperExecutionLanding,type PaperExecutionPlan,type PaperExecutionLanding} from './execution-realism.js';
+import {PAPER_EXECUTION_MODEL_VERSION,PAPER_EXECUTION_POLICY,PAPER_EXECUTION_POLICY_SHA256,planPaperExecution,paperExecutionFee,paperExecutionPlanSha256,validatePaperExecutionLanding,type PaperExecutionPlan,type PaperExecutionLanding,type PaperProtectionExecutionFallback} from './execution-realism.js';
 import {PublicKey} from '@solana/web3.js';
 import type {ExecutionContext,QuoteRequest} from './execution.js';
 import type {ExecutionQuote,Order,Position,UsdPrice} from './ledger.js';
@@ -44,6 +44,7 @@ const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).d
 const MODEL='per-mint-dedicated-base-and-WSOL-accounts-v1' as const;
 export const PILOT_ENTRY_QUOTE_FAILURE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence'] as const;
 export const PILOT_ENTRY_QUOTE_FAILURE_CODES=['ENTRY_QUOTE_BUSY','ENTRY_QUOTE_CALLER_ABORTED','ENTRY_QUOTE_TIMEOUT','ENTRY_QUOTE_UNKNOWN',
+ 'PAPER_EXECUTION_POOL_EXTENSION_RENT_UNAVAILABLE','PAPER_EXECUTION_CONSTRUCTION_STALE','PAPER_EXECUTION_ORIGINAL_BATCH_REQUIRED','PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED',
  'PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED',
  'PILOT_RPC_ABORTED','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_METHOD_PACING','PILOT_RPC_LOWER_PRIORITY_DEFER','PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_ABORTED','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COMPONENT_HTTP_429','PILOT_RPC_COMPONENT_HTTP_STATUS_502','PILOT_RPC_COMPONENT_HTTP_STATUS_503','PILOT_RPC_COMPONENT_HTTP_STATUS_504','RESEARCH_CLOCK_POOL_UNAVAILABLE','RESEARCH_CLOCK_ADMISSION_CLOSED'] as const;
 type EntryQuotePhase=typeof PILOT_ENTRY_QUOTE_FAILURE_PHASES[number];
@@ -75,8 +76,9 @@ export class PilotMarket {
   private readonly entryQuoteFailures:{count:number;last:EntryQuoteFailure|null}={count:0,last:null};
   readonly gasLamports:string;
   private readonly constructions=new Map<string,{quote:PilotSizeQuote;construction:PaperUnsignedConstruction;constructionMs:number}>();
+  private readonly legacyProtectionQuotes=new Map<string,{quote:PilotSizeQuote;reasonCode:PaperProtectionExecutionFallback['reasonCode']}>();
   private readonly latencySamples:number[]=[];private lastObservedSource:{at:number;slot:number;sha256:string}|null=null;private observedSlotMs:number|null=null;
-  private readonly executionDiagnostics={plans:0,supportedLandingStates:0,preflightUnsubmitted:0,unknownLanding:0,last:null as {at:number;stage:'planned'|'landing-state-supported'|'preflight-unsubmitted';reasonCode:'PLAN_PREPARED'|'LANDING_STATE_SUPPORTED'|'LANDING_STATE_UNAVAILABLE';observedRpcMs:number|null;modeledDelayMs:number|null;feeLamports:string|null;sourceSlot:number|null}|null};
+  private readonly executionDiagnostics={plans:0,supportedLandingStates:0,preflightUnsubmitted:0,unknownLanding:0,legacyProtectionFallbacks:0,last:null as {at:number;stage:'planned'|'landing-state-supported'|'preflight-unsubmitted'|'legacy-protection-fallback';reasonCode:'PLAN_PREPARED'|'LANDING_STATE_SUPPORTED'|'LANDING_STATE_UNAVAILABLE'|'UNSIGNED_CONSTRUCTION_UNAVAILABLE'|'SIMULATED_ACCOUNT_RENT_UNAVAILABLE'|'PLAN_CONSTRUCTION_UNAVAILABLE'|'PLAN_DELAY_EXCEEDS_DECISION_LIFETIME'|'PLAN_FEE_MISMATCH';observedRpcMs:number|null;modeledDelayMs:number|null;feeLamports:string|null;sourceSlot:number|null}|null};
   constructor(private readonly options:PilotMarketOptions){
     this.options={...options,gas:Object.freeze({...options.gas})};
     this.now=options.now??Date.now;
@@ -116,7 +118,7 @@ export class PilotMarket {
     this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);return true;
   }
   minimumSlot(mint:string,slot:number){this.held.minimumSlot(mint,slot);this.floors.set(mint,Math.max(this.floors.get(mint)??0,slot));}
-  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.constructions.clear();this.pricer.invalidate(reason);this.held.invalidate(reason);}
+  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.pricer.invalidate(reason);this.held.invalidate(reason);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
   private locked(mint:string){const value=this.options.inventory().lockedDeposits[mint]??'0';integer(value);return value;}
   private freshPlan(mint:string){
@@ -140,6 +142,8 @@ export class PilotMarket {
       const prior=this.lastObservedSource;if(prior&&received>prior.at&&batch.slot>prior.slot){const duration=Math.ceil((received-prior.at)/(batch.slot-prior.slot));if(duration>=100&&duration<=2000)this.observedSlotMs=duration;}
       this.lastObservedSource={at:received,slot:batch.slot,sha256:construction.sourceSha256};
     }
+    need(!construction.accounts.poolExtensionRequired,'PAPER_EXECUTION_POOL_EXTENSION_RENT_UNAVAILABLE');
+    if(q.side==='sell')need(plan.quoteExists,'PAPER_EXECUTION_EXIT_ACCOUNT_RENT_UNAVAILABLE');
     this.options.recorder.record('paper-unsigned-pumpswap',{at:this.clock(),quoteEvidence:q.evidence,construction,constructionMs,bankClockGuard:'existing same-batch confirmed Clock validated by source pricer; unsigned helper adds no Clock assertion',financialStateChanged:false});
     return {quote:structuredClone(q),construction,constructionMs};
   }
@@ -147,15 +151,17 @@ export class PilotMarket {
   /** No provider work. All transaction bytes were prepared from the decision's
    * original coherent state; timing is a labeled scenario conditioned on prior
    * observations, never measured propagation or a claimed validator success. */
-  executionPlan(order:Omit<Order,'reserved'>):PaperExecutionPlan|null{
+  executionPlan(order:Omit<Order,'reserved'|'allocation'>):PaperExecutionPlan|PaperProtectionExecutionFallback|null{
     if(!this.options.executionRealism)return null;
-    const prepared=this.constructions.get(order.decisionEvidence),now=this.clock();if(!prepared||prepared.quote.mint!==order.mint||prepared.quote.side!==order.side||prepared.quote.at>now||now-prepared.quote.at>2000||prepared.construction.minimumOutputUnits!==order.minReceive||prepared.construction.inputUnits!==(order.side==='buy'?order.maxSpend:this.options.inventory().positions[order.mint]?.units))return null;
+    const now=this.clock(),fallback=this.legacyProtectionQuotes.get(order.decisionEvidence);if(fallback&&order.side==='sell'&&fallback.quote.mint===order.mint&&fallback.quote.inputUnits===this.options.inventory().positions[order.mint]?.units&&fallback.quote.at<=now&&now-fallback.quote.at<=2000){const fact:PaperProtectionExecutionFallback={version:'legacy-paper-protection-fallback-v1',mint:order.mint,units:fallback.quote.inputUnits,at:fallback.quote.at,sourceEvidence:order.decisionEvidence,reasonCode:fallback.reasonCode};this.options.recorder.record('paper-execution-protection-fallback',{at:now,orderId:order.id,fallback:fact,meaning:'Existing held obligation only; original PAPER protection execution component retained, no new-model construction or chain landing claim'});this.executionDiagnostics.legacyProtectionFallbacks++;this.executionDiagnostics.last={at:now,stage:'legacy-protection-fallback',reasonCode:fallback.reasonCode,observedRpcMs:null,modeledDelayMs:order.executeAt-order.decidedAt,feeLamports:order.gas,sourceSlot:fallback.quote.slot??null};return fact;}
+    const prepared=this.constructions.get(order.decisionEvidence);if(!prepared||prepared.quote.mint!==order.mint||prepared.quote.side!==order.side||prepared.quote.at>now||now-prepared.quote.at>2000||prepared.construction.minimumOutputUnits!==order.minReceive||prepared.construction.inputUnits!==(order.side==='buy'?order.maxSpend:this.options.inventory().positions[order.mint]?.units))return this.refusedPlan('PLAN_CONSTRUCTION_UNAVAILABLE');
     const sorted=[...this.latencySamples].sort((a,b)=>a-b),observedRpcMs=sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)];if(observedRpcMs===undefined)return null;
     const plan=planPaperExecution({plannedAt:order.decidedAt,decisionQuoteAt:prepared.quote.at,sourceSlot:prepared.construction.sourceSlot,constructionSha256:prepared.construction.constructionSha256,intentSha256:hash(prepared.construction.instructions),constructionMs:prepared.constructionMs,observedRpcMs,...(this.observedSlotMs===null?{}:{slotDurationMs:this.observedSlotMs,slotDurationBasis:'observed' as const})});
-    if(!plan||paperExecutionFee(plan)!==order.gas)return null;
+    if(!plan)return this.refusedPlan('PLAN_DELAY_EXCEEDS_DECISION_LIFETIME');if(paperExecutionFee(plan)!==order.gas)return this.refusedPlan('PLAN_FEE_MISMATCH');
     this.options.recorder.record('paper-execution-plan',{at:now,mint:order.mint,side:order.side,plan,planSha256:paperExecutionPlanSha256(plan),decisionEvidence:order.decisionEvidence,policy:PAPER_EXECUTION_POLICY,meaning:PAPER_EXECUTION_POLICY.meaning});
     this.executionDiagnostics.plans++;this.executionDiagnostics.last={at:now,stage:'planned',reasonCode:'PLAN_PREPARED',observedRpcMs:plan.observedRpcMs,modeledDelayMs:plan.executeAt-plan.plannedAt,feeLamports:paperExecutionFee(plan),sourceSlot:plan.sourceSlot};return plan;
   }
+  private refusedPlan(reasonCode:'PLAN_CONSTRUCTION_UNAVAILABLE'|'PLAN_DELAY_EXCEEDS_DECISION_LIFETIME'|'PLAN_FEE_MISMATCH'){this.options.recorder.record('paper-execution-plan-unavailable',{at:this.clock(),reasonCode,financialStateChanged:false,submissionClaimed:false});this.executionDiagnostics.last={at:this.clock(),stage:'preflight-unsubmitted',reasonCode,observedRpcMs:null,modeledDelayMs:null,feeLamports:'0',sourceSlot:null};return null;}
   private unavailableLanding(){this.executionDiagnostics.preflightUnsubmitted++;this.executionDiagnostics.unknownLanding++;this.executionDiagnostics.last={at:this.clock(),stage:'preflight-unsubmitted',reasonCode:'LANDING_STATE_UNAVAILABLE',observedRpcMs:null,modeledDelayMs:null,feeLamports:'0',sourceSlot:null};}
   /** Candidate observation needs current supported pool evidence, not simulated
    * account-creation rent. Use the unchanged state decoder/SDK checks, but leave
@@ -282,7 +288,7 @@ export class PilotMarket {
     try{return await this.held.context(positions,signal);}
     finally{this.holdingActive=false;}
   };
-  readonly quote=async(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>=>{const q=await this.held.quote(request,signal);if(q&&request.side==='sell'){try{await this.rememberConstruction(q);}catch{return null;}}return q;};
+  readonly quote=async(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>=>{const q=await this.held.quote(request,signal);if(q&&request.side==='sell'){try{await this.rememberConstruction(q);}catch(error){const held=this.options.inventory().positions[q.mint];if(!held||held.units!==q.inputUnits||signal.aborted||q.at>this.clock()||this.clock()-q.at>2000)return null;const reasonCode=error instanceof Error&&error.message==='PAPER_EXECUTION_EXIT_ACCOUNT_RENT_UNAVAILABLE'?'SIMULATED_ACCOUNT_RENT_UNAVAILABLE' as const:'UNSIGNED_CONSTRUCTION_UNAVAILABLE' as const;this.legacyProtectionQuotes.set(q.evidence,{quote:structuredClone(q),reasonCode});while(this.legacyProtectionQuotes.size>3)this.legacyProtectionQuotes.delete(this.legacyProtectionQuotes.keys().next().value!);}}return q;};
   readonly executionQuote=async(request:QuoteRequest&{minSlot?:number},signal:AbortSignal):Promise<PilotExecutionQuote|null>=>{
     const order=request.order;
     try{
