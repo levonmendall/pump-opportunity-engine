@@ -120,7 +120,7 @@ def valid_segment(name):
  return type(name)is str and re.fullmatch('(diagnostic|essential)-[0-9]{12}\\.ndjson',name)is not None
 
 def evidence_facts(directory,status,uid=UID,budget_seconds=MAX_SECONDS):
- deadline=time.monotonic()+budget_seconds;private_directory(directory,uid);files=[];facts=[];buckets=[[]for _ in PRIORITY_WINDOWS];bucketbytes=[0 for _ in PRIORITY_WINDOWS];used=0;factbytes=0;unknown={};kind_counts={};result={'files':files,'facts':facts,'unrecognizedEventKinds':unknown,'matchingKindCounts':kind_counts,'samplingPolicy':'Only the two priorityWindows are sampled: up to64 facts/28000B earlier and128 facts/57000B latest, within192 facts/85000B overall. Failures, completed holdings and physical RPC timing precede discretionary audit metadata. Omission counts and all bounds are explicit; temporal proximity is not causal attribution.','bytesRead':0,'scanBudgetReached':False,'factCapacityReached':False,'selectionUnknown':False,'meaning':'Surviving bounded diagnostic copies only; timestamp-correlated events do not independently establish run or source provenance. Rotation, missing files, truncation, optional omission and scan bounds remain UNKNOWN; absence of retained facts is not absence of failure.'}
+ deadline=time.monotonic()+budget_seconds;private_directory(directory,uid);files=[];facts=[];buckets=[[]for _ in PRIORITY_WINDOWS];bucketbytes=[0 for _ in PRIORITY_WINDOWS];used=0;factbytes=0;unknown={};kind_counts={};result={'files':files,'facts':facts,'unrecognizedEventKinds':unknown,'matchingKindCounts':kind_counts,'samplingPolicy':'Only the two priorityWindows are sampled: up to64 facts/28000B earlier and128 facts/57000B latest, within192 facts/85000B overall. Essential files are reserved first, then interleaved one per three latest matching diagnostic files. Failures, completed holdings and physical RPC timing precede discretionary audit metadata. Omission counts and all bounds are explicit; temporal proximity is not causal attribution.','bytesRead':0,'scanBudgetReached':False,'factCapacityReached':False,'selectionUnknown':False,'meaning':'Surviving bounded diagnostic copies only; timestamp-correlated events do not independently establish run or source provenance. Rotation, missing files, truncation, optional omission and scan bounds remain UNKNOWN; absence of retained facts is not absence of failure.'}
  if not status.get('available'):result['selectionUnknown']=True;result['reasonCode']='VERIFIED_CURRENT_STATUS_REQUIRED';return result
  candidates=[]
  try:
@@ -136,7 +136,17 @@ def evidence_facts(directory,status,uid=UID,budget_seconds=MAX_SECONDS):
    if i>=MAX_DIRECTORY_ENTRIES:result['selectionUnknown']=True;result['scanBudgetReached']=True;break
    if time.monotonic()>deadline:result['scanBudgetReached']=True;break
    if valid_segment(e.name)and e.name.startswith('essential-'):names.append(e.name)
- candidates=list(dict.fromkeys([name for name,_ in sorted(candidates,key=lambda row:row[1],reverse=True)]+sorted(names,reverse=True)[:MAX_FILES]))
+ matched=[name for name,_ in sorted(candidates,key=lambda row:row[1],reverse=True)]
+ diagnostics=list(dict.fromkeys(name for name in matched if name.startswith('diagnostic-')))
+ essentials=list(dict.fromkeys([name for name in matched if name.startswith('essential-')]+sorted(names,reverse=True)[:MAX_FILES]))
+ # Reserve an essential read before optional volume can exhaust either bound.
+ # Matching active essential metadata precedes canonical recent sealed files;
+ # each class retains its latest-first order. Missing or unscanned history is
+ # still UNKNOWN, never an assertion that every required fact was recovered.
+ candidates=[]
+ while essentials or diagnostics:
+  if essentials:candidates.append(essentials.pop(0))
+  candidates.extend(diagnostics[:3]);del diagnostics[:3]
  if len(candidates)>MAX_FILES:result['scanBudgetReached']=True
  for name in candidates[:MAX_FILES]:
   item={'file':name,'available':False};files.append(item)

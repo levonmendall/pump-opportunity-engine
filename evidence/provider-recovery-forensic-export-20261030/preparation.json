@@ -1,18 +1,18 @@
 {
   "kind": "POE_PROVIDER_RECOVERY_FORENSIC_EXPORT_OFFLINE_PREPARATION",
   "status": "IMPLEMENTED_OFFLINE_ONLY",
-  "createdAt": "2026-10-30T00:21:01.186992+00:00",
+  "createdAt": "2026-10-30T00:32:23.095411+00:00",
   "files": {
     "operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": {
-      "bytes": 29227,
-      "sha256": "ebcc11a2d73230d82c018eb3f57d2534b378cc41dd438dff085773b3e7c3658c"
+      "bytes": 29960,
+      "sha256": "4f576931c55c1f9111350f1079c87ed4815ea054a3c0808c5c87979b73ac82de"
     },
     "operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py": {
-      "bytes": 20166,
-      "sha256": "381703380f5d58972b0ee731703c6b70620577f25c76c6290714c85e964e2330"
+      "bytes": 22119,
+      "sha256": "68bae7ec4dd3c7dc0ed9b6e855a80278fdd67b9db856a9a3262a72e479c87eb1"
     }
   },
-  "tests": 29,
+  "tests": 31,
   "testExitCode": 0,
   "source": {
     "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
@@ -55,5 +55,9 @@
   "financialDatabaseOpened": false,
   "providerRequests": 0,
   "serviceControls": 0,
-  "byteLimitsIncludeArrayFraming": true
+  "byteLimitsIncludeArrayFraming": true,
+  "readerInteropTests": 13,
+  "essentialFileSelection": "First selected read is essential; then one essential per three latest matching diagnostic files. Known matching active essential precedes canonical recent sealed fallback. Fixed16files/64MiB/2s; missing history UNKNOWN.",
+  "oldFailingCoverageFixture": "essential-reservation-before.json",
+  "newCoverageFixture": "essential-reservation-after.json"
 }

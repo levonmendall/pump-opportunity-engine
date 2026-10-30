@@ -127,6 +127,18 @@ class Fixtures(unittest.TestCase):
   d=self.namespace();latest=m.PRIORITY_WINDOWS[1][0];first='diagnostic-000000000001.ndjson';second='diagnostic-000000000002.ndjson';self.write(d/first,json.dumps(self.event()).encode()+b'\n');self.write(d/second,json.dumps(self.event('component-physical-timeout',at=latest+1)).encode()+b'\n');self.write(d/'state.json',{'version':'poe-owned-rotating-evidence-v1','diagnostics':[{'file':first,'startedAt':m.START-1,'endedAt':m.PRIORITY_WINDOWS[0][1]},{'file':second,'startedAt':latest-1,'endedAt':m.END}],'activeDiagnostic':None,'activeEssential':None})
   with patch.object(m,'MAX_FILES',1):r=m.collect(self.root,self.uid)
   self.assertEqual(r['diagnostics']['files'][0]['file'],second);self.assertTrue(r['diagnostics']['scanBudgetReached']);self.assertEqual(r['diagnostics']['facts'][0]['kind'],'component-physical-timeout')
+ def crowded_diagnostics_with_essential_failure(self):
+  d=self.namespace();latest=m.PRIORITY_WINDOWS[1][0];rows=[]
+  for i in range(16):
+   name='diagnostic-'+str(i+1).zfill(12)+'.ndjson';self.write(d/name,json.dumps(self.event('native-audit-dispatch-state',at=latest+1+i)).encode()+b'\n');rows.append({'file':name,'startedAt':latest-1,'endedAt':m.END+i})
+  essential='essential-000000000123.ndjson';self.write(d/essential,json.dumps(self.event('trader-held-evaluation',at=latest+25,data={'usable':False})).encode()+b'\n');self.write(d/'state.json',{'version':'poe-owned-rotating-evidence-v1','diagnostics':rows,'activeDiagnostic':None,'activeEssential':None});return d,essential
+ def test_sixteen_optional_segments_cannot_exclude_sealed_held_failure(self):
+  _,essential=self.crowded_diagnostics_with_essential_failure();r=m.collect(self.root,self.uid);self.assertLessEqual(len(r['diagnostics']['files']),16);self.assertEqual(r['diagnostics']['files'][0]['file'],essential);self.assertTrue(any(x['kind']=='trader-held-evaluation'and x['data']['usable']is False for x in r['diagnostics']['facts']));self.assertTrue(r['diagnostics']['scanBudgetReached'])
+  diagnostics=[x['file']for x in r['diagnostics']['files']if x['file'].startswith('diagnostic-')];self.assertEqual(diagnostics[:3],['diagnostic-000000000016.ndjson','diagnostic-000000000015.ndjson','diagnostic-000000000014.ndjson'])
+ def test_tight_byte_budget_reserves_essential_before_optional_reads(self):
+  _,essential=self.crowded_diagnostics_with_essential_failure()
+  with patch.object(m,'MAX_SCAN_BYTES',m.MAX_SEGMENT):r=m.collect(self.root,self.uid)
+  self.assertEqual(r['diagnostics']['files'][0]['file'],essential);self.assertTrue(r['diagnostics']['files'][0]['available']);self.assertTrue(any(x['kind']=='trader-held-evaluation'for x in r['diagnostics']['facts']));self.assertTrue(r['diagnostics']['scanBudgetReached']);self.assertLessEqual(r['diagnostics']['bytesRead'],m.MAX_SEGMENT)
  def test_old_forensic_program_remains_hash_identical(self):
   old=P.with_name('export-current-run-forensics-20261029.py');self.assertEqual(hashlib.sha256(old.read_bytes()).hexdigest(),'1c684b1c88c95c75488f056ad00a8ea756c906e45dcb0f4f8725f5e75b193c59')
 if __name__=='__main__':unittest.main()
