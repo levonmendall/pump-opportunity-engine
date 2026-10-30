@@ -1,0 +1,26 @@
+✔ retained baseline reproduces6000ms gap from one settled timeout plus the old two-second attempt cadence (1047.047213ms)
+✔ owned pricing retries one settled unthrottled timeout with a fresh read inside the unchanged4s completion boundary (1015.520607ms)
+✔ a candidate primary timeout does not forbid a separately owned complete holding read after real settlement (1013.912476ms)
+✔ actual HTTP429 and Retry-After restrict owned reads, without any automatic extra request (7.273331ms)
+✔ actual HTTP502 and Retry-After restrict owned reads, without any automatic extra request (6.718753ms)
+✔ actual HTTP503 and Retry-After restrict owned reads, without any automatic extra request (6.662815ms)
+✔ actual HTTP504 and Retry-After restrict owned reads, without any automatic extra request (4.841423ms)
+✔ late HTTP200 Retry-After after logical timeout remains binding after physical settlement (11.991901ms)
+✔ late HTTP429 Retry-After after logical timeout remains binding after physical settlement (10.728471ms)
+✔ late HTTP503 Retry-After after logical timeout remains binding after physical settlement (10.389294ms)
+✔ sustained unthrottled outage has bounded probes, retained uncertainty and no early physical overlap (67.489739ms)
+✔ monotonic read budget and caller cancellation cannot create a third attempt or forget unsettled physical work (13.349391ms)
+✔ owned adapter cannot promote arbitrary methods, invalid deadlines or cash permission through timeout backoff (1.169856ms)
+✔ owned rolling reservation subtracts genuinely used financial starts without permanently wasting provider capacity (0.529185ms)
+✔ ready required audit pages can use idle short-window headroom beyond optional setup allowance (0.124915ms)
+✔ sustained four-scope request pressure retains owned cadence, bounded recovery and fair audit service under actual rolling gates (1319.58308ms)
+ℹ {"classification":"LOCAL_INJECTED_REQUEST_PRESSURE_NOT_LIVE_PROVIDER_CAPACITY","durationMs":120000,"physicalCalls":169,"maximumCompletedGapMs":3075,"maximumAuditWaitMs":4050,"auditsByScope":[11,11,11,11],"missedAuditDeadlines":0,"backgroundLookups":64,"maximumRolling10SecondStarts":16,"maximumRollingMinuteStarts":85,"rapidProbes":1}
+✔ twelve ready audit pages are not capped at nine when both real provider windows and held reserves permit the burst (14.656679ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5476.482364
