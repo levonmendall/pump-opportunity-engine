@@ -41,6 +41,7 @@ export class OriginalEquityCompanion {
   private delivering = false;
   private lastDeliveredSequence = '';
   private lastDeliveryAt = 0;
+  private lastAttemptAt = 0;
   private secret: string;
   constructor(options: EquityCompanionOptions) {
     this.opts = options;
@@ -62,10 +63,11 @@ export class OriginalEquityCompanion {
     if (history.lastSequence === '0') return { ingested, delivered: false };
     // Send a complete bounded source-owned series on process startup, after
     // every new observation and periodically for Render restart recovery.
-    if (this.delivering || (ingested !== 'accepted' &&
-        history.lastSequence === this.lastDeliveredSequence && now - this.lastDeliveryAt < 60_000))
+    if (this.delivering || now - this.lastAttemptAt < 30_000 ||
+        (this.lastDeliveredSequence && now - this.lastDeliveryAt < 60_000))
       return { ingested, delivered: false };
     this.delivering = true;
+    this.lastAttemptAt = now;
     try {
       const response = await (this.opts.fetch ?? fetch)(RECEIVER, {
         method: 'POST', redirect: 'error', signal: AbortSignal.timeout(5_000),
@@ -84,7 +86,9 @@ export class OriginalEquityCompanion {
   start() {
     if (this.timer) return;
     void this.tick();
-    this.timer = setInterval(() => { void this.tick(); }, 15_000);
+    // Match the existing source publisher's 1s file poll, but upload the
+    // bounded lifetime series at most once per minute.
+    this.timer = setInterval(() => { void this.tick(); }, 1_000);
   }
   close() {
     if (this.timer) clearInterval(this.timer);
