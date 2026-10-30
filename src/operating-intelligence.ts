@@ -1,3 +1,4 @@
+import {projectFinancialPolicyReporting,validateFinancialPolicyReporting,type FinancialPolicyReporting} from './financial-policy-reporting.js';
 /** Bounded diagnostics projected from the SAME authoritative source snapshot.
  * No financial writer, provider, credential or dashboard-side inference. */
 import {NATIVE_CANDIDATE_FAILURE_CODES,NATIVE_CANDIDATE_FAILURE_KINDS,NATIVE_AUDIT_DISPATCH_REASONS,NATIVE_AUDIT_DISPATCH_ACTIONS,NATIVE_AUDIT_SCHEDULER_REASONS,NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS} from './native-candidate-diagnostics.js';
@@ -26,6 +27,7 @@ export type OperatingAdmission={
 export type OperatingIntelligence={
  version:typeof OPERATING_INTELLIGENCE_VERSION;
  admission?:OperatingAdmission;
+ financialPolicy?:FinancialPolicyReporting;
  run:{id:string;startedAt:string;mode:'persistent-paper'|'bounded-verification'|'maintenance';configurationSha256:string;strategyVersion:string};
  candidates:{migrationsReceived:Count;verifiedOrigins:Count;known:Count;watch:Count;eligible:Count;deepActive:Count;deepMaximum:Count;queued:Count;promoted:Count;repromoted:Count;demoted:Count;completeWindows:Count;auditedWindows:Count;uniqueEvaluated:Count;uniqueAudited:Count;predictiveAssessments:Count;predictivePasses:Count;predictiveFailures:Count;predictiveUnavailable:Count;waitMeanMs:Count;waitMaximumMs:Count;olderSelected:Count};
  quality:{captureConnected:boolean|null;qualityGaps:Count;auditUnavailable:Count;auditUnusable:Count;decisionDeadlineMisses:Count;enrichmentDeadlineFailures:Count;incompleteExclusions:Count;capacityExclusions:Count;structuralExclusions:Count;limitations:string[]};
@@ -166,7 +168,8 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
   sourceRecoveryGeneration:count(recovery.generation),sourceRecoveryFailures:count(recovery.failures),sourceRecoveryReasonCode:recoveryReasonCode(recovery.reason),sourceRecoveryRetryAt:futureTime(recovery.retryAt),sourceRecoveryClosingSettled:boolean(recovery.closingSettled),sourceRestartRequired:boolean(recovery.restartRequired),
   proofPreparationState:s.proofPreparation===null?'not-started':['pending','complete','failed'].includes(proof.state)?proof.state:null
  }:undefined;
- return {version:OPERATING_INTELLIGENCE_VERSION,...(admission?{admission}:{}),
+ const financialPolicy=projectFinancialPolicyReporting(s,at);
+ return {version:OPERATING_INTELLIGENCE_VERSION,...(admission?{admission}:{}),...(financialPolicy?{financialPolicy}:{}),
   run:{id:runId,startedAt:new Date(start).toISOString(),mode:s.persistent===true||s.service===true||s.operatingMode==='service'?'persistent-paper':s.running===false?'maintenance':'bounded-verification',configurationSha256,strategyVersion},
   candidates:{migrationsReceived:count(f.discovered),verifiedOrigins:count(f.verifiedMigrationOrigins),known:count(w.known),watch:count(first(w.watch,w.watchCandidates)),eligible:count(first(w.eligibleKnown,w.eligible)),deepActive:count(first(w.deepActive,w.deep)),deepMaximum:count(first(w.maximumDeep,w.maximumDeepCandidates)),queued:count(w.queued),promoted:count(w.promoted),repromoted:count(w.repromoted),demoted:count(w.demoted),completeWindows:count(w.completeWindows),auditedWindows:count(f.usableWindows),uniqueEvaluated:count(first(p.uniqueTokens,w.uniqueEvaluatedTokens)),uniqueAudited:count(first(p.uniqueAuditedTokens,w.uniqueAuditedTokens)),predictiveAssessments:count(first(p.assessments,w.predictiveAssessments)),predictivePasses:count(first(p.passed,w.predictivePasses)),predictiveFailures:count(first(p.failed,w.predictiveFailures)),predictiveUnavailable:count(first(p.unavailable,w.predictiveUnavailable)),waitMeanMs:count(rec(w.waitMs).mean),waitMaximumMs:count(rec(w.waitMs).maximum),olderSelected:count(rec(w.ageCohorts).olderSelected)},
   quality:{captureConnected:boolean(native.connected),qualityGaps:count(refusals['native-quality-gaps']),auditUnavailable:count(refusals['independent-audit-unavailable']),auditUnusable:count(refusals['independent-audit-unusable']),decisionDeadlineMisses:count(refusals['predictive-window-deadline-missed']),enrichmentDeadlineFailures:count(w.enrichmentDeadlineFailures),incompleteExclusions:count(w.incompleteDataExclusions),capacityExclusions:count(w.capacityExclusions),structuralExclusions:count(w.structuralExclusions),limitations},
@@ -178,7 +181,7 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
 }
 function exact(v:unknown,keys:string[]):Record<string,any>{const o=rec(v);if(Object.getPrototypeOf(v)!==Object.prototype||Object.keys(o).sort().join('|')!==[...keys].sort().join('|'))throw Error('OPERATING_INTELLIGENCE_FIELDS');return o;}
 export function validateOperatingIntelligence(value:unknown,generatedAt:string):OperatingIntelligence{
- const s=exact(value,['version','run','candidates','quality','provider','resources','protection','times','decisions','refusals','pendingOrders',...(Object.hasOwn(rec(value),'admission')?['admission']:[])]);if(s.version!==OPERATING_INTELLIGENCE_VERSION)throw Error('OPERATING_INTELLIGENCE_VERSION');const generated=Date.parse(generatedAt),inception=Date.parse(ORIGINAL_POE_INCEPTION);
+ const s=exact(value,['version','run','candidates','quality','provider','resources','protection','times','decisions','refusals','pendingOrders',...(Object.hasOwn(rec(value),'admission')?['admission']:[]),...(Object.hasOwn(rec(value),'financialPolicy')?['financialPolicy']:[])]);if(s.version!==OPERATING_INTELLIGENCE_VERSION)throw Error('OPERATING_INTELLIGENCE_VERSION');const generated=Date.parse(generatedAt),inception=Date.parse(ORIGINAL_POE_INCEPTION);
  const text=(v:unknown,max=256)=>{if(!bounded(v,max))throw Error('OPERATING_INTELLIGENCE_TEXT');};
  const n=(v:unknown,whole=true)=>{if(v!==null&&(whole?count(v)===null:finite(v)===null))throw Error('OPERATING_INTELLIGENCE_NUMBER');};
  const b=(v:unknown)=>{if(v!==null&&typeof v!=='boolean')throw Error('OPERATING_INTELLIGENCE_BOOLEAN');};
@@ -192,6 +195,7 @@ export function validateOperatingIntelligence(value:unknown,generatedAt:string):
   t(a.sourceRecoveryRetryAt,true,true);
   if(a.proofPreparationState!==null&&!['not-started','pending','complete','failed'].includes(a.proofPreparationState))throw Error('OPERATING_PROOF_PREPARATION_STATE');
  }
+ if(Object.hasOwn(s,'financialPolicy'))validateFinancialPolicyReporting(s.financialPolicy,generated);
  const run=exact(s.run,['id','startedAt','mode','configurationSha256','strategyVersion']);text(run.id,128);text(run.strategyVersion,128);t(run.startedAt,false);if(!['persistent-paper','bounded-verification','maintenance'].includes(run.mode)||typeof run.configurationSha256!=='string'||!/^[a-f0-9]{64}$/.test(run.configurationSha256))throw Error('OPERATING_INTELLIGENCE_RUN');
  const c=exact(s.candidates,'migrationsReceived verifiedOrigins known watch eligible deepActive deepMaximum queued promoted repromoted demoted completeWindows auditedWindows uniqueEvaluated uniqueAudited predictiveAssessments predictivePasses predictiveFailures predictiveUnavailable waitMeanMs waitMaximumMs olderSelected'.split(' '));Object.values(c).forEach(v=>n(v));if(c.deepActive!==null&&c.deepMaximum!==null&&c.deepActive>c.deepMaximum)throw Error('OPERATING_DEEP_CAPACITY');
  const q=exact(s.quality,'captureConnected qualityGaps auditUnavailable auditUnusable decisionDeadlineMisses enrichmentDeadlineFailures incompleteExclusions capacityExclusions structuralExclusions limitations'.split(' '));b(q.captureConnected);for(const k of Object.keys(q).filter(k=>k!=='captureConnected'&&k!=='limitations'))n(q[k]);if(!Array.isArray(q.limitations)||q.limitations.length>10)throw Error('OPERATING_LIMITATIONS_BOUND');q.limitations.forEach((v:unknown)=>text(v,512));
