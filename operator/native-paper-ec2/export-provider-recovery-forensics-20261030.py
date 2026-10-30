@@ -156,17 +156,19 @@ def evidence_facts(directory,status,uid=UID,budget_seconds=MAX_SECONDS):
       continue
      body=json.dumps(fact,separators=(',',':')).encode();kind_counts[fact['kind']]=kind_counts.get(fact['kind'],0)+1
      wi=window_index(fact['at']);bucket=buckets[wi];capacity=min(MAX_FACTS,WINDOW_FACT_LIMITS[wi]);byte_limit=min(MAX_FACT_BYTES,WINDOW_BYTE_LIMITS[wi])
-     while bucket and(len(bucket)>=capacity or bucketbytes[wi]+len(body)>byte_limit):
+     while bucket and(len(bucket)>=capacity or bucketbytes[wi]+len(body)+2>byte_limit):
       result['factCapacityReached']=True;worst=max(range(len(bucket)),key=lambda i:(fact_priority(bucket[i]),-bucket[i]['at']))
       if (fact_priority(fact),-fact['at'])>=(fact_priority(bucket[worst]),-bucket[worst]['at']):break
-      old=bucket.pop(worst);bucketbytes[wi]-=len(json.dumps(old,separators=(',',':')).encode())
-     if len(bucket)>=capacity or bucketbytes[wi]+len(body)>byte_limit:result['factCapacityReached']=True;continue
-     bucket.append(fact);bucketbytes[wi]+=len(body)
+      old=bucket.pop(worst);bucketbytes[wi]-=len(json.dumps(old,separators=(',',':')).encode())+1
+     if len(bucket)>=capacity or bucketbytes[wi]+len(body)+2>byte_limit:result['factCapacityReached']=True;continue
+     # Charge one separator per fact and reserve one array delimiter byte: the
+     # serialized array itself, not only its member bodies, stays within budget.
+     bucket.append(fact);bucketbytes[wi]+=len(body)+1
      # The default disjoint quotas sum to the unchanged global bounds. Keep
      # global bounds true even if a disposable test tightens them independently.
-     while sum(map(len,buckets))>MAX_FACTS or sum(bucketbytes)>MAX_FACT_BYTES:
+     while sum(map(len,buckets))>MAX_FACTS or sum(bucketbytes)+1>MAX_FACT_BYTES:
       result['factCapacityReached']=True;bi,bj=max(((a,b)for a,items in enumerate(buckets)for b in range(len(items))),key=lambda q:(fact_priority(buckets[q[0]][q[1]]),-buckets[q[0]][q[1]]['at']))
-      old=buckets[bi].pop(bj);bucketbytes[bi]-=len(json.dumps(old,separators=(',',':')).encode())
+      old=buckets[bi].pop(bj);bucketbytes[bi]-=len(json.dumps(old,separators=(',',':')).encode())+1
     except(ValueError,TypeError,AttributeError,OverflowError):item['malformedLines']+=1
   except(OSError,ValueError,TypeError,Refused):item['reasonCode']='SEGMENT_UNAVAILABLE_OR_BOUND'
  facts.extend(sorted((fact for bucket in buckets for fact in bucket),key=lambda f:f['at']));result['bytesRead']=used;return result

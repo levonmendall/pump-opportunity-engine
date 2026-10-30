@@ -1,18 +1,18 @@
 {
   "kind": "POE_PROVIDER_RECOVERY_FORENSIC_EXPORT_OFFLINE_PREPARATION",
   "status": "IMPLEMENTED_OFFLINE_ONLY",
-  "createdAt": "2026-10-30T00:19:28.988432+00:00",
+  "createdAt": "2026-10-30T00:21:01.186992+00:00",
   "files": {
     "operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": {
-      "bytes": 29055,
-      "sha256": "4ca36788ea186c91c1c0b40d775ad057ef69e5c364339191d32615fa534d61e9"
+      "bytes": 29227,
+      "sha256": "ebcc11a2d73230d82c018eb3f57d2534b378cc41dd438dff085773b3e7c3658c"
     },
     "operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py": {
-      "bytes": 19324,
-      "sha256": "e89fa404e4e7c573b538ba361a0bfe5bfdd563fd4ffaee1434a5c209db367a27"
+      "bytes": 20166,
+      "sha256": "381703380f5d58972b0ee731703c6b70620577f25c76c6290714c85e964e2330"
     }
   },
-  "tests": 28,
+  "tests": 29,
   "testExitCode": 0,
   "source": {
     "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
@@ -54,5 +54,6 @@
   "actualExportExecuted": false,
   "financialDatabaseOpened": false,
   "providerRequests": 0,
-  "serviceControls": 0
+  "serviceControls": 0,
+  "byteLimitsIncludeArrayFraming": true
 }

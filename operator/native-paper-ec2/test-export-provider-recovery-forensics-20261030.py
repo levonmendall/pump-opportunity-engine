@@ -117,6 +117,12 @@ class Fixtures(unittest.TestCase):
   self.assertLessEqual(sum(x['at']<m.PRIORITY_WINDOWS[0][1]for x in f),64);self.assertLessEqual(sum(x['at']>=latest for x in f),128)
  def test_collection_exposes_explicit_noncontinuous_priority_windows(self):
   self.namespace();r=m.collect(self.root,self.uid);self.assertEqual(r['priorityWindows'],[{'fromAt':s,'untilAtExclusive':e}for s,e in m.PRIORITY_WINDOWS]);self.assertEqual(r['window'],{'fromAt':m.START,'untilAtExclusive':m.END});self.assertTrue(any('not continuous coverage'in x for x in r['limitations']))
+ def test_window_and_global_byte_limits_include_json_array_framing(self):
+  d=self.namespace();rows=[self.event('component-physical-timeout',at=start+i,data={'durationsMs':list(range(96))})for start,_ in m.PRIORITY_WINDOWS for i in range(30)];self.write(d/'diagnostic-000000000001.ndjson',b'\n'.join(json.dumps(x).encode()for x in rows)+b'\n')
+  with patch.object(m,'WINDOW_BYTE_LIMITS',(1200,1200)),patch.object(m,'MAX_FACT_BYTES',2400):r=m.collect(self.root,self.uid)
+  facts=r['diagnostics']['facts'];self.assertTrue(r['diagnostics']['factCapacityReached']);self.assertLessEqual(len(json.dumps(facts,separators=(',',':')).encode()),2400)
+  for start,end in m.PRIORITY_WINDOWS:
+   selected=[x for x in facts if start<=x['at']<end];self.assertTrue(selected);self.assertLessEqual(len(json.dumps(selected,separators=(',',':')).encode()),1200)
  def test_diagnostic_file_order_prioritizes_latest_retained_interval(self):
   d=self.namespace();latest=m.PRIORITY_WINDOWS[1][0];first='diagnostic-000000000001.ndjson';second='diagnostic-000000000002.ndjson';self.write(d/first,json.dumps(self.event()).encode()+b'\n');self.write(d/second,json.dumps(self.event('component-physical-timeout',at=latest+1)).encode()+b'\n');self.write(d/'state.json',{'version':'poe-owned-rotating-evidence-v1','diagnostics':[{'file':first,'startedAt':m.START-1,'endedAt':m.PRIORITY_WINDOWS[0][1]},{'file':second,'startedAt':latest-1,'endedAt':m.END}],'activeDiagnostic':None,'activeEssential':None})
   with patch.object(m,'MAX_FILES',1):r=m.collect(self.root,self.uid)
