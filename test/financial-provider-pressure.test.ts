@@ -15,7 +15,7 @@ try{
  while(at<end){
   if(at>=nextHeldAt){const began=at;nextHeldAt=began+2000;assert.deepEqual(await rpc.callProtection('getMultipleAccounts',[],undefined,{completeBy:nativePaperProtectionReadDeadline(at,lastCompleted)}),[]);lastCompleted=at;completions.push(at);continue;}
   const u=rpc.usage(),view=pilotLowerPriorityAdmission({now:at,endAt:Number.MAX_SAFE_INTEGER,held:1,lastUsable:lastCompleted,nextPendingAt:null,operationBoundMs:1700});
-  if(view.admitted&&nativePaperSourceWorkAdmission({informationOpen:true,owned:true,entryWork:false,persistent:true,usage:u})&&!u.rpcDispatchWindow.physicalBusy&&u.rpcDispatchWindow.readyAt<=at){await rpc.call('getSlot',[],undefined,{latestStartAt:view.latestStartAt,operationBoundMs:1700});const index=job++%4;jobs[index]=jobs[index]!+1;continue;}
+  if(view.admitted&&nativePaperSourceWorkAdmission({informationOpen:true,owned:true,entryWork:false,discretionarySetup:true,persistent:true,usage:u})&&u.rpcDispatchWindow?.physicalBusy===false&&(u.rpcDispatchWindow?.readyAt??Infinity)<=at){await rpc.call('getSlot',[],undefined,{latestStartAt:view.latestStartAt,operationBoundMs:1700});const index=job++%4;jobs[index]=jobs[index]!+1;continue;}
   at+=25;
  }
  const starts=events.filter(e=>e.kind==='component-physical-start').map(e=>e.data.at as number),gaps=completions.slice(1).map((n,i)=>n-completions[i]!);let maximumMinute=0,maximumShort=0;

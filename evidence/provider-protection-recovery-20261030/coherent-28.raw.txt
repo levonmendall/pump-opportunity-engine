@@ -1,0 +1,40 @@
+▶ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff
+  ✔ old coupled admission (151.487176ms)
+  ✔ held explicit-restriction admission (100.789835ms)
+✔ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff (253.449581ms)
+✔ cash inventory retains ordinary provider backoff and cannot invent held recovery credit (80.869138ms)
+✔ actual provider restriction resets the recovery interval even with complete fresh held contexts (104.063563ms)
+▶ held provider admission cannot override owner stop or missing liquidation evidence
+  ✔ owner-stop (60.972196ms)
+  ✔ missing-marks (63.478685ms)
+✔ held provider admission cannot override owner stop or missing liquidation evidence (124.995038ms)
+{"elapsedFakeMs":120015,"physicalStarts":169,"maximumMinute":85,"maximumShort":15,"maximumActive":1,"heldCompletions":60,"maximumCompletedGapMs":3095,"discretionaryJobs":[27,27,27,27],"successesAfterRetry":1,"measuredUncertaintyBytes":2097152,"scope":"actual RPC/gate and actual launcher admission under four synthetic runnable discretionary queues; not real market or audit coverage","providerRequests":0}
+✔ shared actual provider budget preserves timely held recovery and fair discretionary progress under sustained demand (1551.797252ms)
+✔ source93 whole-context cancellation can report ABORTED without any physical request or HTTP timeout (3010.86911ms)
+✔ original latest-start admission rejects an impossible held read immediately instead of consuming its3s context (6.567322ms)
+✔ owned forecast rejects the source93 four-start chronology; bypassing that refusal still reproduces the genuine pacing abort (3037.095776ms)
+✔ retained baseline reproduces6000ms gap from one settled timeout plus the old two-second attempt cadence (1047.532953ms)
+✔ owned pricing retries one settled unthrottled timeout with a fresh read inside the unchanged4s completion boundary (1015.098067ms)
+✔ a candidate primary timeout does not forbid a separately owned complete holding read after real settlement (1011.695918ms)
+✔ actual HTTP429 and Retry-After restrict owned reads, without any automatic extra request (7.748374ms)
+✔ actual HTTP502 and Retry-After restrict owned reads, without any automatic extra request (5.672564ms)
+✔ actual HTTP503 and Retry-After restrict owned reads, without any automatic extra request (5.207845ms)
+✔ actual HTTP504 and Retry-After restrict owned reads, without any automatic extra request (5.230289ms)
+✔ late HTTP200 Retry-After after logical timeout remains binding after physical settlement (11.955905ms)
+✔ late HTTP429 Retry-After after logical timeout remains binding after physical settlement (11.010102ms)
+✔ late HTTP503 Retry-After after logical timeout remains binding after physical settlement (11.834385ms)
+✔ sustained unthrottled outage has bounded probes, retained uncertainty and no early physical overlap (69.038729ms)
+✔ monotonic read budget and caller cancellation cannot create a third attempt or forget unsettled physical work (11.050604ms)
+✔ owned adapter cannot promote arbitrary methods, invalid deadlines or cash permission through timeout backoff (1.337575ms)
+✔ owned rolling reservation subtracts genuinely used financial starts without permanently wasting provider capacity (0.406243ms)
+✔ ready required audit pages can use idle short-window headroom beyond optional setup allowance (0.386013ms)
+✔ sustained four-scope request pressure retains owned cadence, bounded recovery and fair audit service under actual rolling gates (1320.020623ms)
+ℹ {"classification":"LOCAL_INJECTED_REQUEST_PRESSURE_NOT_LIVE_PROVIDER_CAPACITY","durationMs":120000,"physicalCalls":169,"maximumCompletedGapMs":3075,"maximumAuditWaitMs":4050,"auditsByScope":[11,11,11,11],"missedAuditDeadlines":0,"backgroundLookups":64,"maximumRolling10SecondStarts":16,"maximumRollingMinuteStarts":85,"rapidProbes":1}
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7337.764461

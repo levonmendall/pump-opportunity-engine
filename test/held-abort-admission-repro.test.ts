@@ -31,14 +31,14 @@ test('original latest-start admission rejects an impossible held read immediatel
   assert.equal(f.physical(),0);assert.equal(f.sleeps.length,0);assert.equal(f.rpc.usage().newUnits,0);assert.equal(f.rpc.cooldownUntil(),0);
  }finally{f.close();}
 });
-test('four rolling starts of headroom do not cover the known held obligation before existing minute starts expire',async()=>{
+test('owned forecast rejects the source93 four-start chronology; bypassing that refusal still reproduces the genuine pacing abort',async()=>{
  // Historical85 starts obey20/10s and90/minute. The latest prior start is1.5s
  // old; no fictitious provider saturation, server response or timing is used.
  const starts=[...Array.from({length:70},(_,i)=>T-45000+i*500),...Array.from({length:15},(_,i)=>T-9900+i*600)];
  assert.equal(starts.length,85);assert.ok(starts.every(at=>starts.filter(x=>x>at-10000&&x<=at).length<=20));
  const f=fixture(starts);try{
-  assert.equal(await f.rpc.call('getSlot'),123);const allowed=nativePaperManagementReserve(f.rpc.usage(),true);
-  assert.equal(allowed.rollingStartHeadroom,4);assert.equal(allowed.rolling10SecondStartHeadroom,4);assert.equal(allowed.candidateWorkWithExposureAllowed,true);
+  assert.equal(await f.rpc.call('getSlot'),123);const allowed=nativePaperManagementReserve(f.rpc.usage(),true,true);
+  assert.equal(allowed.rollingStartHeadroom,4);assert.equal(allowed.rolling10SecondStartHeadroom,4);assert.equal(allowed.candidateWorkWithExposureAllowed,false,'new forecast refuses discretionary work before it can consume known future financial runway');
   for(const delay of[2000,4000,6000,8000]){f.set(T+delay);assert.equal(await contextRead(f),123);}
   assert.equal(f.rpc.usage().chapterUsage!.rolling60SecondStarts,90);f.set(T+10000);const before=f.physical();let error:unknown;try{await contextRead(f);}catch(e){error=e;}await turn();
   assert.match(String(error),/PILOT_RPC_COMPONENT_ABORTED/);assert.equal(heldPricingFailureCode(error),'HELD_PRICING_ABORTED');assert.equal(f.physical(),before);assert.equal(f.rpc.usage().newUnits,5);
