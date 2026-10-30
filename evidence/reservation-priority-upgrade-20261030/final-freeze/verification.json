@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "a1c16c7510ddcc09aa6a9962a70d24ea94b8a12a",
+  "startedAt": "2026-10-30T03:34:11.131175+00:00",
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "financialActions": 0,
+  "commands": [
+    {
+      "name": "npm-test",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "npm-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "standalone-build",
+      "command": [
+        "node",
+        "scripts/build-native-paper-ec2.mjs",
+        "--output-directory",
+        "/tmp/poe-native-paper-output-reservation-priority-final"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T03:36:16.278585+00:00",
+  "elapsedSeconds": 125.14747714996338
+}

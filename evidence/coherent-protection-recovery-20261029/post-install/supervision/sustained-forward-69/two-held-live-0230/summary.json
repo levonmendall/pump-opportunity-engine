@@ -1,0 +1,157 @@
+{
+  "frozenAt": "2026-10-30T02:33:00.485673+00:00",
+  "source": {
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030021230118",
+    "startedAt": "2026-10-30T02:12:30.118Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "observations": 16,
+  "sha256": "1db660219db7cac89e312b909d3ec3690b9ff88ee546e9cffc936f4882e851ce",
+  "firstPendingSourceAt": "2026-10-30T02:29:46.721Z",
+  "pendingOrder": [
+    {
+      "id": "buy:68919:1793327386466",
+      "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "side": "buy",
+      "decidedAt": "2026-10-30T02:29:46.466Z",
+      "executeAt": "2026-10-30T02:29:47.466Z",
+      "expiresAt": "2026-10-30T02:29:51.466Z",
+      "reservedSol": "0.526343491",
+      "quantityMinimum": "4937541430488",
+      "reason": "rpc-market:4a419bdcf2537512764b7b1df5220f01bd2911fd6c69f56c8f148ac6a920059b"
+    }
+  ],
+  "firstTwoHeldSourceAt": "2026-10-30T02:30:01.737Z",
+  "firstTwoHeldSequence": "11363",
+  "firstTwoHeldPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 58.896016,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    },
+    {
+      "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "label": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "quantity": "4987415586352",
+      "enteredAt": "2026-10-30T02:29:48.157Z",
+      "entryCostUsd": 49.717211,
+      "netLiquidationUsd": 51.109781,
+      "executionCostsUsd": 0.000664,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "firstTwoHeldFunnel": {
+    "discovered": 40,
+    "supported": 40,
+    "sufficientlyObserved": 5,
+    "evaluated": 5,
+    "qualified": 1,
+    "attempted": 1,
+    "paperFilled": 1,
+    "exited": 0,
+    "reconciled": 531
+  },
+  "firstTwoHeldTrades": [
+    {
+      "id": "paper-fill:3212aa854b30998a52be4bf7c8331016",
+      "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "side": "buy",
+      "quantity": "4987415586352",
+      "at": "2026-10-30T02:29:48.157Z",
+      "valueUsd": 49.716546,
+      "executionCostsUsd": 0.000664,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:68919:1793327386466"
+    }
+  ],
+  "firstTwoHeldProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T02:30:01.675Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 73,
+    "breaches": 74,
+    "unavailableChecks": 245
+  },
+  "firstTwoHeldDiagnosticNotes": [
+    "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+    "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+    "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+    "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+    "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 2296 ms; quote age at use 73 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+    "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 550; logical attempts 550; rapid probes 0; RPC retry successes 0; dispatch refusals 0; holding starts in 10s / 60s 7 / 36. These counts are not completed protection evaluations.",
+    "Candidate quote failures (current market instance) 4: last 2026-10-30T02:24:57.170Z, HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 376.1365329999244 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+    "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.619958070 SOL at 2026-10-30T02:30:01.603Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 0 bps/32 prior quotes; boundary 0.526964360 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T02:30:01.654Z. No fixed profit or profitable holding-time exit.",
+    "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump: Adaptive Momentum v2 historical executable net peak 0.537997702 SOL at 2026-10-30T02:30:00.438Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 368 bps/8 prior quotes; boundary 0.457298047 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T02:30:01.665Z. No fixed profit or profitable holding-time exit."
+  ],
+  "latestSourceAt": "2026-10-30T02:32:47.379Z",
+  "latestStatus": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "latestPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 58.914126,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    },
+    {
+      "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "label": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "quantity": "4987415586352",
+      "enteredAt": "2026-10-30T02:29:48.157Z",
+      "entryCostUsd": 49.717211,
+      "netLiquidationUsd": 47.47936,
+      "executionCostsUsd": 0.000664,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "latestFunnel": {
+    "discovered": 48,
+    "supported": 48,
+    "sufficientlyObserved": 5,
+    "evaluated": 5,
+    "qualified": 1,
+    "attempted": 1,
+    "paperFilled": 1,
+    "exited": 0,
+    "reconciled": 613
+  },
+  "latestProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T02:32:46.577Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 91,
+    "breaches": 74,
+    "unavailableChecks": 245
+  },
+  "latestPending": [],
+  "meaning": "GenuineautonomousPAPERqualificationandentryintooriginalaccount whileoriginalqi6remainedheld. No syntheticqualification/control/order. TwoactualPAPERholdingsareverified, nottwo-heldlifecycle/protectionacceptance. Pendingintentandonefillretainedforidentity/accountingchecks. Activewatchcontinuesforbothindependentprotectionandexit; historicalfailedintervalsnoterased."
+}

@@ -1,0 +1,7 @@
+{
+  "source": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "rpcRequests": "Maps to PilotRpc.newUnits, i.e. accounted operation units. This projection alone does not prove physical invocation/provider delivery for each unit; proven-uninvoked reservations are being independently investigated. Keep exact reported values, label their scope accurately.",
+  "rpcResponseBytes": "Maps to PilotRpc.newAccountedResponseBytes, including HTTP/control-WebSocket accounting. Not exclusively HTTP body bytes; do not add to nativeStreamBytes.",
+  "holdingRpcNotes": "Separate source-owned calls, logical attempts, dispatch refusals, owned starts and failure stages. Acquisition counts are not completed protection evaluations.",
+  "evidenceRule": "No original snapshots or historical counters are replaced. These notes clarify analytical wording; actual kernel cgroup I/O and host-network measurements remain separate."
+}

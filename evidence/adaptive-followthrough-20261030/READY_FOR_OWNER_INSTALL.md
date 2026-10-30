@@ -1,4 +1,10 @@
-# Next original-service upgrade: reviewed and staged, not installed
+# APPLIED — historical 69aa1ef installation instructions; do not repeat
+
+**Superseded status, verified 2026-10-30 02:29 UTC:** the owner applied this package successfully. Actual root verification confirms installed `69aa1ef214a8c79524a25a8aca79299ccaad93dc`, unchanged original account/inception/funding and exact prior financial history. The same Render receiver is bound to that source and receives acknowledged snapshots. The original service has remained independently persistent. **Do not rerun this command.**
+
+Subsequent forward evidence includes a natural second-position PAPER round trip while the original holding remained open, followed by two genuine local protection gaps. The current repair and policy work are recorded at the top of `docs/CONTINUATION_CHECKPOINT.md`. The remainder of this document is the retained historical pre-installation record, not the current operating status.
+
+## Historical pre-installation record
 
 The previous command succeeded: original service `5675961` is installed and the same Render dashboard receives its authoritative data. No repeat action is required for that installation.
 

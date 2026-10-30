@@ -1,0 +1,158 @@
+{
+  "frozenAt": "2026-10-30T02:28:42.006266+00:00",
+  "source": {
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030021230118",
+    "startedAt": "2026-10-30T02:12:30.118Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "rows": 49,
+  "sha256": "7eb5f58f4f42fb0731380dc308c5beea3ab84f4d213fe39a3636c5ddec476123",
+  "distinctDiagnosticFacts": [
+    {
+      "sourceNote": "Candidate quote failures (current market instance) 1: last 2026-10-30T02:16:38.477Z, AoV6s7YdPHNfpaWmNsoSKMtutdkgt2NuW8isASYpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 115.46938899997622 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+      "firstSeenSourceAt": "2026-10-30T02:16:48.754Z",
+      "firstSeenSequence": "11311",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T02:16:48.336Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "httpTimeouts": 644,
+      "rpcRollingStartsPerMinute": 65
+    },
+    {
+      "sourceNote": "Candidate quote failures (current market instance) 2: last 2026-10-30T02:18:16.151Z, Nhyw2m7kkQLdRaDe1vPqMjKnFUatM1X47EXpHEmpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 84.63871899998048 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+      "firstSeenSourceAt": "2026-10-30T02:18:19.021Z",
+      "firstSeenSequence": "11317",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T02:18:18.332Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "httpTimeouts": 644,
+      "rpcRollingStartsPerMinute": 51
+    },
+    {
+      "sourceNote": "Candidate quote failures (current market instance) 3: last 2026-10-30T02:21:58.142Z, Uaq1SsS8uNgsEGjowfU8QYno4dRAzk7E78neTRnpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 383.7374720000662 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+      "firstSeenSourceAt": "2026-10-30T02:22:09.243Z",
+      "firstSeenSequence": "11332",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T02:22:08.402Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "httpTimeouts": 644,
+      "rpcRollingStartsPerMinute": 71
+    },
+    {
+      "sourceNote": "Candidate quote failures (current market instance) 4: last 2026-10-30T02:24:57.170Z, HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 376.1365329999244 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+      "firstSeenSourceAt": "2026-10-30T02:24:58.410Z",
+      "firstSeenSequence": "11343",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T02:24:57.596Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "httpTimeouts": 644,
+      "rpcRollingStartsPerMinute": 59
+    }
+  ],
+  "latestStatus": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "latestFinancialFunnel": {
+    "discovered": 40,
+    "supported": 40,
+    "sufficientlyObserved": 4,
+    "evaluated": 4,
+    "qualified": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 482
+  },
+  "latestProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T02:28:30.396Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 70,
+    "breaches": 74,
+    "unavailableChecks": 245
+  },
+  "latestDiagnostics": [
+    "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+    "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+    "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+    "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+    "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 2216 ms; quote age at use 57 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+    "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 499; logical attempts 499; rapid probes 0; RPC retry successes 0; dispatch refusals 0; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+    "Candidate quote failures (current market instance) 4: last 2026-10-30T02:24:57.170Z, HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 376.1365329999244 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+    "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.619802099 SOL at 2026-10-30T02:28:24.250Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 0 bps/29 prior quotes; boundary 0.526831785 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T02:28:30.386Z. No fixed profit or profitable holding-time exit."
+  ],
+  "meaning": "Source-owned diagnostic facts demonstrate repeated locally denied rent-phase entry quotes. No order/qualification or missedexecutableprofitclaimed. Exactlocaladmissiongate(identity/runtime/riskreserve/financialrunway/readyauditpriority) remainsunknownfromthecoarseADMISSION_CLOSEDcode. No provideroriginassigned. Holdingprotectionandentrycontrolstateareseparate. No controls/restarts/providerRPC byobserver."
+}

@@ -1,0 +1,875 @@
+{
+  "kind": "INDEPENDENT_LOCAL_PRIOR567_QUOTE_AND_PROTECTION_CORRELATION",
+  "generatedAt": "2026-10-30T02:21:53.046989+00:00",
+  "inputSha256": {
+    "evidence/adaptive-followthrough-20261030/post-install/host/host-40990386819.json": "5f4feb0bef23ce0804cce8b3918257237442046e3cf31d9099b596f6c627cd2d",
+    "evidence/coherent-protection-recovery-20261029/post-install/supervision/provider-protection-incident-0125/initial-incident-observations.ndjson": "b9980024d1050dda51baeea618215aa69defa59b40955bfadc232ba3c44f51d2",
+    "evidence/coherent-protection-recovery-20261029/post-install/supervision/dispatch-protection-incident-0147/observations.ndjson": "e08418fccbb802c825cebf5f7c8801fe213a93aee5012718e486cc6cec3772f0"
+  },
+  "reviewed567RpcSourceSha256": "2fa4166edd4c2ba2b66f34a128fdf8f51f989f0ee8b3f0fba40761e0f836fa3d",
+  "source": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "runId": "native-paper-20261030010446598",
+  "exportProvenance": {
+    "sha256": "a66e5b9aadea925ca7d4079f11ff19ab92318df9016dd468297d63223a8bba43",
+    "bytes": 106497,
+    "scriptSha256": "d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75",
+    "receiptVerified": true
+  },
+  "rootCopyReceiptMatches": true,
+  "readerProjectionIsNotByteIdenticalRawExport": true,
+  "scan": {
+    "bytesRead": 23283938,
+    "scanBudgetReached": false,
+    "factCapacityReached": true,
+    "selectionUnknown": true,
+    "matchingKindCounts": {
+      "research-clock-pool-state": 147,
+      "research-clock-position-sell-quote": 137,
+      "trader-context": 151,
+      "trader-held-evaluation": 151,
+      "research-clock-observation-support": 9,
+      "research-clock-verified-links-retained": 12,
+      "pilot-entry-cost-preparation": 7,
+      "trader-pilot-entry-deposit": 7,
+      "trader-quote": 6,
+      "research-clock-buy-quote": 1
+    },
+    "stateSha256": "c2011352cadfbc3f11465e2857f9d0838f426450a8230302a5632601c59e537a",
+    "manifestFilesRead": 41,
+    "manifestBytesRead": 21791,
+    "manifestUnavailable": 1,
+    "matchedEssentialSegments": 2,
+    "manifestSelectionTruncated": false
+  },
+  "selectedFiles": [
+    {
+      "file": "essential-000000000040.ndjson",
+      "available": true,
+      "bytesRead": 8388352,
+      "sha256": "7b4aea8bacfb3c8fffe3b78d9ed6bc26e895330cf12855c4d13d707dadc4a1bf",
+      "changedDuringRead": false,
+      "partialTrailingLine": false,
+      "oversizedLines": 0,
+      "malformedLines": 0
+    },
+    {
+      "file": "essential-000000000039.ndjson",
+      "available": true,
+      "bytesRead": 8380635,
+      "sha256": "76a7a08c83492ac55fa65d6824a469275ad12b7fe0c560804b6d078b43d71001",
+      "changedDuringRead": false,
+      "partialTrailingLine": false,
+      "oversizedLines": 0,
+      "malformedLines": 0
+    },
+    {
+      "file": "essential-000000000042.ndjson",
+      "available": true,
+      "bytesRead": 6493160,
+      "sha256": "9ffd915ffd27b7fd32069f5a5c64742f25f59393a18f9b6f07908adb7ef5567c",
+      "changedDuringRead": false,
+      "partialTrailingLine": false,
+      "oversizedLines": 0,
+      "malformedLines": 0
+    }
+  ],
+  "retainedFacts": 152,
+  "retainedRpcOrHttpPhaseFacts": 0,
+  "runAttribution": {
+    "time-correlated-with-verified-current-run": 152
+  },
+  "windows": [
+    {
+      "fromAt": 1793323080000,
+      "untilAtExclusive": 1793323200000,
+      "fromUtc": "2026-10-30T01:18:00+00:00",
+      "untilExclusiveUtc": "2026-10-30T01:20:00+00:00",
+      "retainedFacts": 66,
+      "retainedKindCounts": {
+        "research-clock-position-sell-quote": 20,
+        "trader-context": 22,
+        "trader-held-evaluation": 22,
+        "trader-quote": 2
+      },
+      "retainedUsableHeldChecks": 22,
+      "retainedUnusableHeldChecks": 0,
+      "unavailableCompletedAtUtc": [],
+      "unavailableHaveNoFreshMark": true,
+      "retainedDecisionQuoteCalls": [
+        {
+          "kind": "trader-quote",
+          "at": 1793323167764,
+          "data": {
+            "at": 1793323167764,
+            "purpose": {
+              "code": "decision",
+              "sha256": "86ae35d58a6aa3b5742df94ef9d7162219f0106a911ae1954c1f0604aaec805d"
+            },
+            "request": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "9b5a33c84571116715845f53f41e04fc971879e116d024d031ea86ab47b09cbf"
+              },
+              "side": {
+                "code": "buy",
+                "sha256": "e8197b20f8e71e429645f83cc6f07d9d43ee7a30ef5dc6c02dd16692a7bc9aac"
+              },
+              "minSlot": 463097124
+            }
+          },
+          "runAttribution": "time-correlated-with-verified-current-run"
+        },
+        {
+          "kind": "trader-quote",
+          "at": 1793323188067,
+          "data": {
+            "at": 1793323188067,
+            "purpose": {
+              "code": "decision",
+              "sha256": "86ae35d58a6aa3b5742df94ef9d7162219f0106a911ae1954c1f0604aaec805d"
+            },
+            "request": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "9b5a33c84571116715845f53f41e04fc971879e116d024d031ea86ab47b09cbf"
+              },
+              "side": {
+                "code": "buy",
+                "sha256": "e8197b20f8e71e429645f83cc6f07d9d43ee7a30ef5dc6c02dd16692a7bc9aac"
+              },
+              "minSlot": 463097220
+            }
+          },
+          "runAttribution": "time-correlated-with-verified-current-run"
+        }
+      ],
+      "healthySamplesIncompleteDoNotInferGapFromSelectedRows": true
+    },
+    {
+      "fromAt": 1793323500000,
+      "untilAtExclusive": 1793323635000,
+      "fromUtc": "2026-10-30T01:25:00+00:00",
+      "untilExclusiveUtc": "2026-10-30T01:27:15+00:00",
+      "retainedFacts": 86,
+      "retainedKindCounts": {
+        "trader-held-evaluation": 34,
+        "research-clock-position-sell-quote": 26,
+        "trader-context": 26
+      },
+      "retainedUsableHeldChecks": 27,
+      "retainedUnusableHeldChecks": 7,
+      "unavailableCompletedAtUtc": [
+        "2026-10-30T01:25:29.138000+00:00",
+        "2026-10-30T01:25:31.178000+00:00",
+        "2026-10-30T01:25:33.221000+00:00",
+        "2026-10-30T01:25:35.260000+00:00",
+        "2026-10-30T01:25:39.228000+00:00",
+        "2026-10-30T01:25:39.317000+00:00",
+        "2026-10-30T01:25:42.374000+00:00"
+      ],
+      "unavailableHaveNoFreshMark": true,
+      "retainedDecisionQuoteCalls": [],
+      "healthySamplesIncompleteDoNotInferGapFromSelectedRows": true
+    }
+  ],
+  "publicBrackets": {
+    "timeoutsThenDispatch0125": {
+      "before": {
+        "sequence": "11108",
+        "sourceAt": "2026-10-30T01:25:18.181Z",
+        "responseSha256": "74ef90b49e2835af452e9f08187bac660567a517d9c1d8a6f7a08f48d5c6d368",
+        "status": {
+          "runtime": "running",
+          "market": "observing",
+          "entries": "enabled",
+          "reconciled": true,
+          "blocker": null
+        },
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-30T01:25:18.180Z",
+          "maximumCompletedGapMs": 89426,
+          "maximumQuoteAgeAtUseMs": 70,
+          "breaches": 72,
+          "unavailableChecks": 233
+        },
+        "provider": {
+          "rpcRequests": 1212,
+          "httpTimeouts": 637,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 59,
+          "maximumStartsPerMinute": 90,
+          "primaryCooldownUntil": "2026-10-30T01:10:48.395Z"
+        },
+        "heldRefusals": {},
+        "selectedCapture": true,
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 6626796,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "resources": {
+          "sampleAt": "2026-10-30T01:25:17.406Z",
+          "cpuOneCoreFraction": 0.21260983954695611,
+          "rssBytes": 403812352,
+          "availableMemoryBytes": 6846935040,
+          "availableDiskBytes": 286718861312,
+          "eventLoopLagMs": 27.918335,
+          "state": "normal"
+        }
+      },
+      "after": {
+        "sequence": "11109",
+        "sourceAt": "2026-10-30T01:25:45.511Z",
+        "responseSha256": "2a964722361652728652315d0814c939402d25ddf0358ed6560ef886a2e6a24c",
+        "status": {
+          "runtime": "running",
+          "market": "observing",
+          "entries": "paused",
+          "reconciled": true,
+          "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+        },
+        "protection": {
+          "state": "degraded",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-30T01:25:45.508Z",
+          "maximumCompletedGapMs": 89426,
+          "maximumQuoteAgeAtUseMs": 70,
+          "breaches": 73,
+          "unavailableChecks": 240
+        },
+        "provider": {
+          "rpcRequests": 1231,
+          "httpTimeouts": 640,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 74,
+          "maximumStartsPerMinute": 90,
+          "primaryCooldownUntil": "2026-10-30T01:25:52.335Z"
+        },
+        "heldRefusals": {
+          "HELD_PRICING_PROVIDER_TIMEOUT": 2,
+          "HELD_PRICING_DISPATCH_UNAVAILABLE": 5
+        },
+        "selectedCapture": true,
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 6433285,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "resources": {
+          "sampleAt": "2026-10-30T01:25:44.648Z",
+          "cpuOneCoreFraction": 0.17308186759393673,
+          "rssBytes": 405913600,
+          "availableMemoryBytes": 6855716864,
+          "availableDiskBytes": 286713933824,
+          "eventLoopLagMs": 27.852799,
+          "state": "normal"
+        }
+      },
+      "protectionDelta": {
+        "breaches": 1,
+        "unavailableChecks": 7
+      },
+      "providerDelta": {
+        "rpcRequests": 19,
+        "httpTimeouts": 3,
+        "httpErrors": 0,
+        "throttles": 0
+      },
+      "heldRefusalDelta": {
+        "HELD_PRICING_DISPATCH_UNAVAILABLE": 5,
+        "HELD_PRICING_PROVIDER_TIMEOUT": 2
+      }
+    },
+    "dispatchOnly0147": {
+      "before": {
+        "sequence": "11193",
+        "sourceAt": "2026-10-30T01:47:14.918Z",
+        "responseSha256": "2ed2af3811a03f489da8c9becf9730ae07ad71725dc2e11b5b019aa6524085de",
+        "status": {
+          "runtime": "running",
+          "market": "observing",
+          "entries": "enabled",
+          "reconciled": true,
+          "blocker": null
+        },
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-30T01:47:14.817Z",
+          "maximumCompletedGapMs": 89426,
+          "maximumQuoteAgeAtUseMs": 70,
+          "breaches": 73,
+          "unavailableChecks": 240
+        },
+        "provider": {
+          "rpcRequests": 2565,
+          "httpTimeouts": 640,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 78,
+          "maximumStartsPerMinute": 90,
+          "primaryCooldownUntil": "2026-10-30T01:25:52.335Z"
+        },
+        "heldRefusals": {
+          "HELD_PRICING_PROVIDER_TIMEOUT": 2,
+          "HELD_PRICING_DISPATCH_UNAVAILABLE": 5
+        },
+        "selectedCapture": true,
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 21394598,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "resources": {
+          "sampleAt": "2026-10-30T01:47:14.917Z",
+          "cpuOneCoreFraction": 0.15732449988311126,
+          "rssBytes": 412856320,
+          "availableMemoryBytes": 6835351552,
+          "availableDiskBytes": 286532222976,
+          "eventLoopLagMs": 28.016639,
+          "state": "normal"
+        }
+      },
+      "after": {
+        "sequence": "11194",
+        "sourceAt": "2026-10-30T01:47:44.118Z",
+        "responseSha256": "81af83aaed93543057e7515cb7697dbe80a3eb3cf0ee008719a1ac2b2cff33a1",
+        "status": {
+          "runtime": "running",
+          "market": "observing",
+          "entries": "paused",
+          "reconciled": true,
+          "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+        },
+        "protection": {
+          "state": "monitored",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": "2026-10-30T01:47:43.509Z",
+          "maximumCompletedGapMs": 89426,
+          "maximumQuoteAgeAtUseMs": 70,
+          "breaches": 74,
+          "unavailableChecks": 245
+        },
+        "provider": {
+          "rpcRequests": 2587,
+          "httpTimeouts": 640,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 84,
+          "maximumStartsPerMinute": 90,
+          "primaryCooldownUntil": "2026-10-30T01:25:52.335Z"
+        },
+        "heldRefusals": {
+          "HELD_PRICING_PROVIDER_TIMEOUT": 2,
+          "HELD_PRICING_DISPATCH_UNAVAILABLE": 10
+        },
+        "selectedCapture": true,
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 21693726,
+          "evidenceDiagnosticLimitBytes": 134217728,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "resources": {
+          "sampleAt": "2026-10-30T01:47:43.668Z",
+          "cpuOneCoreFraction": 0.14272028312989676,
+          "rssBytes": 414208000,
+          "availableMemoryBytes": 6816227328,
+          "availableDiskBytes": 286530088960,
+          "eventLoopLagMs": 28.000255,
+          "state": "normal"
+        }
+      },
+      "protectionDelta": {
+        "breaches": 1,
+        "unavailableChecks": 5
+      },
+      "providerDelta": {
+        "rpcRequests": 22,
+        "httpTimeouts": 0,
+        "httpErrors": 0,
+        "throttles": 0
+      },
+      "heldRefusalDelta": {
+        "HELD_PRICING_DISPATCH_UNAVAILABLE": 5,
+        "HELD_PRICING_PROVIDER_TIMEOUT": 0
+      }
+    }
+  },
+  "automaticRecoveryPublicFrames": {
+    "after0125": {
+      "sequence": "11113",
+      "sourceAt": "2026-10-30T01:26:47.443Z",
+      "responseSha256": "52350e076124c0e99ebec785cba1b4641be9d787ace55145a82c61d0e2c8697d",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:26:47.196Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "provider": {
+        "rpcRequests": 1284,
+        "httpTimeouts": 640,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 52,
+        "maximumStartsPerMinute": 90,
+        "primaryCooldownUntil": "2026-10-30T01:25:52.335Z"
+      },
+      "heldRefusals": {
+        "HELD_PRICING_PROVIDER_TIMEOUT": 2,
+        "HELD_PRICING_DISPATCH_UNAVAILABLE": 5
+      },
+      "selectedCapture": true,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 7354240,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "resources": {
+        "sampleAt": "2026-10-30T01:26:46.994Z",
+        "cpuOneCoreFraction": 0.1632511676530595,
+        "rssBytes": 405016576,
+        "availableMemoryBytes": 6841077760,
+        "availableDiskBytes": 286707105792,
+        "eventLoopLagMs": 27.770879,
+        "state": "normal"
+      }
+    },
+    "after0147": {
+      "sequence": "11198",
+      "sourceAt": "2026-10-30T01:48:44.241Z",
+      "responseSha256": "90fd8c487f1469704e39d8a0232229de1864a4b58c14bdeeb125aacc9d546751",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:48:43.343Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "provider": {
+        "rpcRequests": 2643,
+        "httpTimeouts": 640,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 56,
+        "maximumStartsPerMinute": 90,
+        "primaryCooldownUntil": "2026-10-30T01:25:52.335Z"
+      },
+      "heldRefusals": {
+        "HELD_PRICING_PROVIDER_TIMEOUT": 2,
+        "HELD_PRICING_DISPATCH_UNAVAILABLE": 10
+      },
+      "selectedCapture": true,
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14039212,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "resources": {
+        "sampleAt": "2026-10-30T01:48:43.894Z",
+        "cpuOneCoreFraction": 0.11663739903342459,
+        "rssBytes": 414240768,
+        "availableMemoryBytes": 6807687168,
+        "availableDiskBytes": 286537216000,
+        "eventLoopLagMs": 27.951103,
+        "state": "normal"
+      }
+    }
+  },
+  "currentRpcProjection": {
+    "available": true,
+    "runId": "native-paper-20261030010446598",
+    "fileSha256": "6e227590b1b92a1f00825952b4b460d902a3841bcd512e96d5d406a36db65e47",
+    "diagnostics": {
+      "startedAt": 1793322286653,
+      "projectionGeneratedAt": 1793326344979,
+      "closed": false,
+      "cooldownUntil": 1793326068438,
+      "controlCooldownUntil": 0,
+      "historyCooldownUntil": 1793322686761,
+      "requestLimits": {
+        "maxStartsPer10s": 20,
+        "maxStartsPerMinute": 90,
+        "minSpacingMs": 250,
+        "physicalInFlight": 1
+      },
+      "dispatchWindow": {
+        "waitMs": 148,
+        "physicalBusy": false,
+        "actualPhysicalBusy": false
+      },
+      "rpcDispatchWindow": {
+        "waitMs": 147,
+        "physicalBusy": false,
+        "actualPhysicalBusy": false
+      },
+      "controlDispatchWindow": {
+        "waitMs": 147,
+        "physicalBusy": false,
+        "actualPhysicalBusy": false
+      },
+      "historyDispatchWindow": {
+        "waitMs": 147,
+        "physicalBusy": false,
+        "actualPhysicalBusy": false
+      },
+      "protectionDispatchWindow": {
+        "waitMs": 147,
+        "physicalBusy": false,
+        "actualPhysicalBusy": false
+      },
+      "protectionRecovery": {
+        "calls": 2138,
+        "logicalAttempts": 2130,
+        "rapidProbes": 6,
+        "successesAfterRetry": 0,
+        "refusals": 10,
+        "failureStages": {
+          "uninvoked-quota-or-spacing": 9,
+          "physical-timeout": 3,
+          "physical-settlement-wait": 1,
+          "local-admission": 1
+        },
+        "lastFailure": {
+          "at": 1793324855289,
+          "stage": {
+            "code": "uninvoked-quota-or-spacing",
+            "sha256": "c44fd2db0260708575eff40493e28e2af9c844b76ec2e05d1d54ad0a20cdecb9"
+          },
+          "physicalInFlight": false
+        },
+        "policy": {
+          "version": {
+            "code": "bounded-owned-pricing-recovery-v1",
+            "sha256": "6b106f35f30589e885879dec1bfd43d8e9c5bf163bf80cdd7c9bfd96ddec4341"
+          },
+          "maximumPhysicalReads": 2,
+          "maximumReadMs": 2000,
+          "physicalTimeoutMs": 1000,
+          "validationReserveMs": 125,
+          "rapidProbeIntervalMs": 10000,
+          "outageProbeMs": 2000,
+          "pollMs": 25,
+          "normalStartsPer10s": 5,
+          "normalStartsPerMinute": 30,
+          "rapidStartsPer10s": 1,
+          "rapidStartsPerMinute": 6
+        },
+        "rolling60SecondStarts": 30,
+        "rolling10SecondStarts": 5,
+        "providerRestrictionUntil": 1793322177172,
+        "probeAt": 0
+      },
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "currentUninvokedReservationCredit": 0
+    }
+  },
+  "lastRpcFailureUtc": "2026-10-30T01:47:35.289000+00:00",
+  "laterPreStopStatus": {
+    "generatedAtUtc": "2026-10-30T02:12:22.129000+00:00",
+    "rpcProjectionGeneratedAtUtc": "2026-10-30T02:12:24.979000+00:00",
+    "observedRuntimeElapsedMs": 4055531,
+    "running": true,
+    "entriesEnabled": true,
+    "timing": {
+      "targetMs": 2000,
+      "experimentalCompletedEvaluationLimitMs": 4000,
+      "maximumQuoteAgeAtUseMs": 70,
+      "firstCompletedProtectionAt": 1793322288057,
+      "lastCompletedProtectionAt": 1793326342128,
+      "maximumCompletedGapMs": 89426,
+      "protectionBreaches": 74,
+      "unavailableChecks": 245,
+      "openProtectionGaps": [
+        {
+          "mint": {
+            "code": "UNKNOWN_HASHED",
+            "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+          },
+          "at": 1793326342129
+        }
+      ]
+    },
+    "holdingDiagnostics": {
+      "lastContext": {
+        "at": 1793326342104,
+        "state": {
+          "code": "available",
+          "sha256": "ddd9818abacfde7afed60c93129175401439367a77e69ea93e0ddb3bb38e0bd9"
+        },
+        "heldPositions": 1
+      },
+      "contextFailureCounts": {
+        "HELD_PRICING_DISPATCH_UNAVAILABLE": 10,
+        "HELD_PRICING_PROVIDER_TIMEOUT": 2
+      }
+    },
+    "registeredPools": 5,
+    "entryQuoteCalls": 0,
+    "entryExecutionQuotes": 0,
+    "entryPricing": {
+      "networkCalls": 116,
+      "linkCacheHits": 87,
+      "invalidations": 0,
+      "retainedLinkReadFailures": 28,
+      "highestVerifiedSlot": 463111027,
+      "cachePoolCapacity": 9,
+      "dependencyAccountCapacity": 40,
+      "cachedPoolSlot": 463111027,
+      "timeEvidence": {
+        "code": "confirmed-bank-clock",
+        "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+      }
+    },
+    "native": {
+      "memoryPressure": false,
+      "maximumCandidates": 4,
+      "candidates": 4,
+      "retiring": 0,
+      "connected": true,
+      "physicalTransportsSettled": false,
+      "sharedOperationActive": false,
+      "nativePhysicalOperations": 0,
+      "stopped": false,
+      "transportRecovery": {},
+      "retryAt": 1793326068438,
+      "lastNotificationAt": 1793326330569,
+      "lastFreshSupportAt": 1793326340411,
+      "lastBankClockAt": 1793326339000,
+      "notifications": 7882,
+      "receivedBoundNotifications": 675998,
+      "queueAgeMs": {
+        "p95": 244,
+        "maximum": 295
+      }
+    },
+    "financial": {
+      "revision": 68382,
+      "entriesEnabled": true,
+      "controls": {
+        "entriesEnabled": true,
+        "reason": {
+          "code": "UNKNOWN_HASHED",
+          "sha256": "069f24fc8e9939958daf99a2eb375aa8edc6797258f4b3b02ef5a97b6f708e59"
+        },
+        "stopRequested": false
+      }
+    },
+    "financialReadiness": {
+      "policy": {
+        "version": {
+          "code": "UNKNOWN_HASHED",
+          "sha256": "aa508f94d13a8690488770f8e96814643a7a0480a77214a5fd49e5a1d9bdc880"
+        },
+        "purpose": {
+          "code": "UNKNOWN_HASHED",
+          "sha256": "3c12ea495c771e8b1fc78d0e1fbaed5a3179d8e4f18f254e3ccfef3d0a8b8955"
+        }
+      },
+      "maintenance": {
+        "version": {
+          "code": "UNKNOWN_HASHED",
+          "sha256": "3d6598319a9851a5edb3e1898e1c8b4a626b31f8fdfbd5c09f9274be8c8de415"
+        },
+        "attempts": 0,
+        "cpuMicros": 0,
+        "lastCompletedAt": null
+      },
+      "safety": {
+        "recoveryComplete": true,
+        "idle": true,
+        "evidenceAvailable": true,
+        "financialAvailable": true,
+        "uncertainActions": 0,
+        "automaticRecoveryAllowed": true,
+        "newHardPauseObserved": false
+      },
+      "internalShutdownProof": {
+        "code": {
+          "code": "UNKNOWN_HASHED",
+          "sha256": "bc94bf4a701caec3b9d77f9826883d74a97b6871a4c29a48539edbb3b090a46e"
+        },
+        "at": null
+      }
+    },
+    "resources": {
+      "sampleAt": 1793326341286,
+      "cpuFraction": 0.18686062207560508,
+      "rssBytes": 417202176,
+      "availableDiskBytes": 286495887360,
+      "availableMemoryBytes": 6772514816,
+      "state": {
+        "code": "normal",
+        "sha256": "317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa"
+      }
+    },
+    "evidenceRetention": {
+      "version": {
+        "code": "UNKNOWN_HASHED",
+        "sha256": "7e7edc2c6615ce8d92625e0e457d3097a9eda6ffb3f88013f289e3462d13c41d"
+      },
+      "candidateAdmissionAllowed": true,
+      "requiresCriticalRecovery": false,
+      "diagnosticBytes": 4465690,
+      "diagnosticLimitBytes": 134217728,
+      "continuousRotation": true,
+      "retiredBytes": 3998209441,
+      "totalRecordedBytes": 4131775493,
+      "protectedBytes": 2046571265,
+      "refusedRecords": 0,
+      "refusedBytes": 0,
+      "optionalOmittedRecords": 450,
+      "optionalOmittedBytes": 378451,
+      "availableDiskBytes": 286495887360,
+      "minimumDiskReserveBytes": 134217728
+    },
+    "rpcNewUnits": 3896,
+    "httpTimeoutsRetained": 643,
+    "httpErrors": 0,
+    "throttles": 0,
+    "localPhaseMaximaMs": {
+      "service-startup-report": 133.168361,
+      "backup-start": 7.48004399985075,
+      "ownership-and-maintenance": 0.7952769999392331,
+      "backup-prepare-after-lease": 0.5716949999332428,
+      "candidate-shared-step": 1542.1460239998996,
+      "report-checkpoint": 146.6440729999449,
+      "entry-checkpoint": 110.2649059999967,
+      "candidate-entry-preparation": 2352.4087509999517
+    },
+    "meaning": "Later source snapshot and later RPC projection; cumulative counts are not event-level timing proof for the earlier incidents."
+  },
+  "verifiedFindings": [
+    "The 01:25 public bracket adds 2 holding TIMEOUT +5 DISPATCH +7 unavailable checks +1 breach, with 3 new physical HTTP timeouts. Seven exact unusable native completions are retained in the sampled interval; each has no fresh actual-size liquidation mark.",
+    "The 01:47 public bracket is a separate dispatch-only incident: +5 DISPATCH/+5 unavailable/+1 breach, zero new HTTP timeout/error/throttle, and no advance of primary cooldown from 01:25:52.335. Source-level last successful completion before the incident is 01:47:14.817.",
+    "The verified actual RPC lastFailure is 01:47:35.289, stage uninvoked-quota-or-spacing, physicalInFlight=false. The old category combines local dispatch causes; current totals are 9 such stages, 3 physical-timeout, 1 physical-settlement-wait and 1 local-admission.",
+    "Earlier 01:25 timeout/probe pacing cannot simply be carried forward as the explanation for 01:47: successful primary/protected reads clear both probe clocks, and a new recoverable primary transport failure would update the shared cooldown. Recorded evidence instead identifies a separate uninvoked/local dispatch failure; exact rolling quota, spacing, caller admission or deadline cause is not retained.",
+    "An 84RPM sample at 01:47:44 does not establish request headroom at 01:47:35 or during the shorter 10s window. It is neither proof of provider throttling nor proof that local dispatch should have been immediately available.",
+    "Two retained buy-decision quote-attempt records are present at 01:19:27.764 and01:19:48.067 for one hashed mint. No resulting quote object survives their sanitized projection; later actual PilotMarket entryQuoteCalls/entryExecutionQuotes are 0. The exact cause of those historical attempts remains unknown despite the independently reproduced ancillary-rent/slot-floor mechanism.",
+    "The sealed-manifest time index located 2 matching essential segments using 23,283,938 bytes, without exhausting the scan bound. Physical RPC/HTTP phase facts still do not survive; only essential files are present, and one missing manifest keeps selectionUnknown=true.",
+    "Later 02:12:22.129 source status has entries enabled, one held position, four active deep slots, connected capture, healthy resources and zero mandatory evidence refusals. It preserves 74 breaches/245 unavailable checks and the 89426ms historical maximum. The RPC projection is 2.850s later, not the same atomic source snapshot."
+  ],
+  "unknownsAndLimits": [
+    "The fixed exporter samples 01:18\u201301:20 and01:25\u201301:27:15 only. There are no native phase records from 01:47 in this export; its lastFailure timestamp is a later retained cumulative observation.",
+    "All 152 retained event attributions are temporal within a verified current run, not explicit run IDs on every event. Missing, rotated or bounded diagnostics do not prove absence.",
+    "The fact capacity was reached; healthy sampled completions cannot establish an exact maximum protection gap or fill unknown historical intervals.",
+    "Actual request starts, quota queue delays, precise local admission predicate, deadline runway, and provider TTFB/body/decode timings are unknown for the 01:47 dispatch incident.",
+    "The five retry-paced synthetic refusals after three injected timeouts demonstrate a mechanism for the 01:25-style pattern, not proof of that pattern in a separate01:47 incident.",
+    "This analysis does not certify 69 live protection, entry success, profitability, sustained acceptance or 24-hour operation. It makes no financial control change."
+  ],
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "financialWrites": 0,
+  "serviceControlOperations": 0
+}
