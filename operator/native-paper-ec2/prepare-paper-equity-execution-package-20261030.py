@@ -4,12 +4,12 @@ import ast,copy,gzip,hashlib,io,json,os,pathlib,re,shlex,subprocess,sys,types
 
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 # Parent must select one exact current-package path after the final installed-source audit.
-OLD=None
+OLD=ROOT/'evidence/adaptive-followthrough-20261030/upgrade-package-final'
 OUTPUT=ROOT/'evidence/paper-equity-execution-20261030/upgrade-package-final'
-COMMIT=None
-BUNDLE_SHA=None
-METADATA_SHA=None
-CONFIGURATION=None
+COMMIT='a16a05e642938ad6132e6844712700f344b9b73e'
+BUNDLE_SHA='768cad1ccfda1304b4db2b69f24b1d616b54aeda91092aafa426d751384ce47d'
+METADATA_SHA='1e757832d975a4b99b1e33f0849948d5629c131da54ba1d0217f3783b01aa0e4'
+CONFIGURATION='1a81d2156865467cab6300c260a809e0f98ae6649bdd88b4161f13b4c7d8edef'
 def sha(b):return hashlib.sha256(b).hexdigest()
 def encoded(v):return(json.dumps(v,separators=(',',':'))+'\n').encode()
 def module(name,path):

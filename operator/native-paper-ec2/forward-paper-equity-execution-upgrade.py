@@ -9,55 +9,55 @@ No bootstrap, account initialization, DB restore, secret access or Render call.
 """
 import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
 
-OLD_SOURCE=None
+OLD_SOURCE={'commit': '69aa1ef214a8c79524a25a8aca79299ccaad93dc', 'sha256': 'bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480'}
 BOOTSTRAP_PACKAGE_INDEX_SHA='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
-PRIOR_INDEX=None
-PRIOR_RECORD=None
-PRIOR_FORWARD_DRIVER_SHA=None
-OLD_MANIFEST=None
-OLD_INPUT_SHA=None
+PRIOR_INDEX='adef222e9c9f6786e18561025fefe7da717a2cf8eeade147aa874ee75c72706e'
+PRIOR_RECORD='forward-69aa1ef214a8c79524a25a8aca79299ccaad93dc'
+PRIOR_FORWARD_DRIVER_SHA='cafe8a627066b0abda46a7b77944e4ea6c82a640866b1c1f1d96eb1f0cdbadb7'
+OLD_MANIFEST='37dca9aa8d2accf83e3970d8c991d9212b6e23bea5ab9f233b4fcc0ca721558a'
+OLD_INPUT_SHA='6034e83be9ddbb8233c38141c36af97e03d55e3cf99155b65e7f14b0aed469c0'
 # Root-indexed validation helper and current financial release have distinct pins.
 INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
-OLD_SUPERVISOR=None
+OLD_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
 CORE_SHA='2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab'
 AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 # Final review pins old/new supervisors independently. The active strategy
 # label stays fixed while its risk/execution contract and configuration change.
 # Old/new reporters and backup closures are separately pinned; no credential change.
-OLD_REPORTER=None
-OLD_BACKUP_WORKER_SHA=None
-NEW_BACKUP_WORKER_SHA=None
-NEW_REPORTER=None
-NEW_SUPERVISOR=None
+OLD_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
+OLD_BACKUP_WORKER_SHA='aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2'
+NEW_BACKUP_WORKER_SHA='006dc9b31db5317a5ee5d35f672fac2510c4202290f52ddc8fd189edf6aa5e83'
+NEW_REPORTER='fbbe03be34bb9800d5c309088b3429f7ab830ca015dbb3bc888b73bcd718b388'
+NEW_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
 OLD_STAGE,NEW_STAGE='two','two'
 OLD_STRATEGY='adaptive-momentum-v2-paper-v1'
 NEW_STRATEGY='adaptive-momentum-v2-paper-v1'
 UNCHANGED={'better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
-COMPATIBILITY={'scope':'paper-equity-risk-and-chain-conditioned-execution','financialSchemaChanged':True,'sqliteTableSchemaChanged':False,'financialStateSchemaVersion':1,'financialSemanticsChanged':True,'configurationChanged':True,'strategyChanged':False,'strategyBehaviorChanged':True,'signalQualificationChanged':False,'adaptiveExitInputChanged':False,'entryAcquisitionOrderingChanged':None,'riskChanged':True,'executionSemanticsChanged':True,'physicalPacingEvidenceChanged':None,'financialQuotePriorityChanged':None,'boundedAuditFailureDiagnosticsChanged':None,'authorizedPositionLimit':{'before':2,'after':2},'authorizedDeepObservationLimit':{'before':4,'after':4},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'newWaiverCreated':False,'financialMigrationOwner':'existing-runtime-single-writer-journaled-events-only','riskPolicy':'paper-equity-risk-5-10-v1','executionModel':'paper-chain-conditioned-v1','legacyHeldExecutionModel':'legacy-paper-protection-fallback-v1','refundableRentIsConsumedCost':False,'temporaryQuoteRentIsNetAssetOrFee':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
+COMPATIBILITY={'scope':'paper-equity-risk-and-chain-conditioned-execution','financialSchemaChanged':True,'sqliteTableSchemaChanged':False,'financialStateSchemaVersion':1,'financialSemanticsChanged':True,'configurationChanged':True,'strategyChanged':False,'strategyBehaviorChanged':True,'signalQualificationChanged':False,'adaptiveExitInputChanged':False,'entryAcquisitionOrderingChanged':True,'riskChanged':True,'executionSemanticsChanged':True,'physicalPacingEvidenceChanged':True,'financialQuotePriorityChanged':True,'boundedAuditFailureDiagnosticsChanged':True,'authorizedPositionLimit':{'before':2,'after':2},'authorizedDeepObservationLimit':{'before':4,'after':4},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'newWaiverCreated':False,'financialMigrationOwner':'existing-runtime-single-writer-journaled-events-only','riskPolicy':'paper-equity-risk-5-10-v1','executionModel':'paper-chain-conditioned-v1','legacyHeldExecutionModel':'legacy-paper-protection-fallback-v1','refundableRentIsConsumedCost':False,'temporaryQuoteRentIsNetAssetOrFee':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
 # FINAL FREEZE ONLY: one exact before source and one exact new source. No list,
 # prefix, branch-tip, or either-source admission is permitted.
-NEW_SOURCE=None
-NEW_METADATA_SHA=None
+NEW_SOURCE={'commit': 'a16a05e642938ad6132e6844712700f344b9b73e', 'sha256': '768cad1ccfda1304b4db2b69f24b1d616b54aeda91092aafa426d751384ce47d'}
+NEW_METADATA_SHA='1e757832d975a4b99b1e33f0849948d5629c131da54ba1d0217f3783b01aa0e4'
 
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
 STAGE=pathlib.Path('/var/tmp/poe-original-paper-equity-execution-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
-NATIVE_DROPIN_SHA=None
+NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
-NEW_NATIVE_DROPIN_SHA=None
-OLD_CONFIGURATION_SHA=None
+NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
+OLD_CONFIGURATION_SHA='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
 # Next application pins remain inert until the combined root source freeze,
 # essential verification, build and independent final package review.
-NEW_CONFIGURATION_SHA=None
+NEW_CONFIGURATION_SHA='1a81d2156865467cab6300c260a809e0f98ae6649bdd88b4161f13b4c7d8edef'
 FORENSIC_FILE='export-paper-equity-execution-forensics-20261030.py'
-FORENSIC_SHA=None
+FORENSIC_SHA='c6d317b0ab2b358c3051b34659aa02ab5e95cf509052a742a80632c080c21738'
 FORENSIC_OUTPUT='/var/lib/poe-public/paper-equity-execution-forensics-20261030.json'
 FORENSIC_UID,FORENSIC_GID=988,982
-FORENSIC_RUN=None
+FORENSIC_RUN='native-paper-20261030021230118'
 FORENSIC_OUTPUT_BOUND=131072
-OLD_POLICY_SHA=None
-NEW_POLICY_SHA=None
+OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
+NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
 RESOURCE_AFTER=dict(RESOURCE_BEFORE)
 UID,GID,RUNNER=988,982,994

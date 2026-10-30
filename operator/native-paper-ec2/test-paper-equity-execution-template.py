@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Inert transition and disposable migration-prefix tests; no target access."""
-import contextlib,copy,importlib.util,json,pathlib,types,unittest
+import contextlib,copy,importlib.util,json,os,pathlib,types,unittest
 from unittest.mock import patch
 HERE=pathlib.Path(__file__).resolve().parent
 
@@ -14,15 +14,15 @@ AFTER=['NEW_METADATA_SHA','NEW_CONFIGURATION_SHA','NEW_REPORTER','NEW_BACKUP_WOR
 def pins():
  values={name:'2'*64 for name in BEFORE};values.update({name:'4'*64 for name in AFTER});values.update(OLD_SOURCE={'commit':'1'*40,'sha256':'2'*64},PRIOR_RECORD='forward-'+'1'*40,NEW_SOURCE={'commit':'3'*40,'sha256':'4'*64},FORENSIC_RUN='native-paper-20261030040000000');values['COMPATIBILITY']={k:False if v is None else copy.deepcopy(v)for k,v in f.COMPATIBILITY.items()};return values
 class Templates(unittest.TestCase):
- def test_all_current_transition_and_new_artifact_pins_are_unset(self):
-  for name in BEFORE+AFTER+['OLD_SOURCE','PRIOR_RECORD','NEW_SOURCE','FORENSIC_RUN']:self.assertIsNone(getattr(f,name),name)
-  for name in ['OLD','COMMIT','BUNDLE_SHA','METADATA_SHA','CONFIGURATION']:self.assertIsNone(getattr(p,name),name)
-  for name in ['SOURCE','CONFIGURATION','RUN','STARTED','PRIORITY_WINDOWS','START','END']:self.assertIsNone(getattr(x,name),name)
-  for name in ['entryAcquisitionOrderingChanged','physicalPacingEvidenceChanged','financialQuotePriorityChanged','boundedAuditFailureDiagnosticsChanged']:self.assertIsNone(f.COMPATIBILITY[name],name)
+ def test_final_exact_before_and_new_pins_match_reviewed_packages(self):
+  f.reviewed_transition_pins();self.assertEqual(f.OLD_SOURCE['commit'],'69aa1ef214a8c79524a25a8aca79299ccaad93dc');self.assertEqual(f.NEW_SOURCE['commit'],'a16a05e642938ad6132e6844712700f344b9b73e');self.assertNotEqual(f.OLD_CONFIGURATION_SHA,f.NEW_CONFIGURATION_SHA)
+  self.assertEqual(f.sha((p.OLD/'service.json').read_bytes()),f.OLD_MANIFEST);self.assertEqual(f.sha((p.OLD/'index.json').read_bytes()),f.PRIOR_INDEX);self.assertEqual(f.sha((p.OLD/'forward-original-upgrade.py').read_bytes()),f.PRIOR_FORWARD_DRIVER_SHA)
+  pins=json.loads((p.OUTPUT/'package-pins.json').read_bytes());data={name:(p.OUTPUT/name).read_bytes()for name in f.BOUNDS};sup=f.release_supervisor(data);index,manifest,_,_=f.bundle(p.OUTPUT,os.getuid(),pins['indexSha256'],pins['driverSha256'],sup)
+  self.assertEqual(manifest['source'],f.NEW_SOURCE);self.assertEqual(index['previousSource'],f.OLD_SOURCE);self.assertEqual(manifest['configurationSha256'],f.NEW_CONFIGURATION_SHA);self.assertEqual((manifest['stage'],manifest['deepSlots']),('two',4));self.assertFalse(pins['postStartExecutableRollbackAllowed']);self.assertFalse(pins['ownerDailyLossResetInvoked'])
  def test_unfrozen_driver_refuses_before_any_host_read_or_service_mutation(self):
-  with patch.object(f,'read')as read,patch.object(f,'local_preflight')as pre,patch.object(f,'load_helpers')as helpers:
-   with self.assertRaisesRegex(f.Refused,'FINAL_EXACT_BEFORE_SOURCE_PIN_REQUIRED'):f.apply('a'*64,None,None,None,'b'*64)
-   with self.assertRaisesRegex(f.Refused,'FINAL_EXACT_BEFORE_SOURCE_PIN_REQUIRED'):f.main()
+  with patch.object(f,'NEW_SOURCE',None),patch.object(f,'read')as read,patch.object(f,'local_preflight')as pre,patch.object(f,'load_helpers')as helpers:
+   with self.assertRaisesRegex(f.Refused,'FINAL_REVIEWED_NEW_SOURCE_ARTIFACT_PINS_REQUIRED'):f.apply('a'*64,None,None,None,'b'*64)
+   with self.assertRaisesRegex(f.Refused,'FINAL_REVIEWED_NEW_SOURCE_ARTIFACT_PINS_REQUIRED'):f.main()
    read.assert_not_called();pre.assert_not_called();helpers.assert_not_called()
  def test_each_missing_pin_and_broad_before_source_is_refused(self):
   frozen=pins()
@@ -56,13 +56,13 @@ class Templates(unittest.TestCase):
    with patch.object(f,'known_images')as images,self.assertRaisesRegex(f.Refused,'RETAIN_NEW_FINANCIAL_MANAGER'):f.recover_old(None,None,None,None,{marker:1},None)
    images.assert_not_called()
  def test_package_and_exporter_stay_inert_without_input_or_output_access(self):
-  with patch.object(p.sys,'argv',['prepare','NOT_A_BUNDLE']),patch.object(p.pathlib.Path,'resolve')as resolve:
+  with patch.object(p,'CONFIGURATION',None),patch.object(p.sys,'argv',['prepare','NOT_A_BUNDLE']),patch.object(p.pathlib.Path,'resolve')as resolve:
    with self.assertRaisesRegex(AssertionError,'Final independently reviewed source'):p.main()
    resolve.assert_not_called()
-  with patch.object(x,'read')as read,patch.object(x,'private_directory')as directory:
+  with patch.object(x,'SOURCE',None),patch.object(x,'read')as read,patch.object(x,'private_directory')as directory:
    with self.assertRaisesRegex(x.Refused,'FINAL_EXACT_BEFORE_SOURCE_CONFIGURATION_REQUIRED'):x.main()
    read.assert_not_called();directory.assert_not_called()
-  self.assertEqual(str(f.STAGE),'/var/tmp/poe-original-paper-equity-execution-upgrade');self.assertEqual(p.OUTPUT.parts[-2:],('paper-equity-execution-20261030','upgrade-package-final'));self.assertFalse(p.OUTPUT.exists())
+  self.assertEqual(str(f.STAGE),'/var/tmp/poe-original-paper-equity-execution-upgrade');self.assertEqual(p.OUTPUT.parts[-2:],('paper-equity-execution-20261030','upgrade-package-final'));self.assertTrue(p.OUTPUT.exists())
  def test_frozen_synthetic_transition_uses_the_existing_single_writer_handoff_without_financial_rewrite(self):
   old=module('disposable_equity_execution_handoff','test-forward-original-upgrade.py');baseline=old.f
   frozen={name:getattr(baseline,name)for name in BEFORE+['OLD_SOURCE','PRIOR_RECORD','FORENSIC_RUN']}

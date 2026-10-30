@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "kind": "poe-original-forward-transport-v1",
+  "source": {
+    "commit": "a16a05e642938ad6132e6844712700f344b9b73e",
+    "sha256": "768cad1ccfda1304b4db2b69f24b1d616b54aeda91092aafa426d751384ce47d"
+  },
+  "indexSha256": "8acfe6fc11c1bc319f7dd8a910192b4cbe143feb0e5eb8c3200892108336eb03",
+  "driverSha256": "3d5b2b453e510d2e39f70d01beb330da869cdbfd8cdc4f564aa8eb0ff2ade0e6",
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5392498,
+      "sha256": "768cad1ccfda1304b4db2b69f24b1d616b54aeda91092aafa426d751384ce47d",
+      "packedFile": "native-paper.mjs.gz",
+      "packedBytes": 909409,
+      "packedSha256": "a8dba0d8b3132c41c7e230fb1a29e8675bdbc305ea72792bd082890ee95bd734"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 94226,
+      "sha256": "006dc9b31db5317a5ee5d35f672fac2510c4202290f52ddc8fd189edf6aa5e83",
+      "packedFile": "backup-worker.mjs.gz",
+      "packedBytes": 23184,
+      "packedSha256": "15eba974b7af694b7eabaa757d3d107c1f2b07ba3608ddf972a9326a9fb44384"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+      "packedFile": "better_sqlite3.node.gz",
+      "packedBytes": 1106933,
+      "packedSha256": "1c96bac132087ccbc0720ae061efc2ad8fcc0a87e0fe81f92b34d1e11c4fcbd2"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 170313,
+      "sha256": "1e757832d975a4b99b1e33f0849948d5629c131da54ba1d0217f3783b01aa0e4",
+      "packedFile": "metadata.json.gz",
+      "packedBytes": 42311,
+      "packedSha256": "f80a3679a9081e7c9997c77d89115ca2271dcefd8ae594c2c5fb8c8f2b52a7c5"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 50015,
+      "sha256": "fbbe03be34bb9800d5c309088b3429f7ab830ca015dbb3bc888b73bcd718b388",
+      "packedFile": "snapshot-publisher.mjs.gz",
+      "packedBytes": 14104,
+      "packedSha256": "a9907aea65cbb978df9ad07d8d9123bd29357a9c95b377c0e2e402985a972ecf"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37955,
+      "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e",
+      "packedFile": "run-authoritative-service.py.gz",
+      "packedBytes": 12168,
+      "packedSha256": "af682833ca458397ef7f6034de53dc6158d1c977fc2077b24bc30f9d660a7fd9"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 56270,
+      "sha256": "3d5b2b453e510d2e39f70d01beb330da869cdbfd8cdc4f564aa8eb0ff2ade0e6",
+      "packedFile": "forward-original-upgrade.py.gz",
+      "packedBytes": 17533,
+      "packedSha256": "fef18aabfa3157c4650f0fc201b6211487dabe9f96e774c4902cb74652ae7782"
+    },
+    {
+      "file": "export-paper-equity-execution-forensics-20261030.py",
+      "bytes": 44830,
+      "sha256": "c6d317b0ab2b358c3051b34659aa02ab5e95cf509052a742a80632c080c21738",
+      "packedFile": "export-paper-equity-execution-forensics-20261030.py.gz",
+      "packedBytes": 14685,
+      "packedSha256": "1ea5695b64f9f1380e3e3719941f58387b6e90b1934db1f81261bf50d90080c8"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df",
+      "packedFile": "poe-runtime-persistent.conf.gz",
+      "packedBytes": 583,
+      "packedSha256": "9f411b3ed48826b53396657a0ee474e81307cc182a10ff7ee80603f92f9fb968"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1715,
+      "sha256": "74f55c9fdebf5462851cba6b0dfebbfa014961bf09db11cb77250b81eaa64bd2",
+      "packedFile": "service.json.gz",
+      "packedBytes": 883,
+      "packedSha256": "8966c73bca085b355df933c31b77ad6f5a84e83132ed880137a348e79357ccf4"
+    },
+    {
+      "file": "index.json",
+      "bytes": 3036,
+      "sha256": "8acfe6fc11c1bc319f7dd8a910192b4cbe143feb0e5eb8c3200892108336eb03",
+      "packedFile": "index.json.gz",
+      "packedBytes": 1514,
+      "packedSha256": "ea94300f49c85ed3ea61af1043f676cb609545c55883ceb32df9041b189c1090"
+    }
+  ]
+}

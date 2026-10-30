@@ -1,0 +1,53 @@
+{
+  "beforeSource": {
+    "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+  },
+  "runId": "native-paper-20261030021230118",
+  "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "inputSha256": "6034e83be9ddbb8233c38141c36af97e03d55e3cf99155b65e7f14b0aed469c0",
+  "hostReceiptSha256": "4b7f205cfccdde67db7a80d70f9d373514f40e379dde2a9b47e08e472fd99f1f",
+  "hostReceiptAt": 1793335012630,
+  "originalSupervisorPid": "2482038",
+  "nRestarts": "0",
+  "supersededDeferredCommandSource": "a1c16c7510ddcc09aa6a9962a70d24ea94b8a12a",
+  "deferredCommandApplied": false,
+  "fourForensicWindows": [
+    [
+      1793327310000,
+      1793327655000
+    ],
+    [
+      1793333115000,
+      1793333325000
+    ],
+    [
+      1793334690000,
+      1793334840000
+    ],
+    [
+      1793331225000,
+      1793331435000
+    ]
+  ],
+  "windowBudgets": {
+    "facts": [
+      60,
+      48,
+      48,
+      36
+    ],
+    "bytes": [
+      24000,
+      20000,
+      20000,
+      16000
+    ]
+  },
+  "local0432RetainedRows": 10,
+  "local0432EarliestSourceAt": "2026-10-30T04:31:35.629Z",
+  "local0432LatestSourceAt": "2026-10-30T04:33:54.207Z",
+  "local0432SelectedSha256": "bca7c296c7f095c17166633196b6ae54623dbbda8dfc84d5d999f1c9288ea050",
+  "sourceWindowsAreObservationNotCauseProof": true,
+  "targetActions": 0
+}

@@ -4,14 +4,14 @@ import hashlib,json,math,os,pathlib,re,stat,sys,time,datetime
 
 ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e'
 INCEPTION=1793052456212
-SOURCE=None
-CONFIGURATION=None
-RUN=None
-STARTED=None
+SOURCE={'commit': '69aa1ef214a8c79524a25a8aca79299ccaad93dc', 'sha256': 'bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480'}
+CONFIGURATION='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
+RUN='native-paper-20261030021230118'
+STARTED=1793326350118
 # Parent must review one exact before-source/run/configuration and four
 # bounded diagnostic windows at the final freeze. No historical times assumed.
-PRIORITY_WINDOWS=None
-START,END=None,None
+PRIORITY_WINDOWS=((1793327310000, 1793327655000), (1793333115000, 1793333325000), (1793334690000, 1793334840000), (1793331225000, 1793331435000))
+START,END=1793327310000,1793334840000
 WINDOW_FACT_LIMITS=(60,48,48,36)
 WINDOW_BYTE_LIMITS=(24000,20000,20000,16000)
 ROOT=pathlib.Path('/var/lib/poe/native-engine')
@@ -303,7 +303,7 @@ def publish(path,value,uid=UID):
  return {'path':str(path),'bytes':len(raw),'sha256':digest(raw)}
 def main():
  need(type(SOURCE)is dict and set(SOURCE)=={'commit','sha256'}and type(SOURCE['commit'])is str and re.fullmatch('[a-f0-9]{40}',SOURCE['commit'])and type(SOURCE['sha256'])is str and re.fullmatch('[a-f0-9]{64}',SOURCE['sha256'])and type(CONFIGURATION)is str and re.fullmatch('[a-f0-9]{64}',CONFIGURATION),'FINAL_EXACT_BEFORE_SOURCE_CONFIGURATION_REQUIRED')
- need(type(RUN)is str and re.fullmatch('native-paper-[0-9]{17}',RUN)and integer(STARTED)and STARTED>=INCEPTION and type(PRIORITY_WINDOWS)is tuple and len(PRIORITY_WINDOWS)==4 and all(type(w)is tuple and len(w)==2 and all(integer(v)for v in w)and STARTED<=w[0]<w[1]for w in PRIORITY_WINDOWS)and START==PRIORITY_WINDOWS[0][0]and END==PRIORITY_WINDOWS[-1][1],'FINAL_EXACT_BEFORE_RUN_AND_WINDOWS_REQUIRED')
+ need(type(RUN)is str and re.fullmatch('native-paper-[0-9]{17}',RUN)and integer(STARTED)and STARTED>=INCEPTION and type(PRIORITY_WINDOWS)is tuple and len(PRIORITY_WINDOWS)==4 and all(type(w)is tuple and len(w)==2 and all(integer(v)for v in w)and STARTED<=w[0]<w[1]for w in PRIORITY_WINDOWS)and START==min(w[0]for w in PRIORITY_WINDOWS)and END==max(w[1]for w in PRIORITY_WINDOWS),'FINAL_EXACT_BEFORE_RUN_AND_WINDOWS_REQUIRED')
  need(len(sys.argv)==1,'NO_ARGUMENTS_ACCEPTED');drop_original_identity();value=collect();receipt=publish(OUTPUT,value);print(json.dumps({'kind':'POE_CURRENT_RUN_FORENSIC_EXPORT_RECEIPT','readerUid':os.getuid(),'readerGid':os.getgid(),'financialDatabaseOpened':False,'financialWrites':0,'serviceChanges':0,'credentialReads':0,'source':SOURCE,'runId':RUN,**receipt},separators=(',',':')))
 if __name__=='__main__':
  try:main()
