@@ -1,0 +1,12 @@
+✔ USD valuation uses only public spot endpoint and preserves integer conversion (22.154858ms)
+✔ USD failures retain bounded source timing and HTTP reason without leaking provider bodies or exception messages (1.460548ms)
+✔ valid USD observation retains actual receipt time and a failed optional observer cannot block valuation (0.454381ms)
+✔ wrong currency and oversized USD observations cannot become fresh valuations (1.021199ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 206.489226
