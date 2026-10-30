@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
-import { chmodSync, constants, closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync } from 'node:fs';
+import { chmodSync, constants, closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from './operating-intelligence.js';
 import { EQUITY_GAP_MS, LIFETIME_EQUITY_SOURCE, MAX_LIFETIME_EQUITY_POINTS,
@@ -92,6 +92,46 @@ function compactPlot(db: Database.Database) {
  * The full source-timestamp record is retained; the bounded public chart
  * representation is separately and deterministically downsampled.
  */
+const SIDECAR_APPLICATION_ID = 0x504f4545;
+const SIDECAR_TABLES = ['equity_identity','equity_imported_capture','equity_plot','equity_samples'];
+const SIDECAR_COLUMNS: Record<string,string[]> = {
+  equity_identity:['id','account_id','inception_at','last_sequence','last_sha'],
+  equity_imported_capture:['sha256','accepted_at_ms','observation_count'],
+  equity_plot:['at_ms','equity_usd','segment','kind'],
+  equity_samples:['sequence','at_ms','equity_usd','segment','kind','sha256'],
+};
+function sidecarFile(file:string) {
+  const value=lstatSync(file);
+  if(!value.isFile()||value.isSymbolicLink()||value.nlink!==1||value.uid!==process.getuid?.()||
+      (value.mode&0o077)!==0)throw Error('EQUITY_SIDECAR_PRIVATE_FILE_REQUIRED');
+  return value;
+}
+/** Inspect an existing database READ ONLY before any writable open or PRAGMA.
+ * Exact sidecar tables are required; a renamed financial database is refused.
+ * The hardlink and descriptor identity checks prevent aliasing another file.
+ */
+function verifyExistingSidecar(file:string) {
+  const before=sidecarFile(file),db=new Database(file,{readonly:true,fileMustExist:true});
+  try {
+    const application=db.pragma('application_id',{simple:true});
+    const tables=db.prepare("SELECT type,name FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY name").all() as {type:string;name:string}[];
+    if(![0,SIDECAR_APPLICATION_ID].includes(application as number)||
+        tables.length!==SIDECAR_TABLES.length||tables.some((row,i)=>row.type!=='table'||row.name!==SIDECAR_TABLES[i]))
+      throw Error('EQUITY_SIDECAR_FOREIGN_SCHEMA');
+    for(const table of SIDECAR_TABLES) {
+      const columns=db.pragma('table_info('+table+')') as {name:string}[];
+      if(JSON.stringify(columns.map(row=>row.name))!==JSON.stringify(SIDECAR_COLUMNS[table]))throw Error('EQUITY_SIDECAR_FOREIGN_SCHEMA');
+    }
+    const identity=db.prepare(SQL.meta).get() as MetaRow|undefined;
+    if(!identity||identity.account_id!==ORIGINAL_POE_ACCOUNT||identity.inception_at!==ORIGINAL_POE_INCEPTION)
+      throw Error('EQUITY_SIDECAR_ACCOUNT_CONFLICT');
+  } finally {db.close();}
+  const after=sidecarFile(file);
+  if(before.dev!==after.dev||before.ino!==after.ino||before.size!==after.size||before.mtimeMs!==after.mtimeMs||before.ctimeMs!==after.ctimeMs)
+    throw Error('EQUITY_SIDECAR_FILE_CHANGED');
+  return after;
+}
+
 export class LifetimeEquityStore {
   private readonly db: Database.Database;
   private readonly directory: string;
@@ -103,16 +143,20 @@ export class LifetimeEquityStore {
     mkdirSync(parent, {recursive: true, mode: 0o700});
     const dir = lstatSync(parent);
     if (!dir.isDirectory() || dir.isSymbolicLink() || dir.uid !== process.getuid?.() ||
-        (dir.mode & 0o077) !== 0) throw Error('EQUITY_SIDECAR_PRIVATE_DIRECTORY_REQUIRED');
-    try {
-      const existing = lstatSync(file);
-      if (!existing.isFile() || existing.isSymbolicLink() || existing.uid !== process.getuid?.() ||
-          (existing.mode & 0o077) !== 0) throw Error('EQUITY_SIDECAR_PRIVATE_FILE_REQUIRED');
-    } catch (e) {
-      if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
+        (dir.mode & 0o077) !== 0 || realpathSync(parent)!==parent) throw Error('EQUITY_SIDECAR_PRIVATE_DIRECTORY_REQUIRED');
+    let checked:ReturnType<typeof lstatSync>;
+    try {checked=verifyExistingSidecar(file);}
+    catch(e) {
+      if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;
+      // Precreate exactly this new file, without following links or replacing data.
+      const descriptor=openSync(file,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+      try {checked=fstatSync(descriptor);} finally {closeSync(descriptor);}
     }
-    this.db = new Database(file, {fileMustExist: false});
+    this.db = new Database(file, {fileMustExist: true});
+    const opened=sidecarFile(file);
+    if(opened.dev!==checked.dev||opened.ino!==checked.ino){this.db.close();throw Error('EQUITY_SIDECAR_FILE_CHANGED');}
     chmodSync(file, 0o600);
+    this.db.pragma('application_id = '+SIDECAR_APPLICATION_ID);
     this.db.pragma('journal_mode = WAL');
     this.db.pragma('synchronous = FULL');
     this.db.pragma('busy_timeout = 1000');
