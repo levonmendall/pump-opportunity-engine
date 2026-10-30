@@ -276,9 +276,17 @@ export class SnapshotCache {
       const history = this.sourceEquity, points = structuredClone(history.points);
       const latest = points.at(-1)!;
       const current = this.current?.snapshot;
-      if (current && current.balances.equityUsd !== null &&
-          Date.parse(current.times.generatedAt) > Date.parse(latest.at)) {
-        const at = Date.parse(current.times.generatedAt), prior = Date.parse(latest.at);
+      const at = current ? Date.parse(current.times.generatedAt) : NaN;
+      const market = current?.times.marketAt ? Date.parse(current.times.marketAt) : NaN;
+      const reconciled = current?.times.reconciledAt ? Date.parse(current.times.reconciledAt) : NaN;
+      // The live card remains the source's complete snapshot, including its
+      // warnings. Append a verified historical valuation only when its own
+      // market/reconciliation facts meet the durable recorder's completeness.
+      if (current?.status.reconciled === true && current.balances.equityUsd !== null &&
+          Number.isFinite(market) && Number.isFinite(reconciled) &&
+          market <= at && reconciled <= at && at - market <= 90_000 &&
+          at - reconciled <= 90_000 && at > Date.parse(latest.at)) {
+        const prior = Date.parse(latest.at);
         points.push({at: current.times.generatedAt, equityUsd: current.balances.equityUsd,
           segment: latest.segment + (at - prior > EQUITY_GAP_MS ? 1 : 0), kind: 'observed'});
       }
