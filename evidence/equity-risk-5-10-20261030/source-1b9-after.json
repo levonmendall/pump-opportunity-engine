@@ -1,0 +1,9 @@
+{
+  "headBefore": "1b9fa959c476ee115ba680e48257f6cdf1985a60",
+  "headAfter": "1b9fa959c476ee115ba680e48257f6cdf1985a60",
+  "matchedFiles": 370,
+  "mismatches": [],
+  "testExit": 0,
+  "buildExit": 0,
+  "testCommand": "node --import tsx --test --test-concurrency=2 test/*.test.ts"
+}

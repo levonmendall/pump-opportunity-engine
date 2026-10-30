@@ -1,0 +1,10 @@
+{
+  "headBefore": "653eb4ad428648977e071c9009b3dc02e81f6a3d",
+  "headAfter": "653eb4ad428648977e071c9009b3dc02e81f6a3d",
+  "matchedFiles": 370,
+  "mismatches": [],
+  "addedSourceFiles": [],
+  "testExit": 0,
+  "buildExit": 0,
+  "scope": "all changed financial/native/adaptive/history and existing Ledger/backup tests; previous1b9 full2193PASS, combinedexecutionad31full2235PASS; finalrootcombinedsuite separate"
+}
