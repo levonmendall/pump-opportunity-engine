@@ -12,7 +12,8 @@ import{decodeMigrationIdentity,type MigrationIdentity}from'../src/migration-iden
 import{auditNativeFlowWindow}from'../src/native-flow-audit.js';
 import{PilotRpc,type PilotRpcCallOptions}from'../src/pilot-rpc.js';
 import{pilotLowerPriorityAdmission}from'../src/pilot.js';
-import{nativePaperRequestOperationBound}from'../src/run-native-paper.js';
+import{nativePaperRequestOperationBound,nativePaperObservationReporting}from'../src/run-native-paper.js';
+import{projectOperatingIntelligence,validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION}from'../src/operating-intelligence.js';
 import{nativeHeldAuditScheduling}from'../src/native-held-audit-scheduling.js';
 const original=readFileSync('evidence/integration-2026-10-26T23-32-41.255Z.ndjson','utf8').trim().split('\n').map(x=>JSON.parse(x)).find(x=>x.kind==='migration-transaction')!.data;
 const originalSignature=original.transaction.signatures[0] as string;
@@ -67,6 +68,23 @@ test('late independently verified audit stays recorded but cannot be backdated i
 
 test('missing independent pool history invalidates candidate data instead of becoming a strategy failure',async()=>{
  const f=fixture({missingAudit:true});f.importActual();await f.runner.step();await f.warm();const s=f.runner.status();assert.equal(s.counters.auditUnusable,1);assert.equal(s.counters.qualityGaps,1);assert.equal(s.counters.predictiveFailed,0);assert.equal(s.counters.auditedWindows,0);assert.equal(s.candidates.length,0);assert.ok(f.records.some(r=>r.kind==='native-candidate-quality-gap'&&/HISTORY_SIGNATURE_NOT_OBSERVED/.test(r.data.reason)));await f.runner.stop();
+});
+
+test('retired audit failure causes reach the original observation projection without inserting financial decisions or qualification',async()=>{
+ const f=fixture({missingAudit:true});const mint=f.importActual();await f.runner.step();await f.warm();const s=f.runner.status(),diagnostic=s.watch.summary.auditDiagnostics;
+ assert.equal(s.candidates.length,0);assert.equal(s.counters.auditUnusable,1);assert.equal(s.counters.qualityGaps,1);assert.equal(diagnostic.byReason.NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED,2);assert.equal(diagnostic.byKind['audit-unusable'],1);assert.equal(diagnostic.byKind['quality-gap'],1);assert.equal(diagnostic.recent.at(-1)!.mint,mint);assert.equal(diagnostic.recent[0]!.deadlineAt,diagnostic.recent.at(-1)!.deadlineAt,'gap copies the actual audit deadline, not a reconstructed bucket boundary');assert.deepEqual(s.decisions,[],'failed audit is not an admitted predictive or financial decision');
+ const observed=nativePaperObservationReporting({engine:s,feeds:undefined,financialDecisions:[],eventLoopDelayP95Ms:null});assert.deepEqual(observed.watch!.summary.auditDiagnostics,diagnostic);assert.deepEqual(observed.decisions,[]);
+ const raw={accountId:ORIGINAL_POE_ACCOUNT,inceptionAt:Date.parse(ORIGINAL_POE_INCEPTION),generatedAt:s.generatedAt,startedAt:diagnostic.startedAt!,runId:'OFFLINE-original-audit-diagnostics',configurationSha256:'a'.repeat(64),strategyVersion:'persistent-buying-pilot-v1',persistent:true,positions:{},pending:{},watch:observed.watch!.summary,decisions:observed.decisions,refusals:{'native-quality-gaps':s.counters.qualityGaps,'independent-audit-unusable':s.counters.auditUnusable}},publicView=projectOperatingIntelligence(raw);
+ assert.match(publicView.quality.limitations.join('\n'),/NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED:2/);assert.match(publicView.quality.limitations.join('\n'),/Latest quality-gap/);assert.deepEqual(publicView.decisions,[]);assert.equal(publicView.quality.auditUnusable,1);assert.equal(publicView.quality.qualityGaps,1);validateOperatingIntelligence(publicView,new Date(s.generatedAt).toISOString());await f.runner.stop();
+});
+
+test('a global gap without a candidate or target keeps diagnostics unavailable rather than throwing or inventing a deadline',async()=>{
+ const f=fixture();assert.doesNotThrow(()=>f.runner.onGap({at:f.now,reason:'NATIVE_FLOW_DISCONNECTED_1006'}));const s=f.runner.status(),fact=s.watch.summary.auditDiagnostics.recent.at(-1)!;assert.equal(s.counters.qualityGaps,1);assert.equal(fact.kind,'quality-gap');assert.equal(fact.mint,null);assert.equal(fact.windowEndAt,null);assert.equal(fact.deadlineAt,null);assert.equal(fact.lastDispatchReason,null);assert.equal(fact.reasonCode,'NATIVE_FLOW_DISCONNECTED');assert.equal(fact.transportCloseCode,1006);assert.equal(f.rpcCalls.length,0);await f.runner.stop();
+});
+
+test('a target expiring without an HTTP start retains its local wait action without becoming a provider timeout',async()=>{
+ const f=fixture();const mint=f.importActual();await f.runner.step();f.advance(70000);f.refresh();const target=Math.floor(f.now/10000)*10000;f.setPhysicalBusy(true);await f.steps(10);f.advance(target+10001-f.now);f.refresh();await f.runner.step();
+ const s=f.runner.status(),facts=s.watch.summary.auditDiagnostics,last=facts.recent.find(row=>row.kind==='decision-expired'&&row.windowEndAt===target)!;assert.ok(last);assert.equal(last.reasonCode,'DECISION_DEADLINE_EXPIRED');assert.equal(last.deadlineAt,target+10000);assert.equal(last.lastDispatchReason,'rpc-gate-wait');assert.equal(last.lastDispatchAction,'await-physical-settlement');assert.equal(f.rpcCalls.length,0);assert.equal(s.counters.decisionDeadlineMisses,1);assert.equal(s.counters.auditUnavailable,0);assert.equal(facts.byReason.PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT,undefined);await f.runner.stop();
 });
 
 test('SYNTHETIC six-slot saturation preserves seventh watch identity and releases actual unsubscribe ownership before replacement',async()=>{

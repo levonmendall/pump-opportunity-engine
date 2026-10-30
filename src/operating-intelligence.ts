@@ -1,5 +1,7 @@
 /** Bounded diagnostics projected from the SAME authoritative source snapshot.
  * No financial writer, provider, credential or dashboard-side inference. */
+import {NATIVE_CANDIDATE_FAILURE_CODES,NATIVE_CANDIDATE_FAILURE_KINDS,NATIVE_AUDIT_DISPATCH_REASONS,NATIVE_AUDIT_DISPATCH_ACTIONS,NATIVE_AUDIT_SCHEDULER_REASONS,NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS} from './native-candidate-diagnostics.js';
+const candidateFailureCodes=new Set<string>(NATIVE_CANDIDATE_FAILURE_CODES);
 export const ORIGINAL_POE_ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e';
 export const ORIGINAL_POE_INCEPTION='2026-10-26T22:07:36.212Z';
 export const OPERATING_INTELLIGENCE_VERSION='poe-operating-intelligence-v1';
@@ -74,6 +76,22 @@ function adaptiveHoldingNote(value:unknown,sourceStart:number,enteredAt:number|n
  const sol=`${boundary/1000000000n}.${(boundary%1000000000n).toString().padStart(9,'0')}`;
  return `${d.state} trail ${width} bps (${reason}); dispersion ${volatility??'unknown'} bps/${prior} prior quotes; boundary ${sol} SOL (modeled, fill not guaranteed); evaluated ${new Date(evaluatedAt).toISOString()}`;
 }
+function candidateFailureNote(value:unknown,sourceStart:number,at:number):string|null{
+ const d=rec(value),started=count(d.startedAt),events=count(d.events);
+ if(d.version!==NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS.version||d.scope!==NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS.scope||started===null||started<sourceStart||started>at||events===null)return 'Candidate audit/capture diagnostic detail unavailable; retained failure totals are unchanged.';
+ const byReason=rec(d.byReason),counts=NATIVE_CANDIDATE_FAILURE_CODES.flatMap(code=>{const n=count(byReason[code]);return n!==null&&n>0?[[code,n] as const]:[];}).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+ const rows=(Array.isArray(d.recent)?d.recent:[]).slice(-NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS.maximumRecentFacts),latest=[...rows].reverse().map(rec).find(row=>{const when=count(row.at);return when!==null&&when>=started&&when<=at&&(NATIVE_CANDIDATE_FAILURE_KINDS as readonly unknown[]).includes(row.kind)&&typeof row.reasonCode==='string'&&row.reasonCode.length<=160&&candidateFailureCodes.has(row.reasonCode);});
+ if(events===0&&counts.length===0&&rows.length===0)return null;
+ let detail='Latest outcome detail unavailable.';
+ if(latest){
+  const when=count(latest.at)!,end=count(latest.windowEndAt),validEnd=end!==null&&end>0&&end<=when?end:null,deadline=count(latest.deadlineAt),validDeadline=validEnd!==null&&deadline!==null&&deadline>=validEnd&&deadline<=validEnd+10000?deadline:null,dispatch=(NATIVE_AUDIT_DISPATCH_REASONS as readonly unknown[]).includes(latest.lastDispatchReason)?latest.lastDispatchReason:'unavailable';
+  const close=count(latest.transportCloseCode),rpc=latest.rpcErrorCode,extra=latest.reasonCode==='NATIVE_FLOW_DISCONNECTED'&&close!==null&&close>=1000&&close<=4999?' close '+close:latest.reasonCode==='RPC_NODE_ERROR'&&Number.isSafeInteger(rpc)&&rpc>=-2147483648&&rpc<=2147483647?' RPC-code '+rpc:'';
+  const status=['verified','unusable','unavailable'].includes(latest.auditResultStatus)?'; audit diagnostic '+latest.auditResultStatus+'; no entry permission':'',action=(NATIVE_AUDIT_DISPATCH_ACTIONS as readonly unknown[]).includes(latest.lastDispatchAction)?'/'+latest.lastDispatchAction:'',scheduler=(NATIVE_AUDIT_SCHEDULER_REASONS as readonly unknown[]).includes(latest.lastSchedulerReason)?'; scheduler '+latest.lastSchedulerReason:'';
+  detail=`Latest ${latest.kind}/${latest.reasonCode}${extra} at ${new Date(when).toISOString()}, mint ${canonicalMint(latest.mint)??'unavailable'}; target end ${validEnd??'unavailable'} deadline ${validDeadline??'unavailable'} UTC-ms; dispatch ${dispatch}${action}${scheduler}${status}.`;
+ }
+ const prefix=`Candidate instance ${new Date(started).toISOString()}: `,format=(n:number)=>prefix+'counts '+(counts.slice(0,n).map(([code,value])=>code+':'+value).join(', ')||'unavailable')+' (occurrences, not unique windows). '+detail;
+ const note=format(2);if(note.length<=512)return note;const smaller=format(1);return smaller.length<=512?smaller:prefix+'outcome detail exceeds the bounded public note; source diagnostic counts and original failure totals remain retained.';
+}
 /** These are diagnostics of financially owned acquisition, not completed held
  * evaluations. Fixed source-owned fields only: arbitrary RPC errors, policy,
  * URLs, account data and unknown stage names never cross the public boundary.
@@ -132,7 +150,13 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  const lastPricing=rec(pricing.lastContext),pricingAt=time(lastPricing.at);
  if(lastPricing.state==='unavailable'&&pricingAt&&pricingCodes.includes(lastPricing.reasonCode))operationalRows.push('Holding-pricing refusal at '+pricingAt+': '+lastPricing.reasonCode+'. This is not a completed protection evaluation.');
  const market=rec(u.market),entryNote=Object.hasOwn(market,'entryQuoteFailures')?entryQuoteNote(market.entryQuoteFailures,start,at):null;
- operationalRows.push(...protectionRpcNotes(rpc,start,at,entryNote));
+ const providerNotes=protectionRpcNotes(rpc,start,at,entryNote),optionalRpcCalls=Object.hasOwn(rpc,'protectionRecovery')?providerNotes.shift():null;
+ operationalRows.push(...providerNotes);
+ const candidateNote=Object.hasOwn(w,'auditDiagnostics')?candidateFailureNote(w.auditDiagnostics,start,at):null;if(candidateNote)operationalRows.push(candidateNote);
+ // Financial history, completed protection, held strategy and observed source
+ // failures take precedence when the existing ten-note view is full. Only the
+ // optional acquisition-call summary yields; no source evidence is deleted.
+ if(optionalRpcCalls&&operationalRows.length+strategyRows.length<10)operationalRows.push(optionalRpcCalls);
  const limitations=[...(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,Math.max(0,10-strategyRows.length-operationalRows.length)),...operationalRows,...strategyRows];
  const hasAdmission=['reporting','serviceSupervision','resourceControl','evidenceRetention','sourceRecovery','proofPreparation'].some(k=>Object.hasOwn(s,k));
  const report=rec(s.reporting),supervision=rec(s.serviceSupervision),control=rec(s.resourceControl),retention=rec(s.evidenceRetention),recovery=rec(s.sourceRecovery),proof=rec(s.proofPreparation);
