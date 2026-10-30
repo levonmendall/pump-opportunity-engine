@@ -5,6 +5,7 @@
   "newSchema": false,
   "financialGatesChanged": false,
   "projectedNotes": [
+    "Current runtime observed completed protection maxima since 2026-10-30T01:10:00.000Z: gap 3075 ms; quote age at use 65 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
     "Holding RPC current instance since 2026-10-30T01:11:40.000Z: calls 200; logical attempts 201; rapid probes 1; RPC retry successes 1; dispatch refusals 0; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
     "Holding RPC failure stages (current instance, not completed evaluations): physical-timeout:1.",
     "Last holding RPC failure 2026-10-30T01:19:58.500Z: physical-timeout; physical request in flight: true. This records an acquisition stage, not a diagnosis of every earlier interruption.",

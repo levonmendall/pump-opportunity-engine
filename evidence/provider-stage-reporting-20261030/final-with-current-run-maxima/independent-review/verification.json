@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-30T01:23:10.371053+00:00",
+  "scope": "Independent follow-up current-runtime maxima projection review; no network, financial files or service operations",
+  "hashes": {
+    "src/operating-intelligence.ts": "5d695db8887b7df28712b2ff5331de4da765f22d7568ec3a729535d22b41b6b1",
+    "test/operating-intelligence.test.ts": "01f3f7468b2efbdf75e84abd836058db76e9dc7e2c6c628c6a91f84d239117f3"
+  },
+  "sourceUnchanged": true,
+  "focusedExitCode": 0
+}

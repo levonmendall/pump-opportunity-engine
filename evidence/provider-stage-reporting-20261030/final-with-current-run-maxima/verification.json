@@ -1,0 +1,55 @@
+{
+  "completedAt": "2026-10-30T01:24:25.740289+00:00",
+  "source": "fd6e12e79be654c547686578234f32346cc4c1f0",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/operating-intelligence.test.ts",
+        "test/adaptive-operating-intelligence.test.ts",
+        "test/pilot-reporting.test.ts",
+        "test/reporting.test.ts",
+        "test/snapshot-file-publisher.test.ts",
+        "test/native-paper-observation-reporting.test.ts",
+        "test/operating-financial-readiness.test.ts",
+        "test/dashboard.test.ts",
+        "test/operating-pnl-reporting.test.ts"
+      ],
+      "exitCode": 0,
+      "raw": "focused-tests.raw.txt",
+      "sha256": "6af885abd3b4f176af7e13fe11df0fe26b58d3452a5771ed270be1a6e3103f1b"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "raw": "build.raw.txt",
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "evidence/provider-stage-reporting-20261030/check-original-receiver.mts"
+      ],
+      "exitCode": 0,
+      "raw": "original-receiver.raw.txt",
+      "sha256": "5e94ebc8fdc5058ba12f9e96eebf85af02626b0ff62740cbd1b4d30ec9627d96"
+    }
+  ],
+  "sourceUnchanged": true,
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "serviceControls": 0,
+  "schemaChanges": false,
+  "receiverSource": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "pairedCurrentRunEmitterCommit": "a1420337c041eaa942cc29d0d0806a311923f49b",
+  "deployed": false
+}

@@ -1,6 +1,6 @@
 # Holding RPC stage reporting through the original dashboard
 
-Source commit: `cd354281ea36123fa3df5db118d05db6752df091`. This source-only followthrough is not installed and did not change the operating EC2 service.
+Source commit: `fd6e12e79be654c547686578234f32346cc4c1f0`, following initial stage projection `cd354281ea36123fa3df5db118d05db6752df091`. This source-only followthrough is not installed and did not change the operating EC2 service.
 
 The deployed 567 source records financially owned acquisition stages in `usage.rpc.protectionRecovery`, but its original operating projection discards them. Historical exports consequently retained unavailable holding evaluations while lacking the RPC phase facts needed for exact attribution. This correction projects only existing, allowlisted source facts; it does not reconstruct missing historical causes.
 
@@ -15,5 +15,7 @@ These are explicitly scoped to the current RPC instance, which may be replaced i
 The projector also used ordinary RPC cooldown to classify fresh holding protection as degraded. Since 567 financially owned recovery can operate through optional-work backoff, new sources now use their authoritative `providerRestrictionUntil` for this diagnostic classification. Actual provider restrictions, malformed new restriction metadata, missing completed evaluations and overdue protection remain degraded/unavailable. Legacy sources retain their old cooldown interpretation. Entry blockers, ledger controls, strategy decisions and all financial gates are unchanged.
 
 Validation: 133 focused operating/reporting/financial-readiness/publisher/dashboard tests and the TypeScript build passed with exact source hashes unchanged before/after. Four added regressions cover stage retention/privacy, optional versus authoritative cooldown, malformed/future metadata, and maximum counters. Independent review passed 44 tests and a worst-case payload with three holdings, six existing refusal categories and all eight maximum stage counts: ten notes, maximum 410 of 512 characters, total intelligence 5,198 bytes below the existing 32 KiB bound.
+
+The follow-up pairs with emitter `a1420337c041eaa942cc29d0d0806a311923f49b`: `timing.currentRunMaximumCompletedGapMs` and `currentRunMaximumQuoteAgeAtUseMs` are displayed in one existing note, independently from retained historical maxima and failures. Unknown startup evidence, a prior-run completion or future completion never becomes a current runtime measurement. Explicit valid zero is preserved. The note states that observed completed maxima do not bound currently open or unmonitored gaps. Final validation passed 134 tests, build, unchanged-source guard and the original Render receiver compatibility check; independent follow-up passed 45 tests and a maximum combined ten-note, 410-character, 5,415-byte payload. Evidence is under `final-with-current-run-maxima/`.
 
 No provider requests, original financial account reads, service controls, credentials, new account, new reporting channel or new writer were involved. Existing financial and qualification evidence requirements remain unchanged.
