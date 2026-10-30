@@ -4,7 +4,7 @@ import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,typ
 import {FlowWindow,copyEventIdentity,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
 import {assertPilotBaseline,resolvePilotBinding,type PilotBinding,type ResolvedPilotBinding} from './pilot-contract.js';
 import {ADAPTIVE_MOMENTUM_V2_VERSION,ADAPTIVE_MOMENTUM_V2_POLICY,assessAdaptiveBuying,evaluateAdaptivePrimary,evaluateAdaptiveExit,type AdaptiveRuleContext} from './adaptive-momentum-v2.js';
-import {AdaptiveHeldSeries,ADAPTIVE_HELD_SERIES_POLICY} from './adaptive-held-series.js';
+import {AdaptiveHeldSeries,ADAPTIVE_HELD_SERIES_POLICY,type AdaptiveHeldSignal} from './adaptive-held-series.js';
 import {TechnicalProtectionRecoveryTracker,type TechnicalProtectionRecoveryAuthority,type TechnicalProtectionRecoveryProof} from './technical-protection-recovery.js';
 export type {TechnicalProtectionRecoveryProof} from './technical-protection-recovery.js';
 
@@ -42,6 +42,7 @@ export type TraderOptions={
   timeoutMs?:number;
 };
 export type TraderTickOptions={evaluateCandidates?:boolean;candidateMint?:string;reuseFreshContext?:boolean;maximumDueActions?:1|2|3};
+export type AdaptiveHoldingDiagnosticsRow={state:'measured'|'fallback'|'unavailable';reason:string;quoteAt:number|null;evaluatedAt:number|null;measuredVolatilityBps:number|null;effectiveTrailingDistanceBps:number|null;priorQuoteCount:number|null;modeledTrailingBoundaryLamports:string|null;meaning:'MODELED_TRIGGER_NOT_GUARANTEED_FILL'};
 type Candidate=CandidateEvidence&{admittedAt:number;window:FlowWindow;active:boolean;everActivated:boolean;interrupted:boolean;evaluatedBucket:number;evidenceDeferredBucket:number;predictiveAssessedBucket:number;knownSlot:number|null;informationPending:boolean};
 type Decision={mint:string;at:number;stage:string;reason:string;ruleVersion:string;holdingPolicyVersion?:string;scoreBps?:number|null;adaptiveComponents?:unknown;limitations?:readonly string[];features?:RuleDecision['features'];quote?:SizeQuote|null;permissionContext?:{mode:'candidate-evaluation';primaryKind:string;primaryReason:string;performanceFailure:false}};
 type TraderRuleDecision=Omit<RuleDecision,'ruleVersion'>&{ruleVersion:string};
@@ -78,6 +79,7 @@ export class PaperTrader{
   private newHardPauseObserved=false;
   private readonly technicalProtectionRecovery=new TechnicalProtectionRecoveryTracker();
   private readonly adaptiveHeldSeries=new AdaptiveHeldSeries();
+  private readonly latestAdaptiveHoldingSignals=new Map<string,{roundTripId:string;units:string;evaluatedAt:number;quoteAt:number|null;signal:AdaptiveHeldSignal}>();
   private readonly uncertainOrders=new Set<string>();
   private started=false;
   private readonly execution:PaperExecutionCoordinator;
@@ -224,6 +226,18 @@ export class PaperTrader{
   }
   remove(mint:string){const state=this.options.ledger.state();if(state.positions[mint]||Object.values(state.pending).some(o=>o.mint===mint))throw new Error('held/pending observation has priority');this.candidates.delete(mint);this.pilotDeposits.delete(mint);}
   decisions(){return structuredClone(this.recent);}
+  /** Projection only: never obtains a quote, evaluates an exit, records a
+   * completion or changes a financial/entry-control state. */
+  adaptiveHoldingDiagnostics():Record<string,AdaptiveHoldingDiagnosticsRow>{
+    const rows:Record<string,AdaptiveHoldingDiagnosticsRow>={},at=this.now(),validAt=Number.isSafeInteger(at)&&at>=0;
+    for(const position of Object.values(this.options.ledger.state().positions).slice(0,256)){
+      if(position.strategy?.version!==ADAPTIVE_MOMENTUM_V2_VERSION)continue;
+      const row=this.latestAdaptiveHoldingSignals.get(position.mint),same=!!row&&row.roundTripId===position.strategy.roundTripId&&row.units===position.units;
+      const reason=!same?'holding-signal-not-evaluated':!validAt||row.evaluatedAt>at||row.quoteAt!==null&&row.quoteAt>at?'holding-signal-time-invalid':!this.sourceCurrent(at)?'holding-signal-source-unavailable':row.quoteAt===null||row.signal.modeledTrailingBoundaryLamports===null?row.signal.reason:at-row.quoteAt>PROVISIONAL_RULE.maximumQuoteAgeMs||at-row.evaluatedAt>ADAPTIVE_HELD_SERIES_POLICY.maximumCompletedGapMs?'holding-signal-stale':null;
+      rows[position.mint]={state:reason?'unavailable':row!.signal.state,reason:reason??row!.signal.reason,quoteAt:same?row!.quoteAt:null,evaluatedAt:same?row!.evaluatedAt:null,measuredVolatilityBps:reason?null:row!.signal.measuredVolatilityBps,effectiveTrailingDistanceBps:reason?null:row!.signal.trailingDistanceBps,priorQuoteCount:reason?null:row!.signal.priorQuoteCount,modeledTrailingBoundaryLamports:reason?null:row!.signal.modeledTrailingBoundaryLamports,meaning:'MODELED_TRIGGER_NOT_GUARANTEED_FILL'};
+    }
+    return rows;
+  }
   tick(options:TraderTickOptions={}){if(!this.started)return Promise.reject(new Error('trader recovery required'));if(!options||typeof options!=='object'||Array.isArray(options)||options.evaluateCandidates!==undefined&&typeof options.evaluateCandidates!=='boolean'||options.reuseFreshContext!==undefined&&typeof options.reuseFreshContext!=='boolean'||options.maximumDueActions!==undefined&&(!Number.isSafeInteger(options.maximumDueActions)||options.maximumDueActions<1||options.maximumDueActions>3)||options.candidateMint!==undefined&&(!validText(options.candidateMint,96)||!this.candidates.has(options.candidateMint)))return Promise.reject(new Error('bounded admitted candidate and explicit tick options required'));if(this.active)return this.active;const chosen=Object.freeze({evaluateCandidates:options.evaluateCandidates!==false,candidateMint:options.candidateMint,reuseFreshContext:options.reuseFreshContext===true,maximumDueActions:options.maximumDueActions});this.active=this.drain(chosen).finally(()=>{this.active=undefined;this.tickActionsRemaining=null;});return this.active;}
   private async read<T>(fn:(signal:AbortSignal)=>Promise<T>,outer?:AbortSignal,maxMs=this.options.timeoutMs??1000):Promise<T>{
     if(this.outstanding)throw new Error('previous market request has not canceled');
@@ -351,10 +365,12 @@ export class PaperTrader{
     execution.push(...await this.attempts());
     // Existing exposure and pending actions always precede any candidate quote.
     this.adaptiveHeldSeries.retain(Object.values(this.options.ledger.state().positions).flatMap(p=>p.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION?[{mint:p.mint,roundTripId:p.strategy.roundTripId}]:[]));
+    for(const [mint,row]of this.latestAdaptiveHoldingSignals){const p=this.options.ledger.state().positions[mint];if(p?.strategy?.roundTripId!==row.roundTripId||p.units!==row.units)this.latestAdaptiveHoldingSignals.delete(mint);}
     for(const position of Object.values(this.options.ledger.state().positions)){
       execution.push(...await this.dueActions());if(!this.options.ledger.state().positions[position.mint])continue;
       const evaluatedAt=this.clock(),mark=this.sourceCurrent(evaluatedAt)?this.context.marks[position.mint]??null:null,exitInput={now:evaluatedAt,enteredAt:position.enteredAt,entryCostLamports:(unsigned(position.entryLamports)+unsigned(position.entryGas)).toString(),heldBaseUnits:position.units,mark};
       const adaptiveSignal=position.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION?this.adaptiveHeldSeries.observe({now:evaluatedAt,mint:position.mint,roundTripId:position.strategy.roundTripId,enteredAt:position.enteredAt,heldBaseUnits:position.units,highWaterNetLamports:position.strategy.highWaterNetLamports,mark,sourceCurrent:this.sourceCurrent(evaluatedAt)}):null;
+      if(adaptiveSignal&&position.strategy)this.latestAdaptiveHoldingSignals.set(position.mint,{roundTripId:position.strategy.roundTripId,units:position.units,evaluatedAt,quoteAt:mark&&Number.isSafeInteger(mark.at)&&mark.at>=0?mark.at:null,signal:adaptiveSignal});
       const exit=position.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION?evaluateAdaptiveExit({...exitInput,highWaterNetLamports:position.strategy.highWaterNetLamports,...(adaptiveSignal?.effectiveVolatilityBps===null||adaptiveSignal?.effectiveVolatilityBps===undefined?{}:{volatilityBps:adaptiveSignal.effectiveVolatilityBps})}):evaluateExit(exitInput);
       const pendingExit=Object.values(this.options.ledger.state().pending).some(o=>o.mint===position.mint&&o.side==='sell');
       const completed=(outcome:string)=>{const completedAt=this.clock();this.record('trader-held-evaluation',{mint:position.mint,units:position.units,strategyVersion:position.strategy?.version??(this.adaptive?'persistent-buying-pilot-v1':this.effectiveVersion),highWaterNetLamports:position.strategy?.highWaterNetLamports??null,evaluatedAt,completedAt,quoteAt:mark?.at??null,sourceValidUntil:this.context.sourceValidUntil??null,usable:!!mark&&mark.pricedBaseUnits===position.units&&mark.at<=completedAt&&completedAt-mark.at<=PROVISIONAL_RULE.maximumQuoteAgeMs&&this.sourceCurrent(completedAt)&&/^(0|[1-9][0-9]{0,38})$/.test(mark.netLamports)&&validText(mark.evidence),action:exit.action,reason:exit.reason,pendingExit,outcome,...(adaptiveSignal?{adaptiveHoldingSignal:adaptiveSignal}: {})});};
