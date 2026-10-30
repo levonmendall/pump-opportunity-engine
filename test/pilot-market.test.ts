@@ -12,6 +12,11 @@ import {PilotMarket} from '../src/pilot-market.js';
 import type {PoolWireAccount} from '../src/pool.js';
 import {PilotRpc,PilotRpcUnavailable} from '../src/pilot-rpc.js';
 import {nativePaperRpcConfiguration} from '../src/run-native-paper.js';
+import {runInNewContext} from 'node:vm';
+import {runNativePaper,nativePaperSourceWorkAdmission,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperManagementReserve} from '../src/run-native-paper.js';
+import {NativeCandidateRunner} from '../src/native-candidate-runner.js';
+import {NativePaperWorkState} from '../src/native-paper-work.js';
+import {pilotLowerPriorityAdmission} from '../src/pilot.js';
 
 const signal=()=>new AbortController().signal;
 function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false){
@@ -36,7 +41,7 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false){
     rpcHook?.(method);
     if(wait){const pending=wait;wait=undefined;await pending;}
     if(method==='getMinimumBalanceForRentExemption')return (1000000+Number(params[0])+rentOffset)as T;
-    if(method==='getBlockTime')return Math.floor(at/1000)as T;
+    if(method==='getBlockTime')return Math.floor(at/1000)as T;if(method==='getSlot')return slot as T;
     assert.equal(method,'getMultipleAccounts');
     const addresses=params[0] as string[],raw=Buffer.alloc(40);raw.writeBigUInt64LE(BigInt(slot));raw.writeBigInt64LE(BigInt(Math.floor(at/1000)),32);
     const clock:PoolWireAccount={data:[raw.toString('base64'),'base64'],owner:'Sysvar1111111111111111111111111111111111111',lamports:1169280,executable:false,rentEpoch:0};
@@ -44,12 +49,35 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false){
   },usage:()=>({calls:calls.length})};
   let physical:PilotRpc|undefined;
   if(paced){const old=join(root,'prior.json');writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:1,bytes:0,lastObservedAt:at-120000,starts:[at-121000],pending:[]}));physical=new PilotRpc({directory:join(root,'paced-rpc'),runId:'offline-entry-quote-pacing',baselinePaths:[old],priorPhysicalSettled:true,...nativePaperRpcConfiguration(true),now:()=>at,monotonic:()=>at,sleep:async ms=>{at+=ms;activity?.(ms);},fetcher:(async(_url,init)=>{const q=JSON.parse(String(init?.body)),result=await rpc.call(q.method,q.params);return new Response(JSON.stringify({jsonrpc:'2.0',id:q.id,result}));}),record:(kind,data)=>records.push({kind,data:structuredClone(data)})});}
-  const market=new PilotMarket({rpc:physical??rpc,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
+  let adapter:any=physical??rpc;const routed={call:<T>(method:string,params?:unknown[],signal?:AbortSignal)=>adapter.call(method,params,signal) as Promise<T>,usage:()=>adapter.usage?.()};
+  const market=new PilotMarket({rpc:routed,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
   for(const c of captures)market.registerPool({mint:c.proof.quote.mint,migrationVerified:true,migrationSlot:c.proof.origin.slot,evidence:'retained actual migration; synthetic current timing'});
   const coordinator=new PaperExecutionCoordinator({ledger,now:()=>at,timeoutMs:1000,context:s=>market.context(ledger.state().positions,s),quote:market.executionQuote});
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
-  return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
+  return {captures,ledger,market,coordinator,price,calls,records,get physical(){return physical;},route:(value:any)=>{adapter=value;},now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
 }
+
+for(const background of [0,6,9])test(`BASELINE actual decision quote gates after ${background} discretionary reads preserve genuine holding headroom but can refuse committed entry`,async t=>{
+ const f=fixture(t,3000,false,true),owned=f.captures[0]!.proof.quote.mint,mint=f.captures[1]!.proof.quote.mint;
+ const plan=await f.market.prepareEntryCosts(owned,signal()),entry=await f.market.quote({mint:owned,side:'buy',inputUnits:'10000000'},signal());assert.ok(entry);
+ f.ledger.reconcile('seed-current',f.now(),f.price(),{});f.coordinator.reserve({id:'seed-held',side:'buy',mint:owned,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas:'7000',deposit:plan.depositLamports,maxSpend:'10000000',minReceive:'1',decisionEvidence:entry.evidence},{price:f.price(),marks:{}});f.advance(1000);f.ledger.reconcile('seed-attempt-current',f.now(),f.price(),{});const seed=await f.coordinator.runDue();assert.equal(seed.results[0]?.status,'filled',JSON.stringify(seed));
+ await f.market.prepareEntryCosts(mint,signal());f.advance(10000);
+ const rpc=f.physical!,owner=new NativePaperWorkState(),engine=new NativeCandidateRunner({rpc,flow:{usage:()=>({dataContract:'confirmed-program-activity-v3-shadow',nativeServiceDeadlines:[{action:'support-refresh',deadlineAt:f.now()+60000}]})}as any,record(){},now:f.now});let lastCompleted:number|null=f.now();
+ const lowerView=(bound=1200)=>pilotLowerPriorityAdmission({now:f.now(),endAt:Number.MAX_SAFE_INTEGER,held:1,lastUsable:lastCompleted,nextPendingAt:null,operationBoundMs:bound});
+ const sourceInformationAdmission=()=>true,sourceAdmission=()=>nativePaperSourceWorkAdmission({informationOpen:sourceInformationAdmission(),owned:true,entryWork:owner.current==='candidate',usage:rpc.usage(),persistent:true});
+ const localAdmission=(bound=1200)=>lowerView(bound).admitted&&engine.discretionaryAdmission(bound).admitted,optionalAdmission=(bound=1200)=>sourceAdmission()&&localAdmission(bound);
+ const holder:any={},context:any={__name:(f:unknown)=>f,holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:f.now},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,lowerView,sourceAdmission,sourceInformationAdmission,optionalAdmission,engine};
+ const text=runNativePaper.toString(),begin=text.search(/const\s+requestOptions\s*=/),rest=text.slice(begin),end=rest.search(/;\s*const\s+market\s*=/);assert.ok(begin>=0&&end>0);runInNewContext(rest.slice(0,end)+';holder.scheduled=scheduled;',context,{timeout:1000});f.route(holder.scheduled);
+ const protect=async()=>{owner.set('protection');const marks=await f.market.context(f.ledger.state().positions,signal());assert.ok(marks.marks[owned]);lastCompleted=f.now();context.lastCompleted=lastCompleted;};await protect();
+ owner.set('source');for(let n=0;n<background;n++){if(!lowerView(1500).admitted){await protect();owner.set('source');}await holder.scheduled.call('getSlot');}
+ await protect();if(background===6)while(rpc.usage().requestLimits.maxStartsPer10s-(rpc.usage().chapterUsage?.rolling10SecondStarts??0)>7)await protect();
+ owner.set('candidate');assert.equal(sourceAdmission(),true);const before=f.ledger.state(),calls=f.calls.length,usage=rpc.usage(),reserve=nativePaperManagementReserve(usage,true,true);const quote=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());
+ if(background!==6)assert.equal(sourceAdmission(),true);assert.equal(lowerView(1200).admitted,true);assert.equal(engine.discretionaryAdmission(1200).admitted,true);
+ if(background===6){assert.equal(reserve.discretionarySetupAllowed,true);assert.equal(quote,null);assert.equal(f.calls.length,calls+1,'the first rent starts, then the repeated six-read envelope refuses the second rent');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_RPC_COMPONENT_ADMISSION_CLOSED');}
+ else if(background){assert.equal(reserve.discretionarySetupAllowed,false);assert.equal(quote,null);assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_RPC_COMPONENT_ADMISSION_CLOSED');assert.equal(f.calls.length,calls,'smoothing refusal starts no physical rent request');}
+ else assert.ok(quote);
+ assert.deepEqual(f.ledger.state(),before);t.diagnostic(JSON.stringify({scope:'OFFLINE actual SDK, held ledger inventory, NativeCandidateRunner deadlines, launcher request router and shared PilotRpc; no independently qualified market opportunity represented',background,quoteAvailable:quote!==null,reserve,failure:f.market.usage().entryQuoteFailures.last,providerRequests:0}));
+});
 
 test('fresh final market state remains usable under ancillary rent pacing and active native slot floors',async t=>{
  const f=fixture(t,3000,false,true),mint=f.captures[1]!.proof.quote.mint;
