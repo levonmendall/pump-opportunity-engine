@@ -5,10 +5,10 @@ import ast,copy,gzip,hashlib,io,json,os,pathlib,re,shlex,subprocess,sys,types
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 OLD=ROOT/'evidence/issue11-consolidation-20261028/adaptive-v2-protection-recovery-20261029/upgrade-package-93bf0b5'
 OUTPUT=ROOT/'evidence/provider-protection-recovery-20261030/upgrade-package-final'
-COMMIT=None
-BUNDLE_SHA=None
-METADATA_SHA=None
-CONFIGURATION=None
+COMMIT='5675961a0ad05df508eec6928644c9e403be0811'
+BUNDLE_SHA='157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae'
+METADATA_SHA='93e00187cfae669fff3a713ffb05329f69033f2692c1171c97e9764a76cc5f85'
+CONFIGURATION='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
 def sha(b):return hashlib.sha256(b).hexdigest()
 def encoded(v):return(json.dumps(v,separators=(',',':'))+'\n').encode()
 def module(name,path):
