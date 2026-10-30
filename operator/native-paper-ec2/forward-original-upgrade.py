@@ -277,8 +277,9 @@ def known_images(m,record_dir):
  for path,name,limit,uid,gid,mode in[(m.MANIFEST,'service.json',128*1024,0,GID,0o640),(m.ACCOUNT/'input.json','input.json',MIB,UID,GID,0o600),(m.DROPIN,'native-dropin.conf',8192,0,0,0o644)]:
   body=read(path,limit,uid,gid,mode);need(body in[read(record_dir/('before-'+name),limit),read(record_dir/('after-'+name),limit)],'UNKNOWN_CURRENT_CONFIGURATION_REFUSED')
 def recover_old(m,auditor,supervisor,record_dir,record,expected_inode):
- # A new runtime can durably create schema-v2 prefunded provider leases before
- # its first fill. The ba33 executable cannot read those uncertainty tails.
+ # Retain the new manager after a possible start: financial actions and provider
+ # uncertainty may already have advanced. Prior93 already uses schema-v2;
+ # compatibility alone does not justify replaying older executable state.
  # Possible start, not financial activity, permanently forbids old-code rollback.
  need(not record.get('startRequestedAt')and not record.get('possibleNewSourceStart'),'NEW_SOURCE_MAY_HAVE_RUN_RETAIN_NEW_FINANCIAL_MANAGER');known_images(m,record_dir)
  current=m.CURRENT.resolve(strict=True);need(current in[m.RELEASES/OLD_SOURCE['commit'],m.RELEASES/record['source']['commit']],'UNKNOWN_CURRENT_RELEASE_REFUSED')

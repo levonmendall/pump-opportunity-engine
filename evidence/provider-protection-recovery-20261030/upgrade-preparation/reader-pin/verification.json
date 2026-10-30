@@ -1,0 +1,31 @@
+{
+  "at": 1793321641454,
+  "results": [
+    {
+      "file": "test-forward-original-upgrade.py",
+      "exitCode": 0,
+      "rawSha256": "fa5eac051d96c059dd300befadefc4ab361dbcbf9396d6cae0248792f3aa8dcc"
+    },
+    {
+      "file": "test-export-provider-recovery-forensics-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "7e2b7db98d8032970ad231b573a1d31a016fb426623566525d1e16cf58e345ad"
+    },
+    {
+      "file": "test-read-provider-recovery-forensics-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "4f60a2c9ce1ab522f198755170677b9bc93b112d593440a20c133acad2719394"
+    },
+    {
+      "file": "test-prepare-provider-recovery-package-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    }
+  ],
+  "allPassed": true,
+  "exporterSha256": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+  "readerSha256": "675ddd56d5c0674d4de39a197cc9b44474f7d5a85dd285a5116bee0a4a18857f",
+  "runtimeSourcePinsStillUnset": true,
+  "serviceChanges": 0,
+  "financialDatabaseOpened": false
+}
