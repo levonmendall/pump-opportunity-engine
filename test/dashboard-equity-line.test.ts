@@ -9,7 +9,7 @@ const start=source.indexOf('function plot(points){');
 const end=source.indexOf('function showSnapshot(',start);
 assert.ok(start>=0&&end>start,'dashboard must include one standalone equity-line renderer');
 const code=source.slice(start,end);
-type EquityPoint={at:string;equityUsd:number};
+type EquityPoint={at:string;equityUsd:number;segment?:number};
 class Element {
  children:Element[]=[];
  attributes:Record<string,string>={};
@@ -69,6 +69,16 @@ test('a genuine five-minute reporting outage breaks the line instead of inventin
  assert.equal(v.lines().length,2,'separate source runs are separate line segments');
  for(const line of v.lines())assert.equal((line.attributes.d??'').match(/L/g)?.length,1);
  assert.ok(!v.root.children.some(e=>e.attributes['data-chart-gap-bridge']!==undefined));
+});
+
+test('durable historical segments remain connected after bounded compaction without bridging true outages',()=>{
+ const v=chart();
+ v.plot([
+  {...point(0,980),segment:1},{...point(30,983),segment:1},
+  {...point(40,979),segment:2},{...point(42,987),segment:2},
+ ]);
+ assert.equal(v.lines().length,2,'historical gaps are not invented as continuous equity');
+ for(const line of v.lines())assert.equal((line.attributes.d??'').match(/L/g)?.length,1);
 });
 
 test('no historical equity or a single current value does not fabricate a past trajectory',()=>{
