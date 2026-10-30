@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-30T01:18:29.783477+00:00",
+  "scope": "Independent source-only projection review; no network, financial files or service operations",
+  "hashes": {
+    "src/operating-intelligence.ts": "ee08acc156758061fa38b40ef8b181eca796d3d3a202d73df6a0b8b52f3e9899",
+    "test/operating-intelligence.test.ts": "36d36b48aa43f3b53606942a09f559dafdaec0e9af2935381cc9480e178537aa"
+  },
+  "sourceUnchanged": true,
+  "focusedExitCode": 0
+}

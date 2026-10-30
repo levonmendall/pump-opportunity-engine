@@ -1,0 +1,15 @@
+{
+  "receiverCommit": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "actualPriorValidatorAccepted": true,
+  "existingDashboardRendersNotesAsText": true,
+  "newSchema": false,
+  "financialGatesChanged": false,
+  "projectedNotes": [
+    "Holding RPC current instance since 2026-10-30T01:11:40.000Z: calls 200; logical attempts 201; rapid probes 1; RPC retry successes 1; dispatch refusals 0; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+    "Holding RPC failure stages (current instance, not completed evaluations): physical-timeout:1.",
+    "Last holding RPC failure 2026-10-30T01:19:58.500Z: physical-timeout; physical request in flight: true. This records an acquisition stage, not a diagnosis of every earlier interruption.",
+    "mint: legacy holding retains its original exit rules; new entries use Adaptive Momentum v2."
+  ],
+  "providerRequests": 0,
+  "serviceControls": 0
+}
