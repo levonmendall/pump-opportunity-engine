@@ -5,7 +5,7 @@
   "helperBytes": 47607,
   "helperSha256": "119efbb3b44a0c039e4e21667a3f2a2f7de19b4c5a0f4474cdb50f347a738ecc",
   "stageDirectory": "/var/tmp/poe-paper-equity-startup-readonly-20261030",
-  "ownerCommandSha256": "3f38085b2dc2263c7ee3c292a2324065af99715e5f0c873bb2071752be1263f6",
+  "ownerCommandSha256": "a2290104aa77dd1574da7d7ec74f201cc3693280baad470d0eeb8e4d72f1b8a8",
   "rootInstallation": false,
   "serviceControlOperations": 0,
   "financialDatabaseOpened": false,
