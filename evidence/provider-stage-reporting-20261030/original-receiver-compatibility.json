@@ -2,14 +2,36 @@
   "receiverCommit": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
   "actualPriorValidatorAccepted": true,
   "existingDashboardRendersNotesAsText": true,
+  "candidateEmitterEnumCommit": "1bf5f78edf959420ec5703a02be6689aee8eb65f",
+  "candidatePhaseAndCodeArraysExactlyMatch": true,
+  "rpcClassificationCommit": "8d37c66f8c50bcbff20e0f4eba4ef466764abba1",
+  "allNineRpcStagesExactlyMatch": true,
+  "twoHoldingMaximumNoteScenarioAccepted": true,
+  "twoHoldingScenario": {
+    "noteCount": 10,
+    "maximumNoteCharacters": 451,
+    "intelligenceBytes": 5234,
+    "projectedNotes": [
+      "Original source meaning",
+      "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+      "Current runtime observed completed protection maxima since 2026-10-30T01:10:00.000Z: gap 3075 ms; quote age at use 65 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+      "Recorded holding-pricing refusals in this run: HELD_PRICING_BUSY:9007199254740991, HELD_PRICING_ABORTED:9007199254740991, HELD_PRICING_PROVIDER_TIMEOUT:9007199254740991, HELD_PRICING_PROVIDER_COOLDOWN:9007199254740991, HELD_PRICING_DISPATCH_UNAVAILABLE:9007199254740991, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:9007199254740991.",
+      "Holding-pricing refusal at 2026-10-30T01:19:59.000Z: HELD_PRICING_BANK_CLOCK_UNAVAILABLE. This is not a completed protection evaluation.",
+      "Holding RPC current instance since 2026-10-30T01:11:40.000Z: calls 200; logical attempts 201; rapid probes 1; RPC retry successes 1; dispatch refusals 0; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+      "Holding RPC failure stages (current instance, not completed evaluations): provider-restriction:9007199254740991, protection-retry-paced:9007199254740991, uninvoked-quota-or-spacing:9007199254740991, physical-settlement-wait:9007199254740991, physical-timeout:9007199254740991, caller-cancel-before-physical:9007199254740991, caller-cancel-during-physical:9007199254740991, transport-or-node-response:9007199254740991, local-admission:9007199254740991.",
+      "Last holding RPC failure 2026-10-30T01:19:58.500Z: protection-retry-paced; physical-in-flight false. Candidate quote failures (current market instance) 1: last 2026-10-30T01:19:55.000Z, So11111111111111111111111111111111111111112, pool-state/PILOT_RPC_COMPONENT_DISPATCH_EXPIRED, 1800 ms; caller/deadline aborted false/true. This is not a qualification or order.",
+      "So11111111111111111111111111111111111111112: Adaptive Momentum v2 historical executable net peak 0.400000000 SOL at 2026-10-30T01:19:59.000Z; measured trail 2000 bps (lagged-width-with-nondecreasing-boundary); dispersion 1000 bps/15 prior quotes; boundary 0.320000000 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T01:19:59.910Z. No fixed profit or profitable holding-time exit.",
+      "11111111111111111111111111111112: Adaptive Momentum v2 historical executable net peak 0.200000000 SOL at 2026-10-30T01:19:59.000Z; fallback trail 1500 bps (awaiting-new-high-water); dispersion 1000 bps/15 prior quotes; boundary 0.170000000 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T01:19:59.910Z. No fixed profit or profitable holding-time exit."
+    ]
+  },
   "newSchema": false,
   "financialGatesChanged": false,
   "projectedNotes": [
     "Current runtime observed completed protection maxima since 2026-10-30T01:10:00.000Z: gap 3075 ms; quote age at use 65 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
     "Holding RPC current instance since 2026-10-30T01:11:40.000Z: calls 200; logical attempts 201; rapid probes 1; RPC retry successes 1; dispatch refusals 0; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
-    "Holding RPC failure stages (current instance, not completed evaluations): physical-timeout:1.",
-    "Last holding RPC failure 2026-10-30T01:19:58.500Z: physical-timeout; physical request in flight: true. This records an acquisition stage, not a diagnosis of every earlier interruption.",
-    "mint: legacy holding retains its original exit rules; new entries use Adaptive Momentum v2."
+    "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, physical-timeout:1.",
+    "Last holding RPC failure 2026-10-30T01:19:58.500Z: protection-retry-paced; physical-in-flight false. Candidate quote failures (current market instance) 1: last 2026-10-30T01:19:55.000Z, So11111111111111111111111111111111111111112, pool-state/PILOT_RPC_COMPONENT_DISPATCH_EXPIRED, 1800 ms; caller/deadline aborted false/true. This is not a qualification or order.",
+    "So11111111111111111111111111111111111111112: Adaptive Momentum v2 historical executable net peak 0.400000000 SOL at 2026-10-30T01:19:59.000Z; measured trail 2000 bps (lagged-width-with-nondecreasing-boundary); dispersion 1000 bps/15 prior quotes; boundary 0.320000000 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T01:19:59.910Z. No fixed profit or profitable holding-time exit."
   ],
   "providerRequests": 0,
   "serviceControls": 0

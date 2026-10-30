@@ -1,0 +1,71 @@
+{
+  "completedAt": "2026-10-30T01:37:41.660495+00:00",
+  "source": "5dd5fe775aa7cf205f79acd61ff6bbcd0b5f8571",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/operating-intelligence.test.ts",
+        "test/operating-source-diagnostics.test.ts",
+        "test/adaptive-operating-intelligence.test.ts",
+        "test/pilot-reporting.test.ts",
+        "test/reporting.test.ts",
+        "test/snapshot-file-publisher.test.ts",
+        "test/native-paper-observation-reporting.test.ts",
+        "test/operating-financial-readiness.test.ts",
+        "test/dashboard.test.ts",
+        "test/operating-pnl-reporting.test.ts"
+      ],
+      "exitCode": 0,
+      "raw": "focused-tests.raw.txt",
+      "sha256": "aa1201340210fe8d53444ffe506dcfdbdb68d4aed97efeb131bd707f7e29635b"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "raw": "build.raw.txt",
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "evidence/provider-stage-reporting-20261030/check-original-receiver.mts"
+      ],
+      "exitCode": 0,
+      "raw": "original-receiver.raw.txt",
+      "sha256": "fbc64b11017e0414894691aa511f1c9e34da04ed91b6f80b2445c62dc6736dee"
+    }
+  ],
+  "sourceUnchanged": true,
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "serviceControls": 0,
+  "schemaChanges": false,
+  "receiverSource": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "pairedCurrentRunEmitterCommit": "a1420337c041eaa942cc29d0d0806a311923f49b",
+  "pairedCandidateQuoteEmitterCommit": "1bf5f78edf959420ec5703a02be6689aee8eb65f",
+  "pairedAdaptiveGetterCommit": "d2b7b6ad224d8df637f33deedfcc0807a9859eba",
+  "latestCandidateAndGetterExtrasIndependentReview": "Pending parent review; earlier stage/current metrics independently passed",
+  "deployed": false,
+  "pairedRpcClassificationCommit": "8d37c66f8c50bcbff20e0f4eba4ef466764abba1",
+  "additionalOriginalReceiverScenario": {
+    "allNineRpcStagesExactlyMatch": true,
+    "twoHoldingMaximumNoteScenarioAccepted": true,
+    "scriptSha256": "30b016c13249082340a4ce5668ff044ea3359a914983ae4296dedbf516b9586e",
+    "rawSha256": "6544bc6a49630a7d31dd8ba2d3c585917368471789a86eedf6b433e1b0365d0f",
+    "noteCount": 10,
+    "maximumNoteCharacters": 451,
+    "intelligenceBytes": 5234
+  },
+  "parentComposedSource": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "parentComposedProjectionAndTestBytesMatch": true
+}
