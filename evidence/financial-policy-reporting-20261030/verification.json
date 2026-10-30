@@ -402,5 +402,12 @@
   },
   "originalFinancialOrServiceActions": 0,
   "providerRequests": 0,
-  "scope": "pure reporting projection/validation only; fixture tests are not live market proof"
+  "scope": "pure reporting projection/validation only; fixture tests are not live market proof",
+  "testSummary": {
+    "tests": 85,
+    "pass": 85,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  }
 }
