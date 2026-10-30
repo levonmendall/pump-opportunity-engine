@@ -1,0 +1,7 @@
+# Existing dashboard byte-counter clarification
+
+Prepared from the actual owner frontend `bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1`. The only application change is two display strings in `src/dashboard.ts`: the metric is labeled **RPC-accounted bytes**, with a clarification that HTTP/control-stream accounting overlaps native-stream receipts and must not be summed into a network total. The legacy JSON field remains `snapshot.intelligence.provider.rpcResponseBytes`; all values, schemas, APIs, source identities, account protections and financial gates are unchanged.
+
+The read-only source trace in `source-field-semantics.json` demonstrates the overlap: the same native socket delta increments `native.socketBytes` and is charged by `accountControlBytes` into `ComponentBudget.wsBytes`. `ComponentBudget.bytes` contains HTTP and WebSocket bytes, and `PilotRpc.newAccountedResponseBytes` supplies the legacy public metric. No OS network volume or exclusive HTTP-body measurement is claimed.
+
+All 42 existing relevant dashboard tests and compilation passed, with source hashes unchanged before/after. No new cosmetic tests, provider requests, service changes, credentials, financial database reads, pushes or deployments were involved. The owner's equity line, collapsible PAPER trades, candidate graph and DexScreener links remain intact. The final native APP69 source was not changed; this branch is only the existing Render owner frontend.

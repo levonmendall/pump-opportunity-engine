@@ -1,0 +1,92 @@
+{
+  "kind": "POE_READ_ONLY_BYTE_SCOPE_DEMONSTRATION",
+  "runtimeSource": "5675961a0ad05df508eec6928644c9e403be0811",
+  "ownerFrontendSource": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "legacyPublicField": "snapshot.intelligence.provider.rpcResponseBytes",
+  "sourceField": "status.usage.rpc.newAccountedResponseBytes",
+  "scope": "RPC-accounted HTTP and control-stream receipts; not an exclusive HTTP-body counter or OS network total",
+  "overlap": "The same native socket delta increments native.socketBytes and is charged through accountControlBytes into ComponentBudget.wsBytes. Do not sum these overlapping counters.",
+  "newLabel": "RPC-accounted bytes",
+  "newClarifier": "RPC-accounted bytes include HTTP and control-stream receipts. Native-stream bytes overlap this accounting; these counters are separate scopes, not an additive network total.",
+  "counterValuesChanged": false,
+  "wireFieldsChanged": false,
+  "financialGatesChanged": false,
+  "sourceEvidence": [
+    {
+      "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+      "path": "src/pilot-native-flow.ts",
+      "sha256": "19e57eeda5e76c37e8b61e71cd4bb8caf3ef8c7863840e980cc8187b74efd83b",
+      "evidence": [
+        {
+          "line": 90,
+          "sourceFragment": "this.socketBytes+=delta"
+        },
+        {
+          "line": 90,
+          "sourceFragment": "this.options.control.accountControlBytes(delta)"
+        }
+      ]
+    },
+    {
+      "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+      "path": "src/run-native-paper.ts",
+      "sha256": "e03c84c5e5b537c79cab360cf012e3330dedd291798533c9f65221d69ce43d9a",
+      "evidence": [
+        {
+          "line": 318,
+          "sourceFragment": "accountControlBytes:(bytes:number)=>currentRpc.accountControlBytes(bytes)"
+        }
+      ]
+    },
+    {
+      "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+      "path": "src/pilot-rpc.ts",
+      "sha256": "2fa4166edd4c2ba2b66f34a128fdf8f51f989f0ee8b3f0fba40761e0f836fa3d",
+      "evidence": [
+        {
+          "line": 370,
+          "sourceFragment": "this.budget.chargePassiveWs(bytes)"
+        },
+        {
+          "line": 400,
+          "sourceFragment": "newAccountedResponseBytes:bytes-this.initial.bytes"
+        }
+      ]
+    },
+    {
+      "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+      "path": "src/component-budget.ts",
+      "sha256": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+      "evidence": [
+        {
+          "line": 105,
+          "sourceFragment": "get bytes(){return this.state.baseline.bytes+this.state.httpBytes+this.state.wsBytes;}"
+        },
+        {
+          "line": 127,
+          "sourceFragment": "this.state.wsBytes+=n"
+        }
+      ]
+    },
+    {
+      "commit": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+      "path": "src/operating-intelligence.ts",
+      "sha256": "4741d8fc1cab09cf2be7a49c6c9e10fcbd9cd3e439c2445e93292dae14230a3c",
+      "evidence": [
+        {
+          "line": 77,
+          "sourceFragment": "rpcResponseBytes:count(rpc.newAccountedResponseBytes)"
+        },
+        {
+          "line": 77,
+          "sourceFragment": "nativeStreamBytes:count(native.socketBytes)"
+        }
+      ]
+    }
+  ],
+  "providerRequests": 0,
+  "serviceChanges": 0,
+  "credentialsRead": false,
+  "financialDatabaseOpened": false,
+  "numericForwardMeasurementClaimed": false
+}
