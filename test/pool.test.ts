@@ -4,10 +4,12 @@ import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PublicKey} from '@solana/web3.js';
+import BN from 'bn.js';
 import {ExtensionType,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID} from '@solana/spl-token';
 import {ReadOnlyRpc} from '../src/network.js';
 import {Recorder} from '../src/recorder.js';
-import {quotePool,quotePositionSell,verifyMigration,checkMintExtensions,associatedAccountRequirements} from '../src/pool.js';
+import {quotePool,quotePositionSell,verifyMigration,checkMintExtensions,associatedAccountRequirements,decodeSupportedPoolAccounts,buyFromState,positionSellFromState} from '../src/pool.js';
+import {PUMP_AMM_SDK,buyQuoteInput,sellBaseInput,computeFeesBps} from '../src/sdk.js';
 
 // Captured real observations are regression inputs ONLY, never performance data.
 for(const run of ['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z']){
@@ -142,10 +144,44 @@ test('buy fee-budget difference is labeled separately from sell deductions and a
     const quote=await quotePool(f.rpc,new PublicKey(f.proof.quote.mint),10_000_000n,f.rec,f.proof.origin.slot);
     assert.equal(quote.embeddedCosts.buyBudgetAboveInternalCurveInputLamports,String(10_000_000n-BigInt(quote.buy.internalQuoteWithoutFees)));
     assert.match(quote.embeddedCosts.buyClassification,/rounding/);
-    assert.ok(BigInt(quote.embeddedCosts.correspondingSellPoolFeeLamports)>0n);
+    assert.ok(BigInt(quote.embeddedCosts.correspondingSellPoolFeeLamports!)>0n);
     assert.equal(quote.quoteAssociatedAccount.accountLengthBytes,165);assert.equal(quote.quoteAssociatedAccount.rentLamports,null);
   }finally{Date.now=realNow;f.close();}
   assert.deepEqual(associatedAccountRequirements(TOKEN_PROGRAM_ID,[]).accountExtensions,[]);
   assert.deepEqual(associatedAccountRequirements(TOKEN_2022_PROGRAM_ID,[ExtensionType.MetadataPointer,ExtensionType.TokenMetadata]).accountExtensions,['ImmutableOwner']);
   assert.throws(()=>associatedAccountRequirements(TOKEN_2022_PROGRAM_ID,[ExtensionType.TransferFeeConfig]),/UNMODELED/);
+});
+
+test('an unavailable pre-buy diagnostic sell does not veto a valid exact-input buy or claim an exit',()=>{
+  const f=capturedPoolFixture();
+  try{
+    const mint=new PublicKey(f.proof.quote.mint),key=new PublicKey(f.proof.quote.pool),wire=f.state.value[0];
+    const first=PUMP_AMM_SDK.decodePool({...wire,owner:new PublicKey(wire.owner),data:Buffer.from(wire.data[0],'base64')});
+    const original=decodeSupportedPoolAccounts(mint,key,first,f.state.value,f.state.context,f.proof.quote.requestedAt,f.proof.quote.receivedAt);
+    // Explicitly synthetic reserve perturbation of retained, decoded pool data.
+    // No observed opportunity, original portfolio, live provider or fill exists.
+    const opts={...original.opts,quoteReserve:new BN('1000000'),virtualQuoteReserves:new BN('1000000000000'),feeBucketsTotal:new BN(0)};
+    const summary={...original.summary,rawQuoteReserve:'1000000',virtualQuoteReserves:'1000000000000',effectiveQuoteReserve:'1000001000000',feeBuckets:'0'};
+    const budget=new BN('500000000'),sdkBuy=buyQuoteInput({...opts,quote:budget});
+    assert.ok(sdkBuy.base.gtn(0));
+    assert.throws(()=>sellBaseInput({...opts,base:sdkBuy.base}),/Insufficient real quote reserves/);
+    const records:Array<{kind:string;data:any}>=[],quote=buyFromState({opts,summary},500000000n,{record(kind,data){records.push({kind,data});}});
+    assert.equal(quote.buy.outputBaseUnits,sdkBuy.base.toString());
+    assert.equal(quote.buy.internalQuoteWithoutFees,sdkBuy.internalQuoteWithoutFees.toString());
+    assert.equal(quote.correspondingSell,null);assert.equal(quote.embeddedCosts.correspondingSellPoolFeeLamports,null);
+    assert.equal(quote.correspondingSellUnavailableReason,'SAME_STATE_REAL_VAULT_UNAVAILABLE');
+    assert.equal(records.length,1);assert.equal(records[0]!.data.correspondingSell,null);
+    // The actual strategy still must independently verify a post-entry exit.
+    const fees=computeFeesBps({...opts,baseMintSupply:new BN(opts.baseMintAccount.supply.toString()),quoteReserve:opts.quoteReserve.add(opts.virtualQuoteReserves)});
+    const fee=(amount:BN,rate:BN)=>amount.mul(rate).addn(9999).divn(10000);
+    const retained=fee(sdkBuy.internalQuoteWithoutFees,fees.protocolFeeBps).add(PublicKey.default.equals(opts.coinCreator)?new BN(0):fee(sdkBuy.internalQuoteWithoutFees,fees.creatorFeeBps));
+    const after={...opts,baseReserve:opts.baseReserve.sub(sdkBuy.base),quoteReserve:opts.quoteReserve.add(budget),feeBucketsTotal:retained};
+    const postSell=sellBaseInput({...after,base:sdkBuy.base});assert.ok(postSell.uiQuote.gtn(0));
+    assert.equal(postSell.uiQuote.toString(),'488145180');
+    // A genuine insufficient vault remains unavailable in the actual-size exit
+    // adapter; making the unrelated diagnostic nullable cannot invent proceeds.
+    assert.throws(()=>positionSellFromState({...original,opts:{...after,quoteReserve:new BN('1000'),feeBucketsTotal:new BN(0)}},BigInt(sdkBuy.base.toString()),{record(){}}),/Insufficient real quote reserves/);
+    for(const invalid of [{...opts,feeBucketsTotal:new BN('1000001')},{...opts,quoteReserve:new BN(0)},{...opts,baseReserve:new BN(0)},{...opts,virtualQuoteReserves:new BN('-1000000')}])assert.throws(()=>buyFromState({opts:invalid,summary},500000000n,{record(){}}),/UNBACKED_RETAINED_FEE_BUCKETS|NONPOSITIVE_EFFECTIVE_RESERVES/);
+    assert.throws(()=>buyFromState({opts,summary},1n,{record(){}}),/ZERO_BUY_OUTPUT|fees/);
+  }finally{f.close();}
 });

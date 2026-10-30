@@ -120,10 +120,23 @@ export async function quotePool(rpc:ReadOnlyRpc,mint:PublicKey,buyLamports:bigin
 export function buyFromState<S extends ReturnType<typeof decodeSupportedPoolAccounts>['summary']>({opts,summary}:{opts:ReturnType<typeof decodeSupportedPoolAccounts>['opts'];summary:S},buyLamports:bigint,rec:EvidenceRecorder,signal?:AbortSignal){
   need(typeof buyLamports==='bigint'&&buyLamports>0n&&buyLamports<=MAX_TOKEN_UNITS,'INTEGRATION_SIZE_OUT_OF_RANGE');
   signal?.throwIfAborted();
+  need(opts.baseReserve.gtn(0)&&opts.quoteReserve.gtn(0)&&opts.quoteReserve.add(opts.virtualQuoteReserves).gtn(0),'NONPOSITIVE_EFFECTIVE_RESERVES');
+  need(opts.feeBucketsTotal.gten(0)&&opts.feeBucketsTotal.lte(opts.quoteReserve),'UNBACKED_RETAINED_FEE_BUCKETS');
   const buy=buyQuoteInput({...opts,quote:n(buyLamports)});need(buy.base.gtn(0),'ZERO_BUY_OUTPUT');
-  const sell=sellBaseInput({...opts,base:buy.base});
+  // This separate diagnostic sells against the PRE-BUY state. Its unavailable
+  // real vault cannot invalidate an executable buy or stand in for the V3.1
+  // post-entry full-position liquidation check. Only known sell-domain failures
+  // become an explicit unavailable diagnostic; buy/data/unknown errors escape.
+  let sell:ReturnType<typeof sellBaseInput>|null=null;
+  let correspondingSellUnavailableReason:'SAME_STATE_REAL_VAULT_UNAVAILABLE'|'SAME_STATE_FEE_DUST'|'ZERO_SAME_STATE_SELL_OUTPUT'|null=null;
+  try{sell=sellBaseInput({...opts,base:buy.base});if(sell.uiQuote.lten(0)){sell=null;correspondingSellUnavailableReason='ZERO_SAME_STATE_SELL_OUTPUT';}}
+  catch(error){
+    if(error instanceof Error&&error.message==='Insufficient real quote reserves to cover the sell output.')correspondingSellUnavailableReason='SAME_STATE_REAL_VAULT_UNAVAILABLE';
+    else if(error instanceof Error&&error.message==='Fees exceed total output; final quote is negative.')correspondingSellUnavailableReason='SAME_STATE_FEE_DUST';
+    else throw error;
+  }
   // Independent quotes at one observed state; never a modeled future round trip.
-  const currentResult={...summary,buy:{inputLamports:buyLamports.toString(),outputBaseUnits:buy.base.toString(),internalQuoteWithoutFees:buy.internalQuoteWithoutFees.toString()},correspondingSell:{inputBaseUnits:buy.base.toString(),outputLamports:sell.uiQuote.toString()},embeddedCosts:{buyBudgetAboveInternalCurveInputLamports:(buyLamports-BigInt(buy.internalQuoteWithoutFees.toString())).toString(),buyClassification:'SDK fee budget and integer rounding; not an itemized charged-fee total' as const,correspondingSellPoolFeeLamports:sell.internalQuoteAmountOut.sub(sell.uiQuote).toString()},limitations:['Same-state independent buy and sell estimates; no financial fill or future execution guarantee.','Pool deductions are already embedded in amounts; do not debit them again. Buy budget difference includes SDK rounding.','Excludes gas/rent/priority costs at quote layer; accounting must add them.','Confirmed batch context is retained; no claim of cross-source atomicity.']};
+  const currentResult={...summary,buy:{inputLamports:buyLamports.toString(),outputBaseUnits:buy.base.toString(),internalQuoteWithoutFees:buy.internalQuoteWithoutFees.toString()},correspondingSell:sell?{inputBaseUnits:buy.base.toString(),outputLamports:sell.uiQuote.toString()}:null,correspondingSellUnavailableReason,embeddedCosts:{buyBudgetAboveInternalCurveInputLamports:(buyLamports-BigInt(buy.internalQuoteWithoutFees.toString())).toString(),buyClassification:'SDK fee budget and integer rounding; not an itemized charged-fee total' as const,correspondingSellPoolFeeLamports:sell?sell.internalQuoteAmountOut.sub(sell.uiQuote).toString():null},limitations:['Same-state independent buy and sell estimates; no financial fill or future execution guarantee. An unavailable corresponding sell is not a zero fill or a post-entry exit quote.','Pool deductions are already embedded in amounts; do not debit them again. Buy budget difference includes SDK rounding.','Excludes gas/rent/priority costs at quote layer; accounting must add them.','Confirmed batch context is retained; no claim of cross-source atomicity.']};
   rec.record('size-specific-quote',currentResult);return currentResult;
 }
 
