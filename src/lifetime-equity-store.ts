@@ -94,10 +94,12 @@ function compactPlot(db: Database.Database) {
  */
 export class LifetimeEquityStore {
   private readonly db: Database.Database;
+  private readonly directory: string;
   constructor(file: string) {
     if (!isAbsolute(file) || resolve(file) !== file || !file.endsWith('.sqlite') ||
         /(?:^|\/)(?:ledger|financial)(?:\.|\/)/i.test(file)) throw Error('EQUITY_SIDECAR_PATH_INVALID');
     const parent = dirname(file);
+    this.directory = parent;
     mkdirSync(parent, {recursive: true, mode: 0o700});
     const dir = lstatSync(parent);
     if (!dir.isDirectory() || dir.isSymbolicLink() || dir.uid !== process.getuid?.() ||
@@ -135,6 +137,11 @@ export class LifetimeEquityStore {
         equity_usd REAL NOT NULL,
         segment INTEGER NOT NULL,
         kind TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS equity_imported_capture (
+        sha256 TEXT PRIMARY KEY,
+        accepted_at_ms INTEGER NOT NULL,
+        observation_count INTEGER NOT NULL
       );
     `);
     this.db.transaction(() => {
@@ -188,6 +195,94 @@ export class LifetimeEquityStore {
       this.db.prepare('UPDATE equity_identity SET last_sequence=?, last_sha=? WHERE id=1')
         .run(snapshot.sequence, sha256);
       return 'accepted';
+    }).immediate();
+  }
+  /**
+   * Explicit one-time import of the ACTUAL old accepted Render equity readings,
+   * captured read-only and pinned to a hash by the admin runner before a deploy.
+   * Not a trading-P&L reconstruction. Requires owner-reviewed placement beside
+   * this sidecar; never searches the financial ledger or arbitrary directories.
+   */
+  importReceiverCapture(file: string, expectedSha256: string, now = Date.now()): 'imported' | 'duplicate' {
+    if (!isAbsolute(file) || resolve(file) !== file ||
+        dirname(file) !== this.directory || !file.split('/').at(-1)?.startsWith('accepted-original-equity-') ||
+        !file.endsWith('.json') || !/^[a-f0-9]{64}$/.test(expectedSha256))
+      throw Error('EQUITY_CAPTURE_PIN_REQUIRED');
+    const fd = openSync(file, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+    let raw: Buffer;
+    try {
+      const first = fstatSync(fd);
+      if (!first.isFile() || first.nlink !== 1 || first.uid !== process.getuid?.() ||
+          (first.mode & 0o077) !== 0 || first.size < 50 || first.size > 524288)
+        throw Error('EQUITY_CAPTURE_NOT_PRIVATE');
+      raw = readFileSync(fd);
+      const second = fstatSync(fd);
+      if (raw.length !== first.size || second.ino !== first.ino ||
+          second.mtimeMs !== first.mtimeMs || second.ctimeMs !== first.ctimeMs)
+        throw Error('EQUITY_CAPTURE_CHANGED');
+    } finally { closeSync(fd); }
+    const digest = createHash('sha256').update(raw).digest('hex');
+    if (digest !== expectedSha256) throw Error('EQUITY_CAPTURE_HASH_MISMATCH');
+    const v = JSON.parse(raw.toString('utf8')) as Record<string, unknown>;
+    if (!v || typeof v !== 'object' || v.kind !== 'POE_ACCEPTED_ORIGINAL_EQUITY_RECEIVER_CAPTURE' ||
+        v.accountId !== ORIGINAL_POE_ACCOUNT || v.inceptionAt !== ORIGINAL_POE_INCEPTION ||
+        typeof v.sourceAt !== 'string' || !Number.isFinite(Date.parse(v.sourceAt)) ||
+        typeof v.receiverBodySha256 !== 'string' || !/^[a-f0-9]{64}$/.test(v.receiverBodySha256))
+      throw Error('EQUITY_CAPTURE_ACCOUNT_OR_RECEIPT');
+    const h = v.receiverHistory as Record<string, unknown> | undefined;
+    if (!h || h.source !== 'accepted-authoritative-portfolio-equity' ||
+        h.retention !== 'receiver-memory-only' || !Array.isArray(h.points) ||
+        h.points.length < 1 || h.points.length > 1440)
+      throw Error('EQUITY_CAPTURE_SCHEMA');
+    let prior = Date.parse(ORIGINAL_POE_INCEPTION) - 1;
+    const points: {at: number; usd: number}[] = [];
+    for (const item of h.points) {
+      if (!item || typeof item !== 'object' || Array.isArray(item) ||
+          Object.keys(item).sort().join('|') !== 'at|equityUsd') throw Error('EQUITY_CAPTURE_POINT_SCHEMA');
+      const p = item as Record<string, unknown>;
+      const at = typeof p.at === 'string' ? Date.parse(p.at) : NaN;
+      if (!Number.isSafeInteger(at) || at <= prior ||
+          at < Date.parse(ORIGINAL_POE_INCEPTION) || at > Date.parse(v.sourceAt) ||
+          at > now + 30_000 || typeof p.equityUsd !== 'number' ||
+          !Number.isFinite(p.equityUsd) || p.equityUsd < 0)
+        throw Error('EQUITY_CAPTURE_CHRONOLOGY_OR_VALUE');
+      points.push({at,usd:p.equityUsd});prior=at;
+    }
+    return this.db.transaction(() => {
+      const exists = this.db.prepare('SELECT 1 FROM equity_imported_capture WHERE sha256=?').get(digest);
+      if (exists) return 'duplicate';
+      for (const point of points) {
+        const existing = this.db.prepare('SELECT equity_usd FROM equity_samples WHERE at_ms=?')
+          .get(point.at) as {equity_usd: number} | undefined;
+        if (existing) {
+          if (existing.equity_usd !== point.usd) throw Error('EQUITY_CAPTURE_SOURCE_VALUE_CONFLICT');
+          continue;
+        }
+        this.db.prepare('INSERT INTO equity_samples VALUES(?,?,?,?,?,?)')
+          .run('receiver:' + point.at, point.at, point.usd, 0, 'observed', v.receiverBodySha256);
+      }
+      // The capture may precede the active source: re-evaluate gap boundaries
+      // across all TRUE timestamped original-account observations.
+      const all = this.db.prepare('SELECT sequence,at_ms,equity_usd,kind FROM equity_samples ORDER BY at_ms')
+        .all() as (PointRow & {sequence:string})[];
+      let priorAt = -Infinity, seg = 0;
+      const update = this.db.prepare('UPDATE equity_samples SET segment=? WHERE sequence=?');
+      this.db.prepare('DELETE FROM equity_plot').run();
+      const insert = this.db.prepare('INSERT INTO equity_plot VALUES(?,?,?,?)');
+      const drop = this.db.prepare('DELETE FROM equity_plot WHERE at_ms=?');
+      let previousPlot: PointRow | null = null;
+      for (const row of all) {
+        if (priorAt >= 0 && row.at_ms - priorAt > EQUITY_GAP_MS) seg++;
+        update.run(seg,row.sequence);
+        if (previousPlot && Math.floor(previousPlot.at_ms / 60_000) === Math.floor(row.at_ms / 60_000) &&
+            previousPlot.kind !== 'inception') drop.run(previousPlot.at_ms);
+        insert.run(row.at_ms,row.equity_usd,seg,row.kind);
+        previousPlot = {...row,segment:seg};
+        compactPlot(this.db);
+        priorAt = row.at_ms;
+      }
+      this.db.prepare('INSERT INTO equity_imported_capture VALUES(?,?,?)').run(digest,now,points.length);
+      return 'imported';
     }).immediate();
   }
   history(now = Date.now()): LifetimeEquityHistory {
