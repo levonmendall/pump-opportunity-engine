@@ -1,0 +1,136 @@
+{
+  "kind": "poe-original-current-cgroup-memory-measurement",
+  "workflowRunId": 40987776996,
+  "adminCommit": "6b0051304ebfd2921c8a94ede93d98edf093a364",
+  "sampleAt": 1793324768306,
+  "sampleUtc": "2026-10-30T01:46:08.306000+00:00",
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "service": {
+    "MainPID": "2479299",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "ControlGroup": "/system.slice/poe-runtime.service"
+  },
+  "ownedProcesses": [
+    {
+      "pid": 2479299,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 22.03,
+      "rssBytes": 31920128,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [],
+      "argvExported": false
+    },
+    {
+      "pid": 2479302,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 440.2,
+      "rssBytes": 412737536,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        1024
+      ],
+      "argvExported": false
+    },
+    {
+      "pid": 2479303,
+      "role": "original-publisher",
+      "ownerUid": 988,
+      "cpuSeconds": 11.47,
+      "rssBytes": 179142656,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        128
+      ],
+      "argvExported": false
+    }
+  ],
+  "serviceMemory": {
+    "current": {
+      "available": true,
+      "bytes": 880521216,
+      "unlimited": false
+    },
+    "max": {
+      "available": true,
+      "bytes": 3221225472,
+      "unlimited": false
+    },
+    "peak": {
+      "available": true,
+      "bytes": 919273472,
+      "unlimited": false
+    }
+  },
+  "serviceMemoryBreakdown": {
+    "available": true,
+    "anon": 493903872,
+    "file": 362909696,
+    "file_dirty": 229376,
+    "file_writeback": 0,
+    "slab": 9849368,
+    "meaning": "Kernel cgroup bytes; file/dirty/writeback/slab overlap. These counters alone cannot diagnose a heap leak."
+  },
+  "serviceMemoryEvents": {
+    "available": true,
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0,
+    "sock_throttled": 0
+  },
+  "serviceCpu": {
+    "available": true,
+    "usage_usec": 473959690,
+    "user_usec": 450175956,
+    "system_usec": 23783734,
+    "nr_periods": 0,
+    "nr_throttled": 0,
+    "throttled_usec": 0
+  },
+  "serviceIo": {
+    "available": true,
+    "scope": "poe-runtime.service cgroup only; not host I/O",
+    "deviceCount": 1,
+    "devices": [
+      {
+        "device": "259:0",
+        "rbytes": 249856,
+        "wbytes": 3795574784,
+        "rios": 36,
+        "wios": 44334,
+        "dbytes": 0,
+        "dios": 0
+      }
+    ],
+    "totals": {
+      "rbytes": 249856,
+      "wbytes": 3795574784,
+      "rios": 36,
+      "wios": 44334,
+      "dbytes": 0,
+      "dios": 0
+    },
+    "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+  },
+  "hostMemory": {
+    "available": true,
+    "totalBytes": 8153255936,
+    "availableBytes": 6703566848
+  },
+  "filesystem": {
+    "available": true,
+    "capacityBytes": 331712798720,
+    "availableBytes": 286539608064
+  },
+  "interpretation": "One actual kernel cgroup measurement; anonymous memory, file cache and process RSS are distinct, overlapping measurements. This sample alone does not establish a leak or a time trend.",
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceChanges": 0,
+  "rawLogSha256": "27170bd8aca9c0c3f304d9a7aa0e191269759f3aabedeed5b6d1e753c260ba1e"
+}
