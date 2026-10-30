@@ -248,6 +248,24 @@ function renderCandidateIntelligence(){
 
 function signal(title,message,label,mode,time){put('stateTitle',title);put('state',message);put('sourceLabel',label);put('lastSync',time||'RECEIVER · AWAITING DATA');document.body.dataset.link=mode}
 function clock(){put('utcClock',new Date().toISOString().slice(11,19)+' UTC')}
+// Display only the verified source policy. Legacy snapshots never acquire a
+// percentage limit or execution guarantee through dashboard-side inference.
+function financialPolicyCards(s){
+ const policy=s.intelligence?.financialPolicy,risk=policy?.version==='poe-paper-financial-policy-v1'?policy.risk:null;
+ const usd=v=>v===null||v===undefined?'Unavailable':money(Number(v)/1e6),percent=v=>v===null||v===undefined?'Unavailable':(v/100).toFixed(2)+'%';
+ const ready=risk?.state==='ready',entry=risk?.entry,daily=risk?.daily,execution=policy?.version==='poe-paper-financial-policy-v1'?policy.execution:null,valuation=policy?.version==='poe-paper-financial-policy-v1'?policy.valuation:null;
+ const observed=valuation?.lastObservation,usdObservation=observed?' SOL/USD last '+observed.outcome+' ('+observed.reasonCode+') at '+observed.completedAt+'; publication time unknown.':valuation?' SOL/USD not yet observed in this source instance.':'';
+ const entryFoot=(entry?(ready?'':'Risk facts unavailable ('+risk.reasonCode+'). ')+'5% target cost as of '+risk.asOf+'; cash ceiling '+(ready?entry.cashLimitedConsumedCostSol??'unavailable':'unavailable')+' SOL before token rent/liquidity. Entry safeguards still apply.':'Policy unavailable from this source; legacy figures retained without assuming 5% sizing.')+usdObservation;
+ const remaining=!ready?null:daily?.drawdownBps===null||daily?.drawdownBps===undefined?null:Math.max(0,daily.limitBps-daily.drawdownBps);
+ const modelLast=execution?.last,modelTiming=modelLast?' Last observed RPC '+(modelLast.observedRpcMs??'unavailable')+' ms; modeled delay '+(modelLast.modeledDelayMs??'unavailable')+' ms; scenario fee '+(modelLast.feeSol??'unavailable')+' SOL; '+modelLast.stage+' at '+modelLast.at+'.':'';
+ const modelFoot=execution?execution.plans+' plans; '+execution.supportedLandingStates+' supported landing states, '+execution.preflightUnsubmitted+' preflight unsubmitted, '+execution.unknownLanding+' unknown. Current adapter preparations, not financial fills.'+modelTiming+' No chain landing or fee observed.':'Execution model unavailable from this source; historical PAPER records retain their original model.';
+ const drawdownFoot=daily?'HWM '+usd(daily.highWaterMicroUsd)+(daily.highWaterAt?' at '+daily.highWaterAt.slice(11,19)+' UTC':'')+' · remaining '+percent(remaining)+' / '+usd(ready?daily.remainingBeforePauseMicroUsd:null)+'; '+(daily.lossPaused?'loss guard paused':'loss guard not latched')+'. USD equity includes SOL/USD; '+daily.day+' · '+daily.historyCoverage+'.':'Daily high-water and remaining allowance unavailable; no historical peak inferred.';
+ return [
+ [entry?'NEXT PAPER ENTRY · 5% TARGET':'NEXT PAPER ENTRY POLICY',entry&&ready?usd(entry.targetConsumedCostMicroUsd):'Unavailable',entryFoot,null],
+ [daily?'DAILY DRAWDOWN · 10% GUARD':'DAILY DRAWDOWN POLICY',daily?percent(ready?daily.drawdownBps:null)+' / '+percent(daily.limitBps):'Unavailable',drawdownFoot,null],
+ ['PAPER EXECUTION MODEL',execution?(execution.state==='active'?'Active PAPER model':'Unavailable'):'Unavailable',modelFoot,null],
+ ];
+}
 function renderCards(s){
  const b=s.balances,operating=!!s.intelligence;const data=[
  ['PORTFOLIO EQUITY',money(b.equityUsd),'Includes passive SOL/USD valuation',b.equityUsd],
@@ -259,7 +277,7 @@ function renderCards(s){
  ['MODELED EXECUTION COSTS',money(b.executionCostsUsd),'Simulated transaction costs',null],
  ['OPERATING COSTS',money(b.operatingCostsUsd),'Cost evidence: '+s.costLabels.operating,null],
  ['POSITION COST / EXPOSURE',money(b.positionCostUsd)+' / '+money(b.markedExposureUsd),'USD · cost / marked exposure',null],
- ['DRAWDOWN',money(b.drawdownUsd),'USD · reported risk',null],
+ ...financialPolicyCards(s),
  ['PASSIVE SOL BENCHMARK',money(b.passiveSolEquityUsd),'Reference holding · SOL/USD exposure',null],
  ['INCEPTION REFERENCE',money(s.account.initialUsd),'Virtual starting capital',null]
  ];
