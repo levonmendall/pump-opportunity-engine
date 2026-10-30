@@ -1,0 +1,32 @@
+✔ modern source freshness is independent of unavailable USD and 2s financial reconciliation validity (16.940246ms)
+✔ modern valuation and reconciliation staleness remain warnings without hiding source or publisher staleness (2.203404ms)
+✔ actual selected capture loss is unavailable even while broad discovery continues, and null is unknown (1.650936ms)
+✔ held protection and evidence pressure are explicit source-time facts, not inferred from browser age or cumulative errors (0.492239ms)
+✔ known entry restrictions remain visible and unknown blocker text never enters derived facets (0.450197ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_MANUAL_PAUSE (0.501804ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_SAFE_STOP (0.428795ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_DAILY_LOSS (0.445039ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_FINANCIAL_UNCERTAINTY (0.648901ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_EVIDENCE_UNAVAILABLE (0.77611ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_USD_UNAVAILABLE (0.373113ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_LIQUIDATION_UNAVAILABLE (0.28323ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_RECONCILIATION_REQUIRED (0.344721ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_RECONCILIATION_STALE (0.383197ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_PROVIDER_UNAVAILABLE (0.626969ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_SOURCE_UNAVAILABLE (0.285162ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_MONITORING_UNAVAILABLE (0.270461ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_READINESS_REQUIRED (0.354065ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_PROTECTION_RECOVERY_REQUIRED (0.232034ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_FINANCIAL_PAUSED (0.22267ms)
+✔ a familiar entry-code prefix cannot export unknown private blocker text (0.211403ms)
+✔ legacy sources keep combined market/accounting validity semantics and do not gain inferred capture facts (1.127461ms)
+✔ 57 actual 16:51–17:06 observations separate 39 reconciliation-only false alarms from two real capture losses (8.574052ms)
+✔ actual served browser uses shared classifier, preserves true disconnections/read failures/stops, and never makes financial timestamps source freshness (57.858255ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 459.898573

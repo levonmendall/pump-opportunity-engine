@@ -1,0 +1,60 @@
+{
+  "verifiedAt": "2026-10-29T18:26:02.548969+00:00",
+  "baseCommit": "49624682672056fa50201b8af638281314576e5e",
+  "classification": "OFFLINE_VERIFIED_STATIC_WORDING_ONLY_NOT_DEPLOYED",
+  "files": {
+    "src/reporting.ts": {
+      "bytes": 24780,
+      "sha256": "b5a28ad6a8a37cb00f0187dad2cda678e57482c040d9e5e3a5fde6c68ea153a2"
+    },
+    "src/dashboard.ts": {
+      "bytes": 70801,
+      "sha256": "5392ab127011ac69aa28e6b61fc2d75dc723a156975c1ba72e229e266fa76957"
+    },
+    "test/reporting-operating-freshness.test.ts": {
+      "bytes": 18215,
+      "sha256": "16d9cb1f090ee081c5020347880777ad0f9970bd72ae9d98592f785619418160"
+    }
+  },
+  "sourceUnchangedThroughFullSuite": true,
+  "fullSuite": {
+    "command": "npm test",
+    "passed": 262,
+    "failed": 0,
+    "durationMs": 48148.422677
+  },
+  "focusedTests": {
+    "passed": 23,
+    "failed": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "passed": true
+  },
+  "staticExplanation": "New-entry monitoring or shared RPC capacity is temporarily reserved; position safeguards remain enforced.",
+  "changedClassifierSemantics": false,
+  "changedFinancialBehavior": false,
+  "deployed": false,
+  "artifacts": {
+    "npm-test.raw.txt": {
+      "bytes": 29284,
+      "sha256": "b69888f186842298ebe0882a694744e284336a0fb7a0795e189b30001ce5d94a"
+    },
+    "source-before-tests.json": {
+      "bytes": 709,
+      "sha256": "ca9a3ecdc8113ef537432219bc885d15b19c974af559ee568be39ec257ba9224"
+    },
+    "build.raw.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "source.patch": {
+      "bytes": 8972,
+      "sha256": "04a8cba72c7d41de1d3e5674a0d24b976714480cc6a9184da8587690b50584b3"
+    },
+    "focused-tests.raw.txt": {
+      "bytes": 2865,
+      "sha256": "a959976334a4125a8a0db47c3a422b6c67dab079add0ea6e8941b0840cb35eea"
+    }
+  }
+}

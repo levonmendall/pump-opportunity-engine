@@ -1,0 +1,75 @@
+{
+  "verifiedAt": "2026-10-29T18:29:07.108059+00:00",
+  "integratedSourceCommit": "b73feaf35a949c367e7819b383cf0d670b6403bb",
+  "ownerMain": "e1409fc58eb8329cb3ca51f5b824b50801a398ed",
+  "classification": "OFFLINE_VERIFIED_OWNER_PRESERVING_RENDER_COMPANION_NOT_DEPLOYED",
+  "sourceFiles": {
+    "src/reporting.ts": {
+      "bytes": 24780,
+      "sha256": "b5a28ad6a8a37cb00f0187dad2cda678e57482c040d9e5e3a5fde6c68ea153a2"
+    },
+    "src/dashboard.ts": {
+      "bytes": 75080,
+      "sha256": "e87c934b162a199cfa44fd738af9cc44a37ca13abe4fd0a61d192c3ba544ca55"
+    },
+    "test/reporting-operating-freshness.test.ts": {
+      "bytes": 18215,
+      "sha256": "16d9cb1f090ee081c5020347880777ad0f9970bd72ae9d98592f785619418160"
+    },
+    "test/dashboard-paper-trades-collapse.test.ts": {
+      "bytes": 4571,
+      "sha256": "837cc0642e75f03a64296574660906bbf14282c26d2aca82fb5e27e73c083945"
+    },
+    "test/dashboard-pnl-line.test.ts": {
+      "bytes": 7211,
+      "sha256": "25bf3377dcacfeed34f87118fdf0bb6a98228d07efd3c3f9b0123bf5e36d27ab"
+    }
+  },
+  "sourceUnchangedThroughFullSuite": true,
+  "ownerDashboardBytesExceptIntendedMessageLineMatch": true,
+  "ownerTestsByteIdentical": true,
+  "fullSuite": {
+    "command": "npm test",
+    "passed": 272,
+    "failed": 0,
+    "durationMs": 38569.451373
+  },
+  "focusedTests": {
+    "command": "node --import tsx --test test/reporting-operating-freshness.test.ts test/dashboard-paper-trades-collapse.test.ts test/dashboard-pnl-line.test.ts",
+    "passed": 33,
+    "failed": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "passed": true
+  },
+  "deployed": false,
+  "financialServiceRestarted": false,
+  "financialBehaviorChanged": false,
+  "artifacts": {
+    "npm-test.raw.txt": {
+      "bytes": 30271,
+      "sha256": "872fd5efcb98ab40ad040d778ebd4ac877a47afd65abdada7e25cea196262798"
+    },
+    "independent-review.json": {
+      "bytes": 734,
+      "sha256": "f0790fe52e04100464eee1d1c9e7bbebebd78fb80bf6a6eaa756ed0df5172597"
+    },
+    "source-before-tests.json": {
+      "bytes": 1119,
+      "sha256": "c23d1ef23e1a3355e0cb534bc58928b3a38236ec10012533fc3cb2e33d04179d"
+    },
+    "build.raw.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "source.patch": {
+      "bytes": 13962,
+      "sha256": "ef47d878dac3a47288f8753736d5f546dc65b8dab0b09e6863bd375325d67476"
+    },
+    "focused-tests.raw.txt": {
+      "bytes": 3870,
+      "sha256": "13e226f3c3b0d9234c2eff5386617d7c817c322ea133c5433f163dd6682d6099"
+    }
+  }
+}

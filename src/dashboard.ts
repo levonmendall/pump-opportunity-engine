@@ -3,7 +3,7 @@ import { timingSafeEqual, createHash } from 'node:crypto';
 import {holographicDashboard} from './dashboard-holographic.js';
 import {ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION} from './operating-intelligence.js';
 import { fileURLToPath } from 'node:url';
-import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
+import { MAX_SNAPSHOT_BYTES, SnapshotCache, operatingSnapshotFreshness, type ReportingIdentity } from './reporting.js';
 
 const equal = (a: string, b: string) => timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest());
 export type DashboardConfig = Partial<ReportingIdentity> & { viewerUser: string; viewerPassword: string; ingestionSecret: string; publicViewer?: boolean };
@@ -44,6 +44,7 @@ export function createDashboard(config: DashboardConfig) {
   } : null);
   const viewer = publicViewer ? null : 'Basic ' + Buffer.from(`${config.viewerUser}:${config.viewerPassword}`).toString('base64');
   const publisher = `Bearer ${config.ingestionSecret}`;
+  if (process.env.POE_PILOT_INGEST_SECRET && equal(process.env.POE_PILOT_INGEST_SECRET, config.ingestionSecret)) throw new Error('pilot and original publishing credentials must differ');
   const server = createServer({ maxHeaderSize: 8192, requestTimeout: 5000, headersTimeout: 5000 }, async (req, res) => {
     res.setHeader('x-content-type-options', 'nosniff'); res.setHeader('referrer-policy', 'no-referrer');
     res.setHeader('x-frame-options', 'DENY');
@@ -62,6 +63,27 @@ export function createDashboard(config: DashboardConfig) {
       }
       return;
     }
+    // Separate, signed reporting-only lifetime history from the original EC2
+    // account. The financial snapshot writer and current ingestion path stay
+    // unchanged; no Render disk or browser persistence is assumed.
+    if (path === '/api/equity-history' && req.method === 'POST') {
+      if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res, 401, {error: 'unauthorized'}); return; }
+      if (cache.identity === null) { req.resume(); send(res, 503, {error: 'source-not-configured'}); return; }
+      if (req.headers['content-type']?.split(';')[0] !== 'application/json' || req.headers['content-encoding']) {
+        req.resume(); send(res, 415, {error: 'plain application/json required'}); return;
+      }
+      if (Number(req.headers['content-length'] ?? 0) > MAX_SNAPSHOT_BYTES) {
+        req.resume(); send(res, 413, {error: 'payload limit'}); return;
+      }
+      try { send(res, 200, {result: cache.acceptLifetimeEquityHistory(await readBody(req))}); }
+      catch (e) {
+        const message = e instanceof Error ? e.message : 'invalid-equity-history';
+        send(res, message.includes('NOT_CONFIGURED') ? 503 :
+          message === 'payload limit' || message.endsWith('_BOUND') ? 413 :
+          /REGRESSION|CONFLICT/.test(message) ? 409 : 400, {error: message});
+      }
+      return;
+    }
     if (viewer !== null && !equal(req.headers.authorization ?? '', viewer)) {
       res.setHeader('www-authenticate', 'Basic realm="POE owner", charset="UTF-8"');
       req.resume(); send(res, 401, { error: 'owner authentication required' }); return;
@@ -72,7 +94,7 @@ export function createDashboard(config: DashboardConfig) {
       const current = cache.read();
       if (!current) { send(res, 503, { state: 'waiting', message: 'Awaiting POE data' }); return; }
       if (path === '/api/export') res.setHeader('content-disposition', 'attachment; filename="poe-bounded-snapshot.json"');
-      send(res, 200, { ...current, freshness: cache.status() }); return;
+      send(res, 200, { ...current, freshness: cache.status(), equityHistory: cache.equityHistory() }); return;
     }
     if (path !== '/') { send(res, 404, { error: 'not found' }); return; }
     res.writeHead(200, {
@@ -116,7 +138,24 @@ main{max-width:1480px;margin:0 auto}
 .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.stat{border:1px solid var(--border);border-radius:13px;padding:21px;min-width:0;min-height:137px;position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(20,36,59,.89),rgba(11,22,38,.85));box-shadow:0 12px 36px rgba(0,0,0,.07),inset 0 1px 0 rgba(189,220,255,.03);transition:transform .22s,border-color .22s}.stat:hover{transform:translateY(-3px);border-color:rgba(83,216,238,.42)}.stat:before{content:"";position:absolute;width:120px;height:120px;right:-40px;top:-65px;background:radial-gradient(circle,rgba(88,150,220,.14),transparent 70%)}.stat.top{background:linear-gradient(130deg,rgba(20,53,70,.8),rgba(13,23,46,.96));border-color:rgba(67,212,219,.27)}.stat.top:after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:2px;background:linear-gradient(90deg,rgba(80,240,236,.8),transparent)}.stat-label{font:600 10px var(--mono);color:#91a5c1;letter-spacing:1.15px;line-height:1.4;min-height:14px}.stat-value{font-weight:740;font-size:clamp(22px,2.25vw,33px);letter-spacing:-1.4px;color:#eaf6ff;line-height:1.2;margin:19px 0 10px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.stat-value.long{font-size:18px;letter-spacing:-.5px}.stat-value.positive{color:var(--mint)}.stat-value.negative{color:var(--red)}.stat-foot{font:10px var(--mono);color:#6683a1;line-height:1.4}.stat.empty .stat-value{color:#56708e}.stat.empty .stat-foot{color:#6d829c}
 .panel{background:linear-gradient(150deg,rgba(14,27,45,.92),rgba(8,17,33,.94));border:1px solid var(--border);border-radius:16px;padding:25px;min-width:0;box-shadow:0 17px 45px rgba(0,0,0,.07);position:relative;overflow:hidden}.panel:before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,rgba(80,240,236,.2),rgba(132,178,245,.05),transparent)}.panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:22px}.panel-heading h2{font-size:21px;margin:5px 0 0}.panel-sub{margin:7px 0 0;color:#7993b1;font:11px var(--mono)}.panel-tag{border:1px solid rgba(81,173,194,.26);border-radius:5px;padding:7px 10px;color:var(--cyan);font:600 9px var(--mono);letter-spacing:1px;white-space:nowrap}
 .chart-panel{margin-top:18px;padding:25px 25px 20px}.chart-shell{position:relative;overflow:hidden;border:1px solid rgba(117,169,219,.12);border-radius:10px;background:linear-gradient(180deg,rgba(3,12,25,.38),rgba(5,14,30,.18));min-height:280px}.chart-shell:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 44px,rgba(83,153,197,.065) 45px 46px),repeating-linear-gradient(90deg,transparent 0 83px,rgba(83,153,197,.05) 84px 85px)}.chart-shell:after{content:"";pointer-events:none;position:absolute;inset:0;opacity:.35;background:linear-gradient(90deg,rgba(60,192,234,.03),transparent,rgba(116,105,223,.05))}.chart-shell svg{width:100%;height:280px;display:block;position:relative;z-index:1;overflow:visible}.chart-meta{display:flex;justify-content:space-between;gap:24px;padding:14px 2px 0;color:#7c93af;font:10px var(--mono);line-height:1.7}.chart-meta span{overflow-wrap:anywhere}.chart-legend{white-space:nowrap;color:#a1bad0}.chart-legend:before{content:"";display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:8px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}.chart-note{font:10px var(--mono);color:#6684a3;margin-top:6px}
-.two-up,.system-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;margin-top:17px}.data-panel{min-height:286px}.data-panel .panel-heading{margin-bottom:16px}.table-wrap{width:100%;overflow-x:auto}.data-table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}.data-table th{text-align:left;font:600 9px var(--mono);letter-spacing:1.1px;color:#6b8aa9;text-transform:uppercase;padding:11px 11px 13px;border-bottom:1px solid rgba(105,149,197,.17)}.data-table td{padding:15px 11px;color:#bed0e1;border-bottom:1px solid rgba(105,149,197,.12);max-width:210px;overflow-wrap:anywhere;vertical-align:top}.data-table tr:last-child td{border-bottom:0}.no-records{min-height:155px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#7d95b1;gap:10px;padding:20px}.no-records:before{content:"";display:block;width:35px;height:35px;border:1px dashed rgba(80,240,236,.33);border-radius:10px;background:radial-gradient(circle,rgba(80,240,236,.12),transparent 68%);transform:rotate(45deg)}.no-records strong{font:600 11px var(--mono);color:#aec9e1;letter-spacing:.8px}.no-records span{font:11px var(--mono);color:#617c9a;max-width:300px}
+.two-up,.system-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;margin-top:17px}.data-panel{min-height:286px}.data-panel .panel-heading{margin-bottom:16px}.table-wrap{width:100%;overflow-x:auto}.data-table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}.data-table th{text-align:left;font:600 9px var(--mono);letter-spacing:1.1px;color:#6b8aa9;text-transform:uppercase;padding:11px 11px 13px;border-bottom:1px solid rgba(105,149,197,.17)}.data-table td{padding:15px 11px;color:#bed0e1;border-bottom:1px solid rgba(105,149,197,.12);max-width:210px;overflow-wrap:anywhere;vertical-align:top}.data-table tr:last-child td{border-bottom:0}.dexscreener-link{display:block;width:max-content;max-width:100%;margin-top:7px;padding:5px 0;font:600 10px var(--mono);color:var(--cyan);text-decoration:underline;text-decoration-color:rgba(80,240,236,.35);text-underline-offset:3px;overflow-wrap:anywhere}.dexscreener-link:hover,.dexscreener-link:focus-visible{color:#d4fffb;text-decoration-color:currentColor}.dexscreener-link:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:2px}.no-records{min-height:155px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#7d95b1;gap:10px;padding:20px}.no-records:before{content:"";display:block;width:35px;height:35px;border:1px dashed rgba(80,240,236,.33);border-radius:10px;background:radial-gradient(circle,rgba(80,240,236,.12),transparent 68%);transform:rotate(45deg)}.no-records strong{font:600 11px var(--mono);color:#aec9e1;letter-spacing:.8px}.no-records span{font:11px var(--mono);color:#617c9a;max-width:300px}
+/* Native disclosure keeps the verified trade count visible while conserving dashboard space. */
+.data-panel.paper-trades-panel{min-height:0;align-self:start}
+.paper-trades-disclosure{min-width:0}
+.paper-trades-summary{cursor:pointer;list-style:none;min-height:44px;align-items:center;margin-bottom:0!important;user-select:none}
+.paper-trades-summary::-webkit-details-marker{display:none}
+.paper-trades-summary::marker{content:""}
+.paper-trades-summary:focus-visible{outline:2px solid #96ffec;outline-offset:4px;border-radius:6px}
+.paper-trades-summary:hover h2{color:var(--cyan)}
+.paper-trades-actions{display:flex;gap:9px;align-items:center;flex:0 0 auto}
+.paper-trades-icon{display:flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:7px;border:1px solid rgba(80,240,236,.27);color:var(--cyan);font:700 18px var(--mono)}
+.paper-trades-icon:before{content:"+"}
+.paper-trades-disclosure[open] .paper-trades-icon:before{content:"−"}
+.paper-trades-disclosure[open]>.paper-trades-summary{padding-bottom:12px;border-bottom:1px solid rgba(105,149,197,.18)}
+.paper-trades-body{padding-top:12px}
+.paper-trades-body>.panel-sub:first-child{margin-top:0}
+@media print{.paper-trades-disclosure>.paper-trades-body{display:block!important}}
+
 .funnel-grid{display:flex;flex-direction:column;gap:13px}.funnel-line{display:grid;grid-template-columns:minmax(90px,1fr) minmax(70px,2fr) 40px;gap:12px;align-items:center}.funnel-name{font:10px var(--mono);color:#98adc7;overflow-wrap:anywhere}.funnel-track{height:5px;background:rgba(112,145,192,.13);border-radius:6px;overflow:hidden}.funnel-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#4edbdc,#8694ff);box-shadow:0 0 12px rgba(80,240,236,.3)}.funnel-count{text-align:right;font:12px var(--mono);color:#b3d7e7}.metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{padding:13px;border:1px solid rgba(118,160,200,.13);background:rgba(6,18,33,.54);border-radius:9px;min-width:0}.metric-name{color:#7895b3;font:10px var(--mono);overflow-wrap:anywhere}.metric-value{color:#d7eaff;font:600 13px var(--mono);margin-top:9px;overflow-wrap:anywhere}.full-panel{margin-top:17px}.identity-line{font:10px var(--mono);color:#7690ae;overflow-wrap:anywhere}
 .footer{padding:38px 1px 10px;display:flex;align-items:center;justify-content:space-between;gap:18px;color:#67809f;font:10px var(--mono);letter-spacing:.3px;border-top:1px solid rgba(110,156,199,.13);margin-top:35px}.footer strong{color:var(--cyan);font-weight:600}.footer a{color:#a6c8e8}.footer a:hover{color:var(--cyan)}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes breath{50%{opacity:.46;transform:scale(.75)}}
@@ -157,6 +196,7 @@ body.poe-compact-view .compact-folded{min-height:0}
 @media print{
  body.poe-compact-view .hero-visual{display:none!important}
  body.poe-compact-view .compact-quick-links,body.poe-compact-view .compact-toggle{display:none!important}
+ body.poe-compact-view #portfolio #cards>.stat{display:block!important}
  body.poe-compact-view .compact-disclosure-body{display:block!important}
 }
 
@@ -189,13 +229,13 @@ body.poe-compact-view .compact-folded{min-height:0}
 <section aria-labelledby="portfolioTitle" id="portfolio"><div class="section-heading"><div><div class="section-index">01 / PORTFOLIO INTELLIGENCE</div><h2 id="portfolioTitle">Portfolio overview</h2></div><div class="section-note">AUTHORITATIVE EC2 DATA ONLY<br>NO SYNTHETIC BALANCES OR TRADES</div></div>
 <div class="cards" id="cards"><div class="stat top empty"><div class="stat-label">PORTFOLIO EQUITY</div><div class="stat-value">—</div><div class="stat-foot">Awaiting verified balance</div></div><div class="stat top empty"><div class="stat-label">TOTAL TRADING P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">No actual PAPER record</div></div><div class="stat top empty"><div class="stat-label">CASH / RESERVED SOL</div><div class="stat-value">—</div><div class="stat-foot">Awaiting account snapshot</div></div><div class="stat top empty"><div class="stat-label">ECONOMIC P&amp;L</div><div class="stat-value">—</div><div class="stat-foot">Operating costs not yet reported</div></div></div></section>
 <section class="panel chart-panel" id="performance" aria-labelledby="performanceTitle">
-<div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio P&amp;L trajectory</h2><p class="panel-sub" id="chartBasis">Awaiting the source-reported P&amp;L convention</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
-<div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio trading profit and loss with explicit gaps for missing historical data"></svg></div>
-<div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend" id="chartLegend">SOURCE P&amp;L / USD</span></div>
-<div class="chart-note" id="chartNote">Actual observations only. Zero is the reference line; missing history is not treated as zero.</div>
+<div class="panel-heading"><div><div class="section-index">02 / PERFORMANCE MONITOR</div><h2 id="performanceTitle">Portfolio equity trajectory</h2><p class="panel-sub" id="chartBasis">USD portfolio equity from the same verified source as Portfolio Overview.</p></div><div class="panel-tag" id="chartTag">HISTORY PENDING</div></div>
+<div class="chart-shell"><svg id="chart" viewBox="0 0 900 280" role="img" aria-label="Portfolio equity over time in US dollars, sourced from verified Portfolio Overview equity values"></svg></div>
+<div class="chart-meta"><span id="freshness">No source, market, or reconciliation timestamps available.</span><span class="chart-legend" id="chartLegend">PORTFOLIO EQUITY · USD</span></div>
+<div class="chart-note" id="chartNote">Recorded from accepted Portfolio Equity reports. Earlier equity values are not backfilled.</div>
 </section>
 <div class="two-up" id="activity"><section class="panel data-panel" aria-labelledby="positionsTitle"><div class="panel-heading"><div><div class="section-index">03 / EXPOSURE</div><h2 id="positionsTitle">Open positions</h2></div><div class="panel-tag" id="positionsCount">—</div></div><div id="positions"><div class="no-records"><strong>NO POSITION DATA</strong><span>Waiting for an authoritative PAPER portfolio snapshot.</span></div></div></section>
-<section class="panel data-panel" aria-labelledby="tradesTitle"><div class="panel-heading"><div><div class="section-index">04 / EXECUTION LOG</div><h2 id="tradesTitle">Recent PAPER trades</h2></div><div class="panel-tag" id="tradesCount">—</div></div><h3 class="panel-sub">Pending orders and reservations</h3><div id="orders"><div class="no-records"><strong>NO PENDING ORDERS</strong><span>Unresolved actions will remain visible until reconciled.</span></div></div><h3 class="panel-sub">Completed PAPER executions</h3><div id="trades"><div class="no-records"><strong>NO TRADE DATA</strong><span>Execution records will appear after verified reporting begins.</span></div></div></section></div>
+<section class="panel data-panel paper-trades-panel" aria-labelledby="tradesTitle"><details class="paper-trades-disclosure"><summary class="panel-heading paper-trades-summary" aria-controls="paperTradesBody"><div><div class="section-index">04 / EXECUTION LOG</div><h2 id="tradesTitle">Recent PAPER trades</h2></div><div class="paper-trades-actions"><div class="panel-tag" id="tradesCount">—</div><span class="paper-trades-icon" aria-hidden="true"></span></div></summary><div class="paper-trades-body" id="paperTradesBody"><h3 class="panel-sub">Pending orders and reservations</h3><div id="orders"><div class="no-records"><strong>PENDING ACTIONS UNAVAILABLE</strong><span>Waiting for verified order and reservation details.</span></div></div><h3 class="panel-sub">Completed PAPER executions</h3><div id="trades"><div class="no-records"><strong>NO TRADE DATA</strong><span>Execution records will appear after verified reporting begins.</span></div></div></div></details></section></div>
 <div class="section-heading" id="system"><div><div class="section-index">05 / SYSTEM INTELLIGENCE</div><h2>Signal pipeline &amp; diagnostics</h2></div><div class="section-note">RAW VERIFIED COUNTS · NO INFERRED COVERAGE</div></div>
 <div class="system-grid">
 <section class="panel" aria-labelledby="funnelTitle"><div class="panel-heading"><div><div class="section-index">OPPORTUNITY FUNNEL</div><h2 id="funnelTitle">Candidate progression</h2></div><div class="panel-tag" id="funnelSource">AWAITING SOURCE</div></div><div id="funnel"><div class="no-records"><strong>NO VERIFIED COUNTS</strong><span>Discovery and qualification metrics are not yet reported.</span></div></div></section>
@@ -207,12 +247,13 @@ body.poe-compact-view .compact-folded{min-height:0}
 </div></div>
 <script>
 'use strict';
+const classifyOperatingSnapshot = ${operatingSnapshotFreshness.toString()};
 const byId=id=>document.getElementById(id);
 const money=n=>n===null?'Unavailable':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
 const put=(id,value)=>{byId(id).textContent=String(value)};
 const add=(p,t,value,cls)=>{const n=document.createElement(t);if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;p.append(n);return n};
 const makeSvg=(tag,attrs,txt)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,String(v));if(txt!==undefined)e.textContent=txt;return e};
-let latest=null,latestReceivedAt=null;
+let latest=null,latestReceivedAt=null,readFailure=null,latestEquityHistory=null;
 function renderCandidateIntelligence(){
  if(!latest){put('funnelSource','AWAITING SOURCE');put('decisionsCount','—');return;}
  const intelligence=latest.intelligence||null,isObserver=latest.source.strategy==='UNIMPLEMENTED_FLOW_BLOCKED'&&!intelligence;
@@ -228,6 +269,25 @@ function renderCandidateIntelligence(){
 
 function signal(title,message,label,mode,time){put('stateTitle',title);put('state',message);put('sourceLabel',label);put('lastSync',time||'RECEIVER · AWAITING DATA');document.body.dataset.link=mode}
 function clock(){put('utcClock',new Date().toISOString().slice(11,19)+' UTC')}
+// Display only the verified source policy. Legacy snapshots never acquire a
+// percentage limit or execution guarantee through dashboard-side inference.
+function financialPolicyCards(s){
+ const policy=s.intelligence?.financialPolicy,risk=policy?.version==='poe-paper-financial-policy-v1'?policy.risk:null;
+ const usd=v=>v===null||v===undefined?'Unavailable':money(Number(v)/1e6),percent=v=>v===null||v===undefined?'Unavailable':(v/100).toFixed(2)+'%';
+ const ready=risk?.state==='ready',entry=risk?.entry,daily=risk?.daily,execution=policy?.version==='poe-paper-financial-policy-v1'?policy.execution:null,valuation=policy?.version==='poe-paper-financial-policy-v1'?policy.valuation:null;
+ const observed=valuation?.lastObservation,usdObservation=observed?' SOL/USD last '+observed.outcome+' ('+observed.reasonCode+') at '+observed.completedAt+'; publication time unknown.':valuation?' SOL/USD not yet observed in this source instance.':'';
+ const entryFoot=(entry?(ready?'':'Risk facts unavailable ('+risk.reasonCode+'). ')+'5% target cost as of '+risk.asOf+'; cash ceiling '+(ready?entry.cashLimitedConsumedCostSol??'unavailable':'unavailable')+' SOL before token rent/liquidity. Entry safeguards still apply.':'Policy unavailable from this source; legacy figures retained without assuming 5% sizing.')+usdObservation;
+ const remaining=!ready?null:daily?.drawdownBps===null||daily?.drawdownBps===undefined?null:Math.max(0,daily.limitBps-daily.drawdownBps);
+ const modelLast=execution?.last,modelTiming=modelLast?' Last observed RPC '+(modelLast.observedRpcMs??'unavailable')+' ms; modeled delay '+(modelLast.modeledDelayMs??'unavailable')+' ms; scenario fee '+(modelLast.feeSol??'unavailable')+' SOL; '+modelLast.stage+' ('+modelLast.reasonCode+') at '+modelLast.at+'.':'';
+ const modelFoot=execution?execution.plans+' plans; '+execution.supportedLandingStates+' supported landing states, '+execution.preflightUnsubmitted+' preflight unsubmitted, '+execution.unknownLanding+' unknown, '+execution.legacyProtectionFallbacks+' legacy exit fallbacks. Current adapter preparations, not financial fills.'+modelTiming+(modelLast?.stage==='legacy-protection-fallback'?' Legacy exit model; v1 landing fidelity unavailable.':'')+' No chain landing or fee observed.':'Execution model unavailable from this source; historical PAPER records retain their original model.';
+ const remainingLabel=daily?.lossPaused?'allowance latched; new entries paused':percent(remaining)+' / '+usd(ready?daily?.remainingBeforePauseMicroUsd:null);
+ const drawdownFoot=daily?'HWM '+usd(daily.highWaterMicroUsd)+(daily.highWaterAt?' at '+daily.highWaterAt.slice(11,19)+' UTC':'')+' · remaining '+remainingLabel+'; '+(daily.lossPaused?'loss guard paused':'loss guard not latched')+'. USD equity includes SOL/USD; '+daily.day+' · '+daily.historyCoverage+'.':'Daily high-water and remaining allowance unavailable; no historical peak inferred.';
+ return [
+ [entry?'NEXT PAPER ENTRY · 5% TARGET':'NEXT PAPER ENTRY POLICY',entry&&ready?usd(entry.targetConsumedCostMicroUsd):'Unavailable',entryFoot,null],
+ [daily?'DAILY DRAWDOWN · 10% GUARD':'DAILY DRAWDOWN POLICY',daily?percent(ready?daily.drawdownBps:null)+' / '+percent(daily.limitBps):'Unavailable',drawdownFoot,null],
+ ['PAPER EXECUTION MODEL',execution?(modelLast?.stage==='legacy-protection-fallback'?'Legacy exit fallback':execution.state==='active'?'Active PAPER model':'Unavailable'):'Unavailable',modelFoot,null],
+ ];
+}
 function renderCards(s){
  const b=s.balances,operating=!!s.intelligence;const data=[
  ['PORTFOLIO EQUITY',money(b.equityUsd),'Includes passive SOL/USD valuation',b.equityUsd],
@@ -239,96 +299,152 @@ function renderCards(s){
  ['MODELED EXECUTION COSTS',money(b.executionCostsUsd),'Simulated transaction costs',null],
  ['OPERATING COSTS',money(b.operatingCostsUsd),'Cost evidence: '+s.costLabels.operating,null],
  ['POSITION COST / EXPOSURE',money(b.positionCostUsd)+' / '+money(b.markedExposureUsd),'USD · cost / marked exposure',null],
- ['DRAWDOWN',money(b.drawdownUsd),'USD · reported risk',null],
+ ...financialPolicyCards(s),
  ['PASSIVE SOL BENCHMARK',money(b.passiveSolEquityUsd),'Reference holding · SOL/USD exposure',null],
  ['INCEPTION REFERENCE',money(s.account.initialUsd),'Virtual starting capital',null]
  ];
  const p=byId('cards');p.replaceChildren();
  data.forEach(([label,value,foot,number],i)=>{const el=add(p,'div',undefined,'stat'+(i<4?' top':''));add(el,'div',label,'stat-label');const v=add(el,'div',value,'stat-value');if(String(value).length>24)v.classList.add('long');if(number!==null&&i!==0){if(number>0)v.classList.add('positive');if(number<0)v.classList.add('negative')}add(el,'div',foot,'stat-foot')});
 }
-function renderTable(id,heads,rows,emptyTitle,emptyBody){
+// Build a link only from a validated Solana mint already present in the authoritative snapshot.
+// Opening DEX Screener is an ordinary browser navigation; no feed, API, RPC, or server request is added.
+function dexScreenerUrl(mint){
+ return typeof mint==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint)?'https://dexscreener.com/solana/'+mint:null;
+}
+function renderTable(id,heads,rows,emptyTitle,emptyBody,tokenMints=null,tokenColumn=-1){
  const p=byId(id);p.replaceChildren();
  if(!rows.length){const e=add(p,'div',undefined,'no-records');add(e,'strong',emptyTitle);add(e,'span',emptyBody);return}
  const wrap=add(p,'div',undefined,'table-wrap'),t=add(wrap,'table',undefined,'data-table'),h=add(t,'thead'),tr=add(h,'tr');
  heads.forEach(x=>add(tr,'th',x));const body=add(t,'tbody');
- rows.forEach(row=>{const r=add(body,'tr');row.forEach(cell=>add(r,'td',cell===null?'Unavailable':cell))});
+ rows.forEach((row,rowIndex)=>{
+  const r=add(body,'tr');
+  row.forEach((cell,columnIndex)=>{
+   const td=add(r,'td',cell===null?'Unavailable':cell);
+   if(columnIndex!==tokenColumn||!tokenMints)return;
+   const href=dexScreenerUrl(tokenMints[rowIndex]);
+   if(!href)return;
+   const link=add(td,'a','View on DEX Screener ↗','dexscreener-link');
+   link.href=href;link.target='_blank';link.rel='noopener noreferrer';
+   link.setAttribute('aria-label','View token chart on DEX Screener (opens a new tab)');
+  });
+ });
 }
 function renderFunnel(f,intelligence=null,isObserver=false){
  const el=byId('funnel');el.replaceChildren();const outer=add(el,'div',undefined,'funnel-grid');
  const row=(key,label,value)=>{const line=add(outer,'div',undefined,'funnel-line');line.dataset.funnelStage=key;add(line,'div',label,'funnel-name');const track=add(line,'div',undefined,'funnel-track'),fill=add(track,'div',undefined,'funnel-fill');fill.style.width='0%';add(line,'div',value===null||value===undefined?'Unavailable':typeof value==='number'?value.toLocaleString('en-US'):String(value),'funnel-count');};
  if(intelligence){
   const c=intelligence.candidates;
-  [['migrationsReceived','Migrations received'],['known','Known market identities'],['watch','Lightweight watch'],['eligible','Eligible watch'],['queued','Waiting for deep observation'],['auditedWindows','Audited usable windows'],['uniqueAudited','Unique tokens audited'],['predictiveAssessments','Predictive assessments'],['predictivePasses','Predictive passes'],['predictiveFailures','Predictive failures']].forEach(([key,label])=>row(key,label,c[key]));
-  row('deepActive','Deep-analysis slots',(c.deepActive===null?'?':c.deepActive)+' / '+(c.deepMaximum===null?'?':c.deepMaximum));
-  [['qualified','Executable qualifications'],['attempted','PAPER attempts'],['paperFilled','PAPER fills'],['exited','PAPER exits']].forEach(([key,label])=>row(key,label,f[key]));
-  add(el,'p','Windows and assessments are not unique tokens. A market-wide coverage denominator has not been established.','panel-sub');
+  const candidateRows=[['migrationsReceived','Migrations received'],['known','Known market identities'],['watch','Lightweight watch'],['eligible','Eligible watch'],['queued','Waiting for deep observation'],['auditedWindows','Audited usable windows'],['uniqueAudited','Unique tokens audited'],['predictiveAssessments','Predictive assessments'],['predictivePasses','Predictive passes'],['predictiveFailures','Predictive failures']];
+  const financialRows=[['qualified','Executable qualifications'],['attempted','PAPER attempts'],['paperFilled','PAPER fills'],['exited','PAPER exits']];
+  const numeric=value=>Number.isSafeInteger(value)&&value>=0?value:null;
+  const ceiling=Math.max(1,...candidateRows.map(([key])=>numeric(c[key])??0),...financialRows.map(([key])=>numeric(f[key])??0));
+  const plotted=(key,label,value)=>{
+   row(key,label,value);
+   const count=numeric(value),fill=outer.lastElementChild.querySelector('.funnel-fill');
+   fill.style.width=count===null?'0%':(100*count/ceiling).toFixed(2)+'%';
+  };
+  candidateRows.forEach(([key,label])=>plotted(key,label,c[key]));
+  const active=numeric(c.deepActive),maximum=numeric(c.deepMaximum);
+  row('deepActive','Deep-analysis slots',(active===null?'?':active)+' / '+(maximum===null?'?':maximum));
+  if(active!==null&&maximum!==null&&maximum>0)outer.lastElementChild.querySelector('.funnel-fill').style.width=(100*Math.min(active,maximum)/maximum).toFixed(2)+'%';
+  financialRows.forEach(([key,label])=>plotted(key,label,f[key]));
+  add(el,'p','Bars show counts relative to the largest reported stage; deep-analysis slots show occupancy. Window and assessment totals may span source recoveries; unique tokens are counted within the current source generation. Overlapping windows are not independent coverage. A market-wide denominator has not been established.','panel-sub');
  }else{
   const fields=[['discovered','Discovered'],['supported','Supported'],['sufficientlyObserved','Sufficiently observed'],['evaluated','Financial evaluations'],['qualified','Qualified'],['attempted','Attempted'],['paperFilled','PAPER filled'],['exited','Exited'],['reconciled','Reconciled']];
-  fields.forEach(([key,label])=>row(key,label,isObserver&&key!=='discovered'?'NOT CONNECTED':f[key]));
+  // Rank legacy event frequency; retain source order for ties and leave missing counts unavailable.
+  const ranked=fields.map(([key,label],index)=>({key,label,index,count:Number.isSafeInteger(f[key])&&f[key]>=0?f[key]:null})).sort((a,b)=>a.count===null?(b.count===null?a.index-b.index:1):b.count===null?-1:b.count-a.count||a.index-b.index);
+  const ceiling=Math.max(1,...ranked.map(item=>item.count??0));
+  ranked.forEach(({key,label,count})=>{
+   row(key,label,isObserver&&key!=='discovered'?'NOT ACTIVE':count===null?'Not reported':count);
+   const line=outer.lastElementChild;
+   if(isObserver&&key!=='discovered')line.classList.add('inactive-stage');
+   else line.querySelector('.funnel-fill').style.width=count===null?'0%':(100*count/ceiling).toFixed(2)+'%';
+  });
  }
 }
 function renderMetrics(m,source,intelligence=null){
  const p=byId('metrics');p.replaceChildren();
  const group=(title,items)=>{add(p,'h3',title,'panel-sub');const grid=add(p,'div',undefined,'metric-grid');items.forEach(([label,value])=>{const e=add(grid,'div',undefined,'metric');add(e,'div',label,'metric-name');add(e,'div',value===null||value===undefined?'Unavailable':String(value),'metric-value');});};
- group('Source-reported market evidence', [['Market coverage',m.coverage],['Latency evidence',m.latency],['Processing lag (ms)',m.processingLagMs],['Event-loop lag (ms)',m.eventLoopLagMs],['Provider events',m.providerEvents],['RPC operations',m.rpcRequests],['Runtime release',source.release],['Strategy version',source.strategy]]);
+ group('Source-reported market evidence', [['Market coverage',m.coverage],['Latency evidence',m.latency],['Processing lag (ms)',m.processingLagMs],['Event-loop lag (ms)',m.eventLoopLagMs],['Provider events',m.providerEvents],['RPC operations',m.rpcRequests],['Projected data SOL/day',m.projectedDailyDataSol],['Data budget SOL',m.budgetRemainingSol],['Budget status',m.budgetStatus],['Runtime release',source.release],['Strategy version',source.strategy]]);
  if(!intelligence)return;
  const c=intelligence.candidates,q=intelligence.quality,u=intelligence.provider,r=intelligence.resources,h=intelligence.protection,t=intelligence.times;
  group('Selection and completeness',[['Current run',intelligence.run.id],['Run started',intelligence.run.startedAt],['Promotions / re-promotions',String(c.promoted??'?')+' / '+String(c.repromoted??'?')],['Mean / maximum slot wait (ms)',String(c.waitMeanMs??'?')+' / '+String(c.waitMaximumMs??'?')],['Older tokens retained',c.olderSelected],['Audit unavailable / unusable',String(q.auditUnavailable??'?')+' / '+String(q.auditUnusable??'?')],['Data gaps',q.qualityGaps],['Decision deadline failures',q.decisionDeadlineMisses],['Incomplete / capacity exclusions',String(q.incompleteExclusions??'?')+' / '+String(q.capacityExclusions??'?')],['Enrichment deadline failures',q.enrichmentDeadlineFailures]]);
- group('Provider and resource health',[['Selected capture connected',q.captureConnected],['Migration / watch connected',String(u.discoveryConnected??'?')+' / '+String(u.watchConnected??'?')],['Accounted RPC response bytes',u.rpcResponseBytes],['Native / broad-stream bytes',String(u.nativeStreamBytes??'?')+' / '+String(u.broadWatchBytes??'?')],['HTTP timeouts / errors',String(u.httpTimeouts??'?')+' / '+String(u.httpErrors??'?')],['Throttles',u.throttles],['Rolling starts / per-minute limit',String(u.rollingStartsPerMinute??'?')+' / '+String(u.maximumStartsPerMinute??'?')],['Primary / history cooldown',String(u.primaryCooldownUntil??'None reported')+' / '+String(u.historyCooldownUntil??'None reported')],['Resource state',r.state],['Resource sample time',r.sampleAt],['CPU use (one core)',r.cpuOneCoreFraction===null?null:(100*r.cpuOneCoreFraction).toFixed(1)+'%'],['Resident memory (bytes)',r.rssBytes],['Available RAM / disk (bytes)',String(r.availableMemoryBytes??'?')+' / '+String(r.availableDiskBytes??'?')]]);
+ group('Provider and resource health',[['Selected capture connected',q.captureConnected],['Migration / watch connected',String(u.discoveryConnected??'?')+' / '+String(u.watchConnected??'?')],['RPC-accounted bytes',u.rpcResponseBytes],['Native / broad-stream bytes',String(u.nativeStreamBytes??'?')+' / '+String(u.broadWatchBytes??'?')],['HTTP timeouts / errors',String(u.httpTimeouts??'?')+' / '+String(u.httpErrors??'?')],['Throttles',u.throttles],['Rolling starts / per-minute limit',String(u.rollingStartsPerMinute??'?')+' / '+String(u.maximumStartsPerMinute??'?')],['Primary / history cooldown',String(u.primaryCooldownUntil??'None reported')+' / '+String(u.historyCooldownUntil??'None reported')],['Resource state',r.state],['Resource sample time',r.sampleAt],['CPU use (one core)',r.cpuOneCoreFraction===null?null:(100*r.cpuOneCoreFraction).toFixed(1)+'%'],['Resident memory (bytes)',r.rssBytes],['Available RAM / disk (bytes)',String(r.availableMemoryBytes??'?')+' / '+String(r.availableDiskBytes??'?')]]);
+ add(p,'p','RPC-accounted bytes include HTTP and control-stream receipts. Native-stream bytes overlap this accounting; these counters are separate scopes, not an additive network total.','panel-sub');
+ const a=intelligence.admission;
+ group('Admission and recovery',a?[['Financial projection ready',a.financialProjectionReady],['Reporting supervision permits new risk',a.supervisedNewRiskAllowed],['CPU / memory / disk admission',a.candidateResourceAdmissionAllowed],['Evidence admission',a.evidenceAdmissionAllowed],['Evidence pressure',a.evidencePressureReasonCode],['Diagnostic bytes / rolling limit',String(a.evidenceDiagnosticBytes??'?')+' / '+String(a.evidenceDiagnosticLimitBytes??'?')],['Essential evidence recovery required',a.evidenceRequiresCriticalRecovery],['Evidence refusals',a.evidenceRefusedRecords],['Source recovery generation / failures',String(a.sourceRecoveryGeneration??'?')+' / '+String(a.sourceRecoveryFailures??'?')],['Source recovery reason',a.sourceRecoveryReasonCode],['Source recovery retry time',a.sourceRecoveryRetryAt],['Previous transports settled',a.sourceRecoveryClosingSettled],['Source restart required',a.sourceRestartRequired],['Entry proof preparation',a.proofPreparationState]]:[['Admission / recovery detail',null]]);
  group('Position protection',[['Current protection',h.state],['Last completed evaluation',h.lastCompletedAt],['Target cadence (ms)',h.targetCadenceMs],['Measured maximum evaluation gap (ms)',h.maximumCompletedGapMs],['Maximum quote age at use (ms)',h.maximumQuoteAgeAtUseMs],['Protection failures / unavailable checks',String(h.breaches??'?')+' / '+String(h.unavailableChecks??'?')],['Last market notification',t.marketNotificationAt],['Last fresh support / bank Clock',String(t.freshSupportAt??'Unavailable')+' / '+String(t.bankClockAt??'Unavailable')],['Last independent audit / predictive assessment',String(t.auditAt??'Unavailable')+' / '+String(t.predictiveAt??'Unavailable')],['Financial reconciliation',t.reconciliationAt]]);
  q.limitations.forEach(note=>add(p,'p',note,'panel-sub'));
 }
 
+/** Single simple series: exact USD equity values from accepted authoritative
+ * portfolio reports. Never derive it from trading P&L or initial funding. */
 function plot(points){
  const root=byId('chart');root.replaceChildren();
  const width=Math.max(305,Math.min(960,Math.floor(root.parentElement.clientWidth||900)));
  const height=280;root.setAttribute('viewBox','0 0 '+width+' '+height);
- const left=width<500?49:70,right=width-20,top=20,bottom=height-34;
- for(let i=0;i<5;i++){const y=top+(bottom-top)*i/4;root.append(makeSvg('line',{x1:left,y1:y,x2:right,y2:y,stroke:'rgba(118,167,207,.15)','stroke-dasharray':'3 6'}))}
- const valid=points.filter(p=>p.tradingUsd!==null);
- if(!valid.length){
-  root.append(makeSvg('text',{x:width/2,y:127,'text-anchor':'middle',fill:'#9dc5d9','font-size':width<420?13:15,'font-weight':650,'letter-spacing':1},'NO VERIFIED P&L SERIES'));
-  root.append(makeSvg('text',{x:width/2,y:153,'text-anchor':'middle',fill:'#637e9f','font-size':11},'Chart will populate from actual PAPER history'));
-  return
+ const left=width<500?67:79,right=width-17,top=20,bottom=height-37;
+ const valid=Array.isArray(points)?points.filter(p=>p&&typeof p.equityUsd==='number'&&Number.isFinite(p.equityUsd)&&typeof p.at==='string'&&Number.isFinite(Date.parse(p.at))):[];
+ if(valid.length<2){
+  root.append(makeSvg('text',{x:width/2,y:128,'text-anchor':'middle',fill:'#a9c7dc','font-size':width<420?12:14,'font-weight':600},'RECORDING PORTFOLIO EQUITY'));
+  root.append(makeSvg('text',{x:width/2,y:153,'text-anchor':'middle',fill:'#7b90aa','font-size':10},'Line forms as verified equity reports arrive'));
+  return;
  }
- const from=Date.parse(points[0].at),end=Math.max(from+1,Date.parse(points[points.length-1].at));
- let low=Math.min(0,...valid.map(p=>p.tradingUsd)),high=Math.max(0,...valid.map(p=>p.tradingUsd));
- const span=Math.max(.01,high-low);low-=span*.14;high+=span*.14;
- const x=at=>left+(Date.parse(at)-from)/(end-from)*(right-left),y=n=>bottom-(n-low)/(high-low)*(bottom-top);
- const fmt=n=>(n<0?'-$':'$')+Math.abs(n).toFixed(Math.abs(n)<10?2:0);
- for(let i=0;i<5;i++){const value=high-(high-low)*i/4;root.append(makeSvg('text',{x:left-7,y:top+(bottom-top)*i/4+4,'text-anchor':'end',fill:'#7894b1','font-size':10},fmt(value)))}
- root.append(makeSvg('line',{x1:left,y1:y(0),x2:right,y2:y(0),stroke:'#6489a5','stroke-dasharray':'5 4','stroke-width':1}));
- const defs=makeSvg('defs',{}),grad=makeSvg('linearGradient',{id:'poeChartFill',x1:'0%',x2:'0%',y1:'0%',y2:'100%'});
- grad.append(makeSvg('stop',{offset:'0%','stop-color':'#57efea','stop-opacity':'.24'}),makeSvg('stop',{offset:'100%','stop-color':'#57efea','stop-opacity':'0'}));defs.append(grad);root.append(defs);
- let group=[];
- const flush=()=>{
-  if(!group.length)return;
-  const d=group.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.tradingUsd).toFixed(2)).join(' ');
-  if(group.length>1){const area=d+' L'+x(group[group.length-1].at).toFixed(2)+' '+y(0).toFixed(2)+' L'+x(group[0].at).toFixed(2)+' '+y(0).toFixed(2)+' Z';root.append(makeSvg('path',{d:area,fill:'url(#poeChartFill)',stroke:'none'}))}
-  root.append(makeSvg('path',{d,stroke:'#50f0ec','stroke-width':2.7,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
-  group.forEach(p=>root.append(makeSvg('circle',{cx:x(p.at),cy:y(p.tradingUsd),r:2.7,fill:'#8efaf4',stroke:'#07121e','stroke-width':1})));
-  group=[];
- };
- points.forEach(p=>{if(p.tradingUsd===null)flush();else group.push(p)});flush();
- root.append(makeSvg('text',{x:left,y:height-12,fill:'#7894b1','font-size':10},new Date(from).toISOString().slice(11,19)+' UTC'));
- root.append(makeSvg('text',{x:right,y:height-12,'text-anchor':'end',fill:'#7894b1','font-size':10},new Date(end).toISOString().slice(11,19)+' UTC'));
+ const from=Date.parse(valid[0].at),end=Math.max(from+1,Date.parse(valid[valid.length-1].at));
+ const values=valid.map(p=>p.equityUsd),minimum=Math.min(...values),maximum=Math.max(...values);
+ const padding=Math.max(2,(maximum-minimum)*.15),low=minimum-padding,high=maximum+padding;
+ const x=at=>left+(Date.parse(at)-from)/(end-from)*(right-left);
+ const y=value=>bottom-(value-low)/(high-low)*(bottom-top);
+ const format=value=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2,minimumFractionDigits:2}).format(value);
+ for(let i=0;i<5;i++){
+  const lineY=top+(bottom-top)*i/4;
+  root.append(makeSvg('line',{x1:left,y1:lineY,x2:right,y2:lineY,stroke:'rgba(144,167,209,.13)','stroke-width':1}));
+  root.append(makeSvg('text',{x:left-7,y:lineY+4,'text-anchor':'end',fill:'#a3b4c9','font-size':10},format(high-(high-low)*i/4)));
+ }
+ const segments=[];let current=[];
+ for(const point of valid){
+  // Source-owned segment IDs preserve genuine outages when lifetime samples
+  // are downsampled: a long interval within one verified segment is not an
+  // outage. Legacy receiver-only readings continue using the five-minute gap.
+  if(current.length&&(
+    (Number.isSafeInteger(point.segment)&&Number.isSafeInteger(current[current.length-1].segment))
+      ? point.segment!==current[current.length-1].segment
+      : Date.parse(point.at)-Date.parse(current[current.length-1].at)>5*60*1000)){
+   if(current.length>=2)segments.push(current);
+   current=[];
+  }
+  current.push(point);
+ }
+ if(current.length>=2)segments.push(current);
+ for(const segment of segments){
+  const d=segment.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.equityUsd).toFixed(2)).join(' ');
+  root.append(makeSvg('path',{'data-chart-series':'portfolio-equity-usd',d,stroke:'#91f9e2','stroke-width':3.2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
+ }
+ root.append(makeSvg('text',{x:left,y:height-13,fill:'#9eacc4','font-size':10},new Date(from).toISOString().slice(5,16).replace('T',' ')+' UTC'));
+ root.append(makeSvg('text',{x:right,y:height-13,'text-anchor':'end',fill:'#9eacc4','font-size':10},new Date(end).toISOString().slice(5,16).replace('T',' ')+' UTC'));
 }
-function showSnapshot(s,received,f){
- latest=s;latestReceivedAt=received;
+function showSnapshot(s,received,f,equityHistory=null){
+ latest=s;latestReceivedAt=received;readFailure=null;
+ latestEquityHistory=equityHistory&&equityHistory.accountId===s.account.id&&equityHistory.source==='accepted-authoritative-portfolio-equity'?equityHistory:null;
  renderCards(s);
  put('positionsCount',s.positions.length+' REPORTED');
  put('tradesCount',s.trades.length+' REPORTED');
- renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.');
- renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.');
- renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(s.pnl);
- put('chartBasis',s.intelligence?'Net token trading result translated at current SOL/USD; not historical realized USD profit':'Legacy equity change includes passive SOL/USD; do not interpret as pure trading profit');put('chartLegend',s.intelligence?'TOKEN TRADING · CURRENT USD':'LEGACY EQUITY CHANGE · USD');
+ renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.',s.positions.map(p=>p.mint),0);
+ renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.',s.trades.map(t=>t.mint),1);
+ renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[]);
+ put('chartBasis','Actual portfolio equity in USD, matching Portfolio Overview.');put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
- put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED SERIES':'HISTORY UNAVAILABLE');
- put('freshness','Generated '+s.times.generatedAt+' · Market '+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
- put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps.');
- const state=String(f.state).toUpperCase();
- const bad=f.state==='stale'||f.state==='unavailable';
- signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
+ put('chartTag',latestEquityHistory?.retention==='ec2-durable-republished'?'LIFETIME EQUITY':
+    (latestEquityHistory?.points?.length??0)>=2?'TEMPORARY HISTORY':'COLLECTING EQUITY');
+ put('freshness','Last source report '+s.times.generatedAt.slice(0,19).replace('T',' ')+' UTC');
+ put('chartNote',latestEquityHistory?.retention==='ec2-durable-republished'?
+   'Original account lifetime · verified EC2 equity observations · durable source replay after restarts. Missing periods remain gaps'+(latestEquityHistory.downsampled?' · display downsampled.':'.'):
+   'Temporary receiver history (rolling 24 hours). Durable EC2 lifetime source not yet connected; earlier equity is not invented.');
+ if(!s.intelligence){
+  const state=String(f.state).toUpperCase();
+  const bad=f.state==='stale'||f.state==='unavailable';
+  signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
+ }
  byId('exportLink').hidden=false;
  paintFreshness();
 }
@@ -341,19 +457,45 @@ async function refresh(){
   if(!resp.ok)throw new Error(resp.status===503?'SOURCE_NOT_CONFIGURED':'REPORTING_HTTP_'+resp.status);
   const result=await resp.json();
   if(!result||!result.snapshot||!result.freshness)throw new Error('SNAPSHOT_UNAVAILABLE');
-  showSnapshot(result.snapshot,result.receivedAt,result.freshness);
+  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.equityHistory??null);
  }catch(error){
   const reason=error instanceof Error?error.message:'REPORTING_UNAVAILABLE';
+  readFailure=reason;
   if(reason==='SOURCE_NOT_CONFIGURED'){if(!latest)signal('Awaiting authoritative data','No verified EC2 snapshot is configured. This dashboard will not fabricate balances, charts, or trades.','SOURCE NOT CONNECTED','pending');else signal('Source reporting unavailable','Last received data is retained for inspection, but current source configuration is unavailable.','SOURCE UNAVAILABLE','warning')}
   else{signal(latest?'Data link interrupted':'Reporting unavailable',latest?'Last received snapshot remains displayed; do not treat it as current.':'Unable to obtain a verified source snapshot. Portfolio values remain unavailable.',reason,'error')}
+  paintFreshness();
  }finally{refreshInFlight=false}
 }
 document.querySelectorAll('.rail-link').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.rail-link').forEach(n=>n.classList.remove('selected'));link.classList.add('selected')}));
-function paintFreshness(){if(!latest)return;const age=at=>at===null?0:Math.max(0,Date.now()-Date.parse(at));const stale=Math.max(age(latest.times.generatedAt),age(latest.times.marketAt),age(latest.times.reconciledAt))>90000;if(stale)signal('STALE SOURCE SNAPSHOT','Last verified source is retained; market or financial information is no longer current. PAPER entries '+latest.status.entries+' · runtime '+latest.status.runtime+' · account '+latest.account.id,'CHECK SOURCE FRESHNESS','warning','RECEIVER · '+latestReceivedAt);else if(latest.status.runtime==='stopped')signal('STOPPED','Runtime stopped. Positions and unresolved actions remain as reported; no liquidation is inferred. Account '+latest.account.id,'MONITORING INTERRUPTED','warning','RECEIVER · '+latestReceivedAt);}
+function paintFreshness(){
+ if(!latest)return;
+ const operating=latest.intelligence?classifyOperatingSnapshot(latest,latestReceivedAt,Date.now()):null;
+ if(operating){
+  const stale=operating.state==='stale',stopped=latest.status.runtime==='stopped';
+  if(readFailure){signal('Data link interrupted'+(stale?' · STALE SOURCE SNAPSHOT':stopped?' · STOPPED':''),'Browser snapshot read failed ('+readFailure+'). Last received data is retained for inspection; do not treat it as current. Runtime '+latest.status.runtime+' · account '+latest.account.id,'DASHBOARD READ FAILED','error','RECEIVER · '+latestReceivedAt);return;}
+  const messages={SOURCE_STALE:'Source snapshot is over 90 seconds old',PUBLISHER_STALE:'No accepted publisher delivery within 90 seconds',RUNTIME_STOPPED:'Runtime stopped; positions and unresolved actions remain as reported',RUNTIME_UNAVAILABLE:'Runtime reports unavailable',SELECTED_CAPTURE_LOST:'Selected-candidate capture is disconnected; valid observation is interrupted',SELECTED_CAPTURE_UNKNOWN:'Selected-candidate capture status is unavailable',DISCOVERY_LOST:'Broad migration discovery is disconnected',DISCOVERY_UNKNOWN:'Broad migration discovery status is unavailable',WATCH_LOST:'Lightweight watch activity is disconnected',WATCH_UNKNOWN:'Lightweight watch activity status is unavailable',USD_VALUATION_UNAVAILABLE:'USD valuation is unavailable; financial amounts remain unavailable',VALUATION_UNAVAILABLE:'Current financial valuation timestamp is unavailable',VALUATION_STALE:'Financial valuation timestamp is over 90 seconds old',RECONCILIATION_NOT_CURRENT:'Financial reconciliation is not current; entry permission remains as reported',RECONCILIATION_UNAVAILABLE:'Financial reconciliation timestamp is unavailable',RECONCILIATION_STALE:'Financial reconciliation timestamp is over 90 seconds old',PROTECTION_UNAVAILABLE:'Held-position protection is unavailable as of this source snapshot',PROTECTION_DEGRADED:'Held-position protection is degraded as of this source snapshot',PROTECTION_OVERDUE:'Held-position protection exceeded its reported completion boundary at source generation',EVIDENCE_PRESSURE:'Evidence pressure restricts candidate admission',RESOURCE_PRESSURE:'Resource pressure restricts candidate admission',SOURCE_RECOVERY:'Candidate-source recovery is pending',ENTRY_READINESS_REQUIRED:'Fresh financial reconciliation and runtime readiness are required before entries',CURRENT_ENTRY_GATE_NOT_SATISFIED:'Current entry gates are not satisfied; the source retains a prior readiness reason',OWNER_ENTRY_PAUSE:'The owner paused new entries',SAFE_STOP_REQUESTED:'A safe stop was requested; existing obligations remain',OTHER_SOURCE_RESTRICTION:'New entries are restricted by another source-reported condition',POE_ENTRY_MANUAL_PAUSE:'The owner paused new entries',POE_ENTRY_SAFE_STOP:'A safe stop is active; existing obligations remain',POE_ENTRY_DAILY_LOSS:'The daily loss protection restricts new entries',POE_ENTRY_FINANCIAL_UNCERTAINTY:'Financial state or an order outcome is unresolved; new entries remain closed',POE_ENTRY_EVIDENCE_UNAVAILABLE:'Required trading evidence is unavailable; new entries remain closed',POE_ENTRY_USD_UNAVAILABLE:'A fresh SOL/USD price is unavailable; new entries remain closed',POE_ENTRY_LIQUIDATION_UNAVAILABLE:'Fresh actual-size liquidation pricing is unavailable',POE_ENTRY_RECONCILIATION_REQUIRED:'Financial reconciliation has not completed for the current account day',POE_ENTRY_RECONCILIATION_STALE:'Financial reconciliation exceeds the two-second entry boundary',POE_ENTRY_PROVIDER_UNAVAILABLE:'Provider access is unavailable or recovering; new entries remain closed',POE_ENTRY_SOURCE_UNAVAILABLE:'Required market observation is unavailable or recovering',POE_ENTRY_MONITORING_UNAVAILABLE:'New-entry monitoring or shared RPC capacity is temporarily reserved; position safeguards remain enforced.',POE_ENTRY_READINESS_REQUIRED:'Fresh complete audited market evidence and financial readiness are required',POE_ENTRY_PROTECTION_RECOVERY_REQUIRED:'New entries remain closed after a position-protection failure; verified protection recovery is required',POE_ENTRY_FINANCIAL_PAUSED:'The ledger entry control is paused; verified recovery is still required'};
+  const warnings=operating.reasonCodes.map(code=>messages[code]).filter(Boolean);
+  const capture=operating.market==='unavailable'?'SELECTED CAPTURE UNAVAILABLE':operating.market==='unknown'?'CAPTURE UNKNOWN':operating.market.toUpperCase();
+  let title=latest.status.runtime==='running'?'RUNNING · '+capture:latest.status.runtime.toUpperCase();
+  if(stale)title=(stopped?'STOPPED · ':'')+'STALE SOURCE SNAPSHOT';
+  else if(operating.reasonCodes.includes('PROTECTION_UNAVAILABLE'))title+=' · PROTECTION UNAVAILABLE';
+  else if(operating.reasonCodes.includes('PROTECTION_OVERDUE'))title+=' · PROTECTION OVERDUE';
+  const discovery=operating.selectedCapture===false&&operating.discovery===true?' · Broad discovery continues':'';
+  const detail='PAPER entries '+latest.status.entries+' · source reporting '+operating.reporting+discovery+(warnings.length?' · '+warnings.join(' · '):'')+' · account '+latest.account.id+' · sequence '+latest.sequence;
+  signal(title,detail,stale?'CHECK SOURCE FRESHNESS':stopped?'MONITORING INTERRUPTED':warnings.length?'SOURCE CURRENT · WARNINGS':'SOURCE CURRENT',warnings.length||stale?'warning':'connected','RECEIVER · '+latestReceivedAt);
+  return;
+ }
+ const age=at=>at===null?0:Math.max(0,Date.now()-Date.parse(at));
+ const stale=Math.max(age(latest.times.generatedAt),age(latest.times.marketAt),age(latest.times.reconciledAt))>90000;
+ const stopped=latest.status.runtime==='stopped';
+ if(readFailure){signal('Data link interrupted'+(stale?' · STALE SOURCE SNAPSHOT':stopped?' · STOPPED':''),'Browser snapshot read failed ('+readFailure+'). Last received data is retained for inspection; do not treat it as current. Runtime '+latest.status.runtime+' · account '+latest.account.id,'DASHBOARD READ FAILED','error','RECEIVER · '+latestReceivedAt);return;}
+ if(stale)signal('STALE SOURCE SNAPSHOT','Last verified source is retained; market or financial information is no longer current. PAPER entries '+latest.status.entries+' · runtime '+latest.status.runtime+' · account '+latest.account.id,'CHECK SOURCE FRESHNESS','warning','RECEIVER · '+latestReceivedAt);
+ else if(stopped)signal('STOPPED','Runtime stopped. Positions and unresolved actions remain as reported; no liquidation is inferred. Account '+latest.account.id,'MONITORING INTERRUPTED','warning','RECEIVER · '+latestReceivedAt);
+}
 clock();setInterval(()=>{clock();paintFreshness()},1000);plot([]);refresh();setInterval(refresh,15000);
 window.addEventListener('focus',()=>{void refresh()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh()});
 byId('refreshNow').addEventListener('click',()=>{void refresh()});
-window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
+window.addEventListener('resize',()=>plot(latestEquityHistory?.points??[]));
 
 /** UI-only progressive disclosure. All projections, API endpoints and financial boundaries are unchanged. */
 (function compactCommandView(){
@@ -397,6 +539,7 @@ window.addEventListener('resize',()=>plot(latest?latest.pnl:[]));
  document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',()=>{
   const id=link.getAttribute('href');if(!id)return;
   const dest=document.getElementById(id.slice(1)),details=dest&&dest.querySelector('.compact-disclosure');
+  if(id==='#activity'){const paperTrades=dest&&dest.querySelector('.paper-trades-disclosure');if(paperTrades)paperTrades.open=true;}
   if(details&&dest.classList.contains('compact-folded'))details.open=true;
  }));
 })();

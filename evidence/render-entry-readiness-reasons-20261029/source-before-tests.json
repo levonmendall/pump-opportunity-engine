@@ -1,0 +1,19 @@
+{
+  "recordedAt": "2026-10-29T18:07:18.109558+00:00",
+  "baseCommit": "9bdf59aa9ca4fe2af92dfeecd65cfa6ab8346fe1",
+  "classification": "Render reporting companion only; no backend repair or operational acceptance claim",
+  "files": {
+    "src/reporting.ts": {
+      "bytes": 24780,
+      "sha256": "b5a28ad6a8a37cb00f0187dad2cda678e57482c040d9e5e3a5fde6c68ea153a2"
+    },
+    "src/dashboard.ts": {
+      "bytes": 70770,
+      "sha256": "04f504f80502849b4af98027ab40588368f7f9962b393ee4b1ce7e7c300b6d46"
+    },
+    "test/reporting-operating-freshness.test.ts": {
+      "bytes": 18184,
+      "sha256": "94d77ab72578adb04e9fff9d3ee7ca8b6b331319fdc2ddd573ea51d44410648a"
+    }
+  }
+}

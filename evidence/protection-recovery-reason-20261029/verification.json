@@ -1,0 +1,11 @@
+{
+  "ownerFrontendBase": "464e50560a380788390a68abeabca9fb1c422acc",
+  "purpose": "Recognize explicit protection-recovery source code; no inferred reason from historical breach counts",
+  "code": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED",
+  "focusedTests": 24,
+  "focusedFailed": 0,
+  "buildPassed": true,
+  "financialControlsChanged": false,
+  "deployed": false,
+  "originalEquityLineTradeDisclosureCandidateProgressionDexLinksPreserved": true
+}

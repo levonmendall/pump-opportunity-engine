@@ -1,0 +1,50 @@
+{
+  "sourceCommit": "e29f4c0665734623b3f42789fc7fc55b03dc9f9f",
+  "ownerFrontendBase": "464e50560a380788390a68abeabca9fb1c422acc",
+  "verifiedAt": "2026-10-29T23:37:26.170308+00:00",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/reporting-operating-freshness.test.ts",
+        "test/dashboard-equity-line.test.ts",
+        "test/dashboard-paper-trades-collapse.test.ts",
+        "test/dashboard-candidate-bars.test.ts",
+        "test/dashboard-pilot-ui.test.ts",
+        "test/dashboard-pilot-portfolio.test.ts",
+        "test/dashboard-pilot-integration.test.ts"
+      ],
+      "exitCode": 0,
+      "raw": "focused-tests.raw.txt"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "raw": "build.raw.txt"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:pilot-reporting"
+      ],
+      "exitCode": 0,
+      "raw": "pilot-reporting.raw.txt"
+    }
+  ],
+  "sourceHashes": {
+    "src/dashboard.ts": "684ba9ea1f770436abcaec80294ba1fc086683af29f6dc05b338aa21198ebf15",
+    "src/reporting.ts": "32b94ce57e7eb75d3beb9e8f88dea0a131ac454eee9775b11bbbce563b5a55b1",
+    "test/reporting-operating-freshness.test.ts": "9893d613be8fd6e3be3cff0ef7171a88cdbdc99dc1d951567c39bc2921f7ce6b"
+  },
+  "sourceUnchanged": true,
+  "ownerMainPushed": false,
+  "deployed": false
+}

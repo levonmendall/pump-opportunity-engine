@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-10-29T18:29:07.107857+00:00",
+  "reviewer": "/root/entry_reason_reporting/review_entry_reasons",
+  "verdict": "PASS",
+  "integratedSourceCommit": "b73feaf35a949c367e7819b383cf0d670b6403bb",
+  "ownerMain": "e1409fc58eb8329cb3ca51f5b824b50801a398ed",
+  "checks": [
+    "Both owner commits are ancestors.",
+    "Dashboard outside only intended static messages line is byte-identical to owner main.",
+    "Both owner graph/disclosure test files are byte-identical.",
+    "All five pinned source/test hashes match exact integrated bytes.",
+    "No additional state, financial permission, schema or freshness changes."
+  ],
+  "duplicateFullSuiteRun": false,
+  "edits": false,
+  "network": false,
+  "deploy": false
+}

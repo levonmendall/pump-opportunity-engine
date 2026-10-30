@@ -1,0 +1,41 @@
+✔ Recent PAPER trades is a native, initially collapsed, keyboard-accessible disclosure (1.637962ms)
+✔ authoritative trade count stays visible while pending orders and completed executions collapse together (0.502844ms)
+✔ activity navigation opens trades, refresh does not replace disclosure, and portfolio chart remains expanded (0.189941ms)
+✔ served holographic dashboard retains one collapsible original-account trade panel (35.812436ms)
+✔ same-timestamp null P&L placeholders do not break the verified line (5.74819ms)
+✔ distinct missing timestamp and long unsampled intervals preserve honest gaps (1.355345ms)
+✔ conflicting verified duplicates are not silently selected as a trading value (1.181307ms)
+✔ default recent line is readable while full history remains available on request (2.143329ms)
+✔ no verified P&L renders an honest absence, not a synthetic line (0.92668ms)
+✔ served original dashboard exposes line graph and accessible range control without hiding P&L (51.584738ms)
+✔ modern source freshness is independent of unavailable USD and 2s financial reconciliation validity (19.391524ms)
+✔ modern valuation and reconciliation staleness remain warnings without hiding source or publisher staleness (2.109079ms)
+✔ actual selected capture loss is unavailable even while broad discovery continues, and null is unknown (2.825819ms)
+✔ held protection and evidence pressure are explicit source-time facts, not inferred from browser age or cumulative errors (0.502162ms)
+✔ known entry restrictions remain visible and unknown blocker text never enters derived facets (0.406431ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_MANUAL_PAUSE (0.436155ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_SAFE_STOP (0.400642ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_DAILY_LOSS (0.42614ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_FINANCIAL_UNCERTAINTY (0.511206ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_EVIDENCE_UNAVAILABLE (1.471515ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_USD_UNAVAILABLE (0.364509ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_LIQUIDATION_UNAVAILABLE (0.293244ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_RECONCILIATION_REQUIRED (0.369176ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_RECONCILIATION_STALE (1.31179ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_PROVIDER_UNAVAILABLE (0.320554ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_SOURCE_UNAVAILABLE (0.232083ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_MONITORING_UNAVAILABLE (0.260596ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_READINESS_REQUIRED (0.267306ms)
+✔ current entry restriction remains precise without changing permission: POE_ENTRY_FINANCIAL_PAUSED (0.338731ms)
+✔ a familiar entry-code prefix cannot export unknown private blocker text (0.17598ms)
+✔ legacy sources keep combined market/accounting validity semantics and do not gain inferred capture facts (0.943335ms)
+✔ 57 actual 16:51–17:06 observations separate 39 reconciliation-only false alarms from two real capture losses (8.33826ms)
+✔ actual served browser uses shared classifier, preserves true disconnections/read failures/stops, and never makes financial timestamps source freshness (44.847477ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 418.289491

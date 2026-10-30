@@ -1,7 +1,27 @@
 import { createHash } from 'node:crypto';
 import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
+import { EQUITY_GAP_MS, validateLifetimeEquityHistory, type LifetimeEquityHistory } from './lifetime-equity-contract.js';
 
 export const MAX_SNAPSHOT_BYTES = 128 * 1024;
+// The receiver records only source-reported portfolio equity (never trading P&L
+// plus an inferred starting balance). Samples are ephemeral reporting data, not
+// a financial ledger or a claim of historical coverage before this process.
+// Coalesce into one verified end-of-minute reading to bound mobile chart data.
+const MAX_RECEIVED_EQUITY_MINUTES = 1440;
+const EQUITY_HISTORY_MS = 24 * 60 * 60 * 1000;
+export type ReceivedEquityPoint = {at: string; equityUsd: number};
+export type ReceivedEquityHistory = {
+  schemaVersion: 1;
+  accountId: string | null;
+  source: 'accepted-authoritative-portfolio-equity';
+  retention: 'receiver-memory-only' | 'ec2-durable-republished';
+  downsampled?: boolean;
+  inceptionAt?: string;
+  bucketMs: 60_000;
+  windowLimited: boolean;
+  points: (ReceivedEquityPoint & {segment?: number; kind?: 'inception' | 'observed'})[];
+};
+
 export type ReportingIdentity = { accountId: string; inceptionAt: string; release: string; strategy: string };
 export type Snapshot = {
   intelligence?: OperatingIntelligence;
@@ -134,11 +154,85 @@ function canonical(value: unknown): string {
   return JSON.stringify(value);
 }
 const hash = (s: Snapshot) => createHash('sha256').update(canonical(s)).digest('hex');
+
+/** Reporting interpretation only. Financial validity and entry permission remain source facts.
+ * Kept self-contained so the API and browser run the exact same classifier. */
+export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: string | null, now = Date.now()) {
+  const i = snapshot.intelligence;
+  if (!i) return null; // Legacy sources retain their existing combined validity semantics.
+  const sourceAgeMs = Math.max(0, now - Date.parse(snapshot.times.generatedAt));
+  const receivedAgeMs = receivedAt === null ? null : Math.max(0, now - Date.parse(receivedAt));
+  const valuationAgeMs = snapshot.times.marketAt === null ? null : Math.max(0, now - Date.parse(snapshot.times.marketAt));
+  const reconciliationAgeMs = snapshot.times.reconciledAt === null ? null : Math.max(0, now - Date.parse(snapshot.times.reconciledAt));
+  const reasonCodes: string[] = [];
+  const sourceStale = sourceAgeMs > 90_000;
+  const publisherStale = receivedAgeMs === null || receivedAgeMs > 90_000;
+  if (sourceStale) reasonCodes.push('SOURCE_STALE');
+  if (publisherStale) reasonCodes.push('PUBLISHER_STALE');
+  if (snapshot.status.runtime === 'stopped') reasonCodes.push('RUNTIME_STOPPED');
+  else if (snapshot.status.runtime === 'unavailable') reasonCodes.push('RUNTIME_UNAVAILABLE');
+  const selectedCapture = i.quality.captureConnected;
+  const discovery = i.provider.discoveryConnected;
+  const watch = i.provider.watchConnected;
+  if (selectedCapture === false) reasonCodes.push('SELECTED_CAPTURE_LOST');
+  else if (selectedCapture === null) reasonCodes.push('SELECTED_CAPTURE_UNKNOWN');
+  if (discovery === false) reasonCodes.push('DISCOVERY_LOST');
+  else if (discovery === null) reasonCodes.push('DISCOVERY_UNKNOWN');
+  if (watch === false) reasonCodes.push('WATCH_LOST');
+  else if (watch === null) reasonCodes.push('WATCH_UNKNOWN');
+  const usdAvailable = snapshot.balances.equityUsd !== null && snapshot.balances.solPriceUsd !== null;
+  if (!usdAvailable) reasonCodes.push('USD_VALUATION_UNAVAILABLE');
+  if (valuationAgeMs === null) reasonCodes.push('VALUATION_UNAVAILABLE');
+  else if (valuationAgeMs > 90_000) reasonCodes.push('VALUATION_STALE');
+  if (!snapshot.status.reconciled) reasonCodes.push('RECONCILIATION_NOT_CURRENT');
+  if (reconciliationAgeMs === null) reasonCodes.push('RECONCILIATION_UNAVAILABLE');
+  else if (reconciliationAgeMs > 90_000) reasonCodes.push('RECONCILIATION_STALE');
+  let entryRestriction: string | null = null;
+  if (snapshot.status.entries !== 'enabled' && snapshot.status.blocker !== null) {
+    const currentEntryCodes = ['POE_ENTRY_MANUAL_PAUSE', 'POE_ENTRY_SAFE_STOP', 'POE_ENTRY_DAILY_LOSS', 'POE_ENTRY_FINANCIAL_UNCERTAINTY', 'POE_ENTRY_EVIDENCE_UNAVAILABLE', 'POE_ENTRY_USD_UNAVAILABLE', 'POE_ENTRY_LIQUIDATION_UNAVAILABLE', 'POE_ENTRY_RECONCILIATION_REQUIRED', 'POE_ENTRY_RECONCILIATION_STALE', 'POE_ENTRY_PROVIDER_UNAVAILABLE', 'POE_ENTRY_SOURCE_UNAVAILABLE', 'POE_ENTRY_MONITORING_UNAVAILABLE', 'POE_ENTRY_READINESS_REQUIRED', 'POE_ENTRY_PROTECTION_RECOVERY_REQUIRED', 'POE_ENTRY_FINANCIAL_PAUSED'];
+    if (currentEntryCodes.includes(snapshot.status.blocker)) entryRestriction = snapshot.status.blocker;
+    else if (snapshot.status.blocker === 'execution startup: fresh reconciliation/readiness required' || snapshot.status.blocker === 'startup: observation only; explicit runtime readiness required') entryRestriction = 'ENTRY_READINESS_REQUIRED';
+    else if (snapshot.status.blocker === 'explicit verified runtime readiness') entryRestriction = 'CURRENT_ENTRY_GATE_NOT_SATISFIED';
+    else if (snapshot.status.blocker === 'operator paused new entries' || snapshot.status.blocker === 'owner paused new entries') entryRestriction = 'OWNER_ENTRY_PAUSE';
+    else if (snapshot.status.blocker === 'safe stop requested' || snapshot.status.blocker === 'owner requested safe stop') entryRestriction = 'SAFE_STOP_REQUESTED';
+    else entryRestriction = 'OTHER_SOURCE_RESTRICTION';
+    reasonCodes.push(entryRestriction);
+  }
+  const protection = i.protection;
+  // Protection is assessed at source generation, never extrapolated from a 15s browser poll.
+  const completedAgeAtSourceMs = protection.lastCompletedAt === null ? null : Math.max(0, Date.parse(snapshot.times.generatedAt) - Date.parse(protection.lastCompletedAt));
+  const held = snapshot.positions.length > 0 || protection.state !== 'flat';
+  if (held && (protection.state === 'unavailable' || protection.state === 'flat' || completedAgeAtSourceMs === null)) reasonCodes.push('PROTECTION_UNAVAILABLE');
+  else if (held && protection.state === 'degraded') reasonCodes.push('PROTECTION_DEGRADED');
+  if (held && completedAgeAtSourceMs !== null && protection.completedEvaluationBoundaryMs !== null && completedAgeAtSourceMs > protection.completedEvaluationBoundaryMs) reasonCodes.push('PROTECTION_OVERDUE');
+  if (i.admission?.evidenceAdmissionAllowed === false || i.admission?.evidenceRequiresCriticalRecovery === true) reasonCodes.push('EVIDENCE_PRESSURE');
+  if (i.admission?.candidateResourceAdmissionAllowed === false || i.resources.state === 'pressure') reasonCodes.push('RESOURCE_PRESSURE');
+  if (i.admission?.sourceRecoveryReasonCode || i.admission?.sourceRestartRequired === true) reasonCodes.push('SOURCE_RECOVERY');
+  const market = selectedCapture === true ? snapshot.status.market === 'warming' ? 'warming' : 'observing' : selectedCapture === false ? 'unavailable' : 'unknown';
+  const state = sourceStale || publisherStale ? 'stale'
+    : snapshot.status.runtime !== 'running' || selectedCapture !== true ? 'unavailable'
+    : market === 'warming' ? 'warming'
+    : snapshot.status.entries === 'paused' ? 'entry-paused'
+    : snapshot.funnel.paperFilled === 0 ? 'observing-with-zero-trades' : 'fresh';
+  return {
+    kind: 'operating-source-v1', state, market,
+    reporting: sourceStale ? 'source-stale' : publisherStale ? 'publisher-stale' : 'current',
+    sourceAgeMs, receivedAgeMs, selectedCapture, discovery, watch, entryRestriction,
+    financial: { usdValuation: usdAvailable ? 'available' : 'unavailable', reconciled: snapshot.status.reconciled, valuationAgeMs, reconciliationAgeMs },
+    protection: { state: protection.state, completedAt: protection.lastCompletedAt, completedAgeAtSourceMs, boundaryMs: protection.completedEvaluationBoundaryMs },
+    reasonCodes,
+  };
+}
+
 export const snapshotFingerprint=hash;
 export type SnapshotAcknowledgement={published:true;result:'accepted'|'duplicate';accountId:string;inceptionAt:string;release:string;sequence:string;sourceAtMs:number;fingerprint:string;acknowledgedAtMs:number;rawSourceSha256?:string};
 
+
 export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
+  private acceptedEquity: ReceivedEquityPoint[] = [];
+  private equityWindowLimited = false;
+  private sourceEquity: LifetimeEquityHistory | null = null;
   constructor(readonly identity: ReportingIdentity | null = null) { if (identity !== null) validateIdentity(identity); }
   accept(value: unknown, now = Date.now()): 'accepted' | 'duplicate' {
     if (this.identity === null) throw new Error('source-not-configured');
@@ -154,7 +248,71 @@ export class SnapshotCache {
     }
     // Replace one complete immutable value; never mutate fields of the visible read model.
     this.current = { snapshot: JSON.parse(JSON.stringify(snapshot)) as Snapshot, fingerprint, receivedAt: new Date(now).toISOString() };
+    // Append only authenticated, validated source equity. The same exact USD
+    // value drives the Portfolio Overview equity card; no P&L-derived proxy.
+    if (snapshot.balances.equityUsd !== null) {
+      const point: ReceivedEquityPoint = {at: snapshot.times.generatedAt, equityUsd: snapshot.balances.equityUsd};
+      const previous = this.acceptedEquity.at(-1);
+      if (previous && Math.floor(Date.parse(previous.at) / 60_000) === Math.floor(Date.parse(point.at) / 60_000)) {
+        this.acceptedEquity[this.acceptedEquity.length - 1] = point;
+      } else {
+        this.acceptedEquity.push(point);
+      }
+      const mostRecentAt = Date.parse(point.at);
+      while (this.acceptedEquity.length > MAX_RECEIVED_EQUITY_MINUTES ||
+             mostRecentAt - Date.parse(this.acceptedEquity[0]!.at) > EQUITY_HISTORY_MS) {
+        this.acceptedEquity.shift(); this.equityWindowLimited = true;
+      }
+    }
     return 'accepted';
+  }
+  /**
+   * A durable, read-only EC2 series is periodically republished to recover
+   * after Render upgrades. No history is derived from P&L or written by Render.
+   */
+  acceptLifetimeEquityHistory(input: unknown, now = Date.now()): 'accepted' | 'duplicate' {
+    if (!this.identity || this.identity.accountId !== ORIGINAL_POE_ACCOUNT ||
+        this.identity.inceptionAt !== ORIGINAL_POE_INCEPTION) throw Error('EQUITY_ORIGINAL_SOURCE_NOT_CONFIGURED');
+    const history = validateLifetimeEquityHistory(input, now);
+    if (this.sourceEquity) {
+      const prior = BigInt(this.sourceEquity.lastSequence), next = BigInt(history.lastSequence);
+      if (next < prior) throw Error('EQUITY_HISTORY_REGRESSION');
+      if (next === prior) {
+        if (JSON.stringify(this.sourceEquity) !== JSON.stringify(history)) throw Error('EQUITY_HISTORY_CONFLICT');
+        return 'duplicate';
+      }
+      const prevLast = this.sourceEquity.points.at(-1)!;
+      const newest = history.points.at(-1)!;
+      if (Date.parse(newest.at) < Date.parse(prevLast.at)) throw Error('EQUITY_HISTORY_TIME_REGRESSION');
+    }
+    if (this.current) {
+      const source = this.current.snapshot, latest = history.points.at(-1)!;
+      if (latest.at === source.times.generatedAt && source.balances.equityUsd !== null &&
+          latest.equityUsd !== source.balances.equityUsd) throw Error('EQUITY_SOURCE_VALUE_CONFLICT');
+    }
+    this.sourceEquity = structuredClone(history);
+    return 'accepted';
+  }
+  /** Original-account equity only: current card and line can share the same actual source value. */
+  equityHistory(): ReceivedEquityHistory {
+    if (this.sourceEquity) {
+      const history = this.sourceEquity, points = structuredClone(history.points);
+      const latest = points.at(-1)!;
+      const current = this.current?.snapshot;
+      if (current && current.balances.equityUsd !== null &&
+          Date.parse(current.times.generatedAt) > Date.parse(latest.at)) {
+        const at = Date.parse(current.times.generatedAt), prior = Date.parse(latest.at);
+        points.push({at: current.times.generatedAt, equityUsd: current.balances.equityUsd,
+          segment: latest.segment + (at - prior > EQUITY_GAP_MS ? 1 : 0), kind: 'observed'});
+      }
+      return {schemaVersion: 1, accountId: history.accountId,
+        source: 'accepted-authoritative-portfolio-equity', retention: 'ec2-durable-republished',
+        inceptionAt: history.inceptionAt, downsampled: history.downsampled,
+        bucketMs: 60_000, windowLimited: false, points};
+    }
+    return {schemaVersion: 1, accountId: this.identity?.accountId ?? null,
+      source: 'accepted-authoritative-portfolio-equity', retention: 'receiver-memory-only',
+      bucketMs: 60_000, windowLimited: this.equityWindowLimited, points: structuredClone(this.acceptedEquity)};
   }
   read() { return this.current ? structuredClone(this.current) : null; }
   status(now = Date.now()) {
@@ -163,6 +321,8 @@ export class SnapshotCache {
     const age = (at: string | null) => at === null ? null : Math.max(0, now - Date.parse(at));
     const sourceAgeMs = age(c.snapshot.times.generatedAt)!;
     const marketAgeMs = age(c.snapshot.times.marketAt), reconciliationAgeMs = age(c.snapshot.times.reconciledAt);
+    const operating = operatingSnapshotFreshness(c.snapshot, c.receivedAt, now);
+    if (operating) return { state: operating.state, receivedAt: c.receivedAt, ...c.snapshot.times, sourceAgeMs, marketAgeMs, reconciliationAgeMs, operating };
     const stale = Math.max(sourceAgeMs, marketAgeMs ?? 0, reconciliationAgeMs ?? 0) > 90_000;
     const unavailable = !c.snapshot.status.reconciled || c.snapshot.balances.equityUsd === null || marketAgeMs === null || reconciliationAgeMs === null;
     const state = stale ? 'stale' : c.snapshot.status.runtime !== 'running' || c.snapshot.status.market === 'unavailable' ? 'unavailable' : c.snapshot.status.market === 'warming' ? 'warming' : unavailable ? 'unavailable' : c.snapshot.status.entries === 'paused' ? 'entry-paused' : c.snapshot.funnel.paperFilled === 0 ? 'observing-with-zero-trades' : 'fresh';

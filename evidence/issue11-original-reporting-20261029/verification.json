@@ -1,0 +1,24 @@
+{
+  "purpose": "Expose original native intelligence through the same original authenticated portfolio, retire unused experimental API routes without deleting records or secrets.",
+  "baseCommit": "79195ecfb2aaf138715a730194edf1a489937fc1",
+  "financialSourceUnchanged": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "originalAccount": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "originalInception": "2026-10-26T22:07:36.212Z",
+  "sameService": "srv-daqon53tqb8s73bdceq0",
+  "plan": "free",
+  "tests": {
+    "full": 230,
+    "focused": 48,
+    "mjs": 36,
+    "browserWidths": [
+      390,
+      1280
+    ]
+  },
+  "financialRuntimeChanged": false,
+  "ledgerOpened": false,
+  "secretsReadOrRemoved": false,
+  "reportingSchemaChanged": false,
+  "independentReview": "No blocking issue; preserved runtime-reported facts, legacy masking, stable duplicate timestamps, null PnL gaps, manual refresh, exact reservation integers and read-failure visibility.",
+  "deployment": "NOT YET TRIGGERED"
+}

@@ -1,0 +1,196 @@
+diff --git a/src/dashboard-connectivity.ts b/src/dashboard-connectivity.ts
+index 1557fcc..6db326b 100644
+--- a/src/dashboard-connectivity.ts
++++ b/src/dashboard-connectivity.ts
+@@ -26,7 +26,7 @@ export function connectionReport(cache: SnapshotCache, now = Date.now(), pilot?:
+     sourceAgeMs, receivedAgeMs, source,
+     sourceRole: !snapshot ? 'unknown' : observerOnly ? 'discovery-observer' : 'runtime-reported',
+     capabilities: {
+-      discovery: !snapshot ? 'unavailable' : snapshot.status.market === 'observing' ? 'reported' : 'unavailable',
++      discovery: !snapshot ? 'unavailable' : snapshot.intelligence ? snapshot.intelligence.provider.discoveryConnected === true ? 'reported' : snapshot.intelligence.provider.discoveryConnected === false ? 'unavailable' : 'unknown' : snapshot.status.market === 'observing' ? 'reported' : 'unavailable',
+       candidatePipeline: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
+       decisionTrace: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
+       selectedTokenRpc: !snapshot ? 'unavailable' : observerOnly ? 'not-implemented-in-source' : 'runtime-reported',
+diff --git a/src/dashboard.ts b/src/dashboard.ts
+index 47b6b16..d97df6c 100644
+--- a/src/dashboard.ts
++++ b/src/dashboard.ts
+@@ -3,7 +3,7 @@ import { timingSafeEqual, createHash } from 'node:crypto';
+ import {holographicDashboard} from './dashboard-holographic.js';
+ import {ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION} from './operating-intelligence.js';
+ import { fileURLToPath } from 'node:url';
+-import { MAX_SNAPSHOT_BYTES, SnapshotCache, type ReportingIdentity } from './reporting.js';
++import { MAX_SNAPSHOT_BYTES, SnapshotCache, operatingSnapshotFreshness, type ReportingIdentity } from './reporting.js';
+ 
+ const equal = (a: string, b: string) => timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest());
+ export type DashboardConfig = Partial<ReportingIdentity> & { viewerUser: string; viewerPassword: string; ingestionSecret: string; publicViewer?: boolean };
+@@ -209,6 +209,7 @@ body.poe-compact-view .compact-folded{min-height:0}
+ </div></div>
+ <script>
+ 'use strict';
++const classifyOperatingSnapshot = ${operatingSnapshotFreshness.toString()};
+ const byId=id=>document.getElementById(id);
+ const money=n=>n===null?'Unavailable':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
+ const put=(id,value)=>{byId(id).textContent=String(value)};
+@@ -347,11 +348,13 @@ function showSnapshot(s,received,f){
+  put('chartBasis',s.intelligence?'Net token trading result translated at current SOL/USD; not historical realized USD profit':'Legacy equity change includes passive SOL/USD; do not interpret as pure trading profit');put('chartLegend',s.intelligence?'TOKEN TRADING · CURRENT USD':'LEGACY EQUITY CHANGE · USD');
+  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
+  put('chartTag',s.pnl.some(p=>p.tradingUsd!==null)?'VERIFIED SERIES':'HISTORY UNAVAILABLE');
+- put('freshness','Generated '+s.times.generatedAt+' · Market '+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
++ put('freshness','Generated '+s.times.generatedAt+(s.intelligence?' · Financial valuation ':' · Market ')+(s.times.marketAt||'unavailable')+' · Reconciled '+(s.times.reconciledAt||'unavailable')+' · Receiver '+received);
+  put('chartNote',s.history.label+' · '+s.pnl.length+'/720 points · '+(s.history.downsampled?'downsampled':'as recorded')+' · window start '+(s.history.windowStartAt||'unavailable')+'. Missing samples remain gaps.');
+- const state=String(f.state).toUpperCase();
+- const bad=f.state==='stale'||f.state==='unavailable';
+- signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
++ if(!s.intelligence){
++  const state=String(f.state).toUpperCase();
++  const bad=f.state==='stale'||f.state==='unavailable';
++  signal(state+' · '+s.status.market.toUpperCase(),'PAPER entries '+s.status.entries+' · runtime '+s.status.runtime+(s.status.blocker?' · Blocker: '+s.status.blocker:'')+' · source '+s.account.id+' · sequence '+s.sequence, bad?'CHECK SOURCE FRESHNESS':'VERIFIED SNAPSHOT RECEIVED',bad?'warning':'connected','RECEIVER · '+received);
++ }
+  byId('exportLink').hidden=false;
+  paintFreshness();
+ }
+@@ -376,6 +379,22 @@ async function refresh(){
+ document.querySelectorAll('.rail-link').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.rail-link').forEach(n=>n.classList.remove('selected'));link.classList.add('selected')}));
+ function paintFreshness(){
+  if(!latest)return;
++ const operating=latest.intelligence?classifyOperatingSnapshot(latest,latestReceivedAt,Date.now()):null;
++ if(operating){
++  const stale=operating.state==='stale',stopped=latest.status.runtime==='stopped';
++  if(readFailure){signal('Data link interrupted'+(stale?' · STALE SOURCE SNAPSHOT':stopped?' · STOPPED':''),'Browser snapshot read failed ('+readFailure+'). Last received data is retained for inspection; do not treat it as current. Runtime '+latest.status.runtime+' · account '+latest.account.id,'DASHBOARD READ FAILED','error','RECEIVER · '+latestReceivedAt);return;}
++  const messages={SOURCE_STALE:'Source snapshot is over 90 seconds old',PUBLISHER_STALE:'No accepted publisher delivery within 90 seconds',RUNTIME_STOPPED:'Runtime stopped; positions and unresolved actions remain as reported',RUNTIME_UNAVAILABLE:'Runtime reports unavailable',SELECTED_CAPTURE_LOST:'Selected-candidate capture is disconnected; valid observation is interrupted',SELECTED_CAPTURE_UNKNOWN:'Selected-candidate capture status is unavailable',DISCOVERY_LOST:'Broad migration discovery is disconnected',DISCOVERY_UNKNOWN:'Broad migration discovery status is unavailable',WATCH_LOST:'Lightweight watch activity is disconnected',WATCH_UNKNOWN:'Lightweight watch activity status is unavailable',USD_VALUATION_UNAVAILABLE:'USD valuation is unavailable; financial amounts remain unavailable',VALUATION_UNAVAILABLE:'Current financial valuation timestamp is unavailable',VALUATION_STALE:'Financial valuation timestamp is over 90 seconds old',RECONCILIATION_NOT_CURRENT:'Financial reconciliation is not current; entry permission remains as reported',RECONCILIATION_UNAVAILABLE:'Financial reconciliation timestamp is unavailable',RECONCILIATION_STALE:'Financial reconciliation timestamp is over 90 seconds old',PROTECTION_UNAVAILABLE:'Held-position protection is unavailable as of this source snapshot',PROTECTION_DEGRADED:'Held-position protection is degraded as of this source snapshot',PROTECTION_OVERDUE:'Held-position protection exceeded its reported completion boundary at source generation',EVIDENCE_PRESSURE:'Evidence pressure restricts candidate admission',RESOURCE_PRESSURE:'Resource pressure restricts candidate admission',SOURCE_RECOVERY:'Candidate-source recovery is pending',ENTRY_READINESS_REQUIRED:'Fresh financial reconciliation and runtime readiness are required before entries',CURRENT_ENTRY_GATE_NOT_SATISFIED:'Current entry gates are not satisfied; the source retains a prior readiness reason',OWNER_ENTRY_PAUSE:'The owner paused new entries',SAFE_STOP_REQUESTED:'A safe stop was requested; existing obligations remain',OTHER_SOURCE_RESTRICTION:'New entries are restricted by another source-reported condition'};
++  const warnings=operating.reasonCodes.map(code=>messages[code]).filter(Boolean);
++  const capture=operating.market==='unavailable'?'SELECTED CAPTURE UNAVAILABLE':operating.market==='unknown'?'CAPTURE UNKNOWN':operating.market.toUpperCase();
++  let title=latest.status.runtime==='running'?'RUNNING · '+capture:latest.status.runtime.toUpperCase();
++  if(stale)title=(stopped?'STOPPED · ':'')+'STALE SOURCE SNAPSHOT';
++  else if(operating.reasonCodes.includes('PROTECTION_UNAVAILABLE'))title+=' · PROTECTION UNAVAILABLE';
++  else if(operating.reasonCodes.includes('PROTECTION_OVERDUE'))title+=' · PROTECTION OVERDUE';
++  const discovery=operating.selectedCapture===false&&operating.discovery===true?' · Broad discovery continues':'';
++  const detail='PAPER entries '+latest.status.entries+' · source reporting '+operating.reporting+discovery+(warnings.length?' · '+warnings.join(' · '):'')+' · account '+latest.account.id+' · sequence '+latest.sequence;
++  signal(title,detail,stale?'CHECK SOURCE FRESHNESS':stopped?'MONITORING INTERRUPTED':warnings.length?'SOURCE CURRENT · WARNINGS':'SOURCE CURRENT',warnings.length||stale?'warning':'connected','RECEIVER · '+latestReceivedAt);
++  return;
++ }
+  const age=at=>at===null?0:Math.max(0,Date.now()-Date.parse(at));
+  const stale=Math.max(age(latest.times.generatedAt),age(latest.times.marketAt),age(latest.times.reconciledAt))>90000;
+  const stopped=latest.status.runtime==='stopped';
+diff --git a/src/reporting.ts b/src/reporting.ts
+index 80eb773..e4ef1a0 100644
+--- a/src/reporting.ts
++++ b/src/reporting.ts
+@@ -116,6 +116,73 @@ function canonical(value: unknown): string {
+ }
+ const hash = (s: Snapshot) => createHash('sha256').update(canonical(s)).digest('hex');
+ 
++/** Reporting interpretation only. Financial validity and entry permission remain source facts.
++ * Kept self-contained so the API and browser run the exact same classifier. */
++export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: string | null, now = Date.now()) {
++  const i = snapshot.intelligence;
++  if (!i) return null; // Legacy sources retain their existing combined validity semantics.
++  const sourceAgeMs = Math.max(0, now - Date.parse(snapshot.times.generatedAt));
++  const receivedAgeMs = receivedAt === null ? null : Math.max(0, now - Date.parse(receivedAt));
++  const valuationAgeMs = snapshot.times.marketAt === null ? null : Math.max(0, now - Date.parse(snapshot.times.marketAt));
++  const reconciliationAgeMs = snapshot.times.reconciledAt === null ? null : Math.max(0, now - Date.parse(snapshot.times.reconciledAt));
++  const reasonCodes: string[] = [];
++  const sourceStale = sourceAgeMs > 90_000;
++  const publisherStale = receivedAgeMs === null || receivedAgeMs > 90_000;
++  if (sourceStale) reasonCodes.push('SOURCE_STALE');
++  if (publisherStale) reasonCodes.push('PUBLISHER_STALE');
++  if (snapshot.status.runtime === 'stopped') reasonCodes.push('RUNTIME_STOPPED');
++  else if (snapshot.status.runtime === 'unavailable') reasonCodes.push('RUNTIME_UNAVAILABLE');
++  const selectedCapture = i.quality.captureConnected;
++  const discovery = i.provider.discoveryConnected;
++  const watch = i.provider.watchConnected;
++  if (selectedCapture === false) reasonCodes.push('SELECTED_CAPTURE_LOST');
++  else if (selectedCapture === null) reasonCodes.push('SELECTED_CAPTURE_UNKNOWN');
++  if (discovery === false) reasonCodes.push('DISCOVERY_LOST');
++  else if (discovery === null) reasonCodes.push('DISCOVERY_UNKNOWN');
++  if (watch === false) reasonCodes.push('WATCH_LOST');
++  else if (watch === null) reasonCodes.push('WATCH_UNKNOWN');
++  const usdAvailable = snapshot.balances.equityUsd !== null && snapshot.balances.solPriceUsd !== null;
++  if (!usdAvailable) reasonCodes.push('USD_VALUATION_UNAVAILABLE');
++  if (valuationAgeMs === null) reasonCodes.push('VALUATION_UNAVAILABLE');
++  else if (valuationAgeMs > 90_000) reasonCodes.push('VALUATION_STALE');
++  if (!snapshot.status.reconciled) reasonCodes.push('RECONCILIATION_NOT_CURRENT');
++  if (reconciliationAgeMs === null) reasonCodes.push('RECONCILIATION_UNAVAILABLE');
++  else if (reconciliationAgeMs > 90_000) reasonCodes.push('RECONCILIATION_STALE');
++  let entryRestriction: string | null = null;
++  if (snapshot.status.entries !== 'enabled' && snapshot.status.blocker !== null) {
++    if (snapshot.status.blocker === 'execution startup: fresh reconciliation/readiness required' || snapshot.status.blocker === 'startup: observation only; explicit runtime readiness required') entryRestriction = 'ENTRY_READINESS_REQUIRED';
++    else if (snapshot.status.blocker === 'explicit verified runtime readiness') entryRestriction = 'CURRENT_ENTRY_GATE_NOT_SATISFIED';
++    else if (snapshot.status.blocker === 'operator paused new entries' || snapshot.status.blocker === 'owner paused new entries') entryRestriction = 'OWNER_ENTRY_PAUSE';
++    else if (snapshot.status.blocker === 'safe stop requested' || snapshot.status.blocker === 'owner requested safe stop') entryRestriction = 'SAFE_STOP_REQUESTED';
++    else entryRestriction = 'OTHER_SOURCE_RESTRICTION';
++    reasonCodes.push(entryRestriction);
++  }
++  const protection = i.protection;
++  // Protection is assessed at source generation, never extrapolated from a 15s browser poll.
++  const completedAgeAtSourceMs = protection.lastCompletedAt === null ? null : Math.max(0, Date.parse(snapshot.times.generatedAt) - Date.parse(protection.lastCompletedAt));
++  const held = snapshot.positions.length > 0 || protection.state !== 'flat';
++  if (held && (protection.state === 'unavailable' || protection.state === 'flat' || completedAgeAtSourceMs === null)) reasonCodes.push('PROTECTION_UNAVAILABLE');
++  else if (held && protection.state === 'degraded') reasonCodes.push('PROTECTION_DEGRADED');
++  if (held && completedAgeAtSourceMs !== null && protection.completedEvaluationBoundaryMs !== null && completedAgeAtSourceMs > protection.completedEvaluationBoundaryMs) reasonCodes.push('PROTECTION_OVERDUE');
++  if (i.admission?.evidenceAdmissionAllowed === false || i.admission?.evidenceRequiresCriticalRecovery === true) reasonCodes.push('EVIDENCE_PRESSURE');
++  if (i.admission?.candidateResourceAdmissionAllowed === false || i.resources.state === 'pressure') reasonCodes.push('RESOURCE_PRESSURE');
++  if (i.admission?.sourceRecoveryReasonCode || i.admission?.sourceRestartRequired === true) reasonCodes.push('SOURCE_RECOVERY');
++  const market = selectedCapture === true ? snapshot.status.market === 'warming' ? 'warming' : 'observing' : selectedCapture === false ? 'unavailable' : 'unknown';
++  const state = sourceStale || publisherStale ? 'stale'
++    : snapshot.status.runtime !== 'running' || selectedCapture !== true ? 'unavailable'
++    : market === 'warming' ? 'warming'
++    : snapshot.status.entries === 'paused' ? 'entry-paused'
++    : snapshot.funnel.paperFilled === 0 ? 'observing-with-zero-trades' : 'fresh';
++  return {
++    kind: 'operating-source-v1', state, market,
++    reporting: sourceStale ? 'source-stale' : publisherStale ? 'publisher-stale' : 'current',
++    sourceAgeMs, receivedAgeMs, selectedCapture, discovery, watch, entryRestriction,
++    financial: { usdValuation: usdAvailable ? 'available' : 'unavailable', reconciled: snapshot.status.reconciled, valuationAgeMs, reconciliationAgeMs },
++    protection: { state: protection.state, completedAt: protection.lastCompletedAt, completedAgeAtSourceMs, boundaryMs: protection.completedEvaluationBoundaryMs },
++    reasonCodes,
++  };
++}
++
+ export class SnapshotCache {
+   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
+   constructor(readonly identity: ReportingIdentity | null = null) { if (identity !== null) validateIdentity(identity); }
+@@ -142,6 +209,8 @@ export class SnapshotCache {
+     const age = (at: string | null) => at === null ? null : Math.max(0, now - Date.parse(at));
+     const sourceAgeMs = age(c.snapshot.times.generatedAt)!;
+     const marketAgeMs = age(c.snapshot.times.marketAt), reconciliationAgeMs = age(c.snapshot.times.reconciledAt);
++    const operating = operatingSnapshotFreshness(c.snapshot, c.receivedAt, now);
++    if (operating) return { state: operating.state, receivedAt: c.receivedAt, ...c.snapshot.times, sourceAgeMs, marketAgeMs, reconciliationAgeMs, operating };
+     const stale = Math.max(sourceAgeMs, marketAgeMs ?? 0, reconciliationAgeMs ?? 0) > 90_000;
+     const unavailable = !c.snapshot.status.reconciled || c.snapshot.balances.equityUsd === null || marketAgeMs === null || reconciliationAgeMs === null;
+     const state = stale ? 'stale' : c.snapshot.status.runtime !== 'running' || c.snapshot.status.market === 'unavailable' ? 'unavailable' : c.snapshot.status.market === 'warming' ? 'warming' : unavailable ? 'unavailable' : c.snapshot.status.entries === 'paused' ? 'entry-paused' : c.snapshot.funnel.paperFilled === 0 ? 'observing-with-zero-trades' : 'fresh';
+diff --git a/test/dashboard-holographic.test.ts b/test/dashboard-holographic.test.ts
+index 66a4110..4347450 100644
+--- a/test/dashboard-holographic.test.ts
++++ b/test/dashboard-holographic.test.ts
+@@ -5,13 +5,15 @@ import {once} from 'node:events';
+ import type {AddressInfo} from 'node:net';
+ import {holographicDashboard,HOLOGRAPHIC_VERSION} from '../src/dashboard-holographic.js';
+ import {createDashboard} from '../src/dashboard.js';
++import {operatingSnapshotFreshness} from '../src/reporting.js';
+ 
+ const source=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8');
+ const marker='const HTML = String.raw`';
+ const start=source.indexOf(marker)+marker.length;
+ const end=source.indexOf('`;\n',start);
+ assert.ok(start>=marker.length && end>start,'actual dashboard template must exist');
+-const original=source.slice(start,end);
++// Resolve the same static function interpolation used by the served template.
++const original=source.slice(start,end).replace('${operatingSnapshotFreshness.toString()}',operatingSnapshotFreshness.toString());
+ const full=()=>holographicDashboard(original);
+ const ids=(s:string)=>Array.from(s.matchAll(/\bid="([^"]+)"/g),m=>m[1]!);
+ const scripts=(s:string)=>Array.from(s.matchAll(/<script>([\s\S]*?)<\/script>/g),m=>m[1]!);
+diff --git a/test/operating-intelligence.test.ts b/test/operating-intelligence.test.ts
+index c61376a..ac4d9f1 100644
+--- a/test/operating-intelligence.test.ts
++++ b/test/operating-intelligence.test.ts
+@@ -8,7 +8,7 @@ function snapshot():Snapshot{return {project:'pump-opportunity-engine',mode:'PAP
+ test('one authoritative projection preserves unavailable facts and separates predictive from financial evaluation',()=>{const s=snapshot();validateSnapshot(s,identity,T);assert.equal(s.funnel.evaluated,0);assert.equal(s.intelligence!.candidates.predictiveAssessments,5);assert.equal(s.intelligence!.candidates.uniqueAudited,null);assert.equal(s.intelligence!.provider.httpErrors,null);assert.equal(s.intelligence!.protection.state,'flat');assert.equal(s.intelligence!.protection.maximumCompletedGapMs,null);assert.equal(s.intelligence!.run.mode,'persistent-paper');assert.equal(s.intelligence!.provider.historyCooldownUntil,iso(T+65000));assert.equal(s.intelligence!.times.marketNotificationAt,iso(T-1000));});
+ test('experimental account, wrong inception and incoherent strategy cannot enter original intelligence',()=>{assert.throws(()=>projectOperatingIntelligence({...status(),accountId:'poe-pilot-8468add6-f916-48cf-a585-6cd008a81360'}),/BINDING/);assert.throws(()=>projectOperatingIntelligence({...status(),inceptionAt:Date.parse(ORIGINAL_POE_INCEPTION)+1}),/BINDING/);const s=snapshot();s.intelligence!.run.strategyVersion='other-rule';assert.throws(()=>validateSnapshot(s,identity,T),/strategy/);});
+ test('pending orders retain exact ledger reservation integers and future modeled execution without marking a fill',()=>{const raw=status() as any;raw.pending={order:{id:'order',mint:'fixture-mint',side:'buy',decidedAt:T-100,executeAt:T+400,expiresAt:T+2900,reserved:'500000001',minReceive:'123456789123456789',decisionEvidence:'fixture reservation, no execution'}};const s=snapshot();s.intelligence=projectOperatingIntelligence(raw);s.balances.reservedSol='0.500000001';validateSnapshot(s,identity,T);assert.equal(s.intelligence.pendingOrders[0]!.reservedSol,'0.500000001');assert.equal(s.intelligence.pendingOrders[0]!.quantityMinimum,'123456789123456789');assert.equal(s.trades.length,0);const wrong=structuredClone(s);wrong.balances.reservedSol='0';assert.throws(()=>validateSnapshot(wrong,identity,T),/reservation/);});
+-test('source timestamps cannot be freshened by telemetry and snapshot heartbeats do not conceal stale market state',()=>{const s=snapshot();s.times.marketAt=iso(T-120000);const cache=new SnapshotCache(identity);cache.accept(s,T);assert.equal(cache.status(T).state,'stale');const i=structuredClone(s.intelligence!);i.times.marketNotificationAt=iso(T+1);assert.throws(()=>validateOperatingIntelligence(i,iso(T)),/TIME/);const raw=status();raw.sourceTimes.lastMarketNotificationAt=T+1;assert.equal(projectOperatingIntelligence(raw).times.marketNotificationAt,null);});
++test('financial valuation age stays explicit without misclassifying a fresh modern capture source',()=>{const s=snapshot();s.times.marketAt=iso(T-120000);const cache=new SnapshotCache(identity);cache.accept(s,T);assert.equal(cache.status(T).state,'observing-with-zero-trades');const freshness=cache.status(T);assert.ok('operating'in freshness);assert.ok(freshness.operating!.reasonCodes.includes('VALUATION_STALE'));assert.equal(cache.read()!.snapshot.times.marketAt,iso(T-120000));assert.equal(cache.status(T+90001).state,'stale');const i=structuredClone(s.intelligence!);i.times.marketNotificationAt=iso(T+1);assert.throws(()=>validateOperatingIntelligence(i,iso(T)),/TIME/);const raw=status();raw.sourceTimes.lastMarketNotificationAt=T+1;assert.equal(projectOperatingIntelligence(raw).times.marketNotificationAt,null);});
+ test('unknown diagnostic fields, secret-shaped extras, oversized arrays, counters and invalid protection ownership fail closed',()=>{const i=projectOperatingIntelligence(status()) as any;i.provider.apiKey='DO_NOT_EXPORT';assert.throws(()=>validateOperatingIntelligence(i,iso(T)),/FIELDS/);const j=projectOperatingIntelligence(status()) as any;j.candidates.deepActive=7;assert.throws(()=>validateOperatingIntelligence(j,iso(T)),/CAPACITY/);j.candidates.deepActive=3;j.resources.rssBytes=-1;assert.throws(()=>validateOperatingIntelligence(j,iso(T)),/NUMBER/);const k=projectOperatingIntelligence(status());k.decisions=Array.from({length:51},()=>k.decisions[0]!);assert.throws(()=>validateOperatingIntelligence(k,iso(T)),/BOUND/);const s=snapshot();s.positions=[{mint:'fixture-mint',label:'fixture',quantity:'1',enteredAt:iso(T-1000),entryCostUsd:5,netLiquidationUsd:null,executionCostsUsd:0,status:'unavailable'}];assert.throws(()=>validateSnapshot(s,identity,T),/ownership/);});
+ test('single channel duplicate/reordered semantics include intelligence immutably without refreshing receipt',()=>{const s=snapshot(),cache=new SnapshotCache(identity);cache.accept(s,T);assert.equal(cache.accept(structuredClone(s),T+50000),'duplicate');assert.equal(cache.read()!.receivedAt,iso(T));const changed=structuredClone(s);changed.intelligence!.candidates.auditedWindows=6;assert.throws(()=>cache.accept(changed,T+50000),/conflict/);changed.sequence='1';assert.throws(()=>cache.accept(changed,T+50000),/regression/);});
+ 

@@ -1,0 +1,89 @@
+{
+  "kind": "poe-render-reporting-only-verification-v1",
+  "baseCommit": "cb4f53d3afc6253ff7f9b9cc79515a04c058a86c",
+  "branch": "poe-dashboard-freshness-20261029",
+  "recordedAt": "2026-10-29T17:35:21.600904+00:00",
+  "scope": "Existing Render dashboard classification only. No financial runtime, strategy, risk, source snapshot, authentication or ledger changes.",
+  "files": {
+    "src/reporting.ts": {
+      "sha256": "cec73d576f7d2b347e525e53e762725b830e4497dd816f551882c119ba2dbe85",
+      "bytes": 24195
+    },
+    "src/dashboard.ts": {
+      "sha256": "69c29d9210790a85666a19825c730a13dbd9f3a9c0cbe0840582fa1331885c99",
+      "bytes": 69465
+    },
+    "src/dashboard-connectivity.ts": {
+      "sha256": "81b5bc8a15711845f8db36bec4d89abaa490fd05240c7ba5f0d10b4820fe0ee3",
+      "bytes": 12422
+    },
+    "test/operating-intelligence.test.ts": {
+      "sha256": "77ed607d3fda86121c1738f5c02edd04acd65bc6e998d6e9fb542b683e65c00f",
+      "bytes": 14928
+    },
+    "test/reporting-operating-freshness.test.ts": {
+      "sha256": "1fb466e2fa233a1f044c98619e3675045f24d5843e594f35a319233971b1a5ac",
+      "bytes": 15085
+    },
+    "test/fixtures/operating-freshness-20261029.json": {
+      "sha256": "cfcf950f82696674814bb07abe4aac943d5fc0b068b9a489f6f4bf6d220a94f7",
+      "bytes": 163759
+    },
+    "test/dashboard-holographic.test.ts": {
+      "sha256": "cdd1223e09f95132cf1ea463212786c1208d9cdb7fe8b962244d4b6857b7bac9",
+      "bytes": 5813
+    }
+  },
+  "verification": {
+    "focusedTests": 51,
+    "independentReview": "PASS /root/expose_operating_gates; final focused rerun 44/44",
+    "actualReplay": "57 reporting field projections, 2026-10-29 16:51\u201317:06 UTC; 39 reconciliation-only false unavailability states and two real native-capture disconnects. Historical 15:16\u201315:24 evidence remains incomplete.",
+    "fullSuite": {
+      "command": "npm test",
+      "exitCode": 0,
+      "tests": 247,
+      "pass": 247,
+      "fail": 0,
+      "durationMs": 33564.767871,
+      "rawOutput": "npm-test.raw.txt"
+    },
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "rawOutput": "build.raw.txt"
+    },
+    "firstFullSuite": {
+      "pass": 246,
+      "fail": 1,
+      "explanation": "Presentation test parsed raw TypeScript template without resolving the new static shared-classifier interpolation. Served-browser serialization passed. Test now resolves exactly the real interpolation.",
+      "rawOutput": "npm-test.attempt-01.raw.txt"
+    },
+    "completedAt": "2026-10-29T17:36:48.245428+00:00"
+  },
+  "artifacts": {
+    "README.md": {
+      "sha256": "9a2360e0ad7befd0ccb80726d3a2d5f9ae8a895ceace51aadb72a68585c6968f",
+      "bytes": 3418
+    },
+    "build.raw.txt": {
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "bytes": 55
+    },
+    "focused-tests.raw.txt": {
+      "sha256": "68e416c55c9cdfa81d399977add23b71c32d8deb72d46ab6caf3bc5cfb04aa1a",
+      "bytes": 5903
+    },
+    "npm-test.attempt-01.raw.txt": {
+      "sha256": "e1beacae9ed80a87f39b3697107eebebe8a63c7c764d827ddee38b68ebad1c48",
+      "bytes": 29232
+    },
+    "npm-test.raw.txt": {
+      "sha256": "0c3814e3914703b58b9544442e09ef68e84e787e8b7dc973e101394451d0e421",
+      "bytes": 27529
+    },
+    "tracked-source.patch": {
+      "sha256": "543201716b250862c0f85fb1d4aecdca00746920a959a3095296d09429070944",
+      "bytes": 23628
+    }
+  }
+}

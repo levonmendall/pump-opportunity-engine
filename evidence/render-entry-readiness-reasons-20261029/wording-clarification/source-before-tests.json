@@ -1,0 +1,19 @@
+{
+  "recordedAt": "2026-10-29T18:24:41.233345+00:00",
+  "baseCommit": "49624682672056fa50201b8af638281314576e5e",
+  "scope": "Only human explanation of MONITORING_UNAVAILABLE; shared RPC occupation is not misreported as provider/protection failure.",
+  "files": {
+    "src/reporting.ts": {
+      "bytes": 24780,
+      "sha256": "b5a28ad6a8a37cb00f0187dad2cda678e57482c040d9e5e3a5fde6c68ea153a2"
+    },
+    "src/dashboard.ts": {
+      "bytes": 70801,
+      "sha256": "5392ab127011ac69aa28e6b61fc2d75dc723a156975c1ba72e229e266fa76957"
+    },
+    "test/reporting-operating-freshness.test.ts": {
+      "bytes": 18215,
+      "sha256": "16d9cb1f090ee081c5020347880777ad0f9970bd72ae9d98592f785619418160"
+    }
+  }
+}

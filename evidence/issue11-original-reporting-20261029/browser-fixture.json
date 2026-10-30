@@ -1,0 +1,66 @@
+{
+  "classification": "OFFLINE_DISPOSABLE_BROWSER_FIXTURES_NOT_FORWARD_PERFORMANCE",
+  "checkedAt": "2026-10-29T03:34:41.965Z",
+  "financialFilesRead": false,
+  "ledgerCreated": false,
+  "externalRequests": 0,
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "oneOriginalPortfolio": true,
+      "intelligenceRendered": true,
+      "pnlGapPreserved": true,
+      "pnlAlwaysVisible": true,
+      "manualRefreshVerified": true,
+      "exactPendingReservation": true,
+      "stoppedExposureRetained": true,
+      "frozenSnapshotAges": true,
+      "independentSourceFreshness": true,
+      "readFailureSurvivesTimer": true,
+      "recoveryClearsReadFailure": true,
+      "retiredChannelRequests": 0,
+      "javascriptErrors": []
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "oneOriginalPortfolio": true,
+      "intelligenceRendered": true,
+      "pnlGapPreserved": true,
+      "pnlAlwaysVisible": true,
+      "manualRefreshVerified": true,
+      "exactPendingReservation": true,
+      "stoppedExposureRetained": true,
+      "frozenSnapshotAges": true,
+      "independentSourceFreshness": true,
+      "readFailureSurvivesTimer": true,
+      "recoveryClearsReadFailure": true,
+      "retiredChannelRequests": 0,
+      "javascriptErrors": []
+    }
+  ],
+  "sourceHashes": [
+    {
+      "file": "src/dashboard.ts",
+      "sha256": "8269028a83a23269a506258c16ffe7fabfecb8ee7af2f066c673485d05855f13"
+    },
+    {
+      "file": "src/dashboard-holographic.ts",
+      "sha256": "dd0084e4569809f56adf0719d3925e9dcfbf4294a5e9f9527e95a90cca567803"
+    },
+    {
+      "file": "src/reporting.ts",
+      "sha256": "75e348bb91c34c043fb4deab377a3a070b97cc3131f62c4bc207cb725e198f90"
+    },
+    {
+      "file": "src/operating-intelligence.ts",
+      "sha256": "357a0f9e1906a1f013158cc2f727101e490fbe140c54ee17b5d3c915257c737c"
+    }
+  ],
+  "output": "/tmp/poe-original-dashboard-browser-VA6ySU"
+}
