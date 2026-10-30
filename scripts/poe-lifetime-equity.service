@@ -12,6 +12,8 @@ Group=poe-runtime
 WorkingDirectory=/opt/poe-lifetime-equity/current
 Environment=POE_EQUITY_SOURCE_FILE=/var/lib/poe/service/snapshot.json
 Environment=POE_EQUITY_STORE_FILE=/var/lib/poe/lifetime-equity/equity.sqlite
+# Optional owner-reviewed hash-pinned import path; never supply a wallet secret here.
+EnvironmentFile=-/etc/poe/lifetime-equity.env
 LoadCredential=poe-ingest-secret:/etc/poe/secrets/ingest-secret
 ExecStart=/opt/poe/node/bin/node /opt/poe-lifetime-equity/current/dist/src/lifetime-equity-publisher.js
 Restart=on-failure
