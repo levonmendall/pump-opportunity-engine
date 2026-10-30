@@ -303,7 +303,7 @@ export class PaperTrader{
       if(result.status==='uncertain')this.uncertainOrders.add(result.orderId);else this.uncertainOrders.delete(result.orderId);
       if(result.status==='filled'||result.status==='failed')this.funnel.attempted++;
       if(result.status==='filled'){if(side==='buy')this.funnel.paperFilled++;else if(side==='sell')this.funnel.exited++;}
-      this.record('trader-execution',{...result,side:side??'unavailable'});
+      this.record('trader-execution',{...result,side:side??'unavailable',mint:pending[result.orderId]?.mint??null});
     }for(const id of this.uncertainOrders)if(!this.options.ledger.state().pending[id])this.uncertainOrders.delete(id);
     if(this.uncertainOrders.size)this.pause('financial action unresolved; entries closed and reservations preserved');return batch.results;
   }

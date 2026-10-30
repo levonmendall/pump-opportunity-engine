@@ -76,6 +76,47 @@ test('missing or zero counts do not create fictional progress bars',()=>{
  assert.equal(stage('deepActive').width,'0%');
 });
 
+test('durable discovery bars distinguish registry lifetime, hourly arrivals, active stocks and financial scope',()=>{
+ const marketCoverage={version:'poe-market-coverage-v1',persistence:{createdAt:'2026-10-30T22:00:00.000Z'},lifetime:{uniqueTokensDiscovered:1200,lightweightScreened:1190,lightweightWithActivity:900,lightweightUnavailable:290,deepAdmitted:36,verifiedAudited:30},currentHour:{startedAt:'2026-10-30T22:00:00.000Z',uniqueTokensDiscovered:600},active:{trackedIdentities:1100,awaitingLightweight:10,awaitingVerification:20,awaitingDeep:60,deepObserving:4},financial:{scope:'current-source-instance',qualified:2,entries:1,exits:0}};
+ const {stage,root}=draw({qualified:999,paperFilled:999,exited:999},{candidates:{known:174,deepActive:0,deepMaximum:4},marketCoverage});
+ assert.equal(stage('uniqueTokensDiscovered').count,'1,200');assert.equal(stage('uniqueTokensDiscovered').width,'100.00%');assert.equal(stage('hourUniqueTokens').width,'50.00%');
+ assert.equal(stage('trackedIdentities').count,'1,100');assert.equal(stage('awaitingLightweight').count,'10');assert.equal(stage('lightweightUnavailable').count,'290');
+ assert.equal(stage('paperFilled').count,'1');assert.equal(stage('deepActive').count,'4 / 4');assert.equal(stage('deepActive').width,'100.00%');
+ assert.equal(root.children[0]!.children.some(item=>item.dataset.funnelStage==='known'),false,'restored legacy retained cap is not relabelled as discovery');
+ const note=root.children[1]!.textContent;assert.match(note,/registry lifetime begins/);assert.match(note,/financial stages are current-source counters/);assert.match(note,/does not imply complete market data or economic qualification/);assert.match(note,/market-wide denominator has not been established/);
+});
+
+test('unavailable durable activity and backlog stay unavailable while real zero entries remain visible',()=>{
+ const marketCoverage={version:'poe-market-coverage-v1',persistence:{createdAt:null},lifetime:{uniqueTokensDiscovered:2000,lightweightScreened:2000,lightweightWithActivity:null,lightweightUnavailable:null,deepAdmitted:0,verifiedAudited:0},currentHour:{startedAt:null,uniqueTokensDiscovered:null},active:{trackedIdentities:2000,awaitingLightweight:0,awaitingVerification:null,awaitingDeep:0,deepObserving:0},financial:{qualified:null,entries:0,exits:0}};
+ const {stage}=draw({},{candidates:{deepMaximum:4},marketCoverage});
+ assert.equal(stage('lightweightWithActivity').count,'Unavailable');assert.equal(stage('lightweightWithActivity').width,'0%');assert.equal(stage('awaitingVerification').count,'Unavailable');assert.equal(stage('paperFilled').count,'0');
+});
+
+test('coverage metrics expose real durable delays and feed gaps without manufacturing a full-market percentage',()=>{
+ const root=new FakeElement(),start=dashboardSource.indexOf('function renderMetrics('),through=dashboardSource.indexOf('// Display only the durable',start);
+ const add=(parent:FakeElement,_tag:string,value?:unknown,klass?:string)=>{const child=new FakeElement();child.className=klass??'';child.textContent=value===undefined?'':String(value);parent.children.push(child);return child;};
+ const context=createContext({byId:()=>root,add,Number,Math});new Script(dashboardSource.slice(start,through)).runInContext(context);
+ const marketCoverage={version:'poe-market-coverage-v1',persistence:{state:'sqlite-wal',createdAt:'2026-10-30T22:00:00.000Z',updatedAt:'2026-10-30T22:43:00.000Z'},lifetime:{uniqueTokensDiscovered:1000,lightweightScreened:900},active:{awaitingLightweight:100,awaitingDeep:60},resource:{durableVerificationBacklog:25,oldestVerificationAt:'2026-10-30T22:40:00.000Z',maximumVerificationWaitMs:180000,storageFailures:0,meanWriteMs:.125,maximumWriteMs:4},feeds:[{source:'pumpportal-new-token',connected:true,lastObservedAt:'2026-10-30T22:43:00.000Z',scope:'CREATION_HINTS',coverageGaps:2},{source:'pumpapi-broad',connected:false,lastObservedAt:null,scope:'SHARED_ACTIVITY_HINTS',coverageGaps:3}],limitations:['MARKET_DENOMINATOR_UNKNOWN','PREEXISTING_MARKET_BACKFILL_UNAVAILABLE','PREMIGRATION_EXECUTION_NOT_SUPPORTED']};
+ (context as unknown as {renderMetrics:(m:unknown,s:unknown,i:unknown)=>void}).renderMetrics({}, {}, {marketCoverage,candidates:{},quality:{limitations:[]},provider:{},resources:{cpuOneCoreFraction:null},protection:{},times:{},run:{}});
+ const facts=new Map<string,string>();const walk=(node:FakeElement)=>{if(node.className==='metric')facts.set(node.children[0]!.textContent,node.children[1]!.textContent);node.children.forEach(walk);};walk(root);
+ assert.equal(facts.get('Unique identities locally classified'),'90.0% of encountered identities');assert.equal(facts.get('Maximum pending verification wait (ms)'),'180000');assert.equal(facts.get('Mean / maximum registry write (ms)'),'0.125 / 4');
+ assert.equal(facts.get('Independent whole-market denominator'),'Unknown');assert.equal(facts.get('Capacity-related missed tokens'),'Not independently measured');assert.match(facts.get('Pump.fun creations')!,/Connected; CREATION_HINTS.*gap events 2/);assert.match(facts.get('Shared activity')!,/Disconnected.*last state observation Unavailable.*gap events 3/);
+ const notes=root.children.filter(child=>child.className==='panel-sub').map(child=>child.textContent).join('\n');assert.match(notes,/complete market coverage is not claimed/);assert.match(notes,/backfill of tokens predating discovery/);assert.match(notes,/does not trade bonding-curve tokens/);
+});
+
+test('four-slot metrics distinguish occupancy, completed work, physical waits and actual financial callbacks',()=>{
+ const root=new FakeElement(),start=dashboardSource.indexOf('function renderMetrics('),through=dashboardSource.indexOf('// Display only the durable',start);
+ const add=(parent:FakeElement,_tag:string,value?:unknown,klass?:string)=>{const child=new FakeElement();child.className=klass??'';child.textContent=value===undefined?'':String(value);parent.children.push(child);return child;};
+ const context=createContext({byId:()=>root,add,Number,Math});new Script(dashboardSource.slice(start,through)).runInContext(context);
+ const emptyWait={count:0,sum:0,mean:null,max:null,p50:null,p95:null};
+ const slotProductivity={version:'native-slot-productivity-v1',sourceInstanceId:'native-runner:current:source',startedAt:'2026-10-30T22:00:00.000Z',generatedAt:'2026-10-30T22:01:00.000Z',configuredSlots:4,stateMs:{VACANT:120000,SUBSCRIPTION_WAIT:1000,EVIDENCE_WARMING:118000,AUDIT_READY:0,AUDIT_WAIT:0,AUDIT_ACTIVE:1000,PROVIDER_WAIT:0,UNUSABLE:0,REPLACEMENT_WAIT:0},slots:Array.from({length:4},(_,slot)=>({slot,mint:null,state:slot===0?'EVIDENCE_WARMING':'VACANT',stateAgeMs:1000,openedAt:null})),failureCounts:{historyNotObservedWindows:3,decisionDeadlineWindows:2,auditUnusableWindows:1,providerUnavailableWindows:0},counts:{allocations:2,repromotions:0,distinctAudited:1,distinctPreliminaryEvaluated:1,distinctPrimaryEvaluated:1,qualified:0,entryFills:0,exitFills:0,unattributedFinancialEvents:0},waits:{queueToAllocation:{count:2,sum:4.5,mean:2.25,max:3,p50:1.5,p95:3},allocationToAck:emptyWait,ackToWarm:emptyWait,auditReadyToPhysicalStart:emptyWait,retirementToReplacement:emptyWait}};
+ (context as unknown as {renderMetrics:(m:unknown,s:unknown,i:unknown)=>void}).renderMetrics({}, {}, {slotProductivity,candidates:{},quality:{limitations:[]},provider:{},resources:{cpuOneCoreFraction:null},protection:{},times:{},run:{}});
+ const facts=new Map<string,string>();const walk=(node:FakeElement)=>{if(node.className==='metric')facts.set(node.children[0]!.textContent,node.children[1]!.textContent);node.children.forEach(walk);};walk(root);
+ assert.equal(facts.get('Unique windows: history missing / deadline / unusable / provider unavailable'),'3 / 2 / 1 / 0');assert.equal(facts.get('Configured slots'),'4');assert.equal(facts.get('Occupied time'),'50.0% of observed slot time');assert.equal(facts.get('Distinct audited / preliminary / primary evaluations'),'1 / 1 / 1');assert.equal(facts.get('Qualifications / PAPER entries / exits'),'0 / 0 / 0');assert.equal(facts.get('Primary evaluations per hour (observed)'),'60.0');
+ assert.match(facts.get('Queue → allocation')!,/n 2; mean \/ p50 \/ p95 \/ max 2.25 \/ 1.5 \/ 3 \/ 3/);assert.match(facts.get('Audit ready → physical receipt')!,/n 0.*Unavailable/);assert.match(facts.get('Slot 1')!,/Evidence warming/);
+ const notes=root.children.filter(child=>child.className==='panel-sub').map(child=>child.textContent).join('\n');assert.match(notes,/Occupancy does not prove productive work/);assert.match(notes,/physical starts require a transport receipt/);assert.match(notes,/no per-slot profit/);assert.match(notes,/do not make history absence a provider failure/);
+});
+
 test('observer fallback retains its original distinction between discovery and inactive trading',()=>{
  const {stage}=draw({discovered:9,supported:5},null,true);
  assert.equal(stage('discovered').width,'100.00%');

@@ -6,9 +6,10 @@ test('PAPER rejects submission, simulation, wallet signing and provider trading 
   const rpc=new ReadOnlyRpc('https://api.mainnet.solana.com',fake);
   for(const method of ['sendTransaction','sendRawTransaction','signTransaction','signAllTransactions','simulateTransaction','requestAirdrop','trade','trade-local','https://pumpportal.fun/api/trade'])await assert.rejects(rpc.call(method),/DENIED/);
   assert.equal(calls,0);
-  for(const method of ['trade','buy','sell','signTransaction','subscribeAccountTrade','subscribeNewToken'])assert.throws(()=>dataMessage(method),/DENIED/);
+  for(const method of ['trade','buy','sell','signTransaction','subscribeAccountTrade'])assert.throws(()=>dataMessage(method),/DENIED/);
   assert.throws(()=>dataMessage('subscribeTokenTrade',['mint']),/NOT_APPROVED/);
   assert.deepEqual(JSON.parse(dataMessage('subscribeMigration')),{method:'subscribeMigration'});
+  assert.deepEqual(JSON.parse(dataMessage('subscribeNewToken')),{method:'subscribeNewToken'});
 });
 test('read client preserves explicit RPC errors and uses bounded HTTPS requests',async()=>{
   const rpc=new ReadOnlyRpc('https://api.mainnet.solana.com',(async(_url,init)=>{

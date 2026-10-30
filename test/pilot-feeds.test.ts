@@ -14,20 +14,21 @@ const selected=()=>({mint:scope.mint,poolId:scope.pool,pool:'pump-amm',signature
 class Socket extends EventEmitter{
   _socket=Object.assign(new EventEmitter(),{bytesRead:200});closed=false;readonly sent:string[]=[];
   constructor(readonly endpoint:string){super();}
-  send(data:string,callback?:(error?:Error)=>void){assert.equal(this.endpoint,'wss://pumpportal.fun/api/data');assert.equal(JSON.parse(data).method,'subscribeMigration');this.sent.push(data);callback?.();queueMicrotask(()=>this.frame({message:"Subscribed to 'migration' events."}));}
+  send(data:string,callback?:(error?:Error)=>void){assert.equal(this.endpoint,'wss://pumpportal.fun/api/data');const method=JSON.parse(data).method;assert.ok(['subscribeMigration','subscribeNewToken'].includes(method));this.sent.push(data);callback?.();queueMicrotask(()=>this.frame({message:method==='subscribeMigration'?"Subscribed to 'migration' events.":'Successfully subscribed to token creation events.'}));}
   frame(payload:unknown,bytes?:number){if(this.closed)return;const b=Buffer.from(typeof payload==='string'?payload:JSON.stringify(payload));this._socket.bytesRead+=bytes??b.length+4;this._socket.emit('data',b);this.emit('message',b);}
   terminate(){if(this.closed)return;this.closed=true;queueMicrotask(()=>this.emit('close'));}
   drop(){this.closed=true;this.emit('close');}
 }
-function setup(config:{persistent?:boolean;maximumRecordedBytes?:number;watchOnly?:boolean;maximumCandidates?:1|2|3;responses?:Record<string,unknown>;onGap?:(gap:{mint?:string;reason:string;at:number},feeds:PilotFeeds)=>void;validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;chargeFailure?:boolean}={}){
-  let at=Date.parse(fixtureTx.fetchedAt),mono=0,sequence=0,active=0,controlBytes=0,rpcCalls=0;const timers=new Map<number,{at:number;callback:()=>void}>(),sockets:Socket[]=[],operations:ComponentKind[]=[],records:Array<{kind:string;data:any}>=[],trades:any[]=[],migrations:any[]=[],watchHints:any[]=[],gaps:any[]=[],opens:any[]=[],hints:any[]=[];
+function setup(config:{persistent?:boolean;maximumRecordedBytes?:number;watchOnly?:boolean;marketIntake?:boolean;marketSinkFailure?:boolean;maximumCandidates?:1|2|3;responses?:Record<string,unknown>;onGap?:(gap:{mint?:string;reason:string;at:number},feeds:PilotFeeds)=>void;validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;chargeFailure?:boolean}={}){
+  let at=Date.parse(fixtureTx.fetchedAt),mono=0,sequence=0,active=0,controlBytes=0,rpcCalls=0;const timers=new Map<number,{at:number;callback:()=>void}>(),sockets:Socket[]=[],operations:ComponentKind[]=[],records:Array<{kind:string;data:any}>=[],trades:any[]=[],migrations:any[]=[],watchHints:any[]=[],marketIdentities:any[]=[],marketActivities:any[]=[],marketFeedStatuses:any[]=[],gaps:any[]=[],opens:any[]=[],hints:any[]=[];
   const advance=async(ms:number)=>{const end=mono+ms;while(true){const next=[...timers].filter(([,v])=>v.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;const delta=next[1].at-mono;at+=delta;mono=next[1].at;timers.delete(next[0]);next[1].callback();for(let i=0;i<8;i++)await Promise.resolve();}at+=end-mono;mono=end;for(let i=0;i<8;i++)await Promise.resolve();};
   const control:PilotFeedControl={async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal){assert.equal(active,0,'one physical control operation');operations.push(kind);active++;if(config.closeBeforeSubscribe&&kind.method==='subscribeMigration')sockets[0]!.drop();try{return await work({id:operations.length,signal:signal??new AbortController().signal,chargeHttp(){},completeResponse(){}});}finally{active--; }},accountControlBytes(n){if(config.chargeFailure)throw Error('COMPONENT_STORAGE_UNAVAILABLE');controlBytes+=n;},noteThrottle(){return at+15000;}};
   const feedOptions:PilotFeedsOptions={persistent:config.persistent,maximumRecordedBytes:config.maximumRecordedBytes,control,amountConvention:'user',maximumCandidates:config.maximumCandidates,durationMs:config.durationMs??300000,maxPumpApiBytes:config.maxPumpApiBytes,admitControl:config.admitControl,record(kind,data){records.push({kind,data});if(kind==='research-enrichment-validation-prepared'){at+=config.validationDelay??0;mono+=config.validationDelay??0;}if(kind==='research-normalized-trade'){at+=config.afterRecordDelay??0;mono+=config.afterRecordDelay??0;}},onMigration:s=>migrations.push(s),...(config.watchOnly?{watchedIdentities:()=>[{mint:scope.mint,pool:scope.pool}],onWatchActivity:(row:unknown)=>watchHints.push(row)}:{}),onFlowOpen:(mint,at)=>opens.push({mint,at}),onHint:(mint,at)=>hints.push({mint,at}),onTrade:t=>trades.push(t),onGap:g=>{gaps.push(g);config.onGap?.(g,feeds);}};
+  if(config.marketIntake){feedOptions.onMarketIdentity=row=>{if(config.marketSinkFailure)throw Error('FIXTURE_SINK_FULL');marketIdentities.push(row);};feedOptions.onMarketActivity=row=>{if(config.marketSinkFailure)throw Error('FIXTURE_SINK_FULL');marketActivities.push(row);};feedOptions.onMarketFeed=row=>marketFeedStatuses.push(row);}
   const feeds=new PilotFeeds(feedOptions,
     {now:()=>at,monotonic:()=>mono,setTimer(callback,ms){const id=++sequence;timers.set(id,{at:mono+ms,callback});return id;},clearTimer(id){timers.delete(id as number);},makeSocket(endpoint,options){assert.equal(options.maxPayload,65536);assert.equal(options.followRedirects,false);const socket=new Socket(endpoint);sockets.push(socket);if(config.refuseUpgrade)queueMicrotask(()=>socket.emit('unexpected-response',{}, {socket:{bytesRead:200},statusCode:429,headers:{'retry-after':'10'},destroy(){}}));else if(!config.hangOpen)queueMicrotask(()=>socket.emit('open'));return socket as unknown as WebSocket;}});
   const rpc={async call<T>(method:string,params:unknown[]){rpcCalls++;assert.equal(method,'getTransaction');assert.ok(params[0]===fixtureTx.signature||Object.hasOwn(config.responses??{},String(params[0])));at+=10;mono+=10;return (config.responses?.[String(params[0])]??fixtureTx.transaction) as T;}};
-  return {feeds,feedOptions,control,rpc,advance,sockets,operations,records,trades,migrations,watchHints,gaps,opens,hints,get now(){return at;},get rpcCalls(){return rpcCalls;},get controlBytes(){return controlBytes;},get active(){return active;}};
+  return {feeds,feedOptions,control,rpc,advance,sockets,operations,records,trades,migrations,watchHints,marketIdentities,marketActivities,marketFeedStatuses,gaps,opens,hints,get now(){return at;},get rpcCalls(){return rpcCalls;},get controlBytes(){return controlBytes;},get active(){return active;}};
 }
 
 test('one free discovery connection restores only migration subscription and emits unverified public hints',async()=>{
@@ -237,4 +238,45 @@ test('persistent legacy candidate collection is not retired merely by the old th
  const f=setup({persistent:true});await f.feeds.selectCandidate(scope);
  for(let i=0;i<19;i++){f.sockets.at(-1)!.frame('unrelated transport traffic');await f.advance(10000);}
  assert.equal(f.feeds.usage().failedCandidate,false);assert.equal(f.feeds.usage().stopped,false);assert.equal(f.feeds.usage().candidates.length,1);assert.ok(!f.gaps.some(g=>g.reason==='PILOT_CANDIDATE_OBSERVATION_LIMIT'));assert.equal(f.trades.length,0);await f.feeds.stop();
+});
+
+test('global discovery receives creation and migration on one existing socket with separate acknowledged coverage',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startDiscovery();const socket=f.sockets[0]!;
+ assert.deepEqual(socket.sent.map(value=>JSON.parse(value).method),['subscribeMigration','subscribeNewToken']);
+ socket.frame({txType:'create',signature:fixtureTx.signature,mint:scope.mint});
+ assert.equal(f.marketIdentities.length,1);assert.equal(f.marketIdentities[0].kind,'creation');assert.equal(f.marketIdentities[0].source,'pumpportal-new-token');assert.equal(f.migrations.length,0,'creation signature never enters migration verification');
+ socket.frame({txType:'migrate',signature:fixtureTx.signature,mint:scope.mint});
+ assert.equal(f.marketIdentities.length,2);assert.equal(f.migrations.length,1);assert.equal(f.marketActivities.length,0);assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);
+ assert.deepEqual(f.marketFeedStatuses.filter(row=>row.connected).map(row=>row.source),['pumpportal-migration','pumpportal-new-token']);
+ socket.drop();assert.equal(f.feeds.usage().marketDiscovery.sources['pumpportal-new-token']!.connected,false);await f.advance(2000);
+ assert.equal(f.sockets.length,2);assert.equal(f.sockets[1]!.sent.length,2);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpportal-new-token']!.gaps,1);await f.feeds.stop();
+});
+
+test('broad shared activity discovers every observed mint beyond old working-set limits without per-token RPC or retained feed identities',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startWatchActivity();const socket=f.sockets[0]!;
+ for(let i=0;i<2048;i++){const mintBytes=Buffer.alloc(32,17);mintBytes.writeUInt32BE(i,0);const signatureBytes=Buffer.alloc(64,23);signatureBytes.writeUInt32BE(i,0);socket.frame({...selected(),mint:bs58.encode(mintBytes),signature:bs58.encode(signatureBytes),quoteMint:'So11111111111111111111111111111111111111112',quoteAmount:'0.123456789',tokenAmount:'123.456789'});}
+ assert.equal(f.marketIdentities.length,0,'signed activity and identity are delivered together, avoiding duplicate durable writes');assert.equal(new Set(f.marketActivities.map(row=>row.mint)).size,2048);assert.equal(f.marketActivities.length,2048);assert.equal(f.marketActivities[0].quoteLamports,'123456789');assert.equal(f.marketActivities[0].tokenAmount,'123.456789');assert.equal('tokenUnits' in f.marketActivities[0],false);
+ assert.equal(f.feeds.usage().watchActivity.knownIdentities,0);assert.equal(f.feeds.usage().candidates.length,0);assert.equal(f.sockets.length,1);assert.equal(socket.sent.length,0);assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.activities,2048);await f.feeds.stop();
+});
+
+test('unverified broad fields cannot invent quote denomination, signed volume, token decimals or authoritative trades',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startWatchActivity();const socket=f.sockets[0]!;
+ socket.frame({...selected(),quoteAmount:'5',tokenAmount:'9007199254740993'});
+ assert.equal(f.marketActivities.length,1);assert.equal(f.marketActivities[0].quoteLamports,undefined);assert.equal(f.marketActivities[0].tokenAmount,'9007199254740993');
+ socket.frame({...selected(),signature:'1'.repeat(64),quoteMint:'So11111111111111111111111111111111111111112',quoteAmount:'5'});
+ assert.equal(f.marketIdentities.length,1);assert.equal(f.marketIdentities[0].signature,undefined);assert.equal(f.marketActivities.length,1);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.unsignedActivityFrames,1);
+ socket.frame({mint:scope.mint,action:'buy',signature:fixtureTx.signature,quoteMint:scope.mint,quoteAmount:'5'});
+ assert.equal(f.marketActivities.at(-1)!.quoteLamports,undefined);
+ socket.frame('invalid JSON');socket.frame({mint:'not-a-public-key',signature:fixtureTx.signature});assert.equal(f.marketIdentities.length,1);assert.equal(f.marketActivities.length,2);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.unusableFrames,2);assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.trades.length,0);await f.feeds.stop();
+});
+
+test('durable discovery sink failure is visible and stops intake rather than silently discarding identities',async()=>{
+ const f=setup({persistent:true,marketIntake:true,marketSinkFailure:true});await f.feeds.startWatchActivity();f.sockets[0]!.frame(selected());await Promise.resolve();
+ assert.equal(f.marketIdentities.length,0);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.deliveryFailures,1);assert.equal(f.feeds.usage().pumpApiConnected,false);assert.ok(f.gaps.some(row=>row.reason==='PILOT_MARKET_DISCOVERY_SINK_UNAVAILABLE'));assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);await f.feeds.stop();
+});
+
+test('migration deduplication is time-based rather than evicting valid signatures after 256 discoveries',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startDiscovery();const socket=f.sockets[0]!;const signatures:string[]=[];
+ for(let i=0;i<400;i++){const raw=Buffer.alloc(64,29);raw.writeUInt32BE(i,0);const signature=bs58.encode(raw);signatures.push(signature);socket.frame({txType:'migrate',mint:scope.mint,signature});}
+ socket.frame({txType:'migrate',mint:scope.mint,signature:signatures[0]});assert.equal(f.migrations.length,400);assert.equal(f.marketIdentities.length,401,'durable registry receives observations and owns unique-identity accounting');await f.feeds.stop();
 });

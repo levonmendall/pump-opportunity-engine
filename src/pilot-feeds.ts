@@ -16,6 +16,8 @@ import type {MappedTradeEvidence} from './pumpapi-mapping.js';
 import type {NormalizedTrade} from './strategy.js';
 import type {ComponentKind,ComponentOperation} from './component-budget.js';
 import type {PilotRpcCallOptions} from './pilot-rpc.js';
+import {canonicalTransactionSignature} from './transaction-signature.js';
+import type {MarketIdentityHint,MarketActivityHint,MarketFeedSource,MarketFeedStatus} from './market-discovery.js';
 
 const MIB=1024*1024,DISCOVERY='wss://pumpportal.fun/api/data',BACKOFF=[2000,5000,10000,20000,40000,60000],CANDIDATE_MS=180000;
 export const PILOT_FEED_MAXIMUM_RECORDED_BYTES=16*MIB;
@@ -26,6 +28,13 @@ export type PilotFeedsOptions={
   control:PilotFeedControl;persistent?:boolean;profile?:NativeResearchProfile['version'];amountConvention:'curve'|'user';maximumCandidates?:number;durationMs?:number;maxPumpApiBytes?:number;maxDiscoveryBytes?:number;maximumRecordedBytes?:number;
   record:(kind:string,data:unknown)=>void;
   onMigration:(seed:{signature:string;feedMint?:string;receivedAt:number})=>void;
+  /** Complete observed-provider intake, independent of the deep working set.
+   * Signed buy/sell events use onMarketActivity instead when configured; that
+   * complementary callback includes identity and permits one atomic upsert.
+   * The receiving durable registry owns identity/signature deduplication. */
+  onMarketIdentity?:(row:MarketIdentityHint)=>void;
+  onMarketActivity?:(row:MarketActivityHint)=>void;
+  onMarketFeed?:(row:MarketFeedStatus)=>void;
   onFlowOpen?:(mint:string,at:number)=>void;
   onHint?:(mint:string,at:number)=>void;
   /** Selection hints only; these fields never become strategy or financial evidence. */
@@ -36,19 +45,30 @@ export type PilotFeedsOptions={
   /** The holdings scheduler may postpone low-priority socket controls. */
   admitControl?:()=>PilotRpcCallOptions|false;
 };
-type Connection={socket:WebSocket;seen:number;closed:boolean;opened:boolean;expectedClose:boolean;closeReason:string|null;lastTrafficMono:number;closedPromise:Promise<void>;resolveClosed:()=>void;ack?:()=>void;upgradeReject?:(e:Error)=>void;subscriptionReject?:(e:Error)=>void};
+type Connection={socket:WebSocket;seen:number;closed:boolean;opened:boolean;expectedClose:boolean;closeReason:string|null;lastTrafficMono:number;closedPromise:Promise<void>;resolveClosed:()=>void;ack?:(method:string)=>void;upgradeReject?:(e:Error)=>void;subscriptionReject?:(e:Error)=>void};
 type Leg={name:FeedName;desired:boolean;connected:boolean;connecting:boolean;attempts:number;failures:number;reconnects:number;notBefore:number;timer?:unknown;connection?:Connection};
 type FeatureRow=ReturnType<ActivePipeline['snapshot']>['featureRows'][number];
 type Candidate={generation:number;scope:ActiveScope;pipeline:ActivePipeline;controller:AbortController;selectedMono:number;suspended:boolean;pending:Set<string>;normalized:number;mintBytes:Buffer;poolBytes:Buffer;latestFeature:FeatureRow|null};
 export type PilotFeedDependencies={makeSocket?:(endpoint:string,options:WebSocket.ClientOptions)=>WebSocket;now?:()=>number;monotonic?:()=>number;setTimer?:(callback:()=>void,ms:number)=>unknown;clearTimer?:(timer:unknown)=>void};
 const need=(v:unknown,reason:string)=>{if(!v)throw Error(reason);};
 const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,120}$/.test(e.message)?e.message:'PILOT_FEED_UNAVAILABLE';
+const SOL_MINT='So11111111111111111111111111111111111111112';
+const publicKey=(value:unknown):value is string=>{if(typeof value!=='string'||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value))return false;try{return bs58.decode(value).length===32;}catch{return false;}};
+const decimalHint=(value:unknown):string|undefined=>{const s=typeof value==='string'?value:typeof value==='number'&&Number.isFinite(value)&&value>=0?String(value):'';return s.length<=128&&/^\d+(?:\.\d+)?$/.test(s)?s:undefined;};
+const lamportHint=(value:unknown):string|undefined=>{const s=decimalHint(value);if(!s)return;const [whole,fraction='']=s.split('.');if(fraction.length>9)return;return (BigInt(whole!)*1000000000n+BigInt(fraction.padEnd(9,'0'))).toString();};
+const sourceScope:Record<MarketFeedSource,string>={
+  'pumpportal-new-token':'provider-observed Pump.fun creation notifications; not a historical token inventory',
+  'pumpportal-migration':'provider-observed migration notifications; origin unverified until independent chain checks',
+  'pumpapi-broad':'provider-emitted shared activity across observable venues; no independently established complete-market denominator',
+};
+const marketCounter=()=>({connected:false,frames:0,identities:0,activities:0,unusableFrames:0,missingSignatureFrames:0,unsignedActivityFrames:0,deliveryFailures:0,processingMs:0,lastMessageAt:null as number|null,lastIdentityAt:null as number|null,lastActivityAt:null as number|null,subscribedAt:null as number|null,gaps:0,lastGapAt:null as number|null,lastGapReason:null as string|null,currentOutageStartedAt:null as number|null,lastRecoveryAt:null as number|null,observedOutageMs:0,maximumOutageMs:0});
 
 export class PilotFeeds {
   private readonly now:()=>number;private readonly mono:()=>number;private readonly timer:(cb:()=>void,ms:number)=>unknown;private readonly cancel:(id:unknown)=>void;
   private readonly startedAt:number;private readonly startedMono:number;private readonly duration:number;private readonly pumpLimit:number;private readonly discoveryLimit:number;private readonly recordLimit:number;private readonly maximumCandidates:number;private readonly amountConvention:'curve'|'user';
   private readonly controller=new AbortController();private stopped=false;private watchActivityDesired=false;private generation=0;private readonly candidates=new Map<string,Candidate>();private readonly retryByMint=new Map<string,number>();private enriching=false;private watch:unknown;
   private readonly watchIdentities=new Map<string,{mint:string;pool:string}>();private readonly watchLastEmitted=new Map<string,number>();private readonly watchLastSignature=new Map<string,string>();private watchRefreshAt=-Infinity;private watchFrames=0;private watchParses=0;private watchHints=0;private watchFailures=0;private watchProcessingMs=0;
+  private readonly marketSources:Record<MarketFeedSource,ReturnType<typeof marketCounter>>={'pumpportal-new-token':marketCounter(),'pumpportal-migration':marketCounter(),'pumpapi-broad':marketCounter()};private migrationPruneAt=0;private discoveryMalformedFrames=0;
   private get candidate(){return this.candidates.values().next().value??null;}
   private current(c:Candidate){return this.candidates.get(c.scope.mint)===c;}
   private activeCandidates(){return [...this.candidates.values()].filter(c=>!c.suspended);}
@@ -101,7 +121,7 @@ export class PilotFeeds {
   /** Keep the existing broad WATCH scheduling hints without registering any
    * legacy deep candidate or getTransaction enrichment. Required native deep
    * events are collected through PilotNativeFlow, not through these hints. */
-  async startWatchActivity(signal?:AbortSignal){need(this.live(),'PILOT_FEEDS_CLOSED');need(!!this.options.watchedIdentities&&!!this.options.onWatchActivity,'PILOT_WATCH_ACTIVITY_CALLBACKS_REQUIRED');if(signal?.aborted)throw Error('PILOT_FEED_ABORTED');signal?.addEventListener('abort',()=>this.backgroundStop(),{once:true});this.watchActivityDesired=true;this.legs.pumpapi.desired=true;await this.connect(this.legs.pumpapi);}
+  async startWatchActivity(signal?:AbortSignal){need(this.live(),'PILOT_FEEDS_CLOSED');need(!!this.options.onMarketIdentity||!!this.options.onMarketActivity||!!this.options.watchedIdentities&&!!this.options.onWatchActivity,'PILOT_WATCH_ACTIVITY_CALLBACKS_REQUIRED');if(signal?.aborted)throw Error('PILOT_FEED_ABORTED');signal?.addEventListener('abort',()=>this.backgroundStop(),{once:true});this.watchActivityDesired=true;this.legs.pumpapi.desired=true;await this.connect(this.legs.pumpapi);}
   /** Legacy API deliberately retains replacement behavior, even when explicit
    * multi-candidate mode is selected. addCandidate is the only additive API. */
   async selectCandidate(scope:ActiveScope){need(this.live(),'PILOT_FEEDS_CLOSED');this.checkCandidateBackoff(scope.mint);await this.clearCandidate('PILOT_CANDIDATE_REPLACED');await this.addCandidate(scope);}
@@ -151,7 +171,7 @@ export class PilotFeeds {
   }
   private reconnect(leg:Leg){
     if(!this.live()||!leg.desired||leg.timer!==undefined)return;if(!this.options.persistent&&(leg.attempts>=9||leg.reconnects>=8)){leg.desired=false;if(leg.name==='pumpapi')this.invalidateAll('PILOT_PUMPAPI_RECONNECT_LIMIT');else this.gap('PILOT_DISCOVERY_RECONNECT_LIMIT');return;}
-    const delay=Math.max(BACKOFF[Math.min(leg.failures++,BACKOFF.length-1)]!,leg.notBefore-this.now());leg.reconnects++;try{this.record('pilot-feed-reconnect-scheduled',{feed:leg.name,at:this.now(),delayMs:delay,desiredSubscriptions:leg.name==='discovery'?['subscribeMigration']:[],requiresFreshCandidateWindow:leg.name==='pumpapi'});}catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}leg.timer=this.timer(()=>{leg.timer=undefined;void this.connect(leg).catch(()=>{});},delay);
+    const delay=Math.max(BACKOFF[Math.min(leg.failures++,BACKOFF.length-1)]!,leg.notBefore-this.now());leg.reconnects++;try{this.record('pilot-feed-reconnect-scheduled',{feed:leg.name,at:this.now(),delayMs:delay,desiredSubscriptions:leg.name==='discovery'?this.discoverySubscriptions():[],requiresFreshCandidateWindow:leg.name==='pumpapi'});}catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}leg.timer=this.timer(()=>{leg.timer=undefined;void this.connect(leg).catch(()=>{});},delay);
   }
   private closeLeg(leg:Leg,reason:string,expected:boolean){const c=leg.connection;if(!c||c.closed)return;c.closeReason??=reason;c.expectedClose=expected;leg.connected=false;c.socket.terminate();}
   private sample(leg:Leg,c:Connection,atUpgrade=false,override?:number){
@@ -171,7 +191,7 @@ export class PilotFeeds {
     try{
       if(receivedAt>=this.watchRefreshAt){
         this.watchRefreshAt=receivedAt+1000;
-        const identities=this.options.watchedIdentities();need(Array.isArray(identities)&&identities.length<=512,'PILOT_WATCH_IDENTITY_CAP');
+        const identities=this.options.watchedIdentities();need(Array.isArray(identities),'PILOT_WATCH_IDENTITIES_REQUIRED');
         this.watchIdentities.clear();
         for(const row of identities){need(row&&typeof row.mint==='string'&&typeof row.pool==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(row.mint)&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(row.pool),'PILOT_WATCH_IDENTITY');this.watchIdentities.set(row.mint,{mint:row.mint,pool:row.pool});}
         for(const mint of this.watchLastEmitted.keys())if(!this.watchIdentities.has(mint)){this.watchLastEmitted.delete(mint);this.watchLastSignature.delete(mint);}
@@ -190,19 +210,60 @@ export class PilotFeeds {
     }catch{this.watchFailures++;}
     finally{this.watchProcessingMs+=performance.now()-started;}
   }
+  private discoverySubscriptions(){return this.options.onMarketIdentity?['subscribeMigration','subscribeNewToken']:['subscribeMigration'];}
+  private marketFeed(source:MarketFeedSource,connected:boolean,gapReason?:string){
+    const row=this.marketSources[source],at=this.now();row.connected=connected;if(connected)row.subscribedAt=at;
+    if(gapReason){row.gaps++;row.lastGapAt=at;row.lastGapReason=gapReason;row.currentOutageStartedAt??=at;}
+    if(connected&&row.currentOutageStartedAt!==null){const duration=Math.max(0,at-row.currentOutageStartedAt);row.observedOutageMs+=duration;row.maximumOutageMs=Math.max(row.maximumOutageMs,duration);row.lastRecoveryAt=at;row.currentOutageStartedAt=null;}
+    try{this.options.onMarketFeed?.({source,at,connected,scope:sourceScope[source],...(gapReason?{gapReason}:{})});}
+    catch{row.deliveryFailures++;this.gap('PILOT_MARKET_FEED_STATUS_SINK_UNAVAILABLE');}
+  }
+  /** No identity cache or candidate cap: every syntactically usable provider
+   * identity reaches the durable sink. Amounts remain unverified UI hints;
+   * token decimals, wallet independence and execution values are not inferred. */
+  private observeMarket(payload:unknown,source:MarketFeedSource,receivedAt:number){
+    const counter=this.marketSources[source],started=performance.now();counter.frames++;counter.lastMessageAt=receivedAt;
+    try{
+      if(!payload||typeof payload!=='object'||Array.isArray(payload)||!publicKey((payload as any).mint)){counter.unusableFrames++;return;}
+      const p=payload as Record<string,unknown>,mint=p.mint as string,pool=publicKey(p.poolId)?p.poolId:publicKey(p.pool)?p.pool:undefined,signature=canonicalTransactionSignature(p.signature)?p.signature:undefined;
+      if(!signature)counter.missingSignatureFrames++;
+      const venue=typeof p.pool==='string'&&p.pool.length<=80&&!publicKey(p.pool)?p.pool:undefined;
+      const kind=source==='pumpportal-new-token'?'creation':source==='pumpportal-migration'?'migration':'activity';
+      const identity:MarketIdentityHint={mint,...(pool?{pool}:{}),...(signature?{signature}:{}),receivedAt,source,kind,...(venue?{venue}:{}),evidence:'unverified-provider-discovery-hint'};
+      const side=p.action==='buy'||p.action==='sell'?p.action:p.txType==='buy'||p.txType==='sell'?p.txType:undefined;
+      if(side&&!signature)counter.unsignedActivityFrames++;
+      if(this.options.onMarketIdentity&&!(this.options.onMarketActivity&&side&&signature)){this.options.onMarketIdentity(identity);counter.identities++;counter.lastIdentityAt=receivedAt;}
+      if(this.options.onMarketActivity&&side&&signature){
+        const quoteMint=publicKey(p.quoteMint)?p.quoteMint:undefined;
+        // PumpAPI quoteAmount units are provider UI units. Only explicitly SOL
+        // quotes can form a SOL hint; missing or alternate quote mints stay
+        // unknown. These hints can rank research, never authorize a fill.
+        const quoteLamports=quoteMint===SOL_MINT?lamportHint(p.quoteAmount):undefined,tokenAmount=decimalHint(p.tokenAmount),price=typeof p.price==='number'&&Number.isFinite(p.price)&&p.price>0?p.price:undefined;
+        this.options.onMarketActivity({...identity,side,...(quoteMint?{quoteMint}:{}),...(quoteLamports?{quoteLamports}:{}),...(tokenAmount?{tokenAmount}:{}),...(price?{price}:{}),evidence:'unverified-provider-activity-hint'});counter.identities++;counter.lastIdentityAt=receivedAt;counter.activities++;counter.lastActivityAt=receivedAt;
+      }
+    }catch{counter.deliveryFailures++;throw Error('PILOT_MARKET_DISCOVERY_SINK_UNAVAILABLE');}
+    finally{counter.processingMs+=performance.now()-started;}
+  }
   private message(leg:Leg,c:Connection,raw:WebSocket.RawData){
     if(c.closed||leg.connection!==c||!this.live())return;const receivedAt=this.now(),b=Array.isArray(raw)?Buffer.concat(raw):Buffer.from(raw as ArrayBuffer);this.frames++;this.sample(leg,c);need(b.length<=65536,'PILOT_FEED_PAYLOAD_LIMIT');if(!leg.desired||c.closeReason)return;
     if(leg.name==='discovery'){
-      const p=JSON.parse(b.toString());if(p?.message==="Subscribed to 'migration' events."){c.ack?.();return;}if(p?.txType!=='migrate')return;
-      need(typeof p.signature==='string'&&p.signature.length<=100&&bs58.decode(p.signature).length===64,'PILOT_DISCOVERY_SIGNATURE');if(this.migrationSeen.has(p.signature))return;
-      for(const [sig,at]of this.migrationSeen)if(at<receivedAt-300000)this.migrationSeen.delete(sig);if(this.migrationSeen.size>=256)this.migrationSeen.delete(this.migrationSeen.keys().next().value!);this.migrationSeen.set(p.signature,receivedAt);
+      let p:any;try{p=JSON.parse(b.toString());}catch{this.discoveryMalformedFrames++;return;}if(p?.message==="Subscribed to 'migration' events."){c.ack?.('subscribeMigration');return;}if(p?.message==="Successfully subscribed to token creation events."){c.ack?.('subscribeNewToken');return;}
+      if(p?.txType==='create'){if(this.options.onMarketIdentity)this.observeMarket(p,'pumpportal-new-token',receivedAt);return;}if(p?.txType!=='migrate')return;
+      if(this.options.onMarketIdentity)this.observeMarket(p,'pumpportal-migration',receivedAt);
+      if(!canonicalTransactionSignature(p.signature))return;if(this.migrationSeen.has(p.signature))return;
+      if(receivedAt>=this.migrationPruneAt){for(const [sig,at]of this.migrationSeen)if(at<receivedAt-300000)this.migrationSeen.delete(sig);this.migrationPruneAt=receivedAt+60000;}this.migrationSeen.set(p.signature,receivedAt);
       let feedMint:string|undefined;try{if(typeof p.mint==='string'&&new PublicKey(p.mint).toBase58()===p.mint)feedMint=p.mint;}catch{}
       const seed={signature:p.signature,...(feedMint?{feedMint}:{}),receivedAt};this.record('pilot-migration-hint',{...seed,commitment:'processed',identityVerified:false});this.options.onMigration(seed);return;
+    }
+    let marketPayload:any;
+    if(this.options.onMarketIdentity||this.options.onMarketActivity){
+      const started=performance.now();try{marketPayload=JSON.parse(b.toString());}catch{const counter=this.marketSources['pumpapi-broad'];counter.frames++;counter.lastMessageAt=receivedAt;counter.unusableFrames++;}finally{this.marketSources['pumpapi-broad'].processingMs+=performance.now()-started;}
+      if(marketPayload!==undefined)this.observeMarket(marketPayload,'pumpapi-broad',receivedAt);
     }
     this.observeWatchActivity(b,receivedAt);
     const active=this.activeCandidates(),possible=active.filter(candidate=>b.includes(candidate.mintBytes)||b.includes(candidate.poolBytes));if(!possible.length){this.irrelevant++;return;}
     this.rawParses++;let payload:any;
-    try{payload=JSON.parse(b.toString());need(payload&&typeof payload==='object'&&!Array.isArray(payload),'PILOT_SELECTED_PAYLOAD_SHAPE');}
+    try{payload=marketPayload??JSON.parse(b.toString());need(payload&&typeof payload==='object'&&!Array.isArray(payload),'PILOT_SELECTED_PAYLOAD_SHAPE');}
     catch(e){for(const candidate of possible)this.invalidate(candidate,safe(e));return;}
     const selected=possible.filter(candidate=>payload.poolId===candidate.scope.pool||payload.mint===candidate.scope.mint&&(payload.poolId===undefined||payload.poolId===null));if(!selected.length){this.irrelevant++;return;}
     this.selectedFrames++;this.record('pilot-selected-pumpapi-payload',{receivedAt,payloadUtf8:b.toString(),sha256:createHash('sha256').update(b).digest('hex'),selectedMints:selected.map(c=>c.scope.mint)});
@@ -221,14 +282,16 @@ export class PilotFeeds {
       await this.options.control.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>new Promise<void>((resolve,reject)=>{
         const endpoint=leg.name==='discovery'?DISCOVERY:PUMPAPI_STREAM,config:WebSocket.ClientOptions={agent:process.env.HTTPS_PROXY?new HttpsProxyAgent(process.env.HTTPS_PROXY):undefined,maxPayload:65536,perMessageDeflate:false,followRedirects:false,handshakeTimeout:1200},ws=this.dependencies.makeSocket?.(endpoint,config)??new WebSocket(endpoint,config);let resolveClosed!:()=>void;const closedPromise=new Promise<void>(r=>{resolveClosed=r;}),c:Connection={socket:ws,seen:0,closed:false,opened:false,expectedClose:false,closeReason:null,lastTrafficMono:this.mono(),closedPromise,resolveClosed,upgradeReject:reject};leg.connection=c;leg.attempts++;
         const abort=()=>this.closeLeg(leg,'PILOT_FEED_OPERATION_ABORTED',false);op.signal.addEventListener('abort',abort,{once:true});
-        ws.on('open',()=>{try{this.sample(leg,c,true);need(this.live()&&leg.desired&&!c.closeReason,'PILOT_FEED_OPEN_UNAVAILABLE');const rawSocket=(ws as unknown as {_socket?:{prependListener?:(name:string,cb:()=>void)=>void}})._socket;need(rawSocket?.prependListener,'PILOT_FEED_PREPARSE_COUNTER_REQUIRED');rawSocket!.prependListener!('data',()=>{try{this.sample(leg,c);}catch(e){this.closeLeg(leg,safe(e),false);}});c.opened=true;leg.connected=true;leg.failures=0;if(leg.name==='pumpapi'){const selected=this.activeCandidates();need(selected.length>0||this.watchActivityDesired,'PILOT_NO_CANDIDATE');const at=this.now();for(const old of selected){const fresh=this.makeCandidate(old.scope,old.selectedMono);old.controller.abort();this.candidates.set(old.scope.mint,fresh);fresh.pipeline.open(at);this.options.onFlowOpen?.(fresh.scope.mint,at);}}this.record('pilot-feed-open',{feed:leg.name,at:this.now(),endpoint,connection:leg.attempts,dataOnly:true,paidSubscriptions:0});op.signal.removeEventListener('abort',abort);c.upgradeReject=undefined;op.completeResponse();resolve();}catch(e){this.closeLeg(leg,safe(e),false);}});
-        ws.on('message',raw=>{try{this.message(leg,c,raw);}catch(e){if(leg.name==='pumpapi')this.invalidateAll(safe(e));else{leg.desired=false;this.gap(safe(e));}this.closeLeg(leg,safe(e),false);}});
+        ws.on('open',()=>{try{this.sample(leg,c,true);need(this.live()&&leg.desired&&!c.closeReason,'PILOT_FEED_OPEN_UNAVAILABLE');const rawSocket=(ws as unknown as {_socket?:{prependListener?:(name:string,cb:()=>void)=>void}})._socket;need(rawSocket?.prependListener,'PILOT_FEED_PREPARSE_COUNTER_REQUIRED');rawSocket!.prependListener!('data',()=>{try{this.sample(leg,c);}catch(e){this.closeLeg(leg,safe(e),false);}});c.opened=true;leg.connected=true;leg.failures=0;if(leg.name==='pumpapi'){const selected=this.activeCandidates();need(selected.length>0||this.watchActivityDesired,'PILOT_NO_CANDIDATE');const at=this.now();for(const old of selected){const fresh=this.makeCandidate(old.scope,old.selectedMono);old.controller.abort();this.candidates.set(old.scope.mint,fresh);fresh.pipeline.open(at);this.options.onFlowOpen?.(fresh.scope.mint,at);}}if(leg.name==='pumpapi')this.marketFeed('pumpapi-broad',true);this.record('pilot-feed-open',{feed:leg.name,at:this.now(),endpoint,connection:leg.attempts,dataOnly:true,paidSubscriptions:0});op.signal.removeEventListener('abort',abort);c.upgradeReject=undefined;op.completeResponse();resolve();}catch(e){this.closeLeg(leg,safe(e),false);}});
+        ws.on('message',raw=>{try{this.message(leg,c,raw);}catch(e){if(leg.name==='pumpapi')this.invalidateAll(safe(e));else{if(safe(e)!=='PILOT_MARKET_DISCOVERY_SINK_UNAVAILABLE')leg.desired=false;this.gap(safe(e));}this.closeLeg(leg,safe(e),false);}});
         ws.on('unexpected-response',(_req,response)=>{let reason=response.statusCode===429?'COMPONENT_HTTP_429':'PILOT_FEED_UPGRADE_REFUSED';try{this.sample(leg,c,true,response.socket?.bytesRead);if(response.statusCode===429){const until=this.options.control.noteThrottle(String(response.headers['retry-after']??'')||null,this.now());need(Number.isSafeInteger(until)&&until>=this.now(),'PILOT_FEED_COOLDOWN_INVALID');leg.notBefore=Math.max(leg.notBefore,until);}else leg.desired=false;}catch(e){reason=safe(e);leg.desired=false;if(leg.name==='pumpapi')this.invalidateAll(reason);else this.gap(reason);}finally{c.closeReason=reason;response.destroy();ws.terminate();}});
         ws.on('error',()=>{c.closeReason??='COMPONENT_WS_TRANSPORT';ws.terminate();});
-        ws.on('close',()=>{if(c.closed)return;try{this.sample(leg,c);}catch{c.closeReason??='PILOT_FEED_SOCKET_COUNTER';}c.closed=true;leg.connected=false;op.signal.removeEventListener('abort',abort);c.resolveClosed();const reason=c.closeReason??'COMPONENT_WS_TRANSPORT',controlReason=reason.startsWith('COMPONENT_')?reason:c.expectedClose?'COMPONENT_ABORTED':!c.opened?'COMPONENT_WS_TRANSPORT':reason,error=Error(controlReason);c.upgradeReject?.(error);c.subscriptionReject?.(error);if(!c.expectedClose&&this.live()&&leg.desired){if(leg.name==='pumpapi'){this.invalidateAll(reason);if(this.watchActivityDesired&&leg.desired)this.reconnect(leg);}else{this.gap(reason);this.reconnect(leg);}}});
+        ws.on('close',()=>{if(c.closed)return;try{this.sample(leg,c);}catch{c.closeReason??='PILOT_FEED_SOCKET_COUNTER';}c.closed=true;leg.connected=false;for(const source of leg.name==='pumpapi'?['pumpapi-broad'] as const:this.discoverySubscriptions().map(method=>method==='subscribeMigration'?'pumpportal-migration':'pumpportal-new-token') as MarketFeedSource[])this.marketFeed(source,false,c.expectedClose?undefined:c.closeReason??'COMPONENT_WS_TRANSPORT');op.signal.removeEventListener('abort',abort);c.resolveClosed();const reason=c.closeReason??'COMPONENT_WS_TRANSPORT',controlReason=reason.startsWith('COMPONENT_')?reason:c.expectedClose?'COMPONENT_ABORTED':!c.opened?'COMPONENT_WS_TRANSPORT':reason,error=Error(controlReason);c.upgradeReject?.(error);c.subscriptionReject?.(error);if(!c.expectedClose&&this.live()&&leg.desired){if(leg.name==='pumpapi'){this.invalidateAll(reason);if(this.watchActivityDesired&&leg.desired)this.reconnect(leg);}else{this.gap(reason);this.reconnect(leg);}}});
       }),this.controller.signal,{timeoutMs:1500,...admission});
       if(leg.name==='discovery'){
-        const c=leg.connection!;await this.options.control.operateData({transport:'ws',method:'subscribeMigration'},async op=>new Promise<void>((resolve,reject)=>{if(c.closed||!this.live()||!leg.desired){reject(Error('COMPONENT_WS_TRANSPORT'));return;}c.subscriptionReject=reject;const abort=()=>this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);op.signal.addEventListener('abort',abort,{once:true});c.ack=()=>{c.ack=undefined;c.subscriptionReject=undefined;op.signal.removeEventListener('abort',abort);op.completeResponse();resolve();};try{c.socket.send(dataMessage('subscribeMigration'),e=>{if(e)this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);});}catch{this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);}}),this.controller.signal,{timeoutMs:1500,...admission});
+        const c=leg.connection!;for(const method of this.discoverySubscriptions()){
+          await this.options.control.operateData({transport:'ws',method},async op=>new Promise<void>((resolve,reject)=>{if(c.closed||!this.live()||!leg.desired){reject(Error('COMPONENT_WS_TRANSPORT'));return;}c.subscriptionReject=reject;const abort=()=>this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);op.signal.addEventListener('abort',abort,{once:true});c.ack=ackMethod=>{if(ackMethod!==method)return;c.ack=undefined;c.subscriptionReject=undefined;op.signal.removeEventListener('abort',abort);op.completeResponse();this.marketFeed(method==='subscribeMigration'?'pumpportal-migration':'pumpportal-new-token',true);resolve();};try{c.socket.send(dataMessage(method),e=>{if(e)this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);});}catch{this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);}}),this.controller.signal,{timeoutMs:1500,...admission});
+        }
       }
     }catch(e){this.firstFailure??=safe(e);this.closeLeg(leg,safe(e),false);this.reconnect(leg);throw e;}
     finally{leg.connecting=false;}
@@ -238,6 +301,6 @@ export class PilotFeeds {
   readiness(mint?:string){const c=mint===undefined?this.candidate:this.candidates.get(mint);if(!c)return null;const state=c.pipeline.readiness(this.now()),last=state.latestFeature;return {...state,pending:c.pending.size,fullyEnriched:c.pending.size===0&&!c.suspended,warm:!c.suspended&&last?.curve.sufficientlyObserved===true&&last?.user.sufficientlyObserved===true,windowEndAt:last?.curve.windowEndAt??null,hasQualityLoss:c.suspended||state.hasQualityLoss,failedCandidate:c.suspended};}
   snapshot(mint?:string){const c=mint===undefined?this.candidate:this.candidates.get(mint);if(!c)return null;const state=c.pipeline.snapshot(this.now(),{recordFeatures:false}),last=state.latestFeature,fullyEnriched=c.pending.size===0&&!c.suspended;return {...state,latestFeature:last,pending:c.pending.size,fullyEnriched,warm:!c.suspended&&last?.curve.sufficientlyObserved===true&&last?.user.sufficientlyObserved===true,windowEndAt:last?.curve.windowEndAt??null,hasQualityLoss:c.suspended||state.qualityGaps.length>0,failedCandidate:c.suspended};}
   snapshots(){return Object.fromEntries([...this.candidates.keys()].map(mint=>[mint,this.snapshot(mint)]));}
-  usage(){return {persistent:this.options.persistent===true,lifetimeCapsEnabled:this.options.persistent!==true,rollingTraffic:{pumpapi:{...this.rollingPump.view(this.mono()),admissionEnforced:false},discovery:{...this.rollingDiscovery.view(this.mono()),admissionEnforced:false}},maximumCandidates:this.maximumCandidates,watchActivity:{requested:this.watchActivityDesired,semantics:this.watchActivityDesired?'unverified selection hints only; explicitly requested broad WATCH stream, independent of selected deep observations':'unverified selection hints only; observed only while a deep stream is already open',knownIdentities:this.watchIdentities.size,framesExamined:this.watchFrames,matchedPayloadParses:this.watchParses,hints:this.watchHints,failures:this.watchFailures,processingMs:this.watchProcessingMs,coalesceMs:10000},candidates:[...this.candidates.values()].map(c=>({mint:c.scope.mint,pool:c.scope.pool,suspended:c.suspended,pending:c.pending.size,normalized:c.normalized,selectedForMs:this.mono()-c.selectedMono})),enrichmentInFlight:this.enriching,startedAt:this.startedAt,durationMs:this.duration,stopped:this.stopped,firstFailure:this.firstFailure,pumpApiSocketBytes:this.pumpBytes,discoverySocketBytes:this.discoveryBytes,controlBytesCharged:this.controlBytes,totalSocketBytes:this.pumpBytes+this.discoveryBytes,lastAnyTrafficAt:this.lastAnyTrafficAt,frames:this.frames,irrelevantFrames:this.irrelevant,selectedFrames:this.selectedFrames,parsedPumpApiFrames:this.rawParses,recordedBytes:this.recordedBytes,normalizedTrades:this.trades,gaps:this.gaps,discoveryConnected:this.legs.discovery.connected,pumpApiConnected:this.legs.pumpapi.connected,discoveryDesired:this.legs.discovery.desired,pumpApiDesired:this.legs.pumpapi.desired,failedCandidate:[...this.candidates.values()].some(c=>c.suspended),candidateRetryAt:this.candidateRetryAt,connections:{discovery:this.legs.discovery.attempts,pumpapi:this.legs.pumpapi.attempts},candidate:this.candidate?{mint:this.candidate.scope.mint,pool:this.candidate.scope.pool,suspended:this.candidate.suspended,pending:this.candidate.pending.size,normalized:this.candidate.normalized,selectedForMs:this.mono()-this.candidate.selectedMono}:null,physicalTransportsSettled:Object.values(this.legs).every(l=>!l.connection||l.connection.closed),streamFieldCompleteness:'REQUIRES_BOUNDED_INDEPENDENT_AUDIT',liveTrading:false};}
+  usage(){return {marketDiscovery:{discoveryMalformedFrames:this.discoveryMalformedFrames,identityRetention:'durable sink; no feed-level identity-count ceiling',perTokenRpcRequests:0,configuredSourceEndpoints:2,activeSharedConnections:Object.values(this.legs).filter(leg=>leg.connection?.opened&&!leg.connection.closed).length,subscriptions:this.discoverySubscriptions(),denominator:'provider-observed notifications; independent complete-market denominator unavailable',limitations:['No historical backfill for creations or migrations missed before connection or during outages','Inactive older tokens absent from current provider traffic are unobservable here','Provider activity fields are unverified selection hints; canonical origin and independent audits remain required'],sources:Object.fromEntries(Object.entries(this.marketSources).map(([source,row])=>[source,{...row,currentOutageMs:row.currentOutageStartedAt===null?0:Math.max(0,this.now()-row.currentOutageStartedAt),scope:sourceScope[source as MarketFeedSource]}]))},persistent:this.options.persistent===true,lifetimeCapsEnabled:this.options.persistent!==true,rollingTraffic:{pumpapi:{...this.rollingPump.view(this.mono()),admissionEnforced:false},discovery:{...this.rollingDiscovery.view(this.mono()),admissionEnforced:false}},maximumCandidates:this.maximumCandidates,watchActivity:{requested:this.watchActivityDesired,semantics:this.watchActivityDesired?'unverified selection hints only; explicitly requested broad WATCH stream, independent of selected deep observations':'unverified selection hints only; observed only while a deep stream is already open',knownIdentities:this.watchIdentities.size,framesExamined:this.watchFrames,matchedPayloadParses:this.watchParses,hints:this.watchHints,failures:this.watchFailures,processingMs:this.watchProcessingMs,coalesceMs:10000},candidates:[...this.candidates.values()].map(c=>({mint:c.scope.mint,pool:c.scope.pool,suspended:c.suspended,pending:c.pending.size,normalized:c.normalized,selectedForMs:this.mono()-c.selectedMono})),enrichmentInFlight:this.enriching,startedAt:this.startedAt,durationMs:this.duration,stopped:this.stopped,firstFailure:this.firstFailure,pumpApiSocketBytes:this.pumpBytes,discoverySocketBytes:this.discoveryBytes,controlBytesCharged:this.controlBytes,totalSocketBytes:this.pumpBytes+this.discoveryBytes,lastAnyTrafficAt:this.lastAnyTrafficAt,frames:this.frames,irrelevantFrames:this.irrelevant,selectedFrames:this.selectedFrames,parsedPumpApiFrames:this.rawParses,recordedBytes:this.recordedBytes,normalizedTrades:this.trades,gaps:this.gaps,discoveryConnected:this.legs.discovery.connected,pumpApiConnected:this.legs.pumpapi.connected,discoveryDesired:this.legs.discovery.desired,pumpApiDesired:this.legs.pumpapi.desired,failedCandidate:[...this.candidates.values()].some(c=>c.suspended),candidateRetryAt:this.candidateRetryAt,connections:{discovery:this.legs.discovery.attempts,pumpapi:this.legs.pumpapi.attempts},candidate:this.candidate?{mint:this.candidate.scope.mint,pool:this.candidate.scope.pool,suspended:this.candidate.suspended,pending:this.candidate.pending.size,normalized:this.candidate.normalized,selectedForMs:this.mono()-this.candidate.selectedMono}:null,physicalTransportsSettled:Object.values(this.legs).every(l=>!l.connection||l.connection.closed),streamFieldCompleteness:'REQUIRES_BOUNDED_INDEPENDENT_AUDIT',liveTrading:false};}
   async stop(){if(!this.stopped){this.stopped=true;this.watchActivityDesired=false;this.controller.abort();this.cancel(this.watch);for(const c of this.candidates.values())c.controller.abort();for(const leg of Object.values(this.legs)){leg.desired=false;if(leg.timer!==undefined)this.cancel(leg.timer);this.closeLeg(leg,'PILOT_FEEDS_STOP',true);}}await Promise.all(Object.values(this.legs).map(l=>l.connection?this.waitClosed(l.connection):Promise.resolve()));}
 }
