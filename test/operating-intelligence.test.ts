@@ -113,3 +113,9 @@ test('current-run completed maxima stay separate from historical failures, open 
  raw.timing.currentRunMaximumCompletedGapMs=0;raw.timing.currentRunMaximumQuoteAgeAtUseMs=0;i=projectOperatingIntelligence(raw);assert.match(i.quality.limitations.join('\n'),/gap 0 ms; quote age at use 0 ms/,'valid explicit zero is retained');
  delete (raw.timing as any).currentRunMaximumCompletedGapMs;delete (raw.timing as any).currentRunMaximumQuoteAgeAtUseMs;assert.ok(!projectOperatingIntelligence(raw).quality.limitations.some(note=>note.startsWith('Current runtime observed')),'legacy source does not invent current metrics');
 });
+
+test('fractional queue wait means retain nearest-millisecond wire values instead of becoming unavailable',()=>{
+ const raw={...status(),watch:{...status().watch,waitMs:{mean:1234.5,maximum:1500}}};
+ const before=structuredClone(raw),i=projectOperatingIntelligence(raw);assert.equal(i.candidates.waitMeanMs,1235);assert.equal(i.candidates.waitMaximumMs,1500);validateOperatingIntelligence(i,iso(T));assert.deepEqual(raw,before);
+ for(const invalid of [-1,NaN,Infinity,'1234',Number.MAX_SAFE_INTEGER+1])assert.equal(projectOperatingIntelligence({...raw,watch:{...raw.watch,waitMs:{mean:invalid,maximum:1500}}}).candidates.waitMeanMs,null);
+});

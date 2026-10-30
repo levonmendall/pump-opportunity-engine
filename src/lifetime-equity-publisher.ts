@@ -1,5 +1,5 @@
-import { constants, closeSync, fstatSync, openSync, readFileSync } from 'node:fs';
-import { isAbsolute, join, resolve } from 'node:path';
+import { constants, closeSync, fstatSync, openSync, readFileSync,writeFileSync,renameSync,unlinkSync } from 'node:fs';
+import { dirname,isAbsolute, join, resolve } from 'node:path';
 import { LifetimeEquityStore, readPrivateOriginalSnapshot } from './lifetime-equity-store.js';
 
 const RECEIVER = 'https://meme-machine-dashboard-staging.onrender.com/api/equity-history';
@@ -11,8 +11,8 @@ function absolute(name: string, value: string) {
   return value;
 }
 export function equityCredentialOwnerModeAccepted(path:string,file:{uid:number;gid:number;mode:number},uid:number|undefined,credentialDirectory?:string) {
-  const directory='/run/credentials/poe-lifetime-equity.service';
-  const systemd=credentialDirectory===directory&&path===directory+'/poe-ingest-secret'&&
+  const directories=['/run/credentials/poe-lifetime-equity.service','/run/credentials/poe-runtime.service'];
+  const systemd=directories.some(directory=>credentialDirectory===directory&&path===directory+'/poe-ingest-secret')&&
     file.uid===0&&file.gid===0&&(file.mode&0o7777)===0o440;
   return systemd||[0,uid].includes(file.uid)&&(file.mode&0o077)===0;
 }
@@ -35,7 +35,7 @@ function secretFromFile(path: string): string {
 export type EquityCompanionOptions = {
   sourceFile: string; storeFile: string; receiver?: string;
   credentialFile: string; fetch?: typeof fetch;
-  bootstrapFile?: string; bootstrapSha256?: string;
+  bootstrapFile?: string; bootstrapSha256?: string;statusFile?:string;
 };
 /**
  * Auxiliary reporting-only process. Never imports PaperLedger or any trader;
@@ -46,14 +46,25 @@ export class OriginalEquityCompanion {
   private readonly opts: EquityCompanionOptions;
   private timer: ReturnType<typeof setInterval> | null = null;
   private delivering = false;
+  private closed = false;
   private lastDeliveredSequence = '';
   private lastDeliveryAt = 0;
   private lastAttemptAt = 0;
   private secret: string;
+  private readonly telemetry={version:'poe-lifetime-equity-health-v1',generatedAt:0,sourceState:'not-observed',ingestionReasonCode:null as string|null,deliveryState:'not-attempted',httpStatus:null as number|null,attempts:0,deliveryFailures:0,lastDeliveredAt:null as number|null,lastSourceAt:null as string|null,statusWriteFailures:0};
+  status(){return {...this.telemetry,store:this.store.stats(),readOnlyFinancialSource:true,financialDatabaseOpened:false};}
+  private publishStatus(now:number){
+    if(this.closed)return;
+    this.telemetry.generatedAt=now;const target=this.opts.statusFile??join(dirname(this.opts.storeFile),'status.json');
+    const temporary=target+'.'+process.pid+'.tmp';
+    try{writeFileSync(temporary,JSON.stringify(this.status())+'\n',{flag:'wx',mode:0o600});renameSync(temporary,target);}
+    catch{this.telemetry.statusWriteFailures++;try{unlinkSync(temporary);}catch{}}
+  }
   constructor(options: EquityCompanionOptions) {
     this.opts = options;
     absolute('EQUITY_SOURCE', options.sourceFile);
     absolute('EQUITY_STORE', options.storeFile);
+    if(options.statusFile){absolute('EQUITY_STATUS',options.statusFile);if(dirname(options.statusFile)!==dirname(options.storeFile))throw Error('EQUITY_STATUS_SIDECAR_DIRECTORY_REQUIRED');}
     if ((options.receiver ?? RECEIVER) !== RECEIVER) throw Error('EQUITY_RECEIVER_FIXED');
     this.secret = secretFromFile(options.credentialFile);
     this.store = new LifetimeEquityStore(options.storeFile);
@@ -62,13 +73,19 @@ export class OriginalEquityCompanion {
       this.store.importReceiverCapture(options.bootstrapFile,options.bootstrapSha256);
   }
   async tick(now = Date.now()) {
+    if(this.closed)return {ingested:'unavailable' as const,delivered:false};
     let ingested: 'accepted' | 'duplicate' | 'unavailable' = 'unavailable';
     try {
       const {snapshot, sha256} = readPrivateOriginalSnapshot(this.opts.sourceFile, now);
       ingested = this.store.accept(snapshot, sha256, now);
-    } catch {
+      this.telemetry.sourceState=ingested;this.telemetry.lastSourceAt=snapshot.times.generatedAt;this.telemetry.ingestionReasonCode=null;
+    } catch(error) {
+      this.telemetry.sourceState='unavailable';
+      const code=(error as NodeJS.ErrnoException)?.code;
+      this.telemetry.ingestionReasonCode=code==='ENOENT'?'SOURCE_FILE_MISSING':code==='EACCES'?'SOURCE_FILE_ACCESS_DENIED':'SOURCE_VALIDATION_OR_STORE_UNAVAILABLE';
       // Market data, financial reconciliation, and trading run independently.
     }
+    this.publishStatus(now);
     const history = this.store.history(now);
     if (history.points.length === 1) return { ingested, delivered: false };
     // Send a complete bounded source-owned series on process startup, after
@@ -77,7 +94,7 @@ export class OriginalEquityCompanion {
         (this.lastDeliveredSequence && now - this.lastDeliveryAt < 60_000))
       return { ingested, delivered: false };
     this.delivering = true;
-    this.lastAttemptAt = now;
+    this.lastAttemptAt = now;this.telemetry.attempts++;this.telemetry.deliveryState='pending';
     try {
       const response = await (this.opts.fetch ?? fetch)(RECEIVER, {
         method: 'POST', redirect: 'error', signal: AbortSignal.timeout(5_000),
@@ -85,22 +102,25 @@ export class OriginalEquityCompanion {
         body: JSON.stringify(history),
       });
       await response.body?.cancel();
-      if (!response.ok) return { ingested, delivered: false };
+      this.telemetry.httpStatus=response.status;
+      if (!response.ok){this.telemetry.deliveryState='http-refused';this.telemetry.deliveryFailures++;return { ingested, delivered: false };}
       this.lastDeliveredSequence = history.lastSequence;
-      this.lastDeliveryAt = now;
+      this.lastDeliveryAt = now;this.telemetry.lastDeliveredAt=now;this.telemetry.deliveryState='accepted';
       return { ingested, delivered: true };
     } catch {
+      this.telemetry.deliveryState='network-unavailable';this.telemetry.httpStatus=null;this.telemetry.deliveryFailures++;
       return { ingested, delivered: false };
-    } finally { this.delivering = false; }
+    } finally { this.delivering = false;this.publishStatus(now); }
   }
   start() {
-    if (this.timer) return;
+    if (this.timer||this.closed) return;
     void this.tick();
     // Match the existing source publisher's 1s file poll, but upload the
     // bounded lifetime series at most once per minute.
     this.timer = setInterval(() => { void this.tick(); }, 1_000);
   }
   close() {
+    if(this.closed)return;this.closed=true;
     if (this.timer) clearInterval(this.timer);
     this.timer = null;
     this.store.close();
@@ -123,6 +143,6 @@ async function main() {
   const stop = () => { companion.close(); process.exitCode = 0; };
   process.once('SIGINT', stop); process.once('SIGTERM', stop);
 }
-if (process.argv[1]?.endsWith('/lifetime-equity-publisher.js')) {
+if (process.argv[1]?.endsWith('/lifetime-equity-publisher.js')||process.argv[1]?.endsWith('/lifetime-equity-publisher.mjs')) {
   main().catch(() => { process.stderr.write('POE_EQUITY_COMPANION_STARTUP_UNAVAILABLE\n'); process.exitCode = 1; });
 }

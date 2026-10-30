@@ -1,0 +1,60 @@
+{
+  "pool": "E3mK971V24Phmma1fyLxNzdXCvik1scQSqeN5dd4LY6u",
+  "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+  "slot": 463320780,
+  "commitment": "confirmed",
+  "requestedAt": "2026-10-30T14:35:08.096Z",
+  "receivedAt": "2026-10-30T14:35:08.096Z",
+  "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "mintExtensions": [
+    "MetadataPointer",
+    "TokenMetadata"
+  ],
+  "decimals": 6,
+  "poolFlags": {
+    "mayhem": false,
+    "cashback": false,
+    "holderReward": false
+  },
+  "rawBaseReserve": "906616408298325",
+  "rawQuoteReserve": "2204847782",
+  "virtualQuoteReserves": "17584505288",
+  "effectiveQuoteReserve": "19789353070",
+  "feeBuckets": "0",
+  "feeBps": {
+    "lpFeeBps": "2",
+    "protocolFeeBps": "93",
+    "creatorFeeBps": "30"
+  },
+  "creatorFeeApplied": true,
+  "baseAssociatedAccount": {
+    "accountLengthBytes": 170,
+    "accountExtensions": [
+      "ImmutableOwner"
+    ],
+    "rentLamports": null,
+    "rentStatus": "requires-current-RPC-and-account-existence-check",
+    "depositTreatment": "refundable locked capital when a new account is required"
+  },
+  "quoteAssociatedAccount": {
+    "accountLengthBytes": 165,
+    "accountExtensions": [],
+    "rentLamports": null,
+    "rentStatus": "requires-current-RPC-and-account-existence-check",
+    "depositTreatment": "refundable locked capital when a new account is required"
+  },
+  "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+  "mode": "QUOTE_ONLY",
+  "sell": {
+    "inputBaseUnits": "65278155",
+    "outputLamports": "1404",
+    "grossCurveOutputLamports": "1424",
+    "embeddedPoolFeeLamports": "20"
+  },
+  "limitations": [
+    "Current supported-pool full-size sell estimate only; no live fill or stop-price guarantee.",
+    "Embedded pool fees already reduce output; do not debit them again.",
+    "Output excludes network/priority fees and any separately evidenced account-deposit refund.",
+    "Confirmed state/context and original receive time are retained; callers must enforce execution/mark freshness."
+  ]
+}

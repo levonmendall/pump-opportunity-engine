@@ -289,19 +289,24 @@ function financialPolicyCards(s){
  ];
 }
 function renderCards(s){
- const b=s.balances,operating=!!s.intelligence;const data=[
+ const b=s.balances,operating=!!s.intelligence,epoch=s.financialEpoch;const data=[
  ['PORTFOLIO EQUITY',money(b.equityUsd),'Includes passive SOL/USD valuation',b.equityUsd],
- [operating?'TOKEN TRADING P&L':'EQUITY CHANGE FROM INCEPTION',money(b.tradingPnlUsd),operating?'Net token result translated at current SOL/USD':'Includes passive SOL/USD movement; not pure trading',b.tradingPnlUsd],
+ [operating?'TOKEN TRADING P&L':'EQUITY CHANGE FROM INCEPTION',money(b.tradingPnlUsd),epoch?'Current epoch only; contribution excluded':operating?'Net token result translated at current SOL/USD':'Includes passive SOL/USD movement; not pure trading',b.tradingPnlUsd],
  ['CASH / RESERVED SOL',b.cashSol+' / '+b.reservedSol,'SOL · free cash / reservations',null],
  [operating?'TRADING AFTER OPERATING COSTS':'EQUITY CHANGE AFTER COSTS',money(b.economicPnlUsd),operating?'Current USD translation; unknown costs stay unavailable':'Includes passive SOL/USD movement',b.economicPnlUsd],
- ['REALIZED TRADING P&L',money(b.realizedUsd),'Realized PAPER outcomes',b.realizedUsd],
+ [epoch?'EPOCH REALIZED TRADING P&L':'REALIZED TRADING P&L',money(b.realizedUsd),epoch?'Current epoch only; original outcomes retained':'Realized PAPER outcomes',b.realizedUsd],
  ['UNREALIZED TRADING P&L',money(b.unrealizedUsd),'Based on available marks',b.unrealizedUsd],
  ['MODELED EXECUTION COSTS',money(b.executionCostsUsd),'Simulated transaction costs',null],
  ['OPERATING COSTS',money(b.operatingCostsUsd),'Cost evidence: '+s.costLabels.operating,null],
  ['POSITION COST / EXPOSURE',money(b.positionCostUsd)+' / '+money(b.markedExposureUsd),'USD · cost / marked exposure',null],
  ...financialPolicyCards(s),
  ['PASSIVE SOL BENCHMARK',money(b.passiveSolEquityUsd),'Reference holding · SOL/USD exposure',null],
- ['INCEPTION REFERENCE',money(s.account.initialUsd),'Virtual starting capital',null]
+ ['INCEPTION REFERENCE',money(s.account.initialUsd),'Original October 26 virtual contribution; historical account retained',null],
+ ...(epoch?[
+ ['CURRENT PAPER EPOCH',epoch.contributionSol+' SOL','Activated '+epoch.activatedAt+'; verified baseline '+money(epoch.initialUsd)+' at '+money(epoch.solPriceUsd)+'/SOL',null],
+ ['ORIGINAL EPOCH CLOSING EQUITY',epoch.priorEquitySol+' SOL','Archived cash '+epoch.priorArchivedCashSol+' SOL + deposits '+epoch.priorArchivedDepositsSol+' SOL; new10 SOL contribution is separate',null],
+ ['ORIGINAL REALIZED TOKEN RESULT',epoch.priorRealizedPnlSol+' SOL','Historical recorded loss/profit remains intact; simulated fees '+epoch.priorExecutionCostsSol+' SOL',null]
+ ]:[])
  ];
  const p=byId('cards');p.replaceChildren();
  data.forEach(([label,value,foot,number],i)=>{const el=add(p,'div',undefined,'stat'+(i<4?' top':''));add(el,'div',label,'stat-label');const v=add(el,'div',value,'stat-value');if(String(value).length>24)v.classList.add('long');if(number!==null&&i!==0){if(number>0)v.classList.add('positive');if(number<0)v.classList.add('negative')}add(el,'div',foot,'stat-foot')});
@@ -406,16 +411,20 @@ function plot(points){
   // Source-owned segment IDs preserve genuine outages when lifetime samples
   // are downsampled: a long interval within one verified segment is not an
   // outage. Legacy receiver-only readings continue using the five-minute gap.
-  if(current.length&&(
+  if(current.length&&(point.kind==='epoch-start'||(
     (Number.isSafeInteger(point.segment)&&Number.isSafeInteger(current[current.length-1].segment))
       ? point.segment!==current[current.length-1].segment
-      : Date.parse(point.at)-Date.parse(current[current.length-1].at)>5*60*1000)){
+      : Date.parse(point.at)-Date.parse(current[current.length-1].at)>5*60*1000))){
    if(current.length>=2)segments.push(current);
    current=[];
   }
   current.push(point);
  }
  if(current.length>=2)segments.push(current);
+ for(const point of valid.filter(p=>p.kind==='epoch-start')){
+  root.append(makeSvg('line',{x1:x(point.at),x2:x(point.at),y1:top,y2:bottom,stroke:'#b78cff','stroke-width':1,'data-capital-restatement':'10-sol'}));
+  root.append(makeSvg('text',{x:Math.min(right-135,Math.max(left,x(point.at)+5)),y:top+12,fill:'#d5b8ff','font-size':10},'10 SOL CAPITAL RESTATEMENT'));
+ }
  for(const segment of segments){
   const d=segment.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.equityUsd).toFixed(2)).join(' ');
   root.append(makeSvg('path',{'data-chart-series':'portfolio-equity-usd',d,stroke:'#91f9e2','stroke-width':3.2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
@@ -432,7 +441,7 @@ function showSnapshot(s,received,f,equityHistory=null){
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.',s.positions.map(p=>p.mint),0);
  renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.',s.trades.map(t=>t.mint),1);
  renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[]);
- put('chartBasis','Actual portfolio equity in USD, matching Portfolio Overview.');put('chartLegend','PORTFOLIO EQUITY · USD');
+ put('chartBasis','Actual portfolio equity in USD, matching Portfolio Overview.'+(s.financialEpoch?' 10 SOL restatement starts a separate segment; contribution is not profit.':''));put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
  put('chartTag',latestEquityHistory?.retention==='ec2-durable-republished'?'LIFETIME EQUITY':
     (latestEquityHistory?.points?.length??0)>=2?'TEMPORARY HISTORY':'COLLECTING EQUITY');

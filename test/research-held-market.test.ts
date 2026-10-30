@@ -91,6 +91,19 @@ test('holding diagnostics retain actual Clock failures after recovery without cl
  assert.equal(market.usage().contextFailureCounts.HELD_PRICING_BANK_CLOCK_UNAVAILABLE,1,'recovery cannot erase historical failed pricing');assert.deepEqual(f.ledger.state(),before);
 });
 
+test('positive liquidation proceeds below fees keep zero asset valuation and remain sellable from cash',async t=>{
+ const f=fixture(t),entryMarket=f.makeMarket(),entry=f.coordinator(entryMarket);f.setSetupMarket(entryMarket);entry.recover();f.ready();await f.buy(entry,0);
+ // Deliberately large modeled gas exercises the same proceeds<=fees boundary
+ // without fabricating a historical pool collapse or changing retained bytes.
+ const gas='1000000000',market=f.makeMarket({gasLamports:gas}),coordinator=f.coordinator(market);coordinator.recover();const before=f.ledger.state(),position=Object.values(before.positions)[0]!;
+ const context=await market.context(before.positions,signal()),q=await market.quote({mint:position.mint,side:'sell',inputUnits:position.units},signal());
+ assert.ok(q);assert.ok(BigInt(q.outputUnits)>0n&&BigInt(q.outputUnits)<BigInt(gas));
+ assert.equal(context.marks[position.mint]!.netLamports,'0');assert.equal(market.usage().lastContext!.state,'available');
+ coordinator.reserve({id:'below-fee-exit',side:'sell',mint:position.mint,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas,deposit:'0',maxSpend:'0',minReceive:'1',decisionEvidence:q.evidence},context);
+ f.advance(1000);const result=await coordinator.runDue();assert.equal(result.results[0]!.status,'filled');
+ const after=f.ledger.state();assert.deepEqual(after.positions,{});assert.equal(BigInt(after.lamports),BigInt(before.lamports)-BigInt(gas)+BigInt(q.outputUnits));assert.equal(BigInt(after.executionCosts)-BigInt(before.executionCosts),BigInt(gas));
+});
+
 test('post-delay, exact-size, slot, stale and gap constraints refuse cached fills without extra requests',async t=>{
   const f=fixture(t),market=f.makeMarket(),c=f.coordinator(market);f.setSetupMarket(market);c.recover();f.ready();await f.buy(c,0);
   const context=await market.context(f.ledger.state().positions,signal()),p=Object.values(f.ledger.state().positions)[0]!,q=await market.quote({mint:p.mint,side:'sell',inputUnits:p.units},signal());assert.ok(q);

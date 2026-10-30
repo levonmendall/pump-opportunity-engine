@@ -192,4 +192,28 @@ class Tests(unittest.TestCase):
   self.assertTrue(c.source_group_unsettled);self.assertEqual(c.publisher.pid,124);self.assertIsNotNone(c.source)
  def test_resource_sampling_reads_only_own_process_metadata_and_has_no_wallet_environment(self):
   views=m.resource_process_views(None,None);self.assertIsNone(views['source']);self.assertIn('rssBytes',views['supervisor']);self.assertNotIn('environ',str(views));self.assertNotIn('cmdline',str(views))
+ def test_equity_child_has_a_single_store_lease_and_cannot_access_the_financial_path(self):
+  with patch.dict(os.environ,{'CREDENTIALS_DIRECTORY':'/run/credentials/poe-runtime.service'}):
+   args=m.equity_args('/node',pathlib.Path('/release'))
+  self.assertEqual(args[:6],['/usr/bin/flock','--nonblock','--conflict-exit-code','75','--no-fork',str(m.EQUITY/'companion.lock')]);self.assertIn('--allow-fs-write='+str(m.EQUITY),args);self.assertNotIn('--allow-fs-write='+str(m.ROOT),args);self.assertFalse(any(str(m.LEDGER)in value for value in args));self.assertIn('--allow-fs-read='+str(m.ACCOUNT/'snapshot.json'),args)
+ def test_failed_equity_child_recovers_without_touching_financial_source_or_publisher(self):
+  at=m.INCEPTION+100000;c=self.controller();c.source=FakeProcess();c.source_started=at-1000;c.last_source=status(at);c.publisher=FakeProcess(124);c.equity=FakeProcess(125,1);c.equity_enabled=True;c.resource={'critical':False,'newRiskPressure':False,'healthy':True,'publisherRestart':False};c.last_sample=1000000;c.drain=lambda:None;c.write_marker=lambda *_:None;c.cache_source_snapshot=lambda *_:None
+  with patch.object(m,'read_file',return_value=json.dumps(c.last_source).encode()),patch.object(m,'atomic'),patch.object(m,'stop_child',return_value=True)as stop,patch.object(m,'spawn',side_effect=AssertionError('retry must wait')):
+   c.step(1000001,at)
+  self.assertEqual(stop.call_args.args[0].pid,125);self.assertEqual(c.source.pid,123);self.assertEqual(c.publisher.pid,124);self.assertIsNone(c.equity);self.assertEqual(c.next_equity,1000003)
+ def test_companion_spawn_failure_cannot_restart_or_pause_financial_source(self):
+  at=m.INCEPTION+100000;c=self.controller();c.source=FakeProcess();c.source_started=at-1000;c.last_source=status(at);c.publisher=FakeProcess(124);c.equity_enabled=True;c.resource={'critical':False,'newRiskPressure':False,'healthy':True,'publisherRestart':False};c.last_sample=1000000;c.drain=lambda:None;c.write_marker=lambda *_:None;c.cache_source_snapshot=lambda *_:None
+  with patch.object(m,'read_file',return_value=json.dumps(c.last_source).encode()),patch.object(m,'atomic'),patch.object(m,'equity_args',return_value=['equity']),patch.object(m,'spawn',side_effect=OSError('injected failure')),patch.object(m,'stop_child',side_effect=AssertionError('financial children remain running')):
+   c.step(1000001,at)
+  self.assertEqual(c.source.pid,123);self.assertEqual(c.publisher.pid,124);self.assertEqual(c.equity_failures,1);self.assertIsNone(c.equity)
+ def test_stale_source_recovery_records_cause_after_actual_nonfinancial_child_settlement(self):
+  at=m.INCEPTION+100000;c=self.controller();child=m.spawn([sys.executable,'-c','import time;time.sleep(30)']);c.source=child;c.source_started=at-1000;c.source_status_unavailable_since=0;c.source_had_status=True;c.publisher=FakeProcess(124);c.resource={'critical':False,'newRiskPressure':False,'healthy':True,'publisherRestart':False};c.last_sample=100;c.write_marker=lambda *_:None;c.cache_source_snapshot=lambda *_:None
+  try:
+   with patch.object(m,'read_file',side_effect=OSError('missing disposable test status')),patch.object(m,'atomic'),patch.object(m,'spawn',side_effect=AssertionError('recovery delay must precede a new child')):
+    c.step(100,at)
+   self.assertIsNotNone(child.poll());self.assertIsNone(c.source);self.assertEqual(c.publisher.pid,124);self.assertEqual(len(c.restart_history),1)
+   reason=c.restart_history[0];self.assertEqual(reason['reasonCode'],'SUPERVISOR_SOURCE_STATUS_STALE');self.assertTrue(reason['statusStale']);self.assertFalse(reason['resourceCritical']);self.assertFalse(reason['sourceRestartRequired']);self.assertTrue(reason['physicalWriterSettled']);self.assertEqual(reason['restartNotBeforeAt'],at+2000)
+   events=[json.loads(raw)for raw in c.logs['supervisor'].raw];self.assertEqual([event['data']for event in events if event['kind']=='source-recovery-scheduled'],[reason])
+  finally:
+   m.stop_child(child,.1,uid=os.getuid())
 if __name__=='__main__':unittest.main()

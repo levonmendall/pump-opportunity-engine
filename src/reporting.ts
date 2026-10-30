@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import {validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
 import { EQUITY_GAP_MS, validateLifetimeEquityHistory, type LifetimeEquityHistory } from './lifetime-equity-contract.js';
 
@@ -9,7 +10,7 @@ export const MAX_SNAPSHOT_BYTES = 128 * 1024;
 // Coalesce into one verified end-of-minute reading to bound mobile chart data.
 const MAX_RECEIVED_EQUITY_MINUTES = 1440;
 const EQUITY_HISTORY_MS = 24 * 60 * 60 * 1000;
-export type ReceivedEquityPoint = {at: string; equityUsd: number};
+export type ReceivedEquityPoint = {at: string; equityUsd: number;segment?:number;kind?:'inception'|'observed'|'epoch-start'};
 export type ReceivedEquityHistory = {
   schemaVersion: 1;
   accountId: string | null;
@@ -17,14 +18,16 @@ export type ReceivedEquityHistory = {
   retention: 'receiver-memory-only' | 'ec2-durable-republished';
   downsampled?: boolean;
   inceptionAt?: string;
+  financialEpoch?:FinancialEpochReport;
   bucketMs: 60_000;
   windowLimited: boolean;
-  points: (ReceivedEquityPoint & {segment?: number; kind?: 'inception' | 'observed'})[];
+  points: (ReceivedEquityPoint & {segment?: number; kind?: 'inception' | 'observed' | 'epoch-start'})[];
 };
 
 export type ReportingIdentity = { accountId: string; inceptionAt: string; release: string; strategy: string };
 export type Snapshot = {
   intelligence?: OperatingIntelligence;
+  financialEpoch?:FinancialEpochReport;
   project: 'pump-opportunity-engine'; mode: 'PAPER'; liveTrading: false; schemaVersion: 1;
   account: { id: string; inceptionAt: string; initialUsd: 1000 };
   sequence: string; source: { release: string; strategy: string };
@@ -81,7 +84,8 @@ export function validateIdentity(identity: ReportingIdentity) {
 export function validateSnapshot(value: unknown, expected: ReportingIdentity, now = Date.now()): Snapshot {
   validateIdentity(expected);
   const hasIntelligence=!!value&&typeof value==='object'&&Object.hasOwn(value,'intelligence');
-  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics',...(hasIntelligence?['intelligence']:[])]);
+  const hasEpoch=!!value&&typeof value==='object'&&Object.hasOwn(value,'financialEpoch');
+  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics',...(hasIntelligence?['intelligence']:[]),...(hasEpoch?['financialEpoch']:[])]);
   oneOf(s.project, ['pump-opportunity-engine']); oneOf(s.mode, ['PAPER']); oneOf(s.liveTrading, [false]); oneOf(s.schemaVersion, [1]);
   const a = object(s.account, ['id','inceptionAt','initialUsd']);
   if (a.id !== expected.accountId || a.inceptionAt !== expected.inceptionAt || a.initialUsd !== 1000) throw new Error('wrong account/inception');
@@ -91,6 +95,7 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   const ts = object(s.times, ['generatedAt','marketAt','reconciledAt','usefulProgressAt']);
   const generated = time(ts.generatedAt);
   if (generated > now + 30_000 || generated < time(expected.inceptionAt)) throw new Error('invalid generation time');
+  if(hasEpoch)validateFinancialEpochReport(s.financialEpoch,ts.generatedAt as string);
   for (const key of ['marketAt','reconciledAt','usefulProgressAt']) nullable(ts[key], v => { if (time(v) > generated) throw new Error('source time newer than generation'); });
   const status = object(s.status, ['runtime','market','entries','reconciled','blocker']);
   oneOf(status.runtime, ['running','stopped','unavailable']); oneOf(status.market, ['observing','warming','unavailable']); oneOf(status.entries, ['enabled','paused','disabled']); bool(status.reconciled); nullable(status.blocker, v => text(v, 512));
@@ -233,6 +238,7 @@ export class SnapshotCache {
   private acceptedEquity: ReceivedEquityPoint[] = [];
   private equityWindowLimited = false;
   private sourceEquity: LifetimeEquityHistory | null = null;
+  private acceptedEpoch:FinancialEpochReport|null=null;
   constructor(readonly identity: ReportingIdentity | null = null) { if (identity !== null) validateIdentity(identity); }
   accept(value: unknown, now = Date.now()): 'accepted' | 'duplicate' {
     if (this.identity === null) throw new Error('source-not-configured');
@@ -246,14 +252,28 @@ export class SnapshotCache {
       }
       if (Date.parse(snapshot.times.generatedAt) < Date.parse(this.current.snapshot.times.generatedAt)) throw new Error('generation time regression');
     }
+    const historicalEpoch=this.sourceEquity?.financialEpoch;
+    if(historicalEpoch&&Date.parse(snapshot.times.generatedAt)>=Date.parse(historicalEpoch.activatedAt)&&JSON.stringify(snapshot.financialEpoch)!==JSON.stringify(historicalEpoch))throw Error('financial epoch source regression or conflict');
+    if(snapshot.financialEpoch&&this.sourceEquity&&!this.sourceEquity.financialEpoch&&Date.parse(this.sourceEquity.points.at(-1)!.at)>=Date.parse(snapshot.financialEpoch.activatedAt))throw Error('financial epoch historical chronology conflict');
+    if(snapshot.financialEpoch?.activatedAt===snapshot.times.generatedAt&&snapshot.balances.equityUsd!==null&&snapshot.balances.equityUsd!==snapshot.financialEpoch.initialUsd)throw Error('epoch activation equity conflict');
+    if(this.acceptedEpoch&&(!snapshot.financialEpoch||JSON.stringify(snapshot.financialEpoch)!==JSON.stringify(this.acceptedEpoch)))throw Error('financial epoch regression or conflict');
+    if(snapshot.financialEpoch&&!this.acceptedEpoch){
+      const epoch=snapshot.financialEpoch;
+      const prior=this.acceptedEquity.at(-1);
+      if(prior&&Date.parse(prior.at)>=Date.parse(epoch.activatedAt))throw Error('financial epoch chronology conflict');
+      this.acceptedEquity.push({at:epoch.activatedAt,equityUsd:epoch.initialUsd,kind:'epoch-start',segment:(prior?.segment??0)+1});
+      this.acceptedEpoch=structuredClone(epoch);
+    }
     // Replace one complete immutable value; never mutate fields of the visible read model.
     this.current = { snapshot: JSON.parse(JSON.stringify(snapshot)) as Snapshot, fingerprint, receivedAt: new Date(now).toISOString() };
     // Append only authenticated, validated source equity. The same exact USD
     // value drives the Portfolio Overview equity card; no P&L-derived proxy.
     if (snapshot.balances.equityUsd !== null) {
-      const point: ReceivedEquityPoint = {at: snapshot.times.generatedAt, equityUsd: snapshot.balances.equityUsd};
+      const point: ReceivedEquityPoint = {at: snapshot.times.generatedAt, equityUsd: snapshot.balances.equityUsd,...(this.acceptedEpoch?{segment:(this.acceptedEquity.at(-1)?.segment??1)+(this.acceptedEquity.length&&Date.parse(snapshot.times.generatedAt)-Date.parse(this.acceptedEquity.at(-1)!.at)>EQUITY_GAP_MS?1:0),kind:'observed' as const}:{})};
       const previous = this.acceptedEquity.at(-1);
-      if (previous && Math.floor(Date.parse(previous.at) / 60_000) === Math.floor(Date.parse(point.at) / 60_000)) {
+      if(previous?.kind==='epoch-start'&&previous.at===point.at){
+        // Preserve the explicit contribution marker at the same verified instant.
+      }else if (previous && previous.kind!=='epoch-start' && Math.floor(Date.parse(previous.at) / 60_000) === Math.floor(Date.parse(point.at) / 60_000)) {
         this.acceptedEquity[this.acceptedEquity.length - 1] = point;
       } else {
         this.acceptedEquity.push(point);
@@ -274,6 +294,10 @@ export class SnapshotCache {
     if (!this.identity || this.identity.accountId !== ORIGINAL_POE_ACCOUNT ||
         this.identity.inceptionAt !== ORIGINAL_POE_INCEPTION) throw Error('EQUITY_ORIGINAL_SOURCE_NOT_CONFIGURED');
     const history = validateLifetimeEquityHistory(input, now);
+    if(this.sourceEquity?.financialEpoch&&JSON.stringify(history.financialEpoch)!==JSON.stringify(this.sourceEquity.financialEpoch))throw Error('EQUITY_EPOCH_REGRESSION_OR_CONFLICT');
+    if(this.current?.snapshot.financialEpoch&&Date.parse(history.points.at(-1)!.at)>=Date.parse(this.current.snapshot.financialEpoch.activatedAt)&&!history.financialEpoch)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
+    if(history.financialEpoch&&this.current&&!this.current.snapshot.financialEpoch&&Date.parse(this.current.snapshot.times.generatedAt)>=Date.parse(history.financialEpoch.activatedAt))throw Error('EQUITY_EPOCH_SOURCE_CONFLICT');
+    if(history.financialEpoch&&this.current?.snapshot.financialEpoch&&JSON.stringify(history.financialEpoch)!==JSON.stringify(this.current.snapshot.financialEpoch))throw Error('EQUITY_EPOCH_SOURCE_CONFLICT');
     if (this.sourceEquity) {
       const prior = BigInt(this.sourceEquity.lastSequence), next = BigInt(history.lastSequence);
       if (next < prior) throw Error('EQUITY_HISTORY_REGRESSION');
@@ -297,8 +321,13 @@ export class SnapshotCache {
   equityHistory(): ReceivedEquityHistory {
     if (this.sourceEquity) {
       const history = this.sourceEquity, points = structuredClone(history.points);
-      const latest = points.at(-1)!;
+      let latest = points.at(-1)!;
       const current = this.current?.snapshot;
+      const epoch=current?.financialEpoch??history.financialEpoch;
+      if(epoch&&Date.parse(latest.at)<Date.parse(epoch.activatedAt)){
+        latest={at:epoch.activatedAt,equityUsd:epoch.initialUsd,segment:latest.segment+1,kind:'epoch-start'};
+        points.push(latest);
+      }
       const at = current ? Date.parse(current.times.generatedAt) : NaN;
       const market = current?.times.marketAt ? Date.parse(current.times.marketAt) : NaN;
       const reconciled = current?.times.reconciledAt ? Date.parse(current.times.reconciledAt) : NaN;
@@ -315,12 +344,12 @@ export class SnapshotCache {
       }
       return {schemaVersion: 1, accountId: history.accountId,
         source: 'accepted-authoritative-portfolio-equity', retention: 'ec2-durable-republished',
-        inceptionAt: history.inceptionAt, downsampled: history.downsampled,
+        ...(epoch?{financialEpoch:structuredClone(epoch)}:{}),inceptionAt: history.inceptionAt, downsampled: history.downsampled,
         bucketMs: 60_000, windowLimited: false, points};
     }
     return {schemaVersion: 1, accountId: this.identity?.accountId ?? null,
       source: 'accepted-authoritative-portfolio-equity', retention: 'receiver-memory-only',
-      bucketMs: 60_000, windowLimited: this.equityWindowLimited, points: structuredClone(this.acceptedEquity)};
+      ...(this.acceptedEpoch?{financialEpoch:structuredClone(this.acceptedEpoch)}:{}),bucketMs: 60_000, windowLimited: this.equityWindowLimited, points: structuredClone(this.acceptedEquity)};
   }
   read() { return this.current ? structuredClone(this.current) : null; }
   status(now = Date.now()) {

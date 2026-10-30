@@ -6,6 +6,9 @@ import type {NativeNotification} from './pilot-native-flow.js';
 import type {PilotRpcCallOptions} from './pilot-rpc.js';
 
 export type NativeAuditHistoryRow={signature:string;slot:number;success:boolean;blockTime:number|null;confirmationStatus:'confirmed'|'finalized'};
+/** Ephemeral, pool-bound contiguous finalized suffix from a verified audit.
+ * Never restored from packets/checkpoints or accepted without a fresh overlap. */
+export type NativeAuditHistoryCache={pool:string;validatedAt:number;rows:NativeAuditHistoryRow[]};
 type Fence={signature:string;slot:number;receivedAt:number;availableAt:number};
 export type NativeAuditContextFences={lower:{slot:number;availableAt:number;bankClockAt?:number};upper:{slot:number;availableAt:number;bankClockAt:number}};
 export type NativeAuditNotificationGeneration={mint:string;pool:string;openedAt:number;connectionId:number;subscriptionId:number};
@@ -40,6 +43,8 @@ export type NativeFlowAuditOptions={
  /** Already decoded/validated coherent confirmed SDK+Clock contexts. A slot
   * number alone is insufficient; upper bank Clock must reach the target end. */
  contextFences?:NativeAuditContextFences;
+ reusableHistory?:NativeAuditHistoryCache;
+ onVerifiedHistory?:(cache:NativeAuditHistoryCache)=>void;
 };
 const limitations=Object.freeze([
  'The denominator is bounded confirmed pool-address history between strict slot fences, not a whole-market census or proof that every row is a swap.',
@@ -52,7 +57,8 @@ const limitations=Object.freeze([
  'Injected scheduler owns physical request counts, response bytes, timeouts, cooldowns and cancellation settlement; requestAttempts are callback attempts, not additional provider allowances.',
  'Opt-in executed-transactions completeness may retain missing independently confirmed failed rows as diagnostics; this is not full notification completeness and never excuses missing successful or unknown-status activity.',
  'Each page records its actual requested limit. Adaptive sizing does not skip history rows, extend deadlines, raise page count or establish provider throughput.',
- 'An opt-in local post-snapshot tail may corroborate interior history after actual arrival, without changing original target signatures, slot fences or feature availability. Missing successful activity remains blocking.'
+ 'An opt-in local post-snapshot tail may corroborate interior history after actual arrival, without changing original target signatures, slot fences or feature availability. Missing successful activity remains blocking.',
+ 'Finalized history may reuse only a prior verified contiguous suffix reached by a fresh exact finalized overlap. historyRows includes those denominator rows; pages, requestAttempts and historyPayloadBytes describe fresh calls only. Reused rows are recorded separately for replay.'
 ]);
 const int=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0;
 function need(v:unknown,reason:string):asserts v{if(!v)throw Error('NATIVE_AUDIT_'+reason);}
@@ -73,6 +79,11 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
   result.postSnapshotTail.generation=generation;
   need(int(target.startAt)&&int(target.endAt)&&target.endAt-target.startAt===60000&&target.startAt%10000===0&&target.endAt%10000===0&&target.endAt<=startedAt,'INVALID_TARGET');
   need(Array.isArray(options.notifications)&&options.notifications.length<=8192,'NOTIFICATION_BOUND');
+  const cache=options.reusableHistory?structuredClone(options.reusableHistory):null;
+  if(cache){
+   need(cache.pool===options.pool&&int(cache.validatedAt)&&cache.validatedAt<=startedAt&&Array.isArray(cache.rows)&&cache.rows.length<=6000,'HISTORY_CACHE_BINDING');
+   const signatures=new Set<string>();let previous=Infinity;for(const r of cache.rows){need(key(r.signature,64)&&!signatures.has(r.signature)&&int(r.slot)&&r.slot<=previous&&typeof r.success==='boolean'&&(r.blockTime===null||int(r.blockTime))&&r.confirmationStatus==='finalized','HISTORY_CACHE_SCHEMA');signatures.add(r.signature);previous=r.slot;}
+  }
   const captured=new Map<string,NativeNotification>(),all:NativeNotification[]=[];
   for(const raw of options.notifications){
    const n={...raw};need(key(n.signature,64)&&int(n.slot)&&int(n.receivedAt)&&int(n.availableAt)&&n.receivedAt<=n.availableAt&&n.availableAt<=startedAt&&typeof n.success==='boolean'&&typeof n.duplicate==='boolean'&&typeof n.correction==='boolean'&&/^[a-f0-9]{64}$/.test(n.rawHash)&&['failed-transaction','program-event','nontrade','unusable'].includes(n.classification),'NOTIFICATION_SCHEMA');
@@ -108,7 +119,22 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    need(Array.isArray(payload)&&payload.length<=requestedLimit,'HISTORY_PAGE_SCHEMA');const pageBytes=Buffer.byteLength(JSON.stringify(payload));result.historyPayloadBytes+=pageBytes;need(pageBytes<=(requestedLimit===1000?1024*1024:256*1024),'HISTORY_PAGE_PAYLOAD_LIMIT');
    const rows:NativeAuditHistoryRow[]=[];for(const r of payload){need(r&&key(r.signature,64)&&r.signature!==result.anchor?.signature&&!seen.has(r.signature)&&int(r.slot)&&r.slot<=previousSlot&&Object.hasOwn(r,'err')&&(r.err===null||typeof r.err==='object'&&!Array.isArray(r.err)&&Object.keys(r.err).length>0)&&(r.blockTime===null||int(r.blockTime))&&['confirmed','finalized'].includes(r.confirmationStatus),'HISTORY_CONTEXT');seen.add(r.signature);previousSlot=r.slot;rows.push({signature:r.signature,slot:r.slot,success:r.err===null,blockTime:r.blockTime,confirmationStatus:r.confirmationStatus});}
    history.push(...rows);result.historyRows=history.length;options.record?.('native-flow-history-page',{pool:options.pool,target,anchor:result.anchor,page:page+1,requestedLimit,requestedBefore:before,receivedAt,rows});const validatedAt=clock();result.pages.push({page:page+1,requestedLimit,rows:rows.length,newestSlot:rows[0]?.slot??null,oldestSlot:rows.at(-1)?.slot??null,receivedAt,validatedAt});
-   if(rows.length&&rows.at(-1)!.slot<=lowerSlot){result.historyRangeCovered=true;break;}if(rows.length<requestedLimit)break;before=rows.at(-1)!.signature;if(adaptivePageSizing&&pageLimit===1000)requestedLimit=1000;
+   // A fresh provider page must independently reach an exact finalized
+   // overlap. Only its previously audited contiguous suffix is reusable;
+   // confirmed history, packet-derived rows and unbridged cache gaps never are.
+   let reused=0;
+   if(cache&&rows.length===requestedLimit&&rows.at(-1)!.slot>lowerSlot){
+    const cachedIndex=new Map(cache.rows.map((r,i)=>[r.signature,i]));
+    const overlap=rows.findIndex(r=>r.confirmationStatus==='finalized'&&cachedIndex.has(r.signature));
+    if(overlap>=0){
+     const index=cachedIndex.get(rows[overlap]!.signature)!;
+     for(let i=overlap;i<rows.length&&index+i-overlap<cache.rows.length;i++){const fresh=rows[i]!,old=cache.rows[index+i-overlap]!;need(fresh.signature===old.signature&&fresh.slot===old.slot&&fresh.success===old.success&&fresh.confirmationStatus==='finalized','FINALIZED_HISTORY_CONFLICT');}
+     const suffix=cache.rows.slice(index+rows.length-overlap);
+     for(const row of suffix){need(!seen.has(row.signature)&&row.slot<=previousSlot&&history.length<6000,'HISTORY_CACHE_CONTIGUITY');seen.add(row.signature);previousSlot=row.slot;history.push({...row});reused++;if(row.slot<=lowerSlot)break;}
+     if(reused){result.historyRows=history.length;options.record?.('native-flow-finalized-history-reused',{pool:options.pool,target,at:clock(),validatedAt:cache.validatedAt,freshOverlapSignature:rows[overlap]!.signature,freshOverlapSlot:rows[overlap]!.slot,reusedRows:reused,rows:structuredClone(history.slice(-reused)),physicalRequestStarted:false,freshProviderOverlapRequired:true,originalDeadlineUnchanged:true});}
+    }
+   }
+   if(history.length&&history.at(-1)!.slot<=lowerSlot){result.historyRangeCovered=true;break;}if(rows.length<requestedLimit&&!reused)break;before=history.at(-1)!.signature;if(adaptivePageSizing&&pageLimit===1000)requestedLimit=1000;
   }
   if(!result.historyRangeCovered)return finish('unavailable',pageLimit===1000&&result.pages.at(-1)?.rows===result.pages.at(-1)?.requestedLimit?'NATIVE_AUDIT_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN':'NATIVE_AUDIT_HISTORY_RANGE_NOT_COVERED');
   const interior=history.filter(r=>r.slot>lowerSlot&&r.slot<upperSlot);result.interiorRows=interior.length;result.comparedSignatures=interior.map(r=>r.signature);result.boundaryExcludedSignatures=[...new Set([...result.boundaryExcludedSignatures,...history.filter(r=>r.slot===lowerSlot||r.slot===upperSlot).map(r=>r.signature)])];
@@ -135,7 +161,10 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
   if(result.unconfirmedCapturedSignatures.length)return finish('unavailable','NATIVE_AUDIT_CAPTURED_TARGET_NOT_IN_HISTORY');
   if(result.statusDisagreements.length)return finish('unusable','NATIVE_AUDIT_CONFIRMED_STATUS_DISAGREEMENT');
   const notificationsComplete=result.missingNotifications.length===0;
-  return finish('verified',notificationsComplete?'NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED':'NATIVE_AUDIT_EXECUTED_FLOW_VERIFIED_WITH_MISSING_FAILED_PACKETS',{notifications:notificationsComplete,executed:true});
+  const verified=finish('verified',notificationsComplete?'NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED':'NATIVE_AUDIT_EXECUTED_FLOW_VERIFIED_WITH_MISSING_FAILED_PACKETS',{notifications:notificationsComplete,executed:true});
+  const lastNonfinal=history.findLastIndex(r=>r.confirmationStatus!=='finalized'),finalizedSuffix=history.slice(lastNonfinal+1);
+  if(finalizedSuffix.length)options.onVerifiedHistory?.({pool:options.pool,validatedAt:verified.availableAt,rows:structuredClone(finalizedSuffix)});
+  return verified;
  }catch(e){result.status='unavailable';result.complete=false;result.notificationCompletenessVerified=false;result.executedFlowCompletenessVerified=false;result.reason=safe(e);const retry=(e as {retryAt?:unknown})?.retryAt;result.retryAt=int(retry)?retry:null;const at=now();result.availableAt=int(at)&&at>=startedAt?at:Math.max(startedAt,lastAt);return result;}
  finally{open=false;}
 }

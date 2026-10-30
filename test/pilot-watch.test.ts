@@ -453,3 +453,12 @@ test('technical metadata validates checkpoints without weakening old checkpoint 
  for(const patch of patches){const invalid=structuredClone(saved);Object.assign(invalid.rows[0]!.technicalReevaluation!,patch);assert.throws(()=>new PilotWatch({...f.options,restored:invalid}),/CHECKPOINT_TECHNICAL_REEVALUATION/,JSON.stringify(patch));}
  const extra=structuredClone(saved);(extra.rows[0]!.technicalReevaluation as any).financialPermission=true;assert.throws(()=>new PilotWatch({...f.options,restored:extra}),/CHECKPOINT_TECHNICAL_REEVALUATION/);assert.equal(TECHNICAL_REEVALUATION_POLICY.maximumAttempts,3);
 });
+
+test('active adaptive coverage includes early and selected older cohorts without altering allocation or baseline coverage',()=>{
+ const f=fixture();f.at(40000000);f.seed('early',f.now()-70000);f.seed('ordinary',f.now()-600000);f.seed('older',f.now()-3*3600000);f.registry.selectOlderResearch('mint-older',{observedAt:f.now(),evidence:'current observed pool activity'});
+ f.registry.transition('mint-early','DEEP_OBSERVATION','fresh complete audited early flow');f.registry.noteWindow('mint-early',f.now());f.registry.transition('mint-early','DEFERRED','fair revisit',f.now());f.at(f.now()+1001);
+ const checkpoint=f.registry.export(),baseline=f.registry.snapshot(),active=f.registry.snapshot(f.now(),'adaptive-momentum-v2');
+ assert.equal(baseline.summary.eligibleKnown,1);assert.equal(baseline.summary.queued,1);assert.equal(baseline.summary.coverage.atLeastOneValidWindow,0);
+ assert.equal(active.summary.eligibleKnown,3);assert.equal(active.summary.queued,3);assert.equal(active.summary.coverage.atLeastOneValidWindow,1);assert.match(active.summary.coverage.denominator,/AdaptiveMomentumV2/);assert.equal(active.summary.ageCohorts.entryEligible,1);assert.equal(active.summary.ageCohorts.preEntry,1);assert.equal(active.summary.ageCohorts.olderSelected,1);
+ assert.equal(active.summary.waitMs.maximum,1001);assert.equal(active.summary.deepActive,0);assert.deepEqual(f.registry.export(),checkpoint,'reporting cohort selection changes neither allocation nor financial ownership');
+});

@@ -23,7 +23,8 @@ CONTRACT='confirmed-program-ordinary-flow-paper-v1'
 ADAPTIVE_STRATEGY='adaptive-momentum-v2-paper-v1'
 MIB=1024*1024
 POLICY={'version':'poe-authoritative-persistent-supervisor-resource-v2','sampleSeconds':15,'statusStaleSeconds':90,'startupStatusSeconds':30,'minimumStartRamMiB':768,'minimumStartDiskMiB':512,'criticalRamMiB':256,'criticalDiskMiB':128,'candidateSourceRssMiB':1536,'resumeSourceRssMiB':1408,'sourceRssMiB':2048,'publisherRssMiB':256,'parentRssMiB':128,'rollingCpuSeconds':60,'cpuUtilizationAdmissionEnforced':False,'sourceCpuCloseCores':None,'sourceCpuResumeCores':None,'publisherCpuRestartCores':None,'resumeHealthySamples':3,'maximumRecoveryBackoffSeconds':60,'gracefulSourceStopSeconds':30,'sourceHeapMiB':1024,'publisherHeapMiB':128,'diagnosticFileBytes':MIB,'diagnosticFiles':4,'resourceFileBytes':2*MIB,'resourceFiles':4}
-RELEASE_FILES={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB}
+RELEASE_FILES={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB,'lifetime-equity-publisher.mjs':8*MIB,'paper-epoch.mjs':8*MIB}
+EQUITY=ROOT/'lifetime-equity'
 class Guard(RuntimeError):pass
 def need(v,code):
  if not v:raise Guard(code)
@@ -82,7 +83,10 @@ def publisher_args(node,release,manifest,once=False):
  secret=credential_path();args=[node,'--permission','--allow-fs-read='+str(release/'snapshot-publisher.mjs'),'--allow-fs-read='+str(ACCOUNT/'snapshot.json'),'--allow-fs-read='+str(secret),'--max-old-space-size='+str(POLICY['publisherHeapMiB']),'--disable-proto=throw',str(release/'snapshot-publisher.mjs'),'--file',str(ACCOUNT/'snapshot.json'),'--account-id',ACCOUNT_ID,'--inception-at',INCEPTION_ISO,'--release',manifest['source']['commit'],'--strategy',manifest['strategy']]
  args.append('--once'if once else'--watch')
  return args
-def spawn(args,publisher=False):
+def equity_args(node,release):
+ secret=credential_path()
+ return ['/usr/bin/flock','--nonblock','--conflict-exit-code','75','--no-fork',str(EQUITY/'companion.lock'),node,'--permission','--allow-addons','--allow-fs-read='+str(release),'--allow-fs-read='+str(EQUITY),'--allow-fs-write='+str(EQUITY),'--allow-fs-read='+str(ACCOUNT/'snapshot.json'),'--allow-fs-read='+str(secret),'--max-old-space-size=128','--disable-proto=throw',str(release/'lifetime-equity-publisher.mjs')]
+def spawn(args,publisher=False,equity=False):
  parent=os.getpid()
  def prepare():
   if ctypes.CDLL(None,use_errno=True).prctl(1,signal.SIGKILL)!=0 or os.getppid()!=parent:os._exit(1)
@@ -90,8 +94,13 @@ def spawn(args,publisher=False):
   # while CPU utilization is observed, not a reason to stop healthy work.
   resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_NOFILE,(128,128))
  env={'PATH':'/usr/bin:/bin','LANG':'C','TZ':'UTC'}
- if publisher:
+ if publisher or equity:
   credential=credential_path();env['CREDENTIALS_DIRECTORY']=str(credential.parent);env['POE_PUBLISH_SECRET_FILE']=str(credential)
+ if equity:
+  env.update(POE_EQUITY_SOURCE_FILE=str(ACCOUNT/'snapshot.json'),POE_EQUITY_STORE_FILE=str(EQUITY/'equity.sqlite'),POE_EQUITY_CREDENTIAL_FILE=str(credential_path()))
+  receipt=EQUITY/'bootstrap.json'
+  if receipt.exists():
+   value=json.loads(read_file(receipt,4096));need(type(value)is dict and set(value)=={'sha256'}and hashed(value['sha256']),'EXACT_EQUITY_BOOTSTRAP_RECEIPT_REQUIRED');capture=EQUITY/('accepted-original-equity-'+value['sha256']+'.json');body=read_file(capture,16*MIB);need(sha(body)==value['sha256'],'EXACT_EQUITY_BOOTSTRAP_CAPTURE_REQUIRED');env.update(POE_EQUITY_BOOTSTRAP_FILE=str(capture),POE_EQUITY_BOOTSTRAP_SHA256=value['sha256'])
  p=subprocess.Popen(args,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env,start_new_session=True,preexec_fn=prepare,bufsize=0);os.set_blocking(p.stdout.fileno(),False);return p
 
 def group_members(group,uid=UID):
@@ -212,6 +221,7 @@ def publish_public_ack(manifest,source,ack,raw_body,accepted_count,now):
 class Supervisor:
  def __init__(self,manifest,helpers,logs):
   self.manifest,self.helpers,self.logs=manifest,helpers,logs;self.selector=selectors.DefaultSelector();self.source=None;self.publisher=None;self.source_started=0;self.started=time.monotonic();self.last_source=None;self.last_ack=None;self.stopping=False;self.source_failures=0;self.publisher_failures=0;self.next_source=0;self.next_publisher=0;self.last_sample=-float('inf');self.healthy_samples=0;self.last_marker=0;self.resource={'critical':False,'newRiskPressure':False,'healthy':False,'publisherRestart':False};self.cpu={'source':RollingCpu(POLICY['rollingCpuSeconds']),'publisher':RollingCpu(POLICY['rollingCpuSeconds'])};self.source_status_unavailable_since=None;self.source_group_unsettled=False;self.buffers={'source':b'','publisher':b''};self.restart_history=collections.deque(maxlen=32);self.bytes={'source':0,'publisher':0};self.output_errors=0;self.last_health=0;self.source_had_status=False;self.snapshot_cache=collections.OrderedDict();self.pending_acks=collections.deque(maxlen=4);self.accepted_source_count=0;self.last_accepted_fingerprint=None;self.snapshot_at=None;self.source_began_mono=0;self.publisher_began_mono=0
+  self.equity=None;self.equity_enabled=False;self.equity_failures=0;self.next_equity=0;self.buffers['equity']=b'';self.bytes['equity']=0
  def record(self,kind,data):
   try:self.logs['supervisor'].write((json.dumps({'at':int(time.time()*1000),'kind':kind,'data':data},separators=(',',':'))+'\n').encode())
   except OSError:self.output_errors+=1
@@ -227,7 +237,7 @@ class Supervisor:
     key.fileobj.close()
     continue
    self.bytes[name]+=len(raw)
-   try:self.logs[name].write(raw)
+   try:self.logs.get(name,self.logs['supervisor']).write(raw)
    except OSError:self.output_errors+=1
    if name=='publisher':
     buf=self.buffers[name]+raw
@@ -287,9 +297,13 @@ class Supervisor:
     if self.source_stop('source exited; retained-obligation restart'):
      self.source_failures+=1;self.next_source=mono+recovery_delay(self.source_failures);self.restart_history.append({'at':now,'reason':'source-exit','restartNotBeforeAt':now+int(recovery_delay(self.source_failures)*1000)});self.last_source=None;self.healthy_samples=0
    elif self.resource['critical']or self.last_source is not None and(self.last_source.get('sourceRecovery')or{}).get('restartRequired')is True or self.source_status_unavailable_since is not None and mono-self.source_status_unavailable_since>(POLICY['statusStaleSeconds']if self.source_had_status else POLICY['startupStatusSeconds']):
-    if self.source_stop('critical resource or stale runtime; durable recovery required'):self.source_failures+=1;self.next_source=mono+recovery_delay(self.source_failures);self.last_source=None;self.healthy_samples=0
+    cause={'at':now,'reasonCode':'SUPERVISOR_RESOURCE_CRITICAL'if self.resource['critical']else'SUPERVISOR_SOURCE_RESTART_REQUIRED'if self.last_source is not None and(self.last_source.get('sourceRecovery')or{}).get('restartRequired')is True else'SUPERVISOR_SOURCE_STATUS_STALE','resourceCritical':self.resource['critical'],'sourceRestartRequired':self.last_source is not None and(self.last_source.get('sourceRecovery')or{}).get('restartRequired')is True,'statusStale':self.source_status_unavailable_since is not None and mono-self.source_status_unavailable_since>(POLICY['statusStaleSeconds']if self.source_had_status else POLICY['startupStatusSeconds']),'sourceHadStatus':self.source_had_status,'pid':self.source.pid}
+    if self.source_stop('critical resource or stale runtime; durable recovery required'):
+     self.source_failures+=1;delay=recovery_delay(self.source_failures);self.next_source=mono+delay;cause.update(restartNotBeforeAt=now+int(delay*1000),physicalWriterSettled=True,monitoringInterruption=True);self.restart_history.append(cause);self.record('source-recovery-scheduled',cause);self.last_source=None;self.healthy_samples=0
   if self.publisher and(self.publisher.poll()is not None or self.resource['publisherRestart']):
    if stop_child(self.publisher,5,drain=self.drain):self.publisher=None;self.publisher_failures+=1;self.next_publisher=mono+recovery_delay(self.publisher_failures);self.last_ack=None;self.buffers['publisher']=b''
+  if self.equity and self.equity.poll()is not None:
+   if stop_child(self.equity,5,drain=self.drain):self.equity=None;self.equity_failures+=1;self.next_equity=mono+recovery_delay(self.equity_failures);self.buffers['equity']=b'';self.record('equity-companion-retry',{'failures':self.equity_failures,'financialSourceRestarted':False})
   if self.source and self.last_source is not None and mono-self.source_began_mono>=300:self.source_failures=0
   if self.publisher and self.last_ack is not None and mono-self.publisher_began_mono>=300:self.publisher_failures=0
   if self.stopping:return
@@ -297,8 +311,12 @@ class Supervisor:
    self.write_marker(now);self.source_started=now;self.source_began_mono=mono;self.source=spawn(source_args(str(NODE),RELEASES/self.manifest['source']['commit'],self.manifest));self.register('source',self.source);self.source_status_unavailable_since=mono;self.source_had_status=False;self.last_source=None;self.last_ack=None;self.snapshot_cache.clear();self.pending_acks.clear();self.snapshot_at=None;self.record('source-started',{'pid':self.source.pid,'source':self.manifest['source'],'previousFinancialWriterSettled':True,'accountReset':False,'financialRecoveryOwnedByRuntime':True})
   if not self.publisher and mono>=self.next_publisher:
    self.publisher_began_mono=mono;self.publisher=spawn(publisher_args(str(NODE),RELEASES/self.manifest['source']['commit'],self.manifest),publisher=True);self.register('publisher',self.publisher);self.record('publisher-started',{'pid':self.publisher.pid,'financialSourceRestarted':False})
+  if self.equity_enabled and not self.equity and mono>=self.next_equity:
+   try:self.equity=spawn(equity_args(str(NODE),RELEASES/self.manifest['source']['commit']),equity=True);self.register('equity',self.equity);self.record('equity-companion-started',{'pid':self.equity.pid,'financialSourceRestarted':False,'financialDatabaseOpened':False})
+   except(OSError,ValueError,Guard):self.equity_failures+=1;self.next_equity=mono+recovery_delay(self.equity_failures);self.record('equity-companion-unavailable',{'financialManagementContinues':True,'failures':self.equity_failures})
   if now-self.last_marker>=15000:self.write_marker(now)
   health={'schemaVersion':1,'kind':'poe-persistent-paper-supervisor-health','generatedAt':now,'accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'source':self.manifest['source'],'sourcePid':self.source.pid if self.source else None,'publisherPid':self.publisher.pid if self.publisher else None,'sourceRunId':self.last_source.get('runId')if self.last_source else None,'lastSourceAt':self.last_source.get('generatedAt')if self.last_source else None,'lastAcceptedSourceAt':self.last_ack.get('sourceAtMs')if self.last_ack else None,'resource':self.resource,'sourceGroupUnsettled':self.source_group_unsettled,'recentRestarts':list(self.restart_history),'diagnostics':{k:v.status()for k,v in self.logs.items()},'outputErrors':self.output_errors,'continuousCoverageClaimed':False,'financialDatabaseRead':False,'lifetimeStopBudgets':None,'matchedSourceAcknowledgements':self.accepted_source_count}
+  health['equityCompanion']={'enabled':self.equity_enabled,'pid':self.equity.pid if self.equity else None,'restartFailures':self.equity_failures,'financialDatabaseOpened':False,'deliveryFreshnessVerified':False}
   if now-self.last_health>=5000:
    try:atomic(SERVICE/'health.json',health);self.last_health=now
    except(OSError,Guard):self.output_errors+=1
@@ -306,7 +324,7 @@ class Supervisor:
   try:
    while not self.stopping:self.step();time.sleep(.5)
   finally:
-   self.write_marker(int(time.time()*1000));settled=self.source_stop('service stop requested; financial checkpoint and honest interruption');stop_child(self.publisher,5,drain=self.drain);self.publisher=None;self.drain()
+   self.write_marker(int(time.time()*1000));settled=self.source_stop('service stop requested; financial checkpoint and honest interruption');stop_child(self.publisher,5,drain=self.drain);self.publisher=None;stop_child(self.equity,5,drain=self.drain);self.equity=None;self.drain()
    if settled:
     try:
      p=spawn(publisher_args(str(NODE),RELEASES/self.manifest['source']['commit'],self.manifest,once=True),publisher=True);self.publisher=p;self.register('publisher',p);until=time.monotonic()+7
@@ -403,7 +421,7 @@ def main():
  helpers=types.SimpleNamespace(resource_process_views=resource_process_views,available_memory=available_memory,self_rss=self_rss)
  logsdir=SERVICE/'diagnostics'
  if not logsdir.exists():logsdir.mkdir(mode=0o700)
- private_dir(logsdir);logs={name:RotatingDiagnostic(logsdir,name,POLICY['resourceFileBytes']if name=='supervisor'else POLICY['diagnosticFileBytes'],POLICY['resourceFiles']if name=='supervisor'else POLICY['diagnosticFiles'])for name in['source','publisher','supervisor']};controller=Supervisor(manifest,helpers,logs)
+ private_dir(EQUITY);private_dir(logsdir);logs={name:RotatingDiagnostic(logsdir,name,POLICY['resourceFileBytes']if name=='supervisor'else POLICY['diagnosticFileBytes'],POLICY['resourceFiles']if name=='supervisor'else POLICY['diagnosticFiles'])for name in['source','publisher','equity','supervisor']};controller=Supervisor(manifest,helpers,logs);controller.equity_enabled=True
  def stop(_signal,_frame):controller.stopping=True
  signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
  atomic(SERVICE/'startup.json',{'at':int(time.time()*1000),'source':manifest['source'],'nodeVersion':version,'host':host,'localMetadataRequests':2,'accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'financialDatabaseRead':False,'providerRequests':0,'lifetimeStopBudgets':None})

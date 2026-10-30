@@ -42,6 +42,16 @@ test('a candidate primary timeout does not forbid a separately owned complete ho
  }finally{await f.close();}
 });
 
+test('essential exact165byte exit rent preparation has protected admission without granting arbitrary reads',async()=>{
+ const f=fixture();try{
+  f.plan('timeout');await assert.rejects(f.rpc.call('getMultipleAccounts'),/PHYSICAL_TIMEOUT/);await turn();await turn();
+  await assert.rejects(f.rpc.call('getMinimumBalanceForRentExemption',[165,{commitment:'confirmed'}]),/COOLDOWN/);
+  await f.rpc.callProtection('getMinimumBalanceForRentExemption',[165,{commitment:'confirmed'}]);assert.equal(f.calls,2);
+  assert.equal(f.rpc.usage().protectionRecovery.rolling60SecondStarts,1);
+  for(const params of [[166,{commitment:'confirmed'}],[165,{commitment:'processed'}],[165]])await assert.rejects(f.rpc.callProtection('getMinimumBalanceForRentExemption',params),/INVALID_PROTECTION_READ/);
+ }finally{await f.close();}
+});
+
 for(const status of [429,502,503,504])test(`actual HTTP${status} and Retry-After restrict owned reads, without any automatic extra request`,async()=>{
  const f=fixture();try{f.plan({status,retryAfter:'10'});await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),new RegExp(String(status)));assert.equal(f.calls,1);assert.ok(f.rpc.protectionProviderRestrictionUntil()>=f.now()+15000);await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),/COOLDOWN/);assert.equal(f.calls,1);}
  finally{await f.close();}

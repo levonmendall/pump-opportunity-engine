@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
 import { chmodSync, constants, closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, isAbsolute, resolve } from 'node:path';
+import {validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import { ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from './operating-intelligence.js';
 import { EQUITY_GAP_MS, LIFETIME_EQUITY_SOURCE, MAX_LIFETIME_EQUITY_POINTS,
   validateLifetimeEquityHistory, type LifetimeEquityHistory, type LifetimeEquityPoint } from './lifetime-equity-contract.js';
@@ -66,7 +67,7 @@ function compactPlot(db: Database.Database) {
   let remove = -1, score = Infinity;
   for (let i = 1; i < rows.length - 1; i++) {
     const prev = rows[i - 1]!, cur = rows[i]!, next = rows[i + 1]!;
-    if (cur.kind === 'inception' || i === minIndex || i === maxIndex) continue;
+    if (cur.kind !== 'observed' || i === minIndex || i === maxIndex) continue;
     // Segment changes are actual missing-data breaks, never interpolatable.
     const sameSegment = prev.segment === cur.segment && cur.segment === next.segment;
     if (!sameSegment) continue;
@@ -80,7 +81,7 @@ function compactPlot(db: Database.Database) {
     // If an extraordinary number of separate outages exhausts the display,
     // omit an interior point; the surviving segment IDs still forbid bridges.
     remove = rows.findIndex((p, i) => i > 0 && i < rows.length - 1 &&
-      p.kind !== 'inception' && i !== minIndex && i !== maxIndex);
+      p.kind === 'observed' && i !== minIndex && i !== maxIndex);
   }
   if (remove < 0) throw Error('EQUITY_DISPLAY_CAPACITY_UNAVAILABLE');
   db.prepare('DELETE FROM equity_plot WHERE at_ms=?').run(rows[remove]!.at_ms);
@@ -93,8 +94,10 @@ function compactPlot(db: Database.Database) {
  * representation is separately and deterministically downsampled.
  */
 const SIDECAR_APPLICATION_ID = 0x504f4545;
-const SIDECAR_TABLES = ['equity_identity','equity_imported_capture','equity_plot','equity_samples'];
+const LEGACY_SIDECAR_TABLES = ['equity_identity','equity_imported_capture','equity_plot','equity_samples'];
+const SIDECAR_TABLES=['equity_epoch',...LEGACY_SIDECAR_TABLES];
 const SIDECAR_COLUMNS: Record<string,string[]> = {
+  equity_epoch:['id','receipt'],
   equity_identity:['id','account_id','inception_at','last_sequence','last_sha'],
   equity_imported_capture:['sha256','accepted_at_ms','observation_count'],
   equity_plot:['at_ms','equity_usd','segment','kind'],
@@ -118,11 +121,13 @@ function verifyExistingSidecar(file:string) {
   try {
     const application=db.pragma('application_id',{simple:true});
     const tables=db.prepare("SELECT type,name FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY name").all() as {type:string;name:string}[];
+    const existingTables=tables.map(row=>row.name),legacy=JSON.stringify(existingTables)===JSON.stringify(LEGACY_SIDECAR_TABLES);
+    const selectedTables=legacy?LEGACY_SIDECAR_TABLES:SIDECAR_TABLES;
     const pendingOwnInitialization=application===SIDECAR_APPLICATION_ID&&tables.length===0;
     if(!pendingOwnInitialization&&(![0,SIDECAR_APPLICATION_ID].includes(application as number)||
-        tables.length!==SIDECAR_TABLES.length||tables.some((row,i)=>row.type!=='table'||row.name!==SIDECAR_TABLES[i])))
+        tables.length!==selectedTables.length||tables.some((row,i)=>row.type!=='table'||row.name!==selectedTables[i])))
       throw Error('EQUITY_SIDECAR_FOREIGN_SCHEMA');
-    for(const table of pendingOwnInitialization?[]:SIDECAR_TABLES) {
+    for(const table of pendingOwnInitialization?[]:selectedTables) {
       const columns=db.pragma('table_info('+table+')') as {name:string}[];
       if(JSON.stringify(columns.map(row=>row.name))!==JSON.stringify(SIDECAR_COLUMNS[table]))throw Error('EQUITY_SIDECAR_FOREIGN_SCHEMA');
     }
@@ -167,6 +172,9 @@ export class LifetimeEquityStore {
     // Schema and inception are one transaction; a crash cannot leave partial tables.
     this.db.transaction(() => {
     this.db.exec(`
+      CREATE TABLE IF NOT EXISTS equity_epoch (
+        id INTEGER PRIMARY KEY CHECK(id=1), receipt TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS equity_identity (
         id INTEGER PRIMARY KEY CHECK(id=1),
         account_id TEXT NOT NULL,
@@ -224,11 +232,27 @@ export class LifetimeEquityStore {
       const sequence = BigInt(snapshot.sequence), previous = BigInt(meta.last_sequence);
       if (sequence <= previous) {
         const row = this.db.prepare('SELECT sha256 FROM equity_samples WHERE sequence=?').get(snapshot.sequence) as {sha256: string} | undefined;
-        if (sequence === previous && row?.sha256 === sha256) return 'duplicate';
+        if (sequence === previous && (row?.sha256===sha256||meta.last_sha===sha256)) return 'duplicate';
         throw Error('EQUITY_SOURCE_SEQUENCE_CONFLICT');
       }
       const at = Date.parse(snapshot.times.generatedAt);
-      const last = this.db.prepare(SQL.last).get() as PointRow;
+      let last = this.db.prepare(SQL.last).get() as PointRow;
+      const epochRow=this.db.prepare('SELECT receipt FROM equity_epoch WHERE id=1').get() as {receipt:string}|undefined;
+      if(epochRow&&JSON.stringify(snapshot.financialEpoch)!==epochRow.receipt)throw Error('EQUITY_EPOCH_REGRESSION_OR_CONFLICT');
+      if(snapshot.financialEpoch&&!epochRow){
+        const epoch=validateFinancialEpochReport(snapshot.financialEpoch,snapshot.times.generatedAt),started=Date.parse(epoch.activatedAt);
+        if(started<=last.at_ms)throw Error('EQUITY_EPOCH_TIME_CONFLICT');
+        if(at===started&&snapshot.balances.equityUsd!==epoch.initialUsd)throw Error('EQUITY_EPOCH_INITIAL_VALUE_CONFLICT');
+        const segment=last.segment+1;
+        this.db.prepare('INSERT INTO equity_epoch VALUES(1,?)').run(JSON.stringify(epoch));
+        this.db.prepare('INSERT INTO equity_samples VALUES(?,?,?,?,?,?)').run('epoch:'+epoch.id,started,epoch.initialUsd,segment,'epoch-start',sha256);
+        this.db.prepare('INSERT INTO equity_plot VALUES(?,?,?,?)').run(started,epoch.initialUsd,segment,'epoch-start');
+        last={at_ms:started,equity_usd:epoch.initialUsd,segment,kind:'epoch-start'};
+      }
+      if(at===last.at_ms&&last.kind==='epoch-start'){
+        this.db.prepare('UPDATE equity_identity SET last_sequence=?,last_sha=? WHERE id=1').run(snapshot.sequence,sha256);
+        return 'accepted';
+      }
       if (at <= last.at_ms) throw Error('EQUITY_SOURCE_TIME_REGRESSION');
       const segment = at - last.at_ms > EQUITY_GAP_MS ? last.segment + 1 : last.segment;
       const usd = snapshot.balances.equityUsd!;
@@ -236,7 +260,7 @@ export class LifetimeEquityStore {
         .run(snapshot.sequence, at, usd, segment, 'observed', sha256);
       const bucket = Math.floor(at / 60_000);
       const recent = this.db.prepare('SELECT at_ms FROM equity_plot ORDER BY at_ms DESC LIMIT 1').get() as {at_ms: number};
-      if (Math.floor(recent.at_ms / 60_000) === bucket && recent.at_ms !== Date.parse(ORIGINAL_POE_INCEPTION)) {
+      if (Math.floor(recent.at_ms / 60_000) === bucket && recent.at_ms !== Date.parse(ORIGINAL_POE_INCEPTION) && recent.at_ms!==Date.parse(snapshot.financialEpoch?.activatedAt??'')) {
         this.db.prepare('DELETE FROM equity_plot WHERE at_ms=?').run(recent.at_ms);
       }
       this.db.prepare('INSERT INTO equity_plot VALUES(?,?,?,?)').run(at, usd, segment, 'observed');
@@ -321,10 +345,10 @@ export class LifetimeEquityStore {
       const drop = this.db.prepare('DELETE FROM equity_plot WHERE at_ms=?');
       let previousPlot: PointRow | null = null;
       for (const row of all) {
-        if (priorAt >= 0 && row.at_ms - priorAt > EQUITY_GAP_MS) seg++;
+        if (priorAt >= 0 && (row.at_ms - priorAt > EQUITY_GAP_MS||row.kind==='epoch-start')) seg++;
         update.run(seg,row.sequence);
         if (previousPlot && Math.floor(previousPlot.at_ms / 60_000) === Math.floor(row.at_ms / 60_000) &&
-            previousPlot.kind !== 'inception') drop.run(previousPlot.at_ms);
+            previousPlot.kind === 'observed') drop.run(previousPlot.at_ms);
         insert.run(row.at_ms,row.equity_usd,seg,row.kind);
         previousPlot = {...row,segment:seg};
         compactPlot(this.db);
@@ -341,8 +365,9 @@ export class LifetimeEquityStore {
       segment: row.segment, kind: row.kind,
     }));
     const total = (this.db.prepare('SELECT count(*) n FROM equity_samples').get() as {n:number}).n;
+    const epoch=this.db.prepare('SELECT receipt FROM equity_epoch WHERE id=1').get() as {receipt:string}|undefined;
     return validateLifetimeEquityHistory({
-      schemaVersion: 1, accountId: ORIGINAL_POE_ACCOUNT, inceptionAt: ORIGINAL_POE_INCEPTION,
+      ...(epoch?{financialEpoch:JSON.parse(epoch.receipt) as FinancialEpochReport}:{}),schemaVersion: 1, accountId: ORIGINAL_POE_ACCOUNT, inceptionAt: ORIGINAL_POE_INCEPTION,
       source: LIFETIME_EQUITY_SOURCE, lastSequence: meta.last_sequence,
       downsampled: total > points.length, points,
     }, now);

@@ -13,6 +13,7 @@ import type {PoolWireAccount} from '../src/pool.js';
 import {PilotRpc,PilotRpcUnavailable} from '../src/pilot-rpc.js';
 import {nativePaperRpcConfiguration} from '../src/run-native-paper.js';
 import {runInNewContext} from 'node:vm';
+import {NativeProtectionDispatch} from '../src/native-protection-dispatch.js';
 import {runNativePaper,nativePaperSourceWorkAdmission,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperManagementReserve} from '../src/run-native-paper.js';
 import {NativeCandidateRunner} from '../src/native-candidate-runner.js';
 import {NativePaperWorkState} from '../src/native-paper-work.js';
@@ -66,7 +67,7 @@ for(const background of [0,6,9])test(`BASELINE actual decision quote gates after
  const lowerView=(bound=1200)=>pilotLowerPriorityAdmission({now:f.now(),endAt:Number.MAX_SAFE_INTEGER,held:1,lastUsable:lastCompleted,nextPendingAt:null,operationBoundMs:bound});
  const sourceInformationAdmission=()=>true,sourceAdmission=()=>nativePaperSourceWorkAdmission({informationOpen:sourceInformationAdmission(),owned:true,entryWork:owner.current==='candidate',usage:rpc.usage(),persistent:true});
  const localAdmission=(bound=1200)=>lowerView(bound).admitted&&engine.discretionaryAdmission(bound).admitted,optionalAdmission=(bound=1200)=>sourceAdmission()&&localAdmission(bound);
- const holder:any={},context:any={__name:(f:unknown)=>f,holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:f.now},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,lowerView,sourceAdmission,sourceInformationAdmission,optionalAdmission,engine};
+ const holder:any={},context:any={__name:(f:unknown)=>f,NativeProtectionDispatch,record(){},holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:f.now},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,lowerView,sourceAdmission,sourceInformationAdmission,optionalAdmission,engine};
  const text=runNativePaper.toString(),begin=text.search(/const\s+requestOptions\s*=/),rest=text.slice(begin),end=rest.search(/;\s*const\s+market\s*=/);assert.ok(begin>=0&&end>0);runInNewContext(rest.slice(0,end)+';holder.scheduled=scheduled;',context,{timeout:1000});f.route(holder.scheduled);
  const protect=async()=>{owner.set('protection');const marks=await f.market.context(f.ledger.state().positions,signal());assert.ok(marks.marks[owned]);lastCompleted=f.now();context.lastCompleted=lastCompleted;};await protect();
  owner.set('source');for(let n=0;n<background;n++){if(!lowerView(1500).admitted){await protect();owner.set('source');}await holder.scheduled.call('getSlot');}

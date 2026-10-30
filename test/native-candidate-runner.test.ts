@@ -504,3 +504,13 @@ for(const responseDelayMs of [500,750,1200])for(const early of[false,true])test(
   console.log('HELD_CHARGED_EARLY_CHARACTERIZATION '+JSON.stringify(output));assert.ok(assessments.every(r=>r.data.at<=target+9999));assert.equal(actual.maximumActive,1);assert.equal(output.physicalTimeouts,0);assert.ok(shortMaximum<=20);assert.ok((output.minuteStarts??0)<=90);assert.ok(output.maximumSyntheticProtectionGapMs<=4000);
  }finally{await f.runner.stop();actual.close();}
 });
+
+test('fresh ACK clears finalized history and a prior-generation completion cannot repopulate it',async()=>{
+ const f=fixture({forcePredictiveFeatures:true}),mint=f.importActual(),captured:Parameters<typeof auditNativeFlowWindow>[0][]=[];
+ const original=(f.runner as any).audit as typeof auditNativeFlowWindow;(f.runner as any).audit=async(options:Parameters<typeof auditNativeFlowWindow>[0])=>{captured.push(options);return original(options);};
+ await f.runner.step();await f.warm();assert.ok(captured.length);const first=captured[0]!;
+ f.advance(10000);f.refresh();await f.steps(5);assert.ok(captured.some(o=>o.reusableHistory?.rows.length),'a verified finalized suffix is available within one generation');
+ const state=f.states.get(mint)!;state.openedAt=f.now;state.window=new FlowWindow(mint,f.now);state.notes=[];state.lastSyntheticAt=f.now;f.runner.onFlowOpen({mint,at:f.now});
+ first.onVerifiedHistory?.({pool:first.pool,validatedAt:f.now,rows:[]});const before=captured.length;f.advance(70000);f.refresh();await f.steps(8);assert.ok(captured.length>before);assert.equal(captured[before]!.reusableHistory,undefined,'old completion cannot restore cache after actual ACK rebind');
+ await f.runner.stop();
+});

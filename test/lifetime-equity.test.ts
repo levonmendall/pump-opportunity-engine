@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { createHash } from 'node:crypto';
-import { chmodSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdtempSync, rmSync, writeFileSync,readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createDashboard } from '../src/dashboard.js';
@@ -11,6 +11,7 @@ import { EQUITY_GAP_MS, LIFETIME_EQUITY_SOURCE, validateLifetimeEquityHistory,
   type LifetimeEquityHistory } from '../src/lifetime-equity-contract.js';
 import { LifetimeEquityStore, readPrivateOriginalSnapshot } from '../src/lifetime-equity-store.js';
 import { OriginalEquityCompanion } from '../src/lifetime-equity-publisher.js';
+import {type FinancialEpochReport} from '../src/financial-epoch-reporting.js';
 import { SnapshotCache, type Snapshot } from '../src/reporting.js';
 
 const original = {accountId: ORIGINAL_POE_ACCOUNT, inceptionAt: ORIGINAL_POE_INCEPTION,
@@ -214,4 +215,64 @@ test('existing machine bearer authorizes lifetime history; public viewer cannot 
   assert.equal(data.equityHistory.retention,'ec2-durable-republished');
   assert.deepEqual(data.equityHistory.points,history.points);
   assert.equal(data.snapshot.pnl.length,0,'the financial/P&L snapshot is unchanged');
+});
+
+function epochReceipt(at:number):FinancialEpochReport {return {version:'poe-paper-epoch-v1',id:'poe-paper-10sol-20261030',activatedAt:iso(at),initialSol:'10.000000000',contributionSol:'10.000000000',initialUsd:950,solPriceUsd:95,priceAt:iso(at-100),priorEquitySol:'9.300000000',priorArchivedCashSol:'9.290000000',priorArchivedDepositsSol:'0.010000000',priorRealizedPnlSol:'-0.600000000',priorExecutionCostsSol:'0.000100000',capitalAdjustmentSol:'0.700000000',priorStateSha256:'a'.repeat(64),backupSha256:'b'.repeat(64)};}
+test('capital restatement preserves old loss and marks a disconnected durable10SOL epoch baseline',t=>{
+ const {path}=store(t),now=Date.now(),activated=now-60000,db=new LifetimeEquityStore(path);
+ db.accept(sample('1',activated-30000,885),sha('prior-loss'),now);
+ const receipt=epochReceipt(activated),next={...sample('2',now,951),financialEpoch:receipt};
+ db.accept(next,sha('new-epoch'),now);
+ const history=db.history(now);assert.deepEqual(history.points.map(p=>p.equityUsd),[1000,885,950,951]);
+ const marker=history.points.find(p=>p.kind==='epoch-start')!;assert.equal(marker.at,iso(activated));assert.equal(marker.equityUsd,950);assert.ok(marker.segment>history.points[1]!.segment);assert.deepEqual(history.financialEpoch,receipt);
+ assert.equal(db.accept(next,sha('new-epoch'),now),'duplicate');
+ assert.throws(()=>db.accept(sample('3',now+1000,960),sha('without-epoch'),now+1000),/EPOCH_REGRESSION_OR_CONFLICT/);
+ db.close();const reopened=new LifetimeEquityStore(path);assert.deepEqual(reopened.history(now),history);reopened.close();
+});
+test('source epoch at exact activation is retained as capital marker and retries remain idempotent',t=>{
+ const {path}=store(t),now=Date.now(),db=new LifetimeEquityStore(path),receipt=epochReceipt(now);
+ const next={...sample('2',now,950),financialEpoch:receipt};
+ assert.equal(db.accept(next,sha('activation'),now),'accepted');assert.equal(db.accept(next,sha('activation'),now),'duplicate');
+ assert.deepEqual(db.history(now).points.map(p=>p.kind),['inception','epoch-start']);db.close();
+});
+test('receiver preserves restatement segment while durable companion catches up',()=>{
+ const now=Date.now(),activated=now-30000,cache=new SnapshotCache(original);
+ cache.accept(sample('1',activated-30000,885),activated);const priorHistory=seededHistory(activated-30000,'1');priorHistory.points.at(-1)!.equityUsd=885;cache.acceptLifetimeEquityHistory(priorHistory,activated);
+ const next={...sample('2',now,951),financialEpoch:epochReceipt(activated)};cache.accept(next,now);
+ const h=cache.equityHistory(),marker=h.points.find(p=>p.kind==='epoch-start')!;
+ assert.equal(marker.equityUsd,950);assert.equal(marker.at,iso(activated));assert.ok(marker.segment!>h.points.at(-3)!.segment!);assert.equal(h.points.at(-1)!.equityUsd,951);assert.equal(h.points.at(-1)!.segment,marker.segment);
+ assert.throws(()=>cache.accept(sample('3',now+1000,960),now+1000),/epoch regression/);
+});
+
+test('companion reports sanitized source and delivery failure phases without exposing credentials',async t=>{
+ const {dir,path}=store(t),now=Date.now(),sourceFile=join(dir,'missing-snapshot.json'),secretFile=join(dir,'key');
+ const secret='secret-never-exported-'+ 'x'.repeat(30);writeFileSync(secretFile,secret,{mode:0o600});
+ const companion=new OriginalEquityCompanion({sourceFile,storeFile:path,credentialFile:secretFile,fetch:(async()=>new Response('',{status:401})) as typeof fetch});
+ await companion.tick(now);assert.equal(companion.status().ingestionReasonCode,'SOURCE_FILE_MISSING');
+ writeFileSync(sourceFile,JSON.stringify(sample('1',now+1000,950)),{mode:0o600});
+ await companion.tick(now+1000);const health=JSON.parse(readFileSync(join(dir,'status.json'),'utf8'));
+ assert.equal(health.deliveryState,'http-refused');assert.equal(health.httpStatus,401);assert.equal(health.deliveryFailures,1);assert.equal(health.lastDeliveredAt,null);assert.equal(health.financialDatabaseOpened,false);
+ assert.ok(!JSON.stringify(health).includes(secret));assert.ok(!JSON.stringify(health).includes(secretFile));companion.close();
+});
+
+test('epoch cannot disappear or conflict when the durable and current reporting channels arrive in either order',()=>{
+ const now=Date.now(),activated=now-30000,receipt=epochReceipt(activated),history={...seededHistory(activated-10000,'1'),financialEpoch:receipt};
+ history.points.push({at:iso(activated),equityUsd:950,segment:2,kind:'epoch-start'});
+ const ahead=new SnapshotCache(original);ahead.acceptLifetimeEquityHistory(history,now);assert.throws(()=>ahead.accept(sample('2',now,951),now),/epoch source regression/);assert.equal(ahead.accept({...sample('2',now,951),financialEpoch:receipt},now),'accepted');
+ const current=new SnapshotCache(original);current.accept({...sample('2',now,951),financialEpoch:receipt},now);const missing=seededHistory(now,'2');assert.throws(()=>current.acceptLifetimeEquityHistory(missing,now),/EPOCH_MARKER_REQUIRED/);
+ const wrong=structuredClone(history);wrong.financialEpoch.backupSha256='c'.repeat(64);assert.throws(()=>current.acceptLifetimeEquityHistory(wrong,now),/EPOCH_SOURCE_CONFLICT/);
+});
+test('receiver-only equity preserves real reporting gaps after an epoch marker',()=>{
+ const now=Date.now(),cache=new SnapshotCache(original),receipt=epochReceipt(now);
+ cache.accept({...sample('1',now,950),financialEpoch:receipt},now);
+ cache.accept({...sample('2',now+EQUITY_GAP_MS+1,951),financialEpoch:receipt},now+EQUITY_GAP_MS+1);
+ const points=cache.equityHistory().points;assert.equal(points[0]!.kind,'epoch-start');assert.ok(points[1]!.segment!>points[0]!.segment!,'epoch segmentation does not suppress a later genuine outage');
+});
+
+test('companion shutdown during HTTP delivery cannot query a closed sidecar or restart polling',async t=>{
+ const {dir,path}=store(t),now=Date.now(),sourceFile=join(dir,'snapshot.json'),secretFile=join(dir,'key');
+ writeFileSync(secretFile,'shutdown-fixture-secret-'+ 'x'.repeat(30),{mode:0o600});writeFileSync(sourceFile,JSON.stringify(sample('1',now,950)),{mode:0o600});
+ let release!:(response:Response)=>void;const companion=new OriginalEquityCompanion({sourceFile,storeFile:path,credentialFile:secretFile,fetch:(async()=>new Promise<Response>(resolve=>{release=resolve;})) as typeof fetch});
+ const pending=companion.tick(now);assert.equal(typeof release,'function');companion.close();companion.close();release(new Response('',{status:200}));await pending;
+ companion.start();assert.deepEqual(await companion.tick(now+1000),{ingested:'unavailable',delivered:false});
 });

@@ -9,7 +9,7 @@ const start=source.indexOf('function plot(points){');
 const end=source.indexOf('function showSnapshot(',start);
 assert.ok(start>=0&&end>start,'dashboard must include one standalone equity-line renderer');
 const code=source.slice(start,end);
-type EquityPoint={at:string;equityUsd:number;segment?:number};
+type EquityPoint={at:string;equityUsd:number;segment?:number;kind?:'epoch-start'};
 class Element {
  children:Element[]=[];
  attributes:Record<string,string>={};
@@ -117,4 +117,12 @@ test('actual served holographic dashboard uses a single account equity line with
  assert.doesNotMatch(html,/id="experimental-portfolio"/);
  assert.doesNotMatch(html,/chartRangeToggle/);
  assert.equal(result.headers.get('cache-control'),'no-store');
+});
+
+test('10SOL contribution is labeled and never joined to historical losses as trading recovery',()=>{
+ const v=chart(),data=[point(0,885),point(1,884),{...point(2,950),kind:'epoch-start' as const},point(3,951)];
+ v.plot(data);assert.equal(v.lines().length,2);
+ assert.ok(v.root.children.some(e=>e.attributes['data-capital-restatement']==='10-sol'));
+ assert.ok(v.root.children.some(e=>e.textContent==='10 SOL CAPITAL RESTATEMENT'));
+ for(const line of v.lines())assert.equal((line.attributes.d??'').match(/L/g)?.length,1);
 });

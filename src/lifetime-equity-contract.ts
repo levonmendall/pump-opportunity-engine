@@ -1,3 +1,4 @@
+import {validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import { ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from './operating-intelligence.js';
 
 /**
@@ -12,10 +13,11 @@ export type LifetimeEquityPoint = {
   at: string;
   equityUsd: number;
   segment: number;
-  kind: 'inception' | 'observed';
+  kind: 'inception' | 'observed' | 'epoch-start';
 };
 export type LifetimeEquityHistory = {
   schemaVersion: 1;
+  financialEpoch?:FinancialEpochReport;
   accountId: typeof ORIGINAL_POE_ACCOUNT;
   inceptionAt: typeof ORIGINAL_POE_INCEPTION;
   source: typeof LIFETIME_EQUITY_SOURCE;
@@ -38,7 +40,10 @@ function utc(value: unknown): number {
   return parsed;
 }
 export function validateLifetimeEquityHistory(input: unknown, now = Date.now()): LifetimeEquityHistory {
-  const obj = exactObject(input, ['schemaVersion', 'accountId', 'inceptionAt', 'source', 'lastSequence', 'downsampled', 'points']);
+  const hasEpoch=!!input&&typeof input==='object'&&Object.hasOwn(input,'financialEpoch');
+  const obj = exactObject(input, ['schemaVersion', 'accountId', 'inceptionAt', 'source', 'lastSequence', 'downsampled', 'points',...(hasEpoch?['financialEpoch']:[])]);
+  const epoch=hasEpoch?validateFinancialEpochReport(obj.financialEpoch,new Date(now+30000).toISOString()):null;
+  let epochSeen=false;
   if (obj.schemaVersion !== 1 || obj.accountId !== ORIGINAL_POE_ACCOUNT ||
       obj.inceptionAt !== ORIGINAL_POE_INCEPTION || obj.source !== LIFETIME_EQUITY_SOURCE)
     throw Error('EQUITY_ORIGINAL_ACCOUNT_REQUIRED');
@@ -57,13 +62,18 @@ export function validateLifetimeEquityHistory(input: unknown, now = Date.now()):
         point.equityUsd < 0 || point.equityUsd > 1e15) throw Error('EQUITY_AMOUNT_INVALID');
     if (!Number.isSafeInteger(point.segment) || (point.segment as number) < 0 ||
         (point.segment as number) < previousSegment) throw Error('EQUITY_SEGMENTS_INVALID');
-    if (point.kind !== 'inception' && point.kind !== 'observed') throw Error('EQUITY_KIND_INVALID');
+    if (point.kind !== 'inception' && point.kind !== 'observed' && point.kind!=='epoch-start') throw Error('EQUITY_KIND_INVALID');
     if (index === 0 && (point.kind !== 'inception' || at !== inception ||
         point.equityUsd !== 1000 || point.segment !== 0)) throw Error('EQUITY_INCEPTION_PROOF_REQUIRED');
-    if (index > 0 && point.kind !== 'observed') throw Error('EQUITY_INCEPTION_DUPLICATED');
+    if (index > 0 && point.kind === 'inception') throw Error('EQUITY_INCEPTION_DUPLICATED');
+    if(point.kind==='epoch-start'){
+      if(!epoch||epochSeen||point.at!==epoch.activatedAt||point.equityUsd!==epoch.initialUsd||(point.segment as number)<=previousSegment)throw Error('EQUITY_EPOCH_PROOF_REQUIRED');
+      epochSeen=true;
+    }else if(epoch&&at>=Date.parse(epoch.activatedAt)&&!epochSeen)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
     previousAt = at;
     previousSegment = point.segment as number;
   }
+  if(epoch&&!epochSeen)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
   if (Buffer.byteLength(JSON.stringify(input)) > 128 * 1024) throw Error('EQUITY_TRANSFER_BOUND');
   return structuredClone(input) as LifetimeEquityHistory;
 }

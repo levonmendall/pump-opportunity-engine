@@ -21,7 +21,7 @@ export type PilotRpcOptions={persistent?:boolean;profile?:PilotRpcProfile;direct
 /** Existing holdings get one bounded fresh-read recovery opportunity after an
  * unthrottled settled transport failure. Ordinary candidate work keeps its
  * backoff; actual provider restrictions and the one shared gate remain binding. */
-export const PILOT_PROTECTION_RECOVERY_POLICY=Object.freeze({version:'bounded-owned-pricing-recovery-v1',maximumPhysicalReads:2,maximumReadMs:2000,physicalTimeoutMs:1000,validationReserveMs:125,rapidProbeIntervalMs:10000,outageProbeMs:2000,pollMs:25,normalStartsPer10s:5,normalStartsPerMinute:30,rapidStartsPer10s:1,rapidStartsPerMinute:6});
+export const PILOT_PROTECTION_RECOVERY_POLICY=Object.freeze({version:'bounded-owned-financial-read-recovery-v2',supportedReads:['getMultipleAccounts','getMinimumBalanceForRentExemption:165:confirmed'],maximumPhysicalReads:2,maximumReadMs:2000,physicalTimeoutMs:1000,validationReserveMs:125,rapidProbeIntervalMs:10000,outageProbeMs:2000,pollMs:25,normalStartsPer10s:5,normalStartsPerMinute:30,rapidStartsPer10s:1,rapidStartsPerMinute:6});
 export type PilotProtectionCallOptions=PilotRpcCallOptions&{completeBy?:number};
 export class PilotRpcUnavailable extends Error{
   constructor(readonly code:string,readonly retryAt:number|null=null){super('PILOT_RPC_'+code);this.name='PilotRpcUnavailable';}
@@ -136,7 +136,7 @@ export class PilotRpc{
   }
   private trackMethodStart(kind:string,data:unknown){
     if(kind==='component-physical-start'&&this.activeHistoryBatch){this.collectHistoryBatchCounts();this.persist();}
-    if(kind!=='component-physical-start')return;const d=data as {at:number;kind?:ComponentKind};if(!d.kind)return;if(this.protectedOperation&&d.kind.transport==='http'&&d.kind.method==='getMultipleAccounts'){while(this.protectedStarts.length&&this.protectedStarts[0]!<=d.at-60000)this.protectedStarts.shift();this.protectedStarts.push(d.at);}if(!int(d.at)||d.at>this.now())throw new PilotRpcUnavailable('METHOD_CLOCK');this.knownMethodStarts=this.knownMethodStarts.filter(r=>r.at>d.at-10000);this.knownMethodStarts.push({at:d.at,method:d.kind.method});if(this.knownMethodStarts.length>600)throw new PilotRpcUnavailable('METHOD_HISTORY_BOUND');if(d.kind.transport!=='http'||d.kind.method!=='getTransaction')return;
+    if(kind!=='component-physical-start')return;const d=data as {at:number;kind?:ComponentKind};if(!d.kind)return;if(this.protectedOperation&&d.kind.transport==='http'){while(this.protectedStarts.length&&this.protectedStarts[0]!<=d.at-60000)this.protectedStarts.shift();this.protectedStarts.push(d.at);}if(!int(d.at)||d.at>this.now())throw new PilotRpcUnavailable('METHOD_CLOCK');this.knownMethodStarts=this.knownMethodStarts.filter(r=>r.at>d.at-10000);this.knownMethodStarts.push({at:d.at,method:d.kind.method});if(this.knownMethodStarts.length>600)throw new PilotRpcUnavailable('METHOD_HISTORY_BOUND');if(d.kind.transport!=='http'||d.kind.method!=='getTransaction')return;
     if(!int(d.at)||d.at>this.now()||this.methodStarts.at(-1)?.at!>d.at)throw new PilotRpcUnavailable('METHOD_CLOCK');this.recentMethodStarts();this.methodStarts.push({at:d.at,origin:'getTransaction'});if(this.methodStarts.length>600)throw new PilotRpcUnavailable('METHOD_HISTORY_BOUND');this.persist();
   }
   private current(){return this.budget?.usage();}
@@ -271,10 +271,12 @@ export class PilotRpc{
     return this.perform(o=>this.transport!.call<T>(method,params,signal,o),signal,options,this.historyDomain(method),queryKey);
   }
   /** Only the owned-position/pending financial adapter selects this path. It
-   * cannot sign/submit and accepts only the existing complete account batch.
+   * cannot sign/submit and accepts only the complete account batch or the
+   * exact165-byte confirmed rent read needed for an owned exit construction.
    * At most one fresh retry can fit the unchanged bounded read/deadline. */
   async callProtection<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:PilotProtectionCallOptions={}):Promise<T>{
-    if(method!=='getMultipleAccounts'||!Array.isArray(params)||Buffer.byteLength(JSON.stringify({method,params}))>64000)throw new PilotRpcUnavailable('INVALID_PROTECTION_READ');
+    const rent=Array.isArray(params)&&method==='getMinimumBalanceForRentExemption'&&params.length===2&&params[0]===165&&JSON.stringify(params[1])===JSON.stringify({commitment:'confirmed'});
+    if((method!=='getMultipleAccounts'&&!rent)||!Array.isArray(params)||Buffer.byteLength(JSON.stringify({method,params}))>64000)throw new PilotRpcUnavailable('INVALID_PROTECTION_READ');
     const started=this.now(),startedMono=this.mono(),deadline=options.completeBy??started+PILOT_PROTECTION_RECOVERY_POLICY.maximumReadMs;
     if(!int(deadline)||deadline<=started||deadline>started+PILOT_PROTECTION_RECOVERY_POLICY.maximumReadMs)throw new PilotRpcUnavailable('INVALID_PROTECTION_DEADLINE');
     const deadlineMono=startedMono+deadline-started,copied=structuredClone(params);this.protectionRecovery.calls++;let last:unknown;

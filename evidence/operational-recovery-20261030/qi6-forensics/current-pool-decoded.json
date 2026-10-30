@@ -1,0 +1,20 @@
+{
+  "poolBump": 253,
+  "index": 0,
+  "creator": "6PR7FfHyZaAVEAGUYpuq8jJBoC4GGHkMwVyLpE6PjHDu",
+  "baseMint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+  "quoteMint": "So11111111111111111111111111111111111111112",
+  "lpMint": "Cx2F6e5dSy8uoqtLMLr5zHz2ps2jURVKYJgjXMUyqBng",
+  "poolBaseTokenAccount": "DmijMtfTofYwRu4hM44uZvYYumkaQdk5F2tDrztckmHL",
+  "poolQuoteTokenAccount": "DdNFKqFb84i4MVmapktTsqwzG3HCdGeChShz3nhDsgob",
+  "lpSupply": "03d0596b42ec",
+  "coinCreator": "FUW518RCrCaAM53xENwvvRP2mgD8yw7sr1xeTj1P45NM",
+  "isMayhemMode": false,
+  "isCashbackCoin": false,
+  "virtualQuoteReserves": "04181e41c8",
+  "creatorFeeBps": "00",
+  "canEditCreatorFee": false,
+  "isHolderReward": false,
+  "protocolFees": "00",
+  "creatorFees": "00"
+}

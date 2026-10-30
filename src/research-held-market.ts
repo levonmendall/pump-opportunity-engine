@@ -132,9 +132,14 @@ export class ResearchHeldMarket {
             need(q.mint===mint,'RESEARCH_HELD_QUOTE_MINT_MISMATCH');
             const time=this.source(q,r.minSlot);need(batch.context&&q.slot===batch.context.slot&&q.requestedAt===batch.context.requestedAt&&q.receivedAt===batch.context.receivedAt,'RESEARCH_HELD_INCOHERENT_BATCH');
             need(q.sell.inputBaseUnits===r.fullBaseUnits.toString()&&this.current(mint,q.sell.inputBaseUnits),'RESEARCH_HELD_POSITION_CHANGED');
-            const output=amount(q.sell.outputLamports),gas=amount(this.options.gasLamports);need(output>gas,'RESEARCH_HELD_EXIT_COST_EXCEEDS_PROCEEDS');
+            // A collapsed position can still have an executable positive gross
+            // liquidation quote while cash pays more in gas than it returns.
+            // Keep that quote and a conservative zero asset mark; suppressing
+            // it would blind the cost stop. The ledger separately reserves and
+            // charges cash fees and may still refuse an unaffordable exit.
+            const output=amount(q.sell.outputLamports),gas=amount(this.options.gasLamports);
             this.floors.set(mint,Math.max(this.floors.get(mint)??0,q.slot));this.snapshots.set(mint,structuredClone(q));
-            result.marks[mint]={netLamports:(output-gas).toString(),pricedBaseUnits:q.sell.inputBaseUnits,at:time.receivedAt,evidence:this.evidence(q)};
+            result.marks[mint]={netLamports:(output>gas?output-gas:0n).toString(),pricedBaseUnits:q.sell.inputBaseUnits,at:time.receivedAt,evidence:this.evidence(q)};
           }catch(error){failure??=heldPricingFailureCode(error);/* Unaffected holdings may continue. */}
         }
       }

@@ -15,7 +15,8 @@ Environment=POE_EQUITY_STORE_FILE=/var/lib/poe/lifetime-equity/equity.sqlite
 # Optional owner-reviewed hash-pinned import path; never supply a wallet secret here.
 EnvironmentFile=-/etc/poe/lifetime-equity.env
 LoadCredential=poe-ingest-secret:/etc/poe/secrets/ingest-secret
-ExecStart=/opt/poe/node/bin/node /opt/poe-lifetime-equity/current/dist/src/lifetime-equity-publisher.js
+# Same kernel lease is required by the supervisor-managed companion.
+ExecStart=/usr/bin/flock --nonblock --conflict-exit-code 75 /var/lib/poe/lifetime-equity/companion.lock /opt/poe/node/bin/node /opt/poe-lifetime-equity/current/dist/src/lifetime-equity-publisher.js
 Restart=on-failure
 RestartSec=15
 NoNewPrivileges=yes

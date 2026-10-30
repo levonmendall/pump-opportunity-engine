@@ -1,3 +1,4 @@
+import {PAPER_EPOCH_VERSION,PAPER_EPOCH_ASSET_SEGREGATION,verifyArchivedEpochAssets,PAPER_TEN_SOL_EPOCH_ID,PAPER_TEN_SOL_EPOCH_AUTHORIZATION,validatePaperEpoch,requireEpochFlat,verifiedEpochBackup,paperEpochStateSha256,type PaperEpoch,type PaperEpochBackupReceipt} from './paper-epoch.js';
 import Database from 'better-sqlite3';
 import {PAPER_EQUITY_RISK_VERSION,PAPER_EQUITY_RISK_POLICY,consumedEntryAllowance,drawdownFacts,validateEquityRiskState,validateEntryAllocation,entryAllocation,type EquityRiskState,type EntryAllocation} from './paper-equity-risk.js';
 import {validatePaperExecutionPlan,validatePaperExecutionLanding,validatePaperExecutionAttempt,paperExecutionFee,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt} from './execution-realism.js';
@@ -40,6 +41,7 @@ export type LedgerMode = 'PAPER' | 'DISPOSABLE_PAPER';
 export type LedgerState = {
   schemaVersion: 1;
   equityRisk?:EquityRiskState;
+  paperEpoch?:PaperEpoch;
   accountId: string; fixtureId?: string; mode: LedgerMode; inceptionAt: number;
   initialMicroUsd: string; inceptionPrice: UsdPrice; lamports: string;
   roundingResidualMicroUsd: string; gasReserve: string;
@@ -186,6 +188,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   const key = (v: unknown, max: number) => boundedText(v, max) && !['__proto__','constructor','prototype'].includes(v);
   const eventTime = (v: unknown) => Number.isSafeInteger(v) && (v as number) >= s.inceptionAt && (v as number) <= s.lastAt;
   if (!record(s) || s.schemaVersion !== 1 || s.accountId !== accountId || s.mode !== mode || s.initialMicroUsd !== INITIAL.toString() || !Number.isSafeInteger(s.inceptionAt) || s.inceptionAt < 0 || !Number.isSafeInteger(s.lastAt) || s.lastAt < s.inceptionAt || !Number.isSafeInteger(s.revision) || s.revision < 0) throw new Error('financial identity/state invariant');
+  if(s.paperEpoch!==undefined)validatePaperEpoch(s.paperEpoch,s);
   if (!record(s.inceptionPrice)) throw new Error('inception conversion invariant');
   const inceptionPrice = priceAt(s.inceptionPrice, s.inceptionAt);
   const initialLamports = INITIAL * L / inceptionPrice;
@@ -282,7 +285,14 @@ export class PaperLedger {
   state(): Readonly<State> {
     const s = this.read();
     if (!s) throw new Error('PAPER account not initialized');
+    if(s.paperEpoch)this.validateEpochAnchor(s);else if(this.db.prepare('SELECT 1 FROM actions WHERE id=? UNION ALL SELECT 1 FROM journal WHERE action_id=? LIMIT 1').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_TEN_SOL_EPOCH_ID))throw Error('PAPER_EPOCH_STATE_MISSING_FROM_RECORDED_HISTORY');
     return s;
+  }
+  private validateEpochAnchor(s:State){
+    const epoch=s.paperEpoch;if(!epoch)return;validatePaperEpoch(epoch,s);
+    const id='epoch:'+PAPER_TEN_SOL_EPOCH_ID,row=this.db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM actions a JOIN journal j ON j.action_id=a.id WHERE a.id=?').get(id) as {payloadHash:string;result:string;revision:number;at:number;kind:string;detail:string}|undefined;
+    if(!row||row.kind!=='paper-epoch-transition'||row.at!==epoch.startedAt||row.revision!==epoch.transitionRevision||Buffer.byteLength(row.detail)>65536||Buffer.byteLength(row.result)>65536)throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
+    const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(row.payloadHash!==digest({kind:row.kind,payload})||payload.authorization!==PAPER_TEN_SOL_EPOCH_AUTHORIZATION||!isDeepStrictEqual(result.epoch,epoch)||!isDeepStrictEqual(payload.epoch,epoch)||paperEpochStateSha256(payload.previousState)!==epoch.priorStateSha256||payload.backup?.backupSha256!==epoch.backupSha256||payload.backup.stateSha256!==epoch.priorStateSha256||payload.backup.revision!==epoch.transitionRevision-1||payload.backup.accountId!==s.accountId||payload.backup.inceptionAt!==s.inceptionAt||Object.keys(epoch.archivedAssets.lockedDeposits).length>0&&payload.assetDisposition!==PAPER_EPOCH_ASSET_SEGREGATION||payload.previousState?.paperEpoch!==undefined||payload.previousState?.accountId!==s.accountId||payload.previousState?.inceptionAt!==s.inceptionAt||epoch.archivedAssets.cashLamports!==payload.previousState.lamports||!isDeepStrictEqual(epoch.archivedAssets.lockedDeposits,Object.fromEntries(Object.entries(payload.previousState.lockedDeposits).filter(([,v])=>BigInt(v as string)>0n))))throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
   }
   private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode,{allowUnavailableEntryPolicy:true}); }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
@@ -340,7 +350,7 @@ export class PaperLedger {
       liquid += amount(mark.netLamports);
     }
     for (const deposit of Object.values(s.lockedDeposits)) liquid += amount(deposit);
-    return usd(liquid, price) + amount(s.roundingResidualMicroUsd);
+    return usd(liquid, price) + (s.paperEpoch?0n:amount(s.roundingResidualMicroUsd));
   }
 
   /** Audited one-time activation. No entry permission, stop clearance, cash or
@@ -365,7 +375,7 @@ export class PaperLedger {
   private newRiskDay(s:State,now:number):EquityRiskState['daily']{return {day:utcDay(now),highWaterMicroUsd:null,highWaterAt:null,lossPaused:false,historyState:'scanning',historyCoverage:'unavailable',historyCutoffRevision:s.revision,historyCursorRevision:0,historyReceipts:0,historyDigest:digest({version:PAPER_EQUITY_RISK_VERSION,day:utcDay(now),accountId:s.accountId,inceptionAt:s.inceptionAt,cutoffRevision:s.revision})};}
   private scanRiskHistory(s:State,now:number){
     const risk=s.equityRisk;if(!risk)return;const d=risk.daily;if(d.historyState!=='scanning')return;
-    const from=Date.parse(d.day+'T00:00:00.000Z'),through=from+86400000;
+    const dayStart=Date.parse(d.day+'T00:00:00.000Z'),from=Math.max(dayStart,s.paperEpoch?.startedAt??0),through=dayStart+86400000;
     type Receipt={revision:number;actionId:string;at:number;detail:string;payloadHash:string|null;result:string|null};
     const rows=this.db.prepare("SELECT j.revision,j.action_id actionId,j.at,j.detail,a.payload_hash payloadHash,a.result FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.revision<=? AND j.at>=? AND j.at<? AND j.kind='reconcile' ORDER BY j.revision LIMIT 257").all(d.historyCursorRevision,d.historyCutoffRevision,from,through) as Receipt[];
     try{
@@ -508,8 +518,9 @@ export class PaperLedger {
       const select="SELECT j.revision,j.action_id actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
       const read=(row:Row)=>{if(!Number.isSafeInteger(row.revision)||row.revision<1||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at<state.inceptionAt||row.at>at||!boundedText(row.actionId,160)||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('malformed');const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(!object(payload)||payload.now!==row.at||!object(result)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('malformed');return {payload,result};};
       const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,row.revision-1,state.accountId,payload.price);if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
-      const anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get()as Row|undefined;
-      if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
+      let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get()as Row|undefined;
+      if(state.paperEpoch&&(!anchor||anchor.revision<state.paperEpoch.transitionRevision)){this.validateEpochAnchor(state);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID) as Row;}
+      if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(state);else if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
       const boundary=anchor?.revision??0,size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary)as{count:number;bytes:number};if(size.count>512||size.bytes>1024*1024)return null;
       const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision LIMIT 513").all(boundary)as Row[];if(rows.length!==size.count)return null;
       let previousAt=anchor?.at??state.inceptionAt,previousRevision=boundary;
@@ -546,7 +557,7 @@ export class PaperLedger {
   }
 
   private operatingTemporaryControlVerified(state:State,at:number){
-    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=null;
+    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
     for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
       if(restored||!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return false;
       lastControl={at:row.at,reason:payload.reason};
@@ -841,11 +852,13 @@ export class PaperLedger {
       const select="SELECT j.revision,CASE WHEN length(j.action_id)<=160 THEN j.action_id END actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,CASE WHEN length(a.payload_hash)=64 THEN a.payload_hash END payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
       // json_valid is explicit: malformed later resume results are not silently
       // treated as an enabled anchor; ordered validation below rejects them.
-      const anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get() as Row|undefined;
+      let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get() as Row|undefined;
       const inception=this.db.prepare('SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0').get() as {actionId:string;at:number;kind:string;detail:string}|undefined;
       if(!inception||inception.actionId!=='inception'||inception.at!==s.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string')return no('INTERNAL_SHUTDOWN_INCEPTION');
       const inceptionPayload=JSON.parse(inception.detail);
       if(!isDeepStrictEqual(inceptionPayload,{price:s.inceptionPrice,gasReserve:s.gasReserve,mode:s.mode}))return no('INTERNAL_SHUTDOWN_INCEPTION');
+      const successfulResumeRevision=anchor?.revision??0;
+      if(s.paperEpoch&&(!anchor||anchor.revision<s.paperEpoch.transitionRevision)){this.validateEpochAnchor(s);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID) as Row;}
       const boundary=anchor?.revision??0;
       if(!Number.isSafeInteger(boundary)||boundary<0||boundary>s.revision)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
       const size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary) as {count:number;bytes:number};
@@ -863,7 +876,7 @@ export class PaperLedger {
         if(r.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!object(payload.price)||!object(payload.marks)||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==expectedEnabled||(expectedEnabled?result.reason!==validReason:!validReason))throw Error('malformed');
         priceAt(payload.price as UsdPrice,r.at);return {payload,result};
       };
-      if(anchor)resume(anchor,true);
+      if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(s);else if(anchor)resume(anchor,true);
       let previousAt=anchor?.at??s.inceptionAt,previousRevision=boundary,internalStop=false,lastControl:{at:number;reason:string}|null=null;
       const stops:Array<{revision:number;actionId:string;at:number}>=[],intents:Array<{revision:number;actionId:string;at:number;kind:string;payloadHash:string|null;resultSha256:string}>=[];
       for(const r of rows){
@@ -885,7 +898,7 @@ export class PaperLedger {
       }
       if(!internalStop||!lastControl)return no('INTERNAL_SHUTDOWN_CHAIN_ABSENT');
       if(s.controls.changedAt!==lastControl.at||s.controls.reason!==lastControl.reason||this.state().revision!==s.revision)return no('INTERNAL_SHUTDOWN_STATE_CHANGED');
-      const identity={accountId:s.accountId,inceptionAt:s.inceptionAt,stateRevision:s.revision,lastSuccessfulResumeRevision:boundary};
+      const identity={accountId:s.accountId,inceptionAt:s.inceptionAt,stateRevision:s.revision,lastSuccessfulResumeRevision:successfulResumeRevision};
       return {verified:true,...identity,stops,proofSha256:digest({version:p.version,...identity,knownRunIds:[...runs.keys()].sort(),anchor:anchor?{revision:anchor.revision,actionId:anchor.actionId,at:anchor.at,payloadHash:anchor.payloadHash,resultSha256:digest(JSON.parse(anchor.result!))}:null,intents})};
     }catch{return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');}
   }
@@ -930,6 +943,33 @@ export class PaperLedger {
       this.db.prepare("INSERT INTO metadata VALUES('operating_costs',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(body);
       return { recorded: true, actionId, eventId: event.id, kind: event.kind, accountId: account.accountId, inceptionAt: account.inceptionAt, recordedAt: now };
     });
+  }
+  /** One explicit owner-authorized PAPER capital transition. A verified full
+   * SQLite snapshot and zero unresolved obligations precede the append. No
+   * historical row, identity, cost metadata, or lifetime counter is rewritten. */
+  async beginAuthorizedTenSolEpoch(input:{authorization:typeof PAPER_TEN_SOL_EPOCH_AUTHORIZATION;price:UsdPrice;backupDirectory:string;assetDisposition?:typeof PAPER_EPOCH_ASSET_SEGREGATION},clock:()=>number=Date.now):Promise<{epoch:PaperEpoch;backup:PaperEpochBackupReceipt;alreadyApplied:boolean}> {
+    if(input.authorization!==PAPER_TEN_SOL_EPOCH_AUTHORIZATION)throw Error('PAPER_EPOCH_OWNER_AUTHORIZATION_REQUIRED');
+    const id='epoch:'+PAPER_TEN_SOL_EPOCH_ID,existing=this.state();
+    if(existing.paperEpoch){this.validateEpochAnchor(existing);const prior=this.actionResult(id) as {epoch:PaperEpoch;backup:PaperEpochBackupReceipt};return {...structuredClone(prior),alreadyApplied:true};}
+    if(this.db.prepare('SELECT 1 FROM actions WHERE id=?').get(id)||this.db.prepare('SELECT 1 FROM journal WHERE action_id=?').get(id))throw Error('PAPER_EPOCH_HISTORY_CONFLICT');
+    requireEpochFlat(existing,input.assetDisposition);if(this.equityRiskStatus(existing).kind!=='active')throw Error('PAPER_EPOCH_VERIFIED_EQUITY_RISK_REQUIRED');
+    const assets=verifyArchivedEpochAssets(this.db,existing);
+    const backup=await verifiedEpochBackup(this.db,input.backupDirectory,s=>validateFinancialState(s,this.accountId,this.mode),input.assetDisposition);
+    const at=clock(),p=priceAt(input.price,at),previousState=this.state();if(previousState.revision!==backup.revision||paperEpochStateSha256(previousState)!==backup.stateSha256)throw Error('PAPER_EPOCH_SOURCE_CHANGED_AFTER_BACKUP');
+    requireEpochFlat(previousState,input.assetDisposition);if(!Number.isSafeInteger(at)||at<previousState.lastAt||at<previousState.inceptionAt)throw Error('PAPER_EPOCH_TIME_INVALID');
+    const epoch:PaperEpoch={version:PAPER_EPOCH_VERSION,id:PAPER_TEN_SOL_EPOCH_ID,startedAt:at,transitionRevision:previousState.revision+1,initialLamports:'10000000000',initialMicroUsd:(10n*p).toString(),price:structuredClone(input.price),priorStateSha256:backup.stateSha256,backupSha256:backup.backupSha256,priorRealizedLamports:previousState.realizedLamports,priorExecutionCostsLamports:previousState.executionCosts,priorOperatingCostsMicroUsd:projectOperatingCosts(this.getOperatingCosts(),{asOf:at,now:at,tradingPnlMicroUsd:null}).operatingCostsMicroUsd,capitalAdjustmentLamports:(10000000000n-BigInt(assets.totalLamports)).toString(),contributionLamports:'10000000000',capitalArchivedLamports:assets.totalLamports,archivedAssets:assets};
+    const result=this.apply(id,'paper-epoch-transition',at,{authorization:input.authorization,assetDisposition:input.assetDisposition??null,previousState,epoch,backup},s=>{
+      if(s.paperEpoch||s.revision!==backup.revision||paperEpochStateSha256(s)!==backup.stateSha256)throw Error('PAPER_EPOCH_SOURCE_CHANGED_BEFORE_APPEND');requireEpochFlat(s,input.assetDisposition);
+      s.paperEpoch=epoch;s.lamports=epoch.initialLamports;s.lockedDeposits={};
+      s.daily={day:utcDay(at),baselineMicroUsd:epoch.initialMicroUsd,paused:true,lossPaused:false,reconciledAt:0};
+      // The only day reset is this explicit epoch transition. Later restarts
+      // retain the same epoch high water and pause; ordinary UTC days scan only
+      // same-epoch reconciliation receipts while retaining the full old prefix.
+      s.equityRisk!.daily={day:utcDay(at),highWaterMicroUsd:epoch.initialMicroUsd,highWaterAt:at,lossPaused:false,historyState:'complete',historyCoverage:'first-complete-observation',historyCutoffRevision:s.revision,historyCursorRevision:s.revision,historyReceipts:0,historyDigest:digest({epoch,backup:backup.logicalSha256})};
+      s.controls={entriesEnabled:false,reason:'execution startup: fresh reconciliation/readiness required',changedAt:at,readinessVersion:null,stopRequested:false};
+      return {epoch:structuredClone(epoch),backup:structuredClone(backup)};
+    });
+    this.validateEpochAnchor(this.state());return {...result,alreadyApplied:false};
   }
   async backup(path: string) { await this.db.backup(path); }
   nextSnapshotSequence() {
@@ -1042,11 +1082,13 @@ export class PaperLedger {
     equityLamports = unknownMarks ? null : equityLamports + positionLiquidationLamports;
     let p: bigint | null = null;
     try { if (price) p = priceAt(price, now); } catch { /* Explicit unknown USD valuation. */ }
-    const initialLamports = INITIAL * L / amount(s.inceptionPrice.microUsdPerSol);
-    const equityMicroUsd = p !== null && equityLamports !== null ? usd(equityLamports, p) + amount(s.roundingResidualMicroUsd) : null;
-    const passiveSolEquityMicroUsd = p !== null ? usd(initialLamports, p) + amount(s.roundingResidualMicroUsd) : null;
-    const totalPnlMicroUsd = equityMicroUsd === null ? null : (equityMicroUsd - INITIAL).toString();
-    const operating = projectOperatingCosts(this.getOperatingCosts(), { asOf: now, now, tradingPnlMicroUsd: totalPnlMicroUsd });
+    const initialLamports = s.paperEpoch?amount(s.paperEpoch.initialLamports):INITIAL * L / amount(s.inceptionPrice.microUsdPerSol),initialMicroUsd=s.paperEpoch?amount(s.paperEpoch.initialMicroUsd):INITIAL,residual=s.paperEpoch?0n:amount(s.roundingResidualMicroUsd);
+    const equityMicroUsd = p !== null && equityLamports !== null ? usd(equityLamports, p) + residual : null;
+    const passiveSolEquityMicroUsd = p !== null ? usd(initialLamports, p) + residual : null;
+    const totalPnlMicroUsd = equityMicroUsd === null ? null : (equityMicroUsd - initialMicroUsd).toString();
+    const lifetimeOperating = projectOperatingCosts(this.getOperatingCosts(), { asOf: now, now, tradingPnlMicroUsd: totalPnlMicroUsd });
+    const epochOperating=s.paperEpoch?(lifetimeOperating.operatingCostsMicroUsd===null||s.paperEpoch.priorOperatingCostsMicroUsd===null?null:(BigInt(lifetimeOperating.operatingCostsMicroUsd)-BigInt(s.paperEpoch.priorOperatingCostsMicroUsd)).toString()):lifetimeOperating.operatingCostsMicroUsd;
+    const operating={...lifetimeOperating,operatingCostsMicroUsd:epochOperating,economicPnlMicroUsd:epochOperating===null||totalPnlMicroUsd===null?null:(BigInt(totalPnlMicroUsd)-BigInt(epochOperating)).toString(),classification:epochOperating===null?'unavailable' as const:lifetimeOperating.classification};
     const dayFresh = s.daily.day === utcDay(now) && s.daily.reconciledAt > 0 && now >= s.daily.reconciledAt && now - s.daily.reconciledAt <= MAX_QUOTE_AGE;
     const policy=this.equityRiskStatus(s),risk=policy.kind==='active'?s.equityRisk:undefined,d=risk?.daily,historyReady=!!d&&d.day===utcDay(now)&&d.historyState==='complete';
     const drawdown=historyReady&&d.highWaterMicroUsd!==null&&equityMicroUsd!==null?drawdownFacts(amount(d.highWaterMicroUsd),equityMicroUsd):null;
@@ -1062,8 +1104,10 @@ export class PaperLedger {
       totalPnlMicroUsd,
       operatingCostsMicroUsd: operating.operatingCostsMicroUsd, economicPnlMicroUsd: operating.economicPnlMicroUsd, operatingCostClassification: operating.classification,
       passiveSolEquityMicroUsd: passiveSolEquityMicroUsd?.toString() ?? null,
-      solPriceEffectMicroUsd: passiveSolEquityMicroUsd === null ? null : (passiveSolEquityMicroUsd - INITIAL).toString(),
-      realizedLamports: s.realizedLamports, executionCostsLamports: s.executionCosts,
+      solPriceEffectMicroUsd: passiveSolEquityMicroUsd === null ? null : (passiveSolEquityMicroUsd - initialMicroUsd).toString(),
+      realizedLamports: (BigInt(s.realizedLamports)-BigInt(s.paperEpoch?.priorRealizedLamports??'0')).toString(), executionCostsLamports: (BigInt(s.executionCosts)-BigInt(s.paperEpoch?.priorExecutionCostsLamports??'0')).toString(),
+      lifetimeRealizedLamports:s.realizedLamports,lifetimeExecutionCostsLamports:s.executionCosts,
+      paperEpoch:s.paperEpoch?structuredClone(s.paperEpoch):null,epochInitialLamports:initialLamports.toString(),epochInitialMicroUsd:initialMicroUsd.toString(),
       positionLiquidationLamports: unknownMarks ? null : positionLiquidationLamports.toString(),
       positionCostMicroUsd: Object.values(s.positions).reduce((sum, x) => sum + amount(x.costMicroUsd), 0n).toString(),
       openPositions: Object.keys(s.positions).length, pendingActions: Object.keys(s.pending).length,

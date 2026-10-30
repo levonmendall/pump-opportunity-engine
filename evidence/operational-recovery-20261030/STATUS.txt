@@ -1,0 +1,12 @@
+POE recovery work, 2026-10-30 UTC
+
+Implementation prepared; NOT deployed and 10 SOL epoch NOT activated.
+Connected EC2 runner UID994 lacks POE service/ledger/root upgrade capability.
+Capability proof: GitHub admin run41071533732.
+Original Render equity preserved locally and by EC2 capture run41072232891 (453 samples, source through14:30:55.590Z).
+
+Repairs: cooperative held protection priority between source operations; protected exact exit-rent read; positive low-proceeds liquidation handling; finalized independently audited history reuse; V2 cohort and mean wait correction; append-only one-time10SOL epoch with verified SQLite backup, archived prior assets, and persistent5%/10% risk; epoch-separated reporting; supervised read-only lifetime reporter; release-independent read-only diagnostics.
+
+Independent chain evidence corroborates actual qi6 pool sell cascade at14:00:42Z and near-zero exit quote scale. Original POE quote batch/order/ledger receipts require privileged export; no historical result corrected. See qi6-forensics/findings.json.
+
+Offline tests and injected stress are validation of software behavior, not live trading performance or operational acceptance.
