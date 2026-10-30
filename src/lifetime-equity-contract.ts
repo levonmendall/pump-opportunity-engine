@@ -64,7 +64,6 @@ export function validateLifetimeEquityHistory(input: unknown, now = Date.now()):
     previousAt = at;
     previousSegment = point.segment as number;
   }
-  if (obj.lastSequence === '0' && obj.points.length !== 1) throw Error('EQUITY_SOURCE_SEQUENCE_REQUIRED');
   if (Buffer.byteLength(JSON.stringify(input)) > 128 * 1024) throw Error('EQUITY_TRANSFER_BOUND');
   return structuredClone(input) as LifetimeEquityHistory;
 }
