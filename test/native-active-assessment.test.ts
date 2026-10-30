@@ -75,9 +75,17 @@ test('active native public intelligence retains honest limitations in the existi
 });
 
 test('active adaptive score cannot clear an owner stop or a genuine daily-loss latch',async t=>{
- for(const control of ['owner-stop','daily-loss']as const)await t.test(control,async st=>{const f=await auditFixture(true,st);if(control==='owner-stop')f.ledger!.safeStop('OFFLINE explicit owner stop',f.at);else f.ledger!.reconcile('OFFLINE daily-loss shock',f.at,{...f.price(),microUsdPerSol:'90000000'},{});const state=f.ledger!.state();assert.equal((await f.bridge!.candidate(f.mint,true)).kind,'entry-permission-refused');assert.deepEqual(f.ledger!.state(),state);assert.deepEqual(state.pending,{});assert.equal(state.executionCosts,'0');});
+ for(const control of ['owner-stop','daily-loss']as const)await t.test(control,async st=>{const f=await auditFixture(true,st);if(control==='owner-stop')f.ledger!.safeStop('OFFLINE explicit owner stop',f.at);else{f.ledger!.reconcile('OFFLINE preceding complete daily-equity reference',f.at,f.price(),{});f.ledger!.reconcile('OFFLINE daily-loss shock',f.at,{...f.price(),microUsdPerSol:'90000000'},{});}const state=f.ledger!.state();assert.equal((await f.bridge!.candidate(f.mint,true)).kind,'entry-permission-refused');assert.deepEqual(f.ledger!.state(),state);assert.deepEqual(state.pending,{});assert.equal(state.executionCosts,'0');});
 });
 
 test('active native entry still fails closed after genuine source evidence is lost',async t=>{
  const f=await auditFixture(true,t);f.runner.onGap({mint:f.mint,at:f.at,reason:'OFFLINE genuinely missing required executed packet'});assert.equal(f.bridge!.ready(f.mint),false);assert.equal(f.bridge!.candidateDue(f.mint),false);assert.equal(f.bridge!.qualificationProof(f.mint),null);assert.equal((await f.bridge!.candidate(f.mint,true)).kind,'unavailable');assert.deepEqual(f.ledger!.state().pending,{});assert.equal(f.ledger!.state().executionCosts,'0');
+});
+
+test('existing report retires fixed-dollar fallback only from actual activated financial policy facts',async t=>{
+ const f=await auditFixture(true,t);const projection=f.ledger!.projection(f.at,f.price());
+ const input={engine:f.runner.status(),feeds:undefined,financialDecisions:[],eventLoopDelayP95Ms:null};
+ const legacy=nativePaperObservationReporting(input);assert.ok(legacy.additionalMeanings!.some(s=>s.startsWith('Current $50/$150')));
+ const current=nativePaperObservationReporting({...input,equityRisk:projection.equityRisk});assert.ok(current.additionalMeanings!.some(s=>s.includes('Activated PAPER risk:5%')&&s.includes('EQUITY_RISK_INITIALIZING')));assert.ok(!current.additionalMeanings!.some(s=>s.startsWith('Current $50/$150')));for(const line of current.additionalMeanings!)assert.ok(line.length<=512);
+ f.ledger!.reconcile('OFFLINE full current policy observation',f.at,f.price(),{});const ready=nativePaperObservationReporting({...input,equityRisk:f.ledger!.projection(f.at,f.price()).equityRisk});assert.ok(ready.additionalMeanings!.some(s=>s.includes('Risk facts:ready')));
 });

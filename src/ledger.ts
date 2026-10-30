@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3';
-import {PAPER_EQUITY_RISK_VERSION,PAPER_EQUITY_RISK_POLICY,equityRiskDay,consumedEntryAllowance,drawdownFacts,validateEquityRiskState,validateEntryAllocation,entryAllocation,type EquityRiskState,type EntryAllocation} from './paper-equity-risk.js';
+import {PAPER_EQUITY_RISK_VERSION,PAPER_EQUITY_RISK_POLICY,consumedEntryAllowance,drawdownFacts,validateEquityRiskState,validateEntryAllocation,entryAllocation,type EquityRiskState,type EntryAllocation} from './paper-equity-risk.js';
 import {validatePaperExecutionPlan,validatePaperExecutionLanding,validatePaperExecutionAttempt,paperExecutionFee,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt} from './execution-realism.js';
 import { createHash } from 'node:crypto';
 import { openSync, closeSync, fstatSync, lstatSync, statSync, realpathSync, constants, type Stats } from 'node:fs';
@@ -200,7 +200,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   }
   for (const [mint, p] of Object.entries(s.positions)) {
     if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || (p.allocation===undefined&&amount(p.costMicroUsd) > 50_000_000n) || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
-    if(p.allocation!==undefined){validateEntryAllocation(p.allocation,p.enteredAt,amount(p.entryLamports)+amount(p.entryGas));if(amount(p.costMicroUsd)!==usd(amount(p.allocation.consumedLamports),amount(p.allocation.microUsdPerSol)))throw Error('position allocation cost invariant');}
+    if(p.allocation!==undefined){if(!s.equityRisk||p.allocation.at<s.equityRisk.activatedAt)throw Error('position allocation policy invariant');validateEntryAllocation(p.allocation,p.enteredAt,amount(p.entryLamports)+amount(p.entryGas));if(amount(p.costMicroUsd)!==usd(amount(p.allocation.consumedLamports),amount(p.allocation.microUsdPerSol)))throw Error('position allocation cost invariant');}
     if(p.strategy!==undefined){validateEntryStrategy(p.strategy,p.strategy.assessedAt);if(!boundedText(p.strategy.roundTripId,100)||!Number.isSafeInteger(p.strategy.highWaterAt)||p.strategy.highWaterAt<p.enteredAt||p.strategy.highWaterAt>s.lastAt||p.strategy.assessedAt>p.enteredAt)throw Error('adaptive position strategy invariant');amount(p.strategy.highWaterNetLamports);}
   }
   let reservations = 0n;
@@ -209,7 +209,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
     if (!record(o) || !key(id, 100) || o.id !== id || !key(o.mint, 96) || pendingMints.has(o.mint) || !eventTime(o.decidedAt) || !Number.isSafeInteger(o.executeAt) || !Number.isSafeInteger(o.expiresAt) || o.executeAt < o.decidedAt + 500 || o.expiresAt <= o.executeAt || o.expiresAt > o.decidedAt + 30_000 || !boundedText(o.decisionEvidence) || amount(o.gas) === 0n || amount(o.minReceive) === 0n) throw new Error('pending order identity/time/amount invariant');
     const gas = amount(o.gas), spend = amount(o.maxSpend), deposit = amount(o.deposit), reserved = amount(o.reserved);
     if(o.executionModel!==undefined&&(!validatePaperExecutionPlan(o.executionModel)||o.executionModel.plannedAt!==o.decidedAt||o.executionModel.executeAt!==o.executeAt||o.executionModel.expiresAt!==o.expiresAt||paperExecutionFee(o.executionModel)!==o.gas))throw Error('pending execution model invariant');
-    if(o.allocation!==undefined){if(o.side!=='buy')throw Error('allocation belongs to entry only');validateEntryAllocation(o.allocation,o.decidedAt,gas+spend);}
+    if(o.allocation!==undefined){if(!s.equityRisk||o.allocation.at<s.equityRisk.activatedAt)throw Error('pending allocation policy invariant');if(o.side!=='buy')throw Error('allocation belongs to entry only');validateEntryAllocation(o.allocation,o.decidedAt,gas+spend);}
     if(o.entryStrategy!==undefined){if(o.side!=='buy')throw Error('adaptive strategy belongs to entry only');validateEntryStrategy(o.entryStrategy,o.decidedAt);}
     if (o.side === 'buy') {
       pendingBuys++;
@@ -354,7 +354,13 @@ export class PaperLedger {
     const from=Date.parse(d.day+'T00:00:00.000Z'),through=from+86400000;
     type Receipt={revision:number;actionId:string;at:number;detail:string;payloadHash:string|null;result:string|null};
     const rows=this.db.prepare("SELECT j.revision,j.action_id actionId,j.at,j.detail,a.payload_hash payloadHash,a.result FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.revision<=? AND j.at>=? AND j.at<? AND j.kind='reconcile' ORDER BY j.revision LIMIT 257").all(d.historyCursorRevision,d.historyCutoffRevision,from,through) as Receipt[];
-    try{for(const row of rows.slice(0,256)){
+    try{
+    // Revisions are the original contiguous0..cutoff financial prefix. A
+    // receipt query alone cannot see a missing driving journal row. Check
+    // indexed cardinality/identity before consuming and again at certification.
+    const prefix=this.db.prepare('SELECT count(*) count,min(revision) first,max(revision) last FROM journal WHERE revision<=?').get(d.historyCutoffRevision) as {count:number;first:number;last:number};
+    if(prefix.first!==0||prefix.last!==d.historyCutoffRevision||prefix.count!==d.historyCutoffRevision+1||this.db.prepare('SELECT 1 FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>0 AND j.revision<=? AND a.id IS NULL LIMIT 1').get(d.historyCutoffRevision))throw Error('risk history prefix incomplete');
+    for(const row of rows.slice(0,256)){
       if(!Number.isSafeInteger(row.at)||row.at>now||!boundedText(row.actionId,160)||!row.result||Buffer.byteLength(row.detail)>65536||Buffer.byteLength(row.result)>65536)throw Error('risk history receipt unavailable');
       const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(payload.now!==row.at||digest({kind:'reconcile',payload})!==row.payloadHash||typeof result.paused!=='boolean')throw Error('risk history identity mismatch');priceAt(payload.price,row.at);const value=amount(result.equityMicroUsd);
       if(d.highWaterMicroUsd===null||value>amount(d.highWaterMicroUsd)){d.highWaterMicroUsd=value.toString();d.highWaterAt=row.at;}
