@@ -1,0 +1,60 @@
+{
+  "sourceCommit": "f96e1ccede6c27e8d4b70ffa14a113c1cef2bf63",
+  "startedAt": "2026-10-30T03:21:00.474015+00:00",
+  "providerRequests": 0,
+  "financialAccountRead": false,
+  "financialActions": 0,
+  "serviceChanges": 0,
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/component-budget.test.ts",
+        "test/component-history-batch.test.ts",
+        "test/component-http-dispatch-timing.test.ts",
+        "test/component-known-uninvoked.test.ts",
+        "test/component-launcher.test.ts",
+        "test/component-live-evidence.test.ts",
+        "test/component-parity.test.ts",
+        "test/component-receipt-accounting.test.ts",
+        "test/component-results.test.ts",
+        "test/component-selection.test.ts",
+        "test/component-transport.test.ts",
+        "test/financial-audit-burst.test.ts",
+        "test/financial-provider-permission.test.ts",
+        "test/financial-provider-pressure.test.ts",
+        "test/known-uninvoked-checkpoint.test.ts",
+        "test/pilot-protection-recovery.test.ts",
+        "test/pilot-rpc-derived-status.test.ts",
+        "test/pilot-rpc-history-batch.test.ts",
+        "test/pilot-rpc-minute-research.test.ts",
+        "test/pilot-rpc-query-timeout.test.ts",
+        "test/pilot-rpc.test.ts",
+        "test/research-baseline.test.ts",
+        "test/research-checkpoint.test.ts",
+        "test/uninvoked-compaction-recovery.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T03:21:24.459379+00:00",
+  "artifacts": {
+    "source-before.json": "2efd0801e2488f93fd59ac79ceebbea9a0cd543c5caf8a9bfbc73117b867dd43",
+    "build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "source-after.json": "2efd0801e2488f93fd59ac79ceebbea9a0cd543c5caf8a9bfbc73117b867dd43",
+    "focused-tests.raw.txt": "13d04e0fa8362cc03bba69bda9a81839c1ad31f27dc7c3a658618ed9dfa6415a"
+  }
+}
