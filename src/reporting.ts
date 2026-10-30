@@ -15,10 +15,11 @@ export type ReceivedEquityHistory = {
   schemaVersion: 1;
   accountId: string | null;
   source: 'accepted-authoritative-portfolio-equity';
-  retention: 'receiver-memory-only' | 'ec2-durable-republished';
+  retention: 'receiver-memory-only' | 'ec2-durable-republished' | 'durable-with-preserved-receiver';
   downsampled?: boolean;
   inceptionAt?: string;
   financialEpoch?:FinancialEpochReport;
+  preservedReceiverPoints?:number;
   bucketMs: 60_000;
   windowLimited: boolean;
   points: (ReceivedEquityPoint & {segment?: number; kind?: 'inception' | 'observed' | 'epoch-start'})[];
@@ -233,12 +234,30 @@ export const snapshotFingerprint=hash;
 export type SnapshotAcknowledgement={published:true;result:'accepted'|'duplicate';accountId:string;inceptionAt:string;release:string;sequence:string;sourceAtMs:number;fingerprint:string;acknowledgedAtMs:number;rawSourceSha256?:string};
 
 
+/** Reporting-only union of real accepted observations. Capital markers and
+ * source segment boundaries remain breaks; no values are interpolated. */
+export function mergePreservedEquityPoints(source:ReceivedEquityPoint[],preserved:ReceivedEquityPoint[],epoch?:FinancialEpochReport){
+ const combined=new Map(source.map(point=>[point.at,{...point}]));let supplementary=0;
+ for(const point of preserved){if(epoch&&Date.parse(point.at)>=Date.parse(epoch.activatedAt))continue;const prior=combined.get(point.at);if(prior){if(prior.equityUsd!==point.equityUsd)throw Error('PRESERVED_EQUITY_VALUE_CONFLICT');continue;}combined.set(point.at,{...point});supplementary++;}
+ if(!preserved.length)return {points:structuredClone(source),supplementary};
+ const boundaries=new Set<string>();for(const rows of [source,preserved]){let prior:number|undefined;for(const point of rows){if(point.segment!==undefined){if(prior!==undefined&&prior!==point.segment)boundaries.add(point.at);prior=point.segment;}}}
+ let segment=0,lastAt:number|undefined;
+ const points=[...combined.values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at)).map(point=>{const at=Date.parse(point.at);if(lastAt!==undefined&&(point.kind==='epoch-start'||at-lastAt>EQUITY_GAP_MS||boundaries.has(point.at)))segment++;lastAt=at;return {...point,segment,kind:point.kind??'observed' as const};});
+ return {points,supplementary};
+}
+
 export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
   private acceptedEquity: ReceivedEquityPoint[] = [];
   private equityWindowLimited = false;
   private sourceEquity: LifetimeEquityHistory | null = null;
   private acceptedEpoch:FinancialEpochReport|null=null;
+  private preservedReceiverEquity:ReceivedEquityPoint[]=[];
+  /** Startup-only historical cache; never creates a current snapshot or acknowledgement. */
+  preserveReceiverEquity(points:ReceivedEquityPoint[]){
+    if(this.current||!this.identity||this.identity.accountId!==ORIGINAL_POE_ACCOUNT||this.identity.inceptionAt!==ORIGINAL_POE_INCEPTION)throw Error('PRESERVED_EQUITY_STARTUP_ONLY');
+    const merged=new Map(this.preservedReceiverEquity.map(point=>[point.at,point]));for(const point of points){const prior=merged.get(point.at);if(prior&&prior.equityUsd!==point.equityUsd)throw Error('PRESERVED_EQUITY_VALUE_CONFLICT');if(!prior||prior.segment===undefined&&point.segment!==undefined)merged.set(point.at,{...point});}if(merged.size>2880)throw Error('PRESERVED_EQUITY_BOUND');this.preservedReceiverEquity=[...merged.values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+  }
   constructor(readonly identity: ReportingIdentity | null = null) { if (identity !== null) validateIdentity(identity); }
   accept(value: unknown, now = Date.now()): 'accepted' | 'duplicate' {
     if (this.identity === null) throw new Error('source-not-configured');
@@ -314,6 +333,7 @@ export class SnapshotCache {
       if (latest.at === source.times.generatedAt && source.balances.equityUsd !== null &&
           latest.equityUsd !== source.balances.equityUsd) throw Error('EQUITY_SOURCE_VALUE_CONFLICT');
     }
+    mergePreservedEquityPoints(history.points,this.preservedReceiverEquity,history.financialEpoch??this.current?.snapshot.financialEpoch);
     this.sourceEquity = structuredClone(history);
     return 'accepted';
   }
@@ -342,14 +362,16 @@ export class SnapshotCache {
         points.push({at: current.times.generatedAt, equityUsd: current.balances.equityUsd,
           segment: latest.segment + (at - prior > EQUITY_GAP_MS ? 1 : 0), kind: 'observed'});
       }
+      const merged=mergePreservedEquityPoints(points,this.preservedReceiverEquity,epoch);
       return {schemaVersion: 1, accountId: history.accountId,
-        source: 'accepted-authoritative-portfolio-equity', retention: 'ec2-durable-republished',
+        source: 'accepted-authoritative-portfolio-equity', retention: merged.supplementary?'durable-with-preserved-receiver':'ec2-durable-republished',
+        ...(merged.supplementary?{preservedReceiverPoints:merged.supplementary}:{}),
         ...(epoch?{financialEpoch:structuredClone(epoch)}:{}),inceptionAt: history.inceptionAt, downsampled: history.downsampled,
-        bucketMs: 60_000, windowLimited: false, points};
+        bucketMs: 60_000, windowLimited: false, points:merged.points};
     }
     return {schemaVersion: 1, accountId: this.identity?.accountId ?? null,
       source: 'accepted-authoritative-portfolio-equity', retention: 'receiver-memory-only',
-      ...(this.acceptedEpoch?{financialEpoch:structuredClone(this.acceptedEpoch)}:{}),bucketMs: 60_000, windowLimited: this.equityWindowLimited, points: structuredClone(this.acceptedEquity)};
+      ...(this.acceptedEpoch?{financialEpoch:structuredClone(this.acceptedEpoch)}:{}),bucketMs: 60_000, windowLimited: this.equityWindowLimited, ...(this.preservedReceiverEquity.length?{preservedReceiverPoints:this.preservedReceiverEquity.length}:{}),points:mergePreservedEquityPoints(this.acceptedEquity,this.preservedReceiverEquity,this.acceptedEpoch??undefined).points};
   }
   read() { return this.current ? structuredClone(this.current) : null; }
   status(now = Date.now()) {

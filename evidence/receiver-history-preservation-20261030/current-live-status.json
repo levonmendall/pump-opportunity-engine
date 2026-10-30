@@ -1,0 +1,6261 @@
+{
+  "snapshot": {
+    "project": "pump-opportunity-engine",
+    "mode": "PAPER",
+    "liveTrading": false,
+    "schemaVersion": 1,
+    "account": {
+      "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "initialUsd": 1000
+    },
+    "sequence": "14068",
+    "source": {
+      "release": "69bc0df2d4ff7f7d8291526a233d2cee8de37396",
+      "strategy": "adaptive-momentum-v2-paper-v1"
+    },
+    "times": {
+      "generatedAt": "2026-10-30T15:02:45.250Z",
+      "marketAt": "2026-10-30T15:02:44.902Z",
+      "reconciledAt": "2026-10-30T15:02:44.407Z",
+      "usefulProgressAt": "2026-10-30T15:02:44.407Z"
+    },
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_DAILY_LOSS"
+    },
+    "balances": {
+      "cashSol": "9.321194942",
+      "reservedSol": "0",
+      "equitySol": "9.345187782",
+      "equityUsd": 885.923802,
+      "realizedUsd": -58.440396,
+      "unrealizedUsd": 0,
+      "tradingPnlUsd": -58.440396,
+      "economicPnlUsd": null,
+      "positionCostUsd": 0,
+      "markedExposureUsd": 0,
+      "drawdownUsd": null,
+      "executionCostsUsd": null,
+      "operatingCostsUsd": null,
+      "passiveSolEquityUsd": 944.364198,
+      "solPriceUsd": 94.8
+    },
+    "costLabels": {
+      "execution": "simulated",
+      "operating": "unavailable"
+    },
+    "positions": [],
+    "trades": [
+      {
+        "id": "paper-fill:a9708f63ce74cae713db1f70d804248b",
+        "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "side": "sell",
+        "quantity": "65278155",
+        "at": "2026-10-30T14:00:46.386Z",
+        "valueUsd": 0.010675,
+        "executionCostsUsd": 0.000664,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:88812:1793368845249"
+      },
+      {
+        "id": "paper-fill:97844fecbc7122d16fd5803963f4709b",
+        "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+        "side": "sell",
+        "quantity": "4987415586352",
+        "at": "2026-10-30T02:33:22.864Z",
+        "valueUsd": 43.327651,
+        "executionCostsUsd": 0.000664,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:69032:1793327601701"
+      },
+      {
+        "id": "paper-fill:3212aa854b30998a52be4bf7c8331016",
+        "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+        "side": "buy",
+        "quantity": "4987415586352",
+        "at": "2026-10-30T02:29:48.157Z",
+        "valueUsd": 49.716546,
+        "executionCostsUsd": 0.000664,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:68919:1793327386466"
+      },
+      {
+        "id": "paper-fill:1a0c8cd86cd25f090f0307fb06d5f232",
+        "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "side": "buy",
+        "quantity": "65278155",
+        "at": "2026-10-29T22:23:36.537Z",
+        "valueUsd": 49.707332,
+        "executionCostsUsd": 0.00068,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:61596:1793312614906"
+      },
+      {
+        "id": "paper-fill:4f9999cd2454f2f8b495153b077f3080",
+        "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+        "side": "sell",
+        "quantity": "271921178563",
+        "at": "2026-10-29T20:05:58.456Z",
+        "valueUsd": 60.85611,
+        "executionCostsUsd": 0.000694,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:53370:1793304357294"
+      },
+      {
+        "id": "paper-fill:8f94d82f6f8d0cb7cd235b91a9ef4d44",
+        "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+        "side": "buy",
+        "quantity": "271921178563",
+        "at": "2026-10-29T19:50:56.681Z",
+        "valueUsd": 49.698831,
+        "executionCostsUsd": 0.0007,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:52923:1793303455037"
+      },
+      {
+        "id": "paper-fill:def906f7b2cc4a0c2732c63eefbe322c",
+        "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+        "side": "sell",
+        "quantity": "195070637",
+        "at": "2026-10-29T19:28:56.225Z",
+        "valueUsd": 49.555833,
+        "executionCostsUsd": 0.0007,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:51615:1793302135089"
+      },
+      {
+        "id": "paper-fill:d5775daf8c2b9df708b307a2a99cb33c",
+        "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+        "side": "buy",
+        "quantity": "195070637",
+        "at": "2026-10-29T19:13:54.251Z",
+        "valueUsd": 49.698274,
+        "executionCostsUsd": 0.000701,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:51167:1793301232511"
+      },
+      {
+        "id": "paper-fill:a3642f8273dedd56f127555852b6bf13",
+        "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+        "side": "sell",
+        "quantity": "1028422062926",
+        "at": "2026-10-29T17:25:39.189Z",
+        "valueUsd": 42.251924,
+        "executionCostsUsd": 0.000711,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:48201:1793294738055"
+      },
+      {
+        "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+        "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+        "side": "buy",
+        "quantity": "1028422062926",
+        "at": "2026-10-29T17:20:07.003Z",
+        "valueUsd": 49.694512,
+        "executionCostsUsd": 0.00071,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+      },
+      {
+        "id": "paper-fill:8c86a04e730c26bd139f4d3e5783a07c",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "side": "sell",
+        "quantity": "319987598",
+        "at": "2026-10-29T16:23:37.938Z",
+        "valueUsd": 49.63868,
+        "executionCostsUsd": 0.000715,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:47355:1793291016775"
+      },
+      {
+        "id": "paper-fill:c5c94babc37540a39bd3cf70c18d4cf2",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "side": "buy",
+        "quantity": "319987598",
+        "at": "2026-10-29T16:08:35.958Z",
+        "valueUsd": 49.690465,
+        "executionCostsUsd": 0.00072,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:46914:1793290114273"
+      },
+      {
+        "id": "paper-fill:6dd8e14067d2b21a203ce5f5f1ecb921",
+        "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+        "side": "sell",
+        "quantity": "6411268419",
+        "at": "2026-10-29T15:16:50.857Z",
+        "valueUsd": 50.035441,
+        "executionCostsUsd": 0.000714,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:46296:1793287009656"
+      },
+      {
+        "id": "paper-fill:783fb910281022ac56bff60190469d36",
+        "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+        "side": "buy",
+        "quantity": "6411268419",
+        "at": "2026-10-29T15:01:47.821Z",
+        "valueUsd": 49.694031,
+        "executionCostsUsd": 0.000711,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:45874:1793286106180"
+      },
+      {
+        "id": "paper-fill:4f60a80e3a2a1138b54933655b1b7c13",
+        "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+        "side": "sell",
+        "quantity": "400582323928",
+        "at": "2026-10-29T09:18:01.660Z",
+        "valueUsd": 41.245086,
+        "executionCostsUsd": 0.000701,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:41776:1793265480459"
+      },
+      {
+        "id": "paper-fill:f57e6eff547ba02b388fd8a44502d794",
+        "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+        "side": "buy",
+        "quantity": "400582323928",
+        "at": "2026-10-29T09:15:17.693Z",
+        "valueUsd": 49.698409,
+        "executionCostsUsd": 0.000701,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:41696:1793265315521"
+      }
+    ],
+    "decisions": [],
+    "pnl": [
+      {
+        "at": "2026-10-26T22:07:36.212Z",
+        "tradingUsd": 0,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-26T22:07:36.213Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:27:44.772Z",
+        "tradingUsd": 9.304429,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:27:44.773Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:00.084Z",
+        "tradingUsd": 9.302955,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:00.085Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:15.258Z",
+        "tradingUsd": 9.295509,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:15.259Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:30.296Z",
+        "tradingUsd": 9.297053,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:30.297Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:45.351Z",
+        "tradingUsd": 9.29955,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:28:45.352Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:00.412Z",
+        "tradingUsd": 9.307061,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:00.413Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:15.478Z",
+        "tradingUsd": 9.304251,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:15.479Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:30.853Z",
+        "tradingUsd": 9.308728,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:30.854Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:45.877Z",
+        "tradingUsd": 9.31078,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:29:45.878Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:00.930Z",
+        "tradingUsd": 9.322326,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:00.931Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:15.982Z",
+        "tradingUsd": 9.316801,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:15.983Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:31.018Z",
+        "tradingUsd": 9.31898,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:31.019Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:46.052Z",
+        "tradingUsd": 9.305877,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:30:46.053Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:01.109Z",
+        "tradingUsd": 9.31313,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:01.110Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:16.248Z",
+        "tradingUsd": 9.31795,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:16.249Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:31.574Z",
+        "tradingUsd": 9.318436,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:31.575Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:46.641Z",
+        "tradingUsd": 9.321971,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:31:46.642Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:02.099Z",
+        "tradingUsd": 9.334927,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:02.100Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:17.113Z",
+        "tradingUsd": 9.33331,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:17.114Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:32.444Z",
+        "tradingUsd": 9.319443,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:32.445Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:47.461Z",
+        "tradingUsd": 9.323198,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:32:47.462Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:03.251Z",
+        "tradingUsd": 9.3199,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:03.252Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:18.280Z",
+        "tradingUsd": 9.307833,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:18.281Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:33.915Z",
+        "tradingUsd": 9.300626,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:33.916Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:48.987Z",
+        "tradingUsd": 9.307747,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:33:48.988Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:04.611Z",
+        "tradingUsd": 9.318812,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:04.612Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:20.072Z",
+        "tradingUsd": 9.330182,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:20.073Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:35.090Z",
+        "tradingUsd": 9.340243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:35.091Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:50.155Z",
+        "tradingUsd": 9.359176,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:34:50.156Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:05.329Z",
+        "tradingUsd": 9.37201,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:05.330Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:20.362Z",
+        "tradingUsd": 9.359893,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:20.363Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:35.755Z",
+        "tradingUsd": 9.355745,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:35.756Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:50.777Z",
+        "tradingUsd": 9.361622,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:35:50.778Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:06.509Z",
+        "tradingUsd": 9.351835,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:06.510Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:21.681Z",
+        "tradingUsd": 9.350526,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:21.682Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:37.739Z",
+        "tradingUsd": 9.342958,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:37.740Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:52.811Z",
+        "tradingUsd": 9.348432,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:36:52.812Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:07.815Z",
+        "tradingUsd": 9.36354,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:07.816Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:22.868Z",
+        "tradingUsd": 9.361484,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:22.869Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:38.091Z",
+        "tradingUsd": 9.382699,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:38.092Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:53.101Z",
+        "tradingUsd": 9.367489,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:37:53.102Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:08.151Z",
+        "tradingUsd": 9.376409,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:08.152Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:24.666Z",
+        "tradingUsd": 9.367006,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:24.667Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:39.733Z",
+        "tradingUsd": 9.369383,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:39.734Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:55.023Z",
+        "tradingUsd": 9.374434,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:38:55.024Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:10.054Z",
+        "tradingUsd": 9.389568,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:10.055Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:25.060Z",
+        "tradingUsd": 9.380308,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:25.061Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:40.083Z",
+        "tradingUsd": 9.375051,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:40.084Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:55.744Z",
+        "tradingUsd": 9.394533,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:39:55.745Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:10.759Z",
+        "tradingUsd": 9.404163,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:10.760Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:26.440Z",
+        "tradingUsd": 9.401807,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:26.441Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:41.451Z",
+        "tradingUsd": 9.394104,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:41.452Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:56.453Z",
+        "tradingUsd": 9.401081,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:40:56.454Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:12.031Z",
+        "tradingUsd": 9.395532,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:12.032Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:27.085Z",
+        "tradingUsd": 9.382561,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:27.086Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:42.962Z",
+        "tradingUsd": 9.387803,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:42.963Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:57.967Z",
+        "tradingUsd": 9.391875,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:41:57.968Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:13.324Z",
+        "tradingUsd": 9.389963,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:13.325Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:28.348Z",
+        "tradingUsd": 9.389612,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:28.349Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:43.404Z",
+        "tradingUsd": 9.389681,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:43.405Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:58.690Z",
+        "tradingUsd": 9.383351,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:42:58.691Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:43:15.478Z",
+        "tradingUsd": 9.38249,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:43:15.479Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:43:30.488Z",
+        "tradingUsd": 9.380484,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:43:30.489Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:43:45.984Z",
+        "tradingUsd": 9.383969,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:43:45.985Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:01.027Z",
+        "tradingUsd": 9.38679,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:01.028Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:16.550Z",
+        "tradingUsd": 9.381099,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:16.551Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:31.612Z",
+        "tradingUsd": 9.382341,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:31.613Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:46.971Z",
+        "tradingUsd": 9.389647,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:44:46.972Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:02.022Z",
+        "tradingUsd": 9.397877,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:02.023Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:18.346Z",
+        "tradingUsd": 9.399159,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:18.347Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:33.381Z",
+        "tradingUsd": 9.400006,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:33.382Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:48.837Z",
+        "tradingUsd": 9.411012,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:45:48.838Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:03.881Z",
+        "tradingUsd": 9.40266,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:03.882Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:18.959Z",
+        "tradingUsd": 9.390355,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:18.960Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:34.039Z",
+        "tradingUsd": 9.388738,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:34.040Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:49.052Z",
+        "tradingUsd": 9.403078,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:46:49.053Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:05.681Z",
+        "tradingUsd": 9.409135,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:05.682Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:20.704Z",
+        "tradingUsd": 9.408223,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:20.705Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:36.380Z",
+        "tradingUsd": 9.417573,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:36.381Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:51.403Z",
+        "tradingUsd": 9.42313,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:47:51.404Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:07.026Z",
+        "tradingUsd": 9.411238,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:07.027Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:22.055Z",
+        "tradingUsd": 9.407374,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:22.056Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:37.566Z",
+        "tradingUsd": 9.406605,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:37.567Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:52.638Z",
+        "tradingUsd": 9.401466,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:48:52.639Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:49:28.391Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:50:52.996Z",
+        "tradingUsd": 9.426064,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:50:52.997Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:53:29.035Z",
+        "tradingUsd": 9.431583,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:53:29.036Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:53:44.038Z",
+        "tradingUsd": 9.443152,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:53:44.039Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:53:59.304Z",
+        "tradingUsd": 9.443103,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:53:59.305Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:54:14.354Z",
+        "tradingUsd": 9.470257,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:54:14.355Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:54:29.372Z",
+        "tradingUsd": 9.467775,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:54:29.373Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:54:44.540Z",
+        "tradingUsd": 9.479345,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:54:44.541Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:01.193Z",
+        "tradingUsd": 9.493111,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:01.194Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:16.334Z",
+        "tradingUsd": 9.487381,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:16.335Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:31.343Z",
+        "tradingUsd": 9.502862,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:31.344Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:47.105Z",
+        "tradingUsd": 9.495055,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:55:47.106Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:02.122Z",
+        "tradingUsd": 9.481686,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:02.123Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:17.382Z",
+        "tradingUsd": 9.478288,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:17.383Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:32.440Z",
+        "tradingUsd": 9.48118,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:32.441Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:47.746Z",
+        "tradingUsd": 9.49079,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:56:47.747Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:04.235Z",
+        "tradingUsd": 9.506602,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:04.236Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:19.284Z",
+        "tradingUsd": 9.50506,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:19.285Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:34.813Z",
+        "tradingUsd": 9.505184,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:34.814Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:49.868Z",
+        "tradingUsd": 9.502668,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:57:49.869Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:05.078Z",
+        "tradingUsd": 9.505166,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:05.079Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:20.213Z",
+        "tradingUsd": 9.496836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:20.214Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:35.609Z",
+        "tradingUsd": 9.501606,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:35.610Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:50.655Z",
+        "tradingUsd": 9.492594,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:58:50.656Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:06.062Z",
+        "tradingUsd": 9.513188,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:06.063Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:21.093Z",
+        "tradingUsd": 9.503055,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:21.094Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:36.548Z",
+        "tradingUsd": 9.511967,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:36.549Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:51.552Z",
+        "tradingUsd": 9.542542,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T13:59:51.553Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:06.956Z",
+        "tradingUsd": 9.555036,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:06.957Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:21.990Z",
+        "tradingUsd": 9.553558,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:21.991Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:37.051Z",
+        "tradingUsd": 9.547311,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:37.052Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:53.744Z",
+        "tradingUsd": -58.529782,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:00:53.745Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:08.748Z",
+        "tradingUsd": -58.508206,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:08.749Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:24.147Z",
+        "tradingUsd": -58.474301,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:24.148Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:39.231Z",
+        "tradingUsd": -58.48663,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:39.232Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:54.249Z",
+        "tradingUsd": -58.535947,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:01:54.250Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:09.300Z",
+        "tradingUsd": -58.63458,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:09.301Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:24.571Z",
+        "tradingUsd": -58.637663,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:24.572Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:39.597Z",
+        "tradingUsd": -58.461972,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:39.598Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:54.830Z",
+        "tradingUsd": -58.428066,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:02:54.831Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:10.230Z",
+        "tradingUsd": -58.434231,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:10.231Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:26.400Z",
+        "tradingUsd": -58.440396,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:26.401Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:41.460Z",
+        "tradingUsd": -58.335597,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:41.461Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:56.847Z",
+        "tradingUsd": -58.387996,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:03:56.848Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:11.856Z",
+        "tradingUsd": -58.387996,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:11.857Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:26.859Z",
+        "tradingUsd": -58.394161,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:26.860Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:41.915Z",
+        "tradingUsd": -58.384914,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:41.916Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:56.917Z",
+        "tradingUsd": -58.400326,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:04:56.918Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:13.722Z",
+        "tradingUsd": -58.40649,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:13.723Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:28.781Z",
+        "tradingUsd": -58.455807,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:28.782Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:43.786Z",
+        "tradingUsd": -58.428066,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:43.787Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:58.787Z",
+        "tradingUsd": -58.440396,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:05:58.788Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:13.824Z",
+        "tradingUsd": -58.40649,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:13.825Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:28.843Z",
+        "tradingUsd": -58.33868,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:28.844Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:43.897Z",
+        "tradingUsd": -58.33868,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:43.898Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:58.917Z",
+        "tradingUsd": -58.301692,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:06:58.918Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:14.300Z",
+        "tradingUsd": -58.36642,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:14.301Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:29.315Z",
+        "tradingUsd": -58.384914,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:29.316Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:44.614Z",
+        "tradingUsd": -58.37875,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:44.615Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:59.664Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:07:59.665Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:08:14.829Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:08:14.830Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:08:30.374Z",
+        "tradingUsd": -58.37875,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:08:30.375Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:08:45.392Z",
+        "tradingUsd": -58.347927,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:08:45.393Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:00.434Z",
+        "tradingUsd": -58.317104,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:00.435Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:15.453Z",
+        "tradingUsd": -58.335597,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:15.454Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:30.505Z",
+        "tradingUsd": -58.329433,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:30.506Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:45.557Z",
+        "tradingUsd": -58.329433,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:09:45.558Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:00.564Z",
+        "tradingUsd": -58.307857,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:00.565Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:15.596Z",
+        "tradingUsd": -58.289363,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:15.597Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:30.628Z",
+        "tradingUsd": -58.304774,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:30.629Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:45.680Z",
+        "tradingUsd": -58.304774,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:10:45.681Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:00.731Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:00.732Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:15.748Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:15.749Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:30.801Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:30.802Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:45.858Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:11:45.859Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:00.881Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:00.882Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:15.882Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:15.883Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:30.913Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:30.914Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:45.916Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:12:45.917Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:13:00.929Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:13:00.930Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:13:15.952Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:13:15.953Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:13:30.990Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:13:30.991Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:13:46.007Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:01.007Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:01.008Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:16.061Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:16.062Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:31.082Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:31.083Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:46.144Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:14:46.145Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:15:01.181Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:15:01.182Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:15:16.207Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:15:16.208Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:15:31.230Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:15:31.231Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:15:46.249Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:01.249Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:01.250Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:16.295Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:16.296Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:31.350Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:31.351Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:46.377Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:16:46.378Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:02.024Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:02.025Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:17.072Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:17.073Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:32.129Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:32.130Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:47.151Z",
+        "tradingUsd": -58.042779,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:17:47.152Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:03.457Z",
+        "tradingUsd": -58.073602,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:03.458Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:18.491Z",
+        "tradingUsd": -58.089013,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:18.492Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:33.632Z",
+        "tradingUsd": -58.082849,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:33.633Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:48.690Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:18:48.691Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:03.736Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:03.737Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:18.794Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:18.795Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:33.842Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:33.843Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:48.878Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:19:48.879Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:03.935Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:03.936Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:18.956Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:18.957Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:33.985Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:33.986Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:49.033Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:20:49.034Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:04.099Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:04.100Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:19.132Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:19.133Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:34.168Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:34.169Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:49.211Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:21:49.212Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:04.253Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:04.254Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:19.291Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:19.292Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:34.325Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:34.326Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:49.334Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:22:49.335Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:04.383Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:04.384Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:19.388Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:19.389Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:34.407Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:34.408Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:49.449Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:23:49.450Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:04.455Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:04.456Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:19.467Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:19.468Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:34.468Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:34.469Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:49.515Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:24:49.516Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:04.522Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:04.523Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:19.550Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:19.551Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:34.557Z",
+        "tradingUsd": -58.141413,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:34.558Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:49.596Z",
+        "tradingUsd": -58.1784,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:25:49.597Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:04.622Z",
+        "tradingUsd": -58.230799,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:04.623Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:20.062Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:20.063Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:35.111Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:35.112Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:52.077Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:26:52.078Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:07.109Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:07.110Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:22.159Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:22.160Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:37.217Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:37.218Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:52.464Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:27:52.465Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:07.509Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:07.510Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:22.637Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:22.638Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:37.678Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:37.679Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:53.875Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:28:53.876Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:08.910Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:08.911Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:25.073Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:25.074Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:40.102Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:40.103Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:55.127Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:29:55.128Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:10.511Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:10.512Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:25.532Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:25.533Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:40.573Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:40.574Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:55.590Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:30:55.591Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:10.609Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:10.610Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:25.642Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:25.643Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:40.702Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:40.703Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:55.739Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:31:55.740Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:10.770Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:10.771Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:25.832Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:25.833Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:42.017Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:42.018Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:57.083Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:32:57.084Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:12.091Z",
+        "tradingUsd": -58.264704,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:12.092Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:27.112Z",
+        "tradingUsd": -57.879417,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:27.113Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:42.125Z",
+        "tradingUsd": -57.867088,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:42.126Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:57.140Z",
+        "tradingUsd": -57.904075,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:33:57.141Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:13.694Z",
+        "tradingUsd": -57.953392,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:13.695Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:28.754Z",
+        "tradingUsd": -57.968804,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:28.755Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:43.756Z",
+        "tradingUsd": -57.928734,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:43.757Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:58.767Z",
+        "tradingUsd": -57.947228,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:34:58.768Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:13.797Z",
+        "tradingUsd": -57.947228,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:13.798Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:28.815Z",
+        "tradingUsd": -57.888664,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:28.816Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:43.862Z",
+        "tradingUsd": -57.888664,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:43.863Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:58.892Z",
+        "tradingUsd": -57.904075,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:35:58.893Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:13.922Z",
+        "tradingUsd": -57.888664,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:13.923Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:28.935Z",
+        "tradingUsd": -57.882499,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:28.936Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:43.993Z",
+        "tradingUsd": -57.857841,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:43.994Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:59.015Z",
+        "tradingUsd": -57.876335,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:36:59.016Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:14.076Z",
+        "tradingUsd": -57.857841,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:14.077Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:29.102Z",
+        "tradingUsd": -57.811606,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:29.103Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:44.151Z",
+        "tradingUsd": -57.780783,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:44.152Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:59.152Z",
+        "tradingUsd": -57.799277,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:37:59.153Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:38:14.635Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:38:14.636Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:38:30.091Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:38:30.092Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:38:45.092Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:38:45.093Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:00.110Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:00.111Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:15.158Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:15.159Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:30.272Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:30.273Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:45.311Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:39:45.312Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:00.372Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:00.373Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:15.381Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:15.382Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:30.388Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:30.389Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:45.418Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:40:45.419Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:00.450Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:00.451Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:15.512Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:15.513Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:30.578Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:30.579Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:45.636Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:41:45.637Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:00.649Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:00.650Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:15.684Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:15.685Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:31.995Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:31.996Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:47.040Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:42:47.041Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:02.089Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:02.090Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:17.148Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:17.149Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:32.379Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:32.380Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:47.401Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:43:47.402Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:02.498Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:02.499Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:17.509Z",
+        "tradingUsd": -57.808524,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:17.510Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:32.539Z",
+        "tradingUsd": -58.381832,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:32.540Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:47.571Z",
+        "tradingUsd": -58.452725,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:44:47.572Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:02.616Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:02.617Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:17.660Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:17.661Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:32.736Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:32.737Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:47.746Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:45:47.747Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:02.796Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:04.055Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:06.691Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:21.696Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:21.697Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:36.726Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:36.727Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:51.770Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:46:51.771Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:06.820Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:06.821Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:21.842Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:21.843Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:36.899Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:36.900Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:51.998Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:47:51.999Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:07.043Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:07.044Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:22.097Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:22.098Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:37.108Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:37.109Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:52.226Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:48:52.227Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:07.290Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:07.291Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:22.345Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:22.346Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:37.365Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:37.366Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:52.372Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:49:52.373Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:07.737Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:07.738Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:22.740Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:22.741Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:37.780Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:37.781Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:54.043Z",
+        "tradingUsd": -58.397243,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:50:54.044Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:09.096Z",
+        "tradingUsd": -58.33868,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:09.097Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:24.150Z",
+        "tradingUsd": -58.335597,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:24.151Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:39.172Z",
+        "tradingUsd": -58.29861,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:39.173Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:54.211Z",
+        "tradingUsd": -58.32635,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:51:54.212Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:09.246Z",
+        "tradingUsd": -58.341762,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:09.247Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:24.289Z",
+        "tradingUsd": -58.36642,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:24.290Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:39.357Z",
+        "tradingUsd": -58.33868,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:39.358Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:54.423Z",
+        "tradingUsd": -58.32635,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:52:54.424Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:09.486Z",
+        "tradingUsd": -58.29861,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:09.487Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:24.520Z",
+        "tradingUsd": -58.29861,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:24.521Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:39.544Z",
+        "tradingUsd": -58.341762,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:39.545Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:54.546Z",
+        "tradingUsd": -58.246211,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:53:54.547Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:09.605Z",
+        "tradingUsd": -58.21847,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:09.606Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:24.666Z",
+        "tradingUsd": -58.209223,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:24.667Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:41.000Z",
+        "tradingUsd": -58.196894,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:41.001Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:56.049Z",
+        "tradingUsd": -58.267787,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:54:56.050Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:55:12.067Z",
+        "tradingUsd": -58.209223,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:55:27.067Z",
+        "tradingUsd": -58.203059,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:55:27.068Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:55:42.071Z",
+        "tradingUsd": -58.270869,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:55:42.072Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:55:57.129Z",
+        "tradingUsd": -58.301692,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:55:57.130Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:12.607Z",
+        "tradingUsd": -58.277034,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:12.608Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:27.669Z",
+        "tradingUsd": -58.206141,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:27.670Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:42.726Z",
+        "tradingUsd": -58.209223,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:42.727Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:57.789Z",
+        "tradingUsd": -58.144495,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:56:57.790Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:12.829Z",
+        "tradingUsd": -58.119836,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:12.830Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:27.843Z",
+        "tradingUsd": -58.092096,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:27.844Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:42.968Z",
+        "tradingUsd": -58.079767,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:42.969Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:58.028Z",
+        "tradingUsd": -58.048944,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:57:58.029Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:13.030Z",
+        "tradingUsd": -58.033532,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:13.031Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:28.079Z",
+        "tradingUsd": -58.042779,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:28.080Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:43.135Z",
+        "tradingUsd": -58.092096,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:43.136Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:58.190Z",
+        "tradingUsd": -58.092096,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:58:58.191Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:13.211Z",
+        "tradingUsd": -58.09826,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:13.212Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:28.278Z",
+        "tradingUsd": -58.150659,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:28.279Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:43.479Z",
+        "tradingUsd": -58.181482,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:43.480Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:58.482Z",
+        "tradingUsd": -58.169153,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T14:59:58.483Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:13.547Z",
+        "tradingUsd": -58.175318,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:13.548Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:28.551Z",
+        "tradingUsd": -58.206141,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:28.552Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:43.978Z",
+        "tradingUsd": -58.206141,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:43.979Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:58.990Z",
+        "tradingUsd": -58.236964,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:00:58.991Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:14.006Z",
+        "tradingUsd": -58.25854,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:14.007Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:29.637Z",
+        "tradingUsd": -58.332515,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:29.638Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:44.657Z",
+        "tradingUsd": -58.403408,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:44.658Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:59.937Z",
+        "tradingUsd": -58.421902,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:01:59.938Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:02:14.980Z",
+        "tradingUsd": -58.471219,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:02:14.981Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:02:30.034Z",
+        "tradingUsd": -58.468136,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:02:30.035Z",
+        "tradingUsd": null,
+        "economicUsd": null
+      },
+      {
+        "at": "2026-10-30T15:02:45.250Z",
+        "tradingUsd": -58.440396,
+        "economicUsd": null
+      }
+    ],
+    "history": {
+      "windowStartAt": "2026-10-26T22:07:36.212Z",
+      "downsampled": true,
+      "label": "WINDOW LIMITED. Actual samples; explicit gaps. Trading SOL at current USD; passive SOL separate. Pre-cutover unknown. 0 fills lack context; historical USD/gas unverified."
+    },
+    "funnel": {
+      "discovered": 53,
+      "supported": 53,
+      "sufficientlyObserved": 0,
+      "evaluated": 0,
+      "qualified": 0,
+      "attempted": 0,
+      "paperFilled": 0,
+      "exited": 0,
+      "reconciled": 1012
+    },
+    "metrics": {
+      "processingLagMs": 89,
+      "eventLoopLagMs": 37.093375,
+      "providerEvents": 5389,
+      "rpcRequests": 499,
+      "projectedDailyDataSol": null,
+      "budgetRemainingSol": null,
+      "budgetStatus": "available",
+      "coverage": "Current-run source counters; bounded admitted candidates only; raw feed messages and shared physical operation counts. No independent full-market denominator. Held actual-size marks require fresh coherent validated state.",
+      "latency": "Held market time is the oldest validated bank Clock, not getBlockTime. No real transaction landing claim."
+    },
+    "intelligence": {
+      "version": "poe-operating-intelligence-v1",
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12028051,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "financialPolicy": {
+        "version": "poe-paper-financial-policy-v1",
+        "risk": {
+          "version": "paper-equity-risk-5-10-v1",
+          "state": "ready",
+          "reasonCode": "EQUITY_RISK_DAILY_DRAWDOWN",
+          "asOf": "2026-10-30T15:02:45.250Z",
+          "entry": {
+            "targetBps": 500,
+            "targetConsumedCostMicroUsd": "44296190",
+            "targetConsumedCostSol": "0.467259389",
+            "unreservedCashSol": "9.321194942",
+            "cashLimitedConsumedCostSol": "0.467259389",
+            "refundableDepositsIncluded": false,
+            "executabilityClaimed": false
+          },
+          "daily": {
+            "day": "2026-10-30",
+            "limitBps": 1000,
+            "highWaterMicroUsd": "983754372",
+            "highWaterAt": "2026-10-30T06:57:56.652Z",
+            "currentEquityMicroUsd": "885923802",
+            "drawdownMicroUsd": "97830570",
+            "drawdownBps": 994,
+            "remainingBeforePauseMicroUsd": "544867",
+            "lossPaused": true,
+            "historyCoverage": "verified-retained-same-day",
+            "basis": "complete-observed-executable-equity-current-usd"
+          }
+        },
+        "execution": {
+          "version": "paper-chain-conditioned-v1",
+          "state": "active",
+          "scope": "current-market-instance",
+          "plans": 0,
+          "supportedLandingStates": 0,
+          "preflightUnsubmitted": 0,
+          "unknownLanding": 0,
+          "legacyProtectionFallbacks": 0,
+          "last": null,
+          "meaning": "PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME"
+        },
+        "valuation": {
+          "version": "paper-sol-usd-observation-v1",
+          "scope": "current-source-instance",
+          "failuresByReason": {},
+          "lastObservation": {
+            "source": "coinbase-public-sol-usd",
+            "startedAt": "2026-10-30T15:02:44.852Z",
+            "completedAt": "2026-10-30T15:02:44.902Z",
+            "durationMs": 49.64817199995741,
+            "outcome": "received",
+            "reasonCode": "USD_PRICE_RECEIVED",
+            "httpStatus": 200,
+            "receivedAt": "2026-10-30T15:02:44.902Z",
+            "publicationTimeKnown": false
+          }
+        }
+      },
+      "run": {
+        "id": "native-paper-20261030144605701",
+        "startedAt": "2026-10-30T14:46:05.701Z",
+        "mode": "persistent-paper",
+        "configurationSha256": "1a81d2156865467cab6300c260a809e0f98ae6649bdd88b4161f13b4c7d8edef",
+        "strategyVersion": "adaptive-momentum-v2-paper-v1"
+      },
+      "candidates": {
+        "migrationsReceived": 958,
+        "verifiedOrigins": 168,
+        "known": 174,
+        "watch": 95,
+        "eligible": 64,
+        "deepActive": 4,
+        "deepMaximum": 4,
+        "queued": 58,
+        "promoted": 6370,
+        "repromoted": 5562,
+        "demoted": 6347,
+        "completeWindows": 4824,
+        "auditedWindows": 4846,
+        "uniqueEvaluated": 33,
+        "uniqueAudited": null,
+        "predictiveAssessments": 2727,
+        "predictivePasses": 1230,
+        "predictiveFailures": 1497,
+        "predictiveUnavailable": 0,
+        "waitMeanMs": null,
+        "waitMaximumMs": 2062912,
+        "olderSelected": 24
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1649,
+        "auditUnavailable": 277,
+        "auditUnusable": 339,
+        "decisionDeadlineMisses": 1109,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1649,
+        "capacityExclusions": 0,
+        "structuralExclusions": 73,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Activated PAPER risk:5% current equity consumed entry cost, refundable rent separately reserved;10% observed UTC daily equity high-water drawdown. Fixed$50/$150 limits retired. Risk facts:ready (EQUITY_RISK_DAILY_DRAWDOWN); this grants no entry permission. Four deep slots/two holdings; legacy held exit rules retained.",
+          "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+          "Current runtime observed completed protection maxima since 2026-10-30T14:46:05.701Z: gap unavailable; quote age at use unavailable. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+          "Candidate instance 2026-10-30T14:46:05.860Z: counts NATIVE_FLOW_DISCONNECTED:12, NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED:10 (occurrences, not unique windows). Latest quality-gap/NATIVE_FLOW_DISCONNECTED close 1006 at 2026-10-30T15:02:20.476Z, mint 4qizrkdhWZBRMSm1BCs1m13Ju3YJxAu4mjbuSKjypump; target end unavailable deadline unavailable UTC-ms; dispatch unavailable.",
+          "Holding RPC current instance since 2026-10-30T14:46:05.762Z: calls 0; logical attempts 0; rapid probes 0; RPC retry successes 0; dispatch refusals 0; holding starts in 10s / 60s 0 / 0. These counts are not completed protection evaluations."
+        ]
+      },
+      "provider": {
+        "rpcRequests": 499,
+        "rpcResponseBytes": 41188267,
+        "nativeStreamBytes": 1826954923,
+        "broadWatchBytes": 118165756389,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 775,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 26,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-30T15:02:28.602Z",
+        "historyCooldownUntil": "2026-10-30T01:11:26.761Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-30T15:02:44.255Z",
+        "cpuOneCoreFraction": 0.4031428884173655,
+        "rssBytes": 428396544,
+        "availableMemoryBytes": 6745190400,
+        "availableDiskBytes": 282460504064,
+        "eventLoopLagMs": 37.093375,
+        "state": "normal"
+      },
+      "protection": {
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "breaches": 89,
+        "unavailableChecks": 550
+      },
+      "times": {
+        "marketNotificationAt": "2026-10-30T15:02:44.798Z",
+        "freshSupportAt": "2026-10-30T15:02:22.918Z",
+        "bankClockAt": "2026-10-30T15:02:22.000Z",
+        "auditAt": "2026-10-30T15:02:12.319Z",
+        "predictiveAt": "2026-10-30T15:01:02.379Z",
+        "reconciliationAt": "2026-10-30T15:02:44.407Z"
+      },
+      "decisions": [
+        {
+          "id": "native-paper-20261030144605701:0:1793372072387",
+          "mint": "nvqR1p3HzhPXuJJdXqixyZ1b94oHMRhJ9pM59uQpump",
+          "at": "2026-10-30T14:54:32.387Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:1:1793372072711",
+          "mint": "kziXxCJLQMpkiuoyAkgHELxGcKDs4hNoeWdnpgkpump",
+          "at": "2026-10-30T14:54:32.711Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:2:1793372073036",
+          "mint": "6PNq3Dduz73HHFBFt1KYRqDEsgcPQE6BDDRgxAFupump",
+          "at": "2026-10-30T14:54:33.036Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:3:1793372073418",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:54:33.418Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:4:1793372081389",
+          "mint": "6PNq3Dduz73HHFBFt1KYRqDEsgcPQE6BDDRgxAFupump",
+          "at": "2026-10-30T14:54:41.389Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-near-neutral-executed-flow"
+        },
+        {
+          "id": "native-paper-20261030144605701:5:1793372081683",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:54:41.683Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:6:1793372092415",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:54:52.415Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:7:1793372102314",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:55:02.314Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:8:1793372112446",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:55:12.446Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:9:1793372122369",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:55:22.369Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:10:1793372132381",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:55:32.381Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:11:1793372142580",
+          "mint": "B7aV6Pyw4qmn458V5SUj13AQXzZza1TAuZASYyHpump",
+          "at": "2026-10-30T14:55:42.580Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:12:1793372142872",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:55:42.872Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:13:1793372152424",
+          "mint": "B7aV6Pyw4qmn458V5SUj13AQXzZza1TAuZASYyHpump",
+          "at": "2026-10-30T14:55:52.424Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:14:1793372152722",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:55:52.722Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:15:1793372162425",
+          "mint": "HoAotFnxws7mX4ATrj1E91VeG1AUmsfNiC7nMD7spump",
+          "at": "2026-10-30T14:56:02.425Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:16:1793372162793",
+          "mint": "6g6192Bs3fz5vKFKoJwan1Ypdi5qevxDnZAft5kFpump",
+          "at": "2026-10-30T14:56:02.793Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:17:1793372163172",
+          "mint": "B7aV6Pyw4qmn458V5SUj13AQXzZza1TAuZASYyHpump",
+          "at": "2026-10-30T14:56:03.172Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:18:1793372163482",
+          "mint": "yiTWtj5rXwQQqgZdJNdmnptomaqFFqrNudcKiKHpump",
+          "at": "2026-10-30T14:56:03.482Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:19:1793372242509",
+          "mint": "qhbbjGBKJxW3AZGqngWM5tHcrENR3pVoRB9MCf1pump",
+          "at": "2026-10-30T14:57:22.509Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:20:1793372262331",
+          "mint": "7nyEor8ayMibc42Xa1ikRvpNKnA6w5JjGasFGzvgpump",
+          "at": "2026-10-30T14:57:42.331Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:21:1793372262588",
+          "mint": "E8KY9K1TNmuNsRagZyYsjb4N9N2iPPUZgtrxQGKjpump",
+          "at": "2026-10-30T14:57:42.588Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:22:1793372262906",
+          "mint": "LBABxq9YMjAbdiuH5id6FBZQXf47sqTkJtAbmj7pump",
+          "at": "2026-10-30T14:57:42.906Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:23:1793372392403",
+          "mint": "wpDqTbt8uDN3x6NEW5iJeX2CtxbY3vBm7cB6RoBpump",
+          "at": "2026-10-30T14:59:52.403Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:24:1793372402446",
+          "mint": "2RhfshVmBgjL1HmNtX4VoprSUZtA7yiq5VsTGobMpump",
+          "at": "2026-10-30T15:00:02.446Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:25:1793372402743",
+          "mint": "8AH7LjWuuSi8T2dJRgurTgd9B4HR3E7nM5AFcnbapump",
+          "at": "2026-10-30T15:00:02.743Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:26:1793372403009",
+          "mint": "wpDqTbt8uDN3x6NEW5iJeX2CtxbY3vBm7cB6RoBpump",
+          "at": "2026-10-30T15:00:03.009Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:27:1793372412419",
+          "mint": "wpDqTbt8uDN3x6NEW5iJeX2CtxbY3vBm7cB6RoBpump",
+          "at": "2026-10-30T15:00:12.419Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "id": "native-paper-20261030144605701:28:1793372422423",
+          "mint": "wpDqTbt8uDN3x6NEW5iJeX2CtxbY3vBm7cB6RoBpump",
+          "at": "2026-10-30T15:00:22.423Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "id": "native-paper-20261030144605701:29:1793372462379",
+          "mint": "2R1fzYc7rxVcXnmcdoBXunxS8TbQF6vEGnsqNYpopump",
+          "at": "2026-10-30T15:01:02.379Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        }
+      ],
+      "refusals": [
+        {
+          "reason": "native-quality-gaps",
+          "count": 1649
+        },
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 277
+        },
+        {
+          "reason": "independent-audit-unusable",
+          "count": 339
+        },
+        {
+          "reason": "predictive-window-deadline-missed",
+          "count": 1109
+        },
+        {
+          "reason": "optional-diagnostic-omissions-not-required-flow",
+          "count": 450
+        }
+      ],
+      "pendingOrders": []
+    }
+  },
+  "fingerprint": "30b55e454b9fa5672922ce60f5fb574e9714538808dfe200b5cb8880d7dd20af",
+  "receivedAt": "2026-10-30T15:02:46.902Z",
+  "freshness": {
+    "state": "entry-paused",
+    "receivedAt": "2026-10-30T15:02:46.902Z",
+    "generatedAt": "2026-10-30T15:02:45.250Z",
+    "marketAt": "2026-10-30T15:02:44.902Z",
+    "reconciledAt": "2026-10-30T15:02:44.407Z",
+    "usefulProgressAt": "2026-10-30T15:02:44.407Z",
+    "sourceAgeMs": 8111,
+    "marketAgeMs": 8459,
+    "reconciliationAgeMs": 8954,
+    "operating": {
+      "kind": "operating-source-v1",
+      "state": "entry-paused",
+      "market": "observing",
+      "reporting": "current",
+      "sourceAgeMs": 8111,
+      "receivedAgeMs": 6459,
+      "selectedCapture": true,
+      "discovery": true,
+      "watch": true,
+      "entryRestriction": "POE_ENTRY_DAILY_LOSS",
+      "financial": {
+        "usdValuation": "available",
+        "reconciled": true,
+        "valuationAgeMs": 8459,
+        "reconciliationAgeMs": 8954
+      },
+      "protection": {
+        "state": "flat",
+        "completedAt": null,
+        "completedAgeAtSourceMs": null,
+        "boundaryMs": 4000
+      },
+      "reasonCodes": [
+        "POE_ENTRY_DAILY_LOSS"
+      ]
+    }
+  },
+  "equityHistory": {
+    "schemaVersion": 1,
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "source": "accepted-authoritative-portfolio-equity",
+    "retention": "receiver-memory-only",
+    "bucketMs": 60000,
+    "windowLimited": false,
+    "points": [
+      {
+        "at": "2026-10-30T06:51:52.962Z",
+        "equityUsd": 980.943221
+      },
+      {
+        "at": "2026-10-30T06:52:53.238Z",
+        "equityUsd": 981.754796
+      },
+      {
+        "at": "2026-10-30T06:53:54.701Z",
+        "equityUsd": 981.911854
+      },
+      {
+        "at": "2026-10-30T06:54:55.290Z",
+        "equityUsd": 982.221574
+      },
+      {
+        "at": "2026-10-30T06:55:57.993Z",
+        "equityUsd": 982.283792
+      },
+      {
+        "at": "2026-10-30T06:56:58.295Z",
+        "equityUsd": 983.148408
+      },
+      {
+        "at": "2026-10-30T06:57:58.703Z",
+        "equityUsd": 983.554024
+      },
+      {
+        "at": "2026-10-30T06:58:58.773Z",
+        "equityUsd": 983.465581
+      },
+      {
+        "at": "2026-10-30T06:59:59.176Z",
+        "equityUsd": 982.670567
+      },
+      {
+        "at": "2026-10-30T07:00:59.242Z",
+        "equityUsd": 982.127797
+      },
+      {
+        "at": "2026-10-30T07:01:45.714Z",
+        "equityUsd": 982.281973
+      },
+      {
+        "at": "2026-10-30T07:02:46.894Z",
+        "equityUsd": 982.292049
+      },
+      {
+        "at": "2026-10-30T07:03:46.928Z",
+        "equityUsd": 982.301356
+      },
+      {
+        "at": "2026-10-30T07:04:47.019Z",
+        "equityUsd": 982.315278
+      },
+      {
+        "at": "2026-10-30T07:05:47.480Z",
+        "equityUsd": 982.323402
+      },
+      {
+        "at": "2026-10-30T07:06:49.617Z",
+        "equityUsd": 982.332416
+      },
+      {
+        "at": "2026-10-30T07:07:50.790Z",
+        "equityUsd": 982.350024
+      },
+      {
+        "at": "2026-10-30T07:08:51.563Z",
+        "equityUsd": 981.058273
+      },
+      {
+        "at": "2026-10-30T07:09:52.749Z",
+        "equityUsd": 980.625766
+      },
+      {
+        "at": "2026-10-30T07:10:53.152Z",
+        "equityUsd": 980.787866
+      },
+      {
+        "at": "2026-10-30T07:11:53.528Z",
+        "equityUsd": 981.201829
+      },
+      {
+        "at": "2026-10-30T07:12:54.011Z",
+        "equityUsd": 980.712545
+      },
+      {
+        "at": "2026-10-30T07:13:55.279Z",
+        "equityUsd": 979.821958
+      },
+      {
+        "at": "2026-10-30T07:14:55.495Z",
+        "equityUsd": 979.536228
+      },
+      {
+        "at": "2026-10-30T07:15:57.095Z",
+        "equityUsd": 979.996035
+      },
+      {
+        "at": "2026-10-30T07:16:57.950Z",
+        "equityUsd": 980.309643
+      },
+      {
+        "at": "2026-10-30T07:17:45.311Z",
+        "equityUsd": 980.469388
+      },
+      {
+        "at": "2026-10-30T07:18:45.687Z",
+        "equityUsd": 980.982123
+      },
+      {
+        "at": "2026-10-30T07:19:46.260Z",
+        "equityUsd": 980.895809
+      },
+      {
+        "at": "2026-10-30T07:20:46.770Z",
+        "equityUsd": 980.559708
+      },
+      {
+        "at": "2026-10-30T07:21:47.226Z",
+        "equityUsd": 980.571806
+      },
+      {
+        "at": "2026-10-30T07:22:47.853Z",
+        "equityUsd": 980.281476
+      },
+      {
+        "at": "2026-10-30T07:23:50.242Z",
+        "equityUsd": 980.142735
+      },
+      {
+        "at": "2026-10-30T07:24:50.652Z",
+        "equityUsd": 980.203559
+      },
+      {
+        "at": "2026-10-30T07:25:50.776Z",
+        "equityUsd": 980.50846
+      },
+      {
+        "at": "2026-10-30T07:26:54.055Z",
+        "equityUsd": 980.768987
+      },
+      {
+        "at": "2026-10-30T07:27:54.604Z",
+        "equityUsd": 980.281589
+      },
+      {
+        "at": "2026-10-30T07:28:54.819Z",
+        "equityUsd": 980.394538
+      },
+      {
+        "at": "2026-10-30T07:29:55.772Z",
+        "equityUsd": 980.100959
+      },
+      {
+        "at": "2026-10-30T07:30:57.000Z",
+        "equityUsd": 981.515391
+      },
+      {
+        "at": "2026-10-30T07:31:57.594Z",
+        "equityUsd": 982.329506
+      },
+      {
+        "at": "2026-10-30T07:32:58.069Z",
+        "equityUsd": 982.139684
+      },
+      {
+        "at": "2026-10-30T07:33:58.809Z",
+        "equityUsd": 981.946069
+      },
+      {
+        "at": "2026-10-30T07:34:58.951Z",
+        "equityUsd": 979.80123
+      },
+      {
+        "at": "2026-10-30T07:35:58.996Z",
+        "equityUsd": 980.159923
+      },
+      {
+        "at": "2026-10-30T07:36:59.570Z",
+        "equityUsd": 978.768433
+      },
+      {
+        "at": "2026-10-30T07:37:45.331Z",
+        "equityUsd": 978.770038
+      },
+      {
+        "at": "2026-10-30T07:38:45.828Z",
+        "equityUsd": 977.874049
+      },
+      {
+        "at": "2026-10-30T07:39:47.650Z",
+        "equityUsd": 977.383339
+      },
+      {
+        "at": "2026-10-30T07:40:47.948Z",
+        "equityUsd": 978.643196
+      },
+      {
+        "at": "2026-10-30T07:41:49.544Z",
+        "equityUsd": 977.802662
+      },
+      {
+        "at": "2026-10-30T07:42:50.915Z",
+        "equityUsd": 975.306091
+      },
+      {
+        "at": "2026-10-30T07:43:51.014Z",
+        "equityUsd": 974.566831
+      },
+      {
+        "at": "2026-10-30T07:44:53.108Z",
+        "equityUsd": 975.429446
+      },
+      {
+        "at": "2026-10-30T07:45:53.505Z",
+        "equityUsd": 973.886349
+      },
+      {
+        "at": "2026-10-30T07:46:54.917Z",
+        "equityUsd": 975.949905
+      },
+      {
+        "at": "2026-10-30T07:47:57.924Z",
+        "equityUsd": 976.158298
+      },
+      {
+        "at": "2026-10-30T07:48:59.492Z",
+        "equityUsd": 975.317139
+      },
+      {
+        "at": "2026-10-30T07:49:44.823Z",
+        "equityUsd": 974.826056
+      },
+      {
+        "at": "2026-10-30T07:50:46.592Z",
+        "equityUsd": 973.938307
+      },
+      {
+        "at": "2026-10-30T07:51:49.458Z",
+        "equityUsd": 974.300665
+      },
+      {
+        "at": "2026-10-30T07:52:50.597Z",
+        "equityUsd": 973.257615
+      },
+      {
+        "at": "2026-10-30T07:53:51.717Z",
+        "equityUsd": 972.669068
+      },
+      {
+        "at": "2026-10-30T07:54:55.006Z",
+        "equityUsd": 972.126947
+      },
+      {
+        "at": "2026-10-30T07:55:55.701Z",
+        "equityUsd": 970.67924
+      },
+      {
+        "at": "2026-10-30T07:56:57.607Z",
+        "equityUsd": 970.89076
+      },
+      {
+        "at": "2026-10-30T07:57:58.066Z",
+        "equityUsd": 972.045909
+      },
+      {
+        "at": "2026-10-30T07:58:58.486Z",
+        "equityUsd": 974.206866
+      },
+      {
+        "at": "2026-10-30T07:59:59.237Z",
+        "equityUsd": 973.812315
+      },
+      {
+        "at": "2026-10-30T08:00:59.466Z",
+        "equityUsd": 972.878127
+      },
+      {
+        "at": "2026-10-30T08:01:59.494Z",
+        "equityUsd": 972.537659
+      },
+      {
+        "at": "2026-10-30T08:02:59.600Z",
+        "equityUsd": 973.448024
+      },
+      {
+        "at": "2026-10-30T08:03:45.265Z",
+        "equityUsd": 972.649198
+      },
+      {
+        "at": "2026-10-30T08:04:47.214Z",
+        "equityUsd": 972.815523
+      },
+      {
+        "at": "2026-10-30T08:05:48.911Z",
+        "equityUsd": 971.82701
+      },
+      {
+        "at": "2026-10-30T08:06:52.269Z",
+        "equityUsd": 971.838773
+      },
+      {
+        "at": "2026-10-30T08:07:53.795Z",
+        "equityUsd": 971.494309
+      },
+      {
+        "at": "2026-10-30T08:08:56.945Z",
+        "equityUsd": 971.109482
+      },
+      {
+        "at": "2026-10-30T08:09:57.798Z",
+        "equityUsd": 971.418374
+      },
+      {
+        "at": "2026-10-30T08:10:58.884Z",
+        "equityUsd": 971.63227
+      },
+      {
+        "at": "2026-10-30T08:11:59.488Z",
+        "equityUsd": 971.989781
+      },
+      {
+        "at": "2026-10-30T08:12:45.124Z",
+        "equityUsd": 972.697969
+      },
+      {
+        "at": "2026-10-30T08:13:47.981Z",
+        "equityUsd": 972.15629
+      },
+      {
+        "at": "2026-10-30T08:14:48.358Z",
+        "equityUsd": 973.118979
+      },
+      {
+        "at": "2026-10-30T08:15:49.687Z",
+        "equityUsd": 974.732457
+      },
+      {
+        "at": "2026-10-30T08:16:51.233Z",
+        "equityUsd": 974.240618
+      },
+      {
+        "at": "2026-10-30T08:17:51.769Z",
+        "equityUsd": 973.948618
+      },
+      {
+        "at": "2026-10-30T08:18:52.254Z",
+        "equityUsd": 973.956275
+      },
+      {
+        "at": "2026-10-30T08:19:52.573Z",
+        "equityUsd": 975.569118
+      },
+      {
+        "at": "2026-10-30T08:20:38.632Z",
+        "equityUsd": 974.874042
+      },
+      {
+        "at": "2026-10-30T08:21:54.039Z",
+        "equityUsd": 974.881791
+      },
+      {
+        "at": "2026-10-30T08:22:54.146Z",
+        "equityUsd": 976.146436
+      },
+      {
+        "at": "2026-10-30T08:23:54.294Z",
+        "equityUsd": 976.308999
+      },
+      {
+        "at": "2026-10-30T08:24:48.143Z",
+        "equityUsd": 975.966348
+      },
+      {
+        "at": "2026-10-30T08:25:50.201Z",
+        "equityUsd": 976.12897
+      },
+      {
+        "at": "2026-10-30T08:26:50.415Z",
+        "equityUsd": 973.930616
+      },
+      {
+        "at": "2026-10-30T08:27:51.402Z",
+        "equityUsd": 974.097394
+      },
+      {
+        "at": "2026-10-30T08:28:52.452Z",
+        "equityUsd": 973.909931
+      },
+      {
+        "at": "2026-10-30T08:29:52.519Z",
+        "equityUsd": 973.214789
+      },
+      {
+        "at": "2026-10-30T08:30:53.603Z",
+        "equityUsd": 973.226354
+      },
+      {
+        "at": "2026-10-30T08:31:54.025Z",
+        "equityUsd": 973.033415
+      },
+      {
+        "at": "2026-10-30T08:32:54.186Z",
+        "equityUsd": 974.295729
+      },
+      {
+        "at": "2026-10-30T08:33:54.471Z",
+        "equityUsd": 974.257813
+      },
+      {
+        "at": "2026-10-30T08:34:55.760Z",
+        "equityUsd": 974.367156
+      },
+      {
+        "at": "2026-10-30T08:35:55.967Z",
+        "equityUsd": 973.068864
+      },
+      {
+        "at": "2026-10-30T08:36:57.027Z",
+        "equityUsd": 972.428298
+      },
+      {
+        "at": "2026-10-30T08:37:57.946Z",
+        "equityUsd": 973.540215
+      },
+      {
+        "at": "2026-10-30T08:38:46.137Z",
+        "equityUsd": 974.047756
+      },
+      {
+        "at": "2026-10-30T08:39:48.156Z",
+        "equityUsd": 974.411122
+      },
+      {
+        "at": "2026-10-30T08:40:48.743Z",
+        "equityUsd": 972.664025
+      },
+      {
+        "at": "2026-10-30T08:41:49.287Z",
+        "equityUsd": 972.826881
+      },
+      {
+        "at": "2026-10-30T08:42:50.457Z",
+        "equityUsd": 973.49435
+      },
+      {
+        "at": "2026-10-30T08:43:50.923Z",
+        "equityUsd": 972.401315
+      },
+      {
+        "at": "2026-10-30T08:44:51.673Z",
+        "equityUsd": 972.413299
+      },
+      {
+        "at": "2026-10-30T08:45:51.909Z",
+        "equityUsd": 971.968432
+      },
+      {
+        "at": "2026-10-30T08:46:52.593Z",
+        "equityUsd": 972.03094
+      },
+      {
+        "at": "2026-10-30T08:47:53.204Z",
+        "equityUsd": 971.993711
+      },
+      {
+        "at": "2026-10-30T08:48:54.275Z",
+        "equityUsd": 972.354867
+      },
+      {
+        "at": "2026-10-30T08:49:55.837Z",
+        "equityUsd": 971.912998
+      },
+      {
+        "at": "2026-10-30T08:50:56.612Z",
+        "equityUsd": 972.276888
+      },
+      {
+        "at": "2026-10-30T08:51:56.948Z",
+        "equityUsd": 972.537185
+      },
+      {
+        "at": "2026-10-30T08:52:57.333Z",
+        "equityUsd": 972.597298
+      },
+      {
+        "at": "2026-10-30T08:53:57.869Z",
+        "equityUsd": 973.962533
+      },
+      {
+        "at": "2026-10-30T08:54:59.187Z",
+        "equityUsd": 976.683971
+      },
+      {
+        "at": "2026-10-30T08:55:44.241Z",
+        "equityUsd": 976.638768
+      },
+      {
+        "at": "2026-10-30T08:56:47.256Z",
+        "equityUsd": 975.338792
+      },
+      {
+        "at": "2026-10-30T08:57:47.410Z",
+        "equityUsd": 974.85035
+      },
+      {
+        "at": "2026-10-30T08:58:49.637Z",
+        "equityUsd": 974.962055
+      },
+      {
+        "at": "2026-10-30T08:59:50.188Z",
+        "equityUsd": 974.575186
+      },
+      {
+        "at": "2026-10-30T09:00:50.277Z",
+        "equityUsd": 974.036958
+      },
+      {
+        "at": "2026-10-30T09:01:50.611Z",
+        "equityUsd": 974.494762
+      },
+      {
+        "at": "2026-10-30T09:02:51.383Z",
+        "equityUsd": 974.465342
+      },
+      {
+        "at": "2026-10-30T09:03:52.287Z",
+        "equityUsd": 975.427188
+      },
+      {
+        "at": "2026-10-30T09:04:52.437Z",
+        "equityUsd": 975.538606
+      },
+      {
+        "at": "2026-10-30T09:05:54.563Z",
+        "equityUsd": 974.296268
+      },
+      {
+        "at": "2026-10-30T09:06:55.219Z",
+        "equityUsd": 973.653572
+      },
+      {
+        "at": "2026-10-30T09:07:55.496Z",
+        "equityUsd": 972.962846
+      },
+      {
+        "at": "2026-10-30T09:08:56.735Z",
+        "equityUsd": 972.224117
+      },
+      {
+        "at": "2026-10-30T09:09:57.216Z",
+        "equityUsd": 973.335752
+      },
+      {
+        "at": "2026-10-30T09:10:57.571Z",
+        "equityUsd": 973.349269
+      },
+      {
+        "at": "2026-10-30T09:11:58.250Z",
+        "equityUsd": 973.356622
+      },
+      {
+        "at": "2026-10-30T09:12:58.628Z",
+        "equityUsd": 973.370501
+      },
+      {
+        "at": "2026-10-30T09:13:46.101Z",
+        "equityUsd": 973.372443
+      },
+      {
+        "at": "2026-10-30T09:14:46.343Z",
+        "equityUsd": 973.38737
+      },
+      {
+        "at": "2026-10-30T09:15:48.919Z",
+        "equityUsd": 973.398395
+      },
+      {
+        "at": "2026-10-30T09:16:49.024Z",
+        "equityUsd": 972.853837
+      },
+      {
+        "at": "2026-10-30T09:17:51.510Z",
+        "equityUsd": 972.113029
+      },
+      {
+        "at": "2026-10-30T09:18:51.665Z",
+        "equityUsd": 972.522737
+      },
+      {
+        "at": "2026-10-30T09:19:54.250Z",
+        "equityUsd": 972.280517
+      },
+      {
+        "at": "2026-10-30T09:20:55.208Z",
+        "equityUsd": 972.19046
+      },
+      {
+        "at": "2026-10-30T09:21:55.344Z",
+        "equityUsd": 971.250033
+      },
+      {
+        "at": "2026-10-30T09:22:58.544Z",
+        "equityUsd": 970.112421
+      },
+      {
+        "at": "2026-10-30T09:23:58.857Z",
+        "equityUsd": 971.134296
+      },
+      {
+        "at": "2026-10-30T09:24:59.435Z",
+        "equityUsd": 970.69402
+      },
+      {
+        "at": "2026-10-30T09:25:44.869Z",
+        "equityUsd": 971.753266
+      },
+      {
+        "at": "2026-10-30T09:26:47.275Z",
+        "equityUsd": 971.366813
+      },
+      {
+        "at": "2026-10-30T09:27:48.085Z",
+        "equityUsd": 970.120505
+      },
+      {
+        "at": "2026-10-30T09:28:50.405Z",
+        "equityUsd": 970.129357
+      },
+      {
+        "at": "2026-10-30T09:29:51.103Z",
+        "equityUsd": 970.036518
+      },
+      {
+        "at": "2026-10-30T09:30:51.900Z",
+        "equityUsd": 970.548047
+      },
+      {
+        "at": "2026-10-30T09:31:52.595Z",
+        "equityUsd": 969.959195
+      },
+      {
+        "at": "2026-10-30T09:32:52.771Z",
+        "equityUsd": 970.06515
+      },
+      {
+        "at": "2026-10-30T09:33:53.146Z",
+        "equityUsd": 969.425952
+      },
+      {
+        "at": "2026-10-30T09:34:53.821Z",
+        "equityUsd": 970.836681
+      },
+      {
+        "at": "2026-10-30T09:35:55.139Z",
+        "equityUsd": 970.993845
+      },
+      {
+        "at": "2026-10-30T09:36:55.610Z",
+        "equityUsd": 971.356009
+      },
+      {
+        "at": "2026-10-30T09:37:55.884Z",
+        "equityUsd": 971.110523
+      },
+      {
+        "at": "2026-10-30T09:38:56.311Z",
+        "equityUsd": 971.172773
+      },
+      {
+        "at": "2026-10-30T09:39:57.436Z",
+        "equityUsd": 971.435252
+      },
+      {
+        "at": "2026-10-30T09:40:58.094Z",
+        "equityUsd": 971.644615
+      },
+      {
+        "at": "2026-10-30T09:41:58.920Z",
+        "equityUsd": 970.556124
+      },
+      {
+        "at": "2026-10-30T09:42:45.079Z",
+        "equityUsd": 971.159806
+      },
+      {
+        "at": "2026-10-30T09:43:45.276Z",
+        "equityUsd": 972.123698
+      },
+      {
+        "at": "2026-10-30T09:44:46.986Z",
+        "equityUsd": 971.683626
+      },
+      {
+        "at": "2026-10-30T09:45:49.187Z",
+        "equityUsd": 970.886191
+      },
+      {
+        "at": "2026-10-30T09:46:49.390Z",
+        "equityUsd": 969.883512
+      },
+      {
+        "at": "2026-10-30T09:47:49.579Z",
+        "equityUsd": 969.599343
+      },
+      {
+        "at": "2026-10-30T09:48:50.345Z",
+        "equityUsd": 969.91358
+      },
+      {
+        "at": "2026-10-30T09:49:50.913Z",
+        "equityUsd": 971.080096
+      },
+      {
+        "at": "2026-10-30T09:50:51.494Z",
+        "equityUsd": 971.137105
+      },
+      {
+        "at": "2026-10-30T09:51:53.352Z",
+        "equityUsd": 970.19395
+      },
+      {
+        "at": "2026-10-30T09:52:54.353Z",
+        "equityUsd": 969.555605
+      },
+      {
+        "at": "2026-10-30T09:53:54.603Z",
+        "equityUsd": 969.711298
+      },
+      {
+        "at": "2026-10-30T09:54:55.804Z",
+        "equityUsd": 969.623117
+      },
+      {
+        "at": "2026-10-30T09:55:56.222Z",
+        "equityUsd": 969.588068
+      },
+      {
+        "at": "2026-10-30T09:56:56.851Z",
+        "equityUsd": 969.797073
+      },
+      {
+        "at": "2026-10-30T09:57:57.167Z",
+        "equityUsd": 969.460582
+      },
+      {
+        "at": "2026-10-30T09:58:58.001Z",
+        "equityUsd": 970.022831
+      },
+      {
+        "at": "2026-10-30T09:59:58.742Z",
+        "equityUsd": 970.434424
+      },
+      {
+        "at": "2026-10-30T10:00:45.295Z",
+        "equityUsd": 969.288753
+      },
+      {
+        "at": "2026-10-30T10:01:46.455Z",
+        "equityUsd": 968.046096
+      },
+      {
+        "at": "2026-10-30T10:02:47.203Z",
+        "equityUsd": 968.155443
+      },
+      {
+        "at": "2026-10-30T10:03:47.588Z",
+        "equityUsd": 967.157994
+      },
+      {
+        "at": "2026-10-30T10:04:47.866Z",
+        "equityUsd": 965.915686
+      },
+      {
+        "at": "2026-10-30T10:05:48.092Z",
+        "equityUsd": 966.479956
+      },
+      {
+        "at": "2026-10-30T10:06:52.399Z",
+        "equityUsd": 965.388959
+      },
+      {
+        "at": "2026-10-30T10:07:56.174Z",
+        "equityUsd": 965.200059
+      },
+      {
+        "at": "2026-10-30T10:08:56.687Z",
+        "equityUsd": 965.915021
+      },
+      {
+        "at": "2026-10-30T10:09:56.915Z",
+        "equityUsd": 964.866685
+      },
+      {
+        "at": "2026-10-30T10:10:57.894Z",
+        "equityUsd": 965.929257
+      },
+      {
+        "at": "2026-10-30T10:11:59.576Z",
+        "equityUsd": 965.737164
+      },
+      {
+        "at": "2026-10-30T10:12:45.221Z",
+        "equityUsd": 965.895401
+      },
+      {
+        "at": "2026-10-30T10:13:45.768Z",
+        "equityUsd": 966.658231
+      },
+      {
+        "at": "2026-10-30T10:14:48.233Z",
+        "equityUsd": 966.668538
+      },
+      {
+        "at": "2026-10-30T10:15:50.526Z",
+        "equityUsd": 966.38914
+      },
+      {
+        "at": "2026-10-30T10:16:53.913Z",
+        "equityUsd": 965.902763
+      },
+      {
+        "at": "2026-10-30T10:17:54.341Z",
+        "equityUsd": 965.164452
+      },
+      {
+        "at": "2026-10-30T10:18:55.900Z",
+        "equityUsd": 965.62434
+      },
+      {
+        "at": "2026-10-30T10:19:58.231Z",
+        "equityUsd": 964.938552
+      },
+      {
+        "at": "2026-10-30T10:20:59.016Z",
+        "equityUsd": 965.353321
+      },
+      {
+        "at": "2026-10-30T10:21:59.938Z",
+        "equityUsd": 965.565091
+      },
+      {
+        "at": "2026-10-30T10:22:45.012Z",
+        "equityUsd": 965.37554
+      },
+      {
+        "at": "2026-10-30T10:23:45.288Z",
+        "equityUsd": 966.635604
+      },
+      {
+        "at": "2026-10-30T10:24:45.384Z",
+        "equityUsd": 966.647411
+      },
+      {
+        "at": "2026-10-30T10:25:45.751Z",
+        "equityUsd": 966.662732
+      },
+      {
+        "at": "2026-10-30T10:26:45.977Z",
+        "equityUsd": 966.673986
+      },
+      {
+        "at": "2026-10-30T10:27:46.079Z",
+        "equityUsd": 966.679623
+      },
+      {
+        "at": "2026-10-30T10:28:46.514Z",
+        "equityUsd": 966.690898
+      },
+      {
+        "at": "2026-10-30T10:29:49.677Z",
+        "equityUsd": 968.860146
+      },
+      {
+        "at": "2026-10-30T10:30:50.162Z",
+        "equityUsd": 969.676478
+      },
+      {
+        "at": "2026-10-30T10:31:50.466Z",
+        "equityUsd": 970.692239
+      },
+      {
+        "at": "2026-10-30T10:32:50.725Z",
+        "equityUsd": 970.402471
+      },
+      {
+        "at": "2026-10-30T10:33:51.220Z",
+        "equityUsd": 972.521545
+      },
+      {
+        "at": "2026-10-30T10:34:52.658Z",
+        "equityUsd": 972.281921
+      },
+      {
+        "at": "2026-10-30T10:35:53.731Z",
+        "equityUsd": 972.092687
+      },
+      {
+        "at": "2026-10-30T10:36:54.095Z",
+        "equityUsd": 972.504088
+      },
+      {
+        "at": "2026-10-30T10:37:54.617Z",
+        "equityUsd": 973.666818
+      },
+      {
+        "at": "2026-10-30T10:38:54.783Z",
+        "equityUsd": 973.374241
+      },
+      {
+        "at": "2026-10-30T10:39:55.328Z",
+        "equityUsd": 973.084627
+      },
+      {
+        "at": "2026-10-30T10:40:56.562Z",
+        "equityUsd": 974.057726
+      },
+      {
+        "at": "2026-10-30T10:41:57.923Z",
+        "equityUsd": 973.431957
+      },
+      {
+        "at": "2026-10-30T10:42:58.611Z",
+        "equityUsd": 974.39122
+      },
+      {
+        "at": "2026-10-30T10:43:59.191Z",
+        "equityUsd": 973.554267
+      },
+      {
+        "at": "2026-10-30T10:44:45.258Z",
+        "equityUsd": 973.610922
+      },
+      {
+        "at": "2026-10-30T10:45:46.388Z",
+        "equityUsd": 973.119662
+      },
+      {
+        "at": "2026-10-30T10:46:46.860Z",
+        "equityUsd": 972.228833
+      },
+      {
+        "at": "2026-10-30T10:47:48.042Z",
+        "equityUsd": 971.641935
+      },
+      {
+        "at": "2026-10-30T10:48:48.846Z",
+        "equityUsd": 971.649087
+      },
+      {
+        "at": "2026-10-30T10:49:49.293Z",
+        "equityUsd": 970.857505
+      },
+      {
+        "at": "2026-10-30T10:50:50.817Z",
+        "equityUsd": 971.573049
+      },
+      {
+        "at": "2026-10-30T10:51:51.249Z",
+        "equityUsd": 970.472604
+      },
+      {
+        "at": "2026-10-30T10:52:51.887Z",
+        "equityUsd": 971.740707
+      },
+      {
+        "at": "2026-10-30T10:53:53.249Z",
+        "equityUsd": 973.202934
+      },
+      {
+        "at": "2026-10-30T10:54:53.739Z",
+        "equityUsd": 973.81577
+      },
+      {
+        "at": "2026-10-30T10:55:54.261Z",
+        "equityUsd": 974.181163
+      },
+      {
+        "at": "2026-10-30T10:56:54.490Z",
+        "equityUsd": 973.844174
+      },
+      {
+        "at": "2026-10-30T10:57:54.609Z",
+        "equityUsd": 973.851508
+      },
+      {
+        "at": "2026-10-30T10:58:55.013Z",
+        "equityUsd": 974.716339
+      },
+      {
+        "at": "2026-10-30T10:59:56.916Z",
+        "equityUsd": 975.677921
+      },
+      {
+        "at": "2026-10-30T11:00:57.471Z",
+        "equityUsd": 975.685229
+      },
+      {
+        "at": "2026-10-30T11:01:58.702Z",
+        "equityUsd": 974.741317
+      },
+      {
+        "at": "2026-10-30T11:02:58.992Z",
+        "equityUsd": 974.19518
+      },
+      {
+        "at": "2026-10-30T11:03:59.489Z",
+        "equityUsd": 973.402726
+      },
+      {
+        "at": "2026-10-30T11:04:59.718Z",
+        "equityUsd": 973.114909
+      },
+      {
+        "at": "2026-10-30T11:05:45.567Z",
+        "equityUsd": 973.272737
+      },
+      {
+        "at": "2026-10-30T11:06:46.541Z",
+        "equityUsd": 973.031562
+      },
+      {
+        "at": "2026-10-30T11:07:46.970Z",
+        "equityUsd": 973.247253
+      },
+      {
+        "at": "2026-10-30T11:08:48.534Z",
+        "equityUsd": 972.559572
+      },
+      {
+        "at": "2026-10-30T11:09:51.007Z",
+        "equityUsd": 971.967926
+      },
+      {
+        "at": "2026-10-30T11:10:52.722Z",
+        "equityUsd": 971.83033
+      },
+      {
+        "at": "2026-10-30T11:11:52.877Z",
+        "equityUsd": 971.435231
+      },
+      {
+        "at": "2026-10-30T11:12:54.067Z",
+        "equityUsd": 971.999973
+      },
+      {
+        "at": "2026-10-30T11:13:56.920Z",
+        "equityUsd": 971.958141
+      },
+      {
+        "at": "2026-10-30T11:14:57.205Z",
+        "equityUsd": 971.87078
+      },
+      {
+        "at": "2026-10-30T11:15:57.986Z",
+        "equityUsd": 972.035467
+      },
+      {
+        "at": "2026-10-30T11:16:59.413Z",
+        "equityUsd": 970.840774
+      },
+      {
+        "at": "2026-10-30T11:17:59.697Z",
+        "equityUsd": 971.897754
+      },
+      {
+        "at": "2026-10-30T11:18:45.267Z",
+        "equityUsd": 971.657298
+      },
+      {
+        "at": "2026-10-30T11:19:45.867Z",
+        "equityUsd": 971.267233
+      },
+      {
+        "at": "2026-10-30T11:20:46.936Z",
+        "equityUsd": 971.881615
+      },
+      {
+        "at": "2026-10-30T11:21:47.906Z",
+        "equityUsd": 971.687248
+      },
+      {
+        "at": "2026-10-30T11:22:48.400Z",
+        "equityUsd": 971.39674
+      },
+      {
+        "at": "2026-10-30T11:23:50.762Z",
+        "equityUsd": 971.403941
+      },
+      {
+        "at": "2026-10-30T11:24:51.306Z",
+        "equityUsd": 971.516333
+      },
+      {
+        "at": "2026-10-30T11:25:52.556Z",
+        "equityUsd": 971.478933
+      },
+      {
+        "at": "2026-10-30T11:26:52.657Z",
+        "equityUsd": 973.693099
+      },
+      {
+        "at": "2026-10-30T11:27:52.936Z",
+        "equityUsd": 973.247554
+      },
+      {
+        "at": "2026-10-30T11:28:54.488Z",
+        "equityUsd": 972.901517
+      },
+      {
+        "at": "2026-10-30T11:29:55.253Z",
+        "equityUsd": 973.465851
+      },
+      {
+        "at": "2026-10-30T11:30:55.562Z",
+        "equityUsd": 973.178263
+      },
+      {
+        "at": "2026-10-30T11:31:55.686Z",
+        "equityUsd": 973.435161
+      },
+      {
+        "at": "2026-10-30T11:32:55.854Z",
+        "equityUsd": 973.448301
+      },
+      {
+        "at": "2026-10-30T11:33:55.961Z",
+        "equityUsd": 972.908356
+      },
+      {
+        "at": "2026-10-30T11:34:56.581Z",
+        "equityUsd": 971.969977
+      },
+      {
+        "at": "2026-10-30T11:35:57.692Z",
+        "equityUsd": 972.182628
+      },
+      {
+        "at": "2026-10-30T11:36:57.907Z",
+        "equityUsd": 971.241099
+      },
+      {
+        "at": "2026-10-30T11:37:58.007Z",
+        "equityUsd": 971.193913
+      },
+      {
+        "at": "2026-10-30T11:38:59.446Z",
+        "equityUsd": 971.554824
+      },
+      {
+        "at": "2026-10-30T11:39:45.141Z",
+        "equityUsd": 971.515665
+      },
+      {
+        "at": "2026-10-30T11:40:45.864Z",
+        "equityUsd": 971.325743
+      },
+      {
+        "at": "2026-10-30T11:41:45.993Z",
+        "equityUsd": 971.186247
+      },
+      {
+        "at": "2026-10-30T11:42:47.940Z",
+        "equityUsd": 971.148536
+      },
+      {
+        "at": "2026-10-30T11:43:49.380Z",
+        "equityUsd": 969.650953
+      },
+      {
+        "at": "2026-10-30T11:44:50.116Z",
+        "equityUsd": 970.014091
+      },
+      {
+        "at": "2026-10-30T11:45:50.277Z",
+        "equityUsd": 970.027397
+      },
+      {
+        "at": "2026-10-30T11:46:52.365Z",
+        "equityUsd": 969.536224
+      },
+      {
+        "at": "2026-10-30T11:47:53.485Z",
+        "equityUsd": 967.992493
+      },
+      {
+        "at": "2026-10-30T11:48:53.672Z",
+        "equityUsd": 967.995625
+      },
+      {
+        "at": "2026-10-30T11:49:54.459Z",
+        "equityUsd": 968.001884
+      },
+      {
+        "at": "2026-10-30T11:50:54.663Z",
+        "equityUsd": 968.013678
+      },
+      {
+        "at": "2026-10-30T11:51:56.129Z",
+        "equityUsd": 968.024746
+      },
+      {
+        "at": "2026-10-30T11:52:56.655Z",
+        "equityUsd": 968.036021
+      },
+      {
+        "at": "2026-10-30T11:53:57.348Z",
+        "equityUsd": 968.042833
+      },
+      {
+        "at": "2026-10-30T11:54:57.904Z",
+        "equityUsd": 967.999578
+      },
+      {
+        "at": "2026-10-30T11:55:58.644Z",
+        "equityUsd": 967.808942
+      },
+      {
+        "at": "2026-10-30T11:56:47.864Z",
+        "equityUsd": 967.169563
+      },
+      {
+        "at": "2026-10-30T11:57:49.178Z",
+        "equityUsd": 968.029159
+      },
+      {
+        "at": "2026-10-30T11:58:50.011Z",
+        "equityUsd": 968.24004
+      },
+      {
+        "at": "2026-10-30T11:59:50.906Z",
+        "equityUsd": 968.902794
+      },
+      {
+        "at": "2026-10-30T12:00:52.573Z",
+        "equityUsd": 968.058996
+      },
+      {
+        "at": "2026-10-30T12:01:52.982Z",
+        "equityUsd": 968.826675
+      },
+      {
+        "at": "2026-10-30T12:02:55.057Z",
+        "equityUsd": 967.976989
+      },
+      {
+        "at": "2026-10-30T12:03:55.495Z",
+        "equityUsd": 969.043315
+      },
+      {
+        "at": "2026-10-30T12:04:55.905Z",
+        "equityUsd": 968.551439
+      },
+      {
+        "at": "2026-10-30T12:05:56.861Z",
+        "equityUsd": 969.267197
+      },
+      {
+        "at": "2026-10-30T12:06:58.966Z",
+        "equityUsd": 968.977777
+      },
+      {
+        "at": "2026-10-30T12:07:59.387Z",
+        "equityUsd": 969.442964
+      },
+      {
+        "at": "2026-10-30T12:08:59.498Z",
+        "equityUsd": 969.655514
+      },
+      {
+        "at": "2026-10-30T12:09:45.279Z",
+        "equityUsd": 970.270149
+      },
+      {
+        "at": "2026-10-30T12:10:45.432Z",
+        "equityUsd": 971.084974
+      },
+      {
+        "at": "2026-10-30T12:11:45.604Z",
+        "equityUsd": 971.298782
+      },
+      {
+        "at": "2026-10-30T12:12:50.186Z",
+        "equityUsd": 971.512164
+      },
+      {
+        "at": "2026-10-30T12:13:51.455Z",
+        "equityUsd": 971.122781
+      },
+      {
+        "at": "2026-10-30T12:14:53.041Z",
+        "equityUsd": 970.378725
+      },
+      {
+        "at": "2026-10-30T12:15:53.487Z",
+        "equityUsd": 969.939751
+      },
+      {
+        "at": "2026-10-30T12:16:53.531Z",
+        "equityUsd": 969.801148
+      },
+      {
+        "at": "2026-10-30T12:17:54.202Z",
+        "equityUsd": 969.262232
+      },
+      {
+        "at": "2026-10-30T12:18:54.285Z",
+        "equityUsd": 969.07251
+      },
+      {
+        "at": "2026-10-30T12:19:56.308Z",
+        "equityUsd": 969.077762
+      },
+      {
+        "at": "2026-10-30T12:20:57.854Z",
+        "equityUsd": 969.087648
+      },
+      {
+        "at": "2026-10-30T12:21:57.951Z",
+        "equityUsd": 969.100611
+      },
+      {
+        "at": "2026-10-30T12:22:58.470Z",
+        "equityUsd": 969.110475
+      },
+      {
+        "at": "2026-10-30T12:23:45.282Z",
+        "equityUsd": 969.125155
+      },
+      {
+        "at": "2026-10-30T12:24:47.917Z",
+        "equityUsd": 970.239793
+      },
+      {
+        "at": "2026-10-30T12:25:48.350Z",
+        "equityUsd": 969.697036
+      },
+      {
+        "at": "2026-10-30T12:26:50.308Z",
+        "equityUsd": 969.752362
+      },
+      {
+        "at": "2026-10-30T12:27:23.136Z",
+        "equityUsd": 969.555724
+      },
+      {
+        "at": "2026-10-30T12:32:52.974Z",
+        "equityUsd": 969.865941
+      },
+      {
+        "at": "2026-10-30T12:33:53.916Z",
+        "equityUsd": 970.375763
+      },
+      {
+        "at": "2026-10-30T12:34:55.998Z",
+        "equityUsd": 970.08908
+      },
+      {
+        "at": "2026-10-30T12:35:56.486Z",
+        "equityUsd": 970.151912
+      },
+      {
+        "at": "2026-10-30T12:36:56.724Z",
+        "equityUsd": 970.464967
+      },
+      {
+        "at": "2026-10-30T12:37:56.788Z",
+        "equityUsd": 970.922632
+      },
+      {
+        "at": "2026-10-30T12:38:57.009Z",
+        "equityUsd": 970.536413
+      },
+      {
+        "at": "2026-10-30T12:39:58.920Z",
+        "equityUsd": 969.743354
+      },
+      {
+        "at": "2026-10-30T12:40:59.519Z",
+        "equityUsd": 969.855117
+      },
+      {
+        "at": "2026-10-30T12:41:45.842Z",
+        "equityUsd": 969.412965
+      },
+      {
+        "at": "2026-10-30T12:42:46.436Z",
+        "equityUsd": 968.917355
+      },
+      {
+        "at": "2026-10-30T12:43:32.055Z",
+        "equityUsd": 968.725653
+      },
+      {
+        "at": "2026-10-30T12:44:48.055Z",
+        "equityUsd": 968.741625
+      },
+      {
+        "at": "2026-10-30T12:45:48.401Z",
+        "equityUsd": 969.250962
+      },
+      {
+        "at": "2026-10-30T12:46:49.297Z",
+        "equityUsd": 968.807006
+      },
+      {
+        "at": "2026-10-30T12:47:50.478Z",
+        "equityUsd": 969.414971
+      },
+      {
+        "at": "2026-10-30T12:48:53.498Z",
+        "equityUsd": 970.280272
+      },
+      {
+        "at": "2026-10-30T12:49:54.996Z",
+        "equityUsd": 971.145354
+      },
+      {
+        "at": "2026-10-30T12:50:55.795Z",
+        "equityUsd": 971.004415
+      },
+      {
+        "at": "2026-10-30T12:51:55.921Z",
+        "equityUsd": 971.366412
+      },
+      {
+        "at": "2026-10-30T12:52:58.625Z",
+        "equityUsd": 970.72676
+      },
+      {
+        "at": "2026-10-30T12:53:59.704Z",
+        "equityUsd": 970.934699
+      },
+      {
+        "at": "2026-10-30T12:54:45.399Z",
+        "equityUsd": 970.44133
+      },
+      {
+        "at": "2026-10-30T12:55:46.858Z",
+        "equityUsd": 970.251516
+      },
+      {
+        "at": "2026-10-30T12:56:47.038Z",
+        "equityUsd": 970.410982
+      },
+      {
+        "at": "2026-10-30T12:57:47.978Z",
+        "equityUsd": 971.483187
+      },
+      {
+        "at": "2026-10-30T12:58:48.030Z",
+        "equityUsd": 971.792859
+      },
+      {
+        "at": "2026-10-30T12:59:51.247Z",
+        "equityUsd": 972.411673
+      },
+      {
+        "at": "2026-10-30T13:00:52.930Z",
+        "equityUsd": 971.812445
+      },
+      {
+        "at": "2026-10-30T13:01:53.361Z",
+        "equityUsd": 971.972262
+      },
+      {
+        "at": "2026-10-30T13:02:53.778Z",
+        "equityUsd": 972.387597
+      },
+      {
+        "at": "2026-10-30T13:03:55.423Z",
+        "equityUsd": 971.03944
+      },
+      {
+        "at": "2026-10-30T13:04:55.653Z",
+        "equityUsd": 971.054924
+      },
+      {
+        "at": "2026-10-30T13:05:56.188Z",
+        "equityUsd": 972.120228
+      },
+      {
+        "at": "2026-10-30T13:06:56.686Z",
+        "equityUsd": 970.973276
+      },
+      {
+        "at": "2026-10-30T13:07:59.206Z",
+        "equityUsd": 970.024519
+      },
+      {
+        "at": "2026-10-30T13:08:59.346Z",
+        "equityUsd": 969.985936
+      },
+      {
+        "at": "2026-10-30T13:09:59.813Z",
+        "equityUsd": 970.401405
+      },
+      {
+        "at": "2026-10-30T13:10:44.910Z",
+        "equityUsd": 970.256394
+      },
+      {
+        "at": "2026-10-30T13:11:45.230Z",
+        "equityUsd": 970.013982
+      },
+      {
+        "at": "2026-10-30T13:12:45.963Z",
+        "equityUsd": 969.372708
+      },
+      {
+        "at": "2026-10-30T13:13:46.869Z",
+        "equityUsd": 970.035111
+      },
+      {
+        "at": "2026-10-30T13:14:47.534Z",
+        "equityUsd": 969.290528
+      },
+      {
+        "at": "2026-10-30T13:15:48.092Z",
+        "equityUsd": 968.599454
+      },
+      {
+        "at": "2026-10-30T13:16:48.831Z",
+        "equityUsd": 967.958951
+      },
+      {
+        "at": "2026-10-30T13:17:49.351Z",
+        "equityUsd": 966.764883
+      },
+      {
+        "at": "2026-10-30T13:18:50.102Z",
+        "equityUsd": 966.877572
+      },
+      {
+        "at": "2026-10-30T13:19:50.963Z",
+        "equityUsd": 966.388583
+      },
+      {
+        "at": "2026-10-30T13:20:53.167Z",
+        "equityUsd": 966.954143
+      },
+      {
+        "at": "2026-10-30T13:21:53.399Z",
+        "equityUsd": 968.52794
+      },
+      {
+        "at": "2026-10-30T13:22:54.864Z",
+        "equityUsd": 967.734788
+      },
+      {
+        "at": "2026-10-30T13:23:55.273Z",
+        "equityUsd": 966.852332
+      },
+      {
+        "at": "2026-10-30T13:24:55.684Z",
+        "equityUsd": 964.90478
+      },
+      {
+        "at": "2026-10-30T13:25:57.893Z",
+        "equityUsd": 964.765787
+      },
+      {
+        "at": "2026-10-30T13:26:59.710Z",
+        "equityUsd": 964.021126
+      },
+      {
+        "at": "2026-10-30T13:27:44.772Z",
+        "equityUsd": 964.078549
+      },
+      {
+        "at": "2026-10-30T13:28:45.351Z",
+        "equityUsd": 963.475972
+      },
+      {
+        "at": "2026-10-30T13:29:45.877Z",
+        "equityUsd": 963.686435
+      },
+      {
+        "at": "2026-10-30T13:30:46.052Z",
+        "equityUsd": 961.888435
+      },
+      {
+        "at": "2026-10-30T13:31:46.641Z",
+        "equityUsd": 962.701461
+      },
+      {
+        "at": "2026-10-30T13:32:47.461Z",
+        "equityUsd": 961.059016
+      },
+      {
+        "at": "2026-10-30T13:33:48.987Z",
+        "equityUsd": 958.503345
+      },
+      {
+        "at": "2026-10-30T13:34:50.155Z",
+        "equityUsd": 962.639049
+      },
+      {
+        "at": "2026-10-30T13:35:50.777Z",
+        "equityUsd": 961.595523
+      },
+      {
+        "at": "2026-10-30T13:36:52.811Z",
+        "equityUsd": 958.992304
+      },
+      {
+        "at": "2026-10-30T13:37:53.101Z",
+        "equityUsd": 960.107142
+      },
+      {
+        "at": "2026-10-30T13:38:55.023Z",
+        "equityUsd": 960.114087
+      },
+      {
+        "at": "2026-10-30T13:39:55.744Z",
+        "equityUsd": 960.980926
+      },
+      {
+        "at": "2026-10-30T13:40:56.453Z",
+        "equityUsd": 960.290159
+      },
+      {
+        "at": "2026-10-30T13:41:57.967Z",
+        "equityUsd": 958.438048
+      },
+      {
+        "at": "2026-10-30T13:42:58.690Z",
+        "equityUsd": 956.337579
+      },
+      {
+        "at": "2026-10-30T13:43:45.984Z",
+        "equityUsd": 955.491456
+      },
+      {
+        "at": "2026-10-30T13:44:46.971Z",
+        "equityUsd": 955.098668
+      },
+      {
+        "at": "2026-10-30T13:45:48.837Z",
+        "equityUsd": 956.016581
+      },
+      {
+        "at": "2026-10-30T13:46:49.052Z",
+        "equityUsd": 954.215551
+      },
+      {
+        "at": "2026-10-30T13:47:51.403Z",
+        "equityUsd": 955.082343
+      },
+      {
+        "at": "2026-10-30T13:48:52.638Z",
+        "equityUsd": 951.723527
+      },
+      {
+        "at": "2026-10-30T13:50:52.996Z",
+        "equityUsd": 952.644673
+      },
+      {
+        "at": "2026-10-30T13:53:59.304Z",
+        "equityUsd": 951.914589
+      },
+      {
+        "at": "2026-10-30T13:54:44.540Z",
+        "equityUsd": 955.437407
+      },
+      {
+        "at": "2026-10-30T13:55:47.105Z",
+        "equityUsd": 955.453117
+      },
+      {
+        "at": "2026-10-30T13:56:47.746Z",
+        "equityUsd": 953.954606
+      },
+      {
+        "at": "2026-10-30T13:57:49.868Z",
+        "equityUsd": 954.61399
+      },
+      {
+        "at": "2026-10-30T13:58:50.655Z",
+        "equityUsd": 952.312738
+      },
+      {
+        "at": "2026-10-30T13:59:51.552Z",
+        "equityUsd": 956.148112
+      },
+      {
+        "at": "2026-10-30T14:00:53.744Z",
+        "equityUsd": 887.278854
+      },
+      {
+        "at": "2026-10-30T14:01:54.249Z",
+        "equityUsd": 887.372306
+      },
+      {
+        "at": "2026-10-30T14:02:54.830Z",
+        "equityUsd": 885.736898
+      },
+      {
+        "at": "2026-10-30T14:03:56.847Z",
+        "equityUsd": 885.129461
+      },
+      {
+        "at": "2026-10-30T14:04:56.917Z",
+        "equityUsd": 885.316365
+      },
+      {
+        "at": "2026-10-30T14:05:58.787Z",
+        "equityUsd": 885.923802
+      },
+      {
+        "at": "2026-10-30T14:06:58.917Z",
+        "equityUsd": 883.821135
+      },
+      {
+        "at": "2026-10-30T14:07:59.664Z",
+        "equityUsd": 885.269639
+      },
+      {
+        "at": "2026-10-30T14:08:45.392Z",
+        "equityUsd": 884.522024
+      },
+      {
+        "at": "2026-10-30T14:09:45.557Z",
+        "equityUsd": 884.241668
+      },
+      {
+        "at": "2026-10-30T14:10:45.680Z",
+        "equityUsd": 883.867861
+      },
+      {
+        "at": "2026-10-30T14:11:45.858Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:12:45.916Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:13:46.007Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:14:46.144Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:15:46.249Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:16:46.377Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:17:47.151Z",
+        "equityUsd": 879.896156
+      },
+      {
+        "at": "2026-10-30T14:18:48.690Z",
+        "equityUsd": 881.064305
+      },
+      {
+        "at": "2026-10-30T14:19:48.878Z",
+        "equityUsd": 881.064305
+      },
+      {
+        "at": "2026-10-30T14:20:49.033Z",
+        "equityUsd": 881.064305
+      },
+      {
+        "at": "2026-10-30T14:21:49.211Z",
+        "equityUsd": 881.064305
+      },
+      {
+        "at": "2026-10-30T14:22:49.334Z",
+        "equityUsd": 881.064305
+      },
+      {
+        "at": "2026-10-30T14:23:49.449Z",
+        "equityUsd": 881.064305
+      },
+      {
+        "at": "2026-10-30T14:24:49.515Z",
+        "equityUsd": 881.064305
+      },
+      {
+        "at": "2026-10-30T14:25:49.596Z",
+        "equityUsd": 881.952097
+      },
+      {
+        "at": "2026-10-30T14:26:52.077Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:27:52.464Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:28:53.875Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:29:55.127Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:30:55.590Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:31:55.739Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:32:57.083Z",
+        "equityUsd": 883.260424
+      },
+      {
+        "at": "2026-10-30T14:33:57.140Z",
+        "equityUsd": 877.793489
+      },
+      {
+        "at": "2026-10-30T14:34:58.767Z",
+        "equityUsd": 878.447652
+      },
+      {
+        "at": "2026-10-30T14:35:58.892Z",
+        "equityUsd": 877.793489
+      },
+      {
+        "at": "2026-10-30T14:36:59.015Z",
+        "equityUsd": 877.372955
+      },
+      {
+        "at": "2026-10-30T14:37:59.152Z",
+        "equityUsd": 876.204807
+      },
+      {
+        "at": "2026-10-30T14:38:45.092Z",
+        "equityUsd": 876.344985
+      },
+      {
+        "at": "2026-10-30T14:39:45.311Z",
+        "equityUsd": 876.344985
+      },
+      {
+        "at": "2026-10-30T14:40:45.418Z",
+        "equityUsd": 876.344985
+      },
+      {
+        "at": "2026-10-30T14:41:45.636Z",
+        "equityUsd": 876.344985
+      },
+      {
+        "at": "2026-10-30T14:42:47.040Z",
+        "equityUsd": 876.344985
+      },
+      {
+        "at": "2026-10-30T14:43:47.401Z",
+        "equityUsd": 876.344985
+      },
+      {
+        "at": "2026-10-30T14:44:47.571Z",
+        "equityUsd": 886.110706
+      },
+      {
+        "at": "2026-10-30T14:45:47.746Z",
+        "equityUsd": 885.269639
+      },
+      {
+        "at": "2026-10-30T14:46:51.770Z",
+        "equityUsd": 885.269639
+      },
+      {
+        "at": "2026-10-30T14:47:51.998Z",
+        "equityUsd": 885.269639
+      },
+      {
+        "at": "2026-10-30T14:48:52.226Z",
+        "equityUsd": 885.269639
+      },
+      {
+        "at": "2026-10-30T14:49:52.372Z",
+        "equityUsd": 885.269639
+      },
+      {
+        "at": "2026-10-30T14:50:54.043Z",
+        "equityUsd": 885.269639
+      },
+      {
+        "at": "2026-10-30T14:51:54.211Z",
+        "equityUsd": 884.194942
+      },
+      {
+        "at": "2026-10-30T14:52:54.423Z",
+        "equityUsd": 884.194942
+      },
+      {
+        "at": "2026-10-30T14:53:54.546Z",
+        "equityUsd": 882.980068
+      },
+      {
+        "at": "2026-10-30T14:54:56.049Z",
+        "equityUsd": 883.30715
+      },
+      {
+        "at": "2026-10-30T14:55:57.129Z",
+        "equityUsd": 883.821135
+      },
+      {
+        "at": "2026-10-30T14:56:57.789Z",
+        "equityUsd": 881.438112
+      },
+      {
+        "at": "2026-10-30T14:57:58.028Z",
+        "equityUsd": 879.989608
+      },
+      {
+        "at": "2026-10-30T14:58:58.190Z",
+        "equityUsd": 880.643771
+      },
+      {
+        "at": "2026-10-30T14:59:58.482Z",
+        "equityUsd": 881.81192
+      },
+      {
+        "at": "2026-10-30T15:00:58.990Z",
+        "equityUsd": 882.83989
+      },
+      {
+        "at": "2026-10-30T15:01:59.937Z",
+        "equityUsd": 885.643447
+      },
+      {
+        "at": "2026-10-30T15:02:45.250Z",
+        "equityUsd": 885.923802
+      }
+    ]
+  }
+}

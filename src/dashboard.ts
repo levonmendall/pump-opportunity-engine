@@ -1,5 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual, createHash } from 'node:crypto';
+import {restoreRenderReceiverHistory} from './render-history-bootstrap.js';
 import {holographicDashboard} from './dashboard-holographic.js';
 import {ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION} from './operating-intelligence.js';
 import { fileURLToPath } from 'node:url';
@@ -443,10 +444,10 @@ function showSnapshot(s,received,f,equityHistory=null){
  renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[]);
  put('chartBasis','Actual portfolio equity in USD, matching Portfolio Overview.'+(s.financialEpoch?' 10 SOL restatement starts a separate segment; contribution is not profit.':''));put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
- put('chartTag',latestEquityHistory?.retention==='ec2-durable-republished'?'LIFETIME EQUITY':
+ put('chartTag',latestEquityHistory?.retention==='durable-with-preserved-receiver'?'LIFETIME + PRESERVED CAPTURE':latestEquityHistory?.retention==='ec2-durable-republished'?'LIFETIME EQUITY':
     (latestEquityHistory?.points?.length??0)>=2?'TEMPORARY HISTORY':'COLLECTING EQUITY');
  put('freshness','Last source report '+s.times.generatedAt.slice(0,19).replace('T',' ')+' UTC');
- put('chartNote',latestEquityHistory?.retention==='ec2-durable-republished'?
+ put('chartNote',latestEquityHistory?.retention==='durable-with-preserved-receiver'?'Verified EC2 lifetime equity plus exact original receiver observations preserved before redeploy. Actual timestamped values; missing intervals remain unknown.':latestEquityHistory?.retention==='ec2-durable-republished'?
    'Original account lifetime · verified EC2 equity observations · durable source replay after restarts. Missing periods remain gaps'+(latestEquityHistory.downsampled?' · display downsampled.':'.'):
    'Temporary receiver history (rolling 24 hours). Durable EC2 lifetime source not yet connected; earlier equity is not invented.');
  if(!s.intelligence){
@@ -561,11 +562,12 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const port = Number(process.env.PORT ?? 10000);
   if((process.env.POE_ACCOUNT_ID||process.env.POE_INCEPTION_AT)&&(process.env.POE_ACCOUNT_ID!==ORIGINAL_POE_ACCOUNT||process.env.POE_INCEPTION_AT!==ORIGINAL_POE_INCEPTION))throw Error('original POE account and inception required');
   if (!Number.isSafeInteger(port) || port < 1 || port > 65535) throw new Error('invalid PORT');
-  const { server } = createDashboard({
+  const { server,cache } = createDashboard({
     accountId: process.env.POE_ACCOUNT_ID, inceptionAt: process.env.POE_INCEPTION_AT,
     release: process.env.POE_RUNTIME_RELEASE, strategy: process.env.POE_STRATEGY_VERSION,
     viewerUser: process.env.POE_VIEWER_USER ?? '', viewerPassword: process.env.POE_VIEWER_PASSWORD ?? '',
     publicViewer: process.env.POE_PUBLIC_VIEWER === 'true', ingestionSecret: required('POE_INGEST_SECRET'),
   });
+  if(cache.identity)restoreRenderReceiverHistory(cache);
   server.listen(port, '0.0.0.0', () => process.stdout.write(`poe-dashboard listening on ${port}; awaiting authenticated source\n`));
 }
