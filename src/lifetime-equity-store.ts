@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
-import { constants, closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync } from 'node:fs';
+import { chmodSync, constants, closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from './operating-intelligence.js';
 import { EQUITY_GAP_MS, LIFETIME_EQUITY_SOURCE, MAX_LIFETIME_EQUITY_POINTS,
@@ -61,11 +61,12 @@ function plotRows(db: Database.Database): PointRow[] {
 function compactPlot(db: Database.Database) {
   const rows = plotRows(db);
   if (rows.length <= MAX_LIFETIME_EQUITY_POINTS) return;
-  const extrema = [Math.min(...rows.map(p => p.equity_usd)), Math.max(...rows.map(p => p.equity_usd))];
+  const minIndex = rows.reduce((i, p, n) => p.equity_usd < rows[i]!.equity_usd ? n : i, 0);
+  const maxIndex = rows.reduce((i, p, n) => p.equity_usd > rows[i]!.equity_usd ? n : i, 0);
   let remove = -1, score = Infinity;
   for (let i = 1; i < rows.length - 1; i++) {
     const prev = rows[i - 1]!, cur = rows[i]!, next = rows[i + 1]!;
-    if (cur.kind === 'inception' || extrema.includes(cur.equity_usd)) continue;
+    if (cur.kind === 'inception' || i === minIndex || i === maxIndex) continue;
     // Segment changes are actual missing-data breaks, never interpolatable.
     const sameSegment = prev.segment === cur.segment && cur.segment === next.segment;
     if (!sameSegment) continue;
@@ -79,7 +80,7 @@ function compactPlot(db: Database.Database) {
     // If an extraordinary number of separate outages exhausts the display,
     // omit an interior point; the surviving segment IDs still forbid bridges.
     remove = rows.findIndex((p, i) => i > 0 && i < rows.length - 1 &&
-      p.kind !== 'inception' && !extrema.includes(p.equity_usd));
+      p.kind !== 'inception' && i !== minIndex && i !== maxIndex);
   }
   if (remove < 0) throw Error('EQUITY_DISPLAY_CAPACITY_UNAVAILABLE');
   db.prepare('DELETE FROM equity_plot WHERE at_ms=?').run(rows[remove]!.at_ms);
@@ -109,6 +110,7 @@ export class LifetimeEquityStore {
       if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
     }
     this.db = new Database(file, {fileMustExist: false});
+    chmodSync(file, 0o600);
     this.db.pragma('journal_mode = WAL');
     this.db.pragma('synchronous = FULL');
     this.db.pragma('busy_timeout = 1000');
