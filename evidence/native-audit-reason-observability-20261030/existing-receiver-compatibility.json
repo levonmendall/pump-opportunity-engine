@@ -1,0 +1,14 @@
+{
+  "kind": "OFFLINE_EXISTING_RECEIVER_AUDIT_DIAGNOSTIC_CHECK",
+  "receiverCommit": "4c7b4a1a58a86bef2e5504b840caa40ee750ee60",
+  "acceptedByExactPriorValidator": true,
+  "newStrictSchema": false,
+  "financialDecisionRowsUnchanged": true,
+  "notes": [
+    "Candidate instance 2026-10-30T02:50:00.000Z: counts DECISION_DEADLINE_EXPIRED:1 (occurrences, not unique windows). Latest decision-expired/DECISION_DEADLINE_EXPIRED at 2026-10-30T02:59:59.999Z, mint So11111111111111111111111111111111111111112; target end 1793329189999 deadline 1793329199999 UTC-ms; dispatch scheduler-wait/await-next-dispatch; scheduler outside-bounded-admission-window."
+  ],
+  "providerRequests": 0,
+  "financialDatabaseOpened": false,
+  "serviceControls": 0,
+  "meaning": "Schema compatibility only; no live trading, audit completeness, coverage or profit acceptance."
+}

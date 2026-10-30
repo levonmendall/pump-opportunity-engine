@@ -1,0 +1,50 @@
+{
+  "completedAt": "2026-10-30T03:30:57.773826+00:00",
+  "source": "d1999faeaa3b42d57cc890359e1a01e8e80c1d20",
+  "baseSource": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/native-candidate-diagnostics.test.ts",
+        "test/native-candidate-runner.test.ts",
+        "test/operating-intelligence.test.ts",
+        "test/operating-source-diagnostics.test.ts",
+        "test/adaptive-operating-intelligence.test.ts",
+        "test/pilot-reporting.test.ts",
+        "test/reporting.test.ts",
+        "test/snapshot-file-publisher.test.ts",
+        "test/native-paper-observation-reporting.test.ts",
+        "test/operating-financial-readiness.test.ts",
+        "test/dashboard.test.ts",
+        "test/operating-pnl-reporting.test.ts"
+      ],
+      "exitCode": 0,
+      "raw": "focused-tests.raw.txt",
+      "sha256": "41c99178464da7337c9a04e11427af7684d17d60291c6c5298c79b15e80421c0"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "raw": "build.raw.txt",
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ],
+  "sourceUnchanged": true,
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "serviceControls": 0,
+  "schedulingChanges": false,
+  "qualificationChanges": false,
+  "schemaChanges": false,
+  "historicalCausesReconstructed": false,
+  "independentReview": "Pending parent review; new child spawn refused agent thread limit",
+  "deployed": false
+}
