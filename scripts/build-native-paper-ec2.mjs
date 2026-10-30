@@ -47,6 +47,8 @@ const transforms=[];
 const transformedInputs=new Map(),sourceSnapshots=new Map(),optionalFallbacks=new Map();
 const sdkBefore="const sdk=createRequire(import.meta.url)('@pump-fun/pump-swap-sdk') as typeof import('@pump-fun/pump-swap-sdk');";
 const sdkAfter="const sdk=require('@pump-fun/pump-swap-sdk') as typeof import('@pump-fun/pump-swap-sdk');";
+const unsignedSdkBefore="const SDK=createRequire(import.meta.url)('@pump-fun/pump-swap-sdk') as typeof import('@pump-fun/pump-swap-sdk');";
+const unsignedSdkAfter="const SDK=require('@pump-fun/pump-swap-sdk') as typeof import('@pump-fun/pump-swap-sdk');";
 const idlBefore="const require=createRequire(import.meta.url),idlBytes=readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'))";
 const idlAfter='const idlBytes=Buffer.from('+JSON.stringify(idlBytes.toString('base64'))+",'base64')";
 const fullIdlBefore="const require=createRequire(import.meta.url);\nconst idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl;";
@@ -70,14 +72,14 @@ const plugin={name:'exact-reviewed-runtime-resolution',setup(build){
     return {path:args.path,namespace:'poe-optional-unavailable'};
   });
   build.onLoad({filter:/.*/,namespace:'poe-optional-unavailable'},args=>({contents:optionalFallbacks.get('poe-optional-unavailable:'+args.path).contents,loader:'js'}));
-  build.onLoad({filter:/[\\/]src[\\/](?:sdk|program-log-mapping|migration-identity|pumpapi-mapping)\.ts$/},async args=>{
-    if(!['src/sdk.ts','src/program-log-mapping.ts','src/migration-identity.ts','src/pumpapi-mapping.ts'].some(path=>args.path===join(root,path)))return;
-    const source=readFileSync(args.path,'utf8'),isSdk=basename(args.path)==='sdk.ts';
-    const isFull=['migration-identity.ts','pumpapi-mapping.ts'].includes(basename(args.path)),before=isSdk?sdkBefore:isFull?fullIdlBefore:idlBefore,after=isSdk?sdkAfter:isFull?fullIdlAfter:idlAfter;
+  build.onLoad({filter:/[\\/]src[\\/](?:sdk|paper-unsigned-pumpswap|program-log-mapping|migration-identity|pumpapi-mapping)\.ts$/},async args=>{
+    if(!['src/sdk.ts','src/paper-unsigned-pumpswap.ts','src/program-log-mapping.ts','src/migration-identity.ts','src/pumpapi-mapping.ts'].some(path=>args.path===join(root,path)))return;
+    const source=readFileSync(args.path,'utf8'),isSdk=basename(args.path)==='sdk.ts',isUnsignedSdk=basename(args.path)==='paper-unsigned-pumpswap.ts';
+    const isFull=['migration-identity.ts','pumpapi-mapping.ts'].includes(basename(args.path)),before=isSdk?sdkBefore:isUnsignedSdk?unsignedSdkBefore:isFull?fullIdlBefore:idlBefore,after=isSdk?sdkAfter:isUnsignedSdk?unsignedSdkAfter:isFull?fullIdlAfter:idlAfter;
     need(source.split(before).length===2,'BUNDLE_NARROW_TRANSFORM_NO_LONGER_MATCHES:'+relative(root,args.path));
     const contents=source.replace(before,after);
     const sourceSha256=hash(source),transformedSha256=hash(contents);
-    transforms.push({path:relative(root,args.path),sourceSha256,transformedSha256,operation:isSdk?'Replace exactly one runtime createRequire SDK load with a statically bundleable require of the identical pinned CommonJS SDK.':'Replace exactly one IDL file-resolution initializer with the identical pinned IDL bytes encoded as base64; parser logic unchanged.'});
+    transforms.push({path:relative(root,args.path),sourceSha256,transformedSha256,operation:isSdk||isUnsignedSdk?'Replace exactly one runtime createRequire SDK load with a statically bundleable require of the identical pinned CommonJS SDK.':'Replace exactly one IDL file-resolution initializer with the identical pinned IDL bytes encoded as base64; parser logic unchanged.'});
     transformedInputs.set(realpathSync(args.path),sourceSha256);
     return {contents,loader:'ts',resolveDir:dirname(args.path)};
   });
