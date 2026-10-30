@@ -10,7 +10,7 @@ Type=simple
 User=poe-runtime
 Group=poe-runtime
 WorkingDirectory=/opt/poe-lifetime-equity/current
-Environment=POE_EQUITY_SOURCE_FILE=/var/lib/poe/service/snapshot.json
+Environment=POE_EQUITY_SOURCE_FILE=/var/lib/poe/native-engine/snapshot.json
 Environment=POE_EQUITY_STORE_FILE=/var/lib/poe/lifetime-equity/equity.sqlite
 # Optional owner-reviewed hash-pinned import path; never supply a wallet secret here.
 EnvironmentFile=-/etc/poe/lifetime-equity.env
@@ -22,7 +22,7 @@ NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectHome=yes
 ProtectSystem=strict
-ReadOnlyPaths=/var/lib/poe/service
+ReadOnlyPaths=/var/lib/poe/native-engine
 ReadWritePaths=/var/lib/poe/lifetime-equity
 UMask=0077
 Nice=10

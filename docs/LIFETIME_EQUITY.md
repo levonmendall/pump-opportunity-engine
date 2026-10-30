@@ -47,7 +47,9 @@ dashboard does not by itself activate lifetime recording.**
 ## Deployment sequence
 
 1. Verify the original protected `poe-runtime.service` and source snapshot
-   pathname, owner UID/GID, and exact credential path. The supplied unit is an
+   pathname, owner UID/GID, and exact credential path. The authoritative source
+   pathname is `/var/lib/poe/native-engine/snapshot.json`; the separate service
+   status directory is not the source snapshot. The supplied unit is an
    *installation template*, not a claim those paths are confirmed.
 2. Compile the pinned repository on a non-financial checkout using Node
    24.19.0 and install under `/opt/poe-lifetime-equity/current`; provide the
@@ -102,3 +104,12 @@ account identity, chronology and actual accepted equity values; it imports
 idempotently without modifying source financial history. It retains a
 separate witness in `equity_imported_capture`. Conflicting values fail
 rather than overwriting prior evidence.
+
+Existing sidecar databases must have one hardlink, private ownership/mode, the
+exact sidecar tables and the original-account identity. These are checked before
+any writable SQLite open or journal-mode change. A renamed or hardlinked
+financial database is rejected without modifying it. The trusted systemd
+credential mode0440 exception applies only to this companion's exact credential
+path and root UID/GID metadata; arbitrary group-readable credential files remain
+rejected. The installed unit must derive the credential source from the original
+reporting unit rather than assume the template path exists.

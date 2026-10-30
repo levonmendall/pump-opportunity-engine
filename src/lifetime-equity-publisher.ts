@@ -3,12 +3,18 @@ import { isAbsolute, join, resolve } from 'node:path';
 import { LifetimeEquityStore, readPrivateOriginalSnapshot } from './lifetime-equity-store.js';
 
 const RECEIVER = 'https://meme-machine-dashboard-staging.onrender.com/api/equity-history';
-const SOURCE = '/var/lib/poe/service/snapshot.json';
+const SOURCE = '/var/lib/poe/native-engine/snapshot.json';
 const STORE = '/var/lib/poe/lifetime-equity/equity.sqlite';
 
 function absolute(name: string, value: string) {
   if (!isAbsolute(value) || resolve(value) !== value || value.length > 4096) throw Error(name + '_INVALID');
   return value;
+}
+export function equityCredentialOwnerModeAccepted(path:string,file:{uid:number;gid:number;mode:number},uid:number|undefined,credentialDirectory?:string) {
+  const directory='/run/credentials/poe-lifetime-equity.service';
+  const systemd=credentialDirectory===directory&&path===directory+'/poe-ingest-secret'&&
+    file.uid===0&&file.gid===0&&(file.mode&0o7777)===0o440;
+  return systemd||[0,uid].includes(file.uid)&&(file.mode&0o077)===0;
 }
 function secretFromFile(path: string): string {
   const file = absolute('EQUITY_SECRET_PATH', path);
@@ -16,7 +22,7 @@ function secretFromFile(path: string): string {
   try {
     const a = fstatSync(fd);
     if (!a.isFile() || a.nlink !== 1 || a.size === 0 || a.size > 4096 ||
-        ![0, process.getuid?.()].includes(a.uid) || (a.mode & 0o077) !== 0) throw Error('EQUITY_CREDENTIAL_MODE');
+        !equityCredentialOwnerModeAccepted(file,a,process.getuid?.(),process.env.CREDENTIALS_DIRECTORY)) throw Error('EQUITY_CREDENTIAL_MODE');
     const raw = readFileSync(fd), b = fstatSync(fd);
     if (raw.length !== a.size || a.ino !== b.ino || a.mtimeMs !== b.mtimeMs || a.ctimeMs !== b.ctimeMs)
       throw Error('EQUITY_CREDENTIAL_CHANGED');
