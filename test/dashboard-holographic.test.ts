@@ -36,14 +36,17 @@ test('all original data targets and original scripts survive unchanged',()=>{
 test('hero has one ornamental orbital illustration and no false performance data',()=>{
  const rendered=full();
  assert.match(rendered,/A new dimension/);
- assert.match(rendered,/class="holo-object"/);
+ assert.equal((rendered.match(/class="holo-object"/g)||[]).length,1);
  assert.match(rendered,/DECORATIVE \/ NOT MARKET DATA/);
  assert.match(rendered,/LIVE EXECUTION DISABLED/);
  assert.match(rendered,/NO DEMO PERFORMANCE/);
  assert.match(rendered,/NO SYNTHETIC BALANCES OR TRADES/);
  assert.match(rendered,/RECORDING PORTFOLIO EQUITY/);
  assert.ok(!rendered.includes('class="radar"'));
- assert.ok(!rendered.includes('NaN'));
+ // Missing epoch time uses an internal NaN sentinel, rejected by the renderer's
+ // finite-time guard. It must never appear in displayed markup or SVG values.
+ const markup=rendered.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
+ assert.doesNotMatch(markup,/\b(?:NaN|Infinity)\b/);
 });
 
 test('original account panels remain, experimental sections are absent and the equity chart stays visible',()=>{

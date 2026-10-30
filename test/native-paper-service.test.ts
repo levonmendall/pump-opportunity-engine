@@ -35,7 +35,7 @@ test('actual runtime RPC configuration selects the explicit90 service profile wi
    const usage=rpc.usage(),authorization=JSON.parse(readFileSync(join(directory,'rpc/authorization.json'),'utf8')),chapter=JSON.parse(readFileSync(usage.activeChapterPath!,'utf8'));
    assert.equal(usage.profile,expectedProfile);assert.equal(authorization.profile,expectedProfile);assert.equal(chapter.profile,expectedProfile);assert.equal(usage.persistent,service);assert.equal(usage.lifetimeCapsEnabled,!service);assert.equal(authorization.lifetimeCapsEnabled,!service);
    const physical={maxStartsPerMinute:expectedMinute,maxStartsPer10s:20,maxGetTransactionStartsPer10s:8,minSpacingMs:250,physicalInFlight:1};assert.deepEqual(usage.requestLimits,physical);assert.deepEqual(authorization.requestLimits,physical);assert.equal(chapter.limits.maxStartsPerMinute,expectedMinute);assert.equal(chapter.limits.maxStartsPer10s,20);assert.equal(chapter.limits.minSpacingMs,250);assert.equal(usage.automaticRequestRetries,0);assert.equal(usage.inFlight,0);assert.equal(usage.cooldownUntil,0);assert.equal(usage.uncertainResponseBytes,0);assert.ok(usage.newAccountedResponseBytes>0,'the larger local minute allowance never bypasses byte accounting');
-   const reserve=nativePaperManagementReserve({...usage,chapterUsage:{...usage.chapterUsage!,rolling60SecondStarts:expectedMinute-6}},true);assert.equal(reserve.entryAllowed,true);assert.equal(nativePaperManagementReserve({...usage,chapterUsage:{...usage.chapterUsage!,rolling60SecondStarts:expectedMinute-3}},true).candidateWorkWithExposureAllowed,false,'the existing financial request headroom remains relative to the selected rolling rate');
+   const reserve=nativePaperManagementReserve({...usage,chapterUsage:{...usage.chapterUsage!,rolling60SecondStarts:expectedMinute-7}},true);assert.equal(reserve.entryAllowed,true);assert.equal(nativePaperManagementReserve({...usage,chapterUsage:{...usage.chapterUsage!,rolling60SecondStarts:expectedMinute-3}},true).candidateWorkWithExposureAllowed,false,'the existing financial request headroom remains relative to the selected rolling rate');
   }finally{rpc.close();assert.deepEqual(readFileSync(baseline),prior,'historical consumed usage is unchanged');rmSync(directory,{recursive:true,force:true});}
  }
 });
@@ -46,9 +46,9 @@ test('original binding preserves inception and virtual funding; fixture exceptio
  assert.throws(()=>assertNativePaperAccount(original,{accountId:original.accountId,inceptionAt:original.inceptionAt}),/FIXTURE/);
 });
 test('persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion',()=>{
- const consumed={chapter:1000000,newUnits:1000000,maximumNewUnits:1500,newAccountedResponseBytes:10**12,maximumNewResponseBytes:1,requestLimits:{maxStartsPerMinute:60},chapterUsage:{rolling60SecondStarts:54}};
+ const consumed={chapter:1000000,newUnits:1000000,maximumNewUnits:1500,newAccountedResponseBytes:10**12,maximumNewResponseBytes:1,requestLimits:{maxStartsPerMinute:60},chapterUsage:{rolling60SecondStarts:53}};
  assert.equal(nativePaperManagementReserve(consumed).entryAllowed,false);assert.equal(nativePaperManagementReserve(consumed,true).entryAllowed,true);
- assert.equal(nativePaperManagementReserve({...consumed,chapterUsage:{rolling60SecondStarts:55}},true).entryAllowed,false);
+ assert.equal(nativePaperManagementReserve({...consumed,chapterUsage:{rolling60SecondStarts:54}},true).entryAllowed,false);
  assert.equal(nativePaperManagementReserve({...consumed,chapterUsage:{rolling60SecondStarts:57}},true).candidateWorkWithExposureAllowed,false);
  assert.equal(nativePaperManagementReserve(consumed,true).lifetimeAllowanceEnforced,false);
 });
@@ -127,9 +127,9 @@ test('actual continuous recorder optional omission preserves complete required p
 });
 
 test('rolling short-window financial reserve blocks new risk before a burst consumes protection and pending-entry starts',()=>{
- const normal={chapter:2,newUnits:20,maximumNewUnits:1500,newAccountedResponseBytes:10000,maximumNewResponseBytes:256*1024*1024,requestLimits:{maxStartsPerMinute:90,maxStartsPer10s:20},chapterUsage:{rolling60SecondStarts:20,rolling10SecondStarts:14}};
- assert.equal(nativePaperManagementReserve(normal,true).entryAllowed,true);assert.equal(nativePaperManagementReserve(normal,true).rolling10SecondStartHeadroom,6);
- assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:15}},true).entryAllowed,false,'ample minute budget cannot authorize entry that consumes the held/pending short-window reserve');
+ const normal={chapter:2,newUnits:20,maximumNewUnits:1500,newAccountedResponseBytes:10000,maximumNewResponseBytes:256*1024*1024,requestLimits:{maxStartsPerMinute:90,maxStartsPer10s:20},chapterUsage:{rolling60SecondStarts:20,rolling10SecondStarts:13}};
+ assert.equal(nativePaperManagementReserve(normal,true).entryAllowed,true);assert.equal(nativePaperManagementReserve(normal,true).rolling10SecondStartHeadroom,7);
+ assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:14}},true).entryAllowed,false,'ample minute budget cannot authorize entry that consumes the held/pending short-window reserve');
  assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:16}},true).candidateWorkWithExposureAllowed,true);assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:17}},true).candidateWorkWithExposureAllowed,false);
  assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{rolling60SecondStarts:20,rolling10SecondStarts:0}},true).entryAllowed,true,'rolling headroom recovers without a restart or cumulative allowance reset');
 });

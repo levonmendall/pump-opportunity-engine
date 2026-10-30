@@ -25,8 +25,11 @@ test('known historical high-water remains legible while unavailable current risk
  const p=risk();p.risk.state='unavailable';(p.risk.entry as any).targetConsumedCostMicroUsd=null;(p.risk.entry as any).cashLimitedConsumedCostSol=null;for(const key of ['drawdownBps','remainingBeforePauseMicroUsd'])(p.risk.daily as any)[key]=null;
  const all=cards(p).flat().join('\n');assert.match(all,/HWM \$1,000\.00 at 03:49:50 UTC · remaining Unavailable \/ Unavailable/);assert.match(all,/cash ceiling unavailable SOL/);assert.doesNotMatch(all,/remaining 0\.00%|\$0\.00/);
 });
-test('new cards retain the original portfolio-equity graph, candidate progression, collapsed trades and DexScreener links',()=>{
- assert.match(source,/\.\.\.financialPolicyCards\(s\)/);assert.match(source,/\['PORTFOLIO EQUITY',money\(b.equityUsd\)/);assert.match(source,/plot\(latestEquityHistory\?\.points\?\?\[\]\)/);assert.match(source,/paper-trades-disclosure/);assert.match(source,/function renderFunnel\(/);assert.match(source,/https:\/\/dexscreener.com\/solana\//);
+test('new cards retain the approved epoch equity graph, candidate progression, collapsed trades and DexScreener links',()=>{
+ assert.match(source,/\.\.\.financialPolicyCards\(s\)/);assert.match(source,/\['PORTFOLIO EQUITY',money\(b.equityUsd\)/);
+ assert.match(source,/plot\(latestEquityHistory\?\.points\?\?\[\],latest\?\.financialEpoch\?\.activatedAt\?\?latestEquityHistory\?\.financialEpoch\?\.activatedAt\?\?null\)/);
+ assert.match(source,/Earlier history is retained in exports and is not backfilled into this graph/);
+ assert.match(source,/paper-trades-disclosure/);assert.match(source,/function renderFunnel\(/);assert.match(source,/https:\/\/dexscreener.com\/solana\//);
 });
 test('PAPER model card distinguishes adapter preparation from financial fills and observed RPC from scenario delay/fees',()=>{
  const p=risk() as any;p.execution={version:'paper-chain-conditioned-v1',state:'active',scope:'current-market-instance',plans:2,supportedLandingStates:1,preflightUnsubmitted:1,unknownLanding:1,legacyProtectionFallbacks:0,last:{at:'2026-10-30T03:49:59.900Z',stage:'landing-state-supported',reasonCode:'LANDING_STATE_SUPPORTED',observedRpcMs:325,modeledDelayMs:1375,feeSol:'0.000007000',sourceSlot:400000001},meaning:'PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME'};
